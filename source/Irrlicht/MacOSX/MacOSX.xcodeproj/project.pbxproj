@@ -6627,6 +6627,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Debug";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
@@ -6653,6 +6654,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = Quake3Map_dbg;
 				SDKROOT = "";
+				SYMROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -6662,6 +6664,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Release";
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
@@ -6691,6 +6694,7 @@
 				SDKROOT = "";
 				SEPARATE_STRIP = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SYMROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
