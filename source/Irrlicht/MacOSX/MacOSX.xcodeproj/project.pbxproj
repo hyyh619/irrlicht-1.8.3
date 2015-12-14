@@ -5730,6 +5730,7 @@
 		09F649010D2CDED9001E0599 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Debug";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
@@ -5747,6 +5748,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/build/Debug\"";
+				OBJROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -5755,6 +5757,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = HelloWorld_dbg;
+				SYMROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -5763,6 +5766,7 @@
 		09F649020D2CDED9001E0599 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Release";
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
@@ -5780,6 +5784,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/build/Debug\"";
+				OBJROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				ONLY_LINK_ESSENTIAL_SYMBOLS = YES;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -5791,6 +5796,7 @@
 				PRODUCT_NAME = HelloWorld;
 				SEPARATE_STRIP = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SYMROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6059,6 +6065,7 @@
 		1DEB921F08733DC00010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Debug";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -6067,7 +6074,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MacOSX_Prefix.pch;
 				INSTALL_PATH = /usr/local/lib;
+				OBJROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				PRODUCT_NAME = Irrlicht;
+				SYMROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				ZERO_LINK = NO;
 			};
 			name = Debug;
@@ -6075,13 +6084,16 @@
 		1DEB922008733DC00010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Release";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = MacOSX_Prefix.pch;
 				INSTALL_PATH = /usr/local/lib;
+				OBJROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = Irrlicht;
+				SYMROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 			};
 			name = Release;
 		};
@@ -6929,21 +6941,29 @@
 		B81CFFE9097FE9C30057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Debug";
+				CONFIGURATION_TEMP_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				OBJROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				PRODUCT_NAME = ALL;
+				SYMROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 			};
 			name = Debug;
 		};
 		B81CFFEA097FE9C30057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Release";
+				CONFIGURATION_TEMP_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				OBJROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				PRODUCT_NAME = ALL;
+				SYMROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				ZERO_LINK = NO;
 			};
 			name = Release;

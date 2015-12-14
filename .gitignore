@@ -45,3 +45,37 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+*.hmap
+
+*.o
+
+*.d
+
+*.dia
+
+build/MacOSX.build/Debug/libIrrlicht.a.build/dgph
+
+build/MacOSX.build/Debug/libIrrlicht.a.build/dgph~
+
+bin/MacOSX/HelloWorld_dbg.app/Contents/MacOS/HelloWorld_dbg
+
+bin/MacOSX/HelloWorld_dbg.app/Contents/Info.plist
+
+bin/MacOSX/HelloWorld_dbg.app/Contents/PkgInfo
+
+bin/MacOSX/HelloWorld_dbg.app/Contents/Resources/MainMenu.nib
+
+build/Debug/HelloWorld_dbg.app
+
+*.a
+
+build/MacOSX.build/Debug/01.HelloWorld.build/dgph~
+
+build/MacOSX.build/Debug/01.HelloWorld.build/dgph
+
+build/MacOSX.build/Debug/01.HelloWorld.build/Objects-normal/x86_64/HelloWorld_dbg_dependency_info.dat
+
+build/MacOSX.build/Debug/01.HelloWorld.build/Objects-normal/x86_64/HelloWorld_dbg.LinkFileList
+
+build/MacOSX.build/Debug/libIrrlicht.a.build/Objects-normal/x86_64/Irrlicht.LinkFileList
