@@ -121,3 +121,12 @@ build/MacOSX.build/Release/01.HelloWorld.build/dgph~
 build/MacOSX.build/Release/libIrrlicht.a.build/dgph
 
 build/MacOSX.build/Release/libIrrlicht.a.build/dgph~
+bin
+examples/01.HelloWorld/Debug
+*.user
+examples/02.Quake3Map/Debug
+examples/.vs
+source/Irrlicht/obj
+source/Irrlicht/.vs
+lib/Win32-visualstudio
+bin
