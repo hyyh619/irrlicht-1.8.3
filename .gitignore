@@ -129,4 +129,11 @@ examples/.vs
 source/Irrlicht/obj
 source/Irrlicht/.vs
 lib/Win32-visualstudio
-bin
+lib/Win64-visualstudio
+bin/Win64-VisualStudio
+Debug
+
+# ignore vim file
+*~
+*.swp
+
