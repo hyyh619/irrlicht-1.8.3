@@ -137,3 +137,9 @@ Debug
 *~
 *.swp
 
+*.exe
+*.dll
+*.lib
+*.exp
+*.sdf
+*.suo
