@@ -27,6 +27,8 @@ $RECYCLE.BIN/
 .DS_Store
 .AppleDouble
 .LSOverride
+source/Irrlicht/MacOSX/MacOSX.xcodeproj/project.xcworkspace/
+source/Irrlicht/MacOSX/build/XCBuildData
 
 # Thumbnails
 ._*
