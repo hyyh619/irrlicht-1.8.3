@@ -151,6 +151,7 @@ void generateMTFValues ( EState* s )
    UChar* block  = s->block;
    UInt16* mtfv  = s->mtfv;
 
+   memset(yy, 0, 256);
    makeMaps_e ( s );
    EOB = s->nInUse+1;
 
@@ -225,7 +226,10 @@ void generateMTFValues ( EState* s )
       zPend = 0;
    }
 
-   mtfv[wr] = EOB; wr++; s->mtfFreq[EOB]++;
+   mtfv[wr] = EOB;
+   wr++;
+   if (EOB < BZ_MAX_ALPHA_SIZE)
+        s->mtfFreq[EOB]++;
 
    s->nMTF = wr;
 }

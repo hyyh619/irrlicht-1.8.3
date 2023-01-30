@@ -108,12 +108,12 @@ void CAnimatedMeshSceneNode::buildFrameNr(u32 timeMs)
         if (FramesPerSecond > 0.f) //forwards...
         {
             if (CurrentFrameNr > EndFrame)
-                CurrentFrameNr = StartFrame + fmod(CurrentFrameNr - StartFrame, (f32)(EndFrame-StartFrame));
+                CurrentFrameNr = StartFrame + (irr::f32)fmod(CurrentFrameNr - StartFrame, (f32)(EndFrame-StartFrame));
         }
         else //backwards...
         {
             if (CurrentFrameNr < StartFrame)
-                CurrentFrameNr = EndFrame - fmod(EndFrame - CurrentFrameNr, (f32)(EndFrame-StartFrame));
+                CurrentFrameNr = EndFrame - (irr::f32)fmod(EndFrame - CurrentFrameNr, (f32)(EndFrame-StartFrame));
         }
     }
     else
@@ -639,7 +639,7 @@ u32 CAnimatedMeshSceneNode::getJointCount() const
     if (!Mesh || Mesh->getMeshType() != EAMT_SKINNED)
         return 0;
 
-    ISkinnedMesh *skinnedMesh=(ISkinnedMesh*)Mesh;
+    const ISkinnedMesh *skinnedMesh=(ISkinnedMesh*)Mesh;
 
     return skinnedMesh->getJointCount();
 #endif

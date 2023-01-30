@@ -28,14 +28,14 @@ namespace scene
 
         // FIXME: rescale the inputs to 1/2 angle
         angle = angles.Z * 0.5f;
-        sy = sin(angle);
-        cy = cos(angle);
+        sy = (irr::f32)sin(angle);
+        cy = (irr::f32)cos(angle);
         angle = angles.Y * 0.5f;
-        sp = sin(angle);
-        cp = cos(angle);
+        sp = (irr::f32)sin(angle);
+        cp = (irr::f32)cos(angle);
         angle = angles.X * 0.5f;
-        sr = sin(angle);
-        cr = cos(angle);
+        sr = (irr::f32)sin(angle);
+        cr = (irr::f32)cos(angle);
 
         quaternion[0] = sr*cp*cy-cr*sp*sy; // X
         quaternion[1] = cr*sp*cy+sr*cp*sy; // Y
@@ -80,10 +80,10 @@ namespace scene
 
         if ((1.f + cosom) > 0.00000001) {
             if ((1.f - cosom) > 0.00000001) {
-                omega = acos( cosom );
-                sinom = sin( omega );
-                sclp = sin( (1.f - t)*omega) / sinom;
-                sclq = sin( t*omega ) / sinom;
+                omega = (irr::f32)acos( cosom );
+                sinom = (irr::f32)sin( omega );
+                sclp = (irr::f32)sin( (1.f - t)*omega) / sinom;
+                sclq = (irr::f32)sin( t*omega ) / sinom;
             }
             else {
                 sclp = 1.f - t;
@@ -98,8 +98,8 @@ namespace scene
             qt[1] = p[0];
             qt[2] = -p[3];
             qt[3] = p[2];
-            sclp = sin( (1.f - t) * 0.5f * core::PI);
-            sclq = sin( t * 0.5f * core::PI);
+            sclp = (irr::f32)sin( (1.f - t) * 0.5f * core::PI);
+            sclq = (irr::f32)sin( t * 0.5f * core::PI);
             for (i = 0; i < 3; i++) {
                 qt[i] = sclp * p[i] + sclq * qt[i];
             }
@@ -1302,17 +1302,19 @@ void CAnimatedMeshHalfLife::dumpModelInfo(u32 level) const
     }
 
     hdr = TextureHeader;
-    printf("\nnumtextures: %d\n", hdr->numtextures);
-    printf("textureindex: %d\n", hdr->textureindex);
-    printf("texturedataindex: %d\n", hdr->texturedataindex);
+
+    printf("\nnumtextures: %u\n", hdr->numtextures);
+    printf("textureindex: %u\n", hdr->textureindex);
+    printf("texturedataindex: %u\n", hdr->texturedataindex);
+
     const SHalflifeTexture *ptextures = (const SHalflifeTexture *) ((const u8*) hdr + hdr->textureindex);
     for (i = 0; i < hdr->numtextures; i++)
     {
-        printf("texture %d.name: \"%s\"\n", i + 1, ptextures[i].name);
-        printf("texture %d.flags: %d\n", i + 1, ptextures[i].flags);
-        printf("texture %d.width: %d\n", i + 1, ptextures[i].width);
-        printf("texture %d.height: %d\n", i + 1, ptextures[i].height);
-        printf("texture %d.index: %d\n", i + 1, ptextures[i].index);
+        printf("texture %u.name: \"%s\"\n", i + 1, ptextures[i].name);
+        printf("texture %u.flags: %d\n", i + 1, ptextures[i].flags);
+        printf("texture %u.width: %d\n", i + 1, ptextures[i].width);
+        printf("texture %u.height: %d\n", i + 1, ptextures[i].height);
+        printf("texture %u.index: %d\n", i + 1, ptextures[i].index);
     }
 }
 
@@ -1323,13 +1325,13 @@ void CAnimatedMeshHalfLife::ExtractBbox(s32 sequence, core::aabbox3df &box) cons
 {
     const SHalflifeSequence *seq = (const SHalflifeSequence *)((const u8*)Header + Header->seqindex) + sequence;
 
-    box.MinEdge.X = seq[0].bbmin[0];
-    box.MinEdge.Y = seq[0].bbmin[1];
-    box.MinEdge.Z = seq[0].bbmin[2];
+    box.MinEdge.X = seq->bbmin[0];
+    box.MinEdge.Y = seq->bbmin[1];
+    box.MinEdge.Z = seq->bbmin[2];
 
-    box.MaxEdge.X = seq[0].bbmax[0];
-    box.MaxEdge.Y = seq[0].bbmax[1];
-    box.MaxEdge.Z = seq[0].bbmax[2];
+    box.MaxEdge.X = seq->bbmax[0];
+    box.MaxEdge.Y = seq->bbmax[1];
+    box.MaxEdge.Z = seq->bbmax[2];
 }
 
 
