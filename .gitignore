@@ -130,3 +130,12 @@ source/Irrlicht/obj
 source/Irrlicht/.vs
 lib/Win32-visualstudio
 bin
+*.db
+*.db-shm
+.vs
+Debug
+lib
+bin
+*.dll
+*.lib
+*.obj
