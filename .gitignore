@@ -27,6 +27,8 @@ $RECYCLE.BIN/
 .DS_Store
 .AppleDouble
 .LSOverride
+source/Irrlicht/MacOSX/MacOSX.xcodeproj/project.xcworkspace/
+source/Irrlicht/MacOSX/build/XCBuildData
 
 # Thumbnails
 ._*
@@ -129,13 +131,17 @@ examples/.vs
 source/Irrlicht/obj
 source/Irrlicht/.vs
 lib/Win32-visualstudio
-bin
-*.db
-*.db-shm
-.vs
+lib/Win64-visualstudio
+bin/Win64-VisualStudio
 Debug
-lib
-bin
+
+# ignore vim file
+*~
+*.swp
+
+*.exe
 *.dll
 *.lib
-*.obj
+*.exp
+*.sdf
+*.suo
