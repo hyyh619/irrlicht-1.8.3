@@ -1529,10 +1529,10 @@ void CD3D9Driver::draw2D3DVertexPrimitiveList(const void* vertices,
                 pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_LINESTRIP, 0, vertexCount,
                 primitiveCount - 1, indexList, indexType, vertices, stride);
 
-                u16 tmpIndices[] = {primitiveCount - 1, 0};
+                const u32 tmpIndices[] = {primitiveCount - 1, 0};
 
                 pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_LINELIST, 0, vertexCount,
-                    1, tmpIndices, indexType, vertices, stride);
+                    1, (const void*)tmpIndices, indexType, vertices, stride);
             }
             break;
         case scene::EPT_LINES:

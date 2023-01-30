@@ -365,7 +365,7 @@ public:
 
     //! Get number of occupied elements of the array.
     /** \return Size of elements in the array which are actually occupied. */
-    u32 size() const
+    u32 size() const noexcept
     {
         return used;
     }

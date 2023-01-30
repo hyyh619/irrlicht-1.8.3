@@ -36,13 +36,13 @@ enum eLocaleID
 };
 
 static eLocaleID locale_current = IRR_LOCALE_ANSI;
-static inline void locale_set ( eLocaleID id )
+static inline void locale_set ( eLocaleID id ) noexcept
 {
     locale_current = id;
 }
 
 //! Returns a character converted to lower case
-static inline u32 locale_lower ( u32 x )
+static inline u32 locale_lower ( u32 x ) noexcept
 {
     switch ( locale_current )
     {
@@ -55,7 +55,7 @@ static inline u32 locale_lower ( u32 x )
 }
 
 //! Returns a character converted to upper case
-static inline u32 locale_upper ( u32 x )
+static inline u32 locale_upper ( u32 x ) noexcept
 {
     switch ( locale_current )
     {
@@ -301,7 +301,7 @@ public:
 
 
     //! Destructor
-    ~string()
+    ~string() noexcept
     {
         allocator.deallocate(array); // delete [] array;
     }

@@ -43,15 +43,13 @@ namespace irr
     public:
 
         //! Constructor.
-        IReferenceCounted()
+        IReferenceCounted() noexcept
             : DebugName(0), ReferenceCounter(1)
         {
         }
 
         //! Destructor.
-        virtual ~IReferenceCounted()
-        {
-        }
+        virtual ~IReferenceCounted() = default;
 
         //! Grabs the object. Increments the reference counter by one.
         /** Someone who calls grab() to an object, should later also
@@ -83,7 +81,7 @@ namespace irr
         You will not have to drop the pointer to the loaded texture,
         because the name of the method does not start with 'create'.
         The texture is stored somewhere by the driver. */
-        void grab() const { ++ReferenceCounter; }
+        void grab() const noexcept { ++ReferenceCounter; }
 
         //! Drops the object. Decrements the reference counter by one.
         /** The IReferenceCounted class provides a basic reference
@@ -113,7 +111,7 @@ namespace irr
         because the name of the method does not start with 'create'.
         The texture is stored somewhere by the driver.
         \return True, if the object was deleted. */
-        bool drop() const
+        bool drop() const noexcept
         {
             // someone is doing bad reference counting.
             _IRR_DEBUG_BREAK_IF(ReferenceCounter <= 0)
@@ -130,7 +128,7 @@ namespace irr
 
         //! Get the reference count.
         /** \return Current value of the reference counter. */
-        s32 getReferenceCount() const
+        s32 getReferenceCount() const noexcept
         {
             return ReferenceCounter;
         }
@@ -139,7 +137,7 @@ namespace irr
         /** The Debugname may only be set and changed by the object
         itself. This method should only be used in Debug mode.
         \return Returns a string, previously set by setDebugName(); */
-        const c8* getDebugName() const
+        const c8* getDebugName() const noexcept
         {
             return DebugName;
         }
@@ -150,7 +148,7 @@ namespace irr
         /** The Debugname may only be set and changed by the object
         itself. This method should only be used in Debug mode.
         \param newName: New debug name to set. */
-        void setDebugName(const c8* newName)
+        void setDebugName(const c8* newName) noexcept
         {
             DebugName = newName;
         }

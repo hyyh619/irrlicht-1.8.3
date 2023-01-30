@@ -86,7 +86,7 @@ namespace core
     /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
     \param radians    The radians value to convert to degrees.
     */
-    inline f32 radToDeg(f32 radians)
+    inline constexpr f32 radToDeg(f32 radians) noexcept
     {
         return RADTODEG * radians;
     }
@@ -95,7 +95,7 @@ namespace core
     /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
     \param radians    The radians value to convert to degrees.
     */
-    inline f64 radToDeg(f64 radians)
+    inline constexpr f64 radToDeg(f64 radians) noexcept
     {
         return RADTODEG64 * radians;
     }
@@ -104,7 +104,7 @@ namespace core
     /** Provided as it can be clearer to write degToRad(X) than DEGTORAD * X
     \param degrees    The degrees value to convert to radians.
     */
-    inline f32 degToRad(f32 degrees)
+    inline constexpr f32 degToRad(f32 degrees) noexcept
     {
         return DEGTORAD * degrees;
     }
@@ -113,7 +113,7 @@ namespace core
     /** Provided as it can be clearer to write degToRad(X) than DEGTORAD * X
     \param degrees    The degrees value to convert to radians.
     */
-    inline f64 degToRad(f64 degrees)
+    inline constexpr f64 degToRad(f64 degrees) noexcept
     {
         return DEGTORAD64 * degrees;
     }
@@ -148,7 +148,7 @@ namespace core
 
     //! returns abs of two values. Own implementation to get rid of STL (VS6 problems)
     template<class T>
-    inline T abs_(const T& a)
+    inline T abs_(const T& a) noexcept
     {
         return a < (T)0 ? -a : a;
     }
@@ -182,22 +182,22 @@ namespace core
     }
 
     //! returns if a equals b, taking possible rounding errors into account
-    inline bool equals(const f64 a, const f64 b, const f64 tolerance = ROUNDING_ERROR_f64)
+    inline constexpr bool equals(const f64 a, const f64 b, const f64 tolerance = ROUNDING_ERROR_f64) noexcept
     {
         return (a + tolerance >= b) && (a - tolerance <= b);
     }
 
     //! returns if a equals b, taking possible rounding errors into account
-    inline bool equals(const f32 a, const f32 b, const f32 tolerance = ROUNDING_ERROR_f32)
+    inline constexpr bool equals(const f32 a, const f32 b, const f32 tolerance = ROUNDING_ERROR_f32) noexcept
     {
         return (a + tolerance >= b) && (a - tolerance <= b);
     }
 
     union FloatIntUnion32
     {
-        FloatIntUnion32(float f1 = 0.0f) : f(f1) {}
+        FloatIntUnion32(float f1 = 0.0f) noexcept : f(f1) {}
         // Portable sign-extraction
-        bool sign() const { return (i >> 31) != 0; }
+        bool sign() const noexcept { return (i >> 31) != 0; }
 
         irr::s32 i;
         irr::f32 f;
@@ -205,7 +205,7 @@ namespace core
 
     //! We compare the difference in ULP's (spacing between floating-point numbers, aka ULP=1 means there exists no float between).
     //\result true when numbers have a ULP <= maxUlpDiff AND have the same sign.
-    inline bool equalsByUlp(f32 a, f32 b, int maxUlpDiff)
+    inline bool equalsByUlp(f32 a, f32 b, int maxUlpDiff) noexcept
     {
         // Based on the ideas and code from Bruce Dawson on
         // http://www.altdevblogaday.com/2012/02/22/comparing-floating-point-numbers-2012-edition/
@@ -247,20 +247,20 @@ namespace core
     }
 #endif
     //! returns if a equals b, taking an explicit rounding tolerance into account
-    inline bool equals(const s32 a, const s32 b, const s32 tolerance = ROUNDING_ERROR_S32)
+    inline constexpr bool equals(const s32 a, const s32 b, const s32 tolerance = ROUNDING_ERROR_S32) noexcept
     {
         return (a + tolerance >= b) && (a - tolerance <= b);
     }
 
     //! returns if a equals b, taking an explicit rounding tolerance into account
-    inline bool equals(const u32 a, const u32 b, const s32 tolerance = ROUNDING_ERROR_S32)
+    inline constexpr bool equals(const u32 a, const u32 b, const s32 tolerance = ROUNDING_ERROR_S32) noexcept
     {
         return (a + tolerance >= b) && (a - tolerance <= b);
     }
 
 #ifdef __IRR_HAS_S64
     //! returns if a equals b, taking an explicit rounding tolerance into account
-    inline bool equals(const s64 a, const s64 b, const s64 tolerance = ROUNDING_ERROR_S64)
+    inline constexpr bool equals(const s64 a, const s64 b, const s64 tolerance = ROUNDING_ERROR_S64) noexcept
     {
         return (a + tolerance >= b) && (a - tolerance <= b);
     }
@@ -285,38 +285,38 @@ namespace core
     }
 
     //! returns if a equals zero, taking rounding errors into account
-    inline bool iszero(const s32 a, const s32 tolerance = 0)
+    inline constexpr bool iszero(const s32 a, const s32 tolerance = 0) noexcept
     {
         return ( a & 0x7ffffff ) <= tolerance;
     }
 
     //! returns if a equals zero, taking rounding errors into account
-    inline bool iszero(const u32 a, const u32 tolerance = 0)
+    inline constexpr bool iszero(const u32 a, const u32 tolerance = 0) noexcept
     {
         return a <= tolerance;
     }
 
 #ifdef __IRR_HAS_S64
     //! returns if a equals zero, taking rounding errors into account
-    inline bool iszero(const s64 a, const s64 tolerance = 0)
+    inline bool iszero(const s64 a, const s64 tolerance = 0) noexcept
     {
         return abs_(a) <= tolerance;
     }
 #endif
 
-    inline s32 s32_min(s32 a, s32 b)
+    inline constexpr s32 s32_min(s32 a, s32 b) noexcept
     {
         const s32 mask = (a - b) >> 31;
         return (a & mask) | (b & ~mask);
     }
 
-    inline s32 s32_max(s32 a, s32 b)
+    inline constexpr s32 s32_max(s32 a, s32 b) noexcept
     {
         const s32 mask = (a - b) >> 31;
         return (b & mask) | (a & ~mask);
     }
 
-    inline s32 s32_clamp (s32 value, s32 low, s32 high)
+    inline s32 s32_clamp (s32 value, s32 low, s32 high) noexcept
     {
         return s32_min(s32_max(value,low), high);
     }
@@ -350,7 +350,7 @@ namespace core
 #ifdef IRRLICHT_FAST_MATH
     #define IR(x)                           ((u32&)(x))
 #else
-    inline u32 IR(f32 x) {inttofloat tmp; tmp.f=x; return tmp.u;}
+    inline constexpr u32 IR(f32 x) noexcept { inttofloat tmp = { 0 }; tmp.f = x; return tmp.u; }
 #endif
 
     //! Absolute integer representation of a floating-point value
@@ -360,8 +360,8 @@ namespace core
 #ifdef IRRLICHT_FAST_MATH
     #define FR(x)                           ((f32&)(x))
 #else
-    inline f32 FR(u32 x) {inttofloat tmp; tmp.u=x; return tmp.f;}
-    inline f32 FR(s32 x) {inttofloat tmp; tmp.s=x; return tmp.f;}
+    inline constexpr f32 FR(u32 x) noexcept { inttofloat tmp = { 0 }; tmp.u = x; return tmp.f; }
+    inline constexpr f32 FR(s32 x) noexcept { inttofloat tmp = { 0 }; tmp.s = x; return tmp.f; }
 #endif
 
     //! integer representation of 1.0
@@ -418,19 +418,19 @@ namespace core
 #else
 
     //! conditional set based on mask and arithmetic shift
-    REALINLINE u32 if_c_a_else_b ( const s32 condition, const u32 a, const u32 b )
+    REALINLINE constexpr u32 if_c_a_else_b ( const s32 condition, const u32 a, const u32 b ) noexcept
     {
         return ( ( -condition >> 31 ) & ( a ^ b ) ) ^ b;
     }
 
     //! conditional set based on mask and arithmetic shift
-    REALINLINE u16 if_c_a_else_b ( const s16 condition, const u16 a, const u16 b )
+    REALINLINE constexpr u16 if_c_a_else_b ( const s16 condition, const u16 a, const u16 b ) noexcept
     {
         return ( ( -condition >> 15 ) & ( a ^ b ) ) ^ b;
     }
 
     //! conditional set based on mask and arithmetic shift
-    REALINLINE u32 if_c_a_else_0 ( const s32 condition, const u32 a )
+    REALINLINE constexpr u32 if_c_a_else_0 ( const s32 condition, const u32 a ) noexcept
     {
         return ( -condition >> 31 ) & a;
     }
@@ -439,7 +439,7 @@ namespace core
     /*
         if (condition) state |= m; else state &= ~m;
     */
-    REALINLINE void setbit_cond ( u32 &state, s32 condition, u32 mask )
+    REALINLINE void setbit_cond ( u32 &state, s32 condition, u32 mask ) noexcept
     {
         // 0, or any postive to mask
         //s32 conmask = -condition >> 31;
@@ -451,7 +451,7 @@ namespace core
         return floorf( x + 0.5f );
     }
 
-    REALINLINE void clearFPUException ()
+    REALINLINE void clearFPUException () noexcept
     {
 #ifdef IRRLICHT_FAST_MATH
         return;
@@ -532,7 +532,7 @@ namespace core
     }
 
     // calculate: 1 / x
-    REALINLINE f32 reciprocal( const f32 f )
+    REALINLINE f32 reciprocal( const f32 f ) noexcept
     {
 #if defined (IRRLICHT_FAST_MATH)
 
@@ -565,14 +565,14 @@ namespace core
     }
 
     // calculate: 1 / x
-    REALINLINE f64 reciprocal ( const f64 f )
+    REALINLINE f64 reciprocal ( const f64 f ) noexcept
     {
         return 1.0 / f;
     }
 
 
     // calculate: 1 / x, low precision allowed
-    REALINLINE f32 reciprocal_approxim ( const f32 f )
+    REALINLINE f32 reciprocal_approxim ( const f32 f ) noexcept
     {
 #if defined( IRRLICHT_FAST_MATH)
 
@@ -705,12 +705,12 @@ namespace core
 #endif
     }
 
-    inline f32 f32_max3(const f32 a, const f32 b, const f32 c)
+    inline f32 f32_max3(const f32 a, const f32 b, const f32 c) noexcept
     {
         return a > b ? (a > c ? a : c) : (b > c ? b : c);
     }
 
-    inline f32 f32_min3(const f32 a, const f32 b, const f32 c)
+    inline f32 f32_min3(const f32 a, const f32 b, const f32 c) noexcept
     {
         return a < b ? (a < c ? a : c) : (b < c ? b : c);
     }

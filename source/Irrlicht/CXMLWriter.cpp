@@ -54,7 +54,7 @@ void CXMLWriter::writeXMLHeader()
     }
 
     const wchar_t* const p = L"<?xml version=\"1.0\"?>";
-    File->write(p, wcslen(p)*sizeof(wchar_t));
+    File->write(p, irr::u32(wcslen(p)*sizeof(wchar_t)));
 
     writeLineBreak();
     TextWrittenLast = false;

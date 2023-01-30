@@ -48,7 +48,7 @@ inline bool hasFileExtension (    const io::path& filename,
 //! cut the filename extension from a source file path and store it in a dest file path
 inline io::path& cutFilenameExtension ( io::path &dest, const io::path &source )
 {
-    s32 endPos = source.findLast ( '.' );
+    const s32 endPos = source.findLast ( '.' );
     dest = source.subString ( 0, endPos < 0 ? source.size () : endPos );
     return dest;
 }
@@ -56,7 +56,7 @@ inline io::path& cutFilenameExtension ( io::path &dest, const io::path &source )
 //! get the filename extension from a file path
 inline io::path& getFileNameExtension ( io::path &dest, const io::path &source )
 {
-    s32 endPos = source.findLast ( '.' );
+    const s32 endPos = source.findLast ( '.' );
     if ( endPos < 0 )
         dest = "";
     else

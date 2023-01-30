@@ -23,7 +23,7 @@ typedef core::string<fschar_t> path;
 struct SNamedPath
 {
     //! Constructor
-    SNamedPath() {}
+    SNamedPath() noexcept {}
 
     //! Constructor
     SNamedPath(const path& p) : Path(p), InternalName( PathToName(p) )
@@ -44,14 +44,14 @@ struct SNamedPath
     }
 
     //! Get the path.
-    const path& getPath() const
+    const path& getPath() const noexcept
     {
         return Path;
     };
 
     //! Get the name which is used to identify the file.
     //! This string is similar to the names and filenames used before Irrlicht 1.7
-    const path& getInternalName() const
+    const path& getInternalName() const noexcept
     {
         return InternalName;
     }

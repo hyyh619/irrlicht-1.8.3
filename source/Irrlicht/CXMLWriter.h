@@ -23,7 +23,7 @@ namespace io
         CXMLWriter(IWriteFile* file);
 
         //! Destructor
-        virtual ~CXMLWriter();
+        virtual ~CXMLWriter() noexcept;
 
         //! Writes a xml 1.0 header like <?xml version="1.0"?>
         virtual void writeXMLHeader();
