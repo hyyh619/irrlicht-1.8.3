@@ -21,6 +21,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "23.SMeshHandling", "..\..\e
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "22.MaterialViewer", "..\..\examples\22.MaterialViewer\MaterialViewer_vc12.vcxproj", "{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "21.Quake3Explorer", "..\..\examples\21.Quake3Explorer\Quake3Explorer_vc12.vcxproj", "{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -229,6 +231,30 @@ Global
 		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Release|Win32.Build.0 = Release|Win32
 		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Release|x64.ActiveCfg = Release|x64
 		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Release|x64.Build.0 = Release|x64
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Debug|Win32.Build.0 = Debug|Win32
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Debug|x64.ActiveCfg = Debug|x64
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Debug|x64.Build.0 = Debug|x64
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Release - Fast FPU|Win32.ActiveCfg = Release|Win32
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Release - Fast FPU|Win32.Build.0 = Release|Win32
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Release - Fast FPU|x64.ActiveCfg = Release|x64
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Release - Fast FPU|x64.Build.0 = Release|x64
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Release|Win32.ActiveCfg = Release|Win32
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Release|Win32.Build.0 = Release|Win32
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Release|x64.ActiveCfg = Release|x64
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Release|x64.Build.0 = Release|x64
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Static lib - Debug|Win32.ActiveCfg = Debug|Win32
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Static lib - Debug|Win32.Build.0 = Debug|Win32
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Static lib - Debug|x64.ActiveCfg = Debug|x64
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Static lib - Debug|x64.Build.0 = Debug|x64
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Static lib - Release - Fast FPU|Win32.ActiveCfg = Release|Win32
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Static lib - Release - Fast FPU|Win32.Build.0 = Release|Win32
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Static lib - Release - Fast FPU|x64.ActiveCfg = Release|x64
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Static lib - Release - Fast FPU|x64.Build.0 = Release|x64
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Static lib - Release|Win32.ActiveCfg = Release|Win32
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Static lib - Release|Win32.Build.0 = Release|Win32
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Static lib - Release|x64.ActiveCfg = Release|x64
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD}.Static lib - Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -241,6 +267,7 @@ Global
 		{02B67A37-50E1-49DB-BECF-905BC029C2FE} = {6D7279F0-4E8B-40B4-B04F-784221C7DA0E}
 		{6AEC2AA2-C9FF-4B7D-B07A-94A9D34B41D7} = {6D7279F0-4E8B-40B4-B04F-784221C7DA0E}
 		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA} = {6D7279F0-4E8B-40B4-B04F-784221C7DA0E}
+		{CDC4AAA9-72E1-4FFA-A04D-7EF59D8B97CD} = {6D7279F0-4E8B-40B4-B04F-784221C7DA0E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E0862258-42AB-4AD8-90CF-383E51D058B8}
