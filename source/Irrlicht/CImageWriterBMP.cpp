@@ -64,26 +64,24 @@ bool CImageWriterBMP::writeImage(io::IWriteFile* file, IImage* image, u32 param)
     void (*CColorConverter_convertFORMATtoFORMAT)(const void*, s32, void*) = 0;
     switch(image->getColorFormat())
     {
-    case ECF_R8G8B8:
+    case ECOLOR_FORMAT::ECF_R8G8B8:
         CColorConverter_convertFORMATtoFORMAT
             = CColorConverter::convert_R8G8B8toR8G8B8;
         break;
-    case ECF_A8R8G8B8:
+    case ECOLOR_FORMAT::ECF_A8R8G8B8:
         CColorConverter_convertFORMATtoFORMAT
             = CColorConverter::convert_A8R8G8B8toB8G8R8;
         break;
-    case ECF_A1R5G5B5:
+    case ECOLOR_FORMAT::ECF_A1R5G5B5:
         CColorConverter_convertFORMATtoFORMAT
             = CColorConverter::convert_A1R5G5B5toR8G8B8;
         break;
-    case ECF_R5G6B5:
+    case ECOLOR_FORMAT::ECF_R5G6B5:
         CColorConverter_convertFORMATtoFORMAT
             = CColorConverter::convert_R5G6B5toR8G8B8;
         break;
-#ifndef _DEBUG
     default:
         break;
-#endif
     }
 
     // couldn't find a color converter
@@ -94,7 +92,7 @@ bool CImageWriterBMP::writeImage(io::IWriteFile* file, IImage* image, u32 param)
     if (file->write(&imageHeader, sizeof(imageHeader)) != sizeof(imageHeader))
         return false;
 
-    u8* scan_lines = (u8*)image->lock();
+    const u8* scan_lines = (const u8*)image->lock();
     if (!scan_lines)
         return false;
 
@@ -115,7 +113,7 @@ bool CImageWriterBMP::writeImage(io::IWriteFile* file, IImage* image, u32 param)
     s32 y;
     for (y = imageHeader.Height - 1; 0 <= y; --y)
     {
-        if (image->getColorFormat()==ECF_R8G8B8)
+        if (image->getColorFormat()== ECOLOR_FORMAT::ECF_R8G8B8)
             CColorConverter::convert24BitTo24Bit(&scan_lines[y * row_stride], row_pointer, imageHeader.Width, 1, 0, false, true);
         else
             // source, length [pixels], destination

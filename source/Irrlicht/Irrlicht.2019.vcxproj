@@ -331,7 +331,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <DisableSpecificWarnings>26429;26493;4477;26481;26446;26482;26472;26440;26432;4267;6385;6386;6011;6326;26485;26433;26455;26434;26401;26402;26409;26400;26451;4996;26494;26495;26447;26496</DisableSpecificWarnings>
+      <DisableSpecificWarnings>26429;26493;4477;26481;26446;26482;26472;26440;26432;4267;6385;6386;6011;6326;26485;26433;26455;26434;26401;26402;26409;26400;26451;4996;26494;26495;26447;26496;26497;26467;26812;26430</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <ResourceCompile>
@@ -372,7 +372,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <DisableSpecificWarnings>26429;26493;4477;26481;26446;26482;26472;26440;26432;4267;6385;6386;6011;6326;26485;26433;26455;26434;26401;26402;26409;26400;26451;4996;26494;26495;26447;26496</DisableSpecificWarnings>
+      <DisableSpecificWarnings>26429;26493;4477;26481;26446;26482;26472;26440;26432;4267;6385;6386;6011;6326;26485;26433;26455;26434;26401;26402;26409;26400;26451;4996;26494;26495;26447;26496;26497;26467;26812;26430</DisableSpecificWarnings>
       <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <ResourceCompile>

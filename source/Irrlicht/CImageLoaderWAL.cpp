@@ -87,7 +87,7 @@ IImage* CImageLoaderLMP::loadImage(irr::io::IReadFile* file) const
 
     file->read(rawtex, rawtexsize);
 
-    IImage* image = new CImage(ECF_A8R8G8B8, core::dimension2d<u32>(header.width, header.height));
+    IImage* image = new CImage(ECOLOR_FORMAT::ECF_A8R8G8B8, core::dimension2d<u32>(header.width, header.height));
 
     CColorConverter::convert8BitTo32Bit(rawtex, (u8*)image->lock(), header.width, header.height, (u8*) colormap_h, 0, false);
     image->unlock();
@@ -187,12 +187,12 @@ IImage* CImageLoaderWAL2::loadImage(irr::io::IReadFile* file) const
         pal [ 192 + i ] = 0xFF000000 | s[0] << 16 | s[1] << 8 | s[2];
     }
 
-    ECOLOR_FORMAT format = ECF_R8G8B8;
+    ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_R8G8B8;
 
     // transparency in filename;-) funny. rgb:0x0000FF is colorkey
     if ( file->getFileName().findFirst ( '{' ) >= 0 )
     {
-        format = ECF_A8R8G8B8;
+        format = ECOLOR_FORMAT::ECF_A8R8G8B8;
         pal [ 192 + 255 ] &= 0x00FFFFFF;
     }
 
@@ -208,11 +208,13 @@ IImage* CImageLoaderWAL2::loadImage(irr::io::IReadFile* file) const
 
     switch ( format )
     {
-    case ECF_R8G8B8:
+    case ECOLOR_FORMAT::ECF_R8G8B8:
         CColorConverter::convert8BitTo24Bit(rawtex, (u8*)image->lock(), header.width, header.height, (u8*) pal + 768, 0, false);
         break;
-    case ECF_A8R8G8B8:
+    case ECOLOR_FORMAT::ECF_A8R8G8B8:
         CColorConverter::convert8BitTo32Bit(rawtex, (u8*)image->lock(), header.width, header.height, (u8*) pal + 768, 0, false);
+        break;
+    default:
         break;
     }
 
@@ -258,7 +260,7 @@ IImage* CImageLoaderWAL::loadImage(irr::io::IReadFile* file) const
     file->seek ( header.mipmap[0] );
     file->read(rawtex, rawtexsize);
 
-    IImage* image = new CImage(ECF_A8R8G8B8, core::dimension2d<u32>(header.width, header.height));
+    IImage* image = new CImage(ECOLOR_FORMAT::ECF_A8R8G8B8, core::dimension2d<u32>(header.width, header.height));
 
     CColorConverter::convert8BitTo32Bit(rawtex, (u8*)image->lock(), header.width, header.height, (u8*) colormap_pcx, 0, false);
     image->unlock();

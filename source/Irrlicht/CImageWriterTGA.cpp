@@ -60,34 +60,32 @@ bool CImageWriterTGA::writeImage(io::IWriteFile *file, IImage *image,u32 param) 
     void (*CColorConverter_convertFORMATtoFORMAT)(const void*, s32, void*) = 0;
     switch(image->getColorFormat())
     {
-    case ECF_A8R8G8B8:
+    case ECOLOR_FORMAT::ECF_A8R8G8B8:
         CColorConverter_convertFORMATtoFORMAT
             = CColorConverter::convert_A8R8G8B8toA8R8G8B8;
         imageHeader.PixelDepth = 32;
         imageHeader.ImageDescriptor |= 8;
         break;
-    case ECF_A1R5G5B5:
+    case ECOLOR_FORMAT::ECF_A1R5G5B5:
         CColorConverter_convertFORMATtoFORMAT
             = CColorConverter::convert_A1R5G5B5toA1R5G5B5;
         imageHeader.PixelDepth = 16;
         imageHeader.ImageDescriptor |= 1;
         break;
-    case ECF_R5G6B5:
+    case ECOLOR_FORMAT::ECF_R5G6B5:
         CColorConverter_convertFORMATtoFORMAT
             = CColorConverter::convert_R5G6B5toA1R5G5B5;
         imageHeader.PixelDepth = 16;
         imageHeader.ImageDescriptor |= 1;
         break;
-    case ECF_R8G8B8:
+    case ECOLOR_FORMAT::ECF_R8G8B8:
         CColorConverter_convertFORMATtoFORMAT
             = CColorConverter::convert_R8G8B8toR8G8B8;
         imageHeader.PixelDepth = 24;
         imageHeader.ImageDescriptor |= 0;
         break;
-#ifndef _DEBUG
     default:
         break;
-#endif
     }
 
     // couldn't find a color converter
@@ -97,7 +95,7 @@ bool CImageWriterTGA::writeImage(io::IWriteFile *file, IImage *image,u32 param) 
     if (file->write(&imageHeader, sizeof(imageHeader)) != sizeof(imageHeader))
         return false;
 
-    u8* scan_lines = (u8*)image->lock();
+    const u8* scan_lines = (const u8*)image->lock();
     if (!scan_lines)
         return false;
 
@@ -117,7 +115,7 @@ bool CImageWriterTGA::writeImage(io::IWriteFile *file, IImage *image,u32 param) 
     for (y = 0; y < imageHeader.ImageHeight; ++y)
     {
         // source, length [pixels], destination
-        if (image->getColorFormat()==ECF_R8G8B8)
+        if (image->getColorFormat()== ECOLOR_FORMAT::ECF_R8G8B8)
             CColorConverter::convert24BitTo24Bit(&scan_lines[y * row_stride], row_pointer, imageHeader.ImageWidth, 1, 0, 0, true);
         else
             CColorConverter_convertFORMATtoFORMAT(&scan_lines[y * row_stride], imageHeader.ImageWidth, row_pointer);
