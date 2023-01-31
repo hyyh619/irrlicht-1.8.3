@@ -1973,7 +1973,7 @@ void CQ3LevelMesh::loadTextures()
 
         // lightmap is a CTexture::R8G8B8 format
         lmapImg = Driver->createImageFromData(
-            video::ECF_R8G8B8, lmapsize,
+            video::ECOLOR_FORMAT::ECF_R8G8B8, lmapsize,
             LightMaps[t].imageBits, false, true );
 
         Lightmap[t] = Driver->addTexture( lightmapname, lmapImg );

@@ -322,7 +322,7 @@ namespace irr
                 POINT p;
                 if (!GetCursorPos(&p))
                 {
-                    DWORD xy = GetMessagePos();
+                    const DWORD xy = GetMessagePos();
                     p.x = GET_X_LPARAM(xy);
                     p.y = GET_Y_LPARAM(xy);
                 }

@@ -27,7 +27,7 @@ CSoftwareTexture::CSoftwareTexture(IImage* image, const io::path& name,
         OrigSize = image->getDimension();
         core::dimension2d<u32> optSize=OrigSize.getOptimalSize();
 
-        Image = new CImage(ECF_A1R5G5B5, OrigSize);
+        Image = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, OrigSize);
         image->copyTo(Image);
 
         if (optSize == OrigSize)
@@ -37,7 +37,7 @@ CSoftwareTexture::CSoftwareTexture(IImage* image, const io::path& name,
         }
         else
         {
-            Texture = new CImage(ECF_A1R5G5B5, optSize);
+            Texture = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, optSize);
             Image->copyToScaling(Texture);
         }
     }
@@ -119,7 +119,7 @@ E_DRIVER_TYPE CSoftwareTexture::getDriverType() const
 //! returns color format of texture
 ECOLOR_FORMAT CSoftwareTexture::getColorFormat() const
 {
-    return ECF_A1R5G5B5;
+    return ECOLOR_FORMAT::ECF_A1R5G5B5;
 }
 
 

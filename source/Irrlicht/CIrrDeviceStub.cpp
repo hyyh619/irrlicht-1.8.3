@@ -343,7 +343,7 @@ bool CIrrDeviceStub::isFullscreen() const
 //! returns color format
 video::ECOLOR_FORMAT CIrrDeviceStub::getColorFormat() const
 {
-    return video::ECF_R5G6B5;
+    return video::ECOLOR_FORMAT::ECF_R5G6B5;
 }
 
 //! No-op in this implementation

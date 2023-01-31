@@ -98,7 +98,7 @@ namespace video
         virtual void renameTexture(ITexture* texture, const io::path& newName);
 
         //! creates a Texture
-        virtual ITexture* addTexture(const core::dimension2d<u32>& size, const io::path& name, ECOLOR_FORMAT format = ECF_A8R8G8B8);
+        virtual ITexture* addTexture(const core::dimension2d<u32>& size, const io::path& name, ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_A8R8G8B8);
 
         //! sets a render target
         virtual bool setRenderTarget(video::ITexture* texture, bool clearBackBuffer,
@@ -315,7 +315,7 @@ namespace video
 
         //! Creates a render target texture.
         virtual ITexture* addRenderTargetTexture(const core::dimension2d<u32>& size,
-            const io::path& name, const ECOLOR_FORMAT format = ECF_UNKNOWN);
+            const io::path& name, const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
 
         //! Creates an 1bit alpha channel of the texture based of an color key.
         virtual void makeColorKeyTexture(video::ITexture* texture, video::SColor color, bool zeroTexels) const;
@@ -583,7 +583,7 @@ namespace video
         virtual void clearZBuffer();
 
         //! Returns an image created from the last rendered frame.
-        virtual IImage* createScreenShot(video::ECOLOR_FORMAT format=video::ECF_UNKNOWN, video::E_RENDER_TARGET target=video::ERT_FRAME_BUFFER);
+        virtual IImage* createScreenShot(video::ECOLOR_FORMAT format=video::ECOLOR_FORMAT::ECF_UNKNOWN, video::E_RENDER_TARGET target=video::ERT_FRAME_BUFFER);
 
         //! Writes the provided image to disk file
         virtual bool writeImageToFile(IImage* image, const io::path& filename, u32 param = 0);
@@ -733,7 +733,7 @@ namespace video
             virtual const core::dimension2d<u32>& getOriginalSize() const { return size; }
             virtual const core::dimension2d<u32>& getSize() const { return size; }
             virtual E_DRIVER_TYPE getDriverType() const { return video::EDT_NULL; }
-            virtual ECOLOR_FORMAT getColorFormat() const { return video::ECF_A1R5G5B5; };
+            virtual ECOLOR_FORMAT getColorFormat() const { return video::ECOLOR_FORMAT::ECF_A1R5G5B5; };
             virtual u32 getPitch() const { return 0; }
             virtual void regenerateMipMapLevels(void* mipmapData=0) {};
             core::dimension2d<u32> size;

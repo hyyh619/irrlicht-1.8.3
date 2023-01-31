@@ -87,7 +87,7 @@ namespace irr
         //! Returns if game timer is currently stopped
         virtual bool isStopped() const
         {
-            bool ret = os::Timer::isStopped();
+            const bool ret = os::Timer::isStopped();
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
             return ret;
         }

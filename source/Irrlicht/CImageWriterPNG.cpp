@@ -109,8 +109,8 @@ bool CImageWriterPNG::writeImage(io::IWriteFile* file, IImage* image,u32 param) 
     // Set info
     switch(image->getColorFormat())
     {
-        case ECF_A8R8G8B8:
-        case ECF_A1R5G5B5:
+        case ECOLOR_FORMAT::ECF_A8R8G8B8:
+        case ECOLOR_FORMAT::ECF_A1R5G5B5:
             png_set_IHDR(png_ptr, info_ptr,
                 image->getDimension().Width, image->getDimension().Height,
                 8, PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE,
@@ -126,12 +126,12 @@ bool CImageWriterPNG::writeImage(io::IWriteFile* file, IImage* image,u32 param) 
     s32 lineWidth = image->getDimension().Width;
     switch(image->getColorFormat())
     {      
-    case ECF_R8G8B8:      
-    case ECF_R5G6B5:      
+    case ECOLOR_FORMAT::ECF_R8G8B8:
+    case ECOLOR_FORMAT::ECF_R5G6B5:
         lineWidth*=3;      
         break;      
-    case ECF_A8R8G8B8:      
-    case ECF_A1R5G5B5:      
+    case ECOLOR_FORMAT::ECF_A8R8G8B8:
+    case ECOLOR_FORMAT::ECF_A1R5G5B5:
         lineWidth*=4;      
         break;
     // TODO: Error handling in case of unsupported color format
@@ -149,23 +149,21 @@ bool CImageWriterPNG::writeImage(io::IWriteFile* file, IImage* image,u32 param) 
     u8* data = (u8*)image->lock();
     switch(image->getColorFormat())
     {
-    case ECF_R8G8B8:
+    case ECOLOR_FORMAT::ECF_R8G8B8:
         CColorConverter::convert_R8G8B8toR8G8B8(data,image->getDimension().Height*image->getDimension().Width,tmpImage);
         break;
-    case ECF_A8R8G8B8:
+    case ECOLOR_FORMAT::ECF_A8R8G8B8:
         CColorConverter::convert_A8R8G8B8toA8R8G8B8(data,image->getDimension().Height*image->getDimension().Width,tmpImage);
         break;
-    case ECF_R5G6B5:
+    case ECOLOR_FORMAT::ECF_R5G6B5:
         CColorConverter::convert_R5G6B5toR8G8B8(data,image->getDimension().Height*image->getDimension().Width,tmpImage);
         break;
-    case ECF_A1R5G5B5:
+    case ECOLOR_FORMAT::ECF_A1R5G5B5:
         CColorConverter::convert_A1R5G5B5toA8R8G8B8(data,image->getDimension().Height*image->getDimension().Width,tmpImage);
         break;
-#ifndef _DEBUG
         // TODO: Error handling in case of unsupported color format
     default:
         break;
-#endif
     }
     image->unlock();
 
@@ -199,7 +197,7 @@ bool CImageWriterPNG::writeImage(io::IWriteFile* file, IImage* image,u32 param) 
 
     png_set_rows(png_ptr, info_ptr, RowPointers);
 
-    if (image->getColorFormat()==ECF_A8R8G8B8 || image->getColorFormat()==ECF_A1R5G5B5)
+    if (image->getColorFormat()== ECOLOR_FORMAT::ECF_A8R8G8B8 || image->getColorFormat()== ECOLOR_FORMAT::ECF_A1R5G5B5)
         png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_BGR, NULL);
     else
     {

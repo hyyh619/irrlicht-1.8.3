@@ -30,7 +30,7 @@ CSoftwareDriver::CSoftwareDriver(const core::dimension2d<u32>& windowSize, bool 
 
     // create backbuffer
 
-    BackBuffer = new CImage(ECF_A1R5G5B5, windowSize);
+    BackBuffer = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, windowSize);
     if (BackBuffer)
     {
         BackBuffer->fill(SColor(0));
@@ -777,7 +777,7 @@ void CSoftwareDriver::OnResize(const core::dimension2d<u32>& size)
 
         if (BackBuffer)
             BackBuffer->drop();
-        BackBuffer = new CImage(ECF_A1R5G5B5, realSize);
+        BackBuffer = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, realSize);
 
         if (resetRT)
             setRenderTarget(BackBuffer);
@@ -904,7 +904,7 @@ ITexture* CSoftwareDriver::addRenderTargetTexture(const core::dimension2d<u32>& 
                                                   const io::path& name,
                                                   const ECOLOR_FORMAT format)
 {
-    IImage* img = createImage(video::ECF_A1R5G5B5, size);
+    IImage* img = createImage(video::ECOLOR_FORMAT::ECF_A1R5G5B5, size);
     ITexture* tex = new CSoftwareTexture(img, name, true);
     img->drop();
     addTexture(tex);

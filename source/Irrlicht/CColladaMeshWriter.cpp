@@ -1003,10 +1003,10 @@ irr::core::stringw CColladaMeshWriter::toString(const irr::video::ECOLOR_FORMAT 
 {
     switch ( format )
     {
-        case video::ECF_A1R5G5B5:    return irr::core::stringw(L"A1R5G5B5");
-        case video::ECF_R5G6B5:        return irr::core::stringw(L"R5G6B5");
-        case video::ECF_R8G8B8:        return irr::core::stringw(L"R8G8B8");
-        case video::ECF_A8R8G8B8:    return irr::core::stringw(L"A8R8G8B8");
+        case video::ECOLOR_FORMAT::ECF_A1R5G5B5:    return irr::core::stringw(L"A1R5G5B5");
+        case video::ECOLOR_FORMAT::ECF_R5G6B5:        return irr::core::stringw(L"R5G6B5");
+        case video::ECOLOR_FORMAT::ECF_R8G8B8:        return irr::core::stringw(L"R8G8B8");
+        case video::ECOLOR_FORMAT::ECF_A8R8G8B8:    return irr::core::stringw(L"A8R8G8B8");
         default:                    return irr::core::stringw(L"");
     }
 }
@@ -1027,7 +1027,10 @@ irr::core::stringw CColladaMeshWriter::toString(const irr::video::E_TEXTURE_CLAM
         case video::ETC_MIRROR_CLAMP_TO_EDGE:
         case video::ETC_MIRROR_CLAMP_TO_BORDER:
             return core::stringw(L"MIRROR");
+        default:
+            break;
     }
+
     return core::stringw(L"NONE");
 }
 

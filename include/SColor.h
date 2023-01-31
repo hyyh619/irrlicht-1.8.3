@@ -14,7 +14,7 @@ namespace video
 {
     //! An enum for the color format of textures used by the Irrlicht Engine.
     /** A color format specifies how color information is stored. */
-    enum ECOLOR_FORMAT
+    enum class ECOLOR_FORMAT
     {
         //! 16 bit color format used by the software driver.
         /** It is thus preferred by all other irrlicht engine video drivers.
@@ -52,7 +52,8 @@ namespace video
         ECF_A32B32G32R32F,
 
         //! Unknown color format:
-        ECF_UNKNOWN
+        ECF_UNKNOWN,
+        ECF_UNKNOWN2
     };
 
 
@@ -84,7 +85,7 @@ namespace video
 
 
     //! Converts a 32bit (X8R8G8B8) color to a 16bit A1R5G5B5 color
-    inline u16 X8R8G8B8toA1R5G5B5(u32 color)
+    inline constexpr u16 X8R8G8B8toA1R5G5B5(u32 color)
     {
         return (u16)(0x8000 |
             ( color & 0x00F80000) >> 9 |
@@ -94,7 +95,7 @@ namespace video
 
 
     //! Converts a 32bit (A8R8G8B8) color to a 16bit A1R5G5B5 color
-    inline u16 A8R8G8B8toA1R5G5B5(u32 color)
+    inline constexpr u16 A8R8G8B8toA1R5G5B5(u32 color)
     {
         return (u16)(( color & 0x80000000) >> 16|
             ( color & 0x00F80000) >> 9 |
@@ -104,7 +105,7 @@ namespace video
 
 
     //! Converts a 32bit (A8R8G8B8) color to a 16bit R5G6B5 color
-    inline u16 A8R8G8B8toR5G6B5(u32 color)
+    inline constexpr u16 A8R8G8B8toR5G6B5(u32 color)
     {
         return (u16)(( color & 0x00F80000) >> 8 |
             ( color & 0x0000FC00) >> 5 |
@@ -135,7 +136,7 @@ namespace video
 
 
     //! Returns A1R5G5B5 Color from R5G6B5 color
-    inline u16 R5G6B5toA1R5G5B5(u16 color)
+    inline constexpr u16 R5G6B5toA1R5G5B5(u16 color)
     {
         return 0x8000 | (((color & 0xFFC0) >> 1) | (color & 0x1F));
     }
@@ -152,7 +153,7 @@ namespace video
     //! Returns the alpha component from A1R5G5B5 color
     /** In Irrlicht, alpha refers to opacity.
     \return The alpha value of the color. 0 is transparent, 1 is opaque. */
-    inline u32 getAlpha(u16 color)
+    inline constexpr u32 getAlpha(u16 color)
     {
         return ((color >> 15)&0x1);
     }
@@ -160,7 +161,7 @@ namespace video
 
     //! Returns the red component from A1R5G5B5 color.
     /** Shift left by 3 to get 8 bit value. */
-    inline u32 getRed(u16 color)
+    inline constexpr u32 getRed(u16 color)
     {
         return ((color >> 10)&0x1F);
     }
@@ -168,7 +169,7 @@ namespace video
 
     //! Returns the green component from A1R5G5B5 color
     /** Shift left by 3 to get 8 bit value. */
-    inline u32 getGreen(u16 color)
+    inline constexpr u32 getGreen(u16 color)
     {
         return ((color >> 5)&0x1F);
     }
@@ -176,7 +177,7 @@ namespace video
 
     //! Returns the blue component from A1R5G5B5 color
     /** Shift left by 3 to get 8 bit value. */
-    inline u32 getBlue(u16 color)
+    inline constexpr u32 getBlue(u16 color)
     {
         return (color & 0x1F);
     }
@@ -379,18 +380,18 @@ namespace video
         {
             switch (format)
             {
-                case ECF_A1R5G5B5:
+                case ECOLOR_FORMAT::ECF_A1R5G5B5:
                     color = A1R5G5B5toA8R8G8B8(*(u16*)data);
                     break;
-                case ECF_R5G6B5:
+                case ECOLOR_FORMAT::ECF_R5G6B5:
                     color = R5G6B5toA8R8G8B8(*(u16*)data);
                     break;
-                case ECF_A8R8G8B8:
+                case ECOLOR_FORMAT::ECF_A8R8G8B8:
                     color = *(u32*)data;
                     break;
-                case ECF_R8G8B8:
+                case ECOLOR_FORMAT::ECF_R8G8B8:
                     {
-                        u8* p = (u8*)data;
+                        const u8* p = (const u8*)data;
                         set(255, p[0],p[1],p[2]);
                     }
                     break;
@@ -408,21 +409,21 @@ namespace video
         {
             switch(format)
             {
-                case ECF_A1R5G5B5:
+                case ECOLOR_FORMAT::ECF_A1R5G5B5:
                 {
                     u16 * dest = (u16*)data;
                     *dest = video::A8R8G8B8toA1R5G5B5( color );
                 } 
                 break;
 
-                case ECF_R5G6B5:
+                case ECOLOR_FORMAT::ECF_R5G6B5:
                 {
                     u16 * dest = (u16*)data;
                     *dest = video::A8R8G8B8toR5G6B5( color );
                 } 
                 break;
 
-                case ECF_R8G8B8:
+                case ECOLOR_FORMAT::ECF_R8G8B8:
                 {
                     u8* dest = (u8*)data;
                     dest[0] = (u8)getRed();
@@ -431,7 +432,7 @@ namespace video
                 } 
                 break;
 
-                case ECF_A8R8G8B8:
+                case ECOLOR_FORMAT::ECF_A8R8G8B8:
                 {
                     u32 * dest = (u32*)data;
                     *dest = color;
@@ -480,7 +481,7 @@ namespace video
         constructed from. */
         SColorf(SColor c)
         {
-            const f32 inv = 1.0f / 255.0f;
+            constexpr f32 inv = 1.0f / 255.0f;
             r = c.getRed() * inv;
             g = c.getGreen() * inv;
             b = c.getBlue() * inv;
@@ -547,7 +548,7 @@ namespace video
 
 
         //! Sets a color component by index. R=0, G=1, B=2, A=3
-        void setColorComponentValue(s32 index, f32 value)
+        void setColorComponentValue(s32 index, f32 value) noexcept
         {
             switch(index)
             {
@@ -555,6 +556,7 @@ namespace video
             case 1: g = value; break;
             case 2: b = value; break;
             case 3: a = value; break;
+            default:break;
             }
         }
 

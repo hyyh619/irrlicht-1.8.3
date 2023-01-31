@@ -23,7 +23,7 @@ namespace core
     {
     public:
         //! Default constructor (null vector).
-        vector3d() : X(0), Y(0), Z(0) {}
+        vector3d() noexcept : X(0), Y(0), Z(0) {}
         //! Constructor with three different values
         vector3d(T nx, T ny, T nz) : X(nx), Y(ny), Z(nz) {}
         //! Constructor with the same value for all elements

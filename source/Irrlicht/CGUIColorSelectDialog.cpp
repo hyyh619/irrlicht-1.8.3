@@ -178,7 +178,7 @@ void CGUIColorSelectDialog::buildColorRing( const core::dimension2d<u32> & dim, 
     const core::dimension2d<u32> d(dim.Width * supersample, dim.Height * supersample);
     video::IVideoDriver* driver = Environment->getVideoDriver();
 
-    video::IImage *RawTexture = driver->createImage(video::ECF_A8R8G8B8, d);
+    video::IImage *RawTexture = driver->createImage(video::ECOLOR_FORMAT::ECF_A8R8G8B8, d);
 
     RawTexture->fill ( 0x00808080 );
 
@@ -271,7 +271,7 @@ void CGUIColorSelectDialog::buildColorRing( const core::dimension2d<u32> & dim, 
 
     if ( supersample > 1 )
     {
-        video::IImage * filter = driver->createImage(video::ECF_A8R8G8B8, dim );
+        video::IImage * filter = driver->createImage(video::ECOLOR_FORMAT::ECF_A8R8G8B8, dim );
         RawTexture->copyToScalingBoxFilter(filter);
         RawTexture->drop();
         RawTexture = filter;

@@ -224,9 +224,9 @@ IImage* CImageLoaderPng::loadImage(io::IReadFile* file) const
 
     // Create the image structure to be filled by png data
     if (ColorType==PNG_COLOR_TYPE_RGB_ALPHA)
-        image = new CImage(ECF_A8R8G8B8, core::dimension2d<u32>(Width, Height));
+        image = new CImage(ECOLOR_FORMAT::ECF_A8R8G8B8, core::dimension2d<u32>(Width, Height));
     else
-        image = new CImage(ECF_R8G8B8, core::dimension2d<u32>(Width, Height));
+        image = new CImage(ECOLOR_FORMAT::ECF_R8G8B8, core::dimension2d<u32>(Width, Height));
     if (!image)
     {
         os::Printer::log("LOAD PNG: Internal PNG create image struct failure\n", file->getFileName(), ELL_ERROR);

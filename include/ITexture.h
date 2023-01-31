@@ -168,7 +168,7 @@ public:
 
     //! Returns if the texture has an alpha channel
     virtual bool hasAlpha() const {
-        return getColorFormat () == video::ECF_A8R8G8B8 || getColorFormat () == video::ECF_A1R5G5B5;
+        return getColorFormat () == video::ECOLOR_FORMAT::ECF_A8R8G8B8 || getColorFormat () == video::ECOLOR_FORMAT::ECF_A1R5G5B5;
     }
 
     //! Regenerates the mip map levels of the texture.

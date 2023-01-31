@@ -860,7 +860,7 @@ void STextureAtlas::create(u32 border, E_TEXTURE_CLAMP texmode)
     u32 h;
     u32 wsum;
     u32 hsum = 0;
-    ECOLOR_FORMAT format = ECF_R8G8B8;
+    ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_R8G8B8;
 
     const s32 frame = core::s32_max ( 0, (border - 1 ) / 2 );
 
@@ -888,9 +888,9 @@ void STextureAtlas::create(u32 border, E_TEXTURE_CLAMP texmode)
     h = 0;
     for (i = 0; i < atlas.size(); i++)
     {
-        if ( atlas[i].image->getColorFormat() == ECF_A8R8G8B8 )
+        if ( atlas[i].image->getColorFormat() == ECOLOR_FORMAT::ECF_A8R8G8B8 )
         {
-            format = ECF_A8R8G8B8;
+            format = ECOLOR_FORMAT::ECF_A8R8G8B8;
         }
 
         // make space
@@ -1032,7 +1032,7 @@ SHalflifeHeader* CAnimatedMeshHalfLife::loadModel(io::IReadFile* file, const io:
                 }
             }
 
-            IImage* image = SceneManager->getVideoDriver()->createImage(ECF_R8G8B8, core::dimension2d<u32>(tex[i].width, tex[i].height));
+            IImage* image = SceneManager->getVideoDriver()->createImage(ECOLOR_FORMAT::ECF_R8G8B8, core::dimension2d<u32>(tex[i].width, tex[i].height));
 
             CColorConverter::convert8BitTo24Bit(src, (u8*)image->lock(), tex[i].width, tex[i].height, (u8*) palette, 0, false);
             image->unlock();

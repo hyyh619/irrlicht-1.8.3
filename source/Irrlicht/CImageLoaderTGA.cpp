@@ -169,7 +169,7 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
         {
             if (header.ImageType==3) // grey image
             {
-                image = new CImage(ECF_R8G8B8,
+                image = new CImage(ECOLOR_FORMAT::ECF_R8G8B8,
                     core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
                 if (image)
                     CColorConverter::convert8BitTo24Bit((u8*)data,
@@ -179,7 +179,7 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
             }
             else
             {
-                image = new CImage(ECF_A1R5G5B5,
+                image = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5,
                     core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
                 if (image)
                     CColorConverter::convert8BitTo16Bit((u8*)data,
@@ -191,21 +191,21 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
         }
         break;
     case 16:
-        image = new CImage(ECF_A1R5G5B5,
+        image = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5,
             core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
         if (image)
             CColorConverter::convert16BitTo16Bit((s16*)data,
                 (s16*)image->lock(), header.ImageWidth,    header.ImageHeight, 0, (header.ImageDescriptor&0x20)==0);
         break;
     case 24:
-            image = new CImage(ECF_R8G8B8,
+            image = new CImage(ECOLOR_FORMAT::ECF_R8G8B8,
                 core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
             if (image)
                 CColorConverter::convert24BitTo24Bit(
                     (u8*)data, (u8*)image->lock(), header.ImageWidth, header.ImageHeight, 0, (header.ImageDescriptor&0x20)==0, true);
         break;
     case 32:
-            image = new CImage(ECF_A8R8G8B8,
+            image = new CImage(ECOLOR_FORMAT::ECF_A8R8G8B8,
                 core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
             if (image)
                 CColorConverter::convert32BitTo32Bit((s32*)data,

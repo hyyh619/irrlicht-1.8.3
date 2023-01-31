@@ -352,7 +352,7 @@ void pollJoysticks()
                     (s16)((65535 * (info.dwXpos - caps.wXmin)) / (caps.wXmax - caps.wXmin) - 32768);
             }
 
-            (void)Device->postEventFromUser(event);
+            Device->postEventFromUser(event);
         }
     }
 #endif
@@ -422,7 +422,7 @@ bool activateJoysticks(core::array<SJoystickInfo> & joystickInfo)
     for(joystick = 0; joystick < joystickInfo.size(); ++joystick)
     {
         char logString[256];
-        (void)sprintf(logString, "Found joystick %d, %d axes, %d buttons '%s'",
+        sprintf(logString, "Found joystick %d, %d axes, %d buttons '%s'",
             joystick, joystickInfo[joystick].Axes,
             joystickInfo[joystick].Buttons, joystickInfo[joystick].Name.c_str());
         os::Printer::log(logString, ELL_INFORMATION);
@@ -593,6 +593,7 @@ static unsigned int LocaleIdToCodepage(unsigned int lcid)
             return 1257;
         case 1066:  // Vietnamese
             return 1258;
+        default:break;
     }
     return 65001;   // utf-8
 }
@@ -729,7 +730,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             if ( event.MouseInput.Event >= irr::EMIE_LMOUSE_PRESSED_DOWN && event.MouseInput.Event <= irr::EMIE_MMOUSE_PRESSED_DOWN )
             {
-                irr::u32 clicks = dev->checkSuccessiveClicks(event.MouseInput.X, event.MouseInput.Y, event.MouseInput.Event);
+                const irr::u32 clicks = dev->checkSuccessiveClicks(event.MouseInput.X, event.MouseInput.Y, event.MouseInput.Event);
                 if ( clicks == 2 )
                 {
                     event.MouseInput.Event = (irr::EMOUSE_INPUT_EVENT)(irr::EMIE_LMOUSE_DOUBLE_CLICK + event.MouseInput.Event-irr::EMIE_LMOUSE_PRESSED_DOWN);
@@ -765,11 +766,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             BYTE allKeys[256];
 
+            memset(allKeys, 0, 256);
+
             event.EventType = irr::EET_KEY_INPUT_EVENT;
             event.KeyInput.Key = (irr::EKEY_CODE)wParam;
             event.KeyInput.PressedDown = (message==WM_KEYDOWN || message == WM_SYSKEYDOWN);
 
-            const UINT MY_MAPVK_VSC_TO_VK_EX = 3; // MAPVK_VSC_TO_VK_EX should be in SDK according to MSDN, but isn't in mine.
+            constexpr  UINT MY_MAPVK_VSC_TO_VK_EX = 3; // MAPVK_VSC_TO_VK_EX should be in SDK according to MSDN, but isn't in mine.
             if ( event.KeyInput.Key == irr::KEY_SHIFT )
             {
                 // this will fail on systems before windows NT/2000/XP, not sure _what_ will return there instead.
@@ -797,8 +800,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Handle unicode and deadkeys in a way that works since Windows 95 and nt4.0
             // Using ToUnicode instead would be shorter, but would to my knowledge not run on 95 and 98.
             WORD keyChars[2];
-            UINT scanCode = HIWORD(lParam);
-            int conversionResult = ToAsciiEx(wParam,scanCode,allKeys,keyChars,0,KEYBOARD_INPUT_HKL);
+            const UINT scanCode = HIWORD(lParam);
+            const int conversionResult = ToAsciiEx((UINT)wParam,scanCode,allKeys,keyChars,0,KEYBOARD_INPUT_HKL);
             if (conversionResult == 1)
             {
                 WORD unicodeChar;
@@ -900,6 +903,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         KEYBOARD_INPUT_HKL = GetKeyboardLayout(0);
         KEYBOARD_INPUT_CODEPAGE = LocaleIdToCodepage( LOWORD(KEYBOARD_INPUT_HKL) );
         return 0;
+    default: break;
     }
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
@@ -1322,7 +1326,7 @@ bool CIrrDeviceWin32::isWindowActive() const
 //! returns if window has focus
 bool CIrrDeviceWin32::isWindowFocused() const
 {
-    bool ret = (GetFocus() == HWnd);
+    const bool ret = (GetFocus() == HWnd);
     _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
     return ret;
 }
@@ -1567,6 +1571,8 @@ void CIrrDeviceWin32::getWindowsVersion(core::stringc& out)
                 case PRODUCT_STARTER_N:
                     out.append("Starter Edition ");
                     break;
+                default:
+                    break;
                 }
             }
 #ifdef VER_SUITE_ENTERPRISE
@@ -1657,6 +1663,9 @@ void CIrrDeviceWin32::getWindowsVersion(core::stringc& out)
     case VER_PLATFORM_WIN32s:
         out.append("Microsoft Win32s ");
         break;
+
+    default:
+        break;
     }
 }
 
@@ -1688,7 +1697,7 @@ void CIrrDeviceWin32::setResizable(bool resize)
     clientSize.right = getVideoDriver()->getScreenSize().Width;
     clientSize.bottom = getVideoDriver()->getScreenSize().Height;
 
-    AdjustWindowRect(&clientSize, style, FALSE);
+    AdjustWindowRect(&clientSize, (DWORD)style, FALSE);
 
     const s32 realWidth = clientSize.right - clientSize.left;
     const s32 realHeight = clientSize.bottom - clientSize.top;
@@ -1822,7 +1831,7 @@ void CIrrDeviceWin32::ReportLastWinApiError()
 {
     // (based on code from ovidiucucu from http://www.codeguru.com/forum/showthread.php?t=318721)
     LPCTSTR pszCaption = __TEXT("Windows SDK Error Report");
-    DWORD dwError = GetLastError();
+    const DWORD dwError = GetLastError();
 
     if(NOERROR == dwError)
     {
@@ -1830,12 +1839,12 @@ void CIrrDeviceWin32::ReportLastWinApiError()
     }
     else
     {
-        const DWORD dwFormatControl = FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        constexpr  DWORD dwFormatControl = FORMAT_MESSAGE_ALLOCATE_BUFFER |
                                         FORMAT_MESSAGE_IGNORE_INSERTS |
                                         FORMAT_MESSAGE_FROM_SYSTEM;
 
         LPVOID pTextBuffer = NULL;
-        DWORD dwCount = FormatMessage(dwFormatControl,
+        const DWORD dwCount = FormatMessage(dwFormatControl,
                                         NULL,
                                         dwError,
                                         0,
@@ -1871,10 +1880,10 @@ HCURSOR CIrrDeviceWin32::TextureToCursor(HWND hwnd, irr::video::ITexture * tex, 
     HBITMAP oldXorBitmap = (HBITMAP)SelectObject(xorDc, xorBitmap);
 
 
-    video::ECOLOR_FORMAT format = tex->getColorFormat();
-    u32 bytesPerPixel = video::IImage::getBitsPerPixelFromFormat(format) / 8;
-    u32 bytesLeftGap = sourceRect.UpperLeftCorner.X * bytesPerPixel;
-    u32 bytesRightGap = tex->getPitch() - sourceRect.LowerRightCorner.X * bytesPerPixel;
+    const video::ECOLOR_FORMAT format = tex->getColorFormat();
+    const u32 bytesPerPixel = video::IImage::getBitsPerPixelFromFormat(format) / 8;
+    const u32 bytesLeftGap = sourceRect.UpperLeftCorner.X * bytesPerPixel;
+    const u32 bytesRightGap = tex->getPitch() - sourceRect.LowerRightCorner.X * bytesPerPixel;
     const u8* data = (const u8*)tex->lock(video::ETLM_READ_ONLY, 0);
     data += sourceRect.UpperLeftCorner.Y*tex->getPitch();
     for ( s32 y = 0; y < sourceRect.getHeight(); ++y )
@@ -1978,8 +1987,8 @@ void CIrrDeviceWin32::CCursorControl::update()
     if ( !Cursors[ActiveIcon].Frames.empty() && Cursors[ActiveIcon].FrameTime )
     {
         // update animated cursors. This could also be done by X11 in case someone wants to figure that out (this way was just easier to implement)
-        u32 now = Device->getTimer()->getRealTime();
-        u32 frame = ((now - ActiveIconStartTime) / Cursors[ActiveIcon].FrameTime) % Cursors[ActiveIcon].Frames.size();
+        const u32 now = Device->getTimer()->getRealTime();
+        const u32 frame = ((now - ActiveIconStartTime) / Cursors[ActiveIcon].FrameTime) % Cursors[ActiveIcon].Frames.size();
         SetCursor( Cursors[ActiveIcon].Frames[frame].IconHW );
     }
 }
@@ -2007,9 +2016,9 @@ gui::ECURSOR_ICON CIrrDeviceWin32::CCursorControl::addIcon(const gui::SCursorSpr
 
         for ( u32 i=0; i < icon.SpriteBank->getSprites()[icon.SpriteId].Frames.size(); ++i )
         {
-            irr::u32 texId = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].textureNumber;
-            irr::u32 rectId = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].rectNumber;
-            irr::core::rect<s32> rectIcon = icon.SpriteBank->getPositions()[rectId];
+            const irr::u32 texId = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].textureNumber;
+            const irr::u32 rectId = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].rectNumber;
+            const irr::core::rect<s32> rectIcon = icon.SpriteBank->getPositions()[rectId];
 
             HCURSOR hc = Device->TextureToCursor(HWnd, icon.SpriteBank->getTexture(texId), rectIcon, icon.HotSpot);
             cW32.Frames.push_back( CursorFrameW32(hc) );
@@ -2037,9 +2046,9 @@ void CIrrDeviceWin32::CCursorControl::changeIcon(gui::ECURSOR_ICON iconId, const
         cW32.FrameTime = icon.SpriteBank->getSprites()[icon.SpriteId].frameTime;
         for ( u32 i=0; i < icon.SpriteBank->getSprites()[icon.SpriteId].Frames.size(); ++i )
         {
-            irr::u32 texId = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].textureNumber;
-            irr::u32 rectId = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].rectNumber;
-            irr::core::rect<s32> rectIcon = icon.SpriteBank->getPositions()[rectId];
+            const irr::u32 texId = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].textureNumber;
+            const irr::u32 rectId = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].rectNumber;
+            const irr::core::rect<s32> rectIcon = icon.SpriteBank->getPositions()[rectId];
 
             HCURSOR hc = Device->TextureToCursor(HWnd, icon.SpriteBank->getTexture(texId), rectIcon, icon.HotSpot);
             cW32.Frames.push_back( CursorFrameW32(hc) );

@@ -105,13 +105,13 @@ namespace video
 
         //! Creates a render target texture.
         virtual ITexture* addRenderTargetTexture(const core::dimension2d<u32>& size,
-                const io::path& name, const ECOLOR_FORMAT format = ECF_UNKNOWN);
+                const io::path& name, const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
 
         //! Clears the ZBuffer.
         virtual void clearZBuffer();
 
         //! Returns an image created from the last rendered frame.
-        virtual IImage* createScreenShot(video::ECOLOR_FORMAT format=video::ECF_UNKNOWN, video::E_RENDER_TARGET target=video::ERT_FRAME_BUFFER);
+        virtual IImage* createScreenShot(video::ECOLOR_FORMAT format=video::ECOLOR_FORMAT::ECF_UNKNOWN, video::E_RENDER_TARGET target=video::ERT_FRAME_BUFFER);
 
         //! Returns the maximum amount of primitives (mostly vertices) which
         //! the device is able to render with one drawIndexedTriangleList

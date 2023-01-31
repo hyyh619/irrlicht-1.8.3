@@ -200,6 +200,7 @@ namespace video
                         case EMF_POLYGON_OFFSET:
                             material.PolygonOffsetDirection = Material.PolygonOffsetDirection;
                             material.PolygonOffsetFactor = Material.PolygonOffsetFactor; break;
+                        default:break;
                         }
                     }
                 }
@@ -413,7 +414,7 @@ namespace video
         should not be dropped. See IReferenceCounted::drop() for more
         information. */
         virtual ITexture* addTexture(const core::dimension2d<u32>& size,
-            const io::path& name, ECOLOR_FORMAT format = ECF_A8R8G8B8) = 0;
+            const io::path& name, ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_A8R8G8B8) = 0;
 
         //! Creates a texture from an IImage.
         /** \param name A name for the texture. Later calls of
@@ -439,7 +440,7 @@ namespace video
         could not be created. This pointer should not be dropped. See
         IReferenceCounted::drop() for more information. */
         virtual ITexture* addRenderTargetTexture(const core::dimension2d<u32>& size,
-                const io::path& name = "rt", const ECOLOR_FORMAT format = ECF_UNKNOWN) =0;
+                const io::path& name = "rt", const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN) =0;
 
         //! Removes a texture from the texture cache and deletes it.
         /** This method can free a lot of memory!
@@ -1371,7 +1372,7 @@ namespace video
 
         //! Make a screenshot of the last rendered frame.
         /** \return An image created from the last rendered frame. */
-        virtual IImage* createScreenShot(video::ECOLOR_FORMAT format=video::ECF_UNKNOWN, video::E_RENDER_TARGET target=video::ERT_FRAME_BUFFER) =0;
+        virtual IImage* createScreenShot(video::ECOLOR_FORMAT format=video::ECOLOR_FORMAT::ECF_UNKNOWN, video::E_RENDER_TARGET target=video::ERT_FRAME_BUFFER) =0;
 
         //! Check if the image is already loaded.
         /** Works similar to getTexture(), but does not load the texture

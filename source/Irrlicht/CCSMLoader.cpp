@@ -422,7 +422,7 @@ namespace scene
             os::Printer::log("CCSMLoader loading light map", lmapName.c_str());
 
             video::IImage* lmapImg = driver->createImageFromData(
-                video::ECF_A8R8G8B8,
+                video::ECOLOR_FORMAT::ECF_A8R8G8B8,
                 core::dimension2d<u32>(lmap->getWidth(),lmap->getHeight()),
                 lmap->getPixelData());
 

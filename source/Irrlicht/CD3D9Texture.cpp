@@ -33,7 +33,7 @@ namespace video
 CD3D9Texture::CD3D9Texture(CD3D9Driver* driver, const core::dimension2d<u32>& size,
                            const io::path& name, const ECOLOR_FORMAT format)
 : ITexture(name), Texture(0), RTTSurface(0), Driver(driver), DepthSurface(0),
-    TextureSize(size), ImageSize(size), Pitch(0), ColorFormat(ECF_UNKNOWN),
+    TextureSize(size), ImageSize(size), Pitch(0), ColorFormat(ECOLOR_FORMAT::ECF_UNKNOWN),
     HasMipMaps(false), HardwareMipMaps(false), IsRenderTarget(true)
 {
     #ifdef _DEBUG
@@ -52,7 +52,7 @@ CD3D9Texture::CD3D9Texture(CD3D9Driver* driver, const core::dimension2d<u32>& si
 CD3D9Texture::CD3D9Texture(IImage* image, CD3D9Driver* driver,
                u32 flags, const io::path& name, void* mipmapData)
 : ITexture(name), Texture(0), RTTSurface(0), Driver(driver), DepthSurface(0),
-    TextureSize(0,0), ImageSize(0,0), Pitch(0), ColorFormat(ECF_UNKNOWN),
+    TextureSize(0,0), ImageSize(0,0), Pitch(0), ColorFormat(ECOLOR_FORMAT::ECF_UNKNOWN),
     HasMipMaps(false), HardwareMipMaps(false), IsRenderTarget(false)
 {
     #ifdef _DEBUG
@@ -115,7 +115,7 @@ void CD3D9Texture::createRenderTarget(const ECOLOR_FORMAT format)
 
     D3DFORMAT d3dformat = Driver->getD3DColorFormat();
 
-    if(ColorFormat == ECF_UNKNOWN)
+    if(ColorFormat == ECOLOR_FORMAT::ECF_UNKNOWN)
     {
         // get irrlicht format from backbuffer
         // (This will get overwritten by the custom format if it is provided, else kept.)
@@ -123,7 +123,7 @@ void CD3D9Texture::createRenderTarget(const ECOLOR_FORMAT format)
         setPitch(d3dformat);
 
         // Use color format if provided.
-        if(format != ECF_UNKNOWN)
+        if(format != ECOLOR_FORMAT::ECF_UNKNOWN)
         {
             ColorFormat = format;
             d3dformat = Driver->getD3DFormatFromColorFormat(format);
@@ -280,11 +280,11 @@ bool CD3D9Texture::createTexture(u32 flags, IImage * image)
         {
             switch(image->getColorFormat())
             {
-            case ECF_R8G8B8:
-            case ECF_A8R8G8B8:
+            case ECOLOR_FORMAT::ECF_R8G8B8:
+            case ECOLOR_FORMAT::ECF_A8R8G8B8:
                 format = D3DFMT_A8R8G8B8; break;
-            case ECF_A1R5G5B5:
-            case ECF_R5G6B5:
+            case ECOLOR_FORMAT::ECF_A1R5G5B5:
+            case ECOLOR_FORMAT::ECF_R5G6B5:
                 format = D3DFMT_A1R5G5B5; break;
             }
         }
@@ -520,7 +520,7 @@ void CD3D9Texture::copy16BitMipMap(char* src, char* tgt,
                     const s32 tgx = (x*2)+dx;
 
                     SColor c;
-                    if (ColorFormat == ECF_A1R5G5B5)
+                    if (ColorFormat == ECOLOR_FORMAT::ECF_A1R5G5B5)
                         c = A1R5G5B5toA8R8G8B8(*(u16*)(&src[(tgx*2)+(tgy*pitchsrc)]));
                     else
                         c = R5G6B5toA8R8G8B8(*(u16*)(&src[(tgx*2)+(tgy*pitchsrc)]));
@@ -538,7 +538,7 @@ void CD3D9Texture::copy16BitMipMap(char* src, char* tgt,
             b /= 4;
 
             u16 c;
-            if (ColorFormat == ECF_A1R5G5B5)
+            if (ColorFormat == ECOLOR_FORMAT::ECF_A1R5G5B5)
                 c = RGBA16(r,g,b,a);
             else
                 c = A8R8G8B8toR5G6B5(SColor(a,r,g,b).color);

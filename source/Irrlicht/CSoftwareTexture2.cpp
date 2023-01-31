@@ -18,7 +18,7 @@ namespace video
 //! constructor
 CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name,
         u32 flags, void* mipmapData)
-        : ITexture(name), MipMapLOD(0), Flags ( flags ), OriginalFormat(video::ECF_UNKNOWN)
+        : ITexture(name), MipMapLOD(0), Flags ( flags ), OriginalFormat(video::ECOLOR_FORMAT::ECF_UNKNOWN)
 {
     #ifdef _DEBUG
     setDebugName("CSoftwareTexture2");
@@ -36,8 +36,8 @@ CSoftwareTexture2::CSoftwareTexture2(IImage* image, const io::path& name,
         OriginalFormat = image->getColorFormat();
 
         core::setbit_cond(Flags,
-                image->getColorFormat () == video::ECF_A8R8G8B8 ||
-                image->getColorFormat () == video::ECF_A1R5G5B5,
+                image->getColorFormat () == video::ECOLOR_FORMAT::ECF_A8R8G8B8 ||
+                image->getColorFormat () == video::ECOLOR_FORMAT::ECF_A1R5G5B5,
                 HAS_ALPHA);
 
         core::dimension2d<u32> optSize(

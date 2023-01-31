@@ -218,10 +218,10 @@ IImage* CImageLoaderRGB::loadImage(io::IReadFile* file) const
 
             Complete Alpha blending computation
             The actual resulting merged color is computed this way:
-            (image color ◊ alpha) + (background color ◊ (100% - alpha)).
+            (image color * alpha) + (background color * (100% - alpha)).
 
             Using precomputed blending
-            (image color) + (background color ◊ (100% - alpha)).
+            (image color) + (background color * (100% - alpha)).
 
             Alternatively, the RGB files could use another blending technique entirely
 */
@@ -234,14 +234,14 @@ IImage* CImageLoaderRGB::loadImage(io::IReadFile* file) const
                 for (int n=0; n<256; n++)
                     paletteData[n] = n;
 
-                image = new CImage(ECF_A1R5G5B5, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
+                image = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
                 if (image)
                     CColorConverter::convert8BitTo16Bit(rgb.rgbData, (s16*)image->lock(), rgb.Header.Xsize, rgb.Header.Ysize, paletteData, 0, true);
                 break;
             case 3:
                 // RGB image
                 // one byte per COLOR VALUE, eg, 24bpp
-                image = new CImage(ECF_R8G8B8, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
+                image = new CImage(ECOLOR_FORMAT::ECF_R8G8B8, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
                 if (image)
                     CColorConverter::convert24BitTo24Bit(rgb.rgbData, (u8*)image->lock(), rgb.Header.Xsize, rgb.Header.Ysize, 0, true, false);
                 break;
@@ -249,9 +249,9 @@ IImage* CImageLoaderRGB::loadImage(io::IReadFile* file) const
                 // RGBa image with one alpha channel (32bpp)
                 // image is stored in rgbData as RGBA
 
-                converttoARGB(reinterpret_cast<u32*>(rgb.rgbData),     rgb.Header.Ysize * rgb.Header.Xsize);
+                converttoARGB((u32*)(rgb.rgbData), rgb.Header.Ysize * rgb.Header.Xsize);
 
-                image = new CImage(ECF_A8R8G8B8, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
+                image = new CImage(ECOLOR_FORMAT::ECF_A8R8G8B8, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
                 if (image)
                     CColorConverter::convert32BitTo32Bit((s32*)rgb.rgbData, (s32*)image->lock(), rgb.Header.Xsize, rgb.Header.Ysize, 0, true);
 
@@ -275,7 +275,7 @@ IImage* CImageLoaderRGB::loadImage(io::IReadFile* file) const
 // returns true on success
 bool CImageLoaderRGB::readHeader(io::IReadFile* file, rgbStruct& rgb) const
 {
-    if ( file->read(&rgb.Header, sizeof(rgb.Header)) < s32(sizeof(rgb.Header)) )
+    if ( file->read(&rgb.Header, sizeof(rgb.Header)) < (s32)(sizeof(rgb.Header)) )
         return false;
 
     // test for INTEL or BIG ENDIAN processor
@@ -509,7 +509,7 @@ void CImageLoaderRGB::readRGBrow(u8 *buf, int y, int z, io::IReadFile* file, rgb
 #ifndef __BIG_ENDIAN__
         if (rgb.Header.BPC != 1)
         {
-            u16* tmpbuf = reinterpret_cast<u16*>(buf);
+            u16* tmpbuf = (u16*)(buf);
             for (u16 i=0; i<rgb.Header.Xsize; ++i)
                 tmpbuf[i] = os::Byteswap::byteswap(tmpbuf[i]);
         }
@@ -556,9 +556,9 @@ void CImageLoaderRGB::readRGBrow(u8 *buf, int y, int z, io::IReadFile* file, rgb
         s32 count = (s32)(pixel & 0x7F);
 
         // limit the count value to the remaining row size
-        if (oPtr + count*rgb.Header.BPC > buf + rgb.Header.Xsize * rgb.Header.BPC)
+        if ((oPtr + (size_t)(count)*rgb.Header.BPC) > (buf + (size_t)(rgb.Header.Xsize) * rgb.Header.BPC))
         {
-            count = ( (buf + rgb.Header.Xsize * rgb.Header.BPC) - oPtr ) / rgb.Header.BPC;
+            count = (irr::s32)((( (buf + (size_t)(rgb.Header.Xsize) * rgb.Header.BPC)) - oPtr ) / rgb.Header.BPC);
         }
 
         if (count<=0)
@@ -651,4 +651,3 @@ IImageLoader* createImageLoaderRGB()
 } // end namespace irr
 
 #endif
-

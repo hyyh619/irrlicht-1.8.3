@@ -36,7 +36,7 @@ public:
 
     //! rendertarget constructor
     CD3D9Texture(CD3D9Driver* driver, const core::dimension2d<u32>& size, const io::path& name,
-        const ECOLOR_FORMAT format = ECF_UNKNOWN);
+        const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
 
     //! destructor
     virtual ~CD3D9Texture();
@@ -81,7 +81,7 @@ public:
 private:
     friend class CD3D9Driver;
 
-    void createRenderTarget(const ECOLOR_FORMAT format = ECF_UNKNOWN);
+    void createRenderTarget(const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
 
     //! creates the hardware texture
     bool createTexture(u32 flags, IImage * image);

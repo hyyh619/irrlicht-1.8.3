@@ -39,7 +39,7 @@ COpenGLDriver::COpenGLDriver(const irr::SIrrlichtCreationParameters &params,
     : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
     CurrentRenderMode(ERM_NONE), ResetRenderStates(true), Transformation3DChanged(true),
     AntiAlias(params.AntiAlias), RenderTargetTexture(0),
-    CurrentRendertargetSize(0, 0), ColorFormat(ECF_R8G8B8),
+    CurrentRendertargetSize(0, 0), ColorFormat(ECOLOR_FORMAT::ECF_R8G8B8),
     CurrentTarget(ERT_FRAME_BUFFER), Params(params),
     HDc(0), Window(static_cast<HWND>(params.WindowId)), Win32Device(device),
     DeviceType(EIDT_WIN32)
@@ -448,16 +448,16 @@ bool COpenGLDriver::initDriver(CIrrDeviceWin32 *device)
     if (pfd.cAlphaBits != 0)
     {
         if (pfd.cRedBits == 8)
-            ColorFormat = ECF_A8R8G8B8;
+            ColorFormat = ECOLOR_FORMAT::ECF_A8R8G8B8;
         else
-            ColorFormat = ECF_A1R5G5B5;
+            ColorFormat = ECOLOR_FORMAT::ECF_A1R5G5B5;
     }
     else
     {
         if (pfd.cRedBits == 8)
-            ColorFormat = ECF_R8G8B8;
+            ColorFormat = ECOLOR_FORMAT::ECF_R8G8B8;
         else
-            ColorFormat = ECF_R5G6B5;
+            ColorFormat = ECOLOR_FORMAT::ECF_R5G6B5;
     }
 
     genericDriverInit();
@@ -4180,7 +4180,7 @@ ITexture* COpenGLDriver::addRenderTargetTexture(const core::dimension2d<u32> &si
         // we try to find an optimal size with the original constraints
         core::dimension2du destSize(core::min_(size.Width, ScreenSize.Width), core::min_(size.Height, ScreenSize.Height));
         destSize = destSize.getOptimalSize((size==size.getOptimalSize()), false, false);
-        rtt      = addTexture(destSize, name, ECF_A8R8G8B8);
+        rtt      = addTexture(destSize, name, ECOLOR_FORMAT::ECF_A8R8G8B8);
         if (rtt)
         {
             static_cast<video::COpenGLTexture*>(rtt)->setIsRenderTarget(true);
@@ -4568,7 +4568,7 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
         glPixelStorei(GL_PACK_INVERT_MESA, GL_TRUE);
 #endif
 
-    if (format==video::ECF_UNKNOWN)
+    if (format==video::ECOLOR_FORMAT::ECF_UNKNOWN)
         format = getColorFormat();
 
     GLenum fmt;
@@ -4576,22 +4576,22 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
 
     switch (format)
     {
-    case ECF_A1R5G5B5:
+    case ECOLOR_FORMAT::ECF_A1R5G5B5:
         fmt  = GL_BGRA;
         type = GL_UNSIGNED_SHORT_1_5_5_5_REV;
         break;
 
-    case ECF_R5G6B5:
+    case ECOLOR_FORMAT::ECF_R5G6B5:
         fmt  = GL_RGB;
         type = GL_UNSIGNED_SHORT_5_6_5;
         break;
 
-    case ECF_R8G8B8:
+    case ECOLOR_FORMAT::ECF_R8G8B8:
         fmt  = GL_RGB;
         type = GL_UNSIGNED_BYTE;
         break;
 
-    case ECF_A8R8G8B8:
+    case ECOLOR_FORMAT::ECF_A8R8G8B8:
         fmt = GL_BGRA;
         if (Version > 101)
             type = GL_UNSIGNED_INT_8_8_8_8_REV;
@@ -4600,7 +4600,7 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
 
         break;
 
-    case ECF_R16F:
+    case ECOLOR_FORMAT::ECF_R16F:
         if (FeatureAvailable[IRR_ARB_texture_rg])
             fmt = GL_RED;
         else
@@ -4613,12 +4613,12 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
 #endif
         {
             type   = GL_FLOAT;
-            format = ECF_R32F;
+            format = ECOLOR_FORMAT::ECF_R32F;
         }
 
         break;
 
-    case ECF_G16R16F:
+    case ECOLOR_FORMAT::ECF_G16R16F:
 #ifdef GL_ARB_texture_rg
         if (FeatureAvailable[IRR_ARB_texture_rg])
             fmt = GL_RG;
@@ -4632,12 +4632,12 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
 #endif
         {
             type   = GL_FLOAT;
-            format = ECF_G32R32F;
+            format = ECOLOR_FORMAT::ECF_G32R32F;
         }
 
         break;
 
-    case ECF_A16B16G16R16F:
+    case ECOLOR_FORMAT::ECF_A16B16G16R16F:
         fmt = GL_BGRA;
 #ifdef GL_ARB_half_float_pixel
         if (FeatureAvailable[IRR_ARB_half_float_pixel])
@@ -4646,12 +4646,12 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
 #endif
         {
             type   = GL_FLOAT;
-            format = ECF_A32B32G32R32F;
+            format = ECOLOR_FORMAT::ECF_A32B32G32R32F;
         }
 
         break;
 
-    case ECF_R32F:
+    case ECOLOR_FORMAT::ECF_R32F:
         if (FeatureAvailable[IRR_ARB_texture_rg])
             fmt = GL_RED;
         else
@@ -4660,7 +4660,7 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
         type = GL_FLOAT;
         break;
 
-    case ECF_G32R32F:
+    case ECOLOR_FORMAT::ECF_G32R32F:
 #ifdef GL_ARB_texture_rg
         if (FeatureAvailable[IRR_ARB_texture_rg])
             fmt = GL_RG;
@@ -4670,7 +4670,7 @@ IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RE
         type = GL_FLOAT;
         break;
 
-    case ECF_A32B32G32R32F:
+    case ECOLOR_FORMAT::ECF_A32B32G32R32F:
         fmt  = GL_BGRA;
         type = GL_FLOAT;
         break;

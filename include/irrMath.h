@@ -42,45 +42,45 @@ namespace core
 
     //! Rounding error constant often used when comparing f32 values.
 
-    const s32 ROUNDING_ERROR_S32 = 0;
+    constexpr  s32 ROUNDING_ERROR_S32 = 0;
 #ifdef __IRR_HAS_S64
-    const s64 ROUNDING_ERROR_S64 = 0;
+    constexpr  s64 ROUNDING_ERROR_S64 = 0;
 #endif
-    const f32 ROUNDING_ERROR_f32 = 0.000001f;
-    const f64 ROUNDING_ERROR_f64 = 0.00000001;
+    constexpr  f32 ROUNDING_ERROR_f32 = 0.000001f;
+    constexpr  f64 ROUNDING_ERROR_f64 = 0.00000001;
 
 #ifdef PI // make sure we don't collide with a define
 #undef PI
 #endif
     //! Constant for PI.
-    const f32 PI        = 3.14159265359f;
+    constexpr  f32 PI        = 3.14159265359f;
 
     //! Constant for reciprocal of PI.
-    const f32 RECIPROCAL_PI    = 1.0f/PI;
+    constexpr  f32 RECIPROCAL_PI    = 1.0f/PI;
 
     //! Constant for half of PI.
-    const f32 HALF_PI    = PI/2.0f;
+    constexpr  f32 HALF_PI    = PI/2.0f;
 
 #ifdef PI64 // make sure we don't collide with a define
 #undef PI64
 #endif
     //! Constant for 64bit PI.
-    const f64 PI64        = 3.1415926535897932384626433832795028841971693993751;
+    constexpr  f64 PI64        = 3.1415926535897932384626433832795028841971693993751;
 
     //! Constant for 64bit reciprocal of PI.
-    const f64 RECIPROCAL_PI64 = 1.0/PI64;
+    constexpr  f64 RECIPROCAL_PI64 = 1.0/PI64;
 
     //! 32bit Constant for converting from degrees to radians
-    const f32 DEGTORAD = PI / 180.0f;
+    constexpr  f32 DEGTORAD = PI / 180.0f;
 
     //! 32bit constant for converting from radians to degrees (formally known as GRAD_PI)
-    const f32 RADTODEG   = 180.0f / PI;
+    constexpr  f32 RADTODEG   = 180.0f / PI;
 
     //! 64bit constant for converting from degrees to radians (formally known as GRAD_PI2)
-    const f64 DEGTORAD64 = PI64 / 180.0;
+    constexpr  f64 DEGTORAD64 = PI64 / 180.0;
 
     //! 64bit constant for converting from radians to degrees
-    const f64 RADTODEG64 = 180.0 / PI64;
+    constexpr  f64 RADTODEG64 = 180.0 / PI64;
 
     //! Utility function to convert a radian value to degrees
     /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
@@ -213,8 +213,8 @@ namespace core
         // by one integer number. Also works the other way round, an integer of 1 interpreted as float
         // is for example the smallest possible float number.
 
-        FloatIntUnion32 fa(a);
-        FloatIntUnion32 fb(b);
+        const FloatIntUnion32 fa(a);
+        const FloatIntUnion32 fb(b);
 
         // Different signs, we could maybe get difference to 0, but so close to 0 using epsilons is better.
         if ( fa.sign() != fb.sign() )
@@ -226,7 +226,7 @@ namespace core
         }
 
         // Find the difference in ULPs.
-        int ulpsDiff = abs_(fa.i- fb.i);
+        const int ulpsDiff = abs_(fa.i- fb.i);
         if (ulpsDiff <= maxUlpDiff)
             return true;
 
@@ -316,7 +316,7 @@ namespace core
         return (b & mask) | (a & ~mask);
     }
 
-    inline s32 s32_clamp (s32 value, s32 low, s32 high) noexcept
+    inline constexpr s32 s32_clamp (s32 value, s32 low, s32 high) noexcept
     {
         return s32_min(s32_max(value,low), high);
     }
@@ -532,7 +532,7 @@ namespace core
     }
 
     // calculate: 1 / x
-    REALINLINE f32 reciprocal( const f32 f ) noexcept
+    REALINLINE constexpr f32 reciprocal( const f32 f ) noexcept
     {
 #if defined (IRRLICHT_FAST_MATH)
 
@@ -565,14 +565,14 @@ namespace core
     }
 
     // calculate: 1 / x
-    REALINLINE f64 reciprocal ( const f64 f ) noexcept
+    REALINLINE constexpr f64 reciprocal ( const f64 f ) noexcept
     {
         return 1.0 / f;
     }
 
 
     // calculate: 1 / x, low precision allowed
-    REALINLINE f32 reciprocal_approxim ( const f32 f ) noexcept
+    REALINLINE constexpr f32 reciprocal_approxim ( const f32 f ) noexcept
     {
 #if defined( IRRLICHT_FAST_MATH)
 
@@ -705,12 +705,12 @@ namespace core
 #endif
     }
 
-    inline f32 f32_max3(const f32 a, const f32 b, const f32 c) noexcept
+    inline constexpr f32 f32_max3(const f32 a, const f32 b, const f32 c) noexcept
     {
         return a > b ? (a > c ? a : c) : (b > c ? b : c);
     }
 
-    inline f32 f32_min3(const f32 a, const f32 b, const f32 c) noexcept
+    inline constexpr f32 f32_min3(const f32 a, const f32 b, const f32 c) noexcept
     {
         return a < b ? (a < c ? a : c) : (b < c ? b : c);
     }

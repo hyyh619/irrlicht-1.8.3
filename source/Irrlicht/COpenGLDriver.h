@@ -344,7 +344,7 @@ namespace video
         virtual u32 getMaximalPrimitiveCount() const;
 
         virtual ITexture* addRenderTargetTexture(const core::dimension2d<u32>& size,
-                const io::path& name, const ECOLOR_FORMAT format = ECF_UNKNOWN);
+                const io::path& name, const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
 
         //! set or reset render target
         virtual bool setRenderTarget(video::E_RENDER_TARGET target, bool clearTarget,
@@ -362,7 +362,7 @@ namespace video
         virtual void clearZBuffer();
 
         //! Returns an image created from the last rendered frame.
-        virtual IImage* createScreenShot(video::ECOLOR_FORMAT format=video::ECF_UNKNOWN, video::E_RENDER_TARGET target=video::ERT_FRAME_BUFFER);
+        virtual IImage* createScreenShot(video::ECOLOR_FORMAT format=video::ECOLOR_FORMAT::ECF_UNKNOWN, video::E_RENDER_TARGET target=video::ERT_FRAME_BUFFER);
 
         //! checks if an OpenGL error has happend and prints it
         //! for performance reasons only available in debug mode

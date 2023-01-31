@@ -856,7 +856,7 @@ void CNullDriver::draw2DPolygon(core::position2d<s32> center,
 //! returns color format
 ECOLOR_FORMAT CNullDriver::getColorFormat() const
 {
-    return ECF_R5G6B5;
+    return ECOLOR_FORMAT::ECF_R5G6B5;
 }
 
 
@@ -988,14 +988,14 @@ void CNullDriver::makeColorKeyTexture(video::ITexture* texture,
     if (!texture)
         return;
 
-    if (texture->getColorFormat() != ECF_A1R5G5B5 &&
-        texture->getColorFormat() != ECF_A8R8G8B8 )
+    if (texture->getColorFormat() != ECOLOR_FORMAT::ECF_A1R5G5B5 &&
+        texture->getColorFormat() != ECOLOR_FORMAT::ECF_A8R8G8B8 )
     {
         os::Printer::log("Error: Unsupported texture color format for making color key channel.", ELL_ERROR);
         return;
     }
 
-    if (texture->getColorFormat() == ECF_A1R5G5B5)
+    if (texture->getColorFormat() == ECOLOR_FORMAT::ECF_A1R5G5B5)
     {
         u16 *p = (u16*)texture->lock();
 
@@ -1077,8 +1077,8 @@ void CNullDriver::makeColorKeyTexture(video::ITexture* texture,
     if (!texture)
         return;
 
-    if (texture->getColorFormat() != ECF_A1R5G5B5 &&
-        texture->getColorFormat() != ECF_A8R8G8B8 )
+    if (texture->getColorFormat() != ECOLOR_FORMAT::ECF_A1R5G5B5 &&
+        texture->getColorFormat() != ECOLOR_FORMAT::ECF_A8R8G8B8 )
     {
         os::Printer::log("Error: Unsupported texture color format for making color key channel.", ELL_ERROR);
         return;
@@ -1086,7 +1086,7 @@ void CNullDriver::makeColorKeyTexture(video::ITexture* texture,
 
     SColor colorKey;
 
-    if (texture->getColorFormat() == ECF_A1R5G5B5)
+    if (texture->getColorFormat() == ECOLOR_FORMAT::ECF_A1R5G5B5)
     {
         u16 *p = (u16*)texture->lock(ETLM_READ_ONLY);
 
@@ -1129,8 +1129,8 @@ void CNullDriver::makeNormalMapTexture(video::ITexture* texture, f32 amplitude) 
     if (!texture)
         return;
 
-    if (texture->getColorFormat() != ECF_A1R5G5B5 &&
-        texture->getColorFormat() != ECF_A8R8G8B8 )
+    if (texture->getColorFormat() != ECOLOR_FORMAT::ECF_A1R5G5B5 &&
+        texture->getColorFormat() != ECOLOR_FORMAT::ECF_A8R8G8B8 )
     {
         os::Printer::log("Error: Unsupported texture color format for making normal map.", ELL_ERROR);
         return;
@@ -1141,7 +1141,7 @@ void CNullDriver::makeNormalMapTexture(video::ITexture* texture, f32 amplitude) 
     f32 vh = dim.Height / (f32)dim.Width;
     f32 hh = dim.Width / (f32)dim.Height;
 
-    if (texture->getColorFormat() == ECF_A8R8G8B8)
+    if (texture->getColorFormat() == ECOLOR_FORMAT::ECF_A8R8G8B8)
     {
         // ECF_A8R8G8B8 version
 

@@ -89,9 +89,9 @@ bool CD3D9HLSLMaterialRenderer::createHLSLVertexShader(const char* vertexShaderP
 #ifdef _IRR_D3D_NO_SHADER_DEBUGGING
 
     // compile without debug info
-    HRESULT h = stubD3DXCompileShader(
+    const HRESULT h = stubD3DXCompileShader(
         vertexShaderProgram,
-        strlen(vertexShaderProgram),
+        irr::u32(strlen(vertexShaderProgram)),
         0, // macros
         0, // no includes
         shaderEntryPointName,
@@ -191,9 +191,9 @@ bool CD3D9HLSLMaterialRenderer::createHLSLPixelShader(const char* pixelShaderPro
 #ifdef _IRR_D3D_NO_SHADER_DEBUGGING
 
     // compile without debug info
-    HRESULT h = stubD3DXCompileShader(
+    const HRESULT h = stubD3DXCompileShader(
         pixelShaderProgram,
-        strlen(pixelShaderProgram),
+        irr::u32(strlen(pixelShaderProgram)),
         0, // macros
         0, // no includes
         shaderEntryPointName,

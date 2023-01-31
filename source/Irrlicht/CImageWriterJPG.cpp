@@ -109,16 +109,16 @@ static bool writeJPEGFile(io::IWriteFile* file, IImage* image, u32 quality)
     void (*format)(const void*, s32, void*) = 0;
     switch( image->getColorFormat () )
     {
-        case ECF_R8G8B8:
+        case ECOLOR_FORMAT::ECF_R8G8B8:
             format = CColorConverter::convert_R8G8B8toR8G8B8;
             break;
-        case ECF_A8R8G8B8:
+        case ECOLOR_FORMAT::ECF_A8R8G8B8:
             format = CColorConverter::convert_A8R8G8B8toR8G8B8;
             break;
-        case ECF_A1R5G5B5:
+        case ECOLOR_FORMAT::ECF_A1R5G5B5:
             format = CColorConverter::convert_A1R5G5B5toB8G8R8;
             break;
-        case ECF_R5G6B5:
+        case ECOLOR_FORMAT::ECF_R5G6B5:
             format = CColorConverter::convert_R5G6B5toR8G8B8;
             break;
 #ifndef _DEBUG

@@ -76,7 +76,7 @@ public:
     virtual u32 getPitch() const =0;
 
     //! Copies the image into the target, scaling the image to fit
-    virtual void copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT format=ECF_A8R8G8B8, u32 pitch=0) =0;
+    virtual void copyToScaling(void* target, u32 width, u32 height, ECOLOR_FORMAT format= ECOLOR_FORMAT::ECF_A8R8G8B8, u32 pitch=0) =0;
 
     //! Copies the image into the target, scaling the image to fit
     virtual void copyToScaling(IImage* target) =0;
@@ -103,25 +103,25 @@ public:
     {
         switch(format)
         {
-        case ECF_A1R5G5B5:
+        case ECOLOR_FORMAT::ECF_A1R5G5B5:
             return 16;
-        case ECF_R5G6B5:
+        case ECOLOR_FORMAT::ECF_R5G6B5:
             return 16;
-        case ECF_R8G8B8:
+        case ECOLOR_FORMAT::ECF_R8G8B8:
             return 24;
-        case ECF_A8R8G8B8:
+        case ECOLOR_FORMAT::ECF_A8R8G8B8:
             return 32;
-        case ECF_R16F:
+        case ECOLOR_FORMAT::ECF_R16F:
             return 16;
-        case ECF_G16R16F:
+        case ECOLOR_FORMAT::ECF_G16R16F:
             return 32;
-        case ECF_A16B16G16R16F:
+        case ECOLOR_FORMAT::ECF_A16B16G16R16F:
             return 64;
-        case ECF_R32F:
+        case ECOLOR_FORMAT::ECF_R32F:
             return 32;
-        case ECF_G32R32F:
+        case ECOLOR_FORMAT::ECF_G32R32F:
             return 64;
-        case ECF_A32B32G32R32F:
+        case ECOLOR_FORMAT::ECF_A32B32G32R32F:
             return 128;
         default:
             return 0;
@@ -136,10 +136,10 @@ public:
     {
         switch(format)
         {
-            case ECF_A1R5G5B5:
-            case ECF_R5G6B5:
-            case ECF_R8G8B8:
-            case ECF_A8R8G8B8:
+            case ECOLOR_FORMAT::ECF_A1R5G5B5:
+            case ECOLOR_FORMAT::ECF_R5G6B5:
+            case ECOLOR_FORMAT::ECF_R8G8B8:
+            case ECOLOR_FORMAT::ECF_A8R8G8B8:
                 return false;
             default:
                 return true;

@@ -284,7 +284,7 @@ IAnimatedMesh* CDMFLoader::createMesh(io::IReadFile* file)
                 if (color.getAlpha()!=255 && materiali[i].textureBlend==4)
                     driver->setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT,true);
 
-                video::IImage *immagine= driver->createImage(video::ECF_A8R8G8B8,
+                video::IImage *immagine= driver->createImage(video::ECOLOR_FORMAT::ECF_A8R8G8B8,
                     core::dimension2d<u32>(8,8));
                 immagine->fill(color);
                 tex = driver->addTexture("", immagine);
@@ -326,7 +326,7 @@ IAnimatedMesh* CDMFLoader::createMesh(io::IReadFile* file)
                 if (pp)
                 {
                     const video::ECOLOR_FORMAT format = tex->getColorFormat();
-                    if (format == video::ECF_A1R5G5B5)
+                    if (format == video::ECOLOR_FORMAT::ECF_A1R5G5B5)
                     {
                         s16* p = (s16*)pp;
                         s16 tmp=0;
@@ -339,7 +339,7 @@ IAnimatedMesh* CDMFLoader::createMesh(io::IReadFile* file)
                             }
                     }
                     else
-                    if (format == video::ECF_A8R8G8B8)
+                    if (format == video::ECOLOR_FORMAT::ECF_A8R8G8B8)
                     {
                         s32* p = (s32*)pp;
                         s32 tmp=0;
@@ -364,7 +364,7 @@ IAnimatedMesh* CDMFLoader::createMesh(io::IReadFile* file)
                 if (pp)
                 {
                     video::ECOLOR_FORMAT format = lig->getColorFormat();
-                    if (format == video::ECF_A1R5G5B5)
+                    if (format == video::ECOLOR_FORMAT::ECF_A1R5G5B5)
                     {
                         s16* p = (s16*)pp;
                         s16 tmp=0;
@@ -378,7 +378,7 @@ IAnimatedMesh* CDMFLoader::createMesh(io::IReadFile* file)
                             }
                         }
                     }
-                    else if (format == video::ECF_A8R8G8B8)
+                    else if (format == video::ECOLOR_FORMAT::ECF_A8R8G8B8)
                     {
                         s32* p = (s32*)pp;
                         s32 tmp=0;

@@ -41,11 +41,11 @@ extern "C" void bz_internal_error(int errorCode)
     #endif
 #endif
 
+
 namespace irr
 {
 namespace io
 {
-
 
 // -----------------------------------------------------------------------------
 // zip loader

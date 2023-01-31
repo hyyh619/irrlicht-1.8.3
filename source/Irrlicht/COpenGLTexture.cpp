@@ -21,7 +21,7 @@ namespace video
 
 //! constructor for usual textures
 COpenGLTexture::COpenGLTexture(IImage* origImage, const io::path& name, void* mipmapData, COpenGLDriver* driver)
-    : ITexture(name), ColorFormat(ECF_A8R8G8B8), Driver(driver), Image(0), MipImage(0),
+    : ITexture(name), ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), Driver(driver), Image(0), MipImage(0),
     TextureName(0), InternalFormat(GL_RGBA), PixelFormat(GL_BGRA_EXT),
     PixelType(GL_UNSIGNED_BYTE), MipLevelStored(0), MipmapLegacyMode(true),
     IsRenderTarget(false), AutomaticMipmapUpdate(false),
@@ -58,7 +58,7 @@ COpenGLTexture::COpenGLTexture(IImage* origImage, const io::path& name, void* mi
 
 //! constructor for basic setup (only for derived classes)
 COpenGLTexture::COpenGLTexture(const io::path& name, COpenGLDriver* driver)
-    : ITexture(name), ColorFormat(ECF_A8R8G8B8), Driver(driver), Image(0), MipImage(0),
+    : ITexture(name), ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), Driver(driver), Image(0), MipImage(0),
     TextureName(0), InternalFormat(GL_RGBA), PixelFormat(GL_BGRA_EXT),
     PixelType(GL_UNSIGNED_BYTE), MipLevelStored(0), HasMipMaps(true),
     MipmapLegacyMode(true), IsRenderTarget(false), AutomaticMipmapUpdate(false),
@@ -83,26 +83,26 @@ COpenGLTexture::~COpenGLTexture()
 //! Choose best matching color format, based on texture creation flags
 ECOLOR_FORMAT COpenGLTexture::getBestColorFormat(ECOLOR_FORMAT format)
 {
-    ECOLOR_FORMAT destFormat = ECF_A8R8G8B8;
+    ECOLOR_FORMAT destFormat = ECOLOR_FORMAT::ECF_A8R8G8B8;
     switch (format)
     {
-        case ECF_A1R5G5B5:
+        case ECOLOR_FORMAT::ECF_A1R5G5B5:
             if (!Driver->getTextureCreationFlag(ETCF_ALWAYS_32_BIT))
-                destFormat = ECF_A1R5G5B5;
+                destFormat = ECOLOR_FORMAT::ECF_A1R5G5B5;
         break;
-        case ECF_R5G6B5:
+        case ECOLOR_FORMAT::ECF_R5G6B5:
             if (!Driver->getTextureCreationFlag(ETCF_ALWAYS_32_BIT))
-                destFormat = ECF_A1R5G5B5;
+                destFormat = ECOLOR_FORMAT::ECF_A1R5G5B5;
         break;
-        case ECF_A8R8G8B8:
+        case ECOLOR_FORMAT::ECF_A8R8G8B8:
             if (Driver->getTextureCreationFlag(ETCF_ALWAYS_16_BIT) ||
                     Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED))
-                destFormat = ECF_A1R5G5B5;
+                destFormat = ECOLOR_FORMAT::ECF_A1R5G5B5;
         break;
-        case ECF_R8G8B8:
+        case ECOLOR_FORMAT::ECF_R8G8B8:
             if (Driver->getTextureCreationFlag(ETCF_ALWAYS_16_BIT) ||
                     Driver->getTextureCreationFlag(ETCF_OPTIMIZED_FOR_SPEED))
-                destFormat = ECF_A1R5G5B5;
+                destFormat = ECOLOR_FORMAT::ECF_A1R5G5B5;
         default:
         break;
     }
@@ -110,11 +110,11 @@ ECOLOR_FORMAT COpenGLTexture::getBestColorFormat(ECOLOR_FORMAT format)
     {
         switch (destFormat)
         {
-            case ECF_A1R5G5B5:
-                destFormat = ECF_R5G6B5;
+            case ECOLOR_FORMAT::ECF_A1R5G5B5:
+                destFormat = ECOLOR_FORMAT::ECF_R5G6B5;
             break;
-            case ECF_A8R8G8B8:
-                destFormat = ECF_R8G8B8;
+            case ECOLOR_FORMAT::ECF_A8R8G8B8:
+                destFormat = ECOLOR_FORMAT::ECF_R8G8B8;
             break;
             default:
             break;
@@ -138,29 +138,29 @@ GLint COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(ECOLOR_FORMAT 
 
     switch(format)
     {
-        case ECF_A1R5G5B5:
+        case ECOLOR_FORMAT::ECF_A1R5G5B5:
             colorformat=GL_BGRA_EXT;
             type=GL_UNSIGNED_SHORT_1_5_5_5_REV;
             internalformat =  GL_RGBA;
             break;
-        case ECF_R5G6B5:
+        case ECOLOR_FORMAT::ECF_R5G6B5:
             colorformat=GL_RGB;
             type=GL_UNSIGNED_SHORT_5_6_5;
             internalformat =  GL_RGB;
             break;
-        case ECF_R8G8B8:
+        case ECOLOR_FORMAT::ECF_R8G8B8:
             colorformat=GL_BGR;
             type=GL_UNSIGNED_BYTE;
             internalformat =  GL_RGB;
             break;
-        case ECF_A8R8G8B8:
+        case ECOLOR_FORMAT::ECF_A8R8G8B8:
             colorformat=GL_BGRA_EXT;
             if (Driver->Version > 101)
                 type=GL_UNSIGNED_INT_8_8_8_8_REV;
             internalformat =  GL_RGBA;
             break;
         // Floating Point texture formats. Thanks to Patryk "Nadro" Nadrowski.
-        case ECF_R16F:
+        case ECOLOR_FORMAT::ECF_R16F:
         {
 #ifdef GL_ARB_texture_rg
             filtering = GL_NEAREST;
@@ -169,12 +169,12 @@ GLint COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(ECOLOR_FORMAT 
 
             internalformat =  GL_R16F;
 #else
-            ColorFormat = ECF_A8R8G8B8;
+            ColorFormat = ECOLOR_FORMAT::ECF_A8R8G8B8;
             internalformat =  GL_RGB8;
 #endif
         }
             break;
-        case ECF_G16R16F:
+        case ECOLOR_FORMAT::ECF_G16R16F:
         {
 #ifdef GL_ARB_texture_rg
             filtering = GL_NEAREST;
@@ -183,12 +183,12 @@ GLint COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(ECOLOR_FORMAT 
 
             internalformat =  GL_RG16F;
 #else
-            ColorFormat = ECF_A8R8G8B8;
+            ColorFormat = ECOLOR_FORMAT::ECF_A8R8G8B8;
             internalformat =  GL_RGB8;
 #endif
         }
             break;
-        case ECF_A16B16G16R16F:
+        case ECOLOR_FORMAT::ECF_A16B16G16R16F:
         {
 #ifdef GL_ARB_texture_rg
             filtering = GL_NEAREST;
@@ -202,7 +202,7 @@ GLint COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(ECOLOR_FORMAT 
 #endif
         }
             break;
-        case ECF_R32F:
+        case ECOLOR_FORMAT::ECF_R32F:
         {
 #ifdef GL_ARB_texture_rg
             filtering = GL_NEAREST;
@@ -216,7 +216,7 @@ GLint COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(ECOLOR_FORMAT 
 #endif
         }
             break;
-        case ECF_G32R32F:
+        case ECOLOR_FORMAT::ECF_G32R32F:
         {
 #ifdef GL_ARB_texture_rg
             filtering = GL_NEAREST;
@@ -230,7 +230,7 @@ GLint COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(ECOLOR_FORMAT 
 #endif
         }
             break;
-        case ECF_A32B32G32R32F:
+        case ECOLOR_FORMAT::ECF_A32B32G32R32F:
         {
 #ifdef GL_ARB_texture_float
             filtering = GL_NEAREST;
@@ -431,11 +431,11 @@ void* COpenGLTexture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel)
                     ++i;
                 }
                 while (i != mipmapLevel);
-                MipImage = image = Driver->createImage(ECF_A8R8G8B8, core::dimension2du(width,height));
+                MipImage = image = Driver->createImage(ECOLOR_FORMAT::ECF_A8R8G8B8, core::dimension2du(width,height));
             }
             else
-                Image = image = Driver->createImage(ECF_A8R8G8B8, ImageSize);
-            ColorFormat = ECF_A8R8G8B8;
+                Image = image = Driver->createImage(ECOLOR_FORMAT::ECF_A8R8G8B8, ImageSize);
+            ColorFormat = ECOLOR_FORMAT::ECF_A8R8G8B8;
         }
         if (!image)
             return 0;
@@ -525,7 +525,7 @@ void COpenGLTexture::unlock()
     if (Image)
         ColorFormat=Image->getColorFormat();
     else
-        ColorFormat=ECF_A8R8G8B8;
+        ColorFormat= ECOLOR_FORMAT::ECF_A8R8G8B8;
 }
 
 
@@ -675,7 +675,7 @@ COpenGLFBOTexture::COpenGLFBOTexture(const core::dimension2d<u32>& size,
     ImageSize = size;
     TextureSize = size;
 
-    if (ECF_UNKNOWN == format)
+    if (ECOLOR_FORMAT::ECF_UNKNOWN == format)
         format = getBestColorFormat(driver->getColorFormat());
 
     ColorFormat = format;

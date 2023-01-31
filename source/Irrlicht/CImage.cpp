@@ -107,13 +107,13 @@ u32 CImage::getRedMask() const
 {
     switch(Format)
     {
-    case ECF_A1R5G5B5:
+    case ECOLOR_FORMAT::ECF_A1R5G5B5:
         return 0x1F<<10;
-    case ECF_R5G6B5:
+    case ECOLOR_FORMAT::ECF_R5G6B5:
         return 0x1F<<11;
-    case ECF_R8G8B8:
+    case ECOLOR_FORMAT::ECF_R8G8B8:
         return 0x00FF0000;
-    case ECF_A8R8G8B8:
+    case ECOLOR_FORMAT::ECF_A8R8G8B8:
         return 0x00FF0000;
     default:
         return 0x0;
@@ -126,13 +126,13 @@ u32 CImage::getGreenMask() const
 {
     switch(Format)
     {
-    case ECF_A1R5G5B5:
+    case ECOLOR_FORMAT::ECF_A1R5G5B5:
         return 0x1F<<5;
-    case ECF_R5G6B5:
+    case ECOLOR_FORMAT::ECF_R5G6B5:
         return 0x3F<<5;
-    case ECF_R8G8B8:
+    case ECOLOR_FORMAT::ECF_R8G8B8:
         return 0x0000FF00;
-    case ECF_A8R8G8B8:
+    case ECOLOR_FORMAT::ECF_A8R8G8B8:
         return 0x0000FF00;
     default:
         return 0x0;
@@ -145,13 +145,13 @@ u32 CImage::getBlueMask() const
 {
     switch(Format)
     {
-    case ECF_A1R5G5B5:
+    case ECOLOR_FORMAT::ECF_A1R5G5B5:
         return 0x1F;
-    case ECF_R5G6B5:
+    case ECOLOR_FORMAT::ECF_R5G6B5:
         return 0x1F;
-    case ECF_R8G8B8:
+    case ECOLOR_FORMAT::ECF_R8G8B8:
         return 0x000000FF;
-    case ECF_A8R8G8B8:
+    case ECOLOR_FORMAT::ECF_A8R8G8B8:
         return 0x000000FF;
     default:
         return 0x0;
@@ -164,13 +164,13 @@ u32 CImage::getAlphaMask() const
 {
     switch(Format)
     {
-    case ECF_A1R5G5B5:
+    case ECOLOR_FORMAT::ECF_A1R5G5B5:
         return 0x1<<15;
-    case ECF_R5G6B5:
+    case ECOLOR_FORMAT::ECF_R5G6B5:
         return 0x0;
-    case ECF_R8G8B8:
+    case ECOLOR_FORMAT::ECF_R8G8B8:
         return 0x0;
-    case ECF_A8R8G8B8:
+    case ECOLOR_FORMAT::ECF_A8R8G8B8:
         return 0xFF000000;
     default:
         return 0x0;
@@ -186,19 +186,19 @@ void CImage::setPixel(u32 x, u32 y, const SColor &color, bool blend)
 
     switch(Format)
     {
-        case ECF_A1R5G5B5:
+        case ECOLOR_FORMAT::ECF_A1R5G5B5:
         {
             u16 * dest = (u16*) (Data + ( y * Pitch ) + ( x << 1 ));
             *dest = video::A8R8G8B8toA1R5G5B5( color.color );
         } break;
 
-        case ECF_R5G6B5:
+        case ECOLOR_FORMAT::ECF_R5G6B5:
         {
             u16 * dest = (u16*) (Data + ( y * Pitch ) + ( x << 1 ));
             *dest = video::A8R8G8B8toR5G6B5( color.color );
         } break;
 
-        case ECF_R8G8B8:
+        case ECOLOR_FORMAT::ECF_R8G8B8:
         {
             u8* dest = Data + ( y * Pitch ) + ( x * 3 );
             dest[0] = (u8)color.getRed();
@@ -206,7 +206,7 @@ void CImage::setPixel(u32 x, u32 y, const SColor &color, bool blend)
             dest[2] = (u8)color.getBlue();
         } break;
 
-        case ECF_A8R8G8B8:
+        case ECOLOR_FORMAT::ECF_A8R8G8B8:
         {
             u32 * dest = (u32*) (Data + ( y * Pitch ) + ( x << 2 ));
             *dest = blend ? PixelBlend32 ( *dest, color.color ) : color.color;
@@ -227,13 +227,13 @@ SColor CImage::getPixel(u32 x, u32 y) const
 
     switch(Format)
     {
-    case ECF_A1R5G5B5:
+    case ECOLOR_FORMAT::ECF_A1R5G5B5:
         return A1R5G5B5toA8R8G8B8(((u16*)Data)[y*Size.Width + x]);
-    case ECF_R5G6B5:
+    case ECOLOR_FORMAT::ECF_R5G6B5:
         return R5G6B5toA8R8G8B8(((u16*)Data)[y*Size.Width + x]);
-    case ECF_A8R8G8B8:
+    case ECOLOR_FORMAT::ECF_A8R8G8B8:
         return ((u32*)Data)[y*Size.Width + x];
-    case ECF_R8G8B8:
+    case ECOLOR_FORMAT::ECF_R8G8B8:
         {
             u8* p = Data+(y*3)*Size.Width + (x*3);
             return SColor(255,p[0],p[1],p[2]);
@@ -393,18 +393,18 @@ void CImage::fill(const SColor &color)
 
     switch ( Format )
     {
-        case ECF_A1R5G5B5:
+        case ECOLOR_FORMAT::ECF_A1R5G5B5:
             c = color.toA1R5G5B5();
             c |= c << 16;
             break;
-        case ECF_R5G6B5:
+        case ECOLOR_FORMAT::ECF_R5G6B5:
             c = video::A8R8G8B8toR5G6B5( color.color );
             c |= c << 16;
             break;
-        case ECF_A8R8G8B8:
+        case ECOLOR_FORMAT::ECF_A8R8G8B8:
             c = color.color;
             break;
-        case ECF_R8G8B8:
+        case ECOLOR_FORMAT::ECF_R8G8B8:
         {
             u8 rgb[3];
             CColorConverter::convert_A8R8G8B8toR8G8B8(&color, 1, rgb);

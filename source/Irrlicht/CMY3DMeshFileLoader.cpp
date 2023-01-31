@@ -824,7 +824,7 @@ video::ITexture* CMY3DMeshFileLoader::readEmbeddedLightmap(io::IReadFile* file, 
     {
         // 24 bit lightmap format
         light_img = SceneManager->getVideoDriver()->createImageFromData(
-        video::ECF_R8G8B8,
+        video::ECOLOR_FORMAT::ECF_R8G8B8,
         core::dimension2d<u32>(texDataHeader.Width, texDataHeader.Height),
             data, true);
     }
@@ -832,7 +832,7 @@ video::ITexture* CMY3DMeshFileLoader::readEmbeddedLightmap(io::IReadFile* file, 
     {
         // 16 bit lightmap format
         light_img = SceneManager->getVideoDriver()->createImageFromData(
-            video::ECF_A1R5G5B5,
+            video::ECOLOR_FORMAT::ECF_A1R5G5B5,
             core::dimension2d<u32>(texDataHeader.Width, texDataHeader.Height),
             data, true);
     }

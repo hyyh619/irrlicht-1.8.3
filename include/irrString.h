@@ -29,13 +29,13 @@ characters are truncated to 8-bit ASCII/Latin-1 characters, discarding all
 other information in the wchar_t.
 */
 
-enum eLocaleID
+enum class eLocaleID
 {
     IRR_LOCALE_ANSI = 0,
     IRR_LOCALE_GERMAN = 1
 };
 
-static eLocaleID locale_current = IRR_LOCALE_ANSI;
+static eLocaleID locale_current = eLocaleID::IRR_LOCALE_ANSI;
 static inline void locale_set ( eLocaleID id ) noexcept
 {
     locale_current = id;
@@ -46,8 +46,8 @@ static inline u32 locale_lower ( u32 x ) noexcept
 {
     switch ( locale_current )
     {
-        case IRR_LOCALE_GERMAN:
-        case IRR_LOCALE_ANSI:
+        case eLocaleID::IRR_LOCALE_GERMAN:
+        case eLocaleID::IRR_LOCALE_ANSI:
             break;
     }
     // ansi
@@ -59,8 +59,8 @@ static inline u32 locale_upper ( u32 x ) noexcept
 {
     switch ( locale_current )
     {
-        case IRR_LOCALE_GERMAN:
-        case IRR_LOCALE_ANSI:
+        case eLocaleID::IRR_LOCALE_GERMAN:
+        case eLocaleID::IRR_LOCALE_ANSI:
             break;
     }
 
@@ -301,7 +301,7 @@ public:
 
 
     //! Destructor
-    ~string() noexcept
+    ~string()
     {
         allocator.deallocate(array); // delete [] array;
     }
@@ -655,7 +655,7 @@ public:
             return *this;
 
         --used;
-        u32 len = other.size()+1;
+        const u32 len = other.size()+1;
 
         if (used + len > allocated)
             reallocate(used + len);
@@ -1335,7 +1335,7 @@ private:
         array = allocator.allocate(new_size); //new T[new_size];
         allocated = new_size;
 
-        u32 amount = used < new_size ? used : new_size;
+        const u32 amount = used < new_size ? used : new_size;
         for (u32 i=0; i<amount; ++i)
             array[i] = old_array[i];
 

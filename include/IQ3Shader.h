@@ -184,6 +184,8 @@ namespace quake3
             case 2:
                 ret = false;
                 break;
+            default:
+                break;
         }
         return ret;
     }
@@ -207,6 +209,8 @@ namespace quake3
                 break;
             case 1:
                 ret = video::ECFN_EQUAL;
+                break;
+            default:
                 break;
         }
         return ret;
@@ -274,6 +278,8 @@ namespace quake3
                         blendfunc.isTransparent = 1;
                         resolved = 1;
                         break;
+                    default:
+                        break;
                 } break;
 
             case video::EBF_ONE:
@@ -292,6 +298,8 @@ namespace quake3
                         blendfunc.isTransparent = 1;
                         resolved = 1;
                         break;
+                    default:
+                        break;
                 } break;
 
             case video::EBF_SRC_ALPHA:
@@ -303,6 +311,8 @@ namespace quake3
                         blendfunc.param0 = 1.f/255.f;
                         blendfunc.isTransparent = 1;
                         resolved = 1;
+                        break;
+                    default:
                         break;
                 } break;
 
@@ -340,7 +350,8 @@ namespace quake3
                 blendfunc.isTransparent = 1;
                 resolved = 1;
                 break;
-
+            default:
+                break;
         }
 
         // use the generic blender
@@ -412,9 +423,7 @@ namespace quake3
         SAWTOOTH_INVERSE    = WAVE_MODIFIER_FUNCTION + 6,
         NOISE                = WAVE_MODIFIER_FUNCTION + 7,
 
-
         UNKNOWN                = -2
-
     };
 
     struct SModifierFunction
@@ -803,7 +812,7 @@ namespace quake3
                     {
                         core::dimension2du s ( 2, 2 );
                         u32 image[4] = { 0xFFFFFFFF, 0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF };
-                        video::IImage* w = driver->createImageFromData ( video::ECF_A8R8G8B8, s,&image );
+                        video::IImage* w = driver->createImageFromData ( video::ECOLOR_FORMAT::ECF_A8R8G8B8, s,&image );
                         texture = driver->addTexture( "$whiteimage", w );
                         w->drop ();
                     }
@@ -817,7 +826,7 @@ namespace quake3
                     {
                         core::dimension2du s ( 2, 2 );
                         u32 image[4] = { 0xFFFF0000, 0xFFFF0000,0xFFFF0000,0xFFFF0000 };
-                        video::IImage* w = driver->createImageFromData ( video::ECF_A8R8G8B8, s,&image );
+                        video::IImage* w = driver->createImageFromData ( video::ECOLOR_FORMAT::ECF_A8R8G8B8, s,&image );
                         texture = driver->addTexture( "$redimage", w );
                         w->drop ();
                     }
@@ -830,7 +839,7 @@ namespace quake3
                     {
                         core::dimension2du s ( 2, 2 );
                         u32 image[4] = { 0xFF0000FF, 0xFF0000FF,0xFF0000FF,0xFF0000FF };
-                        video::IImage* w = driver->createImageFromData ( video::ECF_A8R8G8B8, s,&image );
+                        video::IImage* w = driver->createImageFromData ( video::ECOLOR_FORMAT::ECF_A8R8G8B8, s,&image );
                         texture = driver->addTexture( "$blueimage", w );
                         w->drop ();
                     }
@@ -843,7 +852,7 @@ namespace quake3
                     {
                         core::dimension2du s ( 2, 2 );
                         u32 image[4] = { 0xFFFFFFFF, 0xFF000000,0xFF000000,0xFFFFFFFF };
-                        video::IImage* w = driver->createImageFromData ( video::ECF_A8R8G8B8, s,&image );
+                        video::IImage* w = driver->createImageFromData ( video::ECOLOR_FORMAT::ECF_A8R8G8B8, s,&image );
                         texture = driver->addTexture( "$checkerimage", w );
                         w->drop ();
                     }

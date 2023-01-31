@@ -2814,7 +2814,7 @@ video::ITexture* CColladaFileLoader::getTextureFromImage(core::stringc uri, SCol
                         ++ptrdest;
                         ptrsrc += 4;
                     }
-                    video::IImage* img = driver->createImageFromData(video::ECF_A8R8G8B8, Images[i].Dimension, data, true, true);
+                    video::IImage* img = driver->createImageFromData(video::ECOLOR_FORMAT::ECF_A8R8G8B8, Images[i].Dimension, data, true, true);
                     video::ITexture* tex = driver->addTexture((CurrentlyLoadingMesh+"#"+Images[i].Id).c_str(), img);
                     img->drop();
                     return tex;

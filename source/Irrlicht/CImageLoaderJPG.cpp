@@ -262,7 +262,7 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
     IImage* image = 0;
     if (useCMYK)
     {
-        image = new CImage(ECF_R8G8B8,
+        image = new CImage(ECOLOR_FORMAT::ECF_R8G8B8,
                 core::dimension2d<u32>(width, height));
         const u32 size = 3*width*height;
         u8* data = (u8*)image->lock();
@@ -283,7 +283,7 @@ IImage* CImageLoaderJPG::loadImage(io::IReadFile* file) const
         delete [] output;
     }
     else
-        image = new CImage(ECF_R8G8B8,
+        image = new CImage(ECOLOR_FORMAT::ECF_R8G8B8,
                 core::dimension2d<u32>(width, height), output);
 
     delete [] input;
