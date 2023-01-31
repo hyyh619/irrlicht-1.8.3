@@ -12,130 +12,127 @@
 
 namespace irr
 {
-namespace video
-{
-
+    namespace video
+    {
 /*!
     interface for a Video Driver dependent Texture.
-*/
-class CSoftwareTexture2 : public ITexture
-{
+ */
+        class CSoftwareTexture2 : public ITexture
+        {
 public:
 
-    //! constructor
-    enum eTex2Flags
-    {
-        GEN_MIPMAP    = 1,
-        IS_RENDERTARGET    = 2,
-        NP2_SIZE    = 4,
-        HAS_ALPHA    = 8
-    };
-    CSoftwareTexture2(IImage* surface, const io::path& name, u32 flags, void* mipmapData=0);
+            // ! constructor
+            enum eTex2Flags
+            {
+                GEN_MIPMAP      = 1,
+                IS_RENDERTARGET = 2,
+                NP2_SIZE        = 4,
+                HAS_ALPHA       = 8
+            };
+            CSoftwareTexture2(IImage *surface, const io::path &name, u32 flags, void *mipmapData = 0);
 
-    //! destructor
-    virtual ~CSoftwareTexture2();
+            // ! destructor
+            virtual ~CSoftwareTexture2();
 
-    //! lock function
-    virtual void* lock(E_TEXTURE_LOCK_MODE mode=ETLM_READ_WRITE, u32 mipmapLevel=0)
-    {
-        if (Flags & GEN_MIPMAP)
-            MipMapLOD=mipmapLevel;
-        return MipMap[MipMapLOD]->lock();
-    }
+            // ! lock function
+            virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel = 0)
+            {
+                if (Flags & GEN_MIPMAP)
+                    MipMapLOD = mipmapLevel;
 
-    //! unlock function
-    virtual void unlock()
-    {
-        MipMap[MipMapLOD]->unlock();
-    }
+                return MipMap[MipMapLOD]->lock();
+            }
 
-    //! Returns original size of the texture.
-    virtual const core::dimension2d<u32>& getOriginalSize() const
-    {
-        //return MipMap[0]->getDimension();
-        return OrigSize;
-    }
+            // ! unlock function
+            virtual void unlock()
+            {
+                MipMap[MipMapLOD]->unlock();
+            }
 
-    //! Returns the size of the largest mipmap.
-    f32 getLODFactor( const f32 texArea ) const
-    {
-        return OrigImageDataSizeInPixels * texArea;
-        //return MipMap[0]->getImageDataSizeInPixels () * texArea;
-    }
+            // ! Returns original size of the texture.
+            virtual const core::dimension2d<u32>&getOriginalSize() const
+            {
+                // return MipMap[0]->getDimension();
+                return OrigSize;
+            }
 
-    //! Returns (=size) of the texture.
-    virtual const core::dimension2d<u32>& getSize() const
-    {
-        return MipMap[MipMapLOD]->getDimension();
-    }
+            // ! Returns the size of the largest mipmap.
+            f32 getLODFactor(const f32 texArea) const
+            {
+                return OrigImageDataSizeInPixels * texArea;
+                // return MipMap[0]->getImageDataSizeInPixels () * texArea;
+            }
 
-    //! returns unoptimized surface
-    virtual CImage* getImage() const
-    {
-        return MipMap[0];
-    }
+            // ! Returns (=size) of the texture.
+            virtual const core::dimension2d<u32>&getSize() const
+            {
+                return MipMap[MipMapLOD]->getDimension();
+            }
 
-    //! returns texture surface
-    virtual CImage* getTexture() const
-    {
-        return MipMap[MipMapLOD];
-    }
+            // ! returns unoptimized surface
+            virtual CImage* getImage() const
+            {
+                return MipMap[0];
+            }
+
+            // ! returns texture surface
+            virtual CImage* getTexture() const
+            {
+                return MipMap[MipMapLOD];
+            }
 
 
-    //! returns driver type of texture (=the driver, who created the texture)
-    virtual E_DRIVER_TYPE getDriverType() const
-    {
-        return EDT_BURNINGSVIDEO;
-    }
+            // ! returns driver type of texture (=the driver, who created the texture)
+            virtual E_DRIVER_TYPE getDriverType() const
+            {
+                return EDT_BURNINGSVIDEO;
+            }
 
-    //! returns color format of texture
-    virtual ECOLOR_FORMAT getColorFormat() const
-    {
-        return BURNINGSHADER_COLOR_FORMAT;
-    }
+            // ! returns color format of texture
+            virtual ECOLOR_FORMAT getColorFormat() const
+            {
+                return BURNINGSHADER_COLOR_FORMAT;
+            }
 
-    //! returns pitch of texture (in bytes)
-    virtual u32 getPitch() const
-    {
-        return MipMap[MipMapLOD]->getPitch();
-    }
+            // ! returns pitch of texture (in bytes)
+            virtual u32 getPitch() const
+            {
+                return MipMap[MipMapLOD]->getPitch();
+            }
 
-    //! Regenerates the mip map levels of the texture. Useful after locking and
-    //! modifying the texture
-    virtual void regenerateMipMapLevels(void* mipmapData=0);
+            // ! Regenerates the mip map levels of the texture. Useful after locking and
+            // ! modifying the texture
+            virtual void regenerateMipMapLevels(void *mipmapData = 0);
 
-    //! support mipmaps
-    virtual bool hasMipMaps() const
-    {
-        return (Flags & GEN_MIPMAP ) != 0;
-    }
+            // ! support mipmaps
+            virtual bool hasMipMaps() const
+            {
+                return (Flags & GEN_MIPMAP) != 0;
+            }
 
-    //! Returns if the texture has an alpha channel
-    virtual bool hasAlpha() const
-    {
-        return (Flags & HAS_ALPHA ) != 0;
-    }
+            // ! Returns if the texture has an alpha channel
+            virtual bool hasAlpha() const
+            {
+                return (Flags & HAS_ALPHA) != 0;
+            }
 
-    //! is a render target
-    virtual bool isRenderTarget() const
-    {
-        return (Flags & IS_RENDERTARGET) != 0;
-    }
+            // ! is a render target
+            virtual bool isRenderTarget() const
+            {
+                return (Flags & IS_RENDERTARGET) != 0;
+            }
 
 private:
-    f32 OrigImageDataSizeInPixels;
-    core::dimension2d<u32> OrigSize;
+            f32                    OrigImageDataSizeInPixels;
+            core::dimension2d<u32> OrigSize;
 
-    CImage * MipMap[SOFTWARE_DRIVER_2_MIPMAPPING_MAX];
+            CImage *MipMap[SOFTWARE_DRIVER_2_MIPMAPPING_MAX];
 
-    u32 MipMapLOD;
-    u32 Flags;
-    ECOLOR_FORMAT OriginalFormat;
-};
-
-
-} // end namespace video
+            u32           MipMapLOD;
+            u32           Flags;
+            ECOLOR_FORMAT OriginalFormat;
+        };
+    } // end namespace video
 } // end namespace irr
 
 #endif
-

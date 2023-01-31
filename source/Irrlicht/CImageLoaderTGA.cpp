@@ -131,6 +131,8 @@ IImage* CImageLoaderTGA::loadImage(io::IReadFile* file) const
             case 32:
                 CColorConverter::convert_B8G8R8A8toA8R8G8B8(colorMap, header.ColorMapLength, palette);
                 break;
+            default:
+                break;
         }
         delete [] colorMap;
     }
