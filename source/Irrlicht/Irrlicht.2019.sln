@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "24.CursorControl", "..\..\e
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "23.SMeshHandling", "..\..\examples\23.SMeshHandling\SMeshHandling_vc12.vcxproj", "{6AEC2AA2-C9FF-4B7D-B07A-94A9D34B41D7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "22.MaterialViewer", "..\..\examples\22.MaterialViewer\MaterialViewer_vc12.vcxproj", "{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -203,6 +205,30 @@ Global
 		{6AEC2AA2-C9FF-4B7D-B07A-94A9D34B41D7}.Static lib - Release|Win32.Build.0 = Release|Win32
 		{6AEC2AA2-C9FF-4B7D-B07A-94A9D34B41D7}.Static lib - Release|x64.ActiveCfg = Release|x64
 		{6AEC2AA2-C9FF-4B7D-B07A-94A9D34B41D7}.Static lib - Release|x64.Build.0 = Release|x64
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Debug|Win32.Build.0 = Debug|Win32
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Debug|x64.ActiveCfg = Debug|x64
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Debug|x64.Build.0 = Debug|x64
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Release - Fast FPU|Win32.ActiveCfg = Release|Win32
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Release - Fast FPU|Win32.Build.0 = Release|Win32
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Release - Fast FPU|x64.ActiveCfg = Release|x64
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Release - Fast FPU|x64.Build.0 = Release|x64
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Release|Win32.ActiveCfg = Release|Win32
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Release|Win32.Build.0 = Release|Win32
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Release|x64.ActiveCfg = Release|x64
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Release|x64.Build.0 = Release|x64
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Debug|Win32.ActiveCfg = Debug|Win32
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Debug|Win32.Build.0 = Debug|Win32
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Debug|x64.ActiveCfg = Debug|x64
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Debug|x64.Build.0 = Debug|x64
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Release - Fast FPU|Win32.ActiveCfg = Release|Win32
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Release - Fast FPU|Win32.Build.0 = Release|Win32
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Release - Fast FPU|x64.ActiveCfg = Release|x64
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Release - Fast FPU|x64.Build.0 = Release|x64
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Release|Win32.ActiveCfg = Release|Win32
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Release|Win32.Build.0 = Release|Win32
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Release|x64.ActiveCfg = Release|x64
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA}.Static lib - Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -214,6 +240,7 @@ Global
 		{8FDA260E-EF27-4F8C-8720-7AF707DD0D9E} = {6D7279F0-4E8B-40B4-B04F-784221C7DA0E}
 		{02B67A37-50E1-49DB-BECF-905BC029C2FE} = {6D7279F0-4E8B-40B4-B04F-784221C7DA0E}
 		{6AEC2AA2-C9FF-4B7D-B07A-94A9D34B41D7} = {6D7279F0-4E8B-40B4-B04F-784221C7DA0E}
+		{4E6C2F8D-BA92-4C5B-96FD-72D4FE8BD7FA} = {6D7279F0-4E8B-40B4-B04F-784221C7DA0E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E0862258-42AB-4AD8-90CF-383E51D058B8}

@@ -123,7 +123,7 @@ namespace irr
             u8  *p        = bmpData;
             u8  *newBmp   = new u8[lineWidth * height];
             u8  *d        = newBmp;
-            u8  *destEnd  = newBmp + lineWidth * height;
+            const u8  *destEnd  = newBmp + lineWidth * height;
             s32 line      = 0;
             s32 shift     = 4;
 
