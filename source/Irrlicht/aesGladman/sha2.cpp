@@ -350,39 +350,39 @@ sha2_void sha256(unsigned char hval[], const unsigned char data[], unsigned long
 const sha2_64t  k512[80] = 
 {
     n_u64(428a2f98d728ae22), n_u64(7137449123ef65cd), 
-    n_u64(b5c0fbcfec4d3b2f), n_u64(e9b5dba58189dbbc),
+    static_cast<sha2_64t>(n_u64(b5c0fbcfec4d3b2f)), static_cast<sha2_64t>(n_u64(e9b5dba58189dbbc)),
     n_u64(3956c25bf348b538), n_u64(59f111f1b605d019),
-    n_u64(923f82a4af194f9b), n_u64(ab1c5ed5da6d8118),
-    n_u64(d807aa98a3030242), n_u64(12835b0145706fbe),
+    static_cast<sha2_64t>(n_u64(923f82a4af194f9b)), static_cast<sha2_64t>(n_u64(ab1c5ed5da6d8118)),
+    static_cast<sha2_64t>(n_u64(d807aa98a3030242)), n_u64(12835b0145706fbe),
     n_u64(243185be4ee4b28c), n_u64(550c7dc3d5ffb4e2),
-    n_u64(72be5d74f27b896f), n_u64(80deb1fe3b1696b1),
-    n_u64(9bdc06a725c71235), n_u64(c19bf174cf692694),
-    n_u64(e49b69c19ef14ad2), n_u64(efbe4786384f25e3),
+    n_u64(72be5d74f27b896f), static_cast<sha2_64t>(n_u64(80deb1fe3b1696b1)),
+    static_cast<sha2_64t>(n_u64(9bdc06a725c71235)), static_cast<sha2_64t>(n_u64(c19bf174cf692694)),
+    static_cast<sha2_64t>(n_u64(e49b69c19ef14ad2)), static_cast<sha2_64t>(n_u64(efbe4786384f25e3)),
     n_u64(0fc19dc68b8cd5b5), n_u64(240ca1cc77ac9c65),
     n_u64(2de92c6f592b0275), n_u64(4a7484aa6ea6e483),
     n_u64(5cb0a9dcbd41fbd4), n_u64(76f988da831153b5),
-    n_u64(983e5152ee66dfab), n_u64(a831c66d2db43210),
-    n_u64(b00327c898fb213f), n_u64(bf597fc7beef0ee4),
-    n_u64(c6e00bf33da88fc2), n_u64(d5a79147930aa725),
+    static_cast<sha2_64t>(n_u64(983e5152ee66dfab)), static_cast<sha2_64t>(n_u64(a831c66d2db43210)),
+    static_cast<sha2_64t>(n_u64(b00327c898fb213f)), static_cast<sha2_64t>(n_u64(bf597fc7beef0ee4)),
+    static_cast<sha2_64t>(n_u64(c6e00bf33da88fc2)), static_cast<sha2_64t>(n_u64(d5a79147930aa725)),
     n_u64(06ca6351e003826f), n_u64(142929670a0e6e70),
     n_u64(27b70a8546d22ffc), n_u64(2e1b21385c26c926),
     n_u64(4d2c6dfc5ac42aed), n_u64(53380d139d95b3df),
     n_u64(650a73548baf63de), n_u64(766a0abb3c77b2a8),
-    n_u64(81c2c92e47edaee6), n_u64(92722c851482353b),
-    n_u64(a2bfe8a14cf10364), n_u64(a81a664bbc423001),
-    n_u64(c24b8b70d0f89791), n_u64(c76c51a30654be30),
-    n_u64(d192e819d6ef5218), n_u64(d69906245565a910),
-    n_u64(f40e35855771202a), n_u64(106aa07032bbd1b8),
+    static_cast<sha2_64t>(n_u64(81c2c92e47edaee6)), static_cast<sha2_64t>(n_u64(92722c851482353b)),
+    static_cast<sha2_64t>(n_u64(a2bfe8a14cf10364)), static_cast<sha2_64t>(n_u64(a81a664bbc423001)),
+    static_cast<sha2_64t>(n_u64(c24b8b70d0f89791)), static_cast<sha2_64t>(n_u64(c76c51a30654be30)),
+    static_cast<sha2_64t>(n_u64(d192e819d6ef5218)), static_cast<sha2_64t>(n_u64(d69906245565a910)),
+    static_cast<sha2_64t>(n_u64(f40e35855771202a)), n_u64(106aa07032bbd1b8),
     n_u64(19a4c116b8d2d0c8), n_u64(1e376c085141ab53),
     n_u64(2748774cdf8eeb99), n_u64(34b0bcb5e19b48a8),
     n_u64(391c0cb3c5c95a63), n_u64(4ed8aa4ae3418acb),
     n_u64(5b9cca4f7763e373), n_u64(682e6ff3d6b2b8a3),
     n_u64(748f82ee5defb2fc), n_u64(78a5636f43172f60),
-    n_u64(84c87814a1f0ab72), n_u64(8cc702081a6439ec),
-    n_u64(90befffa23631e28), n_u64(a4506cebde82bde9),
-    n_u64(bef9a3f7b2c67915), n_u64(c67178f2e372532b),
-    n_u64(ca273eceea26619c), n_u64(d186b8c721c0c207),
-    n_u64(eada7dd6cde0eb1e), n_u64(f57d4f7fee6ed178),
+    static_cast<sha2_64t>(n_u64(84c87814a1f0ab72)), static_cast<sha2_64t>(n_u64(8cc702081a6439ec)),
+    static_cast<sha2_64t>(n_u64(90befffa23631e28)), static_cast<sha2_64t>(n_u64(a4506cebde82bde9)),
+    static_cast<sha2_64t>(n_u64(bef9a3f7b2c67915)), static_cast<sha2_64t>(n_u64(c67178f2e372532b)),
+    static_cast<sha2_64t>(n_u64(ca273eceea26619c)), static_cast<sha2_64t>(n_u64(d186b8c721c0c207)),
+    static_cast<sha2_64t>(n_u64(eada7dd6cde0eb1e)), static_cast<sha2_64t>(n_u64(f57d4f7fee6ed178)),
     n_u64(06f067aa72176fba), n_u64(0a637dc5a2c898a6),
     n_u64(113f9804bef90dae), n_u64(1b710b35131c471b),
     n_u64(28db77f523047d84), n_u64(32caab7b40c72493),
@@ -441,15 +441,15 @@ sha2_void sha512_hash(const unsigned char data[], unsigned long len, sha512_ctx 
 
 static sha2_64t  m2[8] =
 {
-    n_u64(0000000000000000), n_u64(ff00000000000000), 
-    n_u64(ffff000000000000), n_u64(ffffff0000000000),
-    n_u64(ffffffff00000000), n_u64(ffffffffff000000),
-    n_u64(ffffffffffff0000), n_u64(ffffffffffffff00)
+    n_u64(0000000000000000), static_cast<sha2_64t>(n_u64(ff00000000000000)), 
+    static_cast<sha2_64t>(n_u64(ffff000000000000)), static_cast<sha2_64t>(n_u64(ffffff0000000000)),
+    static_cast<sha2_64t>(n_u64(ffffffff00000000)), static_cast<sha2_64t>(n_u64(ffffffffff000000)),
+    static_cast<sha2_64t>(n_u64(ffffffffffff0000)), static_cast<sha2_64t>(n_u64(ffffffffffffff00))
 };
 
 static sha2_64t  b2[8] =
 {
-    n_u64(8000000000000000), n_u64(0080000000000000), 
+    static_cast<sha2_64t>(n_u64(8000000000000000)), n_u64(0080000000000000), 
     n_u64(0000800000000000), n_u64(0000008000000000),
     n_u64(0000000080000000), n_u64(0000000000800000), 
     n_u64(0000000000008000), n_u64(0000000000000080)
@@ -507,10 +507,10 @@ static void sha_end(unsigned char hval[], sha512_ctx ctx[1], const unsigned int 
 
 const sha2_64t  i384[80] = 
 {
-    n_u64(cbbb9d5dc1059ed8), n_u64(629a292a367cd507),
-    n_u64(9159015a3070dd17), n_u64(152fecd8f70e5939),
-    n_u64(67332667ffc00b31), n_u64(8eb44a8768581511),
-    n_u64(db0c2e0d64f98fa7), n_u64(47b5481dbefa4fa4)
+    static_cast<sha2_64t>(n_u64(cbbb9d5dc1059ed8)), n_u64(629a292a367cd507),
+    static_cast<sha2_64t>(n_u64(9159015a3070dd17)), n_u64(152fecd8f70e5939),
+    n_u64(67332667ffc00b31), static_cast<sha2_64t>(n_u64(8eb44a8768581511)),
+    static_cast<sha2_64t>(n_u64(db0c2e0d64f98fa7)), n_u64(47b5481dbefa4fa4)
 };
 
 sha2_void sha384_begin(sha384_ctx ctx[1])
@@ -538,9 +538,9 @@ sha2_void sha384(unsigned char hval[], const unsigned char data[], unsigned long
 
 const sha2_64t  i512[80] = 
 {
-    n_u64(6a09e667f3bcc908), n_u64(bb67ae8584caa73b),
-    n_u64(3c6ef372fe94f82b), n_u64(a54ff53a5f1d36f1),
-    n_u64(510e527fade682d1), n_u64(9b05688c2b3e6c1f),
+    n_u64(6a09e667f3bcc908), static_cast<sha2_64t>(n_u64(bb67ae8584caa73b)),
+    n_u64(3c6ef372fe94f82b), static_cast<sha2_64t>(n_u64(a54ff53a5f1d36f1)),
+    n_u64(510e527fade682d1), static_cast<sha2_64t>(n_u64(9b05688c2b3e6c1f)),
     n_u64(1f83d9abfb41bd6b), n_u64(5be0cd19137e2179)
 };
 

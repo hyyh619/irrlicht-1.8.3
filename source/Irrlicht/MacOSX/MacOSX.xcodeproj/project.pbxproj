@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -4376,9 +4376,11 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1520;
 			};
 			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "MacOSX" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -5596,11 +5598,12 @@
 		09022C600EA0E97F00CD54EE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -5619,7 +5622,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = GUIEditor_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -5629,12 +5632,12 @@
 		09022C610EA0E97F00CD54EE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -5653,10 +5656,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = GUIEditor;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -5665,12 +5667,12 @@
 		0946CCB20EC99BBE00D945A5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -5684,7 +5686,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = MouseAndJoystick_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -5694,13 +5696,12 @@
 		0946CCB30EC99BBE00D945A5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -5714,10 +5715,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = MouseAndJoystick;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -5726,12 +5726,13 @@
 		09F649010D2CDED9001E0599 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Debug";
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -5751,7 +5752,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = HelloWorld_dbg;
 				SYMROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				WRAPPER_EXTENSION = app;
@@ -5762,13 +5763,13 @@
 		09F649020D2CDED9001E0599 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Release";
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -5788,10 +5789,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = HelloWorld;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
@@ -5801,11 +5801,12 @@
 		09F6493C0D2CE03E001E0599 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -5824,7 +5825,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = LoadIrrFile_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -5834,12 +5835,12 @@
 		09F6493D0D2CE03E001E0599 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -5858,10 +5859,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = LoadIrrFile;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -5870,11 +5870,12 @@
 		09F649630D2CE206001E0599 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -5893,7 +5894,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = Quake3Shader_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -5903,12 +5904,12 @@
 		09F649640D2CE206001E0599 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -5927,10 +5928,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = Quake3Shader;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -5939,12 +5939,12 @@
 		0E2E3CFA1103E294002DE8D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -5958,7 +5958,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = SplitScreen_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -5968,13 +5968,12 @@
 		0E2E3CFB1103E294002DE8D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -5988,10 +5987,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = SplitScreen;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6000,12 +5998,12 @@
 		0E2E3D3A1103E3F4002DE8D7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6019,7 +6017,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = ManagedLights_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -6029,13 +6027,12 @@
 		0E2E3D3B1103E3F4002DE8D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6049,10 +6046,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = ManagedLights;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6061,10 +6057,12 @@
 		1DEB921F08733DC00010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Debug";
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				GCC_C_LANGUAGE_STANDARD = c17;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -6080,7 +6078,10 @@
 		1DEB922008733DC00010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Release";
+				DEAD_CODE_STRIPPING = YES;
+				GCC_C_LANGUAGE_STANDARD = c17;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6096,15 +6097,44 @@
 		1DEB922308733DC00010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++23";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = c17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = ../../../include;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DMACOSX",
 					"-D_DEBUG",
 				);
-				PREBINDING = NO;
 				SDKROOT = "";
 			};
 			name = Debug;
@@ -6112,18 +6142,45 @@
 		1DEB922408733DC00010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++23";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = c17;
 				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = ../../../include;
 				INSTALL_MODE_FLAG = "a+rwx";
 				OTHER_CFLAGS = "-DMACOSX";
-				PREBINDING = NO;
 				SDKROOT = "";
 			};
 			name = Release;
@@ -6132,12 +6189,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
+				GCC_C_LANGUAGE_STANDARD = c17;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6158,8 +6217,8 @@
 					"-read_only_relocs",
 					suppress,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.irrlichtengine.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = IrrFramework;
 				SHARED_PRECOMPS_DIR = "";
 			};
@@ -6169,13 +6228,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
+				GCC_C_LANGUAGE_STANDARD = c17;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6195,8 +6256,8 @@
 					"-read_only_relocs",
 					suppress,
 				);
-				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.irrlichtengine.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = IrrFramework;
 				SHARED_PRECOMPS_DIR = "";
 				ZERO_LINK = NO;
@@ -6206,11 +6267,12 @@
 		B81CFE0D097FD9F50057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6224,7 +6286,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = 2DGraphics_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -6234,12 +6296,12 @@
 		B81CFE0E097FD9F50057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6253,10 +6315,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = 2DGraphics;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6265,11 +6326,12 @@
 		B81CFE8E097FDDE20057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6283,7 +6345,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = Collision_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -6293,12 +6355,12 @@
 		B81CFE8F097FDDE20057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6312,10 +6374,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = Collision;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6324,11 +6385,12 @@
 		B81CFEB0097FDE900057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6342,7 +6404,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = PerPixelLighting_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -6352,12 +6414,12 @@
 		B81CFEB1097FDE900057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6372,10 +6434,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = PerPixelLighting;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6384,11 +6445,12 @@
 		B81CFECE097FDF020057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6402,7 +6464,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = TerrainRendering_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -6412,12 +6474,12 @@
 		B81CFECF097FDF020057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6431,10 +6493,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = TerrainRendering;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6443,11 +6504,12 @@
 		B81CFEF4097FE05F0057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6461,7 +6523,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = SpecialFx_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -6471,12 +6533,12 @@
 		B81CFEF5097FE05F0057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6490,10 +6552,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = SpecialFx;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6502,11 +6563,12 @@
 		B81CFF13097FE13E0057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6520,7 +6582,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = UserInterface_dbg;
 				SDKROOT = "";
 				WRAPPER_EXTENSION = app;
@@ -6531,12 +6593,12 @@
 		B81CFF14097FE13E0057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6550,11 +6612,10 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = UserInterface;
 				SDKROOT = "";
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6563,11 +6624,12 @@
 		B81CFF2A097FE1E00057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6581,7 +6643,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = CustomSceneNode_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -6591,12 +6653,12 @@
 		B81CFF2B097FE1E00057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6610,10 +6672,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = CustomSceneNode;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6622,13 +6683,13 @@
 		B81CFF3F097FE25F0057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Debug";
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6647,7 +6708,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = Quake3Map_dbg;
 				SDKROOT = "";
 				SYMROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
@@ -6659,14 +6720,13 @@
 		B81CFF40097FE25F0057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Release";
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6685,11 +6745,10 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = Quake3Map;
 				SDKROOT = "";
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
@@ -6699,11 +6758,12 @@
 		B81CFF56097FE3050057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6717,7 +6777,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = Shaders_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -6727,12 +6787,12 @@
 		B81CFF57097FE3050057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6746,10 +6806,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = Shaders;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6758,12 +6817,12 @@
 		B81CFF84097FE3DC0057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6777,7 +6836,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = Movement_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -6787,13 +6846,12 @@
 		B81CFF85097FE3DC0057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6807,10 +6865,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = Movement;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6819,12 +6876,12 @@
 		B81CFF9D097FE45E0057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6838,7 +6895,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = MeshViewer_dbg;
 				SDKROOT = "";
 				WRAPPER_EXTENSION = app;
@@ -6849,13 +6906,12 @@
 		B81CFF9E097FE45E0057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6869,11 +6925,10 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = MeshViewer;
 				SDKROOT = "";
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6882,11 +6937,12 @@
 		B81CFFBB097FE5F80057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6900,7 +6956,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = RenderToTexture_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -6910,12 +6966,12 @@
 		B81CFFBC097FE5F80057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -6929,10 +6985,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = RenderToTexture;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -6941,9 +6996,11 @@
 		B81CFFE9097FE9C30057C06F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Debug";
 				CONFIGURATION_TEMP_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6956,10 +7013,11 @@
 		B81CFFEA097FE9C30057C06F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CONFIGURATION_BUILD_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/Release";
 				CONFIGURATION_TEMP_DIR = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				DEAD_CODE_STRIPPING = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				OBJROOT = "/Users/yinghuang/development/hy_code/GameEngine/irrlicht-1.8.3/build";
 				PRODUCT_NAME = ALL;
@@ -6971,11 +7029,12 @@
 		B8DEF3610950229300FDEA7E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = ../../../bin/MacOSX;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -6989,7 +7048,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = Demo_dbg;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -6999,12 +7058,12 @@
 		B8DEF3620950229300FDEA7E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DSTROOT = ../../../bin/MacOSX;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -7018,10 +7077,9 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.irrlicht.${EXECUTABLE_NAME}";
 				PRODUCT_NAME = Demo;
 				SEPARATE_STRIP = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};

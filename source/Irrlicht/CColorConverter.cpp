@@ -173,7 +173,7 @@ namespace irr
                 out += lineWidth * height;
 
             u32          x;
-            register u32 c;
+            u32 c;
 
             for (u32 y = 0; y < (u32) height; ++y)
             {

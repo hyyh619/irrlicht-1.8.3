@@ -642,7 +642,7 @@ bool CIrrDeviceMacOSX::createWindow()
 						NSOpenGLPFASamples, (NSOpenGLPixelFormatAttribute)CreationParams.AntiAlias,
 						NSOpenGLPFAStencilSize, (NSOpenGLPixelFormatAttribute)(CreationParams.Stencilbuffer?1:0),
 						NSOpenGLPFADoubleBuffer,
-						(NSOpenGLPixelFormatAttribute)nil
+						(NSOpenGLPixelFormatAttribute)0
 					};
 
 					if (CreationParams.AntiAlias<2)
@@ -668,7 +668,7 @@ bool CIrrDeviceMacOSX::createWindow()
 						{
 							// Third try without Doublebuffer
 							os::Printer::log("No doublebuffering available.", ELL_WARNING);
-							windowattribs[14]=(NSOpenGLPixelFormatAttribute)nil;
+							windowattribs[14]=(NSOpenGLPixelFormatAttribute)0;
 						}
 
 						format = [[NSOpenGLPixelFormat alloc] initWithAttributes:windowattribs];
@@ -1551,21 +1551,21 @@ bool CIrrDeviceMacOSX::present(video::IImage* surface, void* windowId, core::rec
 		{
 			if(SoftwareRendererType == 2)
 			{
-				if (surface->getColorFormat() == video::ECF_A8R8G8B8)
+				if (surface->getColorFormat() == video::ECOLOR_FORMAT::ECF_A8R8G8B8)
 					video::CColorConverter::convert_A8R8G8B8toB8G8R8(srcdata, minWidth, destData);
-				else if (surface->getColorFormat() == video::ECF_A1R5G5B5)
+				else if (surface->getColorFormat() == video::ECOLOR_FORMAT::ECF_A1R5G5B5)
 					video::CColorConverter::convert_A1R5G5B5toB8G8R8(srcdata, minWidth, destData);
 				else
-					video::CColorConverter::convert_viaFormat(srcdata, surface->getColorFormat(), minWidth, destData, video::ECF_R8G8B8);
+					video::CColorConverter::convert_viaFormat(srcdata, surface->getColorFormat(), minWidth, destData, video::ECOLOR_FORMAT::ECF_R8G8B8);
 			}
 			else
 			{
-				if (surface->getColorFormat() == video::ECF_A8R8G8B8)
+				if (surface->getColorFormat() == video::ECOLOR_FORMAT::ECF_A8R8G8B8)
 					video::CColorConverter::convert_A8R8G8B8toR8G8B8(srcdata, minWidth, destData);
-				else if (surface->getColorFormat() == video::ECF_A1R5G5B5)
+				else if (surface->getColorFormat() == video::ECOLOR_FORMAT::ECF_A1R5G5B5)
 					video::CColorConverter::convert_A1R5G5B5toR8G8B8(srcdata, minWidth, destData);
 				else
-					video::CColorConverter::convert_viaFormat(srcdata, surface->getColorFormat(), minWidth, destData, video::ECF_R8G8B8);
+					video::CColorConverter::convert_viaFormat(srcdata, surface->getColorFormat(), minWidth, destData, video::ECOLOR_FORMAT::ECF_R8G8B8);
 			}
 
 			srcdata += srcPitch;
