@@ -148,3 +148,6 @@ Debug
 
 v16
 *.xml
+
+.agents
+.opencode
