@@ -10,13 +10,11 @@
 
 #ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
 
-#ifndef __cplusplus
-// Objective-C imports for non-C++ compilation (Objective-C, not C++)
+#ifdef __OBJC__
 #import <AppKit/NSWindow.h>
 #import <AppKit/NSOpenGL.h>
 #import <AppKit/NSBitmapImageRep.h>
-#endif
-
+#else
 #ifdef __cplusplus
 // C++ context: forward declare Objective-C classes
 extern "C++" {
@@ -26,6 +24,7 @@ class NSOpenGLContext;
 class NSOpenGLPixelFormat;
 class NSBitmapImageRep;
 }
+#endif
 #endif
 
 // Include paths relative to where compiler searches (MacOSX/ or ../../include)

@@ -1,5 +1,7 @@
 # Irrlicht Engine Demo Makefile
 Target = Demo
+IrrlichtHome = ../..
+
 Sources = CDemo.cpp CMainMenu.cpp main.cpp
 
 CPPFLAGS = -I../../include -I/usr/X11R6/include
@@ -12,7 +14,7 @@ endif
 all: all_linux
 # macOS target
 all_macos clean_macos: SYSTEM=MacOSX
-all_macos clean_macos: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht
+all_macos clean_macos: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht -framework Cocoa -framework OpenGL -framework IOKit -framework Carbon -framework CoreGraphics
 all_macos:
 	$(warning Building for Mac...)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS)

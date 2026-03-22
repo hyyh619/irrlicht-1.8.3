@@ -2,6 +2,8 @@
 # It's usually sufficient to change just the target name and source file list
 # and be sure that CXX is set to a valid compiler
 Target = 20.ManagedLights
+IrrlichtHome = ../..
+
 Sources = main.cpp
 
 # general compiler settings
@@ -13,7 +15,7 @@ CXXFLAGS = -g -Wall
 all: all_linux
 # macOS target
 all_macos clean_macos: SYSTEM=MacOSX
-all_macos clean_macos: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht
+all_macos clean_macos: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht -framework Cocoa -framework OpenGL -framework IOKit -framework Carbon -framework CoreGraphics
 all_macos:
 	$(warning Building for Mac...)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS)
