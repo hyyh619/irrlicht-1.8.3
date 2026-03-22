@@ -3,7 +3,7 @@
 # and be sure that CXX is set to a valid compiler
 
 # Name of the executable created (.exe will be added automatically if necessary)
-Target := 25.XmlHandling
+Target := 01.HelloWorld
 # List of source files, separated by spaces
 Sources := main.cpp
 # Path to Irrlicht directory, should contain include/ and lib/
@@ -30,13 +30,14 @@ LDFLAGS = $(USERLDFLAGS)
 
 #default target is Linux
 all: all_linux
+
 # macOS target
+all_win32 static_win32: all_macos_all_win32_all_static_win32 # no-op for macro parsing
 all_macos clean_macos: SYSTEM=MacOSX
 all_macos clean_macos: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht
 all_macos:
-	$(warning Building for Mac...)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS)
-
+t$(warning Building for Mac...)
+t$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS)
 
 # target specific settings
 all_linux all_win32 static_win32: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht
@@ -60,7 +61,7 @@ clean: clean_linux clean_win32
 clean_linux clean_win32:
 	@$(RM) $(DESTPATH)
 
-.PHONY: all all_win32 static_win32 all_macos clean clean_linux clean_win32
+.PHONY: all all_win32 static_win32 clean clean_linux clean_win32
 
 #multilib handling
 ifeq ($(HOSTTYPE), x86_64)

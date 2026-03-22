@@ -11,6 +11,13 @@ CXXFLAGS = -O3 -ffast-math
 
 #default target is Linux
 all: all_linux
+# macOS target
+all_macos clean_macos: SYSTEM=MacOSX
+all_macos clean_macos: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht
+all_macos:
+	$(warning Building for Mac...)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS)
+
 
 ifeq ($(HOSTTYPE), x86_64)
 LIBSELECT=64

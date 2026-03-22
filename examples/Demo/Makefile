@@ -10,6 +10,13 @@ LIBSELECT=64
 endif
 
 all: all_linux
+# macOS target
+all_macos clean_macos: SYSTEM=MacOSX
+all_macos clean_macos: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht
+all_macos:
+	$(warning Building for Mac...)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS)
+
 
 # target specific settings
 all_linux: SYSTEM=Linux

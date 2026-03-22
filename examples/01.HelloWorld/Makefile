@@ -30,6 +30,13 @@ LDFLAGS = $(USERLDFLAGS)
 
 #default target is Linux
 all: all_linux
+# macOS target
+all_macos clean_macos: SYSTEM=MacOSX
+all_macos clean_macos: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht
+all_macos:
+	$(warning Building for Mac...)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS)
+
 
 # target specific settings
 all_linux all_win32 static_win32: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht
@@ -53,7 +60,7 @@ clean: clean_linux clean_win32
 clean_linux clean_win32:
 	@$(RM) $(DESTPATH)
 
-.PHONY: all all_win32 static_win32 clean clean_linux clean_win32
+.PHONY: all all_win32 static_win32 all_macos clean clean_linux clean_win32
 
 #multilib handling
 ifeq ($(HOSTTYPE), x86_64)
