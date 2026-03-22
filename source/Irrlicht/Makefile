@@ -194,3 +194,17 @@ clean:
 
 .PHONY: all sharedlib staticlib sharedlib_win32 staticlib_win32 help install clean
 
+
+# Compile files that use dynamic_cast with RTTI enabled
+CColladaMeshWriter.o: CColladaMeshWriter.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -frtti -c -o $@ $<
+
+COpenGLDriver.o: COpenGLDriver.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -frtti -c -o $@ $<
+
+# macOS-specific defines to silence deprecation warnings
+staticlib_osx: CFLAGS += -DGL_SILENCE_DEPRECATION -DPNG_USE_DEPRECATED
+staticlib_osx: CXXFLAGS += -DGL_SILENCE_DEPRECATION
+
+# Additional flags for zlib to work around macOS SDK issues
+staticlib_osx: CFLAGS += -DNULL=0

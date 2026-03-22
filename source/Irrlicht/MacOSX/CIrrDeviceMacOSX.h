@@ -10,16 +10,30 @@
 
 #ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
 
+#ifndef __cplusplus
+// Objective-C imports for non-C++ compilation (Objective-C, not C++)
 #import <AppKit/NSWindow.h>
 #import <AppKit/NSOpenGL.h>
 #import <AppKit/NSBitmapImageRep.h>
+#endif
 
-#include "CIrrDeviceStub.h"
+#ifdef __cplusplus
+// C++ context: forward declare Objective-C classes
+extern "C++" {
+class NSWindow;
+class NSOpenGLView;
+class NSOpenGLContext;
+class NSOpenGLPixelFormat;
+class NSBitmapImageRep;
+}
+#endif
+
+// Include paths relative to where compiler searches (MacOSX/ or ../../include)
 #include "IrrlichtDevice.h"
-#include "IImagePresenter.h"
 #include "IGUIEnvironment.h"
 #include "ICursorControl.h"
-
+#include "../IImagePresenter.h"
+#include "../CIrrDeviceStub.h"
 #include <OpenGL/OpenGL.h>
 #include <map>
 
@@ -243,9 +257,7 @@ namespace irr
 		bool IsResizable;
 	};
 
-
 } // end namespace irr
 
 #endif // _IRR_COMPILE_WITH_OSX_DEVICE_
 #endif // __C_IRR_DEVICE_MACOSX_H_INCLUDED__
-
