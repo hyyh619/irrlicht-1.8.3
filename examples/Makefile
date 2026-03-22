@@ -7,4 +7,4 @@ endif
 all: $(DIRS)
 
 $(DIRS):
-        -@cd $@ && make clean && make
+	-@cd $@ && make clean && make
