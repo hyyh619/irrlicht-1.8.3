@@ -8,7 +8,7 @@ Sources = main.cpp
 
 # general compiler settings
 CPPFLAGS = -I../../include -I/usr/X11R6/include
-CXXFLAGS = -O3 -ffast-math
+CXXFLAGS = -g -O0 -ffast-math
 #CXXFLAGS = -g -Wall
 
 #default target is Linux
@@ -18,7 +18,7 @@ all_macos clean_macos: SYSTEM=MacOSX
 all_macos clean_macos: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht -framework Cocoa -framework OpenGL -framework IOKit -framework Carbon -framework CoreGraphics
 all_macos:
 	$(warning Building for Mac...)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS) && dsymutil $(DESTPATH)
 
 
 ifeq ($(HOSTTYPE), x86_64)
@@ -38,7 +38,7 @@ DESTPATH = ../../bin/$(SYSTEM)/$(Target)$(SUF)
 
 all_linux all_win32 static_win32:
 	$(warning Building...)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS) && dsymutil $(DESTPATH)
 
 clean: clean_linux clean_win32
 	$(warning Cleaning...)
