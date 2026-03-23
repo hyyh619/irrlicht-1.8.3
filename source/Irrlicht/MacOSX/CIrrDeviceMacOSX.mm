@@ -1273,7 +1273,7 @@ void CIrrDeviceMacOSX::storeMouseLocation()
 	{
 		NSPoint	p;
 		p = [NSEvent mouseLocation];
-		p = [Window convertScreenToBase:p];
+		p = [Window convertPointFromScreen:p];
 		x = (int)p.x;
 		y = DeviceHeight - (int)p.y;
 	}
@@ -1313,7 +1313,7 @@ void CIrrDeviceMacOSX::setMouseLocation(int x,int y)
 		// Irrlicht window exists
 		p.x = (float) x;
 		p.y = (float) (DeviceHeight - y);
-		p = [Window convertBaseToScreen:p];
+		p = [Window convertPointToScreen:p];
 		p.y = ScreenHeight - p.y;
 	}
 	else
