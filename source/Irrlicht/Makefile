@@ -94,7 +94,7 @@ staticlib sharedlib: CXXINCS += -I/usr/X11R6/include
 #OSX specific options
 staticlib_osx sharedlib_osx install_osx: SYSTEM = MacOSX
 staticlib_osx sharedlib_osx: IRROTHEROBJ += MacOSX/CIrrDeviceMacOSX.o MacOSX/OSXClipboard.o MacOSX/AppDelegate.o
-staticlib_osx sharedlib_osx: CXXFLAGS += -arch arm64
+staticlib_osx sharedlib_osx: CXXFLAGS += -Wall -pipe -fno-exceptions -frtti -fstrict-aliasing -g -D_DEBUG -DGL_SILENCE_DEPRECATION -arch arm64
 staticlib_osx sharedlib_osx: CFLAGS += -arch arm64
 staticlib_osx sharedlib_osx: LDFLAGS += -arch arm64
 
