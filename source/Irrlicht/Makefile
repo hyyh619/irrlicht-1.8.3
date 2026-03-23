@@ -132,6 +132,10 @@ sharedlib: $(LINKOBJ)
 # Builds Irrlicht as static lib (libIrrlicht.a)
 $(STATIC_LIB): $(LINKOBJ)
 	$(AR) rs $@ $^
+	@if [ "$(SYSTEM)" = "MacOSX" ]; then \
+		$(AR) rs $@ MacOSX/AppDelegate.o MacOSX/CIrrDeviceMacOSX.o MacOSX/OSXClipboard.o; \
+	fi
+
 
 # Copies static lib into lib/Linux
 staticlib staticlib_osx: $(STATIC_LIB)
