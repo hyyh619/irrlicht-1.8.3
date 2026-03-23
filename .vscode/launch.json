@@ -7,11 +7,12 @@
             "request": "launch",
             "program": "${workspaceFolder}/bin/MacOSX/01.HelloWorld",
             "args": [],
-            "stopAtEntry": false,
+            "stopAtEntry": true,
             "cwd": "${workspaceFolder}/bin/MacOSX",
             "environment": [],
             "externalConsole": false,
             "MIMode": "lldb",
+            "targetArchitecture": "arm64",
             "preLaunchTask": "Build 01.HelloWorld"
         }
     ]
