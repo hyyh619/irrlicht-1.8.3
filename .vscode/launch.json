@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/bin/MacOSX/01.HelloWorld",
             "args": [],
-            "stopAtEntry": true,
+            "stopAtEntry": false,
             "cwd": "${workspaceFolder}/bin/MacOSX",
             "environment": [],
             "externalConsole": false,
