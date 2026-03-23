@@ -67,12 +67,12 @@ CXXFLAGS += -Wall -pipe -fno-exceptions -fno-rtti -fstrict-aliasing
 ifndef NDEBUG
 CXXFLAGS += -g -D_DEBUG
 else
-CXXFLAGS += -fexpensive-optimizations -O3
+CXXFLAGS += -O3
 endif
 ifdef PROFILE
 CXXFLAGS += -pg
 endif
-CFLAGS := -O3 -fexpensive-optimizations -DPNG_THREAD_UNSAFE_OK -DPNG_NO_MMX_CODE -DPNG_NO_MNG_FEATURES
+CFLAGS := -O3 -DPNG_THREAD_UNSAFE_OK -DPNG_NO_MMX_CODE -DPNG_NO_MNG_FEATURES
 
 sharedlib sharedlib_osx: CXXFLAGS += -fPIC
 sharedlib sharedlib_osx: CFLAGS += -fPIC
@@ -94,8 +94,8 @@ staticlib sharedlib: CXXINCS += -I/usr/X11R6/include
 #OSX specific options
 staticlib_osx sharedlib_osx install_osx: SYSTEM = MacOSX
 staticlib_osx sharedlib_osx: IRROTHEROBJ += MacOSX/CIrrDeviceMacOSX.o MacOSX/OSXClipboard.o MacOSX/AppDelegate.o
-staticlib_osx sharedlib_osx: CXXFLAGS += -Wall -pipe -fno-exceptions -frtti -fstrict-aliasing -g -D_DEBUG -DGL_SILENCE_DEPRECATION -Wno-deprecated-declarations -arch arm64
-staticlib_osx sharedlib_osx: CFLAGS += -Wno-deprecated-declarations -arch arm64
+staticlib_osx sharedlib_osx: CXXFLAGS += -Wall -pipe -fno-exceptions -frtti -fstrict-aliasing -g -D_DEBUG -DGL_SILENCE_DEPRECATION -Wno-deprecated-declarations -Wno-unknown-warning-option -arch arm64
+staticlib_osx sharedlib_osx: CFLAGS += -Wno-deprecated-declarations -Wno-unknown-warning-option -arch arm64
 staticlib_osx sharedlib_osx: LDFLAGS += -arch arm64
 
 staticlib_osx sharedlib_osx: CXXINCS += -IMacOSX -I/usr/X11R6/include
