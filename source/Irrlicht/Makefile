@@ -131,6 +131,9 @@ sharedlib: $(LINKOBJ)
 
 # Builds Irrlicht as static lib (libIrrlicht.a)
 $(STATIC_LIB): $(LINKOBJ)
+	@if [ "$(SYSTEM)" = "MacOSX" ]; then \
+		$(MAKE) -C MacOSX; \
+	fi
 	$(AR) rs $@ $^
 	@if [ "$(SYSTEM)" = "MacOSX" ]; then \
 		$(AR) rs $@ MacOSX/AppDelegate.o MacOSX/CIrrDeviceMacOSX.o MacOSX/OSXClipboard.o; \
@@ -153,7 +156,8 @@ staticlib_win32: $(STATIC_LIB)
 
 # Builds Irrlicht as shared lib (libIrrlicht.so.versionNumber) and copies it into /lib/MacOSX
 sharedlib_osx: $(LINKOBJ)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -dynamiclib -Wl,-install_name,$(SONAME) -o $(SHARED_FULLNAME) $^ $(LDFLAGS)
+	$(MAKE) -C MacOSX
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -dynamiclib -Wl,-install_name,$(SONAME) -o $(SHARED_FULLNAME) $^ MacOSX/AppDelegate.o MacOSX/CIrrDeviceMacOSX.o MacOSX/OSXClipboard.o $(LDFLAGS)
 	cp $(SHARED_FULLNAME) $(LIB_PATH)
 
 # Installs Irrlicht if it was created as shared lib
