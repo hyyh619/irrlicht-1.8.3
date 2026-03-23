@@ -194,7 +194,7 @@ struct JoystickComponent
 	long minRead; //min read value
 	long maxRead; //max read value
 
-	JoystickComponent() : min(0), minRead(0), max(0), maxRead(0)
+	JoystickComponent() : min(0), max(0), minRead(0), maxRead(0)
 	{
 	}
 };
@@ -218,7 +218,7 @@ struct JoystickInfo
 	long usage; // usage page from IOUSBHID Parser.h which defines general usage
 	long usagePage; // usage within above page from IOUSBHID Parser.h which defines specific usage
 
-	JoystickInfo() : hats(0), axes(0), buttons(0), interface(0), removed(false), usage(0), usagePage(0), numActiveJoysticks(0)
+	JoystickInfo() : axisComp(), buttonComp(), hatComp(), hats(0), axes(0), buttons(0), numActiveJoysticks(0), persistentData(), interface(0), removed(false), usage(0), usagePage(0)
 	{
 		interface = NULL;
 		memset(joystickName, '\0', 256);
@@ -479,7 +479,7 @@ CIrrDeviceMacOSX::CIrrDeviceMacOSX(const SIrrlichtCreationParameters& param)
 	: CIrrDeviceStub(param), Window(NULL), CGLContext(NULL), OGLContext(NULL),
 	SoftwareDriverTarget(0), DeviceWidth(0), DeviceHeight(0),
 	ScreenWidth(0), ScreenHeight(0), MouseButtonStates(0), SoftwareRendererType(0),
-	IsActive(true), IsFullscreen(false), IsShiftDown(false), IsControlDown(false), IsResizable(false)
+	IsFullscreen(false), IsActive(true), IsShiftDown(false), IsControlDown(false), IsResizable(false)
 {
 	struct utsname name;
 	NSString *path;
@@ -497,15 +497,17 @@ CIrrDeviceMacOSX::CIrrDeviceMacOSX(const SIrrlichtCreationParameters& param)
 			[[NSAutoreleasePool alloc] init];
 			[NSApplication sharedApplication];
 			//[NSApp setDelegate:(id<NSFileManagerDelegate>)[[[AppDelegate alloc] initWithDevice:this] autorelease]];
+#ifdef __MAC_10_8
+			[[NSBundle mainBundle] loadNibNamed:@"MainMenu" owner:[NSApp delegate] topLevelObjects:nil];
+#else
 			[NSBundle loadNibNamed:@"MainMenu" owner:[NSApp delegate]];
+#endif
 			[NSApp finishLaunching];
 		}
 
 		path = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
 		chdir([path fileSystemRepresentation]);
-		[path release];
 	}
-    NSWindow* a;
 	uname(&name);
 	Operator = new COSOperator(name.version);
 	os::Printer::log(name.version,ELL_INFORMATION);
@@ -622,9 +624,9 @@ bool CIrrDeviceMacOSX::createWindow()
 		{
 			if(!CreationParams.WindowId) //create another window when WindowId is null
 			{
-				NSBackingStoreType type = (CreationParams.DriverType == video::EDT_OPENGL) ? NSBackingStoreBuffered : NSBackingStoreNonretained;
+				NSBackingStoreType type = (CreationParams.DriverType == video::EDT_OPENGL) ? NSBackingStoreBuffered : NSBackingStoreBuffered;
 
-				Window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,CreationParams.WindowSize.Width,CreationParams.WindowSize.Height) styleMask:NSTitledWindowMask+NSClosableWindowMask+NSResizableWindowMask backing:type defer:FALSE];
+				Window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,CreationParams.WindowSize.Width,CreationParams.WindowSize.Height) styleMask:NSWindowStyleMaskTitled+NSWindowStyleMaskClosable+NSWindowStyleMaskResizable backing:type defer:FALSE];
 			}
 
 			if (Window != NULL || CreationParams.WindowId)
@@ -780,6 +782,7 @@ bool CIrrDeviceMacOSX::createWindow()
 			{
 #ifdef __MAC_10_6
 				olddisplaymode = CGDisplayCopyDisplayMode(display);
+				CGDisplayModeRelease(olddisplaymode);
 #else
 				olddisplaymode = CGDisplayCurrentMode(display);
 #endif
@@ -839,7 +842,7 @@ bool CIrrDeviceMacOSX::createWindow()
 						}
 						else
 						{
-							Window = [[NSWindow alloc] initWithContentRect:[[NSScreen mainScreen] frame] styleMask:NSBorderlessWindowMask backing:NSBackingStoreNonretained defer:NO screen:[NSScreen mainScreen]];
+							Window = [[NSWindow alloc] initWithContentRect:[[NSScreen mainScreen] frame] styleMask:NSWindowStyleMaskBorderless backing:NSBackingStoreBuffered defer:NO screen:[NSScreen mainScreen]];
 
 							[Window setLevel: CGShieldingWindowLevel()];
 							[Window setAcceptsMouseMovedEvents:TRUE];
@@ -893,7 +896,7 @@ void CIrrDeviceMacOSX::setResize(int width, int height)
 	DeviceHeight = height;
 
 	// update the size of the opengl rendering context
-	if(OGLContext);
+	if(OGLContext)
 		[OGLContext update];
 
 	// resize the driver to the inner pane size
@@ -971,25 +974,25 @@ bool CIrrDeviceMacOSX::run()
 	os::Timer::tick();
 	storeMouseLocation();
 
-	event = [NSApp nextEventMatchingMask:NSAnyEventMask untilDate:[NSDate distantPast] inMode:NSDefaultRunLoopMode dequeue:YES];
+	event = [NSApp nextEventMatchingMask:NSEventMaskAny untilDate:[NSDate distantPast] inMode:NSDefaultRunLoopMode dequeue:YES];
 	if (event != nil)
 	{
 		bzero(&ievent,sizeof(ievent));
 
 		switch([(NSEvent *)event type])
 		{
-			case NSKeyDown:
+			case NSEventTypeKeyDown:
 				postKeyEvent(event,ievent,true);
 				break;
 
-			case NSKeyUp:
+			case NSEventTypeKeyUp:
 				postKeyEvent(event,ievent,false);
 				break;
 
-			case NSFlagsChanged:
+			case NSEventTypeFlagsChanged:
 				ievent.EventType = irr::EET_KEY_INPUT_EVENT;
-				ievent.KeyInput.Shift = ([(NSEvent *)event modifierFlags] & NSShiftKeyMask) != 0;
-				ievent.KeyInput.Control = ([(NSEvent *)event modifierFlags] & NSControlKeyMask) != 0;
+				ievent.KeyInput.Shift = ([(NSEvent *)event modifierFlags] & NSEventModifierFlagShift) != 0;
+				ievent.KeyInput.Control = ([(NSEvent *)event modifierFlags] & NSEventModifierFlagControl) != 0;
 
 				if (IsShiftDown != ievent.KeyInput.Shift)
 				{
@@ -1016,7 +1019,7 @@ bool CIrrDeviceMacOSX::run()
 				[NSApp sendEvent:event];
 				break;
 
-			case NSLeftMouseDown:
+			case NSEventTypeLeftMouseDown:
 				ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 				ievent.MouseInput.Event = irr::EMIE_LMOUSE_PRESSED_DOWN;
 				MouseButtonStates |= irr::EMBSM_LEFT;
@@ -1024,7 +1027,7 @@ bool CIrrDeviceMacOSX::run()
 				postMouseEvent(event,ievent);
 				break;
 
-			case NSLeftMouseUp:
+			case NSEventTypeLeftMouseUp:
 				ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 				MouseButtonStates &= !irr::EMBSM_LEFT;
 				ievent.MouseInput.ButtonStates = MouseButtonStates;
@@ -1032,7 +1035,7 @@ bool CIrrDeviceMacOSX::run()
 				postMouseEvent(event,ievent);
 				break;
 
-			case NSOtherMouseDown:
+			case NSEventTypeOtherMouseDown:
 				ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 				ievent.MouseInput.Event = irr::EMIE_MMOUSE_PRESSED_DOWN;
 				MouseButtonStates |= irr::EMBSM_MIDDLE;
@@ -1040,7 +1043,7 @@ bool CIrrDeviceMacOSX::run()
 				postMouseEvent(event,ievent);
 				break;
 
-			case NSOtherMouseUp:
+			case NSEventTypeOtherMouseUp:
 				ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 				MouseButtonStates &= !irr::EMBSM_MIDDLE;
 				ievent.MouseInput.ButtonStates = MouseButtonStates;
@@ -1048,17 +1051,17 @@ bool CIrrDeviceMacOSX::run()
 				postMouseEvent(event,ievent);
 				break;
 
-			case NSMouseMoved:
-			case NSLeftMouseDragged:
-			case NSRightMouseDragged:
-			case NSOtherMouseDragged:
+			case NSEventTypeMouseMoved:
+			case NSEventTypeLeftMouseDragged:
+			case NSEventTypeRightMouseDragged:
+			case NSEventTypeOtherMouseDragged:
 				ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 				ievent.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
 				ievent.MouseInput.ButtonStates = MouseButtonStates;
 				postMouseEvent(event,ievent);
 				break;
 
-			case NSRightMouseDown:
+			case NSEventTypeRightMouseDown:
 				ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 				ievent.MouseInput.Event = irr::EMIE_RMOUSE_PRESSED_DOWN;
 				MouseButtonStates |= irr::EMBSM_RIGHT;
@@ -1066,7 +1069,7 @@ bool CIrrDeviceMacOSX::run()
 				postMouseEvent(event,ievent);
 				break;
 
-			case NSRightMouseUp:
+			case NSEventTypeRightMouseUp:
 				ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 				ievent.MouseInput.Event = irr::EMIE_RMOUSE_LEFT_UP;
 				MouseButtonStates &= !irr::EMBSM_RIGHT;
@@ -1074,7 +1077,7 @@ bool CIrrDeviceMacOSX::run()
 				postMouseEvent(event,ievent);
 				break;
 
-			case NSScrollWheel:
+			case NSEventTypeScrollWheel:
 				ievent.EventType = irr::EET_MOUSE_INPUT_EVENT;
 				ievent.MouseInput.Event = irr::EMIE_MOUSE_WHEEL;
 				ievent.MouseInput.Wheel = [(NSEvent *)event deltaY];
@@ -1128,20 +1131,18 @@ void CIrrDeviceMacOSX::sleep(u32 timeMs, bool pauseTimer=false)
 
 void CIrrDeviceMacOSX::setWindowCaption(const wchar_t* text)
 {
-	size_t size;
 	char title[1024];
 
 	if (Window != NULL)
 	{
-		size = wcstombs(title,text,1024);
+		wcstombs(title,text,1024);
 		title[1023] = 0;
 #ifdef __MAC_10_6
 		NSString* name = [NSString stringWithCString:title encoding:NSUTF8StringEncoding];
 #else
-		NSString* name = [NSString stringWithCString:title length:size];
+		NSString* name = [NSString stringWithCString:title length:strlen(title)];
 #endif
 		[Window setTitle:name];
-		[name release];
 	}
 }
 
@@ -1172,7 +1173,7 @@ void CIrrDeviceMacOSX::postKeyEvent(void *event,irr::SEvent &ievent,bool pressed
 {
 	NSString *str;
 	std::map<int,int>::const_iterator iter;
-	unsigned int result,c,mkey,mchar;
+	unsigned int c,mkey,mchar;
 	const unsigned char *cStr;
 	BOOL skipCommand;
 
@@ -1204,7 +1205,7 @@ void CIrrDeviceMacOSX::postKeyEvent(void *event,irr::SEvent &ievent,bool pressed
 				{
 					mchar = cStr[0];
 					mkey = toupper(mchar);
-					if ([(NSEvent *)event modifierFlags] & NSCommandKeyMask)
+					if ([(NSEvent *)event modifierFlags] & NSEventModifierFlagCommand)
 					{
 						if (mkey == 'C' || mkey == 'V' || mkey == 'X')
 						{
@@ -1219,13 +1220,13 @@ void CIrrDeviceMacOSX::postKeyEvent(void *event,irr::SEvent &ievent,bool pressed
 		ievent.EventType = irr::EET_KEY_INPUT_EVENT;
 		ievent.KeyInput.Key = (irr::EKEY_CODE)mkey;
 		ievent.KeyInput.PressedDown = pressed;
-		ievent.KeyInput.Shift = ([(NSEvent *)event modifierFlags] & NSShiftKeyMask) != 0;
-		ievent.KeyInput.Control = ([(NSEvent *)event modifierFlags] & NSControlKeyMask) != 0;
+		ievent.KeyInput.Shift = ([(NSEvent *)event modifierFlags] & NSEventModifierFlagShift) != 0;
+		ievent.KeyInput.Control = ([(NSEvent *)event modifierFlags] & NSEventModifierFlagControl) != 0;
 		ievent.KeyInput.Char = mchar;
 
 		if (skipCommand)
 			ievent.KeyInput.Control = true;
-		else if ([(NSEvent *)event modifierFlags] & NSCommandKeyMask)
+		else if ([(NSEvent *)event modifierFlags] & NSEventModifierFlagCommand)
 			[NSApp sendEvent:(NSEvent *)event];
 
 		postEventFromUser(ievent);
@@ -1786,8 +1787,6 @@ void CIrrDeviceMacOSX::pollJoysticks()
 				result = (*(ActiveJoysticks[joystick].interface))->getElementValue(ActiveJoysticks[joystick].interface, ActiveJoysticks[joystick].buttonComp[n].cookie, &hidEvent);
 				if (kIOReturnSuccess == result)
 				{
-					u32 ButtonStates = 0;
-
 					if (hidEvent.value && !((ActiveJoysticks[joystick].persistentData.JoystickEvent.ButtonStates & (1 << n)) ? true : false) )
 							found = true;
 					else if (!hidEvent.value && ((ActiveJoysticks[joystick].persistentData.JoystickEvent.ButtonStates & (1 << n)) ? true : false))
