@@ -32,6 +32,10 @@ LDFLAGS = $(USERLDFLAGS)
 all: all_linux
 # macOS target
 all_macos clean_macos: SYSTEM=MacOSX
+all_macos clean_macos: CXXFLAGS += -arch arm64
+all_macos clean_macos: CFLAGS += -arch arm64
+all_macos clean_macos: LDFLAGS += -arch arm64
+
 all_macos clean_macos: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht -framework Cocoa -framework OpenGL -framework IOKit -framework Carbon -framework CoreGraphics
 all_macos:
 	$(warning Building for Mac...)
