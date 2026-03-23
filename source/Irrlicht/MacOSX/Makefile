@@ -12,7 +12,7 @@ JPEGLIB_INCLUDE = ../jpeglib
 
 # Flags
 # Using the flags requested previously
-CXXFLAGS = -Wall -pipe -fno-exceptions -frtti -fstrict-aliasing -g -D_DEBUG -DGL_SILENCE_DEPRECATION -arch arm64
+CXXFLAGS = -Wall -pipe -fno-exceptions -frtti -fstrict-aliasing -g -D_DEBUG -DGL_SILENCE_DEPRECATION -Wno-deprecated-declarations -arch arm64
 CFLAGS = -arch arm64
 CPPFLAGS = -I$(IRR_INCLUDE) -I$(ZLIB_INCLUDE) -I$(LIBPNG_INCLUDE) -I$(JPEGLIB_INCLUDE) -I.. -DIRRLICHT_EXPORTS=1
 
