@@ -353,6 +353,9 @@ public:
                 }
             }
             break;
+
+            default:
+                break;
             }
         }
 
