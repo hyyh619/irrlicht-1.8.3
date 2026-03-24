@@ -129,7 +129,7 @@ public:
                         SettingMap[key] = xml->getAttributeValueSafe(L"value");
                     }
                 }
-
+            
                 // ..
                 // You can add your own sections and tags to read in here
                 // ..
@@ -140,6 +140,11 @@ public:
             case irr::io::EXN_ELEMENT_END:
                 // we were at the end of the video section so we reset our tag
                 currentSection = L"";
+                break;
+            
+            case irr::io::EXN_TEXT:
+            case irr::io::EXN_COMMENT:
+            case irr::io::EXN_NONE:
                 break;
             }
         }
