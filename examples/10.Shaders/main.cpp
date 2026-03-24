@@ -221,7 +221,12 @@ int main()
             psFileName = "../../media/opengl.psh";
             vsFileName = "../../media/opengl.vsh";
         }
+        break;
 
+    default:
+        psFileName = "";
+        vsFileName = "";
+        device->getLogger()->log("WARNING: Unsupported driver type for shaders.");
         break;
     }
 
