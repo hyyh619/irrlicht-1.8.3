@@ -2,10 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(lldb) Launch 01.HelloWorld",
+            "name": "(lldb) Launch 10.Shaders",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/MacOSX/01.HelloWorld",
+            "program": "${workspaceFolder}/bin/MacOSX/10.Shaders",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/bin/MacOSX",
