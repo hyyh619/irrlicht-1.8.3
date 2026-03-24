@@ -12,37 +12,35 @@ class CMainMenu : public IEventReceiver
 {
 public:
 
-	CMainMenu();
+    CMainMenu();
 
-	bool run(bool& outFullscreen, bool& outMusic, bool& outShadows,
-		bool& outAdditive, bool &outVSync, bool& outAA,
-		video::E_DRIVER_TYPE& outDriver);
+    bool run(bool &outFullscreen, bool &outMusic, bool &outShadows,
+             bool &outAdditive, bool &outVSync, bool &outAA,
+             video::E_DRIVER_TYPE &outDriver);
 
-	virtual bool OnEvent(const SEvent& event);
+    virtual bool OnEvent(const SEvent &event);
 
 private:
 
-	void setTransparency();
+    void setTransparency();
 
-	gui::IGUIButton* startButton;
-	IrrlichtDevice *MenuDevice;
-	s32 selected;
-	bool start;
-	bool fullscreen;
-	bool music;
-	bool shadows;
-	bool additive;
-	bool transparent;
-	bool vsync;
-	bool aa;
+    gui::IGUIButton *startButton;
+    IrrlichtDevice  *MenuDevice;
+    s32             selected;
+    bool            start;
+    bool            fullscreen;
+    bool            music;
+    bool            shadows;
+    bool            additive;
+    bool            transparent;
+    bool            vsync;
+    bool            aa;
 
-	scene::IAnimatedMesh* quakeLevel;
-	scene::ISceneNode* lightMapNode;
-	scene::ISceneNode* dynamicNode;
+    scene::IAnimatedMesh *quakeLevel;
+    scene::ISceneNode    *lightMapNode;
+    scene::ISceneNode    *dynamicNode;
 
-	video::SColor SkinColor [ gui::EGDC_COUNT ];
-	void getOriginalSkinColor();
+    video::SColor SkinColor[gui::EGDC_COUNT];
+    void getOriginalSkinColor();
 };
-
 #endif
-

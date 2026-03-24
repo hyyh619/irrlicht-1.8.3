@@ -895,28 +895,28 @@ void CQuake3EventHandler::AddArchive(const path &archiveName)
 
             switch (archive->getType())
             {
-                case io::EFAT_ZIP:
-                    typeName = "ZIP";
-                    break;
+            case io::EFAT_ZIP:
+                typeName = "ZIP";
+                break;
 
-                case io::EFAT_GZIP:
-                    typeName = "gzip";
-                    break;
+            case io::EFAT_GZIP:
+                typeName = "gzip";
+                break;
 
-                case io::EFAT_FOLDER:
-                    typeName = "Mount";
-                    break;
+            case io::EFAT_FOLDER:
+                typeName = "Mount";
+                break;
 
-                case io::EFAT_PAK:
-                    typeName = "PAK";
-                    break;
+            case io::EFAT_PAK:
+                typeName = "PAK";
+                break;
 
-                case io::EFAT_TAR:
-                    typeName = "TAR";
-                    break;
+            case io::EFAT_TAR:
+                typeName = "TAR";
+                break;
 
-                default:
-                    typeName = "archive";
+            default:
+                typeName = "archive";
             }
 
             gui.ArchiveList->setCellText (index, 0, typeName);
@@ -1170,27 +1170,27 @@ void CQuake3EventHandler::addSceneTreeItem(ISceneNode *parent, IGUITreeViewNode 
     {
         switch ((*it)->getType ())
         {
-            case ESNT_Q3SHADER_SCENE_NODE: imageIndex = 0; break;
+        case ESNT_Q3SHADER_SCENE_NODE: imageIndex = 0; break;
 
-            case ESNT_CAMERA: imageIndex = 1; break;
+        case ESNT_CAMERA: imageIndex = 1; break;
 
-            case ESNT_EMPTY: imageIndex = 2; break;
+        case ESNT_EMPTY: imageIndex = 2; break;
 
-            case ESNT_MESH: imageIndex = 3; break;
+        case ESNT_MESH: imageIndex = 3; break;
 
-            case ESNT_OCTREE: imageIndex = 3; break;
+        case ESNT_OCTREE: imageIndex = 3; break;
 
-            case ESNT_ANIMATED_MESH: imageIndex = 4; break;
+        case ESNT_ANIMATED_MESH: imageIndex = 4; break;
 
-            case ESNT_SKY_BOX: imageIndex = 5; break;
+        case ESNT_SKY_BOX: imageIndex = 5; break;
 
-            case ESNT_BILLBOARD: imageIndex = 6; break;
+        case ESNT_BILLBOARD: imageIndex = 6; break;
 
-            case ESNT_PARTICLE_SYSTEM: imageIndex = 7; break;
+        case ESNT_PARTICLE_SYSTEM: imageIndex = 7; break;
 
-            case ESNT_TEXT: imageIndex = 8; break;
+        case ESNT_TEXT: imageIndex = 8; break;
 
-            default: imageIndex = -1; break;
+        default: imageIndex = -1; break;
         }
 
         if (imageIndex < 0)
@@ -1219,17 +1219,17 @@ void CQuake3EventHandler::addSceneTreeItem(ISceneNode *parent, IGUITreeViewNode 
 
             switch ((*ait)->getType ())
             {
-                case ESNAT_FLY_CIRCLE:
-                case ESNAT_FLY_STRAIGHT:
-                case ESNAT_FOLLOW_SPLINE:
-                case ESNAT_ROTATION:
-                case ESNAT_TEXTURE:
-                case ESNAT_DELETION:
-                case ESNAT_COLLISION_RESPONSE:
-                case ESNAT_CAMERA_FPS:
-                case ESNAT_CAMERA_MAYA:
-                default:
-                    break;
+            case ESNAT_FLY_CIRCLE:
+            case ESNAT_FLY_STRAIGHT:
+            case ESNAT_FOLLOW_SPLINE:
+            case ESNAT_ROTATION:
+            case ESNAT_TEXTURE:
+            case ESNAT_DELETION:
+            case ESNAT_COLLISION_RESPONSE:
+            case ESNAT_CAMERA_FPS:
+            case ESNAT_CAMERA_MAYA:
+            default:
+                break;
             }
 
             node->addChildBack(msg, 0, imageIndex);
@@ -1310,17 +1310,17 @@ void CQuake3EventHandler::SetGUIActive(s32 command)
 
     switch (command)
     {
-        case 0: Game->guiActive = 0; inputState = !Game->guiActive; break;
+    case 0: Game->guiActive = 0; inputState = !Game->guiActive; break;
 
-        case 1: Game->guiActive = 1; inputState = !Game->guiActive;; break;
+    case 1: Game->guiActive = 1; inputState = !Game->guiActive;; break;
 
-        case 2: Game->guiActive ^= 1; inputState = !Game->guiActive; break;
+    case 2: Game->guiActive ^= 1; inputState = !Game->guiActive; break;
 
-        case 3:
-            if (camera)
-                inputState = !camera->isInputReceiverEnabled();
+    case 3:
+        if (camera)
+            inputState = !camera->isInputReceiverEnabled();
 
-            break;
+        break;
     }
 
     if (camera)
@@ -1573,9 +1573,9 @@ bool CQuake3EventHandler::OnEvent(const SEvent &eve)
 
             switch (Game->debugState)
             {
-                case 1: value = EDS_NORMALS | EDS_MESH_WIRE_OVERLAY | EDS_BBOX_ALL; break;
+            case 1: value = EDS_NORMALS | EDS_MESH_WIRE_OVERLAY | EDS_BBOX_ALL; break;
 
-                case 2: value = EDS_NORMALS | EDS_MESH_WIRE_OVERLAY | EDS_SKELETON; break;
+            case 2: value = EDS_NORMALS | EDS_MESH_WIRE_OVERLAY | EDS_SKELETON; break;
             }
 
 /*

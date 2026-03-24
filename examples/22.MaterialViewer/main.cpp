@@ -21,38 +21,38 @@ using namespace irr;
  */
 namespace
 {
-    const wchar_t* const DriverTypeNames[] =
-    {
-        L"NULL",
-        L"SOFTWARE",
-        L"BURNINGSVIDEO",
-        L"DIRECT3D8",
-        L"DIRECT3D9",
-        L"OPENGL",
-        0,
-    };
+const wchar_t* const DriverTypeNames[] =
+{
+    L"NULL",
+    L"SOFTWARE",
+    L"BURNINGSVIDEO",
+    L"DIRECT3D8",
+    L"DIRECT3D9",
+    L"OPENGL",
+    0,
+};
 
-    // For the gui id's
-    enum EGUI_IDS
-    {
-        GUI_ID_OPEN_TEXTURE = 1,
-        GUI_ID_QUIT,
-        GUI_ID_MAX
-    };
+// For the gui id's
+enum EGUI_IDS
+{
+    GUI_ID_OPEN_TEXTURE = 1,
+    GUI_ID_QUIT,
+    GUI_ID_MAX
+};
 
-    // Name used in texture selection to clear the textures on the node
-    const core::stringw CLEAR_TEXTURE = L"CLEAR texture";
+// Name used in texture selection to clear the textures on the node
+const core::stringw CLEAR_TEXTURE = L"CLEAR texture";
 
-    // some useful color constants
-    const video::SColor SCOL_BLACK   = video::SColor(255, 0,   0,   0);
-    const video::SColor SCOL_BLUE    = video::SColor(255, 0,   0,  255);
-    const video::SColor SCOL_CYAN    = video::SColor(255, 0,  255, 255);
-    const video::SColor SCOL_GRAY    = video::SColor(255, 128, 128, 128);
-    const video::SColor SCOL_GREEN   = video::SColor(255, 0,  255,  0);
-    const video::SColor SCOL_MAGENTA = video::SColor(255, 255, 0,  255);
-    const video::SColor SCOL_RED     = video::SColor(255, 255, 0,   0);
-    const video::SColor SCOL_YELLOW  = video::SColor(255, 255, 255, 0);
-    const video::SColor SCOL_WHITE   = video::SColor(255, 255, 255, 255);
+// some useful color constants
+const video::SColor SCOL_BLACK   = video::SColor(255, 0,   0,   0);
+const video::SColor SCOL_BLUE    = video::SColor(255, 0,   0,  255);
+const video::SColor SCOL_CYAN    = video::SColor(255, 0,  255, 255);
+const video::SColor SCOL_GRAY    = video::SColor(255, 128, 128, 128);
+const video::SColor SCOL_GREEN   = video::SColor(255, 0,  255,  0);
+const video::SColor SCOL_MAGENTA = video::SColor(255, 255, 0,  255);
+const video::SColor SCOL_RED     = video::SColor(255, 255, 0,   0);
+const video::SColor SCOL_YELLOW  = video::SColor(255, 255, 255, 0);
+const video::SColor SCOL_WHITE   = video::SColor(255, 255, 255, 255);
 };      // namespace
 
 /*
@@ -75,58 +75,58 @@ video::E_VERTEX_TYPE getVertexTypeForMaterialType(video::E_MATERIAL_TYPE materia
 
     switch (materialType)
     {
-        case EMT_SOLID:
-            return EVT_STANDARD;
+    case EMT_SOLID:
+        return EVT_STANDARD;
 
-        case EMT_SOLID_2_LAYER:
-            return EVT_STANDARD;
+    case EMT_SOLID_2_LAYER:
+        return EVT_STANDARD;
 
-        case EMT_LIGHTMAP:
-        case EMT_LIGHTMAP_ADD:
-        case EMT_LIGHTMAP_M2:
-        case EMT_LIGHTMAP_M4:
-        case EMT_LIGHTMAP_LIGHTING:
-        case EMT_LIGHTMAP_LIGHTING_M2:
-        case EMT_LIGHTMAP_LIGHTING_M4:
-            return EVT_2TCOORDS;
+    case EMT_LIGHTMAP:
+    case EMT_LIGHTMAP_ADD:
+    case EMT_LIGHTMAP_M2:
+    case EMT_LIGHTMAP_M4:
+    case EMT_LIGHTMAP_LIGHTING:
+    case EMT_LIGHTMAP_LIGHTING_M2:
+    case EMT_LIGHTMAP_LIGHTING_M4:
+        return EVT_2TCOORDS;
 
-        case EMT_DETAIL_MAP:
-            return EVT_2TCOORDS;
+    case EMT_DETAIL_MAP:
+        return EVT_2TCOORDS;
 
-        case EMT_SPHERE_MAP:
-            return EVT_STANDARD;
+    case EMT_SPHERE_MAP:
+        return EVT_STANDARD;
 
-        case EMT_REFLECTION_2_LAYER:
-            return EVT_2TCOORDS;
+    case EMT_REFLECTION_2_LAYER:
+        return EVT_2TCOORDS;
 
-        case EMT_TRANSPARENT_ADD_COLOR:
-            return EVT_STANDARD;
+    case EMT_TRANSPARENT_ADD_COLOR:
+        return EVT_STANDARD;
 
-        case EMT_TRANSPARENT_ALPHA_CHANNEL:
-            return EVT_STANDARD;
+    case EMT_TRANSPARENT_ALPHA_CHANNEL:
+        return EVT_STANDARD;
 
-        case EMT_TRANSPARENT_ALPHA_CHANNEL_REF:
-            return EVT_STANDARD;
+    case EMT_TRANSPARENT_ALPHA_CHANNEL_REF:
+        return EVT_STANDARD;
 
-        case EMT_TRANSPARENT_VERTEX_ALPHA:
-            return EVT_STANDARD;
+    case EMT_TRANSPARENT_VERTEX_ALPHA:
+        return EVT_STANDARD;
 
-        case EMT_TRANSPARENT_REFLECTION_2_LAYER:
-            return EVT_2TCOORDS;
+    case EMT_TRANSPARENT_REFLECTION_2_LAYER:
+        return EVT_2TCOORDS;
 
-        case EMT_NORMAL_MAP_SOLID:
-        case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:
-        case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
-        case EMT_PARALLAX_MAP_SOLID:
-        case EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:
-        case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
-            return EVT_TANGENTS;
+    case EMT_NORMAL_MAP_SOLID:
+    case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:
+    case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:
+    case EMT_PARALLAX_MAP_SOLID:
+    case EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:
+    case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA:
+        return EVT_TANGENTS;
 
-        case EMT_ONETEXTURE_BLEND:
-            return EVT_STANDARD;
+    case EMT_ONETEXTURE_BLEND:
+        return EVT_STANDARD;
 
-        case EMT_FORCE_32BIT:
-            return EVT_STANDARD;
+    case EMT_FORCE_32BIT:
+        return EVT_STANDARD;
     }
 
     return EVT_STANDARD;
@@ -611,26 +611,26 @@ struct SMeshNodeControl
 
             switch (vertexType)
             {
-                case video::EVT_STANDARD:
-                    material.MaterialType = (video::E_MATERIAL_TYPE)selectedMaterial;
-                    SceneNode->setVisible(true);
-                    SceneNode2T->setVisible(false);
-                    SceneNodeTangents->setVisible(false);
-                    break;
+            case video::EVT_STANDARD:
+                material.MaterialType = (video::E_MATERIAL_TYPE)selectedMaterial;
+                SceneNode->setVisible(true);
+                SceneNode2T->setVisible(false);
+                SceneNodeTangents->setVisible(false);
+                break;
 
-                case video::EVT_2TCOORDS:
-                    material2T.MaterialType = (video::E_MATERIAL_TYPE)selectedMaterial;
-                    SceneNode->setVisible(false);
-                    SceneNode2T->setVisible(true);
-                    SceneNodeTangents->setVisible(false);
-                    break;
+            case video::EVT_2TCOORDS:
+                material2T.MaterialType = (video::E_MATERIAL_TYPE)selectedMaterial;
+                SceneNode->setVisible(false);
+                SceneNode2T->setVisible(true);
+                SceneNodeTangents->setVisible(false);
+                break;
 
-                case video::EVT_TANGENTS:
-                    materialTangents.MaterialType = (video::E_MATERIAL_TYPE)selectedMaterial;
-                    SceneNode->setVisible(false);
-                    SceneNode2T->setVisible(false);
-                    SceneNodeTangents->setVisible(true);
-                    break;
+            case video::EVT_TANGENTS:
+                materialTangents.MaterialType = (video::E_MATERIAL_TYPE)selectedMaterial;
+                SceneNode->setVisible(false);
+                SceneNode2T->setVisible(false);
+                SceneNodeTangents->setVisible(true);
+                break;
             }
         }
 
@@ -787,37 +787,38 @@ public:
 
             switch (event.GUIEvent.EventType)
             {
-                case gui::EGET_MENU_ITEM_SELECTED:
+            case gui::EGET_MENU_ITEM_SELECTED:
+            {
+                const gui::IGUIContextMenu *menu = (gui::IGUIContextMenu*)event.GUIEvent.Caller;
+                const s32                  id    = menu->getItemCommandId(menu->getSelectedItem());
+
+                switch (id)
                 {
-                    const gui::IGUIContextMenu *menu = (gui::IGUIContextMenu*)event.GUIEvent.Caller;
-                    const s32                  id    = menu->getItemCommandId(menu->getSelectedItem());
+                case GUI_ID_OPEN_TEXTURE:            // File -> Open Texture
+                    env->addFileOpenDialog(L"Please select a texture file to open");
+                    break;
 
-                    switch (id)
-                    {
-                        case GUI_ID_OPEN_TEXTURE:    // File -> Open Texture
-                            env->addFileOpenDialog(L"Please select a texture file to open");
-                            break;
-
-                        case GUI_ID_QUIT:     // File -> Quit
-                            stopApp();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                break;
-
-                case gui::EGET_FILE_SELECTED:
-                {
-                    // load the model file, selected in the file open dialog
-                    gui::IGUIFileOpenDialog *dialog =
-                        (gui::IGUIFileOpenDialog*)event.GUIEvent.Caller;
-                    loadTexture(io::path(dialog->getFileName()).c_str());
-                }
-                break;
+                case GUI_ID_QUIT:             // File -> Quit
+                    stopApp();
+                    break;
 
                 default:
                     break;
+                }
+            }
+            break;
+
+            case gui::EGET_FILE_SELECTED:
+            {
+                // load the model file, selected in the file open dialog
+                gui::IGUIFileOpenDialog *dialog =
+                    (gui::IGUIFileOpenDialog*)event.GUIEvent.Caller;
+                loadTexture(io::path(dialog->getFileName()).c_str());
+            }
+            break;
+
+            default:
+                break;
             }
         }
 

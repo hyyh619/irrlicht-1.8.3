@@ -16,34 +16,33 @@ using namespace irr;
 #ifdef _WIN32
 
 #pragma comment(lib, "Irrlicht.lib")
-INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
+INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
 #else
-int main(int argc, char* argv[])
+int main(int argc, char * argv[])
 #endif
 {
-	bool fullscreen = false;
-	bool music = true;
-	bool shadows = false;
-	bool additive = false;
-	bool vsync = false;
-	bool aa = false;
+    bool fullscreen = false;
+    bool music      = true;
+    bool shadows    = false;
+    bool additive   = false;
+    bool vsync      = false;
+    bool aa         = false;
 
 #ifndef _IRR_WINDOWS_
-	video::E_DRIVER_TYPE driverType = video::EDT_OPENGL;
+    video::E_DRIVER_TYPE driverType = video::EDT_OPENGL;
 #else
-	video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+    video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
 #endif
 
-	CMainMenu menu;
+    CMainMenu menu;
 
-//#ifndef _DEBUG
-	if (menu.run(fullscreen, music, shadows, additive, vsync, aa, driverType))
-//#endif
-	{
-		CDemo demo(fullscreen, music, shadows, additive, vsync, aa, driverType);
-		demo.run();
-	}
+// #ifndef _DEBUG
+    if (menu.run(fullscreen, music, shadows, additive, vsync, aa, driverType))
+// #endif
+    {
+        CDemo demo(fullscreen, music, shadows, additive, vsync, aa, driverType);
+        demo.run();
+    }
 
-	return 0;
+    return 0;
 }
-
