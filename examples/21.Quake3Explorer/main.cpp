@@ -385,13 +385,13 @@ void Q3Player::respawn()
 
     Device->getLogger()->log("respawn");
 
-    if (StartPositionCurrent >= Q3StartPosition (
-            Mesh, camera, StartPositionCurrent++,
-            cam ()->getEllipsoidTranslation())
-        )
+    s32 pos = StartPositionCurrent++;
+    if (pos >= Q3StartPosition(
+            Mesh, camera, pos, cam()->getEllipsoidTranslation()))
     {
         StartPositionCurrent = 0;
     }
+
 }
 
 /*
