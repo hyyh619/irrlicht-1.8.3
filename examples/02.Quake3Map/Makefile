@@ -23,7 +23,7 @@ all_macos clean_macos: LDFLAGS += -arch arm64
 all_macos clean_macos: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht -framework Cocoa -framework OpenGL -framework IOKit -framework Carbon -framework CoreGraphics
 all_macos:
 	$(warning Building for Mac...)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS) && dsymutil $(DESTPATH)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS)
 
 
 ifeq ($(HOSTTYPE), x86_64)
@@ -43,7 +43,7 @@ DESTPATH = ../../bin/$(SYSTEM)/$(Target)$(SUF)
 
 all_linux all_win32 static_win32:
 	$(warning Building...)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS) && dsymutil $(DESTPATH)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS)
 
 clean: clean_linux clean_win32
 	$(warning Cleaning...)
