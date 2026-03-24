@@ -36,10 +36,6 @@ private:
     bool            vsync;
     bool            aa;
 
-    scene::IAnimatedMesh *quakeLevel;
-    scene::ISceneNode    *lightMapNode;
-    scene::ISceneNode    *dynamicNode;
-
     video::SColor SkinColor[gui::EGDC_COUNT];
     void getOriginalSkinColor();
 };

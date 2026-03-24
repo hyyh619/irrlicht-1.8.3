@@ -53,7 +53,6 @@ private:
     void createParticleImpacts();
 
     bool                 fullscreen;
-    bool                 music;
     bool                 shadows;
     bool                 additive;
     bool                 vsync;

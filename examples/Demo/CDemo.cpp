@@ -4,7 +4,7 @@
 #include "CDemo.h"
 
 CDemo::CDemo(bool f, bool m, bool s, bool a, bool v, bool fsaa, video::E_DRIVER_TYPE d)
-    : fullscreen(f), music(m), shadows(s), additive(a), vsync(v), aa(fsaa),
+    : fullscreen(f), shadows(s), additive(a), vsync(v), aa(fsaa),
     driverType(d), device(0),
 #ifdef USE_IRRKLANG
     irrKlang(0), ballSound(0), impactSound(0),
