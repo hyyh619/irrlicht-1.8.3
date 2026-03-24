@@ -1009,9 +1009,7 @@ int ZEXPORT deflateEnd (strm)
  * To simplify the source, this is not supported for 16-bit MSDOS (which
  * doesn't have enough memory anyway to duplicate compression states).
  */
-int ZEXPORT deflateCopy (dest, source)
-    z_streamp dest;
-    z_streamp source;
+int ZEXPORT deflateCopy(z_streamp dest, z_streamp source)
 {
 #ifdef MAXSEG_64K
     return Z_STREAM_ERROR;
