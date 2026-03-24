@@ -145,6 +145,8 @@ public:
             case irr::io::EXN_TEXT:
             case irr::io::EXN_COMMENT:
             case irr::io::EXN_NONE:
+            case irr::io::EXN_CDATA:
+            case irr::io::EXN_UNKNOWN:
                 break;
             }
         }
