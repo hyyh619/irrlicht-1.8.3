@@ -1330,8 +1330,7 @@ local unsigned syncsearch(unsigned FAR *have, unsigned char FAR *buf, unsigned l
     return next;
 }
 
-int ZEXPORT inflateSync(strm)
-z_streamp strm;
+int ZEXPORT inflateSync(z_streamp strm)
 {
     unsigned len;               /* number of bytes to look at or looked at */
     unsigned long in, out;      /* temporary to save total_in and total_out */
