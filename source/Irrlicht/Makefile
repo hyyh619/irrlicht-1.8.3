@@ -65,7 +65,7 @@ CXXINCS = -I../../include -Izlib -Ijpeglib -Ilibpng
 CPPFLAGS += $(CXXINCS) -DIRRLICHT_EXPORTS=1
 CXXFLAGS += -Wall -pipe -fno-exceptions -fno-rtti -fstrict-aliasing
 ifndef NDEBUG
-CXXFLAGS += -g -D_DEBUG
+CXXFLAGS += -g -O0 -D_DEBUG
 else
 CXXFLAGS += -O3
 endif
