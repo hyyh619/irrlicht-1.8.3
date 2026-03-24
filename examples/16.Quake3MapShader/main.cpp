@@ -384,7 +384,7 @@ int IRRCALLCONV main(int argc, char *argv[])
                 str += attr->getAttributeAsInt("drawn_transparent_effect");
 #endif
                 device->setWindowCaption(str.c_str());
-                lastFPS = fps;
+                // lastFPS = fps;
             }
         }
 
