@@ -327,18 +327,23 @@ int IRRCALLCONV main(int argc, char *argv[])
 
     switch (driverType)
     {
-    case video::EDT_BURNINGSVIDEO:
-        gui->addImage(driver->getTexture("burninglogo.png"), pos);
-        break;
+        case video::EDT_NULL:
+        case video::EDT_SOFTWARE:
+        case video::EDT_COUNT:
+            break;
 
-    case video::EDT_OPENGL:
-        gui->addImage(driver->getTexture("opengllogo.png"), pos);
-        break;
-
-    case video::EDT_DIRECT3D8:
-    case video::EDT_DIRECT3D9:
-        gui->addImage(driver->getTexture("directxlogo.png"), pos);
-        break;
+        case video::EDT_BURNINGSVIDEO:
+            gui->addImage(driver->getTexture("burninglogo.png"), pos);
+            break;
+        
+        case video::EDT_OPENGL:
+            gui->addImage(driver->getTexture("opengllogo.png"), pos);
+            break;
+        
+        case video::EDT_DIRECT3D8:
+        case video::EDT_DIRECT3D9:
+            gui->addImage(driver->getTexture("directxlogo.png"), pos);
+            break;
     }
 
     /*
@@ -348,7 +353,7 @@ int IRRCALLCONV main(int argc, char *argv[])
        prevents the engine render to set the position of the mouse cursor
        after task switching when other program are active.
      */
-    int lastFPS = -1;
+    // int lastFPS = -1;
 
     while (device->run())
         if (device->isWindowActive())
