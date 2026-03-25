@@ -14,116 +14,55 @@ namespace irr
 {
 namespace scene
 {
-
-/**
- * @brief Particle system scene node
- * 
- * Controls particle emission with various emitter types
- * (box, cylinder, mesh, point, ring, sphere) and affectors
- * (attraction, fade out, gravity, rotation, scale).
+// ! A particle system scene node.
+/** A scene node controlling a particle system. The behavior of the particles
+   can be controlled by setting the right particle emitters and affectors.
  */
 class CParticleSystemSceneNode : public IParticleSystemSceneNode
 {
 public:
 
-    /**
-     * @brief Constructor
-     * @param createDefaultEmitter Create default emitter
-     * @param parent Parent scene node
-     * @param mgr Scene manager
-     * @param id Node ID
-     * @param position Position
-     * @param rotation Rotation
-     * @param scale Scale
-     */
+    // ! constructor
     CParticleSystemSceneNode(bool createDefaultEmitter,
                              ISceneNode *parent, ISceneManager *mgr, s32 id,
                              const core::vector3df &position,
                              const core::vector3df &rotation,
                              const core::vector3df &scale);
 
-    /**
-     * @brief Destructor
-     */
+    // ! destructor
     virtual ~CParticleSystemSceneNode();
 
-    /**
-     * @brief Get particle emitter
-     * @return Current particle emitter
-     */
+    // ! Gets the particle emitter, which creates the particles.
     virtual IParticleEmitter* getEmitter();
 
-    /**
-     * @brief Set particle emitter
-     * @param emitter New emitter
-     */
+    // ! Sets the particle emitter, which creates the particles.
     virtual void setEmitter(IParticleEmitter *emitter);
 
-    /**
-     * @brief Add particle affector
-     * @param affector Affector to add
-     */
+    // ! Adds new particle affector to the particle system.
     virtual void addAffector(IParticleAffector *affector);
 
-    /**
-     * @brief Get all affectors
-     * @return List of affectors
-     */
+    // ! Get a list of all particle affectors.
     virtual const core::list<IParticleAffector*>&getAffectors() const;
 
-    /**
-     * @brief Remove all affectors
-     */
+    // ! Removes all particle affectors in the particle system.
     virtual void removeAllAffectors();
 
-    /**
-     * @brief Get material
-     * @param i Material index
-     * @return Material reference
-     */
+    // ! Returns the material based on the zero based index i.
     virtual video::SMaterial&getMaterial(u32 i);
 
-    /**
-     * @brief Get material count
-     * @return Number of materials
-     */
+    // ! Returns amount of materials used by this scene node.
     virtual u32 getMaterialCount() const;
 
-    /**
-     * @brief Called when registered to scene
-     */
+    // ! pre render event
     virtual void OnRegisterSceneNode();
 
-    /**
-     * @brief Render particles
-     */
+    // ! render
     virtual void render();
 
-    /**
-     * @brief Get bounding box
-     * @return Axis-aligned bounding box
-     */
+    // ! returns the axis aligned bounding box of this node
     virtual const core::aabbox3d<f32>&getBoundingBox() const;
 
-    /**
-     * @brief Create animated mesh emitter
-     * @param node Animated mesh to emit from
-     * @param useNormalDirection Use normal direction
-     * @param direction Emission direction
-     * @param normalDirectionModifier Normal direction strength
-     * @param mbNumber Mesh buffer number
-     * @param everyMeshVertex Emit from every vertex
-     * @param minParticlesPerSecond Min particles per second
-     * @param maxParticlesPerSecond Max particles per second
-     * @param minStartColor Min start color
-     * @param maxStartColor Max start color
-     * @param lifeTimeMin Min lifetime (ms)
-     * @param lifeTimeMax Max lifetime (ms)
-     * @param maxAngleDegrees Max angle variation
-     * @param minStartSize Min start size
-     * @param maxStartSize Max start size
-     * @return New emitter
-     */
+    // ! Creates a particle emitter for an animated mesh scene node
     virtual IParticleAnimatedMeshSceneNodeEmitter* createAnimatedMeshSceneNodeEmitter(
         scene::IAnimatedMeshSceneNode *node, bool useNormalDirection = true,
         const core::vector3df &direction = core::vector3df(0.0f, 0.03f, 0.0f),
@@ -137,21 +76,7 @@ public:
         const core::dimension2df &minStartSize = core::dimension2df(5.0f, 5.0f),
         const core::dimension2df &maxStartSize = core::dimension2df(5.0f, 5.0f));
 
-    /**
-     * @brief Create box emitter
-     * @param box Emission box volume
-     * @param direction Emission direction
-     * @param minParticlesPerSecond Min particles per second
-     * @param maxParticlesPerSecond Max particles per second
-     * @param minStartColor Min start color
-     * @param maxStartColor Max start color
-     * @param lifeTimeMin Min lifetime (ms)
-     * @param lifeTimeMax Max lifetime (ms)
-     * @param maxAngleDegrees Max angle variation
-     * @param minStartSize Min start size
-     * @param maxStartSize Max start size
-     * @return New emitter
-     */
+    // ! Creates a box particle emitter.
     virtual IParticleBoxEmitter* createBoxEmitter(
         const core::aabbox3df &box = core::aabbox3d<f32>(-10, 0, -10, 5, 30, 10),
         const core::vector3df &direction = core::vector3df(0.0f, 0.03f, 0.0f),
@@ -164,25 +89,7 @@ public:
         const core::dimension2df &minStartSize = core::dimension2df(5.0f, 5.0f),
         const core::dimension2df &maxStartSize = core::dimension2df(5.0f, 5.0f));
 
-    /**
-     * @brief Create cylinder emitter
-     * @param center Cylinder center
-     * @param radius Cylinder radius
-     * @param normal Cylinder normal
-     * @param length Cylinder length
-     * @param outlineOnly Emit from outline only
-     * @param direction Emission direction
-     * @param minParticlesPerSecond Min particles per second
-     * @param maxParticlesPersSecond Max particles per second
-     * @param minStartColor Min start color
-     * @param maxStartColor Max start color
-     * @param lifeTimeMin Min lifetime (ms)
-     * @param lifeTimeMax Max lifetime (ms)
-     * @param maxAngleDegrees Max angle variation
-     * @param minStartSize Min start size
-     * @param maxStartSize Max start size
-     * @return New emitter
-     */
+    // ! Creates a particle emitter for emitting from a cylinder
     virtual IParticleCylinderEmitter* createCylinderEmitter(
         const core::vector3df &center, f32 radius,
         const core::vector3df &normal, f32 length,
@@ -195,25 +102,7 @@ public:
         const core::dimension2df &minStartSize = core::dimension2df(5.0f, 5.0f),
         const core::dimension2df &maxStartSize = core::dimension2df(5.0f, 5.0f));
 
-    /**
-     * @brief Create mesh emitter
-     * @param mesh Mesh to emit from
-     * @param useNormalDirection Use normal direction
-     * @param direction Emission direction
-     * @param normalDirectionModifier Normal direction strength
-     * @param mbNumber Mesh buffer number
-     * @param everyMeshVertex Emit from every vertex
-     * @param minParticlesPerSecond Min particles per second
-     * @param maxParticlesPerSecond Max particles per second
-     * @param minStartColor Min start color
-     * @param maxStartColor Max start color
-     * @param lifeTimeMin Min lifetime (ms)
-     * @param lifeTimeMax Max lifetime (ms)
-     * @param maxAngleDegrees Max angle variation
-     * @param minStartSize Min start size
-     * @param maxStartSize Max start size
-     * @return New emitter
-     */
+    // ! Creates a mesh particle emitter.
     virtual IParticleMeshEmitter* createMeshEmitter(
         scene::IMesh *mesh, bool useNormalDirection = true,
         const core::vector3df &direction = core::vector3df(0.0f, 0.03f, 0.0f),
@@ -228,20 +117,7 @@ public:
         const core::dimension2df &minStartSize = core::dimension2df(5.0f, 5.0f),
         const core::dimension2df &maxStartSize = core::dimension2df(5.0f, 5.0f));
 
-    /**
-     * @brief Create point emitter
-     * @param direction Emission direction
-     * @param minParticlesPerSecond Min particles per second
-     * @param maxParticlesPerSecond Max particles per second
-     * @param minStartColor Min start color
-     * @param maxStartColor Max start color
-     * @param lifeTimeMin Min lifetime (ms)
-     * @param lifeTimeMax Max lifetime (ms)
-     * @param maxAngleDegrees Max angle variation
-     * @param minStartSize Min start size
-     * @param maxStartSize Max start size
-     * @return New emitter
-     */
+    // ! Creates a point particle emitter.
     virtual IParticlePointEmitter* createPointEmitter(
         const core::vector3df &direction = core::vector3df(0.0f, 0.03f, 0.0f),
         u32 minParticlesPerSecond = 5,
@@ -253,23 +129,7 @@ public:
         const core::dimension2df &minStartSize = core::dimension2df(5.0f, 5.0f),
         const core::dimension2df &maxStartSize = core::dimension2df(5.0f, 5.0f));
 
-    /**
-     * @brief Create ring emitter
-     * @param center Ring center
-     * @param radius Ring radius
-     * @param ringThickness Ring thickness
-     * @param direction Emission direction
-     * @param minParticlesPerSecond Min particles per second
-     * @param maxParticlesPerSecond Max particles per second
-     * @param minStartColor Min start color
-     * @param maxStartColor Max start color
-     * @param lifeTimeMin Min lifetime (ms)
-     * @param lifeTimeMax Max lifetime (ms)
-     * @param maxAngleDegrees Max angle variation
-     * @param minStartSize Min start size
-     * @param maxStartSize Max start size
-     * @return New emitter
-     */
+    // ! Creates a ring particle emitter.
     virtual IParticleRingEmitter* createRingEmitter(
         const core::vector3df &center, f32 radius, f32 ringThickness,
         const core::vector3df &direction = core::vector3df(0.0f, 0.03f, 0.0f),
@@ -282,22 +142,7 @@ public:
         const core::dimension2df &minStartSize = core::dimension2df(5.0f, 5.0f),
         const core::dimension2df &maxStartSize = core::dimension2df(5.0f, 5.0f));
 
-    /**
-     * @brief Create sphere emitter
-     * @param center Sphere center
-     * @param radius Sphere radius
-     * @param direction Emission direction
-     * @param minParticlesPerSecond Min particles per second
-     * @param maxParticlesPerSecond Max particles per second
-     * @param minStartColor Min start color
-     * @param maxStartColor Max start color
-     * @param lifeTimeMin Min lifetime (ms)
-     * @param lifeTimeMax Max lifetime (ms)
-     * @param maxAngleDegrees Max angle variation
-     * @param minStartSize Min start size
-     * @param maxStartSize Max start size
-     * @return New emitter
-     */
+    // ! Creates a sphere particle emitter.
     virtual IParticleSphereEmitter* createSphereEmitter(
         const core::vector3df &center, f32 radius,
         const core::vector3df &direction = core::vector3df(0.0f, 0.03f, 0.0f),
@@ -310,99 +155,55 @@ public:
         const core::dimension2df &minStartSize = core::dimension2df(5.0f, 5.0f),
         const core::dimension2df &maxStartSize = core::dimension2df(5.0f, 5.0f));
 
-    /**
-     * @brief Create attraction affector
-     * @param point Attraction point
-     * @param speed Attraction speed
-     * @param attract Attract or repel
-     * @param affectX Affect X axis
-     * @param affectY Affect Y axis
-     * @param affectZ Affect Z axis
-     * @return New affector
-     */
+    // ! Creates a point attraction affector. This affector modifies the positions of the
+    // ! particles and attracts them to a specified point at a specified speed per second.
     virtual IParticleAttractionAffector* createAttractionAffector(
         const core::vector3df &point, f32 speed = 1.0f, bool attract = true,
         bool affectX = true, bool affectY = true, bool affectZ = true);
 
-    /**
-     * @brief Create scale affector
-     * @param scaleTo Target scale
-     * @return New affector
-     */
+    // ! Creates a scale particle affector.
     virtual IParticleAffector* createScaleParticleAffector(const core::dimension2df &scaleTo = core::dimension2df(1.0f, 1.0f));
 
-    /**
-     * @brief Create fade out affector
-     * @param targetColor Target color
-     * @param timeNeededToFadeOut Fade duration (ms)
-     * @return New affector
-     */
+    // ! Creates a fade out particle affector.
     virtual IParticleFadeOutAffector* createFadeOutParticleAffector(
         const video::SColor &targetColor = video::SColor(0, 0, 0, 0),
         u32 timeNeededToFadeOut = 1000);
 
-    /**
-     * @brief Create gravity affector
-     * @param gravity Gravity vector
-     * @param timeForceLost Time to lose force (ms)
-     * @return New affector
-     */
+    // ! Creates a gravity affector.
     virtual IParticleGravityAffector* createGravityAffector(
         const core::vector3df &gravity = core::vector3df(0.0f, -0.03f, 0.0f),
         u32 timeForceLost = 1000);
 
-    /**
-     * @brief Create rotation affector
-     * @param speed Rotation speed (degrees/sec)
-     * @param pivotPoint Pivot point
-     * @return New affector
-     */
+    // ! Creates a rotation affector. This affector rotates the particles
+    // ! around a specified pivot point. The speed is in Degrees per second.
     virtual IParticleRotationAffector* createRotationAffector(
         const core::vector3df &speed = core::vector3df(5.0f, 5.0f, 5.0f),
         const core::vector3df &pivotPoint = core::vector3df(0.0f, 0.0f, 0.0f));
 
-    /**
-     * @brief Set particle size
-     * @param size Particle size
-     */
+    // ! Sets the size of all particles.
     virtual void setParticleSize(
         const core::dimension2d<f32> &size = core::dimension2d<f32>(5.0f, 5.0f));
 
-    /**
-     * @brief Set particles global
-     * @param global true = affected by node movement
-     */
+    // ! Sets if the particles should be global. If they are, the particles are affected by
+    // ! the movement of the particle system scene node too, otherwise they completely
+    // ! ignore it. Default is true.
     virtual void setParticlesAreGlobal(bool global = true);
 
-    /**
-     * @brief Clear all particles
-     */
+    // ! Remove all currently visible particles
     virtual void clearParticles();
 
-    /**
-     * @brief Manual particle update
-     * @param time Time delta (ms)
-     */
+    // ! Do manually update the particles.
+    // ! This should only be called when you want to render the node outside the scenegraph,
+    // ! as the node will care about this otherwise automatically.
     virtual void doParticleSystem(u32 time);
 
-    /**
-     * @brief Serialize attributes
-     * @param out Output attributes
-     * @param options Read/write options
-     */
+    // ! Writes attributes of the scene node.
     virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const;
 
-    /**
-     * @brief Deserialize attributes
-     * @param in Input attributes
-     * @param options Read/write options
-     */
+    // ! Reads attributes of the scene node.
     virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0);
 
-    /**
-     * @brief Get node type
-     * @return Scene node type
-     */
+    // ! Returns type of the scene node
     virtual ESCENE_NODE_TYPE getType() const
     {
         return ESNT_PARTICLE_SYSTEM;
@@ -410,19 +211,16 @@ public:
 
 private:
 
-    /**
-     * @brief Reallocate particle buffers
-     */
     void reallocateBuffers();
 
-    core::list<IParticleAffector*> AffectorList;  ///< List of affectors
-    IParticleEmitter               *Emitter;    ///< Current emitter
-    core::array<SParticle>         Particles;   ///< Particle data
-    core::dimension2d<f32>         ParticleSize; ///< Particle size
-    u32                            LastEmitTime;  ///< Last emit time
-    s32                            MaxParticles;  ///< Max particles
+    core::list<IParticleAffector*> AffectorList;
+    IParticleEmitter               *Emitter;
+    core::array<SParticle>         Particles;
+    core::dimension2d<f32>         ParticleSize;
+    u32                            LastEmitTime;
+    s32                            MaxParticles;
 
-    SMeshBuffer *Buffer;  ///< Mesh buffer for rendering
+    SMeshBuffer *Buffer;
 
     enum E_PARTICLES_PRIMITIVE
     {
@@ -430,9 +228,9 @@ private:
         EPP_BILLBOARD,
         EPP_POINTSPRITE
     };
-    E_PARTICLES_PRIMITIVE ParticlePrimitive;  ///< Render primitive type
+    E_PARTICLES_PRIMITIVE ParticlePrimitive;
 
-    bool ParticlesAreGlobal;  ///< Global particles flag
+    bool ParticlesAreGlobal;
 };
 }   // end namespace scene
 } // end namespace irr

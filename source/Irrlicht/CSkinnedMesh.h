@@ -21,378 +21,190 @@ namespace scene
 class IAnimatedMeshSceneNode;
 class IBoneSceneNode;
 
-/**
- * @brief Skinned mesh with skeletal animation
- * 
- * Supports skeletal animation with:
- * - Bone/joint hierarchy
- * - Position, rotation, scale keyframe animation
- * - Vertex skinning with weights
- * - Software and hardware skinning
- * - Animation blending
- */
 class CSkinnedMesh : public ISkinnedMesh
 {
 public:
 
-    /**
-     * @brief Constructor
-     */
+    // ! constructor
     CSkinnedMesh();
 
-    /**
-     * @brief Destructor
-     */
+    // ! destructor
     virtual ~CSkinnedMesh();
 
-    /**
-     * @brief Get frame count
-     * @return Number of animation frames (1 = static mesh)
-     */
+    // ! returns the amount of frames. If the amount is 1, it is a static (=non animated) mesh.
     virtual u32 getFrameCount() const;
 
-    /**
-     * @brief Get animation speed
-     * @return Frames per second
-     */
+    // ! Gets the default animation speed of the animated mesh.
+    /** \return Amount of frames per second. If the amount is 0, it is a static, non animated mesh. */
     virtual f32 getAnimationSpeed() const;
 
-    /**
-     * @brief Set animation speed
-     * @param fps Frames per second
-     */
+    // ! Gets the frame count of the animated mesh.
+    /** \param fps Frames per second to play the animation with. If the amount is 0, it is not animated.
+       The actual speed is set in the scene node the mesh is instantiated in.*/
     virtual void setAnimationSpeed(f32 fps);
 
-    /**
-     * @brief Get mesh for frame
-     * @param frame Animation frame
-     * @param detailLevel Detail level (ignored)
-     * @param startFrameLoop Start frame loop
-     * @param endFrameLoop End frame loop
-     * @return Renderable mesh
-     */
+    // ! returns the animated mesh based on a detail level (which is ignored)
     virtual IMesh* getMesh(s32 frame, s32 detailLevel = 255, s32 startFrameLoop = -1, s32 endFrameLoop = -1);
 
-    /**
-     * @brief Animate mesh joints
-     * @param frame Animation frame
-     * @param blend Blend factor (0=old, 1=new)
-     */
+    // ! Animates this mesh's joints based on frame input
+    // ! blend: {0-old position, 1-New position}
     virtual void animateMesh(f32 frame, f32 blend);
 
-    /**
-     * @brief Perform software skinning
-     */
+    // ! Preforms a software skin on this mesh based of joint positions
     virtual void skinMesh();
 
-    /**
-     * @brief Get mesh buffer count
-     * @return Number of mesh buffers
-     */
+    // ! returns amount of mesh buffers.
     virtual u32 getMeshBufferCount() const;
 
-    /**
-     * @brief Get mesh buffer by index
-     * @param nr Buffer index
-     * @return Mesh buffer pointer
-     */
+    // ! returns pointer to a mesh buffer
     virtual IMeshBuffer* getMeshBuffer(u32 nr) const;
 
-    /**
-     * @brief Get mesh buffer by material
-     * @param material Material to search for
-     * @return Mesh buffer with matching material
-     */
+    // ! Returns pointer to a mesh buffer which fits a material
+    /** \param material: material to search for
+       \return Returns the pointer to the mesh buffer or
+       NULL if there is no such mesh buffer. */
     virtual IMeshBuffer* getMeshBuffer(const video::SMaterial &material) const;
 
-    /**
-     * @brief Get bounding box
-     * @return Axis-aligned bounding box
-     */
+    // ! returns an axis aligned bounding box
     virtual const core::aabbox3d<f32>&getBoundingBox() const;
 
-    /**
-     * @brief Set bounding box
-     * @param box New bounding box
-     */
+    // ! set user axis aligned bounding box
     virtual void setBoundingBox(const core::aabbox3df &box);
 
-    /**
-     * @brief Set material flag for all buffers
-     * @param flag Material flag
-     * @param newvalue Flag value
-     */
+    // ! sets a flag of all contained materials to a new value
     virtual void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue);
 
-    /**
-     * @brief Set hardware mapping hint
-     * @param newMappingHint Mapping hint
-     * @param buffer Buffer type
-     */
+    // ! set the hardware mapping hint, for driver
     virtual void setHardwareMappingHint(E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer = EBT_VERTEX_AND_INDEX);
 
-    /**
-     * @brief Mark mesh as dirty
-     * @param buffer Buffer type to reload
-     */
+    // ! flags the meshbuffer as changed, reloads hardware buffers
     virtual void setDirty(E_BUFFER_TYPE buffer = EBT_VERTEX_AND_INDEX);
 
-    /**
-     * @brief Get mesh type
-     * @return Animated mesh type
-     */
+    // ! Returns the type of the animated mesh.
     virtual E_ANIMATED_MESH_TYPE getMeshType() const;
 
-    /**
-     * @brief Get joint count
-     * @return Number of bones/joints
-     */
+    // ! Gets joint count.
     virtual u32 getJointCount() const;
 
-    /**
-     * @brief Get joint name
-     * @param number Joint index
-     * @return Joint name
-     */
+    // ! Gets the name of a joint.
     virtual const c8* getJointName(u32 number) const;
 
-    /**
-     * @brief Get joint index by name
-     * @param name Joint name
-     * @return Joint index, -1 if not found
-     */
+    // ! Gets a joint number from its name
     virtual s32 getJointNumber(const c8 *name) const;
 
-    /**
-     * @brief Copy animation from another mesh
-     * @param mesh Source skinned mesh
-     * @return true if successful
-     */
+    // ! uses animation from another mesh
     virtual bool useAnimationFrom(const ISkinnedMesh *mesh);
 
-    /**
-     * @brief Set normal update during animation
-     * @param on Enable/disable normal updating
-     */
+    // ! Update Normals when Animating
+    // ! False= Don't (default)
+    // ! True = Update normals, slower
     virtual void updateNormalsWhenAnimating(bool on);
 
-    /**
-     * @brief Set interpolation mode
-     * @param mode Interpolation mode
-     */
+    // ! Sets Interpolation Mode
     virtual void setInterpolationMode(E_INTERPOLATION_MODE mode);
 
-    /**
-     * @brief Convert mesh to tangent format
-     */
+    // ! Convertes the mesh to contain tangent information
     virtual void convertMeshToTangents();
 
-    /**
-     * @brief Check if mesh is static
-     * @return true if no animation
-     */
+    // ! Does the mesh have no animation
     virtual bool isStatic();
 
-    /**
-     * @brief Enable/disable hardware skinning
-     * @param on Enable flag
-     * @return true if successful
-     */
+    // ! (This feature is not implemented in irrlicht yet)
     virtual bool setHardwareSkinning(bool on);
 
-    // --- Loader interface ---
+    // Interface for the mesh loaders (finalize should lock these functions, and they should have some prefix like loader_
+    // these functions will use the needed arrays, set values, etc to help the loaders
 
-    /**
-     * @brief Get mesh buffers (for loaders)
-     * @return Array of skin mesh buffers
-     */
+    // ! exposed for loaders to add mesh buffers
     virtual core::array<SSkinMeshBuffer*>&getMeshBuffers();
 
-    /**
-     * @brief Get all joints (for loaders)
-     * @return Array of all joints
-     */
+    // ! alternative method for adding joints
     virtual core::array<SJoint*>&getAllJoints();
 
-    /**
-     * @brief Get all joints (const)
-     * @return Array of all joints
-     */
+    // ! alternative method for adding joints
     virtual const core::array<SJoint*>&getAllJoints() const;
 
-    /**
-     * @brief Finalize mesh after loading
-     */
+    // ! loaders should call this after populating the mesh
     virtual void finalize();
 
-    /**
-     * @brief Add new mesh buffer
-     * @return New skin mesh buffer
-     */
+    // ! Adds a new meshbuffer to the mesh, access it as last one
     virtual SSkinMeshBuffer* addMeshBuffer();
 
-    /**
-     * @brief Add new joint
-     * @param parent Parent joint (optional)
-     * @return New joint
-     */
+    // ! Adds a new joint to the mesh, access it as last one
     virtual SJoint* addJoint(SJoint *parent = 0);
 
-    /**
-     * @brief Add position keyframe
-     * @param joint Joint to add key to
-     * @return New position key
-     */
+    // ! Adds a new position key to the mesh, access it as last one
     virtual SPositionKey* addPositionKey(SJoint *joint);
-    
-    /**
-     * @brief Add rotation keyframe
-     * @param joint Joint to add key to
-     * @return New rotation key
-     */
+    // ! Adds a new rotation key to the mesh, access it as last one
     virtual SRotationKey* addRotationKey(SJoint *joint);
-    
-    /**
-     * @brief Add scale keyframe
-     * @param joint Joint to add key to
-     * @return New scale key
-     */
+    // ! Adds a new scale key to the mesh, access it as last one
     virtual SScaleKey* addScaleKey(SJoint *joint);
 
-    /**
-     * @brief Add vertex weight
-     * @param joint Joint to weight
-     * @return New weight
-     */
+    // ! Adds a new weight to the mesh, access it as last one
     virtual SWeight* addWeight(SJoint *joint);
 
-    /**
-     * @brief Update bounding box
-     */
     virtual void updateBoundingBox(void);
 
-    /**
-     * @brief Recover joints from mesh
-     * @param jointChildSceneNodes Array to populate
-     */
+    // ! Recovers the joints from the mesh
     void recoverJointsFromMesh(core::array<IBoneSceneNode*> &jointChildSceneNodes);
 
-    /**
-     * @brief Transfer joint data to mesh
-     * @param jointChildSceneNodes Joint scene nodes
-     */
+    // ! Tranfers the joint data to the mesh
     void transferJointsToMesh(const core::array<IBoneSceneNode*> &jointChildSceneNodes);
 
-    /**
-     * @brief Transfer joint hints to mesh
-     * @param jointChildSceneNodes Joint scene nodes
-     */
+    // ! Tranfers the joint hints to the mesh
     void transferOnlyJointsHintsToMesh(const core::array<IBoneSceneNode*> &jointChildSceneNodes);
 
-    /**
-     * @brief Create joint scene nodes
-     * @param jointChildSceneNodes Array to populate
-     * @param node Parent scene node
-     * @param smgr Scene manager
-     */
+    // ! Creates an array of joints from this mesh as children of node
     void addJoints(core::array<IBoneSceneNode*> &jointChildSceneNodes,
                    IAnimatedMeshSceneNode *node,
                    ISceneManager *smgr);
 
 private:
-
-    /**
-     * @brief Check for animation data
-     */
     void checkForAnimation();
 
-    /**
-     * @brief Normalize vertex weights
-     */
     void normalizeWeights();
 
-    /**
-     * @brief Build local animated matrices
-     */
     void buildAllLocalAnimatedMatrices();
 
-    /**
-     * @brief Build global animated matrices
-     * @param Joint Current joint
-     * @param ParentJoint Parent joint
-     */
     void buildAllGlobalAnimatedMatrices(SJoint *Joint = 0, SJoint *ParentJoint = 0);
 
-    /**
-     * @brief Get frame data with hints
-     * @param frame Animation frame
-     * @param Node Joint node
-     * @param position Output position
-     * @param positionHint Position hint
-     * @param scale Output scale
-     * @param scaleHint Scale hint
-     * @param rotation Output rotation
-     * @param rotationHint Rotation hint
-     */
     void getFrameData(f32 frame, SJoint *Node,
                       core::vector3df &position, s32 &positionHint,
                       core::vector3df &scale, s32 &scaleHint,
                       core::quaternion &rotation, s32 &rotationHint);
 
-    /**
-     * @brief Calculate global matrices
-     * @param Joint Joint to calculate
-     * @param ParentJoint Parent joint
-     */
     void calculateGlobalMatrices(SJoint *Joint, SJoint *ParentJoint);
 
-    /**
-     * @brief Skin single joint
-     * @param Joint Joint to skin
-     * @param ParentJoint Parent joint
-     */
     void skinJoint(SJoint *Joint, SJoint *ParentJoint);
 
-    /**
-     * @brief Calculate tangent vectors
-     * @param normal Normal vector
-     * @param tangent Tangent vector
-     * @param binormal Binormal vector
-     * @param vt1 Vertex 1
-     * @param vt2 Vertex 2
-     * @param vt3 Vertex 3
-     * @param tc1 Tex coord 1
-     * @param tc2 Tex coord 2
-     * @param tc3 Tex coord 3
-     */
     void calculateTangents(core::vector3df &normal,
                            core::vector3df &tangent, core::vector3df &binormal,
                            core::vector3df &vt1, core::vector3df &vt2, core::vector3df &vt3,
                            core::vector2df &tc1, core::vector2df &tc2, core::vector2df &tc3);
 
-    core::array<SSkinMeshBuffer*> *SkinningBuffers;  ///< Skinning buffers
+    core::array<SSkinMeshBuffer*> *SkinningBuffers;     // Meshbuffer to skin, default is to skin localBuffers
 
-    core::array<SSkinMeshBuffer*> LocalBuffers;  ///< Local mesh buffers
+    core::array<SSkinMeshBuffer*> LocalBuffers;
 
-    core::array<SJoint*> AllJoints;  ///< All joints in mesh
-    core::array<SJoint*> RootJoints;  ///< Root joints
+    core::array<SJoint*> AllJoints;
+    core::array<SJoint*> RootJoints;
 
-    core::array<core::array<bool> > Vertices_Moved;  ///< Vertex moved flags
+    core::array<core::array<bool> > Vertices_Moved;
 
-    core::aabbox3d<f32> BoundingBox;  ///< Bounding box
+    core::aabbox3d<f32> BoundingBox;
 
-    f32 AnimationFrames;  ///< Total animation frames
-    f32 FramesPerSecond;  ///< Animation speed
+    f32 AnimationFrames;
+    f32 FramesPerSecond;
 
-    f32  LastAnimatedFrame;  ///< Last animated frame
-    bool SkinnedLastFrame;  ///< Skinned flag
+    f32  LastAnimatedFrame;
+    bool SkinnedLastFrame;
 
-    E_INTERPOLATION_MODE InterpolationMode : 8;  ///< Interpolation mode
+    E_INTERPOLATION_MODE InterpolationMode : 8;
 
-    bool HasAnimation;  ///< Has animation flag
-    bool PreparedForSkinning;  ///< Prepared for skinning
-    bool AnimateNormals;  ///< Animate normals
-    bool HardwareSkinning;  ///< Hardware skinning enabled
+    bool HasAnimation;
+    bool PreparedForSkinning;
+    bool AnimateNormals;
+    bool HardwareSkinning;
 };
 }   // end namespace scene
 } // end namespace irr

@@ -22,160 +22,76 @@ class IXMLWriter;
 }
 namespace gui
 {
-
-/**
- * @brief GUI Environment
- * 
- * Manages all GUI elements including:
- * - Windows, buttons, edit boxes
- * - Fonts and sprite banks
- * - Skins and theming
- * - Event handling
- */
 class CGUIEnvironment : public IGUIEnvironment, public IGUIElement
 {
 public:
 
-    /**
-     * @brief Constructor
-     * @param fs File system
-     * @param driver Video driver
-     * @param op OS operator
-     */
+    // ! constructor
     CGUIEnvironment(io::IFileSystem *fs, video::IVideoDriver *driver, IOSOperator *op);
 
-    /**
-     * @brief Destructor
-     */
+    // ! destructor
     virtual ~CGUIEnvironment();
 
-    /**
-     * @brief Draw all GUI elements
-     */
+    // ! draws all gui elements
     virtual void drawAll();
 
-    /**
-     * @brief Get video driver
-     * @return Video driver
-     */
+    // ! returns the current video driver
     virtual video::IVideoDriver* getVideoDriver() const;
 
-    /**
-     * @brief Get file system
-     * @return File system
-     */
+    // ! returns pointer to the filesystem
     virtual io::IFileSystem* getFileSystem() const;
 
-    /**
-     * @brief Get OS operator
-     * @return OS operator
-     */
+    // ! returns a pointer to the OS operator
     virtual IOSOperator* getOSOperator() const;
 
-    /**
-     * @brief Post event from user
-     * @param event Event to post
-     * @return true if handled
-     */
+    // ! posts an input event to the environment
     virtual bool postEventFromUser(const SEvent &event);
 
-    /**
-     * @brief Set user event receiver
-     * @param receiver Event receiver
-     */
+    // ! This sets a new event receiver for gui events. Usually you do not have to
+    // ! use this method, it is used by the internal engine.
     virtual void setUserEventReceiver(IEventReceiver *evr);
 
-    /**
-     * @brief Clear all elements
-     */
+    // ! removes all elements from the environment
     virtual void clear();
 
-    /**
-     * @brief Handle event
-     * @param event Event to handle
-     * @return true if handled
-     */
+    // ! called if an event happened.
     virtual bool OnEvent(const SEvent &event);
 
-    /**
-     * @brief Get current skin
-     * @return GUI skin
-     */
+    // ! returns the current gui skin
     virtual IGUISkin* getSkin() const;
 
-    /**
-     * @brief Set GUI skin
-     * @param skin New skin
-     */
+    // ! Sets a new GUI Skin
     virtual void setSkin(IGUISkin *skin);
 
-    /**
-     * @brief Create skin from template
-     * @param type Skin type
-     * @return New skin (must be dropped)
-     */
+    // ! Creates a new GUI Skin based on a template.
+    /** \return Returns a pointer to the created skin.
+       If you no longer need the skin, you should call IGUISkin::drop().
+       See IReferenceCounted::drop() for more information. */
     virtual IGUISkin* createSkin(EGUI_SKIN_TYPE type);
 
-    /**
-     * @brief Create image list from texture
-     * @param texture Source texture
-     * @param imageSize Size of each image
-     * @param useAlphaChannel Use alpha channel
-     * @return New image list
-     */
+    // ! Creates the image list from the given texture.
     virtual IGUIImageList* createImageList(video::ITexture *texture,
                                            core::dimension2d<s32> imageSize, bool useAlphaChannel);
 
-    /**
-     * @brief Get font
-     * @param filename Font file path
-     * @return Font pointer
-     */
+    // ! returns the font
     virtual IGUIFont* getFont(const io::path &filename);
 
-    /**
-     * @brief Add external font
-     * @param name Font name
-     * @param font Font to add
-     * @return Added font
-     */
+    // ! add an externally loaded font
     virtual IGUIFont* addFont(const io::path &name, IGUIFont *font);
 
-    /**
-     * @brief Remove font
-     * @param font Font to remove
-     */
+    // ! remove loaded font
     virtual void removeFont(IGUIFont *font);
 
-    /**
-     * @brief Get built-in font
-     * @return Default font
-     */
+    // ! returns default font
     virtual IGUIFont* getBuiltInFont() const;
 
-    /**
-     * @brief Get sprite bank
-     * @param filename Sprite bank file
-     * @return Sprite bank
-     */
+    // ! returns the sprite bank
     virtual IGUISpriteBank* getSpriteBank(const io::path &filename);
 
-    /**
-     * @brief Create empty sprite bank
-     * @param name Bank name
-     * @return New sprite bank
-     */
+    // ! returns the sprite bank
     virtual IGUISpriteBank* addEmptySpriteBank(const io::path &name);
 
-    /**
-     * @brief Add button
-     * @param rectangle Button rectangle
-     * @param parent Parent element
-     * @param id Button ID
-     * @param text Button text
-     * @param tooltiptext Tooltip text
-     * @return New button
-     */
+    // ! adds an button. The returned pointer must not be dropped.
     virtual IGUIButton* addButton(const core::rect<s32> &rectangle, IGUIElement *parent = 0, s32 id = -1, const wchar_t *text = 0, const wchar_t *tooltiptext = 0);
 
     // ! adds a window. The returned pointer must not be dropped.

@@ -13,39 +13,26 @@ namespace scene
 {
 class CAnimatedMeshMD2;
 
-//! Meshloader capable of loading MD2 files
+// ! Meshloader capable of loading MD2 files
 class CMD2MeshFileLoader : public IMeshLoader
 {
 public:
 
-    /**
-     * @brief Constructor
-     */
+    // ! Constructor
     CMD2MeshFileLoader();
 
-    /**
-     * @brief Check if the file can be loaded based on extension
-     * @param filename The file name to check
-     * @return true if the file extension is loadable by this loader
-     */
+    // ! returns true if the file maybe is able to be loaded by this class
+    // ! based on the file extension (e.g. ".bsp")
     virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-    /**
-     * @brief Create an animated mesh from the MD2 file
-     * @param file Pointer to the file to load
-     * @return Pointer to the created animated mesh, or 0 if loading failed
-     * @note The returned mesh must be dropped by the caller when no longer needed
-     * @see IAnimatedMesh::drop()
-     */
+    // ! creates/loads an animated mesh from the file.
+    // ! \return Pointer to the created mesh. Returns 0 if loading failed.
+    // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+    // ! See IReferenceCounted::drop() for more information.
     virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
 private:
-    /**
-     * @brief Load file data into the MD2 mesh
-     * @param file Pointer to the file to load
-     * @param mesh Pointer to the target mesh
-     * @return true if loading succeeded
-     */
+    // ! Loads the file data into the mesh
     bool loadFile(io::IReadFile *file, CAnimatedMeshMD2 *mesh);
 };
 }   // end namespace scene

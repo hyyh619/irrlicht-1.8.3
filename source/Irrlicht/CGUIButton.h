@@ -16,209 +16,121 @@ namespace irr
 {
 namespace gui
 {
-
-/**
- * @brief Button GUI element
- * 
- * A clickable button control with support for images,
- * sprites, push-button behavior, and customization.
- */
 class CGUIButton : public IGUIButton
 {
 public:
 
-    /**
-     * @brief Constructor
-     * @param environment GUI environment
-     * @param parent Parent element
-     * @param id Element ID
-     * @param rectangle Button rectangle
-     * @param noclip Disable clipping
-     */
+    // ! constructor
     CGUIButton(IGUIEnvironment *environment, IGUIElement *parent,
                s32 id, core::rect<s32> rectangle, bool noclip = false);
 
-    /**
-     * @brief Destructor
-     */
+    // ! destructor
     virtual ~CGUIButton();
 
-    /**
-     * @brief Handle input events
-     * @param event Input event
-     * @return true if event was handled
-     */
+    // ! called if an event happened.
     virtual bool OnEvent(const SEvent &event);
 
-    /**
-     * @brief Draw the button
-     */
+    // ! draws the element and its children
     virtual void draw();
 
-    /**
-     * @brief Set override font
-     * @param font Font to use (0 = use skin font)
-     */
+    // ! sets another skin independent font. if this is set to zero, the button uses the font of the skin.
     virtual void setOverrideFont(IGUIFont *font = 0);
 
-    /**
-     * @brief Get override font
-     * @return Override font or 0
-     */
+    // ! Gets the override font (if any)
     virtual IGUIFont* getOverrideFont() const;
 
-    /**
-     * @brief Get active font
-     * @return Font currently being used
-     */
+    // ! Get the font which is used right now for drawing
     virtual IGUIFont* getActiveFont() const;
 
-    /**
-     * @brief Set button image
-     * @param image Texture to display
-     */
+    // ! Sets an image which should be displayed on the button when it is in normal state.
     virtual void setImage(video::ITexture *image = 0);
 
-    /**
-     * @brief Set button image with position
-     * @param image Texture to display
-     * @param pos Image rectangle
-     */
+    // ! Sets an image which should be displayed on the button when it is in normal state.
     virtual void setImage(video::ITexture *image, const core::rect<s32> &pos);
 
-    /**
-     * @brief Set pressed state image
-     * @param image Texture to display when pressed
-     */
+    // ! Sets an image which should be displayed on the button when it is in pressed state.
     virtual void setPressedImage(video::ITexture *image = 0);
 
-    /**
-     * @brief Set pressed state image with position
-     * @param image Texture to display when pressed
-     * @param pos Image rectangle
-     */
+    // ! Sets an image which should be displayed on the button when it is in pressed state.
     virtual void setPressedImage(video::ITexture *image, const core::rect<s32> &pos);
 
-    /**
-     * @brief Set sprite bank
-     * @param bank Sprite bank to use
-     */
+    // ! Sets the sprite bank used by the button
     virtual void setSpriteBank(IGUISpriteBank *bank = 0);
 
-    /**
-     * @brief Set button sprite
-     * @param state Button state
-     * @param index Sprite index in bank
-     * @param color Sprite color
-     * @param loop Loop animation
+    // ! Sets the animated sprite for a specific button state
+    /** \param index: Number of the sprite within the sprite bank, use -1 for no sprite
+       \param state: State of the button to set the sprite for
+       \param index: The sprite number from the current sprite bank
+       \param color: The color of the sprite
      */
     virtual void setSprite(EGUI_BUTTON_STATE state, s32 index,
                            video::SColor color = video::SColor(255, 255, 255, 255), bool loop = false);
 
-    /**
-     * @brief Set push button mode
-     * @param isPushButton true for toggle behavior
-     */
+    // ! Sets if the button should behave like a push button. Which means it
+    // ! can be in two states: Normal or Pressed. With a click on the button,
+    // ! the user can change the state of the button.
     virtual void setIsPushButton(bool isPushButton = true);
 
-    /**
-     * @brief Check if push button
-     * @return true if push button mode
-     */
+    // ! Checks whether the button is a push button
     virtual bool isPushButton() const;
 
-    /**
-     * @brief Set pressed state
-     * @param pressed Pressed state
-     */
+    // ! Sets the pressed state of the button if this is a pushbutton
     virtual void setPressed(bool pressed = true);
 
-    /**
-     * @brief Check if pressed
-     * @return true if currently pressed
-     */
+    // ! Returns if the button is currently pressed
     virtual bool isPressed() const;
 
-    /**
-     * @brief Set border drawing
-     * @param border Draw border flag
-     */
+    // ! Sets if the button should use the skin to draw its border
     virtual void setDrawBorder(bool border = true);
 
-    /**
-     * @brief Check if border is drawn
-     * @return true if border is drawn
-     */
+    // ! Checks if the button face and border are being drawn
     virtual bool isDrawingBorder() const;
 
-    /**
-     * @brief Set alpha channel usage
-     * @param useAlphaChannel Use alpha channel
-     */
+    // ! Sets if the alpha channel should be used for drawing images on the button (default is false)
     virtual void setUseAlphaChannel(bool useAlphaChannel = true);
 
-    /**
-     * @brief Check alpha channel usage
-     * @return true if alpha channel is used
-     */
+    // ! Checks if the alpha channel should be used for drawing images on the button
     virtual bool isAlphaChannelUsed() const;
 
-    /**
-     * @brief Set image scaling
-     * @param scaleImage Scale image to fit button
-     */
+    // ! Sets if the button should scale the button images to fit
     virtual void setScaleImage(bool scaleImage = true);
 
-    /**
-     * @brief Check if image scaling
-     * @return true if images are scaled
-     */
+    // ! Checks whether the button scales the used images
     virtual bool isScalingImage() const;
 
-    /**
-     * @brief Serialize element attributes
-     * @param out Output attributes
-     * @param options Read/write options
-     */
+    // ! Writes attributes of the element.
     virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const;
 
-    /**
-     * @brief Deserialize element attributes
-     * @param in Input attributes
-     * @param options Read/write options
-     */
+    // ! Reads attributes of the element
     virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options);
 
 private:
 
-    /**
-     * @brief Button sprite data
-     */
     struct ButtonSprite
     {
-        s32           Index;         ///< Sprite index
-        video::SColor Color;        ///< Sprite color
-        bool          Loop;         ///< Animation loop
+        s32           Index;
+        video::SColor Color;
+        bool          Loop;
     };
 
-    ButtonSprite ButtonSprites[EGBS_COUNT];  ///< Sprites for each state
+    ButtonSprite ButtonSprites[EGBS_COUNT];
 
-    IGUISpriteBank *SpriteBank;  ///< Sprite bank
-    IGUIFont       *OverrideFont; ///< Override font
+    IGUISpriteBank *SpriteBank;
+    IGUIFont       *OverrideFont;
 
-    video::ITexture *Image;         ///< Normal image
-    video::ITexture *PressedImage;  ///< Pressed image
+    video::ITexture *Image;
+    video::ITexture *PressedImage;
 
-    core::rect<s32> ImageRect;         ///< Normal image rect
-    core::rect<s32> PressedImageRect;  ///< Pressed image rect
+    core::rect<s32> ImageRect;
+    core::rect<s32> PressedImageRect;
 
-    u32 ClickTime, HoverTime, FocusTime;  ///< Timing for events
+    u32 ClickTime, HoverTime, FocusTime;
 
-    bool IsPushButton;    ///< Push button mode
-    bool Pressed;         ///< Pressed state
-    bool UseAlphaChannel; ///< Use alpha channel
-    bool DrawBorder;      ///< Draw border
-    bool ScaleImage;      ///< Scale image
+    bool IsPushButton;
+    bool Pressed;
+    bool UseAlphaChannel;
+    bool DrawBorder;
+    bool ScaleImage;
 };
 }   // end namespace gui
 } // end namespace irr

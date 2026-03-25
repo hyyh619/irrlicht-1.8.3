@@ -18,111 +18,59 @@ namespace irr
 {
 namespace scene
 {
-//! Meshloader capable of loading .irrmesh meshes, the Irrlicht Engine mesh format for static meshes
+// ! Meshloader capable of loading .irrmesh meshes, the Irrlicht Engine mesh format for static meshes
 class CIrrMeshFileLoader : public IMeshLoader
 {
 public:
 
-    /**
-     * @brief Constructor
-     * @param smgr Pointer to the scene manager
-     * @param fs Pointer to the file system
-     */
+    // ! Constructor
     CIrrMeshFileLoader(scene::ISceneManager *smgr, io::IFileSystem *fs);
 
-    /**
-     * @brief Check if the file can be loaded based on extension
-     * @param filename The file name to check
-     * @return true if the file extension is loadable by this loader
-     */
+    // ! returns true if the file maybe is able to be loaded by this class
+    // ! based on the file extension (e.g. ".cob")
     virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-    /**
-     * @brief Create an animated mesh from the IrrMesh file
-     * @param file Pointer to the file to load
-     * @return Pointer to the created animated mesh, or 0 if loading failed
-     * @note The returned mesh must be dropped by the caller when no longer needed
-     * @see IAnimatedMesh::drop()
-     */
+    // ! creates/loads an animated mesh from the file.
+    // ! \return Pointer to the created mesh. Returns 0 if loading failed.
+    // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+    // ! See IReferenceCounted::drop() for more information.
     virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
 private:
 
-    /**
-     * @brief Read mesh section and create mesh
-     * @param reader XML reader positioned at mesh element
-     * @return Pointer to created animated mesh
-     */
+    // ! reads a mesh sections and creates a mesh from it
     IAnimatedMesh* readMesh(io::IXMLReader *reader);
 
-    /**
-     * @brief Read mesh buffer from XML
-     * @param reader XML reader
-     * @return Pointer to created mesh buffer
-     */
+    // ! reads a mesh sections and creates a mesh buffer from it
     IMeshBuffer* readMeshBuffer(io::IXMLReader *reader);
 
-    /**
-     * @brief Skip unknown section in XML
-     * @param reader XML reader
-     * @param reportSkipping Whether to log skipping
-     */
+    // ! skips an (unknown) section in the irrmesh file
     void skipSection(io::IXMLReader *reader, bool reportSkipping);
 
-    /**
-     * @brief Read material from XML element
-     * @param reader XML reader positioned at material element
-     */
+    // ! reads a <material> element and stores it in the material section
     void readMaterial(io::IXMLReader *reader);
 
-    /**
-     * @brief Parse float from character pointer
-     * @param p Pointer to pointer to parse (will be advanced)
-     * @return Parsed float value
-     */
+    // ! parses a float from a char pointer and moves the pointer to
+    // ! the end of the parsed float
     inline f32 readFloat(const c8 **p);
 
-    /**
-     * @brief Parse integer from character pointer
-     * @param p Pointer to pointer to parse (will be advanced)
-     * @return Parsed integer value
-     */
+    // ! parses an int from a char pointer and moves the pointer to
+    // ! the end of the parsed float
     inline s32 readInt(const c8 **p);
 
-    /**
-     * @brief Find next non-whitespace character
-     * @param p Pointer to pointer to advance
-     */
+    // ! places pointer to next begin of a token
     void findNextNoneWhiteSpace(const c8 **p);
 
-    /**
-     * @brief Skip current non-whitespace token
-     * @param p Pointer to pointer to advance
-     */
+    // ! places pointer to next begin of a token
     void skipCurrentNoneWhiteSpace(const c8 **p);
 
-    /**
-     * @brief Read array of floats from XML element
-     * @param reader XML reader
-     * @param floats Array to store floats
-     * @param count Number of floats to read
-     */
+    // ! reads floats from inside of xml element until end of xml element
     void readFloatsInsideElement(io::IXMLReader *reader, f32 *floats, u32 count);
 
-    /**
-     * @brief Read mesh buffer vertices
-     * @param reader XML reader
-     * @param vertexCount Number of vertices
-     * @param sbuffer Dynamic mesh buffer to populate
-     */
+    // ! read the mesh buffers
     void readMeshBuffer(io::IXMLReader *reader, int vertexCount, CDynamicMeshBuffer *sbuffer);
 
-    /**
-     * @brief Read index buffer
-     * @param reader XML reader
-     * @param indexCount Number of indices
-     * @param indices Index buffer to populate
-     */
+    // ! read indices
     void readIndices(io::IXMLReader *reader, int indexCount, IIndexBuffer &indices);
 
 

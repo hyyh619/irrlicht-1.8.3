@@ -2,14 +2,6 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-/**
- * @file COpenGLTexture.h
- * @brief OpenGL texture implementation for the Irrlicht Engine.
- * This file contains the COpenGLTexture class which provides OpenGL-specific
- * texture handling functionality, including mipmap management, render targets,
- * and FrameBufferObject (FBO) support.
- */
-
 #ifndef __C_OPEN_GL_TEXTURE_H_INCLUDED__
 #define __C_OPEN_GL_TEXTURE_H_INCLUDED__
 
@@ -52,118 +44,83 @@ namespace irr
 namespace video
 {
 class COpenGLDriver;
-
-//! OpenGL texture.
-/**
- * @brief COpenGLTexture implements ITexture for OpenGL rendering.
- * This class manages OpenGL texture objects, including creation from images,
- * mipmap generation, render target support, and hardware texture binding.
- */
+// ! OpenGL texture.
 class COpenGLTexture : public ITexture
 {
 public:
 
-    /** @brief Constructor
-     * @param surface The image surface to create the texture from
-     * @param name The name/path of the texture
-     * @param mipmapData Optional pointer to pre-generated mipmap data
-     * @param driver Pointer to the OpenGL driver instance
-     */
+    // ! constructor
     COpenGLTexture(IImage *surface, const io::path &name, void *mipmapData = 0, COpenGLDriver *driver = 0);
 
-    //! destructor
+    // ! destructor
     virtual ~COpenGLTexture();
 
-    /** @brief Lock the texture for CPU access
-     * @param mode Lock mode - read, write, or both
-     * @param mipmapLevel Which mip level to lock (0 = base)
-     * @return Pointer to the locked texture data
-     */
+    // ! lock function
     virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel = 0);
 
-    //! unlock function
+    // ! unlock function
     virtual void unlock();
 
-    //! Returns original size of the texture (image).
+    // ! Returns original size of the texture (image).
     virtual const core::dimension2d<u32>&getOriginalSize() const;
 
-    //! Returns size of the texture.
+    // ! Returns size of the texture.
     virtual const core::dimension2d<u32>&getSize() const;
 
-    //! returns driver type of texture (=the driver, that created it)
+    // ! returns driver type of texture (=the driver, that created it)
     virtual E_DRIVER_TYPE getDriverType() const;
 
-    //! returns color format of texture
+    // ! returns color format of texture
     virtual ECOLOR_FORMAT getColorFormat() const;
 
-    //! returns pitch of texture (in bytes)
+    // ! returns pitch of texture (in bytes)
     virtual u32 getPitch() const;
 
-    //! return open gl texture name
+    // ! return open gl texture name
     GLuint getOpenGLTextureName() const;
 
-    //! return whether this texture has mipmaps
+    // ! return whether this texture has mipmaps
     virtual bool hasMipMaps() const;
 
-    /** @brief Regenerates the mip map levels of the texture.
-     * Useful after locking and modifying the texture
-     * @param mipmapData Pointer to raw mipmap data, including all necessary mip levels, 
-     *        in the same format as the main texture image. If not set the mipmaps are 
-     *        derived from the main image.
-     */
+    // ! Regenerates the mip map levels of the texture.
+    /** Useful after locking and modifying the texture
+       \param mipmapData Pointer to raw mipmap data, including all necessary mip levels, in the same format as the main texture image. If not set the mipmaps are derived from the main image. */
     virtual void regenerateMipMapLevels(void *mipmapData = 0);
 
-    //! Is it a render target?
+    // ! Is it a render target?
     virtual bool isRenderTarget() const;
 
-    //! Is it a FrameBufferObject?
+    // ! Is it a FrameBufferObject?
     virtual bool isFrameBufferObject() const;
 
-    //! Bind RenderTargetTexture
+    // ! Bind RenderTargetTexture
     virtual void bindRTT();
 
-    //! Unbind RenderTargetTexture
+    // ! Unbind RenderTargetTexture
     virtual void unbindRTT();
 
-    /** @brief Sets whether this texture is intended to be used as a render target.
-     * @param isTarget True to enable render target mode
-     */
+    // ! sets whether this texture is intended to be used as a render target.
     void setIsRenderTarget(bool isTarget);
 
 protected:
 
-    /** @brief Protected constructor for derived classes
-     * Creates the object with basic setup but does not create an OpenGL texture name.
-     * @param name The texture name/path
-     * @param driver Pointer to the OpenGL driver
-     */
+    // ! protected constructor with basic setup, no GL texture name created, for derived classes
     COpenGLTexture(const io::path &name, COpenGLDriver *driver);
 
-    /** @brief Get the desired color format based on texture creation flags
-     * @param format The source color format
-     * @return The optimal color format for OpenGL
-     */
+    // ! get the desired color format based on texture creation flags and the input format.
     ECOLOR_FORMAT getBestColorFormat(ECOLOR_FORMAT format);
 
-    /** @brief Get OpenGL color format parameters from Irrlicht color format
-     * @param format The Irrlicht color format
-     * @param filtering Reference to store filtering mode
-     * @param colorformat Reference to store OpenGL color format
-     * @param type Reference to store OpenGL pixel type
-     */
+    // ! Get the OpenGL color format parameters based on the given Irrlicht color format
     GLint getOpenGLFormatAndParametersFromColorFormat(
         ECOLOR_FORMAT format, GLint &filtering, GLenum &colorformat, GLenum &type);
 
-    /** @brief Get important properties from the image
-     * @param image The source image to analyze
-     */
+    // ! get important numbers of the image and hw texture
     void getImageValues(IImage *image);
 
-    /** @brief Upload texture data to OpenGL
-     * @param newTexture True if called for newly created texture first time
-     * @param mipmapData Pointer to raw mipmap data
-     * @param mipLevel If non-zero, only that specific miplevel is updated
-     */
+    // ! copies the texture into an OpenGL texture.
+    /** \param newTexture True if method is called for a newly created texture for the first time. Otherwise call with false to improve memory handling.
+       \param mipmapData Pointer to raw mipmap data, including all necessary mip levels, in the same format as the main texture image.
+       \param mipLevel If set to non-zero, only that specific miplevel is updated, using the MipImage member. */
     void uploadTexture(bool newTexture = false, void *mipmapData = 0, u32 mipLevel = 0);
 
     core::dimension2d<u32> ImageSize;

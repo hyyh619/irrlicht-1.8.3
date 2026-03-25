@@ -12,158 +12,93 @@ namespace irr
 {
 namespace scene
 {
-
-/**
- * @brief Mesh scene node for rendering 3D meshes
- * 
- * Scene node that displays a mesh with configurable materials
- * and optional shadow volume.
- */
 class CMeshSceneNode : public IMeshSceneNode
 {
 public:
 
-    /**
-     * @brief Constructor
-     * @param mesh Mesh to display
-     * @param parent Parent scene node
-     * @param mgr Scene manager
-     * @param id Node ID
-     * @param position Position
-     * @param rotation Rotation
-     * @param scale Scale
-     */
+    // ! constructor
     CMeshSceneNode(IMesh *mesh, ISceneNode *parent, ISceneManager *mgr,    s32 id,
                    const core::vector3df &position = core::vector3df(0, 0, 0),
                    const core::vector3df &rotation = core::vector3df(0, 0, 0),
                    const core::vector3df &scale = core::vector3df(1.0f, 1.0f, 1.0f));
 
-    /**
-     * @brief Destructor
-     */
+    // ! destructor
     virtual ~CMeshSceneNode();
 
-    /**
-     * @brief Called when node is registered to scene
-     */
+    // ! frame
     virtual void OnRegisterSceneNode();
 
-    /**
-     * @brief Render the mesh
-     */
+    // ! renders the node.
     virtual void render();
 
-    /**
-     * @brief Get bounding box
-     * @return Axis-aligned bounding box
-     */
+    // ! returns the axis aligned bounding box of this node
     virtual const core::aabbox3d<f32>&getBoundingBox() const;
 
-    /**
-     * @brief Get material by index
-     * @param i Material index
-     * @return Reference to material
-     */
+    // ! returns the material based on the zero based index i. To get the amount
+    // ! of materials used by this scene node, use getMaterialCount().
+    // ! This function is needed for inserting the node into the scene hirachy on a
+    // ! optimal position for minimizing renderstate changes, but can also be used
+    // ! to directly modify the material of a scene node.
     virtual video::SMaterial&getMaterial(u32 i);
 
-    /**
-     * @brief Get material count
-     * @return Number of materials
-     */
+    // ! returns amount of materials used by this scene node.
     virtual u32 getMaterialCount() const;
 
-    /**
-     * @brief Serialize node attributes
-     * @param out Output attributes
-     * @param options Read/write options
-     */
+    // ! Writes attributes of the scene node.
     virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const;
 
-    /**
-     * @brief Deserialize node attributes
-     * @param in Input attributes
-     * @param options Read/write options
-     */
+    // ! Reads attributes of the scene node.
     virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0);
 
-    /**
-     * @brief Get node type
-     * @return Scene node type identifier
-     */
+    // ! Returns type of the scene node
     virtual ESCENE_NODE_TYPE getType() const
     {
         return ESNT_MESH;
     }
 
-    /**
-     * @brief Set mesh
-     * @param mesh New mesh to display
-     */
+    // ! Sets a new mesh
     virtual void setMesh(IMesh *mesh);
 
-    /**
-     * @brief Get current mesh
-     * @return Current mesh
-     */
+    // ! Returns the current mesh
     virtual IMesh* getMesh(void)
     {
         return Mesh;
     }
 
-    /**
-     * @brief Add shadow volume
-     * @param shadowMesh Mesh for shadow volume
-     * @param id Shadow node ID
-     * @param zfailmethod Use zfail method
-     * @param infinity Shadow infinity distance
-     * @return Shadow volume scene node
-     */
+    // ! Creates shadow volume scene node as child of this node
+    // ! and returns a pointer to it.
     virtual IShadowVolumeSceneNode* addShadowVolumeSceneNode(const IMesh *shadowMesh,
                                                              s32 id, bool zfailmethod = true, f32 infinity = 10000.0f);
 
-    /**
-     * @brief Set read-only materials mode
-     * @param readonly true for read-only materials
-     */
+    // ! Sets if the scene node should not copy the materials of the mesh but use them in a read only style.
+    /* In this way it is possible to change the materials a mesh causing all mesh scene nodes
+       referencing this mesh to change too. */
     virtual void setReadOnlyMaterials(bool readonly);
 
-    /**
-     * @brief Check if materials are read-only
-     * @return true if materials are read-only
-     */
+    // ! Returns if the scene node should not copy the materials of the mesh but use them in a read only style
     virtual bool isReadOnlyMaterials() const;
 
-    /**
-     * @brief Clone this node and children
-     * @param newParent New parent node
-     * @param newManager New scene manager
-     * @return Cloned scene node
-     */
+    // ! Creates a clone of this scene node and its children.
     virtual ISceneNode* clone(ISceneNode *newParent = 0, ISceneManager *newManager = 0);
 
-    /**
-     * @brief Remove child node
-     * @param child Child to remove
-     * @return true if child was removed
-     */
+    // ! Removes a child from this scene node.
+    // ! Implemented here, to be able to remove the shadow properly, if there is one,
+    // ! or to remove attached childs.
     virtual bool removeChild(ISceneNode *child);
 
 protected:
 
-    /**
-     * @brief Copy materials from mesh
-     */
     void copyMaterials();
 
-    core::array<video::SMaterial> Materials;    ///< Material array
-    core::aabbox3d<f32>           Box;          ///< Bounding box
-    video::SMaterial              ReadOnlyMaterial; ///< Read-only material
+    core::array<video::SMaterial> Materials;
+    core::aabbox3d<f32>           Box;
+    video::SMaterial              ReadOnlyMaterial;
 
-    IMesh                  *Mesh;               ///< Mesh to render
-    IShadowVolumeSceneNode *Shadow;            ///< Shadow volume
+    IMesh                  *Mesh;
+    IShadowVolumeSceneNode *Shadow;
 
-    s32  PassCount;          ///< Render pass count
-    bool ReadOnlyMaterials;  ///< Read-only materials flag
+    s32  PassCount;
+    bool ReadOnlyMaterials;
 };
 }   // end namespace scene
 } // end namespace irr

@@ -34,133 +34,52 @@ namespace video
 {
 class COpenGLTexture;
 
-/**
- * @brief OpenGL rendering driver
- * 
- * Hardware-accelerated OpenGL rendering driver.
- * Provides 3D graphics rendering via OpenGL API with support for:
- * - Hardware buffers (VBOs)
- * - Occlusion queries
- * - Multiple render targets
- * - Shader materials (GLSL, Cg)
- * - Texture management
- */
 class COpenGLDriver : public CNullDriver, public IMaterialRendererServices, public COpenGLExtensionHandler
 {
     friend class COpenGLTexture;
 public:
 
         #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-    /**
-     * @brief Constructor (Windows)
-     * @param params Creation parameters
-     * @param io File system
-     * @param device Window device
-     */
     COpenGLDriver(const SIrrlichtCreationParameters &params, io::IFileSystem *io, CIrrDeviceWin32 *device);
-    
-    /**
-     * @brief Initialize driver (Windows)
-     * @param device Window device
-     * @return true if initialization successful
-     */
+    // ! inits the windows specific parts of the open gl driver
     bool initDriver(CIrrDeviceWin32 *device);
-    
-    /**
-     * @brief Change render context
-     * @param videoData Video data
-     * @param device Window device
-     * @return true if successful
-     */
     bool changeRenderContext(const SExposedVideoData &videoData, CIrrDeviceWin32 *device);
         #endif
 
         #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-    /**
-     * @brief Constructor (Linux)
-     * @param params Creation parameters
-     * @param io File system
-     * @param device Window device
-     */
     COpenGLDriver(const SIrrlichtCreationParameters &params, io::IFileSystem *io, CIrrDeviceLinux *device);
-    
-    /**
-     * @brief Initialize driver (Linux)
-     * @param device Window device
-     * @return true if initialization successful
-     */
+    // ! inits the GLX specific parts of the open gl driver
     bool initDriver(CIrrDeviceLinux *device);
-    
-    /**
-     * @brief Change render context
-     * @param videoData Video data
-     * @param device Window device
-     * @return true if successful
-     */
     bool changeRenderContext(const SExposedVideoData &videoData, CIrrDeviceLinux *device);
         #endif
 
         #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-    /**
-     * @brief Constructor (SDL)
-     * @param params Creation parameters
-     * @param io File system
-     * @param device Window device
-     */
     COpenGLDriver(const SIrrlichtCreationParameters &params, io::IFileSystem *io, CIrrDeviceSDL *device);
         #endif
 
         #ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
-    /**
-     * @brief Constructor (macOS)
-     * @param params Creation parameters
-     * @param io File system
-     * @param device Window device
-     */
     COpenGLDriver(const SIrrlichtCreationParameters &params, io::IFileSystem *io, CIrrDeviceMacOSX *device);
         #endif
 
-    /**
-     * @brief Change render context (generic)
-     * @param videoData Video data
-     * @param device Device pointer
-     * @return false - not implemented for this platform
-     */
+    // ! generic version which overloads the unimplemented versions
     bool changeRenderContext(const SExposedVideoData &videoData, void *device)
     {
         return false;
     }
 
-    /**
-     * @brief Destructor
-     */
+    // ! destructor
     virtual ~COpenGLDriver();
 
-    /**
-     * @brief Begin rendering frame
-     * @param backBuffer Clear back buffer
-     * @param zBuffer Clear Z buffer
-     * @param color Clear color
-     * @param videoData Video data
-     * @param sourceRect Source rectangle
-     * @return true if successful
-     */
+    // ! clears the zbuffer
     virtual bool beginScene(bool backBuffer = true, bool zBuffer = true,
                             SColor color = SColor(255, 0, 0, 0),
                             const SExposedVideoData &videoData = SExposedVideoData(),
                             core::rect<s32> *sourceRect = 0);
 
-    /**
-     * @brief Present rendered frame
-     * @return true if successful
-     */
+    // ! presents the rendered scene on the screen, returns false if failed
     virtual bool endScene();
 
-    /**
-     * @brief Set transformation matrix
-     * @param state Transformation state
-     * @param mat Transformation matrix
-     */
+    // ! sets transformation
     virtual void setTransform(E_TRANSFORMATION_STATE state, const core::matrix4 &mat);
 
 

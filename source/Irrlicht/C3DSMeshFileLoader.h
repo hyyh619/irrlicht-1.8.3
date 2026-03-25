@@ -16,37 +16,25 @@ namespace irr
 {
 namespace scene
 {
-//! Meshloader capable of loading 3ds meshes.
+// ! Meshloader capable of loading 3ds meshes.
 class C3DSMeshFileLoader : public IMeshLoader
 {
 public:
 
-    /**
-     * @brief Constructor
-     * @param smgr Pointer to the scene manager
-     * @param fs Pointer to the file system
-     */
+    // ! Constructor
     C3DSMeshFileLoader(ISceneManager *smgr, io::IFileSystem *fs);
 
-    /**
-     * @brief Destructor
-     */
+    // ! destructor
     virtual ~C3DSMeshFileLoader();
 
-    /**
-     * @brief Check if the file can be loaded based on extension
-     * @param filename The file name to check
-     * @return true if the file extension is loadable by this loader
-     */
+    // ! returns true if the file maybe is able to be loaded by this class
+    // ! based on the file extension (e.g. ".cob")
     virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-    /**
-     * @brief Create an animated mesh from the 3DS file
-     * @param file Pointer to the file to load
-     * @return Pointer to the created animated mesh, or 0 if loading failed
-     * @note The returned mesh must be dropped by the caller when no longer needed
-     * @see IAnimatedMesh::drop()
-     */
+    // ! creates/loads an animated mesh from the file.
+    // ! \return Pointer to the created mesh. Returns 0 if loading failed.
+    // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+    // ! See IReferenceCounted::drop() for more information.
     virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
 private:
@@ -54,32 +42,23 @@ private:
 // byte-align structures
 #include "irrpack.h"
 
-    /**
-     * @brief Header structure for 3DS chunks
-     */
     struct ChunkHeader
     {
-        u16 id;      ///< Chunk identifier
-        s32 length;  ///< Length of chunk data
+        u16 id;
+        s32 length;
     } PACK_STRUCT;
 
 // Default alignment
 #include "irrunpack.h"
 
-    /**
-     * @brief Container for chunk data during parsing
-     */
     struct ChunkData
     {
         ChunkData() : read(0) {}
 
-        ChunkHeader header;  ///< The chunk header
-        s32         read;    ///< Number of bytes read
+        ChunkHeader header;
+        s32         read;
     };
 
-    /**
-     * @brief Material data for 3DS objects
-     */
     struct SCurrentMaterial
     {
         void clear()
@@ -98,15 +77,12 @@ private:
             Strength[4] = 0.f;
         }
 
-        video::SMaterial Material;      ///< The material properties
-        core::stringc    Name;           ///< Material name
-        core::stringc    Filename[5];   ///< Texture filenames (up to 5)
-        f32              Strength[5];   ///< Texture strengths
+        video::SMaterial Material;
+        core::stringc    Name;
+        core::stringc    Filename[5];
+        f32              Strength[5];
     };
 
-    /**
-     * @brief Material group representing faces with the same material
-     */
     struct SMaterialGroup
     {
         SMaterialGroup() : faceCount(0), faces(0) {};
@@ -138,9 +114,9 @@ private:
                 faces[i] = o.faces[i];
         }
 
-        core::stringc MaterialName;  ///< Name of the material
-        u16           faceCount;      ///< Number of faces using this material
-        u16           *faces;         ///< Array of face indices
+        core::stringc MaterialName;
+        u16           faceCount;
+        u16           *faces;
     };
 
     bool readChunk(io::IReadFile *file, ChunkData *parent);

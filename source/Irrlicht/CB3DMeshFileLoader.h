@@ -20,47 +20,32 @@ namespace irr
 {
 namespace scene
 {
-//! Meshloader for B3D format
+// ! Meshloader for B3D format
 class CB3DMeshFileLoader : public IMeshLoader
 {
 public:
 
-    /**
-     * @brief Constructor
-     * @param smgr Pointer to the scene manager
-     */
+    // ! Constructor
     CB3DMeshFileLoader(scene::ISceneManager *smgr);
 
-    /**
-     * @brief Check if the file can be loaded based on extension
-     * @param filename The file name to check
-     * @return true if the file extension is loadable by this loader
-     */
+    // ! returns true if the file maybe is able to be loaded by this class
+    // ! based on the file extension (e.g. ".bsp")
     virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-    /**
-     * @brief Create an animated mesh from the B3D file
-     * @param file Pointer to the file to load
-     * @return Pointer to the created animated mesh, or 0 if loading failed
-     * @note The returned mesh must be dropped by the caller when no longer needed
-     * @see IAnimatedMesh::drop()
-     */
+    // ! creates/loads an animated mesh from the file.
+    // ! \return Pointer to the created mesh. Returns 0 if loading failed.
+    // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+    // ! See IReferenceCounted::drop() for more information.
     virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
 private:
 
-    /**
-     * @brief B3D chunk header structure
-     */
     struct SB3dChunkHeader
     {
-        c8  name[4];  ///< Chunk name (4 characters)
-        s32 size;     ///< Chunk size
+        c8  name[4];
+        s32 size;
     };
 
-    /**
-     * @brief B3D chunk data structure
-     */
     struct SB3dChunk
     {
         SB3dChunk(const SB3dChunkHeader &header, long sp)
@@ -72,29 +57,23 @@ private:
             name[3] = header.name[3];
         }
 
-        c8   name[4];          ///< Chunk name
-        s32  length;          ///< Chunk length
-        long startposition;   ///< Starting position in file
+        c8   name[4];
+        s32  length;
+        long startposition;
     };
 
-    /**
-     * @brief B3D texture information
-     */
     struct SB3dTexture
     {
-        core::stringc TextureName;  ///< Texture filename
-        s32           Flags;         ///< Texture flags
-        s32           Blend;         ///< Blend mode
-        f32           Xpos;          ///< X position
-        f32           Ypos;          ///< Y position
-        f32           Xscale;        ///< X scale
-        f32           Yscale;        ///< Y scale
-        f32           Angle;         ///< Rotation angle
+        core::stringc TextureName;
+        s32           Flags;
+        s32           Blend;
+        f32           Xpos;
+        f32           Ypos;
+        f32           Xscale;
+        f32           Yscale;
+        f32           Angle;
     };
 
-    /**
-     * @brief B3D material structure
-     */
     struct SB3dMaterial
     {
         SB3dMaterial() : red(1.0f), green(1.0f),
@@ -104,11 +83,11 @@ private:
             for (u32 i = 0; i<video::MATERIAL_MAX_TEXTURES; ++i)
                 Textures[i] = 0;
         }
-        video::SMaterial Material;                    ///< Irrlicht material
-        f32              red, green, blue, alpha;     ///< Material colors
-        f32              shininess;                   ///< Shininess factor
-        s32              blend, fx;                   ///< Blend mode and effects
-        SB3dTexture      *Textures[video::MATERIAL_MAX_TEXTURES]; ///< Textures
+        video::SMaterial Material;
+        f32              red, green, blue, alpha;
+        f32              shininess;
+        s32              blend, fx;
+        SB3dTexture      *Textures[video::MATERIAL_MAX_TEXTURES];
     };
 
     bool load();
