@@ -5,6 +5,7 @@ Implementation of the Irrlicht Engine including rendering drivers, scene managem
 
 ## STRUCTURE
 ```
+../include         # header files, including interface definition.
 source/Irrlicht/
 ├── aesGladman/    # AES encryption
 ├── bzip2/         # bzip2 compression
