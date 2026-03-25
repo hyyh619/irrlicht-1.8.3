@@ -16,11 +16,10 @@ namespace irr
 {
 namespace gui
 {
-
-//! constructor
-CGUISpinBox::CGUISpinBox(const wchar_t* text, bool border,IGUIEnvironment* environment,
-            IGUIElement* parent, s32 id, const core::rect<s32>& rectangle)
-: IGUISpinBox(environment, parent, id, rectangle),
+// ! constructor
+CGUISpinBox::CGUISpinBox(const wchar_t *text, bool border, IGUIEnvironment *environment,
+                         IGUIElement *parent, s32 id, const core::rect<s32> &rectangle)
+    : IGUISpinBox(environment, parent, id, rectangle),
     EditBox(0), ButtonSpinUp(0), ButtonSpinDown(0), StepSize(1.f),
     RangeMin(-FLT_MAX), RangeMax(FLT_MAX), FormatString(L"%f"),
     DecimalPlaces(-1)
@@ -29,11 +28,11 @@ CGUISpinBox::CGUISpinBox(const wchar_t* text, bool border,IGUIEnvironment* envir
     setDebugName("CGUISpinBox");
     #endif
 
-    CurrentIconColor = video::SColor(255,255,255,255);
+    CurrentIconColor = video::SColor(255, 255, 255, 255);
     s32 ButtonWidth = 16;
 
     ButtonSpinDown = Environment->addButton(
-        core::rect<s32>(rectangle.getWidth() - ButtonWidth, rectangle.getHeight()/2 +1,
+        core::rect<s32>(rectangle.getWidth() - ButtonWidth, rectangle.getHeight() / 2 + 1,
                         rectangle.getWidth(), rectangle.getHeight()), this);
     ButtonSpinDown->grab();
     ButtonSpinDown->setSubElement(true);
@@ -42,7 +41,7 @@ CGUISpinBox::CGUISpinBox(const wchar_t* text, bool border,IGUIEnvironment* envir
 
     ButtonSpinUp = Environment->addButton(
         core::rect<s32>(rectangle.getWidth() - ButtonWidth, 0,
-                        rectangle.getWidth(), rectangle.getHeight()/2), this);
+                        rectangle.getWidth(), rectangle.getHeight() / 2), this);
     ButtonSpinUp->grab();
     ButtonSpinUp->setSubElement(true);
     ButtonSpinUp->setTabStop(false);
@@ -58,13 +57,15 @@ CGUISpinBox::CGUISpinBox(const wchar_t* text, bool border,IGUIEnvironment* envir
 }
 
 
-//! destructor
+// ! destructor
 CGUISpinBox::~CGUISpinBox()
 {
     if (ButtonSpinUp)
         ButtonSpinUp->drop();
+
     if (ButtonSpinDown)
         ButtonSpinDown->drop();
+
     if (EditBox)
         EditBox->drop();
 }
@@ -72,6 +73,7 @@ CGUISpinBox::~CGUISpinBox()
 void CGUISpinBox::refreshSprites()
 {
     IGUISpriteBank *sb = 0;
+
     if (Environment && Environment->getSkin())
     {
         sb = Environment->getSkin()->getSpriteBank();
@@ -79,7 +81,7 @@ void CGUISpinBox::refreshSprites()
 
     if (sb)
     {
-        IGUISkin * skin = Environment->getSkin();
+        IGUISkin *skin = Environment->getSkin();
         CurrentIconColor = skin->getColor(isEnabled() ? EGDC_WINDOW_SYMBOL : EGDC_GRAY_WINDOW_SYMBOL);
         ButtonSpinDown->setSpriteBank(sb);
         ButtonSpinDown->setSprite(EGBS_BUTTON_UP, skin->getIcon(EGDI_SMALL_CURSOR_DOWN), CurrentIconColor);
@@ -113,9 +115,11 @@ void CGUISpinBox::setValue(f32 val)
 
 f32 CGUISpinBox::getValue() const
 {
-    const wchar_t* val = EditBox->getText();
-    if ( !val )
+    const wchar_t *val = EditBox->getText();
+
+    if (!val)
         return 0.f;
+
     core::stringc tmp(val);
     return core::fast_atof(tmp.c_str());
 }
@@ -125,6 +129,7 @@ void CGUISpinBox::setRange(f32 min, f32 max)
 {
     if (max<min)
         core::swap(min, max);
+
     RangeMin = min;
     RangeMax = max;
 
@@ -163,7 +168,7 @@ void CGUISpinBox::setStepSize(f32 step)
 }
 
 
-//! Sets the number of decimal places to display.
+// ! Sets the number of decimal places to display.
 void CGUISpinBox::setDecimalPlaces(s32 places)
 {
     DecimalPlaces = places;
@@ -171,35 +176,40 @@ void CGUISpinBox::setDecimalPlaces(s32 places)
         FormatString = "%f";
     else
     {
-        FormatString = "%.";
+        FormatString  = "%.";
         FormatString += places;
         FormatString += "f";
     }
-    setRange( RangeMin, RangeMax );
+
+    setRange(RangeMin, RangeMax);
     setValue(getValue());
 }
 
 
-bool CGUISpinBox::OnEvent(const SEvent& event)
+bool CGUISpinBox::OnEvent(const SEvent &event)
 {
     if (IsEnabled)
     {
         bool changeEvent = false;
-        switch(event.EventType)
+
+        switch (event.EventType)
         {
         case EET_MOUSE_INPUT_EVENT:
-            switch(event.MouseInput.Event)
+
+            switch (event.MouseInput.Event)
             {
             case EMIE_MOUSE_WHEEL:
-                {
-                    f32 val = getValue() + (StepSize * (event.MouseInput.Wheel < 0 ? -1.f : 1.f));
-                    setValue(val);
-                    changeEvent = true;
-                }
-                break;
+            {
+                f32 val = getValue() + (StepSize * (event.MouseInput.Wheel < 0 ? -1.f : 1.f));
+                setValue(val);
+                changeEvent = true;
+            }
+            break;
+
             default:
                 break;
             }
+
             break;
 
         case EET_GUI_EVENT:
@@ -212,7 +222,7 @@ bool CGUISpinBox::OnEvent(const SEvent& event)
                     setValue(val);
                     changeEvent = true;
                 }
-                else if ( event.GUIEvent.Caller == ButtonSpinDown)
+                else if (event.GUIEvent.Caller == ButtonSpinDown)
                 {
                     f32 val = getValue();
                     val -= StepSize;
@@ -220,6 +230,7 @@ bool CGUISpinBox::OnEvent(const SEvent& event)
                     changeEvent = true;
                 }
             }
+
             if (event.GUIEvent.EventType == EGET_EDITBOX_CHANGED || event.GUIEvent.EventType == EGET_EDITBOX_ENTER)
             {
                 if (event.GUIEvent.Caller == EditBox)
@@ -228,21 +239,24 @@ bool CGUISpinBox::OnEvent(const SEvent& event)
                     changeEvent = true;
                 }
             }
+
             break;
+
         default:
-        break;
+            break;
         }
 
-        if ( changeEvent )
+        if (changeEvent)
         {
             SEvent e;
-            e.EventType = EET_GUI_EVENT;
-            e.GUIEvent.Caller = this;
+            e.EventType        = EET_GUI_EVENT;
+            e.GUIEvent.Caller  = this;
             e.GUIEvent.Element = 0;
 
             e.GUIEvent.EventType = EGET_SPINBOX_CHANGED;
-            if ( Parent )
+            if (Parent)
                 Parent->OnEvent(e);
+
             return true;
         }
     }
@@ -253,15 +267,15 @@ bool CGUISpinBox::OnEvent(const SEvent& event)
 
 void CGUISpinBox::draw()
 {
-    if ( !isVisible() )
+    if (!isVisible())
         return;
 
-    IGUISkin* skin = Environment->getSkin();
+    IGUISkin *skin = Environment->getSkin();
     if (!skin)
         return;
 
     video::SColor iconColor = skin->getColor(isEnabled() ? EGDC_WINDOW_SYMBOL : EGDC_GRAY_WINDOW_SYMBOL);
-    if ( iconColor != CurrentIconColor )
+    if (iconColor != CurrentIconColor)
     {
         refreshSprites();
     }
@@ -272,9 +286,10 @@ void CGUISpinBox::draw()
 void CGUISpinBox::verifyValueRange()
 {
     f32 val = getValue();
-    if ( val+core::ROUNDING_ERROR_f32 < RangeMin )
+
+    if (val + core::ROUNDING_ERROR_f32 < RangeMin)
         val = RangeMin;
-    else if ( val-core::ROUNDING_ERROR_f32 > RangeMax )
+    else if (val - core::ROUNDING_ERROR_f32 > RangeMax)
         val = RangeMax;
     else
         return;
@@ -283,8 +298,8 @@ void CGUISpinBox::verifyValueRange()
 }
 
 
-//! Sets the new caption of the element
-void CGUISpinBox::setText(const wchar_t* text)
+// ! Sets the new caption of the element
+void CGUISpinBox::setText(const wchar_t *text)
 {
     EditBox->setText(text);
     setValue(getValue());
@@ -292,17 +307,18 @@ void CGUISpinBox::setText(const wchar_t* text)
 }
 
 
-//! Returns caption of this element.
+// ! Returns caption of this element.
 const wchar_t* CGUISpinBox::getText() const
 {
     return EditBox->getText();
 }
 
 
-//! Writes attributes of the element.
-void CGUISpinBox::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
+// ! Writes attributes of the element.
+void CGUISpinBox::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
 {
     IGUIElement::serializeAttributes(out, options);
+
     out->addFloat("Min", getMin());
     out->addFloat("Max", getMax());
     out->addFloat("Step", getStepSize());
@@ -310,18 +326,15 @@ void CGUISpinBox::serializeAttributes(io::IAttributes* out, io::SAttributeReadWr
 }
 
 
-//! Reads attributes of the element
-void CGUISpinBox::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
+// ! Reads attributes of the element
+void CGUISpinBox::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
 {
     IGUIElement::deserializeAttributes(in, options);
+
     setRange(in->getAttributeAsFloat("Min"), in->getAttributeAsFloat("Max"));
     setStepSize(in->getAttributeAsFloat("Step"));
     setDecimalPlaces(in->getAttributeAsInt("DecimalPlaces"));
 }
-
-
-} // end namespace gui
+}   // end namespace gui
 } // end namespace irr
-
 #endif // _IRR_COMPILE_WITH_GUI_
-

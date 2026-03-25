@@ -11,11 +11,9 @@ namespace irr
 {
 namespace scene
 {
-
-
-//! constructor
-CCameraSceneNode::CCameraSceneNode(ISceneNode* parent, ISceneManager* mgr, s32 id,
-    const core::vector3df& position, const core::vector3df& lookat)
+// ! constructor
+CCameraSceneNode::CCameraSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
+                                   const core::vector3df &position, const core::vector3df &lookat)
     : ICameraSceneNode(parent, mgr, id, position),
     Target(lookat), UpVector(0.0f, 1.0f, 0.0f), ZNear(1.0f), ZFar(3000.0f),
     InputReceiverEnabled(true), TargetAndRotationAreBound(false)
@@ -27,10 +25,10 @@ CCameraSceneNode::CCameraSceneNode(ISceneNode* parent, ISceneManager* mgr, s32 i
     // set default projection
     Fovy = core::PI / 2.5f;    // Field of view, in radians.
 
-    const video::IVideoDriver* const d = mgr?mgr->getVideoDriver():0;
+    const video::IVideoDriver* const d = mgr ? mgr->getVideoDriver() : 0;
     if (d)
         Aspect = (f32)d->getCurrentRenderTargetSize().Width /
-            (f32)d->getCurrentRenderTargetSize().Height;
+                 (f32)d->getCurrentRenderTargetSize().Height;
     else
         Aspect = 4.0f / 3.0f;    // Aspect ratio.
 
@@ -39,14 +37,14 @@ CCameraSceneNode::CCameraSceneNode(ISceneNode* parent, ISceneManager* mgr, s32 i
 }
 
 
-//! Disables or enables the camera to get key or mouse inputs.
+// ! Disables or enables the camera to get key or mouse inputs.
 void CCameraSceneNode::setInputReceiverEnabled(bool enabled)
 {
     InputReceiverEnabled = enabled;
 }
 
 
-//! Returns if the input receiver of the camera is currently enabled.
+// ! Returns if the input receiver of the camera is currently enabled.
 bool CCameraSceneNode::isInputReceiverEnabled() const
 {
     _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -54,56 +52,56 @@ bool CCameraSceneNode::isInputReceiverEnabled() const
 }
 
 
-//! Sets the projection matrix of the camera.
+// ! Sets the projection matrix of the camera.
 /** The core::matrix4 class has some methods
-to build a projection matrix. e.g: core::matrix4::buildProjectionMatrixPerspectiveFovLH
-\param projection: The new projection matrix of the camera. */
-void CCameraSceneNode::setProjectionMatrix(const core::matrix4& projection, bool isOrthogonal)
+   to build a projection matrix. e.g: core::matrix4::buildProjectionMatrixPerspectiveFovLH
+   \param projection: The new projection matrix of the camera. */
+void CCameraSceneNode::setProjectionMatrix(const core::matrix4 &projection, bool isOrthogonal)
 {
-    IsOrthogonal = isOrthogonal;
-    ViewArea.getTransform ( video::ETS_PROJECTION ) = projection;
+    IsOrthogonal                                  = isOrthogonal;
+    ViewArea.getTransform (video::ETS_PROJECTION) = projection;
 }
 
 
-//! Gets the current projection matrix of the camera
-//! \return Returns the current projection matrix of the camera.
-const core::matrix4& CCameraSceneNode::getProjectionMatrix() const
+// ! Gets the current projection matrix of the camera
+// ! \return Returns the current projection matrix of the camera.
+const core::matrix4&CCameraSceneNode::getProjectionMatrix() const
 {
-    return ViewArea.getTransform ( video::ETS_PROJECTION );
+    return ViewArea.getTransform (video::ETS_PROJECTION);
 }
 
 
-//! Gets the current view matrix of the camera
-//! \return Returns the current view matrix of the camera.
-const core::matrix4& CCameraSceneNode::getViewMatrix() const
+// ! Gets the current view matrix of the camera
+// ! \return Returns the current view matrix of the camera.
+const core::matrix4&CCameraSceneNode::getViewMatrix() const
 {
-    return ViewArea.getTransform ( video::ETS_VIEW );
+    return ViewArea.getTransform (video::ETS_VIEW);
 }
 
 
-//! Sets a custom view matrix affector. The matrix passed here, will be
-//! multiplied with the view matrix when it gets updated.
-//! This allows for custom camera setups like, for example, a reflection camera.
+// ! Sets a custom view matrix affector. The matrix passed here, will be
+// ! multiplied with the view matrix when it gets updated.
+// ! This allows for custom camera setups like, for example, a reflection camera.
 /** \param affector: The affector matrix. */
-void CCameraSceneNode::setViewMatrixAffector(const core::matrix4& affector)
+void CCameraSceneNode::setViewMatrixAffector(const core::matrix4 &affector)
 {
     Affector = affector;
 }
 
 
-//! Gets the custom view matrix affector.
-const core::matrix4& CCameraSceneNode::getViewMatrixAffector() const
+// ! Gets the custom view matrix affector.
+const core::matrix4&CCameraSceneNode::getViewMatrixAffector() const
 {
     return Affector;
 }
 
 
-//! It is possible to send mouse and key events to the camera. Most cameras
-//! may ignore this input, but camera scene nodes which are created for
-//! example with scene::ISceneManager::addMayaCameraSceneNode or
-//! scene::ISceneManager::addFPSCameraSceneNode, may want to get this input
-//! for changing their position, look at target or whatever.
-bool CCameraSceneNode::OnEvent(const SEvent& event)
+// ! It is possible to send mouse and key events to the camera. Most cameras
+// ! may ignore this input, but camera scene nodes which are created for
+// ! example with scene::ISceneManager::addMayaCameraSceneNode or
+// ! scene::ISceneManager::addFPSCameraSceneNode, may want to get this input
+// ! for changing their position, look at target or whatever.
+bool CCameraSceneNode::OnEvent(const SEvent &event)
 {
     if (!InputReceiverEnabled)
         return false;
@@ -121,13 +119,13 @@ bool CCameraSceneNode::OnEvent(const SEvent& event)
 }
 
 
-//! sets the look at target of the camera
-//! \param pos: Look at target of the camera.
-void CCameraSceneNode::setTarget(const core::vector3df& pos)
+// ! sets the look at target of the camera
+// ! \param pos: Look at target of the camera.
+void CCameraSceneNode::setTarget(const core::vector3df &pos)
 {
     Target = pos;
 
-    if(TargetAndRotationAreBound)
+    if (TargetAndRotationAreBound)
     {
         const core::vector3df toTarget = Target - getAbsolutePosition();
         ISceneNode::setRotation(toTarget.getHorizontalAngle());
@@ -135,39 +133,39 @@ void CCameraSceneNode::setTarget(const core::vector3df& pos)
 }
 
 
-//! Sets the rotation of the node.
+// ! Sets the rotation of the node.
 /** This only modifies the relative rotation of the node.
-If the camera's target and rotation are bound ( @see bindTargetAndRotation() )
-then calling this will also change the camera's target to match the rotation.
-\param rotation New rotation of the node in degrees. */
-void CCameraSceneNode::setRotation(const core::vector3df& rotation)
+   If the camera's target and rotation are bound ( @see bindTargetAndRotation() )
+   then calling this will also change the camera's target to match the rotation.
+   \param rotation New rotation of the node in degrees. */
+void CCameraSceneNode::setRotation(const core::vector3df &rotation)
 {
-    if(TargetAndRotationAreBound)
+    if (TargetAndRotationAreBound)
         Target = getAbsolutePosition() + rotation.rotationToDirection();
 
     ISceneNode::setRotation(rotation);
 }
 
 
-//! Gets the current look at target of the camera
-//! \return Returns the current look at target of the camera
-const core::vector3df& CCameraSceneNode::getTarget() const
+// ! Gets the current look at target of the camera
+// ! \return Returns the current look at target of the camera
+const core::vector3df&CCameraSceneNode::getTarget() const
 {
     return Target;
 }
 
 
-//! sets the up vector of the camera
-//! \param pos: New upvector of the camera.
-void CCameraSceneNode::setUpVector(const core::vector3df& pos)
+// ! sets the up vector of the camera
+// ! \param pos: New upvector of the camera.
+void CCameraSceneNode::setUpVector(const core::vector3df &pos)
 {
     UpVector = pos;
 }
 
 
-//! Gets the up vector of the camera.
-//! \return Returns the up vector of the camera.
-const core::vector3df& CCameraSceneNode::getUpVector() const
+// ! Gets the up vector of the camera.
+// ! \return Returns the up vector of the camera.
+const core::vector3df&CCameraSceneNode::getUpVector() const
 {
     return UpVector;
 }
@@ -227,25 +225,26 @@ void CCameraSceneNode::setFOV(f32 f)
 
 void CCameraSceneNode::recalculateProjectionMatrix()
 {
-    ViewArea.getTransform ( video::ETS_PROJECTION ).buildProjectionMatrixPerspectiveFovLH(Fovy, Aspect, ZNear, ZFar);
+    ViewArea.getTransform (video::ETS_PROJECTION).buildProjectionMatrixPerspectiveFovLH(Fovy, Aspect, ZNear, ZFar);
 }
 
 
-//! prerender
+// ! prerender
 void CCameraSceneNode::OnRegisterSceneNode()
 {
-    if ( SceneManager->getActiveCamera () == this )
+    if (SceneManager->getActiveCamera () == this)
         SceneManager->registerNodeForRendering(this, ESNRP_CAMERA);
 
     ISceneNode::OnRegisterSceneNode();
 }
 
 
-//! render
+// ! render
 void CCameraSceneNode::render()
 {
-    core::vector3df pos = getAbsolutePosition();
+    core::vector3df pos  = getAbsolutePosition();
     core::vector3df tgtv = Target - pos;
+
     tgtv.normalize();
 
     // if upvector and vector to the target are the same, we have a
@@ -255,7 +254,7 @@ void CCameraSceneNode::render()
 
     f32 dp = tgtv.dotProduct(up);
 
-    if ( core::equals(core::abs_<f32>(dp), 1.f) )
+    if (core::equals(core::abs_<f32>(dp), 1.f))
     {
         up.X += 0.5f;
     }
@@ -264,23 +263,23 @@ void CCameraSceneNode::render()
     ViewArea.getTransform(video::ETS_VIEW) *= Affector;
     recalculateViewArea();
 
-    video::IVideoDriver* driver = SceneManager->getVideoDriver();
-    if ( driver)
+    video::IVideoDriver *driver = SceneManager->getVideoDriver();
+    if (driver)
     {
-        driver->setTransform(video::ETS_PROJECTION, ViewArea.getTransform ( video::ETS_PROJECTION) );
-        driver->setTransform(video::ETS_VIEW, ViewArea.getTransform ( video::ETS_VIEW) );
+        driver->setTransform(video::ETS_PROJECTION, ViewArea.getTransform (video::ETS_PROJECTION));
+        driver->setTransform(video::ETS_VIEW, ViewArea.getTransform (video::ETS_VIEW));
     }
 }
 
 
-//! returns the axis aligned bounding box of this node
-const core::aabbox3d<f32>& CCameraSceneNode::getBoundingBox() const
+// ! returns the axis aligned bounding box of this node
+const core::aabbox3d<f32>&CCameraSceneNode::getBoundingBox() const
 {
     return ViewArea.getBoundingBox();
 }
 
 
-//! returns the view frustum. needed sometimes by bsp or lod render nodes.
+// ! returns the view frustum. needed sometimes by bsp or lod render nodes.
 const SViewFrustum* CCameraSceneNode::getViewFrustum() const
 {
     return &ViewArea;
@@ -293,13 +292,13 @@ void CCameraSceneNode::recalculateViewArea()
 
     core::matrix4 m(core::matrix4::EM4CONST_NOTHING);
     m.setbyproduct_nocheck(ViewArea.getTransform(video::ETS_PROJECTION),
-                        ViewArea.getTransform(video::ETS_VIEW));
+                           ViewArea.getTransform(video::ETS_VIEW));
     ViewArea.setFrom(m);
 }
 
 
-//! Writes attributes of the scene node.
-void CCameraSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
+// ! Writes attributes of the scene node.
+void CCameraSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
 {
     ICameraSceneNode::serializeAttributes(out, options);
 
@@ -313,19 +312,19 @@ void CCameraSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeR
     out->addBool("ReceiveInput", InputReceiverEnabled);
 }
 
-//! Reads attributes of the scene node.
-void CCameraSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
+// ! Reads attributes of the scene node.
+void CCameraSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
 {
     ICameraSceneNode::deserializeAttributes(in, options);
 
-    Target = in->getAttributeAsVector3d("Target");
-    UpVector = in->getAttributeAsVector3d("UpVector");
-    Fovy = in->getAttributeAsFloat("Fovy");
-    Aspect = in->getAttributeAsFloat("Aspect");
-    ZNear = in->getAttributeAsFloat("ZNear");
-    ZFar = in->getAttributeAsFloat("ZFar");
+    Target                    = in->getAttributeAsVector3d("Target");
+    UpVector                  = in->getAttributeAsVector3d("UpVector");
+    Fovy                      = in->getAttributeAsFloat("Fovy");
+    Aspect                    = in->getAttributeAsFloat("Aspect");
+    ZNear                     = in->getAttributeAsFloat("ZNear");
+    ZFar                      = in->getAttributeAsFloat("ZFar");
     TargetAndRotationAreBound = in->getAttributeAsBool("Binding");
-    if ( in->findAttribute("ReceiveInput") )
+    if (in->findAttribute("ReceiveInput"))
         InputReceiverEnabled = in->getAttributeAsBool("InputReceiverEnabled");
 
     recalculateProjectionMatrix();
@@ -333,53 +332,52 @@ void CCameraSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttribute
 }
 
 
-//! Set the binding between the camera's rotation adn target.
+// ! Set the binding between the camera's rotation adn target.
 void CCameraSceneNode::bindTargetAndRotation(bool bound)
 {
     TargetAndRotationAreBound = bound;
 }
 
 
-//! Gets the binding between the camera's rotation and target.
+// ! Gets the binding between the camera's rotation and target.
 bool CCameraSceneNode::getTargetAndRotationBinding(void) const
 {
     return TargetAndRotationAreBound;
 }
 
 
-//! Creates a clone of this scene node and its children.
-ISceneNode* CCameraSceneNode::clone(ISceneNode* newParent, ISceneManager* newManager)
+// ! Creates a clone of this scene node and its children.
+ISceneNode* CCameraSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
 {
     ICameraSceneNode::clone(newParent, newManager);
 
     if (!newParent)
         newParent = Parent;
+
     if (!newManager)
         newManager = SceneManager;
 
-    CCameraSceneNode* nb = new CCameraSceneNode(newParent,
-        newManager, ID, RelativeTranslation, Target);
+    CCameraSceneNode *nb = new CCameraSceneNode(newParent,
+                                                newManager, ID, RelativeTranslation, Target);
 
     nb->ISceneNode::cloneMembers(this, newManager);
     nb->ICameraSceneNode::cloneMembers(this);
 
-    nb->Target = Target;
-    nb->UpVector = UpVector;
-    nb->Fovy = Fovy;
-    nb->Aspect = Aspect;
-    nb->ZNear = ZNear;
-    nb->ZFar = ZFar;
-    nb->ViewArea = ViewArea;
-    nb->Affector = Affector;
-    nb->InputReceiverEnabled = InputReceiverEnabled;
+    nb->Target                    = Target;
+    nb->UpVector                  = UpVector;
+    nb->Fovy                      = Fovy;
+    nb->Aspect                    = Aspect;
+    nb->ZNear                     = ZNear;
+    nb->ZFar                      = ZFar;
+    nb->ViewArea                  = ViewArea;
+    nb->Affector                  = Affector;
+    nb->InputReceiverEnabled      = InputReceiverEnabled;
     nb->TargetAndRotationAreBound = TargetAndRotationAreBound;
 
-    if ( newParent )
+    if (newParent)
         nb->drop();
+
     return nb;
 }
-
-
+}   // end namespace
 } // end namespace
-} // end namespace
-

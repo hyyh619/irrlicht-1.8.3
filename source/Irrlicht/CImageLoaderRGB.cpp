@@ -135,69 +135,69 @@
 
 namespace irr
 {
-    namespace video
-    {
+namespace video
+{
 // ! constructor
-        CImageLoaderRGB::CImageLoaderRGB()
-        {
+CImageLoaderRGB::CImageLoaderRGB()
+{
     #ifdef _DEBUG
-            setDebugName("CImageLoaderRGB");
+    setDebugName("CImageLoaderRGB");
     #endif
-        }
+}
 
 
 // ! returns true if the file maybe is able to be loaded by this class
 // ! based on the file extensions listed here
-        bool CImageLoaderRGB::isALoadableFileExtension(const io::path &filename) const
-        {
-            return core::hasFileExtension(filename, "rgb", "rgba", "sgi") ||
-                   core::hasFileExtension(filename, "int", "inta", "bw");
-        }
+bool CImageLoaderRGB::isALoadableFileExtension(const io::path &filename) const
+{
+    return core::hasFileExtension(filename, "rgb", "rgba", "sgi") ||
+           core::hasFileExtension(filename, "int", "inta", "bw");
+}
 
 
 // ! returns true if the file maybe is able to be loaded by this class
-        bool CImageLoaderRGB::isALoadableFileFormat(io::IReadFile *file) const
-        {
-            rgbStruct rgb;
+bool CImageLoaderRGB::isALoadableFileFormat(io::IReadFile *file) const
+{
+    rgbStruct rgb;
 
-            return checkFormat(file, rgb);
-        }
+    return checkFormat(file, rgb);
+}
 
 
 /** The main entry point, read and format the image file.
    \return Pointer to the image data on success
                 null pointer on fail */
-        IImage* CImageLoaderRGB::loadImage(io::IReadFile *file) const
+IImage* CImageLoaderRGB::loadImage(io::IReadFile *file) const
+{
+    IImage *image       = 0;
+    s32    *paletteData = 0;
+
+    rgbStruct rgb;         // construct our structure for holding data
+
+    // read Header information
+    if (checkFormat(file, rgb))
+    {
+        // 16 bits per COLOR VALUE, not supported, this is 48bpp mode
+        if (rgb.Header.BPC != 1)
         {
-            IImage *image       = 0;
-            s32    *paletteData = 0;
-
-            rgbStruct rgb; // construct our structure for holding data
-
-            // read Header information
-            if (checkFormat(file, rgb))
-            {
-                // 16 bits per COLOR VALUE, not supported, this is 48bpp mode
-                if (rgb.Header.BPC != 1)
-                {
-                    os::Printer::log("Only one byte per pixel RGB files are supported", file->getFileName(), ELL_ERROR);
-                }
-                else if (rgb.Header.Colormap != 0)
-                {
-                    os::Printer::log("Dithered, Screen and Colormap RGB files are not supported", file->getFileName(), ELL_ERROR);
-                }
-                else if (rgb.Header.Storage == 1 && !readOffsetTables(file, rgb))
-                {
-                    os::Printer::log("Failed to read RLE table in RGB file", file->getFileName(), ELL_ERROR);
-                }
-                else if (!rgb.allocateTemps())
-                {
-                    os::Printer::log("Out of memory in RGB file loader", file->getFileName(), ELL_ERROR);
-                }
-                else
-                {
-                    // read and process the file to rgbData
-                    processFile(file, rgb);
+            os::Printer::log("Only one byte per pixel RGB files are supported", file->getFileName(), ELL_ERROR);
+        }
+        else if (rgb.Header.Colormap != 0)
+        {
+            os::Printer::log("Dithered, Screen and Colormap RGB files are not supported", file->getFileName(), ELL_ERROR);
+        }
+        else if (rgb.Header.Storage == 1 && !readOffsetTables(file, rgb))
+        {
+            os::Printer::log("Failed to read RLE table in RGB file", file->getFileName(), ELL_ERROR);
+        }
+        else if (!rgb.allocateTemps())
+        {
+            os::Printer::log("Out of memory in RGB file loader", file->getFileName(), ELL_ERROR);
+        }
+        else
+        {
+            // read and process the file to rgbData
+            processFile(file, rgb);
 
 /*
           ZSIZE        Description
@@ -226,93 +226,93 @@ namespace irr
             Alternatively, the RGB files could use another blending technique entirely
  */
 
-                    switch (rgb.Header.Zsize)
-                    {
-                        case 1:
-                            // BW (grayscale) image
-                            paletteData = new s32[256];
+            switch (rgb.Header.Zsize)
+            {
+            case 1:
+                // BW (grayscale) image
+                paletteData = new s32[256];
 
-                            for (int n = 0; n<256; n++)
-                                paletteData[n] = n;
+                for (int n = 0; n<256; n++)
+                    paletteData[n] = n;
 
-                            image = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
-                            if (image)
-                                CColorConverter::convert8BitTo16Bit(rgb.rgbData, (s16*)image->lock(), rgb.Header.Xsize, rgb.Header.Ysize, paletteData, 0, true);
+                image = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
+                if (image)
+                    CColorConverter::convert8BitTo16Bit(rgb.rgbData, (s16*)image->lock(), rgb.Header.Xsize, rgb.Header.Ysize, paletteData, 0, true);
 
-                            break;
+                break;
 
-                        case 3:
-                            // RGB image
-                            // one byte per COLOR VALUE, eg, 24bpp
-                            image = new CImage(ECOLOR_FORMAT::ECF_R8G8B8, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
-                            if (image)
-                                CColorConverter::convert24BitTo24Bit(rgb.rgbData, (u8*)image->lock(), rgb.Header.Xsize, rgb.Header.Ysize, 0, true, false);
+            case 3:
+                // RGB image
+                // one byte per COLOR VALUE, eg, 24bpp
+                image = new CImage(ECOLOR_FORMAT::ECF_R8G8B8, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
+                if (image)
+                    CColorConverter::convert24BitTo24Bit(rgb.rgbData, (u8*)image->lock(), rgb.Header.Xsize, rgb.Header.Ysize, 0, true, false);
 
-                            break;
+                break;
 
-                        case 4:
-                            // RGBa image with one alpha channel (32bpp)
-                            // image is stored in rgbData as RGBA
+            case 4:
+                // RGBa image with one alpha channel (32bpp)
+                // image is stored in rgbData as RGBA
 
-                            converttoARGB((u32*)(rgb.rgbData), rgb.Header.Ysize * rgb.Header.Xsize);
+                converttoARGB((u32*)(rgb.rgbData), rgb.Header.Ysize * rgb.Header.Xsize);
 
-                            image = new CImage(ECOLOR_FORMAT::ECF_A8R8G8B8, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
-                            if (image)
-                                CColorConverter::convert32BitTo32Bit((s32*)rgb.rgbData, (s32*)image->lock(), rgb.Header.Xsize, rgb.Header.Ysize, 0, true);
+                image = new CImage(ECOLOR_FORMAT::ECF_A8R8G8B8, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
+                if (image)
+                    CColorConverter::convert32BitTo32Bit((s32*)rgb.rgbData, (s32*)image->lock(), rgb.Header.Xsize, rgb.Header.Ysize, 0, true);
 
-                            break;
+                break;
 
-                        default:
-                            // Format unknown
-                            os::Printer::log("Unsupported pixel format in RGB file", file->getFileName(), ELL_ERROR);
-                    }
-
-                    if (image)
-                        image->unlock();
-                }
+            default:
+                // Format unknown
+                os::Printer::log("Unsupported pixel format in RGB file", file->getFileName(), ELL_ERROR);
             }
 
-            // and tidy up allocated memory
-            delete[] paletteData;
-
-            return image;
+            if (image)
+                image->unlock();
         }
+    }
+
+    // and tidy up allocated memory
+    delete[] paletteData;
+
+    return image;
+}
 
 // returns true on success
-        bool CImageLoaderRGB::readHeader(io::IReadFile *file, rgbStruct &rgb) const
-        {
-            if (file->read(&rgb.Header, sizeof(rgb.Header)) < (s32)(sizeof(rgb.Header)))
-                return false;
+bool CImageLoaderRGB::readHeader(io::IReadFile *file, rgbStruct &rgb) const
+{
+    if (file->read(&rgb.Header, sizeof(rgb.Header)) < (s32)(sizeof(rgb.Header)))
+        return false;
 
-            // test for INTEL or BIG ENDIAN processor
-            // if INTEL, then swap the byte order on 16 bit INT's to make them BIG ENDIAN
-            // because that is the native format for the .rgb file
+    // test for INTEL or BIG ENDIAN processor
+    // if INTEL, then swap the byte order on 16 bit INT's to make them BIG ENDIAN
+    // because that is the native format for the .rgb file
 #ifndef __BIG_ENDIAN__
-            rgb.Header.Magic     = os::Byteswap::byteswap(rgb.Header.Magic);
-            rgb.Header.Storage   = os::Byteswap::byteswap(rgb.Header.Storage);
-            rgb.Header.Dimension = os::Byteswap::byteswap(rgb.Header.Dimension);
-            rgb.Header.Xsize     = os::Byteswap::byteswap(rgb.Header.Xsize);
-            rgb.Header.Ysize     = os::Byteswap::byteswap(rgb.Header.Ysize);
-            rgb.Header.Zsize     = os::Byteswap::byteswap(rgb.Header.Zsize);
-            rgb.Header.Pixmin    = os::Byteswap::byteswap(rgb.Header.Pixmin);
-            rgb.Header.Pixmax    = os::Byteswap::byteswap(rgb.Header.Pixmax);
-            rgb.Header.Colormap  = os::Byteswap::byteswap(rgb.Header.Colormap);
+    rgb.Header.Magic     = os::Byteswap::byteswap(rgb.Header.Magic);
+    rgb.Header.Storage   = os::Byteswap::byteswap(rgb.Header.Storage);
+    rgb.Header.Dimension = os::Byteswap::byteswap(rgb.Header.Dimension);
+    rgb.Header.Xsize     = os::Byteswap::byteswap(rgb.Header.Xsize);
+    rgb.Header.Ysize     = os::Byteswap::byteswap(rgb.Header.Ysize);
+    rgb.Header.Zsize     = os::Byteswap::byteswap(rgb.Header.Zsize);
+    rgb.Header.Pixmin    = os::Byteswap::byteswap(rgb.Header.Pixmin);
+    rgb.Header.Pixmax    = os::Byteswap::byteswap(rgb.Header.Pixmax);
+    rgb.Header.Colormap  = os::Byteswap::byteswap(rgb.Header.Colormap);
 #endif
 
-            // calculate the size of the buffer needed: XSIZE * YSIZE * ZSIZE * BPC
-            rgb.ImageSize = (rgb.Header.Xsize) * (rgb.Header.Ysize) * (rgb.Header.Zsize) * (rgb.Header.BPC);
+    // calculate the size of the buffer needed: XSIZE * YSIZE * ZSIZE * BPC
+    rgb.ImageSize = (rgb.Header.Xsize) * (rgb.Header.Ysize) * (rgb.Header.Zsize) * (rgb.Header.BPC);
 
-            return true;
-        }
+    return true;
+}
 
 
-        bool CImageLoaderRGB::checkFormat(io::IReadFile *file, rgbStruct &rgb) const
-        {
-            if (!readHeader(file, rgb))
-                return false;
+bool CImageLoaderRGB::checkFormat(io::IReadFile *file, rgbStruct &rgb) const
+{
+    if (!readHeader(file, rgb))
+        return false;
 
-            return (rgb.Header.Magic == 0x1DA);
-        }
+    return (rgb.Header.Magic == 0x1DA);
+}
 
 /*
    If the image is stored using run length encoding, offset tables follow the Header that
@@ -356,36 +356,36 @@ namespace irr
    RETURNS:    on success true, else returns false
  */
 
-        bool CImageLoaderRGB::readOffsetTables(io::IReadFile *file, rgbStruct &rgb) const
-        {
-            rgb.TableLen = rgb.Header.Ysize * rgb.Header.Zsize; // calc size of tables
+bool CImageLoaderRGB::readOffsetTables(io::IReadFile *file, rgbStruct &rgb) const
+{
+    rgb.TableLen = rgb.Header.Ysize * rgb.Header.Zsize;         // calc size of tables
 
-            // return error if unable to allocate tables
-            rgb.StartTable = new u32[rgb.TableLen];
-            if (!rgb.StartTable)
-                return false;
+    // return error if unable to allocate tables
+    rgb.StartTable = new u32[rgb.TableLen];
+    if (!rgb.StartTable)
+        return false;
 
-            rgb.LengthTable = new u32[rgb.TableLen];
-            if (!rgb.LengthTable)
-                return false;
+    rgb.LengthTable = new u32[rgb.TableLen];
+    if (!rgb.LengthTable)
+        return false;
 
-            file->seek(512);
-            file->read(rgb.StartTable, rgb.TableLen * sizeof(u32));
-            file->read(rgb.LengthTable, rgb.TableLen * sizeof(u32));
+    file->seek(512);
+    file->read(rgb.StartTable, rgb.TableLen * sizeof(u32));
+    file->read(rgb.LengthTable, rgb.TableLen * sizeof(u32));
 
-            // if we are on an INTEL platform, swap the bytes
+    // if we are on an INTEL platform, swap the bytes
 #ifndef __BIG_ENDIAN__
-            const u32 length = rgb.TableLen;
+    const u32 length = rgb.TableLen;
 
-            for (u32 i = 0; i<length; ++i)
-            {
-                rgb.StartTable[i]  = os::Byteswap::byteswap(rgb.StartTable[i]);
-                rgb.LengthTable[i] = os::Byteswap::byteswap(rgb.LengthTable[i]);
-            }
+    for (u32 i = 0; i<length; ++i)
+    {
+        rgb.StartTable[i]  = os::Byteswap::byteswap(rgb.StartTable[i]);
+        rgb.LengthTable[i] = os::Byteswap::byteswap(rgb.LengthTable[i]);
+    }
 #endif
 
-            return true;
-        }
+    return true;
+}
 
 
 /*
@@ -393,94 +393,94 @@ namespace irr
     The Tables have been read if necessary
     Now process the actual data
  */
-        void CImageLoaderRGB::processFile(io::IReadFile *file, rgbStruct &rgb) const
-        {
-            u16 *tempShort;
+void CImageLoaderRGB::processFile(io::IReadFile *file, rgbStruct &rgb) const
+{
+    u16 *tempShort;
 
-            // calculate the size of the buffer needed: XSIZE * YSIZE * ZSIZE * BPC
-            rgb.rgbData = new u8[(rgb.Header.Xsize) * (rgb.Header.Ysize) * (rgb.Header.Zsize) * (rgb.Header.BPC)];
-            u8 *ptr = rgb.rgbData;
+    // calculate the size of the buffer needed: XSIZE * YSIZE * ZSIZE * BPC
+    rgb.rgbData = new u8[(rgb.Header.Xsize) * (rgb.Header.Ysize) * (rgb.Header.Zsize) * (rgb.Header.BPC)];
+    u8 *ptr = rgb.rgbData;
 
-            // cycle through all scanlines
+    // cycle through all scanlines
 
 #ifdef _IRR_RGB_FILE_INVERTED_IMAGE_
-            // preserve the image as stored, eg, inverted
-            for (u16 i = 0; i < rgb.Header.Ysize; ++i)
+    // preserve the image as stored, eg, inverted
+    for (u16 i = 0; i < rgb.Header.Ysize; ++i)
 #else
-            // invert the image to make it upright
-            for (s32 i = (s32)(rgb.Header.Ysize) - 1; i>=0; --i)
+    // invert the image to make it upright
+    for (s32 i = (s32)(rgb.Header.Ysize) - 1; i>=0; --i)
 #endif
+    {
+        // check the number of channels and read a row of data
+        if (rgb.Header.Zsize >= 1)
+            readRGBrow(rgb.tmpR, i, 0, file, rgb);
+
+        if (rgb.Header.Zsize >= 2)
+            readRGBrow(rgb.tmpG, i, 1, file, rgb);
+
+        if (rgb.Header.Zsize >= 3)
+            readRGBrow(rgb.tmpB, i, 2, file, rgb);
+
+        if (rgb.Header.Zsize >= 4)
+            readRGBrow(rgb.tmpA, i, 3, file, rgb);
+
+        // cycle thru all values for this row
+        for (u16 j = 0; j < rgb.Header.Xsize; ++j)
+        {
+            if (rgb.Header.BPC == 1)
             {
-                // check the number of channels and read a row of data
+                // ONE byte per color
                 if (rgb.Header.Zsize >= 1)
-                    readRGBrow(rgb.tmpR, i, 0, file, rgb);
+                    *ptr++ = rgb.tmpR[j];
 
                 if (rgb.Header.Zsize >= 2)
-                    readRGBrow(rgb.tmpG, i, 1, file, rgb);
+                    *ptr++ = rgb.tmpG[j];
 
                 if (rgb.Header.Zsize >= 3)
-                    readRGBrow(rgb.tmpB, i, 2, file, rgb);
+                    *ptr++ = rgb.tmpB[j];
 
                 if (rgb.Header.Zsize >= 4)
-                    readRGBrow(rgb.tmpA, i, 3, file, rgb);
-
-                // cycle thru all values for this row
-                for (u16 j = 0; j < rgb.Header.Xsize; ++j)
+                    *ptr++ = rgb.tmpA[j];
+            }
+            else
+            {
+                // TWO bytes per color
+                if (rgb.Header.Zsize >= 1)
                 {
-                    if (rgb.Header.BPC == 1)
-                    {
-                        // ONE byte per color
-                        if (rgb.Header.Zsize >= 1)
-                            *ptr++ = rgb.tmpR[j];
+                    // two bytes of color data
+                    tempShort  = (u16*) (ptr);
+                    *tempShort = *((u16*) (rgb.tmpR) + j);
+                    tempShort++;
+                    ptr = ( u8*)(tempShort);
+                }
 
-                        if (rgb.Header.Zsize >= 2)
-                            *ptr++ = rgb.tmpG[j];
+                if (rgb.Header.Zsize >= 2)
+                {
+                    tempShort  = ( u16*) (ptr);
+                    *tempShort = *(( u16*) (rgb.tmpG) + j);
+                    tempShort++;
+                    ptr = ( u8*) (tempShort);
+                }
 
-                        if (rgb.Header.Zsize >= 3)
-                            *ptr++ = rgb.tmpB[j];
+                if (rgb.Header.Zsize >= 3)
+                {
+                    tempShort  = ( u16*) (ptr);
+                    *tempShort = *(( u16*) (rgb.tmpB) + j);
+                    tempShort++;
+                    ptr = ( u8*)(tempShort);
+                }
 
-                        if (rgb.Header.Zsize >= 4)
-                            *ptr++ = rgb.tmpA[j];
-                    }
-                    else
-                    {
-                        // TWO bytes per color
-                        if (rgb.Header.Zsize >= 1)
-                        {
-                            // two bytes of color data
-                            tempShort  = (u16*) (ptr);
-                            *tempShort = *((u16*) (rgb.tmpR) + j);
-                            tempShort++;
-                            ptr = ( u8*)(tempShort);
-                        }
-
-                        if (rgb.Header.Zsize >= 2)
-                        {
-                            tempShort  = ( u16*) (ptr);
-                            *tempShort = *(( u16*) (rgb.tmpG) + j);
-                            tempShort++;
-                            ptr = ( u8*) (tempShort);
-                        }
-
-                        if (rgb.Header.Zsize >= 3)
-                        {
-                            tempShort  = ( u16*) (ptr);
-                            *tempShort = *(( u16*) (rgb.tmpB) + j);
-                            tempShort++;
-                            ptr = ( u8*)(tempShort);
-                        }
-
-                        if (rgb.Header.Zsize >= 4)
-                        {
-                            tempShort  = ( u16*) (ptr);
-                            *tempShort = *(( u16*) (rgb.tmpA) + j);
-                            tempShort++;
-                            ptr = ( u8*)(tempShort);
-                        }
-                    } // end if(rgb.Header.BPC == 1)
-                } // end for
-            } // end for
-        }
+                if (rgb.Header.Zsize >= 4)
+                {
+                    tempShort  = ( u16*) (ptr);
+                    *tempShort = *(( u16*) (rgb.tmpA) + j);
+                    tempShort++;
+                    ptr = ( u8*)(tempShort);
+                }
+            }         // end if(rgb.Header.BPC == 1)
+        }         // end for
+    }         // end for
+}
 
 
 /*
@@ -514,156 +514,156 @@ namespace irr
 
     Return a row of data, expanding RLE compression if necessary
  */
-        void CImageLoaderRGB::readRGBrow(u8 *buf, int y, int z, io::IReadFile *file, rgbStruct &rgb) const
-        {
-            if (rgb.Header.Storage != 1)
-            {
-                // stored VERBATIM
+void CImageLoaderRGB::readRGBrow(u8 *buf, int y, int z, io::IReadFile *file, rgbStruct &rgb) const
+{
+    if (rgb.Header.Storage != 1)
+    {
+        // stored VERBATIM
 
-                file->seek(512 + (y * rgb.Header.Xsize * rgb.Header.BPC) + (z * rgb.Header.Xsize * rgb.Header.Ysize * rgb.Header.BPC));
-                file->read(buf, rgb.Header.Xsize * rgb.Header.BPC);
+        file->seek(512 + (y * rgb.Header.Xsize * rgb.Header.BPC) + (z * rgb.Header.Xsize * rgb.Header.Ysize * rgb.Header.BPC));
+        file->read(buf, rgb.Header.Xsize * rgb.Header.BPC);
 
 #ifndef __BIG_ENDIAN__
-                if (rgb.Header.BPC != 1)
-                {
-                    u16 *tmpbuf = (u16*)(buf);
+        if (rgb.Header.BPC != 1)
+        {
+            u16 *tmpbuf = (u16*)(buf);
 
-                    for (u16 i = 0; i<rgb.Header.Xsize; ++i)
-                        tmpbuf[i] = os::Byteswap::byteswap(tmpbuf[i]);
-                }
+            for (u16 i = 0; i<rgb.Header.Xsize; ++i)
+                tmpbuf[i] = os::Byteswap::byteswap(tmpbuf[i]);
+        }
 #endif
-                return;
-            }
+        return;
+    }
 
-            // the file is stored as Run Length Encoding (RLE)
-            // each sequence is stored as 0x80  NumRepeats ByteToRepeat
+    // the file is stored as Run Length Encoding (RLE)
+    // each sequence is stored as 0x80  NumRepeats ByteToRepeat
 
-            // get the file offset from StartTable and SEEK
-            // then read the data
+    // get the file offset from StartTable and SEEK
+    // then read the data
 
-            file->seek((long) rgb.StartTable[y + z * rgb.Header.Ysize]);
-            file->read(rgb.tmp, rgb.LengthTable[y + z * rgb.Header.Ysize]);
+    file->seek((long) rgb.StartTable[y + z * rgb.Header.Ysize]);
+    file->read(rgb.tmp, rgb.LengthTable[y + z * rgb.Header.Ysize]);
 
-            // rgb.tmp has the data
+    // rgb.tmp has the data
 
-            u16 pixel;
-            u16 *tempShort;
-            u8  *iPtr = rgb.tmp;
-            u8  *oPtr = buf;
+    u16 pixel;
+    u16 *tempShort;
+    u8  *iPtr = rgb.tmp;
+    u8  *oPtr = buf;
 
-            while (true)
+    while (true)
+    {
+        // if BPC = 1, then one byte per pixel
+        if (rgb.Header.BPC == 1)
+        {
+            pixel = *iPtr++;
+        }
+        else
+        {
+            // BPC = 2, so two bytes per pixel
+            tempShort = (u16*)  iPtr;
+            pixel     = *tempShort;
+            tempShort++;
+            iPtr = (u8*) tempShort;
+        }
+
+#ifndef __BIG_ENDIAN__
+        if (rgb.Header.BPC != 1)
+            pixel = os::Byteswap::byteswap(pixel);
+#endif
+
+        s32 count = (s32)(pixel & 0x7F);
+
+        // limit the count value to the remaining row size
+        if ((oPtr + (size_t)(count) * rgb.Header.BPC) > (buf + (size_t)(rgb.Header.Xsize) * rgb.Header.BPC))
+        {
+            count = (irr::s32)((((buf + (size_t)(rgb.Header.Xsize) * rgb.Header.BPC)) - oPtr) / rgb.Header.BPC);
+        }
+
+        if (count<=0)
+            break;
+        else if (pixel & 0x80)
+        {
+            // repeat the byte pointed to by iPtr, count times
+            while (count--)
             {
-                // if BPC = 1, then one byte per pixel
                 if (rgb.Header.BPC == 1)
                 {
-                    pixel = *iPtr++;
+                    *oPtr++ = *iPtr++;
                 }
                 else
                 {
-                    // BPC = 2, so two bytes per pixel
-                    tempShort = (u16*)  iPtr;
+                    // write pixel from iPtr to oPtr, move both two bytes ahead
+                    tempShort = (u16*) (iPtr);
                     pixel     = *tempShort;
                     tempShort++;
-                    iPtr = (u8*) tempShort;
-                }
-
+                    iPtr = (u8*) (tempShort);
 #ifndef __BIG_ENDIAN__
-                if (rgb.Header.BPC != 1)
                     pixel = os::Byteswap::byteswap(pixel);
 #endif
-
-                s32 count = (s32)(pixel & 0x7F);
-
-                // limit the count value to the remaining row size
-                if ((oPtr + (size_t)(count) * rgb.Header.BPC) > (buf + (size_t)(rgb.Header.Xsize) * rgb.Header.BPC))
-                {
-                    count = (irr::s32)((((buf + (size_t)(rgb.Header.Xsize) * rgb.Header.BPC)) - oPtr) / rgb.Header.BPC);
+                    tempShort  = (u16*) (oPtr);
+                    *tempShort = pixel;
+                    tempShort++;
+                    oPtr = (u8*) (tempShort);
                 }
+            }
+        }
+        else
+        {
+            if (rgb.Header.BPC == 1)
+            {
+                pixel = *iPtr++;
+            }
+            else
+            {
+                tempShort = (u16*) (iPtr);
+                pixel     = *tempShort;
+                tempShort++;
+                iPtr = (u8*) (tempShort);
+            }
 
-                if (count<=0)
-                    break;
-                else if (pixel & 0x80)
-                {
-                    // repeat the byte pointed to by iPtr, count times
-                    while (count--)
-                    {
-                        if (rgb.Header.BPC == 1)
-                        {
-                            *oPtr++ = *iPtr++;
-                        }
-                        else
-                        {
-                            // write pixel from iPtr to oPtr, move both two bytes ahead
-                            tempShort = (u16*) (iPtr);
-                            pixel     = *tempShort;
-                            tempShort++;
-                            iPtr = (u8*) (tempShort);
 #ifndef __BIG_ENDIAN__
-                            pixel = os::Byteswap::byteswap(pixel);
+            if (rgb.Header.BPC != 1)
+                pixel = os::Byteswap::byteswap(pixel);
 #endif
-                            tempShort  = (u16*) (oPtr);
-                            *tempShort = pixel;
-                            tempShort++;
-                            oPtr = (u8*) (tempShort);
-                        }
-                    }
+
+            while (count--)
+            {
+                if (rgb.Header.BPC == 1)
+                {
+                    *oPtr++ = (u8) pixel;
                 }
                 else
                 {
-                    if (rgb.Header.BPC == 1)
-                    {
-                        pixel = *iPtr++;
-                    }
-                    else
-                    {
-                        tempShort = (u16*) (iPtr);
-                        pixel     = *tempShort;
-                        tempShort++;
-                        iPtr = (u8*) (tempShort);
-                    }
-
-#ifndef __BIG_ENDIAN__
-                    if (rgb.Header.BPC != 1)
-                        pixel = os::Byteswap::byteswap(pixel);
-#endif
-
-                    while (count--)
-                    {
-                        if (rgb.Header.BPC == 1)
-                        {
-                            *oPtr++ = (u8) pixel;
-                        }
-                        else
-                        {
-                            tempShort  = (u16*) (oPtr);
-                            *tempShort = pixel;
-                            tempShort++;
-                            oPtr = (u8*) (tempShort);
-                        }
-                    }
-                } // else if (pixel & 0x80)
-            } // while (true)
-        }
+                    tempShort  = (u16*) (oPtr);
+                    *tempShort = pixel;
+                    tempShort++;
+                    oPtr = (u8*) (tempShort);
+                }
+            }
+        }         // else if (pixel & 0x80)
+    }         // while (true)
+}
 
 
 // we have 1 byte per COLOR VALUE, eg 24bpp and 1 alpha channel
 // color values are stored as RGBA, convert to ARGB
 // todo: replace with CColorConverter method
-        void CImageLoaderRGB::converttoARGB(u32 *in, const u32 size) const
-        {
-            for (u32 x = 0; x < size; ++x)
-            {
-                *in = (*in >> 8) | (*in << 24);
-                ++in;
-            }
-        }
+void CImageLoaderRGB::converttoARGB(u32 *in, const u32 size) const
+{
+    for (u32 x = 0; x < size; ++x)
+    {
+        *in = (*in >> 8) | (*in << 24);
+        ++in;
+    }
+}
 
 
 // ! creates a loader which is able to load SGI RGB images
-        IImageLoader* createImageLoaderRGB()
-        {
-            return new CImageLoaderRGB;
-        }
-    } // end namespace video
+IImageLoader* createImageLoaderRGB()
+{
+    return new CImageLoaderRGB;
+}
+}     // end namespace video
 } // end namespace irr
 #endif

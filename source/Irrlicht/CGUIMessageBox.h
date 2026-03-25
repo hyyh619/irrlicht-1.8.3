@@ -17,48 +17,45 @@ namespace irr
 {
 namespace gui
 {
-    class CGUIMessageBox : public CGUIWindow
-    {
-    public:
+class CGUIMessageBox : public CGUIWindow
+{
+public:
 
-        //! constructor
-        CGUIMessageBox(IGUIEnvironment* environment, const wchar_t* caption,
-            const wchar_t* text, s32 flag,
-            IGUIElement* parent, s32 id, core::rect<s32> rectangle, video::ITexture* image=0);
+    // ! constructor
+    CGUIMessageBox(IGUIEnvironment *environment, const wchar_t *caption,
+                   const wchar_t *text, s32 flag,
+                   IGUIElement *parent, s32 id, core::rect<s32> rectangle, video::ITexture *image = 0);
 
-        //! destructor
-        virtual ~CGUIMessageBox();
+    // ! destructor
+    virtual ~CGUIMessageBox();
 
-        //! called if an event happened.
-        virtual bool OnEvent(const SEvent& event);
+    // ! called if an event happened.
+    virtual bool OnEvent(const SEvent &event);
 
-        //! Writes attributes of the element.
-        virtual void serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const;
+    // ! Writes attributes of the element.
+    virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const;
 
-        //! Reads attributes of the element
-        virtual void deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options);
+    // ! Reads attributes of the element
+    virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options);
 
-    private:
+private:
 
-        void refreshControls();
-        void setButton(IGUIButton*& button, bool isAvailable, const core::rect<s32> & btnRect, const wchar_t * text, IGUIElement*& focusMe);
+    void refreshControls();
+    void setButton(IGUIButton* &button, bool isAvailable, const core::rect<s32> &btnRect, const wchar_t *text, IGUIElement* &focusMe);
 
-        IGUIButton* OkButton;
-        IGUIButton* CancelButton;
-        IGUIButton* YesButton;
-        IGUIButton* NoButton;
-        IGUIStaticText* StaticText;
-        IGUIImage * Icon;
-        video::ITexture * IconTexture;
+    IGUIButton      *OkButton;
+    IGUIButton      *CancelButton;
+    IGUIButton      *YesButton;
+    IGUIButton      *NoButton;
+    IGUIStaticText  *StaticText;
+    IGUIImage       *Icon;
+    video::ITexture *IconTexture;
 
-        s32 Flags;
-        core::stringw MessageText;
-        bool Pressed;
-    };
-
-} // end namespace gui
+    s32           Flags;
+    core::stringw MessageText;
+    bool          Pressed;
+};
+}   // end namespace gui
 } // end namespace irr
-
 #endif // _IRR_COMPILE_WITH_GUI_
-
 #endif

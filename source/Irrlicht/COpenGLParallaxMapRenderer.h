@@ -15,41 +15,36 @@ namespace irr
 {
 namespace video
 {
-
-//! Class for rendering normal maps with OpenGL
+// ! Class for rendering normal maps with OpenGL
 class COpenGLParallaxMapRenderer : public COpenGLShaderMaterialRenderer, public IShaderConstantSetCallBack
 {
 public:
 
-    //! Constructor
-    COpenGLParallaxMapRenderer(video::COpenGLDriver* driver,
-        s32& outMaterialTypeNr, IMaterialRenderer* baseMaterial);
+    // ! Constructor
+    COpenGLParallaxMapRenderer(video::COpenGLDriver *driver,
+                               s32 &outMaterialTypeNr, IMaterialRenderer *baseMaterial);
 
-    //! Destructor
+    // ! Destructor
     ~COpenGLParallaxMapRenderer();
 
-    //! Called by the engine when the vertex and/or pixel shader constants for an
-    //! material renderer should be set.
-    virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData);
+    // ! Called by the engine when the vertex and/or pixel shader constants for an
+    // ! material renderer should be set.
+    virtual void OnSetConstants(IMaterialRendererServices *services, s32 userData);
 
-    //! Returns the render capability of the material.
+    // ! Returns the render capability of the material.
     virtual s32 getRenderCapability() const;
 
-    virtual void OnSetMaterial(const SMaterial& material) { }
-    virtual void OnSetMaterial(const video::SMaterial& material,
-        const video::SMaterial& lastMaterial,
-        bool resetAllRenderstates, video::IMaterialRendererServices* services);
+    virtual void OnSetMaterial(const SMaterial &material) { }
+    virtual void OnSetMaterial(const video::SMaterial &material,
+                               const video::SMaterial &lastMaterial,
+                               bool resetAllRenderstates, video::IMaterialRendererServices *services);
 
 protected:
 
     bool CompiledShaders;
-    f32 CurrentScale;
+    f32  CurrentScale;
 };
-
-
-} // end namespace video
+}   // end namespace video
 } // end namespace irr
-
 #endif
 #endif
-

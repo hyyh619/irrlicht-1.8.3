@@ -16,37 +16,37 @@ namespace irr
 {
 namespace gui
 {
-
-//! constructor
-CGUIWindow::CGUIWindow(IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle)
-: IGUIWindow(environment, parent, id, rectangle), Dragging(false), IsDraggable(true), DrawBackground(true), DrawTitlebar(true), IsActive(false)
+// ! constructor
+CGUIWindow::CGUIWindow(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
+    : IGUIWindow(environment, parent, id, rectangle), Dragging(false), IsDraggable(true), DrawBackground(true), DrawTitlebar(true), IsActive(false)
 {
     #ifdef _DEBUG
     setDebugName("CGUIWindow");
     #endif
 
-    IGUISkin* skin = 0;
+    IGUISkin *skin = 0;
     if (environment)
         skin = environment->getSkin();
 
-    CurrentIconColor = video::SColor(255,255,255,255);
+    CurrentIconColor = video::SColor(255, 255, 255, 255);
 
     s32 buttonw = 15;
     if (skin)
     {
         buttonw = skin->getSize(EGDS_WINDOW_BUTTON_WIDTH);
     }
+
     s32 posx = RelativeRect.getWidth() - buttonw - 4;
 
     CloseButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1,
-        L"", skin ? skin->getDefaultText(EGDT_WINDOW_CLOSE) : L"Close" );
+                                         L"", skin ? skin->getDefaultText(EGDT_WINDOW_CLOSE) : L"Close");
     CloseButton->setSubElement(true);
     CloseButton->setTabStop(false);
     CloseButton->setAlignment(EGUIA_LOWERRIGHT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_UPPERLEFT);
     posx -= buttonw + 2;
 
     RestoreButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1,
-        L"", skin ? skin->getDefaultText(EGDT_WINDOW_RESTORE) : L"Restore" );
+                                           L"", skin ? skin->getDefaultText(EGDT_WINDOW_RESTORE) : L"Restore");
     RestoreButton->setVisible(false);
     RestoreButton->setSubElement(true);
     RestoreButton->setTabStop(false);
@@ -54,7 +54,7 @@ CGUIWindow::CGUIWindow(IGUIEnvironment* environment, IGUIElement* parent, s32 id
     posx -= buttonw + 2;
 
     MinButton = Environment->addButton(core::rect<s32>(posx, 3, posx + buttonw, 3 + buttonw), this, -1,
-        L"", skin ? skin->getDefaultText(EGDT_WINDOW_MINIMIZE) : L"Minimize" );
+                                       L"", skin ? skin->getDefaultText(EGDT_WINDOW_MINIMIZE) : L"Minimize");
     MinButton->setVisible(false);
     MinButton->setSubElement(true);
     MinButton->setTabStop(false);
@@ -74,7 +74,7 @@ CGUIWindow::CGUIWindow(IGUIEnvironment* environment, IGUIElement* parent, s32 id
 }
 
 
-//! destructor
+// ! destructor
 CGUIWindow::~CGUIWindow()
 {
     if (MinButton)
@@ -91,12 +91,13 @@ void CGUIWindow::refreshSprites()
 {
     if (!Environment)
         return;
-    IGUISkin* skin  = Environment->getSkin();
-    if ( !skin )
+
+    IGUISkin *skin = Environment->getSkin();
+    if (!skin)
         return;
 
-    IGUISpriteBank* sprites = skin->getSpriteBank();
-    if ( !sprites )
+    IGUISpriteBank *sprites = skin->getSpriteBank();
+    if (!sprites)
         return;
 
     CurrentIconColor = skin->getColor(isEnabled() ? EGDC_WINDOW_SYMBOL : EGDC_GRAY_WINDOW_SYMBOL);
@@ -117,13 +118,12 @@ void CGUIWindow::refreshSprites()
     }
 }
 
-//! called if an event happened.
-bool CGUIWindow::OnEvent(const SEvent& event)
+// ! called if an event happened.
+bool CGUIWindow::OnEvent(const SEvent &event)
 {
     if (isEnabled())
     {
-
-        switch(event.EventType)
+        switch (event.EventType)
         {
         case EET_GUI_EVENT:
             if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUS_LOST)
@@ -131,8 +131,7 @@ bool CGUIWindow::OnEvent(const SEvent& event)
                 Dragging = false;
                 IsActive = false;
             }
-            else
-            if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUSED)
+            else if (event.GUIEvent.EventType == EGET_ELEMENT_FOCUSED)
             {
                 if (Parent && ((event.GUIEvent.Caller == this) || isMyChild(event.GUIEvent.Caller)))
                 {
@@ -144,8 +143,7 @@ bool CGUIWindow::OnEvent(const SEvent& event)
                     IsActive = false;
                 }
             }
-            else
-            if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
+            else if (event.GUIEvent.EventType == EGET_BUTTON_CLICKED)
             {
                 if (event.GUIEvent.Caller == CloseButton)
                 {
@@ -153,9 +151,9 @@ bool CGUIWindow::OnEvent(const SEvent& event)
                     {
                         // send close event to parent
                         SEvent e;
-                        e.EventType = EET_GUI_EVENT;
-                        e.GUIEvent.Caller = this;
-                        e.GUIEvent.Element = 0;
+                        e.EventType          = EET_GUI_EVENT;
+                        e.GUIEvent.Caller    = this;
+                        e.GUIEvent.Element   = 0;
                         e.GUIEvent.EventType = EGET_ELEMENT_CLOSED;
 
                         // if the event was not absorbed
@@ -163,7 +161,6 @@ bool CGUIWindow::OnEvent(const SEvent& event)
                             remove();
 
                         return true;
-
                     }
                     else
                     {
@@ -172,20 +169,26 @@ bool CGUIWindow::OnEvent(const SEvent& event)
                     }
                 }
             }
+
             break;
+
         case EET_MOUSE_INPUT_EVENT:
-            switch(event.MouseInput.Event)
+
+            switch (event.MouseInput.Event)
             {
             case EMIE_LMOUSE_PRESSED_DOWN:
                 DragStart.X = event.MouseInput.X;
                 DragStart.Y = event.MouseInput.Y;
-                Dragging = IsDraggable;
+                Dragging    = IsDraggable;
                 if (Parent)
                     Parent->bringToFront(this);
+
                 return true;
+
             case EMIE_LMOUSE_LEFT_UP:
                 Dragging = false;
                 return true;
+
             case EMIE_MOUSE_MOVED:
                 if (!event.MouseInput.isLeftPressed())
                     Dragging = false;
@@ -194,10 +197,10 @@ bool CGUIWindow::OnEvent(const SEvent& event)
                 {
                     // gui window should not be dragged outside its parent
                     if (Parent &&
-                        (event.MouseInput.X < Parent->getAbsolutePosition().UpperLeftCorner.X +1 ||
-                            event.MouseInput.Y < Parent->getAbsolutePosition().UpperLeftCorner.Y +1 ||
-                            event.MouseInput.X > Parent->getAbsolutePosition().LowerRightCorner.X -1 ||
-                            event.MouseInput.Y > Parent->getAbsolutePosition().LowerRightCorner.Y -1))
+                        (event.MouseInput.X < Parent->getAbsolutePosition().UpperLeftCorner.X + 1 ||
+                         event.MouseInput.Y < Parent->getAbsolutePosition().UpperLeftCorner.Y + 1 ||
+                         event.MouseInput.X > Parent->getAbsolutePosition().LowerRightCorner.X - 1 ||
+                         event.MouseInput.Y > Parent->getAbsolutePosition().LowerRightCorner.Y - 1))
                         return true;
 
                     move(core::position2d<s32>(event.MouseInput.X - DragStart.X, event.MouseInput.Y - DragStart.Y));
@@ -205,10 +208,13 @@ bool CGUIWindow::OnEvent(const SEvent& event)
                     DragStart.Y = event.MouseInput.Y;
                     return true;
                 }
+
                 break;
+
             default:
                 break;
             }
+
         default:
             break;
         }
@@ -218,25 +224,25 @@ bool CGUIWindow::OnEvent(const SEvent& event)
 }
 
 
-//! Updates the absolute position.
+// ! Updates the absolute position.
 void CGUIWindow::updateAbsolutePosition()
 {
     IGUIElement::updateAbsolutePosition();
 }
 
 
-//! draws the element and its children
+// ! draws the element and its children
 void CGUIWindow::draw()
 {
     if (IsVisible)
     {
-        IGUISkin* skin = Environment->getSkin();
+        IGUISkin *skin = Environment->getSkin();
 
 
         // update each time because the skin is allowed to change this always.
         updateClientRect();
 
-        if ( CurrentIconColor != skin->getColor(isEnabled() ? EGDC_WINDOW_SYMBOL : EGDC_GRAY_WINDOW_SYMBOL) )
+        if (CurrentIconColor != skin->getColor(isEnabled() ? EGDC_WINDOW_SYMBOL : EGDC_GRAY_WINDOW_SYMBOL))
             refreshSprites();
 
         core::rect<s32> rect = AbsoluteRect;
@@ -245,21 +251,21 @@ void CGUIWindow::draw()
         if (DrawBackground)
         {
             rect = skin->draw3DWindowBackground(this, DrawTitlebar,
-                    skin->getColor(IsActive ? EGDC_ACTIVE_BORDER : EGDC_INACTIVE_BORDER),
-                    AbsoluteRect, &AbsoluteClippingRect);
+                                                skin->getColor(IsActive ? EGDC_ACTIVE_BORDER : EGDC_INACTIVE_BORDER),
+                                                AbsoluteRect, &AbsoluteClippingRect);
 
             if (DrawTitlebar && Text.size())
             {
-                rect.UpperLeftCorner.X += skin->getSize(EGDS_TITLEBARTEXT_DISTANCE_X);
-                rect.UpperLeftCorner.Y += skin->getSize(EGDS_TITLEBARTEXT_DISTANCE_Y);
+                rect.UpperLeftCorner.X  += skin->getSize(EGDS_TITLEBARTEXT_DISTANCE_X);
+                rect.UpperLeftCorner.Y  += skin->getSize(EGDS_TITLEBARTEXT_DISTANCE_Y);
                 rect.LowerRightCorner.X -= skin->getSize(EGDS_WINDOW_BUTTON_WIDTH) + 5;
 
-                IGUIFont* font = skin->getFont(EGDF_WINDOW);
+                IGUIFont *font = skin->getFont(EGDF_WINDOW);
                 if (font)
                 {
                     font->draw(Text.c_str(), rect,
-                            skin->getColor(IsActive ? EGDC_ACTIVE_CAPTION:EGDC_INACTIVE_CAPTION),
-                            false, true, &AbsoluteClippingRect);
+                               skin->getColor(IsActive ? EGDC_ACTIVE_CAPTION : EGDC_INACTIVE_CAPTION),
+                               false, true, &AbsoluteClippingRect);
                 }
             }
         }
@@ -269,35 +275,35 @@ void CGUIWindow::draw()
 }
 
 
-//! Returns pointer to the close button
+// ! Returns pointer to the close button
 IGUIButton* CGUIWindow::getCloseButton() const
 {
     return CloseButton;
 }
 
 
-//! Returns pointer to the minimize button
+// ! Returns pointer to the minimize button
 IGUIButton* CGUIWindow::getMinimizeButton() const
 {
     return MinButton;
 }
 
 
-//! Returns pointer to the maximize button
+// ! Returns pointer to the maximize button
 IGUIButton* CGUIWindow::getMaximizeButton() const
 {
     return RestoreButton;
 }
 
 
-//! Returns true if the window is draggable, false if not
+// ! Returns true if the window is draggable, false if not
 bool CGUIWindow::isDraggable() const
 {
     return IsDraggable;
 }
 
 
-//! Sets whether the window is draggable
+// ! Sets whether the window is draggable
 void CGUIWindow::setDraggable(bool draggable)
 {
     IsDraggable = draggable;
@@ -307,28 +313,28 @@ void CGUIWindow::setDraggable(bool draggable)
 }
 
 
-//! Set if the window background will be drawn
+// ! Set if the window background will be drawn
 void CGUIWindow::setDrawBackground(bool draw)
 {
     DrawBackground = draw;
 }
 
 
-//! Get if the window background will be drawn
+// ! Get if the window background will be drawn
 bool CGUIWindow::getDrawBackground() const
 {
     return DrawBackground;
 }
 
 
-//! Set if the window titlebar will be drawn
+// ! Set if the window titlebar will be drawn
 void CGUIWindow::setDrawTitlebar(bool draw)
 {
     DrawTitlebar = draw;
 }
 
 
-//! Get if the window titlebar will be drawn
+// ! Get if the window titlebar will be drawn
 bool CGUIWindow::getDrawTitlebar() const
 {
     return DrawTitlebar;
@@ -337,30 +343,31 @@ bool CGUIWindow::getDrawTitlebar() const
 
 void CGUIWindow::updateClientRect()
 {
-    if (! DrawBackground )
+    if (!DrawBackground)
     {
-        ClientRect = core::rect<s32>(0,0, AbsoluteRect.getWidth(), AbsoluteRect.getHeight());
+        ClientRect = core::rect<s32>(0, 0, AbsoluteRect.getWidth(), AbsoluteRect.getHeight());
         return;
     }
-    IGUISkin* skin = Environment->getSkin();
+
+    IGUISkin *skin = Environment->getSkin();
     skin->draw3DWindowBackground(this, DrawTitlebar,
-            skin->getColor(IsActive ? EGDC_ACTIVE_BORDER : EGDC_INACTIVE_BORDER),
-            AbsoluteRect, &AbsoluteClippingRect, &ClientRect);
+                                 skin->getColor(IsActive ? EGDC_ACTIVE_BORDER : EGDC_INACTIVE_BORDER),
+                                 AbsoluteRect, &AbsoluteClippingRect, &ClientRect);
     ClientRect -= AbsoluteRect.UpperLeftCorner;
 }
 
 
-//! Returns the rectangle of the drawable area (without border, without titlebar and without scrollbars)
+// ! Returns the rectangle of the drawable area (without border, without titlebar and without scrollbars)
 core::rect<s32> CGUIWindow::getClientRect() const
 {
     return ClientRect;
 }
 
 
-//! Writes attributes of the element.
-void CGUIWindow::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options=0) const
+// ! Writes attributes of the element.
+void CGUIWindow::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
 {
-    IGUIWindow::serializeAttributes(out,options);
+    IGUIWindow::serializeAttributes(out, options);
 
     out->addBool("IsDraggable", IsDraggable);
     out->addBool("DrawBackground", DrawBackground);
@@ -378,16 +385,16 @@ void CGUIWindow::serializeAttributes(io::IAttributes* out, io::SAttributeReadWri
 }
 
 
-//! Reads attributes of the element
-void CGUIWindow::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options=0)
+// ! Reads attributes of the element
+void CGUIWindow::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
 {
-IGUIWindow::deserializeAttributes(in,options);
+    IGUIWindow::deserializeAttributes(in, options);
 
-    Dragging = false;
-    IsActive = false;
-    IsDraggable = in->getAttributeAsBool("IsDraggable");
+    Dragging       = false;
+    IsActive       = false;
+    IsDraggable    = in->getAttributeAsBool("IsDraggable");
     DrawBackground = in->getAttributeAsBool("DrawBackground");
-    DrawTitlebar = in->getAttributeAsBool("DrawTitlebar");
+    DrawTitlebar   = in->getAttributeAsBool("DrawTitlebar");
 
     CloseButton->setVisible(in->getAttributeAsBool("IsCloseVisible"));
     MinButton->setVisible(in->getAttributeAsBool("IsMinVisible"));
@@ -395,10 +402,6 @@ IGUIWindow::deserializeAttributes(in,options);
 
     updateClientRect();
 }
-
-
-} // end namespace gui
+}   // end namespace gui
 } // end namespace irr
-
 #endif // _IRR_COMPILE_WITH_GUI_
-

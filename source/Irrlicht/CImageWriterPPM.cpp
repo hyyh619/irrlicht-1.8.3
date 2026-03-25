@@ -15,8 +15,6 @@ namespace irr
 {
 namespace video
 {
-
-
 IImageWriter* createImageWriterPPM()
 {
     return new CImageWriterPPM;
@@ -31,18 +29,18 @@ CImageWriterPPM::CImageWriterPPM()
 }
 
 
-bool CImageWriterPPM::isAWriteableFileExtension(const io::path& filename) const
+bool CImageWriterPPM::isAWriteableFileExtension(const io::path &filename) const
 {
-    return core::hasFileExtension ( filename, "ppm" );
+    return core::hasFileExtension (filename, "ppm");
 }
 
 
 bool CImageWriterPPM::writeImage(io::IWriteFile *file, IImage *image, u32 param) const
 {
     char cache[70];
-    int size;
+    int  size;
 
-    const core::dimension2d<u32>& imageSize = image->getDimension();
+    const core::dimension2d<u32> &imageSize = image->getDimension();
 
     const bool binary = false;
 
@@ -68,10 +66,10 @@ bool CImageWriterPPM::writeImage(io::IWriteFile *file, IImage *image, u32 param)
         {
             for (u32 c = 0; c < imageSize.Width; ++c)
             {
-                const video::SColor& pixel = image->getPixel(c, h);
-                const u8 r = (u8)(pixel.getRed() & 0xff);
-                const u8 g = (u8)(pixel.getGreen() & 0xff);
-                const u8 b = (u8)(pixel.getBlue() & 0xff);
+                const video::SColor &pixel = image->getPixel(c, h);
+                const u8            r      = (u8)(pixel.getRed() & 0xff);
+                const u8            g      = (u8)(pixel.getGreen() & 0xff);
+                const u8            b      = (u8)(pixel.getBlue() & 0xff);
                 file->write(&r, 1);
                 file->write(&g, 1);
                 file->write(&b, 1);
@@ -86,7 +84,7 @@ bool CImageWriterPPM::writeImage(io::IWriteFile *file, IImage *image, u32 param)
         {
             for (u32 c = 0; c < imageSize.Width; ++c, ++n)
             {
-                const video::SColor& pixel = image->getPixel(c, h);
+                const video::SColor &pixel = image->getPixel(c, h);
                 size = snprintf(cache, 70, "%.3u %.3u %.3u%s", pixel.getRed(), pixel.getGreen(), pixel.getBlue(), n % 5 == 4 ? "\n" : "  ");
                 if (file->write(cache, size) != size)
                     return false;
@@ -96,10 +94,6 @@ bool CImageWriterPPM::writeImage(io::IWriteFile *file, IImage *image, u32 param)
 
     return true;
 }
-
-
-} // namespace video
+}   // namespace video
 } // namespace irr
-
 #endif
-

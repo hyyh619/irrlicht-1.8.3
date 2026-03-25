@@ -9,14 +9,14 @@
 // on this and that he gave me his permission to add it into Irrlicht.
 /*
 
-CLMTSMeshFileLoader.h
+   CLMTSMeshFileLoader.h
 
-LMTSMeshFileLoader
-Written by Jonas Petersen (a.k.a. jox)
+   LMTSMeshFileLoader
+   Written by Jonas Petersen (a.k.a. jox)
 
-Version 1.5 - 15 March 2005
+   Version 1.5 - 15 March 2005
 
-*/
+ */
 
 #if !defined(__C_LMTS_MESH_FILE_LOADER_H_INCLUDED__)
 #define __C_LMTS_MESH_FILE_LOADER_H_INCLUDED__
@@ -30,23 +30,22 @@ namespace irr
 {
 namespace scene
 {
-
 class CLMTSMeshFileLoader : public IMeshLoader
 {
 public:
 
-    CLMTSMeshFileLoader(io::IFileSystem* fs,
-        video::IVideoDriver* driver, io::IAttributes* parameters);
+    CLMTSMeshFileLoader(io::IFileSystem *fs,
+                        video::IVideoDriver *driver, io::IAttributes *parameters);
 
     virtual ~CLMTSMeshFileLoader();
 
-    virtual bool isALoadableFileExtension(const io::path& filename) const;
+    virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-    virtual IAnimatedMesh* createMesh(io::IReadFile* file);
+    virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
 private:
-    void constructMesh(SMesh* mesh);
-    void loadTextures(SMesh* mesh);
+    void constructMesh(SMesh *mesh);
+    void loadTextures(SMesh *mesh);
     void cleanup();
 
 // byte-align structures
@@ -66,7 +65,7 @@ private:
 
     struct SLMTSTextureInfoEntry
     {
-        c8 Filename[256];
+        c8  Filename[256];
         u16 Flags;
     } PACK_STRUCT;
 
@@ -92,18 +91,16 @@ private:
 // Default alignment
 #include "irrunpack.h"
 
-    SLMTSHeader Header;
-    SLMTSTextureInfoEntry* Textures;
-    SLMTSSubsetInfoEntry* Subsets;
-    SLMTSTriangleDataEntry* Triangles;
+    SLMTSHeader            Header;
+    SLMTSTextureInfoEntry  *Textures;
+    SLMTSSubsetInfoEntry   *Subsets;
+    SLMTSTriangleDataEntry *Triangles;
 
-    io::IAttributes* Parameters;
-    video::IVideoDriver* Driver;
-    io::IFileSystem* FileSystem;
-    bool FlipEndianess;
+    io::IAttributes     *Parameters;
+    video::IVideoDriver *Driver;
+    io::IFileSystem     *FileSystem;
+    bool                FlipEndianess;
 };
-
-} // end namespace scene
+}   // end namespace scene
 } // end namespace irr
-
 #endif // !defined(__C_LMTS_MESH_FILE_LOADER_H_INCLUDED__)

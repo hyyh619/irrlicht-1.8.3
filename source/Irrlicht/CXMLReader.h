@@ -11,16 +11,13 @@ namespace irr
 {
 namespace io
 {
-    class IReadFile;
+class IReadFile;
 
-    //! creates an IXMLReader
-    IXMLReader* createIXMLReader(IReadFile* file);
+// ! creates an IXMLReader
+IXMLReader* createIXMLReader(IReadFile *file);
 
-    //! creates an IXMLReader
-    IXMLReaderUTF8* createIXMLReaderUTF8(IReadFile* file);
-
-} // end namespace irr
+// ! creates an IXMLReader
+IXMLReaderUTF8* createIXMLReaderUTF8(IReadFile *file);
+}   // end namespace irr
 } // end namespace io
-
 #endif
-

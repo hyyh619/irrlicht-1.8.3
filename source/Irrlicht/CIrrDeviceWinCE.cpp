@@ -25,30 +25,30 @@
 
 namespace irr
 {
-    namespace video
-    {
+namespace video
+{
         #ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
-        IVideoDriver* createDirectX8Driver(const irr::SIrrlichtCreationParameters& params,
-            io::IFileSystem* io, HWND window);
+IVideoDriver* createDirectX8Driver(const irr::SIrrlichtCreationParameters &params,
+                                   io::IFileSystem *io, HWND window);
         #endif
 
         #ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
-        IVideoDriver* createDirectX9Driver(const irr::SIrrlichtCreationParameters& params,
-            io::IFileSystem* io, HWND window);
+IVideoDriver* createDirectX9Driver(const irr::SIrrlichtCreationParameters &params,
+                                   io::IFileSystem *io, HWND window);
         #endif
 
         #ifdef _IRR_COMPILE_WITH_OPENGL_
-        IVideoDriver* createOpenGLDriver(const irr::SIrrlichtCreationParameters& params, io::IFileSystem* io, this);
+IVideoDriver*createOpenGLDriver(const irr::SIrrlichtCreationParameters & params, io::IFileSystem * io, this);
         #endif
-    }
+}
 } // end namespace irr
 
 
 
 struct SEnvMapper
 {
-    HWND hWnd;
-    irr::CIrrDeviceWinCE* irrDev;
+    HWND                 hWnd;
+    irr::CIrrDeviceWinCE *irrDev;
 };
 
 irr::core::list<SEnvMapper> EnvMap;
@@ -56,6 +56,7 @@ irr::core::list<SEnvMapper> EnvMap;
 SEnvMapper* getEnvMapperFromHWnd(HWND hWnd)
 {
     irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
+
     for (; it!= EnvMap.end(); ++it)
         if ((*it).hWnd == hWnd)
             return &(*it);
@@ -66,6 +67,7 @@ SEnvMapper* getEnvMapperFromHWnd(HWND hWnd)
 irr::CIrrDeviceWinCE* getDeviceFromHWnd(HWND hWnd)
 {
     irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
+
     for (; it!= EnvMap.end(); ++it)
         if ((*it).hWnd == hWnd)
             return (*it).irrDev;
@@ -83,24 +85,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     #define WHEEL_DELTA 120
     #endif
 
-    irr::CIrrDeviceWinCE* dev = 0;
-    irr::SEvent event;
-    SEnvMapper* envm = 0;
+    irr::CIrrDeviceWinCE *dev = 0;
+    irr::SEvent          event;
+    SEnvMapper           *envm = 0;
 
-    //BYTE allKeys[256];
+    // BYTE allKeys[256];
 
-    static irr::s32 ClickCount=0;
+    static irr::s32 ClickCount = 0;
     if (GetCapture() != hWnd && ClickCount > 0)
         ClickCount = 0;
 
     switch (message)
     {
     case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            BeginPaint(hWnd, &ps);
-            EndPaint(hWnd, &ps);
-        }
+    {
+        PAINTSTRUCT ps;
+        BeginPaint(hWnd, &ps);
+        EndPaint(hWnd, &ps);
+    }
         return 0;
 
     case WM_ERASEBKGND:
@@ -113,22 +115,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SetCursor(NULL);
             return 0;
         }
+
         break;
 
     case WM_MOUSEWHEEL:
-        event.EventType = irr::EET_MOUSE_INPUT_EVENT;
+        event.EventType        = irr::EET_MOUSE_INPUT_EVENT;
         event.MouseInput.Wheel = ((irr::f32)((short)HIWORD(wParam))) / (irr::f32)WHEEL_DELTA;
         event.MouseInput.Event = irr::EMIE_MOUSE_WHEEL;
 
         POINT p; // fixed by jox
         p.x = 0; p.y = 0;
         ClientToScreen(hWnd, &p);
-        event.MouseInput.X = LOWORD(lParam) - p.x;
-        event.MouseInput.Y = HIWORD(lParam) - p.y;
-        event.MouseInput.Shift = ((LOWORD(wParam) & MK_SHIFT) != 0);
+        event.MouseInput.X       = LOWORD(lParam) - p.x;
+        event.MouseInput.Y       = HIWORD(lParam) - p.y;
+        event.MouseInput.Shift   = ((LOWORD(wParam) & MK_SHIFT) != 0);
         event.MouseInput.Control = ((LOWORD(wParam) & MK_CONTROL) != 0);
         // left and right mouse buttons
-        event.MouseInput.ButtonStates = wParam & ( MK_LBUTTON | MK_RBUTTON);
+        event.MouseInput.ButtonStates = wParam & (MK_LBUTTON | MK_RBUTTON);
         // middle and extra buttons
         if (wParam & MK_MBUTTON)
             event.MouseInput.ButtonStates |= irr::EMBSM_MIDDLE;
@@ -136,19 +139,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         dev = getDeviceFromHWnd(hWnd);
         if (dev)
             dev->postEventFromUser(event);
+
         break;
 
     case WM_LBUTTONDOWN:
         ClickCount++;
         SetCapture(hWnd);
-        event.EventType = irr::EET_MOUSE_INPUT_EVENT;
-        event.MouseInput.Event = irr::EMIE_LMOUSE_PRESSED_DOWN;
-        event.MouseInput.X = (short)LOWORD(lParam);
-        event.MouseInput.Y = (short)HIWORD(lParam);
-        event.MouseInput.Shift = ((LOWORD(wParam) & MK_SHIFT) != 0);
+        event.EventType          = irr::EET_MOUSE_INPUT_EVENT;
+        event.MouseInput.Event   = irr::EMIE_LMOUSE_PRESSED_DOWN;
+        event.MouseInput.X       = (short)LOWORD(lParam);
+        event.MouseInput.Y       = (short)HIWORD(lParam);
+        event.MouseInput.Shift   = ((LOWORD(wParam) & MK_SHIFT) != 0);
         event.MouseInput.Control = ((LOWORD(wParam) & MK_CONTROL) != 0);
         // left and right mouse buttons
-        event.MouseInput.ButtonStates = wParam & ( MK_LBUTTON | MK_RBUTTON);
+        event.MouseInput.ButtonStates = wParam & (MK_LBUTTON | MK_RBUTTON);
         // middle and extra buttons
         if (wParam & MK_MBUTTON)
             event.MouseInput.ButtonStates |= irr::EMBSM_MIDDLE;
@@ -156,23 +160,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         dev = getDeviceFromHWnd(hWnd);
         if (dev)
             dev->postEventFromUser(event);
+
         return 0;
 
     case WM_LBUTTONUP:
         ClickCount--;
         if (ClickCount<1)
         {
-            ClickCount=0;
+            ClickCount = 0;
             ReleaseCapture();
         }
-        event.EventType = irr::EET_MOUSE_INPUT_EVENT;
-        event.MouseInput.Event = irr::EMIE_LMOUSE_LEFT_UP;
-        event.MouseInput.X = (short)LOWORD(lParam);
-        event.MouseInput.Y = (short)HIWORD(lParam);
-        event.MouseInput.Shift = ((LOWORD(wParam) & MK_SHIFT) != 0);
+
+        event.EventType          = irr::EET_MOUSE_INPUT_EVENT;
+        event.MouseInput.Event   = irr::EMIE_LMOUSE_LEFT_UP;
+        event.MouseInput.X       = (short)LOWORD(lParam);
+        event.MouseInput.Y       = (short)HIWORD(lParam);
+        event.MouseInput.Shift   = ((LOWORD(wParam) & MK_SHIFT) != 0);
         event.MouseInput.Control = ((LOWORD(wParam) & MK_CONTROL) != 0);
         // left and right mouse buttons
-        event.MouseInput.ButtonStates = wParam & ( MK_LBUTTON | MK_RBUTTON);
+        event.MouseInput.ButtonStates = wParam & (MK_LBUTTON | MK_RBUTTON);
         // middle and extra buttons
         if (wParam & MK_MBUTTON)
             event.MouseInput.ButtonStates |= irr::EMBSM_MIDDLE;
@@ -180,19 +186,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         dev = getDeviceFromHWnd(hWnd);
         if (dev)
             dev->postEventFromUser(event);
+
         return 0;
 
     case WM_RBUTTONDOWN:
         ClickCount++;
         SetCapture(hWnd);
-        event.EventType = irr::EET_MOUSE_INPUT_EVENT;
-        event.MouseInput.Event = irr::EMIE_RMOUSE_PRESSED_DOWN;
-        event.MouseInput.X = (short)LOWORD(lParam);
-        event.MouseInput.Y = (short)HIWORD(lParam);
-        event.MouseInput.Shift = ((LOWORD(wParam) & MK_SHIFT) != 0);
+        event.EventType          = irr::EET_MOUSE_INPUT_EVENT;
+        event.MouseInput.Event   = irr::EMIE_RMOUSE_PRESSED_DOWN;
+        event.MouseInput.X       = (short)LOWORD(lParam);
+        event.MouseInput.Y       = (short)HIWORD(lParam);
+        event.MouseInput.Shift   = ((LOWORD(wParam) & MK_SHIFT) != 0);
         event.MouseInput.Control = ((LOWORD(wParam) & MK_CONTROL) != 0);
         // left and right mouse buttons
-        event.MouseInput.ButtonStates = wParam & ( MK_LBUTTON | MK_RBUTTON);
+        event.MouseInput.ButtonStates = wParam & (MK_LBUTTON | MK_RBUTTON);
         // middle and extra buttons
         if (wParam & MK_MBUTTON)
             event.MouseInput.ButtonStates |= irr::EMBSM_MIDDLE;
@@ -200,23 +207,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         dev = getDeviceFromHWnd(hWnd);
         if (dev)
             dev->postEventFromUser(event);
+
         return 0;
 
     case WM_RBUTTONUP:
         ClickCount--;
         if (ClickCount<1)
         {
-            ClickCount=0;
+            ClickCount = 0;
             ReleaseCapture();
         }
-        event.EventType = irr::EET_MOUSE_INPUT_EVENT;
-        event.MouseInput.Event = irr::EMIE_RMOUSE_LEFT_UP;
-        event.MouseInput.X = (short)LOWORD(lParam);
-        event.MouseInput.Y = (short)HIWORD(lParam);
-        event.MouseInput.Shift = ((LOWORD(wParam) & MK_SHIFT) != 0);
+
+        event.EventType          = irr::EET_MOUSE_INPUT_EVENT;
+        event.MouseInput.Event   = irr::EMIE_RMOUSE_LEFT_UP;
+        event.MouseInput.X       = (short)LOWORD(lParam);
+        event.MouseInput.Y       = (short)HIWORD(lParam);
+        event.MouseInput.Shift   = ((LOWORD(wParam) & MK_SHIFT) != 0);
         event.MouseInput.Control = ((LOWORD(wParam) & MK_CONTROL) != 0);
         // left and right mouse buttons
-        event.MouseInput.ButtonStates = wParam & ( MK_LBUTTON | MK_RBUTTON);
+        event.MouseInput.ButtonStates = wParam & (MK_LBUTTON | MK_RBUTTON);
         // middle and extra buttons
         if (wParam & MK_MBUTTON)
             event.MouseInput.ButtonStates |= irr::EMBSM_MIDDLE;
@@ -224,19 +233,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         dev = getDeviceFromHWnd(hWnd);
         if (dev)
             dev->postEventFromUser(event);
+
         return 0;
 
     case WM_MBUTTONDOWN:
         ClickCount++;
         SetCapture(hWnd);
-        event.EventType = irr::EET_MOUSE_INPUT_EVENT;
-        event.MouseInput.Event = irr::EMIE_MMOUSE_PRESSED_DOWN;
-        event.MouseInput.X = (short)LOWORD(lParam);
-        event.MouseInput.Y = (short)HIWORD(lParam);
-        event.MouseInput.Shift = ((LOWORD(wParam) & MK_SHIFT) != 0);
+        event.EventType          = irr::EET_MOUSE_INPUT_EVENT;
+        event.MouseInput.Event   = irr::EMIE_MMOUSE_PRESSED_DOWN;
+        event.MouseInput.X       = (short)LOWORD(lParam);
+        event.MouseInput.Y       = (short)HIWORD(lParam);
+        event.MouseInput.Shift   = ((LOWORD(wParam) & MK_SHIFT) != 0);
         event.MouseInput.Control = ((LOWORD(wParam) & MK_CONTROL) != 0);
         // left and right mouse buttons
-        event.MouseInput.ButtonStates = wParam & ( MK_LBUTTON | MK_RBUTTON);
+        event.MouseInput.ButtonStates = wParam & (MK_LBUTTON | MK_RBUTTON);
         // middle and extra buttons
         if (wParam & MK_MBUTTON)
             event.MouseInput.ButtonStates |= irr::EMBSM_MIDDLE;
@@ -244,23 +254,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         dev = getDeviceFromHWnd(hWnd);
         if (dev)
             dev->postEventFromUser(event);
+
         return 0;
 
     case WM_MBUTTONUP:
         ClickCount--;
         if (ClickCount<1)
         {
-            ClickCount=0;
+            ClickCount = 0;
             ReleaseCapture();
         }
-        event.EventType = irr::EET_MOUSE_INPUT_EVENT;
-        event.MouseInput.Event = irr::EMIE_MMOUSE_LEFT_UP;
-        event.MouseInput.X = (short)LOWORD(lParam);
-        event.MouseInput.Y = (short)HIWORD(lParam);
-        event.MouseInput.Shift = ((LOWORD(wParam) & MK_SHIFT) != 0);
+
+        event.EventType          = irr::EET_MOUSE_INPUT_EVENT;
+        event.MouseInput.Event   = irr::EMIE_MMOUSE_LEFT_UP;
+        event.MouseInput.X       = (short)LOWORD(lParam);
+        event.MouseInput.Y       = (short)HIWORD(lParam);
+        event.MouseInput.Shift   = ((LOWORD(wParam) & MK_SHIFT) != 0);
         event.MouseInput.Control = ((LOWORD(wParam) & MK_CONTROL) != 0);
         // left and right mouse buttons
-        event.MouseInput.ButtonStates = wParam & ( MK_LBUTTON | MK_RBUTTON);
+        event.MouseInput.ButtonStates = wParam & (MK_LBUTTON | MK_RBUTTON);
         // middle and extra buttons
         if (wParam & MK_MBUTTON)
             event.MouseInput.ButtonStates |= irr::EMBSM_MIDDLE;
@@ -268,17 +280,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         dev = getDeviceFromHWnd(hWnd);
         if (dev)
             dev->postEventFromUser(event);
+
         return 0;
 
     case WM_MOUSEMOVE:
-        event.EventType = irr::EET_MOUSE_INPUT_EVENT;
-        event.MouseInput.Event = irr::EMIE_MOUSE_MOVED;
-        event.MouseInput.X = (short)LOWORD(lParam);
-        event.MouseInput.Y = (short)HIWORD(lParam);
-        event.MouseInput.Shift = ((LOWORD(wParam) & MK_SHIFT) != 0);
+        event.EventType          = irr::EET_MOUSE_INPUT_EVENT;
+        event.MouseInput.Event   = irr::EMIE_MOUSE_MOVED;
+        event.MouseInput.X       = (short)LOWORD(lParam);
+        event.MouseInput.Y       = (short)HIWORD(lParam);
+        event.MouseInput.Shift   = ((LOWORD(wParam) & MK_SHIFT) != 0);
         event.MouseInput.Control = ((LOWORD(wParam) & MK_CONTROL) != 0);
         // left and right mouse buttons
-        event.MouseInput.ButtonStates = wParam & ( MK_LBUTTON | MK_RBUTTON);
+        event.MouseInput.ButtonStates = wParam & (MK_LBUTTON | MK_RBUTTON);
         // middle and extra buttons
         if (wParam & MK_MBUTTON)
             event.MouseInput.ButtonStates |= irr::EMBSM_MIDDLE;
@@ -293,25 +306,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_SYSKEYUP:
     case WM_KEYDOWN:
     case WM_KEYUP:
-        {
-            event.EventType = irr::EET_KEY_INPUT_EVENT;
-            event.KeyInput.Key = (irr::EKEY_CODE)wParam;
-            event.KeyInput.PressedDown = (message==WM_KEYDOWN || message == WM_SYSKEYDOWN);
-            dev = getDeviceFromHWnd(hWnd);
+    {
+        event.EventType            = irr::EET_KEY_INPUT_EVENT;
+        event.KeyInput.Key         = (irr::EKEY_CODE)wParam;
+        event.KeyInput.PressedDown = (message==WM_KEYDOWN || message == WM_SYSKEYDOWN);
+        dev                        = getDeviceFromHWnd(hWnd);
 /*
             WORD KeyAsc=0;
             GetKeyboardState(allKeys);
             ToAscii(wParam,lParam,allKeys,&KeyAsc,0);
-*/
+ */
 //            event.KeyInput.Shift = ((allKeys[VK_SHIFT] & 0x80)!=0);
 //            event.KeyInput.Control = ((allKeys[VK_CONTROL] & 0x80)!=0);
 //            event.KeyInput.Char = (KeyAsc & 0x00ff); //KeyAsc >= 0 ? KeyAsc : 0;
 
-            if (dev)
-                dev->postEventFromUser(event);
+        if (dev)
+            dev->postEventFromUser(event);
 
-            return 0;
-        }
+        return 0;
+    }
 
     case WM_SIZE:
     {
@@ -320,12 +333,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         if (dev)
             dev->OnResized();
     }
-    return 0;
+        return 0;
 
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
-
     }
 
     return DefWindowProc(hWnd, message, wParam, lParam);
@@ -333,10 +345,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 namespace irr
 {
-
-//! constructor
-CIrrDeviceWinCE::CIrrDeviceWinCE(const SIrrlichtCreationParameters& params)
-: CIrrDeviceStub(params), HWnd(0),
+// ! constructor
+CIrrDeviceWinCE::CIrrDeviceWinCE(const SIrrlichtCreationParameters &params)
+    : CIrrDeviceStub(params), HWnd(0),
     Win32CursorControl(0), ChangedToFullScreen(false), Resized(false),
     ExternalWindow(false)
 {
@@ -354,32 +365,32 @@ CIrrDeviceWinCE::CIrrDeviceWinCE(const SIrrlichtCreationParameters& params)
     // create the window only if we do not use the null device
     if (!CreationParams.WindowId && (CreationParams.DriverType != video::EDT_NULL))
     {
-        const wchar_t* ClassName = L"CIrrDeviceWinCE";
+        const wchar_t *ClassName = L"CIrrDeviceWinCE";
 
         // Register Class
         WNDCLASS wc;
-        wc.style        = CS_HREDRAW | CS_VREDRAW;
-        wc.lpfnWndProc        = WndProc;
-        wc.cbClsExtra        = 0;
-        wc.cbWndExtra        = 0;
-        wc.hInstance        = hInstance;
-        wc.hIcon        = NULL;
-        wc.hCursor        = LoadCursor(NULL, IDC_ARROW);
-        wc.hbrBackground    = (HBRUSH)(COLOR_WINDOW+1);
-        wc.lpszMenuName        = 0;
-        wc.lpszClassName    = ClassName;
+        wc.style         = CS_HREDRAW | CS_VREDRAW;
+        wc.lpfnWndProc   = WndProc;
+        wc.cbClsExtra    = 0;
+        wc.cbWndExtra    = 0;
+        wc.hInstance     = hInstance;
+        wc.hIcon         = NULL;
+        wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
+        wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+        wc.lpszMenuName  = 0;
+        wc.lpszClassName = ClassName;
 
         // if there is an icon, load it
-        wc.hIcon = (HICON)LoadImageW(hInstance, L"irrlicht.ico", IMAGE_ICON, 0,0, 0);
+        wc.hIcon = (HICON)LoadImageW(hInstance, L"irrlicht.ico", IMAGE_ICON, 0, 0, 0);
 
         RegisterClass(&wc);
 
         // calculate client size
 
         RECT clientSize;
-        clientSize.top = 0;
-        clientSize.left = 0;
-        clientSize.right = CreationParams.WindowSize.Width;
+        clientSize.top    = 0;
+        clientSize.left   = 0;
+        clientSize.right  = CreationParams.WindowSize.Width;
         clientSize.bottom = CreationParams.WindowSize.Height;
 
         DWORD style = WS_POPUP;
@@ -389,18 +400,18 @@ CIrrDeviceWinCE::CIrrDeviceWinCE(const SIrrlichtCreationParameters& params)
 
         AdjustWindowRectEx(&clientSize, style, FALSE, 0);
 
-        const s32 realWidth = clientSize.right - clientSize.left;
+        const s32 realWidth  = clientSize.right - clientSize.left;
         const s32 realHeight = clientSize.bottom - clientSize.top;
 
-        const s32 windowLeft = core::s32_max ( 0, (GetSystemMetrics(SM_CXSCREEN) - realWidth) >> 1 );
-        const s32 windowTop = core::s32_max ( 0, (GetSystemMetrics(SM_CYSCREEN) - realHeight) >> 1 );
+        const s32 windowLeft = core::s32_max (0, (GetSystemMetrics(SM_CXSCREEN) - realWidth) >> 1);
+        const s32 windowTop  = core::s32_max (0, (GetSystemMetrics(SM_CYSCREEN) - realHeight) >> 1);
 
         // create window
 
-        HWnd = CreateWindowW( ClassName, L"", style, windowLeft, windowTop,
-                    realWidth, realHeight,    NULL, NULL, hInstance, NULL);
+        HWnd = CreateWindowW(ClassName, L"", style, windowLeft, windowTop,
+                             realWidth, realHeight,    NULL, NULL, hInstance, NULL);
 
-        ShowWindow(HWnd , SW_SHOW);
+        ShowWindow(HWnd, SW_SHOW);
         UpdateWindow(HWnd);
 
         // fix ugly ATI driver bugs. Thanks to ariaci
@@ -412,16 +423,16 @@ CIrrDeviceWinCE::CIrrDeviceWinCE(const SIrrlichtCreationParameters& params)
         HWnd = static_cast<HWND>(CreationParams.WindowId);
         RECT r;
         GetWindowRect(HWnd, &r);
-        CreationParams.WindowSize.Width = r.right - r.left;
+        CreationParams.WindowSize.Width  = r.right - r.left;
         CreationParams.WindowSize.Height = r.bottom - r.top;
-        CreationParams.Fullscreen = false;
-        ExternalWindow = true;
+        CreationParams.Fullscreen        = false;
+        ExternalWindow                   = true;
     }
 
     // create cursor control
 
     Win32CursorControl = new CCursorControl(CreationParams.WindowSize, HWnd, CreationParams.Fullscreen);
-    CursorControl = Win32CursorControl;
+    CursorControl      = Win32CursorControl;
 
     // create driver
 
@@ -434,7 +445,7 @@ CIrrDeviceWinCE::CIrrDeviceWinCE(const SIrrlichtCreationParameters& params)
 
     SEnvMapper em;
     em.irrDev = this;
-    em.hWnd = HWnd;
+    em.hWnd   = HWnd;
     EnvMap.push_back(em);
 
     // set this as active window
@@ -443,7 +454,7 @@ CIrrDeviceWinCE::CIrrDeviceWinCE(const SIrrlichtCreationParameters& params)
 }
 
 
-//! destructor
+// ! destructor
 CIrrDeviceWinCE::~CIrrDeviceWinCE()
 {
     // unregister environment
@@ -452,6 +463,7 @@ CIrrDeviceWinCE::~CIrrDeviceWinCE()
         SHFullScreen(HWnd, SHFS_SHOWTASKBAR | SHFS_SHOWSTARTICON | SHFS_SHOWSIPBUTTON);
 
     irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
+
     for (; it!= EnvMap.end(); ++it)
         if ((*it).hWnd == HWnd)
         {
@@ -461,10 +473,10 @@ CIrrDeviceWinCE::~CIrrDeviceWinCE()
 }
 
 
-//! create the driver
+// ! create the driver
 void CIrrDeviceWinCE::createDriver()
 {
-    switch(CreationParams.DriverType)
+    switch (CreationParams.DriverType)
     {
     case video::EDT_DIRECT3D8:
         #ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
@@ -473,6 +485,7 @@ void CIrrDeviceWinCE::createDriver()
         {
             os::Printer::log("Could not create DIRECT3D8 Driver.", ELL_ERROR);
         }
+
         #else
         os::Printer::log("DIRECT3D8 Driver was not compiled into this dll. Try another one.", ELL_ERROR);
         #endif // _IRR_COMPILE_WITH_DIRECT3D_8_
@@ -486,6 +499,7 @@ void CIrrDeviceWinCE::createDriver()
         {
             os::Printer::log("Could not create DIRECT3D9 Driver.", ELL_ERROR);
         }
+
         #else
         os::Printer::log("DIRECT3D9 Driver was not compiled into this dll. Try another one.", ELL_ERROR);
         #endif // _IRR_COMPILE_WITH_DIRECT3D_9_
@@ -497,11 +511,13 @@ void CIrrDeviceWinCE::createDriver()
         #ifdef _IRR_COMPILE_WITH_OPENGL_
         if (CreationParams.Fullscreen)
             switchToFullScreen();
+
         VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem);
         if (!VideoDriver)
         {
             os::Printer::log("Could not create OpenGL driver.", ELL_ERROR);
         }
+
         #else
         os::Printer::log("OpenGL driver was not compiled in.", ELL_ERROR);
         #endif
@@ -512,6 +528,7 @@ void CIrrDeviceWinCE::createDriver()
         #ifdef _IRR_COMPILE_WITH_SOFTWARE_
         if (CreationParams.Fullscreen)
             switchToFullScreen();
+
         VideoDriver = video::createSoftwareDriver(CreationParams.WindowSize, CreationParams.Fullscreen, FileSystem, this);
         #else
         os::Printer::log("Software driver was not compiled in.", ELL_ERROR);
@@ -523,6 +540,7 @@ void CIrrDeviceWinCE::createDriver()
         #ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
         if (CreationParams.Fullscreen)
             switchToFullScreen();
+
         VideoDriver = video::createBurningVideoDriver(CreationParams, FileSystem, this);
         #else
         os::Printer::log("Burning's Video driver was not compiled in.", ELL_ERROR);
@@ -541,7 +559,7 @@ void CIrrDeviceWinCE::createDriver()
 }
 
 
-//! runs the device. Returns false if device wants to be deleted
+// ! runs the device. Returns false if device wants to be deleted
 bool CIrrDeviceWinCE::run()
 {
     os::Timer::tick();
@@ -569,17 +587,18 @@ bool CIrrDeviceWinCE::run()
 }
 
 
-//! Pause the current process for the minimum time allowed only to allow other processes to execute
+// ! Pause the current process for the minimum time allowed only to allow other processes to execute
 void CIrrDeviceWinCE::yield()
 {
     Sleep(1);
 }
 
 
-//! Pause execution and let other processes to run for a specified amount of time.
+// ! Pause execution and let other processes to run for a specified amount of time.
 void CIrrDeviceWinCE::sleep(u32 timeMs, bool pauseTimer)
 {
     const bool wasStopped = Timer ? Timer->isStopped() : true;
+
     if (pauseTimer && !wasStopped)
         Timer->stop();
 
@@ -618,50 +637,52 @@ void CIrrDeviceWinCE::resizeIfNecessary()
 }
 
 
-//! sets the caption of the window
-void CIrrDeviceWinCE::setWindowCaption(const wchar_t* text)
+// ! sets the caption of the window
+void CIrrDeviceWinCE::setWindowCaption(const wchar_t *text)
 {
     SetWindowTextW(HWnd, text);
 }
 
 
 #if !defined(BITMAPV4HEADER)
-typedef struct {
-  DWORD        bV4Size;
-  LONG         bV4Width;
-  LONG         bV4Height;
-  WORD         bV4Planes;
-  WORD         bV4BitCount;
-  DWORD        bV4V4Compression;
-  DWORD        bV4SizeImage;
-  LONG         bV4XPelsPerMeter;
-  LONG         bV4YPelsPerMeter;
-  DWORD        bV4ClrUsed;
-  DWORD        bV4ClrImportant;
-  DWORD        bV4RedMask;
-  DWORD        bV4GreenMask;
-  DWORD        bV4BlueMask;
-  DWORD        bV4AlphaMask;
-  DWORD        bV4CSType;
-  DWORD            un[9];
+typedef struct
+{
+    DWORD bV4Size;
+    LONG  bV4Width;
+    LONG  bV4Height;
+    WORD  bV4Planes;
+    WORD  bV4BitCount;
+    DWORD bV4V4Compression;
+    DWORD bV4SizeImage;
+    LONG  bV4XPelsPerMeter;
+    LONG  bV4YPelsPerMeter;
+    DWORD bV4ClrUsed;
+    DWORD bV4ClrImportant;
+    DWORD bV4RedMask;
+    DWORD bV4GreenMask;
+    DWORD bV4BlueMask;
+    DWORD bV4AlphaMask;
+    DWORD bV4CSType;
+    DWORD un[9];
 } BITMAPV4HEADER, *PBITMAPV4HEADER;
 #endif
 
 
-//! presents a surface in the client area
-bool CIrrDeviceWinCE::present(video::IImage* image, void* windowId, core::rect<s32>* src)
+// ! presents a surface in the client area
+bool CIrrDeviceWinCE::present(video::IImage *image, void *windowId, core::rect<s32> *src)
 {
     HWND hwnd = HWnd;
-    if ( windowId )
+
+    if (windowId)
         hwnd = (HWND)windowId;
 
     HDC dc = GetDC(hwnd);
 
-    if ( dc )
+    if (dc)
     {
         RECT rect;
         GetClientRect(hwnd, &rect);
-        const void* memory = (const void *)image->lock();
+        const void *memory = (const void*)image->lock();
 
         BITMAPV4HEADER bi;
         memset (&bi, 0, sizeof(bi));
@@ -677,73 +698,79 @@ bool CIrrDeviceWinCE::present(video::IImage* image, void* windowId, core::rect<s
         bi.bV4BlueMask      = image->getBlueMask();
 
         int r = 0;
-        if ( src )
+        if (src)
         {
-            r = StretchDIBits(dc, 0,0, rect.right, rect.bottom,
-                    src->UpperLeftCorner.X, src->UpperLeftCorner.Y,
-                    src->getWidth(), src->getHeight(),
-                    memory, (const BITMAPINFO*)(&bi), DIB_RGB_COLORS, SRCCOPY);
+            r = StretchDIBits(dc, 0, 0, rect.right, rect.bottom,
+                              src->UpperLeftCorner.X, src->UpperLeftCorner.Y,
+                              src->getWidth(), src->getHeight(),
+                              memory, (const BITMAPINFO*)(&bi), DIB_RGB_COLORS, SRCCOPY);
         }
         else
         {
-            r = StretchDIBits(dc, 0,0, rect.right, rect.bottom,
-                    0, 0, image->getDimension().Width, image->getDimension().Height,
-                    memory, (const BITMAPINFO*)(&bi), DIB_RGB_COLORS, SRCCOPY);
+            r = StretchDIBits(dc, 0, 0, rect.right, rect.bottom,
+                              0, 0, image->getDimension().Width, image->getDimension().Height,
+                              memory, (const BITMAPINFO*)(&bi), DIB_RGB_COLORS, SRCCOPY);
         }
 
         image->unlock();
 
         ReleaseDC(hwnd, dc);
     }
+
     return true;
 }
 
 
-//! notifies the device that it should close itself
+// ! notifies the device that it should close itself
 void CIrrDeviceWinCE::closeDevice()
 {
     MSG msg;
+
     PeekMessage(&msg, NULL, WM_QUIT, WM_QUIT, PM_REMOVE);
     PostQuitMessage(0);
     PeekMessage(&msg, NULL, WM_QUIT, WM_QUIT, PM_REMOVE);
     if (!ExternalWindow)
     {
         DestroyWindow(HWnd);
-        const fschar_t* ClassName = __TEXT("CIrrDeviceWin32");
-        HINSTANCE hInstance = GetModuleHandle(0);
+        const fschar_t *ClassName = __TEXT("CIrrDeviceWin32");
+        HINSTANCE      hInstance  = GetModuleHandle(0);
         UnregisterClass(ClassName, hInstance);
     }
-    Close=true;
+
+    Close = true;
 }
 
 
-//! returns if window is active. if not, nothing need to be drawn
+// ! returns if window is active. if not, nothing need to be drawn
 bool CIrrDeviceWinCE::isWindowActive() const
 {
     bool ret = (GetActiveWindow() == HWnd);
+
     _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
     return ret;
 }
 
 
-//! returns if window has focus
+// ! returns if window has focus
 bool CIrrDeviceWinCE::isWindowFocused() const
 {
     bool ret = (GetFocus() == HWnd);
+
     _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
     return ret;
 }
 
 
-//! returns if window is minimized
+// ! returns if window is minimized
 bool CIrrDeviceWinCE::isWindowMinimized() const
 {
 #if 0
     WINDOWPLACEMENT plc;
-    plc.length=sizeof(WINDOWPLACEMENT);
-    bool ret=false;
-    if (GetWindowPlacement(HWnd,&plc))
-        ret=(plc.showCmd & SW_SHOWMINIMIZED);
+    plc.length = sizeof(WINDOWPLACEMENT);
+    bool ret = false;
+    if (GetWindowPlacement(HWnd, &plc))
+        ret = (plc.showCmd & SW_SHOWMINIMIZED);
+
     _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
     return ret;
 #endif
@@ -751,7 +778,7 @@ bool CIrrDeviceWinCE::isWindowMinimized() const
 }
 
 
-//! switches to fullscreen
+// ! switches to fullscreen
 bool CIrrDeviceWinCE::switchToFullScreen()
 {
     ChangedToFullScreen = SHFullScreen(HWnd, SHFS_HIDESIPBUTTON | SHFS_HIDETASKBAR) != 0;
@@ -759,21 +786,21 @@ bool CIrrDeviceWinCE::switchToFullScreen()
 }
 
 
-//! returns the win32 cursor control
+// ! returns the win32 cursor control
 CIrrDeviceWinCE::CCursorControl* CIrrDeviceWinCE::getWin32CursorControl()
 {
     return Win32CursorControl;
 }
 
 
-//! Return pointer to a list with all video modes supported by the gfx adapter.
+// ! Return pointer to a list with all video modes supported by the gfx adapter.
 /** \return Pointer to video modes list */
 video::IVideoModeList* CIrrDeviceWinCE::getVideoModeList()
 {
     if (!VideoModeList->getVideoModeCount())
     {
         // enumerate video modes.
-        DWORD i=0;
+        DWORD   i = 0;
         DEVMODE mode;
         memset(&mode, 0, sizeof(mode));
         mode.dmSize = sizeof(mode);
@@ -781,7 +808,7 @@ video::IVideoModeList* CIrrDeviceWinCE::getVideoModeList()
         while (EnumDisplaySettings(NULL, i, &mode))
         {
             VideoModeList->addMode(core::dimension2d<u32>(mode.dmPelsWidth, mode.dmPelsHeight),
-                mode.dmBitsPerPel);
+                                   mode.dmBitsPerPel);
 
             ++i;
         }
@@ -794,20 +821,20 @@ video::IVideoModeList* CIrrDeviceWinCE::getVideoModeList()
 }
 
 
-void CIrrDeviceWinCE::getWindowsVersion(core::stringc& out)
+void CIrrDeviceWinCE::getWindowsVersion(core::stringc &out)
 {
     out = "WinCE";
 }
 
 
-//! Notifies the device, that it has been resized
+// ! Notifies the device, that it has been resized
 void CIrrDeviceWinCE::OnResized()
 {
     Resized = true;
 }
 
 
-//! Sets if the window should be resizable in windowed mode.
+// ! Sets if the window should be resizable in windowed mode.
 void CIrrDeviceWinCE::setResizable(bool resize)
 {
     if (ExternalWindow || !getVideoDriver() || CreationParams.Fullscreen)
@@ -824,45 +851,41 @@ void CIrrDeviceWinCE::setResizable(bool resize)
         os::Printer::log("Could not change window style.");
 
     RECT clientSize;
-    clientSize.top = 0;
-    clientSize.left = 0;
-    clientSize.right = getVideoDriver()->getScreenSize().Width;
+    clientSize.top    = 0;
+    clientSize.left   = 0;
+    clientSize.right  = getVideoDriver()->getScreenSize().Width;
     clientSize.bottom = getVideoDriver()->getScreenSize().Height;
 
     AdjustWindowRectEx(&clientSize, style, FALSE, 0);
 
-    const s32 realWidth = clientSize.right - clientSize.left;
+    const s32 realWidth  = clientSize.right - clientSize.left;
     const s32 realHeight = clientSize.bottom - clientSize.top;
 
     const s32 windowLeft = (GetSystemMetrics(SM_CXSCREEN) - realWidth) / 2;
-    const s32 windowTop = (GetSystemMetrics(SM_CYSCREEN) - realHeight) / 2;
+    const s32 windowTop  = (GetSystemMetrics(SM_CYSCREEN) - realHeight) / 2;
 
     SetWindowPos(HWnd, HWND_TOP, windowLeft, windowTop, realWidth, realHeight,
-        SWP_FRAMECHANGED | SWP_NOMOVE | SWP_SHOWWINDOW);
+                 SWP_FRAMECHANGED | SWP_NOMOVE | SWP_SHOWWINDOW);
 }
 
 
-//! Minimizes the window.
+// ! Minimizes the window.
 void CIrrDeviceWinCE::minimizeWindow()
 {
     // do nothing
 }
 
-//! Maximize window
+// ! Maximize window
 void CIrrDeviceWinCE::maximizeWindow()
 {
     // do nothing
 }
 
 
-//! Restore original window size
+// ! Restore original window size
 void CIrrDeviceWinCE::restoreWindow()
 {
     // do nothing
 }
-
-
 } // end namespace
-
 #endif // _IRR_COMPILE_WITH_WINDOWS_CE_DEVICE_
-

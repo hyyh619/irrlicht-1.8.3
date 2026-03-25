@@ -14,40 +14,40 @@ namespace irr
 {
 namespace io
 {
-    class IFileSystem;
-    class IReadFile;
-} // end namespace io
+class IFileSystem;
+class IReadFile;
+}   // end namespace io
 namespace scene
 {
 class IMeshManipulator;
 
-//! Meshloader capable of loading x meshes.
+// ! Meshloader capable of loading x meshes.
 class CXMeshFileLoader : public IMeshLoader
 {
 public:
 
-    //! Constructor
-    CXMeshFileLoader(scene::ISceneManager* smgr, io::IFileSystem* fs);
+    // ! Constructor
+    CXMeshFileLoader(scene::ISceneManager *smgr, io::IFileSystem *fs);
 
-    //! returns true if the file maybe is able to be loaded by this class
-    //! based on the file extension (e.g. ".cob")
-    virtual bool isALoadableFileExtension(const io::path& filename) const;
+    // ! returns true if the file maybe is able to be loaded by this class
+    // ! based on the file extension (e.g. ".cob")
+    virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-    //! creates/loads an animated mesh from the file.
-    //! \return Pointer to the created mesh. Returns 0 if loading failed.
-    //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-    //! See IReferenceCounted::drop() for more information.
-    virtual IAnimatedMesh* createMesh(io::IReadFile* file);
+    // ! creates/loads an animated mesh from the file.
+    // ! \return Pointer to the created mesh. Returns 0 if loading failed.
+    // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+    // ! See IReferenceCounted::drop() for more information.
+    virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
     struct SXTemplateMaterial
     {
-        core::stringc Name; // template name from Xfile
+        core::stringc    Name; // template name from Xfile
         video::SMaterial Material; // material
     };
 
     struct SXMesh
     {
-        SXMesh() : MaxSkinWeightsPerVertex(0), MaxSkinWeightsPerFace(0), BoneCount(0),AttachedJointID(-1),HasSkinning(false), HasVertexColors(false) {}
+        SXMesh() : MaxSkinWeightsPerVertex(0), MaxSkinWeightsPerFace(0), BoneCount(0), AttachedJointID(-1), HasSkinning(false), HasVertexColors(false) {}
         // this mesh contains triangulated texture data.
         // because in an .x file, faces can be made of more than 3
         // vertices, the indices data structure is triangulated during the
@@ -67,7 +67,7 @@ public:
         core::array<scene::SSkinMeshBuffer*> Buffers;
 
         core::array<video::S3DVertex> Vertices;
-        core::array<core::vector2df> TCoords2;
+        core::array<core::vector2df>  TCoords2;
 
         core::array<u32> Indices;
 
@@ -86,9 +86,9 @@ public:
 
 private:
 
-    bool load(io::IReadFile* file);
+    bool load(io::IReadFile *file);
 
-    bool readFileIntoMemory(io::IReadFile* file);
+    bool readFileIntoMemory(io::IReadFile *file);
 
     bool parseFile();
 
@@ -114,7 +114,7 @@ private:
 
     bool parseDataObjectMeshMaterialList(SXMesh &mesh);
 
-    bool parseDataObjectMaterial(video::SMaterial& material);
+    bool parseDataObjectMaterial(video::SMaterial &material);
 
     bool parseDataObjectAnimationSet();
 
@@ -122,36 +122,36 @@ private:
 
     bool parseDataObjectAnimationKey(ISkinnedMesh::SJoint *joint);
 
-    bool parseDataObjectTextureFilename(core::stringc& texturename);
+    bool parseDataObjectTextureFilename(core::stringc &texturename);
 
     bool parseUnknownDataObject();
 
-    //! places pointer to next begin of a token, and ignores comments
+    // ! places pointer to next begin of a token, and ignores comments
     void findNextNoneWhiteSpace();
 
-    //! places pointer to next begin of a token, which must be a number,
+    // ! places pointer to next begin of a token, which must be a number,
     // and ignores comments
     void findNextNoneWhiteSpaceNumber();
 
-    //! returns next parseable token. Returns empty string if no token there
+    // ! returns next parseable token. Returns empty string if no token there
     core::stringc getNextToken();
 
-    //! reads header of dataobject including the opening brace.
-    //! returns false if error happened, and writes name of object
-    //! if there is one
-    bool readHeadOfDataObject(core::stringc* outname=0);
+    // ! reads header of dataobject including the opening brace.
+    // ! returns false if error happened, and writes name of object
+    // ! if there is one
+    bool readHeadOfDataObject(core::stringc *outname = 0);
 
-    //! checks for closing curly brace, returns false if not there
+    // ! checks for closing curly brace, returns false if not there
     bool checkForClosingBrace();
 
-    //! checks for one following semicolons, returns false if not there
+    // ! checks for one following semicolons, returns false if not there
     bool checkForOneFollowingSemicolons();
 
-    //! checks for two following semicolons, returns false if they are not there
+    // ! checks for two following semicolons, returns false if they are not there
     bool checkForTwoFollowingSemicolons();
 
-    //! reads a x file style string
-    bool getNextTokenAsString(core::stringc& out);
+    // ! reads a x file style string
+    bool getNextTokenAsString(core::stringc &out);
 
     void readUntilEndOfLine();
 
@@ -159,25 +159,25 @@ private:
     u32 readBinDWord();
     u32 readInt();
     f32 readFloat();
-    bool readVector2(core::vector2df& vec);
-    bool readVector3(core::vector3df& vec);
-    bool readMatrix(core::matrix4& mat);
-    bool readRGB(video::SColor& color);
-    bool readRGBA(video::SColor& color);
+    bool readVector2(core::vector2df &vec);
+    bool readVector3(core::vector3df &vec);
+    bool readMatrix(core::matrix4 &mat);
+    bool readRGB(video::SColor &color);
+    bool readRGBA(video::SColor &color);
 
-    ISceneManager* SceneManager;
-    io::IFileSystem* FileSystem;
+    ISceneManager   *SceneManager;
+    io::IFileSystem *FileSystem;
 
     core::array<CSkinnedMesh::SJoint*> *AllJoints;
 
-    CSkinnedMesh* AnimatedMesh;
+    CSkinnedMesh *AnimatedMesh;
 
-    c8* Buffer;
-    const c8* P;
-    c8* End;
+    c8       *Buffer;
+    const c8 *P;
+    c8       *End;
     // counter for number arrays in binary format
-    u32 BinaryNumCount;
-    u32 Line;
+    u32      BinaryNumCount;
+    u32      Line;
     io::path FilePath;
 
     CSkinnedMesh::SJoint *CurFrame;
@@ -186,13 +186,11 @@ private:
 
     core::array<SXTemplateMaterial> TemplateMaterials;
 
-    u32 MajorVersion;
-    u32 MinorVersion;
+    u32  MajorVersion;
+    u32  MinorVersion;
     bool BinaryFormat;
-    c8 FloatSize;
+    c8   FloatSize;
 };
-
-} // end namespace scene
+}   // end namespace scene
 } // end namespace irr
-
 #endif

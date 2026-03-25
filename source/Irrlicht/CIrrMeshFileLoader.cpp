@@ -20,45 +20,42 @@ namespace irr
 {
 namespace scene
 {
-
-
-//! Constructor
-CIrrMeshFileLoader::CIrrMeshFileLoader(scene::ISceneManager* smgr,
-        io::IFileSystem* fs)
+// ! Constructor
+CIrrMeshFileLoader::CIrrMeshFileLoader(scene::ISceneManager *smgr,
+                                       io::IFileSystem *fs)
     : SceneManager(smgr), FileSystem(fs)
 {
-
     #ifdef _DEBUG
     setDebugName("CIrrMeshFileLoader");
     #endif
-
 }
 
 
-//! Returns true if the file maybe is able to be loaded by this class.
+// ! Returns true if the file maybe is able to be loaded by this class.
 /** This decision should be based only on the file extension (e.g. ".cob") */
-bool CIrrMeshFileLoader::isALoadableFileExtension(const io::path& filename) const
+bool CIrrMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
 {
-    return core::hasFileExtension ( filename, "xml", "irrmesh" );
+    return core::hasFileExtension (filename, "xml", "irrmesh");
 }
 
 
-//! creates/loads an animated mesh from the file.
-//! \return Pointer to the created mesh. Returns 0 if loading failed.
-//! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-//! See IReferenceCounted::drop() for more information.
-IAnimatedMesh* CIrrMeshFileLoader::createMesh(io::IReadFile* file)
+// ! creates/loads an animated mesh from the file.
+// ! \return Pointer to the created mesh. Returns 0 if loading failed.
+// ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+// ! See IReferenceCounted::drop() for more information.
+IAnimatedMesh* CIrrMeshFileLoader::createMesh(io::IReadFile *file)
 {
-    io::IXMLReader* reader = FileSystem->createXMLReader(file);
+    io::IXMLReader *reader = FileSystem->createXMLReader(file);
+
     if (!reader)
         return 0;
 
     // read until mesh section, skip other parts
 
     const core::stringc meshTagName = "mesh";
-    IAnimatedMesh* mesh = 0;
+    IAnimatedMesh       *mesh       = 0;
 
-    while(reader->read())
+    while (reader->read())
     {
         if (reader->getNodeType() == io::EXN_ELEMENT)
         {
@@ -78,56 +75,55 @@ IAnimatedMesh* CIrrMeshFileLoader::createMesh(io::IReadFile* file)
 }
 
 
-//! reads a mesh sections and creates a mesh from it
-IAnimatedMesh* CIrrMeshFileLoader::readMesh(io::IXMLReader* reader)
+// ! reads a mesh sections and creates a mesh from it
+IAnimatedMesh* CIrrMeshFileLoader::readMesh(io::IXMLReader *reader)
 {
-    SAnimatedMesh* animatedmesh = new SAnimatedMesh();
-    SMesh* mesh = new SMesh();
+    SAnimatedMesh *animatedmesh = new SAnimatedMesh();
+    SMesh         *mesh         = new SMesh();
 
     animatedmesh->addMesh(mesh);
     mesh->drop();
 
-    core::stringc bbSectionName = "boundingBox";
+    core::stringc bbSectionName     = "boundingBox";
     core::stringc bufferSectionName = "buffer";
-    core::stringc meshSectionName = "mesh";
+    core::stringc meshSectionName   = "mesh";
 
     if (!reader->isEmptyElement())
-    while(reader->read())
-    {
-        if (reader->getNodeType() == io::EXN_ELEMENT)
+        while (reader->read())
         {
-            const wchar_t* nodeName = reader->getNodeName();
-            if (bbSectionName == nodeName)
+            if (reader->getNodeType() == io::EXN_ELEMENT)
             {
-                // inside a bounding box, ignore it for now because
-                // we are calculating this anyway ourselves later.
-            }
-            else
-            if (bufferSectionName == nodeName)
-            {
-                // we've got a mesh buffer
-
-                IMeshBuffer* buffer = readMeshBuffer(reader);
-                if (buffer)
+                const wchar_t *nodeName = reader->getNodeName();
+                if (bbSectionName == nodeName)
                 {
-                    mesh->addMeshBuffer(buffer);
-                    buffer->drop();
+                    // inside a bounding box, ignore it for now because
+                    // we are calculating this anyway ourselves later.
+                }
+                else if (bufferSectionName == nodeName)
+                {
+                    // we've got a mesh buffer
+
+                    IMeshBuffer *buffer = readMeshBuffer(reader);
+                    if (buffer)
+                    {
+                        mesh->addMeshBuffer(buffer);
+                        buffer->drop();
+                    }
+                }
+                else
+                    skipSection(reader, true); // unknown section
+            }       // end if node type is element
+            else if (reader->getNodeType() == io::EXN_ELEMENT_END)
+            {
+                if (meshSectionName == reader->getNodeName())
+                {
+                    // end of mesh section reached, cancel out
+                    break;
                 }
             }
-            else
-                skipSection(reader, true); // unknown section
-
-        } // end if node type is element
-        else
-        if (reader->getNodeType() == io::EXN_ELEMENT_END)
-        {
-            if (meshSectionName == reader->getNodeName())
-            {
-                // end of mesh section reached, cancel out
-                break;
-            }
         }
-    } // end while reader->read();
+
+    // end while reader->read();
 
     mesh->recalculateBoundingBox();
     animatedmesh->recalculateBoundingBox();
@@ -136,118 +132,109 @@ IAnimatedMesh* CIrrMeshFileLoader::readMesh(io::IXMLReader* reader)
 }
 
 
-//! reads a mesh sections and creates a mesh buffer from it
-IMeshBuffer* CIrrMeshFileLoader::readMeshBuffer(io::IXMLReader* reader)
+// ! reads a mesh sections and creates a mesh buffer from it
+IMeshBuffer* CIrrMeshFileLoader::readMeshBuffer(io::IXMLReader *reader)
 {
-    CDynamicMeshBuffer* buffer = 0;
+    CDynamicMeshBuffer *buffer = 0;
 
     core::stringc verticesSectionName = "vertices";
-    core::stringc bbSectionName = "boundingBox";
+    core::stringc bbSectionName       = "boundingBox";
     core::stringc materialSectionName = "material";
-    core::stringc indicesSectionName = "indices";
-    core::stringc bufferSectionName = "buffer";
+    core::stringc indicesSectionName  = "indices";
+    core::stringc bufferSectionName   = "buffer";
 
     bool insideVertexSection = false;
-    bool insideIndexSection = false;
+    bool insideIndexSection  = false;
 
     int vertexCount = 0;
-    int indexCount = 0;
+    int indexCount  = 0;
 
     video::SMaterial material;
 
     if (!reader->isEmptyElement())
-    while(reader->read())
-    {
-        if (reader->getNodeType() == io::EXN_ELEMENT)
+        while (reader->read())
         {
-            const wchar_t* nodeName = reader->getNodeName();
-            if (bbSectionName == nodeName)
+            if (reader->getNodeType() == io::EXN_ELEMENT)
             {
-                // inside a bounding box, ignore it for now because
-                // we are calculating this anyway ourselves later.
-            }
-            else
-            if (materialSectionName == nodeName)
-            {
-                //we've got a material
-
-                io::IAttributes* attributes = FileSystem->createEmptyAttributes(SceneManager->getVideoDriver());
-                attributes->read(reader, true, L"material");
-
-                SceneManager->getVideoDriver()->fillMaterialStructureFromAttributes(material, attributes);
-                attributes->drop();
-            }
-            else
-            if (verticesSectionName == nodeName)
-            {
-                // vertices section
-
-                const core::stringc vertexTypeName1 = "standard";
-                const core::stringc vertexTypeName2 = "2tcoords";
-                const core::stringc vertexTypeName3 = "tangents";
-
-                const wchar_t* vertexType = reader->getAttributeValue(L"type");
-                vertexCount = reader->getAttributeValueAsInt(L"vertexCount");
-
-                insideVertexSection = true;
-
-                video::E_INDEX_TYPE itype = (vertexCount > 65536)?irr::video::EIT_32BIT:irr::video::EIT_16BIT;
-                if (vertexTypeName1 == vertexType)
+                const wchar_t *nodeName = reader->getNodeName();
+                if (bbSectionName == nodeName)
                 {
-                    buffer = new CDynamicMeshBuffer(irr::video::EVT_STANDARD, itype);
-
+                    // inside a bounding box, ignore it for now because
+                    // we are calculating this anyway ourselves later.
                 }
-                else
-                if (vertexTypeName2 == vertexType)
+                else if (materialSectionName == nodeName)
                 {
-                    buffer = new CDynamicMeshBuffer(irr::video::EVT_2TCOORDS, itype);
+                    // we've got a material
+
+                    io::IAttributes *attributes = FileSystem->createEmptyAttributes(SceneManager->getVideoDriver());
+                    attributes->read(reader, true, L"material");
+
+                    SceneManager->getVideoDriver()->fillMaterialStructureFromAttributes(material, attributes);
+                    attributes->drop();
                 }
-                else
-                if (vertexTypeName3 == vertexType)
+                else if (verticesSectionName == nodeName)
                 {
-                    buffer = new CDynamicMeshBuffer(irr::video::EVT_TANGENTS, itype);
+                    // vertices section
+
+                    const core::stringc vertexTypeName1 = "standard";
+                    const core::stringc vertexTypeName2 = "2tcoords";
+                    const core::stringc vertexTypeName3 = "tangents";
+
+                    const wchar_t *vertexType = reader->getAttributeValue(L"type");
+                    vertexCount = reader->getAttributeValueAsInt(L"vertexCount");
+
+                    insideVertexSection = true;
+
+                    video::E_INDEX_TYPE itype = (vertexCount > 65536) ? irr::video::EIT_32BIT : irr::video::EIT_16BIT;
+                    if (vertexTypeName1 == vertexType)
+                    {
+                        buffer = new CDynamicMeshBuffer(irr::video::EVT_STANDARD, itype);
+                    }
+                    else if (vertexTypeName2 == vertexType)
+                    {
+                        buffer = new CDynamicMeshBuffer(irr::video::EVT_2TCOORDS, itype);
+                    }
+                    else if (vertexTypeName3 == vertexType)
+                    {
+                        buffer = new CDynamicMeshBuffer(irr::video::EVT_TANGENTS, itype);
+                    }
+
+                    buffer->getVertexBuffer().reallocate(vertexCount);
+                    buffer->Material = material;
                 }
-                buffer->getVertexBuffer().reallocate(vertexCount);
-                buffer->Material = material;
-            }
-            else
-            if (indicesSectionName == nodeName)
-            {
-                // indices section
+                else if (indicesSectionName == nodeName)
+                {
+                    // indices section
 
-                indexCount = reader->getAttributeValueAsInt(L"indexCount");
-                insideIndexSection = true;
-            }
-
-        } // end if node type is element
-        else
-        if (reader->getNodeType() == io::EXN_TEXT)
-        {
-            // read vertex data
-            if (insideVertexSection)
+                    indexCount         = reader->getAttributeValueAsInt(L"indexCount");
+                    insideIndexSection = true;
+                }
+            }       // end if node type is element
+            else if (reader->getNodeType() == io::EXN_TEXT)
             {
-                readMeshBuffer(reader, vertexCount, buffer);
-                insideVertexSection = false;
-
-            } // end reading vertex array
-            else
-            if (insideIndexSection)
+                // read vertex data
+                if (insideVertexSection)
+                {
+                    readMeshBuffer(reader, vertexCount, buffer);
+                    insideVertexSection = false;
+                }       // end reading vertex array
+                else if (insideIndexSection)
+                {
+                    readIndices(reader, indexCount, buffer->getIndexBuffer());
+                    insideIndexSection = false;
+                }
+            }       // end if node type is text
+            else if (reader->getNodeType() == io::EXN_ELEMENT_END)
             {
-                readIndices(reader, indexCount, buffer->getIndexBuffer());
-                insideIndexSection = false;
-            }
-
-        } // end if node type is text
-        else
-        if (reader->getNodeType() == io::EXN_ELEMENT_END)
-        {
-            if (bufferSectionName == reader->getNodeName())
-            {
-                // end of buffer section reached, cancel out
-                break;
+                if (bufferSectionName == reader->getNodeName())
+                {
+                    // end of buffer section reached, cancel out
+                    break;
+                }
             }
         }
-    } // end while reader->read();
+
+    // end while reader->read();
 
     if (buffer)
         buffer->recalculateBoundingBox();
@@ -256,15 +243,15 @@ IMeshBuffer* CIrrMeshFileLoader::readMeshBuffer(io::IXMLReader* reader)
 }
 
 
-//! read indices
-void CIrrMeshFileLoader::readIndices(io::IXMLReader* reader, int indexCount, IIndexBuffer& indices)
+// ! read indices
+void CIrrMeshFileLoader::readIndices(io::IXMLReader *reader, int indexCount, IIndexBuffer &indices)
 {
     indices.reallocate(indexCount);
 
     core::stringc data = reader->getNodeData();
-    const c8* p = &data[0];
+    const c8      *p   = &data[0];
 
-    for (int i=0; i<indexCount && *p; ++i)
+    for (int i = 0; i<indexCount && *p; ++i)
     {
         findNextNoneWhiteSpace(&p);
         indices.push_back(readInt(&p));
@@ -272,18 +259,18 @@ void CIrrMeshFileLoader::readIndices(io::IXMLReader* reader, int indexCount, IIn
 }
 
 
-void CIrrMeshFileLoader::readMeshBuffer(io::IXMLReader* reader, int vertexCount, CDynamicMeshBuffer* sbuffer)
+void CIrrMeshFileLoader::readMeshBuffer(io::IXMLReader *reader, int vertexCount, CDynamicMeshBuffer *sbuffer)
 {
-    core::stringc data = reader->getNodeData();
-    const c8* p = &data[0];
-    scene::IVertexBuffer& Vertices = sbuffer->getVertexBuffer();
-    video::E_VERTEX_TYPE vType = Vertices.getType();
+    core::stringc        data      = reader->getNodeData();
+    const c8             *p        = &data[0];
+    scene::IVertexBuffer &Vertices = sbuffer->getVertexBuffer();
+    video::E_VERTEX_TYPE vType     = Vertices.getType();
 
     if (sbuffer)
     {
-        for (int i=0; i<vertexCount && *p; ++i)
+        for (int i = 0; i<vertexCount && *p; ++i)
         {
-            switch(vType)
+            switch (vType)
             {
             case video::EVT_STANDARD:
             {
@@ -324,6 +311,7 @@ void CIrrMeshFileLoader::readMeshBuffer(io::IXMLReader* reader, int vertexCount,
                 Vertices.push_back(vtx);
             }
             break;
+
             case video::EVT_2TCOORDS:
             {
                 video::S3DVertex2TCoords vtx;
@@ -428,15 +416,16 @@ void CIrrMeshFileLoader::readMeshBuffer(io::IXMLReader* reader, int vertexCount,
                 Vertices.push_back(vtx);
             }
             break;
-            };
+            }
 
+            ;
         }
     }
 }
 
 
-//! skips an (unknown) section in the irrmesh document
-void CIrrMeshFileLoader::skipSection(io::IXMLReader* reader, bool reportSkipping)
+// ! skips an (unknown) section in the irrmesh document
+void CIrrMeshFileLoader::skipSection(io::IXMLReader *reader, bool reportSkipping)
 {
 #ifdef _DEBUG
     os::Printer::log("irrMesh skipping section", core::stringc(reader->getNodeName()).c_str());
@@ -449,7 +438,7 @@ void CIrrMeshFileLoader::skipSection(io::IXMLReader* reader, bool reportSkipping
     // read until we've reached the last element in this section
     u32 tagCounter = 1;
 
-    while(tagCounter && reader->read())
+    while (tagCounter && reader->read())
     {
         if (reader->getNodeType() == io::EXN_ELEMENT &&
             !reader->isEmptyElement())
@@ -461,37 +450,37 @@ void CIrrMeshFileLoader::skipSection(io::IXMLReader* reader, bool reportSkipping
 
             ++tagCounter;
         }
-        else
-        if (reader->getNodeType() == io::EXN_ELEMENT_END)
+        else if (reader->getNodeType() == io::EXN_ELEMENT_END)
             --tagCounter;
     }
 }
 
 
-//! parses a float from a char pointer and moves the pointer
-//! to the end of the parsed float
-inline f32 CIrrMeshFileLoader::readFloat(const c8** p)
+// ! parses a float from a char pointer and moves the pointer
+// ! to the end of the parsed float
+inline f32 CIrrMeshFileLoader::readFloat(const c8 **p)
 {
     f32 ftmp;
+
     *p = core::fast_atof_move(*p, ftmp);
     return ftmp;
 }
 
 
-//! parses an int from a char pointer and moves the pointer to
-//! the end of the parsed float
-inline s32 CIrrMeshFileLoader::readInt(const c8** p)
+// ! parses an int from a char pointer and moves the pointer to
+// ! the end of the parsed float
+inline s32 CIrrMeshFileLoader::readInt(const c8 **p)
 {
     return (s32)readFloat(p);
 }
 
 
-//! places pointer to next begin of a token
-void CIrrMeshFileLoader::skipCurrentNoneWhiteSpace(const c8** start)
+// ! places pointer to next begin of a token
+void CIrrMeshFileLoader::skipCurrentNoneWhiteSpace(const c8 **start)
 {
-    const c8* p = *start;
+    const c8 *p = *start;
 
-    while(*p && !(*p==' ' || *p=='\n' || *p=='\r' || *p=='\t'))
+    while (*p && !(*p==' ' || *p=='\n' || *p=='\r' || *p=='\t'))
         ++p;
 
     // TODO: skip comments <!-- -->
@@ -499,12 +488,12 @@ void CIrrMeshFileLoader::skipCurrentNoneWhiteSpace(const c8** start)
     *start = p;
 }
 
-//! places pointer to next begin of a token
-void CIrrMeshFileLoader::findNextNoneWhiteSpace(const c8** start)
+// ! places pointer to next begin of a token
+void CIrrMeshFileLoader::findNextNoneWhiteSpace(const c8 **start)
 {
-    const c8* p = *start;
+    const c8 *p = *start;
 
-    while(*p && (*p==' ' || *p=='\n' || *p=='\r' || *p=='\t'))
+    while (*p && (*p==' ' || *p=='\n' || *p=='\r' || *p=='\t'))
         ++p;
 
     // TODO: skip comments <!-- -->
@@ -513,13 +502,13 @@ void CIrrMeshFileLoader::findNextNoneWhiteSpace(const c8** start)
 }
 
 
-//! reads floats from inside of xml element until end of xml element
-void CIrrMeshFileLoader::readFloatsInsideElement(io::IXMLReader* reader, f32* floats, u32 count)
+// ! reads floats from inside of xml element until end of xml element
+void CIrrMeshFileLoader::readFloatsInsideElement(io::IXMLReader *reader, f32 *floats, u32 count)
 {
     if (reader->isEmptyElement())
         return;
 
-    while(reader->read())
+    while (reader->read())
     {
         // TODO: check for comments inside the element
         // and ignore them.
@@ -528,9 +517,9 @@ void CIrrMeshFileLoader::readFloatsInsideElement(io::IXMLReader* reader, f32* fl
         {
             // parse float data
             core::stringc data = reader->getNodeData();
-            const c8* p = &data[0];
+            const c8      *p   = &data[0];
 
-            for (u32 i=0; i<count; ++i)
+            for (u32 i = 0; i<count; ++i)
             {
                 findNextNoneWhiteSpace(&p);
                 if (*p)
@@ -539,16 +528,10 @@ void CIrrMeshFileLoader::readFloatsInsideElement(io::IXMLReader* reader, f32* fl
                     floats[i] = 0.0f;
             }
         }
-        else
-        if (reader->getNodeType() == io::EXN_ELEMENT_END)
+        else if (reader->getNodeType() == io::EXN_ELEMENT_END)
             break; // end parsing text
     }
 }
-
-
-
-
-} // end namespace scene
+}   // end namespace scene
 } // end namespace irr
-
 #endif // _IRR_COMPILE_WITH_IRR_MESH_LOADER_

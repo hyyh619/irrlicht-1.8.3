@@ -11,48 +11,43 @@
 
 namespace irr
 {
-
 namespace io
 {
+/*!
+    Class for writing a real file to disk.
+ */
+class CWriteFile : public IWriteFile
+{
+public:
 
-    /*!
-        Class for writing a real file to disk.
-    */
-    class CWriteFile : public IWriteFile
-    {
-    public:
+    CWriteFile(const io::path &fileName, bool append);
 
-        CWriteFile(const io::path& fileName, bool append);
+    virtual ~CWriteFile();
 
-        virtual ~CWriteFile();
+    // ! Reads an amount of bytes from the file.
+    virtual s32 write(const void *buffer, u32 sizeToWrite);
 
-        //! Reads an amount of bytes from the file.
-        virtual s32 write(const void* buffer, u32 sizeToWrite);
+    // ! Changes position in file, returns true if successful.
+    virtual bool seek(long finalPos, bool relativeMovement = false);
 
-        //! Changes position in file, returns true if successful.
-        virtual bool seek(long finalPos, bool relativeMovement = false);
+    // ! Returns the current position in the file.
+    virtual long getPos() const;
 
-        //! Returns the current position in the file.
-        virtual long getPos() const;
+    // ! Returns name of file.
+    virtual const io::path&getFileName() const;
 
-        //! Returns name of file.
-        virtual const io::path& getFileName() const;
+    // ! returns if file is open
+    bool isOpen() const;
 
-        //! returns if file is open
-        bool isOpen() const;
+private:
 
-    private:
+    // ! opens the file
+    void openFile(bool append);
 
-        //! opens the file
-        void openFile(bool append);
-
-        io::path Filename;
-        FILE* File;
-        long FileSize;
-    };
-
-} // end namespace io
+    io::path Filename;
+    FILE     *File;
+    long     FileSize;
+};
+}   // end namespace io
 } // end namespace irr
-
 #endif
-

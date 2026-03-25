@@ -11,16 +11,15 @@ namespace irr
 {
 namespace scene
 {
-
-//! constructor
+// ! constructor
 CParticleAnimatedMeshSceneNodeEmitter::CParticleAnimatedMeshSceneNodeEmitter(
-        IAnimatedMeshSceneNode* node, bool useNormalDirection,
-        const core::vector3df& direction, f32 normalDirectionModifier,
-        s32 mbNumber, bool everyMeshVertex,
-        u32 minParticlesPerSecond, u32 maxParticlesPerSecond,
-        const video::SColor& minStartColor, const video::SColor& maxStartColor,
-        u32 lifeTimeMin, u32 lifeTimeMax, s32 maxAngleDegrees,
-        const core::dimension2df& minStartSize, const core::dimension2df& maxStartSize )
+    IAnimatedMeshSceneNode *node, bool useNormalDirection,
+    const core::vector3df &direction, f32 normalDirectionModifier,
+    s32 mbNumber, bool everyMeshVertex,
+    u32 minParticlesPerSecond, u32 maxParticlesPerSecond,
+    const video::SColor &minStartColor, const video::SColor &maxStartColor,
+    u32 lifeTimeMin, u32 lifeTimeMax, s32 maxAngleDegrees,
+    const core::dimension2df &minStartSize, const core::dimension2df &maxStartSize)
     : Node(0), AnimatedMesh(0), BaseMesh(0), TotalVertices(0), MBCount(0), MBNumber(mbNumber),
     Direction(direction), NormalDirectionModifier(normalDirectionModifier),
     MinParticlesPerSecond(minParticlesPerSecond), MaxParticlesPerSecond(maxParticlesPerSecond),
@@ -37,47 +36,48 @@ CParticleAnimatedMeshSceneNodeEmitter::CParticleAnimatedMeshSceneNodeEmitter(
 }
 
 
-//! Prepares an array with new particles to emitt into the system
-//! and returns how much new particles there are.
-s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle*& outArray)
+// ! Prepares an array with new particles to emitt into the system
+// ! and returns how much new particles there are.
+s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle* &outArray)
 {
     Time += timeSinceLastCall;
 
-    const u32 pps = (MaxParticlesPerSecond - MinParticlesPerSecond);
-    const f32 perSecond = pps ? ((f32)MinParticlesPerSecond + os::Randomizer::frand() * pps) : MinParticlesPerSecond;
+    const u32 pps                  = (MaxParticlesPerSecond - MinParticlesPerSecond);
+    const f32 perSecond            = pps ? ((f32)MinParticlesPerSecond + os::Randomizer::frand() * pps) : MinParticlesPerSecond;
     const f32 everyWhatMillisecond = 1000.0f / perSecond;
 
-    if(Time > everyWhatMillisecond)
+    if (Time > everyWhatMillisecond)
     {
         Particles.set_used(0);
         u32 amount = (u32)((Time / everyWhatMillisecond) + 0.5f);
         Time = 0;
         SParticle p;
 
-        if(amount > MaxParticlesPerSecond * 2)
+        if (amount > MaxParticlesPerSecond * 2)
             amount = MaxParticlesPerSecond * 2;
 
         // Get Mesh for this frame
-        IMesh* frameMesh = AnimatedMesh->getMesh( core::floor32(Node->getFrameNr()),
-                255, Node->getStartFrame(), Node->getEndFrame() );
-        for(u32 i=0; i<amount; ++i)
+        IMesh *frameMesh = AnimatedMesh->getMesh(core::floor32(Node->getFrameNr()),
+                                                 255, Node->getStartFrame(), Node->getEndFrame());
+
+        for (u32 i = 0; i<amount; ++i)
         {
-            if( EveryMeshVertex )
+            if (EveryMeshVertex)
             {
-                for( u32 j=0; j<frameMesh->getMeshBufferCount(); ++j )
+                for (u32 j = 0; j<frameMesh->getMeshBufferCount(); ++j)
                 {
-                    for( u32 k=0; k<frameMesh->getMeshBuffer(j)->getVertexCount(); ++k )
+                    for (u32 k = 0; k<frameMesh->getMeshBuffer(j)->getVertexCount(); ++k)
                     {
                         p.pos = frameMesh->getMeshBuffer(j)->getPosition(k);
-                        if( UseNormalDirection )
+                        if (UseNormalDirection)
                             p.vector = frameMesh->getMeshBuffer(j)->getNormal(k) /
-                                NormalDirectionModifier;
+                                       NormalDirectionModifier;
                         else
                             p.vector = Direction;
 
                         p.startTime = now;
 
-                        if( MaxAngleDegrees )
+                        if (MaxAngleDegrees)
                         {
                             core::vector3df tgt = p.vector;
                             tgt.rotateXYBy(os::Randomizer::frand() * MaxAngleDegrees);
@@ -91,17 +91,18 @@ s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall,
                             p.endTime += os::Randomizer::rand() % (MaxLifeTime - MinLifeTime);
 
                         if (MinStartColor==MaxStartColor)
-                            p.color=MinStartColor;
+                            p.color = MinStartColor;
                         else
                             p.color = MinStartColor.getInterpolated(MaxStartColor, os::Randomizer::frand());
 
-                        p.startColor = p.color;
+                        p.startColor  = p.color;
                         p.startVector = p.vector;
 
                         if (MinStartSize==MaxStartSize)
                             p.startSize = MinStartSize;
                         else
                             p.startSize = MinStartSize.getInterpolated(MaxStartSize, os::Randomizer::frand());
+
                         p.size = p.startSize;
 
                         Particles.push_back(p);
@@ -111,7 +112,7 @@ s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall,
             else
             {
                 s32 randomMB = 0;
-                if( MBNumber < 0 )
+                if (MBNumber < 0)
                     randomMB = os::Randomizer::rand() % MBCount;
                 else
                     randomMB = MBNumber;
@@ -119,18 +120,19 @@ s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall,
                 u32 vertexNumber = frameMesh->getMeshBuffer(randomMB)->getVertexCount();
                 if (!vertexNumber)
                     continue;
+
                 vertexNumber = os::Randomizer::rand() % vertexNumber;
 
                 p.pos = frameMesh->getMeshBuffer(randomMB)->getPosition(vertexNumber);
-                if( UseNormalDirection )
+                if (UseNormalDirection)
                     p.vector = frameMesh->getMeshBuffer(randomMB)->getNormal(vertexNumber) /
-                        NormalDirectionModifier;
+                               NormalDirectionModifier;
                 else
                     p.vector = Direction;
 
                 p.startTime = now;
 
-                if( MaxAngleDegrees )
+                if (MaxAngleDegrees)
                 {
                     core::vector3df tgt = Direction;
                     tgt.rotateXYBy(os::Randomizer::frand() * MaxAngleDegrees);
@@ -144,17 +146,18 @@ s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall,
                     p.endTime += os::Randomizer::rand() % (MaxLifeTime - MinLifeTime);
 
                 if (MinStartColor==MaxStartColor)
-                    p.color=MinStartColor;
+                    p.color = MinStartColor;
                 else
                     p.color = MinStartColor.getInterpolated(MaxStartColor, os::Randomizer::frand());
 
-                p.startColor = p.color;
+                p.startColor  = p.color;
                 p.startVector = p.vector;
 
                 if (MinStartSize==MaxStartSize)
                     p.startSize = MinStartSize;
                 else
                     p.startSize = MinStartSize.getInterpolated(MaxStartSize, os::Randomizer::frand());
+
                 p.size = p.startSize;
 
                 Particles.push_back(p);
@@ -170,31 +173,30 @@ s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall,
 }
 
 
-//! Set Mesh to emit particles from
-void CParticleAnimatedMeshSceneNodeEmitter::setAnimatedMeshSceneNode( IAnimatedMeshSceneNode* node )
+// ! Set Mesh to emit particles from
+void CParticleAnimatedMeshSceneNodeEmitter::setAnimatedMeshSceneNode(IAnimatedMeshSceneNode *node)
 {
-    Node = node;
-    AnimatedMesh = 0;
-    BaseMesh = 0;
+    Node          = node;
+    AnimatedMesh  = 0;
+    BaseMesh      = 0;
     TotalVertices = 0;
     VertexPerMeshBufferList.clear();
-    if ( !node )
+    if (!node)
     {
         return;
     }
 
     AnimatedMesh = node->getMesh();
-    BaseMesh = AnimatedMesh->getMesh(0);
+    BaseMesh     = AnimatedMesh->getMesh(0);
 
     MBCount = BaseMesh->getMeshBufferCount();
     VertexPerMeshBufferList.reallocate(MBCount);
-    for( u32 i = 0; i < MBCount; ++i )
+
+    for (u32 i = 0; i < MBCount; ++i)
     {
-        VertexPerMeshBufferList.push_back( BaseMesh->getMeshBuffer(i)->getVertexCount() );
+        VertexPerMeshBufferList.push_back(BaseMesh->getMeshBuffer(i)->getVertexCount());
         TotalVertices += BaseMesh->getMeshBuffer(i)->getVertexCount();
     }
 }
-
-} // end namespace scene
+}   // end namespace scene
 } // end namespace irr
-

@@ -12,11 +12,10 @@ namespace irr
 {
 namespace video
 {
-
-//! constructor
-CSoftwareTexture::CSoftwareTexture(IImage* image, const io::path& name,
-        bool renderTarget, void* mipmapData)
-: ITexture(name), Texture(0), IsRenderTarget(renderTarget)
+// ! constructor
+CSoftwareTexture::CSoftwareTexture(IImage *image, const io::path &name,
+                                   bool renderTarget, void *mipmapData)
+    : ITexture(name), Texture(0), IsRenderTarget(renderTarget)
 {
     #ifdef _DEBUG
     setDebugName("CSoftwareTexture");
@@ -25,7 +24,7 @@ CSoftwareTexture::CSoftwareTexture(IImage* image, const io::path& name,
     if (image)
     {
         OrigSize = image->getDimension();
-        core::dimension2d<u32> optSize=OrigSize.getOptimalSize();
+        core::dimension2d<u32> optSize = OrigSize.getOptimalSize();
 
         Image = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, OrigSize);
         image->copyTo(Image);
@@ -45,7 +44,7 @@ CSoftwareTexture::CSoftwareTexture(IImage* image, const io::path& name,
 
 
 
-//! destructor
+// ! destructor
 CSoftwareTexture::~CSoftwareTexture()
 {
     if (Image)
@@ -57,7 +56,7 @@ CSoftwareTexture::~CSoftwareTexture()
 
 
 
-//! lock function
+// ! lock function
 void* CSoftwareTexture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel)
 {
     return Image->lock();
@@ -65,7 +64,7 @@ void* CSoftwareTexture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel)
 
 
 
-//! unlock function
+// ! unlock function
 void CSoftwareTexture::unlock()
 {
     if (Image != Texture)
@@ -78,21 +77,21 @@ void CSoftwareTexture::unlock()
 }
 
 
-//! Returns original size of the texture.
-const core::dimension2d<u32>& CSoftwareTexture::getOriginalSize() const
+// ! Returns original size of the texture.
+const core::dimension2d<u32>&CSoftwareTexture::getOriginalSize() const
 {
     return OrigSize;
 }
 
 
-//! Returns (=size) of the texture.
-const core::dimension2d<u32>& CSoftwareTexture::getSize() const
+// ! Returns (=size) of the texture.
+const core::dimension2d<u32>&CSoftwareTexture::getSize() const
 {
     return Image->getDimension();
 }
 
 
-//! returns unoptimized surface
+// ! returns unoptimized surface
 CImage* CSoftwareTexture::getImage()
 {
     return Image;
@@ -100,7 +99,7 @@ CImage* CSoftwareTexture::getImage()
 
 
 
-//! returns texture surface
+// ! returns texture surface
 CImage* CSoftwareTexture::getTexture()
 {
     return Texture;
@@ -108,7 +107,7 @@ CImage* CSoftwareTexture::getTexture()
 
 
 
-//! returns driver type of texture (=the driver, who created the texture)
+// ! returns driver type of texture (=the driver, who created the texture)
 E_DRIVER_TYPE CSoftwareTexture::getDriverType() const
 {
     return EDT_SOFTWARE;
@@ -116,7 +115,7 @@ E_DRIVER_TYPE CSoftwareTexture::getDriverType() const
 
 
 
-//! returns color format of texture
+// ! returns color format of texture
 ECOLOR_FORMAT CSoftwareTexture::getColorFormat() const
 {
     return ECOLOR_FORMAT::ECF_A1R5G5B5;
@@ -124,16 +123,16 @@ ECOLOR_FORMAT CSoftwareTexture::getColorFormat() const
 
 
 
-//! returns pitch of texture (in bytes)
+// ! returns pitch of texture (in bytes)
 u32 CSoftwareTexture::getPitch() const
 {
     return Image->getDimension().Width * 2;
 }
 
 
-//! Regenerates the mip map levels of the texture. Useful after locking and
-//! modifying the texture
-void CSoftwareTexture::regenerateMipMapLevels(void* mipmapData)
+// ! Regenerates the mip map levels of the texture. Useful after locking and
+// ! modifying the texture
+void CSoftwareTexture::regenerateMipMapLevels(void *mipmapData)
 {
     // our software textures don't have mip maps
 }
@@ -142,10 +141,6 @@ bool CSoftwareTexture::isRenderTarget() const
 {
     return IsRenderTarget;
 }
-
-
-} // end namespace video
+}   // end namespace video
 } // end namespace irr
-
 #endif // _IRR_COMPILE_WITH_SOFTWARE_
-

@@ -21,8 +21,7 @@ namespace irr
 {
 namespace scene
 {
-
-COBJMeshWriter::COBJMeshWriter(scene::ISceneManager* smgr, io::IFileSystem* fs)
+COBJMeshWriter::COBJMeshWriter(scene::ISceneManager *smgr, io::IFileSystem *fs)
     : SceneManager(smgr), FileSystem(fs)
 {
     #ifdef _DEBUG
@@ -47,15 +46,15 @@ COBJMeshWriter::~COBJMeshWriter()
 }
 
 
-//! Returns the type of the mesh writer
+// ! Returns the type of the mesh writer
 EMESH_WRITER_TYPE COBJMeshWriter::getType() const
 {
     return EMWT_OBJ;
 }
 
 
-//! writes a mesh
-bool COBJMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 flags)
+// ! writes a mesh
+bool COBJMeshWriter::writeMesh(io::IWriteFile *file, scene::IMesh *mesh, s32 flags)
 {
     if (!file)
         return false;
@@ -64,53 +63,56 @@ bool COBJMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
 
     // write OBJ MESH header
 
-    const core::stringc name(FileSystem->getFileBasename(SceneManager->getMeshCache()->getMeshName(mesh), false)+".mtl");
-    file->write("# exported by Irrlicht\n",23);
-    file->write("mtllib ",7);
-    file->write(name.c_str(),name.size());
-    file->write("\n\n",2);
+    const core::stringc name(FileSystem->getFileBasename(SceneManager->getMeshCache()->getMeshName(mesh), false) + ".mtl");
+    file->write("# exported by Irrlicht\n", 23);
+    file->write("mtllib ", 7);
+    file->write(name.c_str(), name.size());
+    file->write("\n\n", 2);
 
     // write mesh buffers
 
     core::array<video::SMaterial*> mat;
 
-    u32 allVertexCount=1; // count vertices over the whole file
-    for (u32 i=0; i<mesh->getMeshBufferCount(); ++i)
+    u32 allVertexCount = 1; // count vertices over the whole file
+
+    for (u32 i = 0; i<mesh->getMeshBufferCount(); ++i)
     {
-        core::stringc num(i+1);
-        IMeshBuffer* buffer = mesh->getMeshBuffer(i);
+        core::stringc num(i + 1);
+        IMeshBuffer   *buffer = mesh->getMeshBuffer(i);
         if (buffer && buffer->getVertexCount())
         {
             file->write("g grp", 5);
             file->write(num.c_str(), num.size());
-            file->write("\n",1);
+            file->write("\n", 1);
 
-            u32 j;
+            u32       j;
             const u32 vertexCount = buffer->getVertexCount();
-            for (j=0; j<vertexCount; ++j)
+
+            for (j = 0; j<vertexCount; ++j)
             {
-                file->write("v ",2);
+                file->write("v ", 2);
                 getVectorAsStringLine(buffer->getPosition(j), num);
                 file->write(num.c_str(), num.size());
             }
 
-            for (j=0; j<vertexCount; ++j)
+            for (j = 0; j<vertexCount; ++j)
             {
-                file->write("vt ",3);
+                file->write("vt ", 3);
                 getVectorAsStringLine(buffer->getTCoords(j), num);
                 file->write(num.c_str(), num.size());
             }
 
-            for (j=0; j<vertexCount; ++j)
+            for (j = 0; j<vertexCount; ++j)
             {
-                file->write("vn ",3);
+                file->write("vn ", 3);
                 getVectorAsStringLine(buffer->getNormal(j), num);
                 file->write(num.c_str(), num.size());
             }
 
-            file->write("usemtl mat",10);
+            file->write("usemtl mat", 10);
             num = "";
-            for (j=0; j<mat.size(); ++j)
+
+            for (j = 0; j<mat.size(); ++j)
             {
                 if (*mat[j]==buffer->getMaterial())
                 {
@@ -118,45 +120,49 @@ bool COBJMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
                     break;
                 }
             }
+
             if (num == "")
             {
                 num = core::stringc(mat.size());
                 mat.push_back(&buffer->getMaterial());
             }
+
             file->write(num.c_str(), num.size());
-            file->write("\n",1);
+            file->write("\n", 1);
 
             const u32 indexCount = buffer->getIndexCount();
-            for (j=0; j<indexCount; j+=3)
+
+            for (j = 0; j<indexCount; j += 3)
             {
-                file->write("f ",2);
-                num = core::stringc(buffer->getIndices()[j+2]+allVertexCount);
+                file->write("f ", 2);
+                num = core::stringc(buffer->getIndices()[j + 2] + allVertexCount);
                 file->write(num.c_str(), num.size());
-                file->write("/",1);
+                file->write("/", 1);
                 file->write(num.c_str(), num.size());
-                file->write("/",1);
+                file->write("/", 1);
                 file->write(num.c_str(), num.size());
-                file->write(" ",1);
+                file->write(" ", 1);
 
-                num = core::stringc(buffer->getIndices()[j+1]+allVertexCount);
+                num = core::stringc(buffer->getIndices()[j + 1] + allVertexCount);
                 file->write(num.c_str(), num.size());
-                file->write("/",1);
+                file->write("/", 1);
                 file->write(num.c_str(), num.size());
-                file->write("/",1);
+                file->write("/", 1);
                 file->write(num.c_str(), num.size());
-                file->write(" ",1);
+                file->write(" ", 1);
 
-                num = core::stringc(buffer->getIndices()[j+0]+allVertexCount);
+                num = core::stringc(buffer->getIndices()[j + 0] + allVertexCount);
                 file->write(num.c_str(), num.size());
-                file->write("/",1);
+                file->write("/", 1);
                 file->write(num.c_str(), num.size());
-                file->write("/",1);
+                file->write("/", 1);
                 file->write(num.c_str(), num.size());
-                file->write(" ",1);
+                file->write(" ", 1);
 
-                file->write("\n",1);
+                file->write("\n", 1);
             }
-            file->write("\n",1);
+
+            file->write("\n", 1);
             allVertexCount += vertexCount;
         }
     }
@@ -164,48 +170,52 @@ bool COBJMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
     if (mat.size() == 0)
         return true;
 
-    file = FileSystem->createAndWriteFile( name );
+    file = FileSystem->createAndWriteFile(name);
     if (file)
     {
         os::Printer::log("Writing material", file->getFileName());
 
-        file->write("# exported by Irrlicht\n\n",24);
-        for (u32 i=0; i<mat.size(); ++i)
+        file->write("# exported by Irrlicht\n\n", 24);
+
+        for (u32 i = 0; i<mat.size(); ++i)
         {
             core::stringc num(i);
-            file->write("newmtl mat",10);
-            file->write(num.c_str(),num.size());
-            file->write("\n",1);
+            file->write("newmtl mat", 10);
+            file->write(num.c_str(), num.size());
+            file->write("\n", 1);
 
             getColorAsStringLine(mat[i]->AmbientColor, "Ka", num);
-            file->write(num.c_str(),num.size());
+            file->write(num.c_str(), num.size());
             getColorAsStringLine(mat[i]->DiffuseColor, "Kd", num);
-            file->write(num.c_str(),num.size());
+            file->write(num.c_str(), num.size());
             getColorAsStringLine(mat[i]->SpecularColor, "Ks", num);
-            file->write(num.c_str(),num.size());
+            file->write(num.c_str(), num.size());
             getColorAsStringLine(mat[i]->EmissiveColor, "Ke", num);
-            file->write(num.c_str(),num.size());
-            num = core::stringc((double)(mat[i]->Shininess/0.128f));
+            file->write(num.c_str(), num.size());
+            num = core::stringc((double)(mat[i]->Shininess / 0.128f));
             file->write("Ns ", 3);
-            file->write(num.c_str(),num.size());
+            file->write(num.c_str(), num.size());
             file->write("\n", 1);
             if (mat[i]->getTexture(0))
             {
                 file->write("map_Kd ", 7);
                 file->write(mat[i]->getTexture(0)->getName().getPath().c_str(), mat[i]->getTexture(0)->getName().getPath().size());
-                file->write("\n",1);
+                file->write("\n", 1);
             }
-            file->write("\n",1);
+
+            file->write("\n", 1);
         }
+
         file->drop();
     }
+
     return true;
 }
 
 
-void COBJMeshWriter::getVectorAsStringLine(const core::vector3df& v, core::stringc& s) const
+void COBJMeshWriter::getVectorAsStringLine(const core::vector3df &v, core::stringc &s) const
 {
-    s = core::stringc(-v.X);
+    s  = core::stringc(-v.X);
     s += " ";
     s += core::stringc(v.Y);
     s += " ";
@@ -214,30 +224,26 @@ void COBJMeshWriter::getVectorAsStringLine(const core::vector3df& v, core::strin
 }
 
 
-void COBJMeshWriter::getVectorAsStringLine(const core::vector2df& v, core::stringc& s) const
+void COBJMeshWriter::getVectorAsStringLine(const core::vector2df &v, core::stringc &s) const
 {
-    s = core::stringc(v.X);
+    s  = core::stringc(v.X);
     s += " ";
     s += core::stringc(-v.Y);
     s += "\n";
 }
 
 
-void COBJMeshWriter::getColorAsStringLine(const video::SColor& color, const c8* const prefix, core::stringc& s) const
+void COBJMeshWriter::getColorAsStringLine(const video::SColor &color, const c8* const prefix, core::stringc &s) const
 {
-    s = prefix;
+    s  = prefix;
     s += " ";
-    s += core::stringc((double)(color.getRed()/255.f));
+    s += core::stringc((double)(color.getRed() / 255.f));
     s += " ";
-    s += core::stringc((double)(color.getGreen()/255.f));
+    s += core::stringc((double)(color.getGreen() / 255.f));
     s += " ";
-    s += core::stringc((double)(color.getBlue()/255.f));
+    s += core::stringc((double)(color.getBlue() / 255.f));
     s += "\n";
 }
-
-
+}   // end namespace
 } // end namespace
-} // end namespace
-
 #endif
-

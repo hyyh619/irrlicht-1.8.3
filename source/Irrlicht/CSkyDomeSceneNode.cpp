@@ -14,7 +14,6 @@ namespace irr
 {
 namespace scene
 {
-
 /* horiRes and vertRes:
     Controls the number of faces along the horizontal axis (30 is a good value)
     and the number of faces along the vertical axis (8 is a good value).
@@ -30,13 +29,13 @@ namespace scene
     to use a value slightly bigger than 1 to avoid a gap between some ground place and the sky. This
     parameters stretches the image to fit the chosen "sphere-size". */
 
-CSkyDomeSceneNode::CSkyDomeSceneNode(video::ITexture* sky, u32 horiRes, u32 vertRes,
-        f32 texturePercentage, f32 spherePercentage, f32 radius,
-        ISceneNode* parent, ISceneManager* mgr, s32 id)
+CSkyDomeSceneNode::CSkyDomeSceneNode(video::ITexture *sky, u32 horiRes, u32 vertRes,
+                                     f32 texturePercentage, f32 spherePercentage, f32 radius,
+                                     ISceneNode *parent, ISceneManager *mgr, s32 id)
     : ISceneNode(parent, mgr, id), Buffer(0),
-      HorizontalResolution(horiRes), VerticalResolution(vertRes),
-      TexturePercentage(texturePercentage),
-      SpherePercentage(spherePercentage), Radius(radius)
+    HorizontalResolution(horiRes), VerticalResolution(vertRes),
+    TexturePercentage(texturePercentage),
+    SpherePercentage(spherePercentage), Radius(radius)
 {
     #ifdef _DEBUG
     setDebugName("CSkyDomeSceneNode");
@@ -44,14 +43,14 @@ CSkyDomeSceneNode::CSkyDomeSceneNode(video::ITexture* sky, u32 horiRes, u32 vert
 
     setAutomaticCulling(scene::EAC_OFF);
 
-    Buffer = new SMeshBuffer();
-    Buffer->Material.Lighting = false;
-    Buffer->Material.ZBuffer = video::ECFN_NEVER;
+    Buffer                        = new SMeshBuffer();
+    Buffer->Material.Lighting     = false;
+    Buffer->Material.ZBuffer      = video::ECFN_NEVER;
     Buffer->Material.ZWriteEnable = false;
     Buffer->Material.AntiAliasing = video::EAAM_OFF;
     Buffer->Material.setTexture(0, sky);
-    Buffer->BoundingBox.MaxEdge.set(0,0,0);
-    Buffer->BoundingBox.MinEdge.set(0,0,0);
+    Buffer->BoundingBox.MaxEdge.set(0, 0, 0);
+    Buffer->BoundingBox.MinEdge.set(0, 0, 0);
 
     // regenerate the mesh
     generateMesh();
@@ -76,29 +75,33 @@ void CSkyDomeSceneNode::generateMesh()
     const f32 azimuth_step = (core::PI * 2.f) / HorizontalResolution;
     if (SpherePercentage < 0.f)
         SpherePercentage = -SpherePercentage;
+
     if (SpherePercentage > 2.f)
         SpherePercentage = 2.f;
+
     const f32 elevation_step = SpherePercentage * core::HALF_PI / (f32)VerticalResolution;
 
-    Buffer->Vertices.reallocate( (HorizontalResolution + 1) * (VerticalResolution + 1) );
-    Buffer->Indices.reallocate(3 * (2*VerticalResolution - 1) * HorizontalResolution);
+    Buffer->Vertices.reallocate((HorizontalResolution + 1) * (VerticalResolution + 1));
+    Buffer->Indices.reallocate(3 * (2 * VerticalResolution - 1) * HorizontalResolution);
 
     video::S3DVertex vtx;
-    vtx.Color.set(255,255,255,255);
-    vtx.Normal.set(0.0f,-1.f,0.0f);
+    vtx.Color.set(255, 255, 255, 255);
+    vtx.Normal.set(0.0f, -1.f, 0.0f);
 
     const f32 tcV = TexturePercentage / VerticalResolution;
+
     for (k = 0, azimuth = 0; k <= HorizontalResolution; ++k)
     {
-        f32 elevation = core::HALF_PI;
-        const f32 tcU = (f32)k / (f32)HorizontalResolution;
-        const f32 sinA = sinf(azimuth);
-        const f32 cosA = cosf(azimuth);
+        f32       elevation = core::HALF_PI;
+        const f32 tcU       = (f32)k / (f32)HorizontalResolution;
+        const f32 sinA      = sinf(azimuth);
+        const f32 cosA      = cosf(azimuth);
+
         for (u32 j = 0; j <= VerticalResolution; ++j)
         {
             const f32 cosEr = Radius * cosf(elevation);
-            vtx.Pos.set(cosEr*sinA, Radius*sinf(elevation), cosEr*cosA);
-            vtx.TCoords.set(tcU, j*tcV);
+            vtx.Pos.set(cosEr * sinA, Radius * sinf(elevation), cosEr * cosA);
+            vtx.TCoords.set(tcU, j * tcV);
 
             vtx.Normal = -vtx.Pos;
             vtx.Normal.normalize();
@@ -106,40 +109,42 @@ void CSkyDomeSceneNode::generateMesh()
             Buffer->Vertices.push_back(vtx);
             elevation -= elevation_step;
         }
+
         azimuth += azimuth_step;
     }
 
     for (k = 0; k < HorizontalResolution; ++k)
     {
-        Buffer->Indices.push_back(VerticalResolution + 2 + (VerticalResolution + 1)*k);
-        Buffer->Indices.push_back(1 + (VerticalResolution + 1)*k);
-        Buffer->Indices.push_back(0 + (VerticalResolution + 1)*k);
+        Buffer->Indices.push_back(VerticalResolution + 2 + (VerticalResolution + 1) * k);
+        Buffer->Indices.push_back(1 + (VerticalResolution + 1) * k);
+        Buffer->Indices.push_back(0 + (VerticalResolution + 1) * k);
 
         for (u32 j = 1; j < VerticalResolution; ++j)
         {
-            Buffer->Indices.push_back(VerticalResolution + 2 + (VerticalResolution + 1)*k + j);
-            Buffer->Indices.push_back(1 + (VerticalResolution + 1)*k + j);
-            Buffer->Indices.push_back(0 + (VerticalResolution + 1)*k + j);
+            Buffer->Indices.push_back(VerticalResolution + 2 + (VerticalResolution + 1) * k + j);
+            Buffer->Indices.push_back(1 + (VerticalResolution + 1) * k + j);
+            Buffer->Indices.push_back(0 + (VerticalResolution + 1) * k + j);
 
-            Buffer->Indices.push_back(VerticalResolution + 1 + (VerticalResolution + 1)*k + j);
-            Buffer->Indices.push_back(VerticalResolution + 2 + (VerticalResolution + 1)*k + j);
-            Buffer->Indices.push_back(0 + (VerticalResolution + 1)*k + j);
+            Buffer->Indices.push_back(VerticalResolution + 1 + (VerticalResolution + 1) * k + j);
+            Buffer->Indices.push_back(VerticalResolution + 2 + (VerticalResolution + 1) * k + j);
+            Buffer->Indices.push_back(0 + (VerticalResolution + 1) * k + j);
         }
     }
+
     Buffer->setHardwareMappingHint(scene::EHM_STATIC);
 }
 
 
-//! renders the node.
+// ! renders the node.
 void CSkyDomeSceneNode::render()
 {
-    video::IVideoDriver* driver = SceneManager->getVideoDriver();
-    scene::ICameraSceneNode* camera = SceneManager->getActiveCamera();
+    video::IVideoDriver     *driver = SceneManager->getVideoDriver();
+    scene::ICameraSceneNode *camera = SceneManager->getActiveCamera();
 
     if (!camera || !driver)
         return;
 
-    if ( !camera->isOrthogonal() )
+    if (!camera->isOrthogonal())
     {
         core::matrix4 mat(AbsoluteTransformation);
         mat.setTranslation(camera->getAbsolutePosition());
@@ -151,22 +156,22 @@ void CSkyDomeSceneNode::render()
     }
 
     // for debug purposes only:
-    if ( DebugDataVisible )
+    if (DebugDataVisible)
     {
         video::SMaterial m;
         m.Lighting = false;
         driver->setMaterial(m);
 
-        if ( DebugDataVisible & scene::EDS_NORMALS )
+        if (DebugDataVisible & scene::EDS_NORMALS)
         {
             // draw normals
-            const f32 debugNormalLength = SceneManager->getParameters()->getAttributeAsFloat(DEBUG_NORMAL_LENGTH);
-            const video::SColor debugNormalColor = SceneManager->getParameters()->getAttributeAsColor(DEBUG_NORMAL_COLOR);
+            const f32           debugNormalLength = SceneManager->getParameters()->getAttributeAsFloat(DEBUG_NORMAL_LENGTH);
+            const video::SColor debugNormalColor  = SceneManager->getParameters()->getAttributeAsColor(DEBUG_NORMAL_COLOR);
             driver->drawMeshBufferNormals(Buffer, debugNormalLength, debugNormalColor);
         }
 
         // show mesh
-        if ( DebugDataVisible & scene::EDS_MESH_WIRE_OVERLAY )
+        if (DebugDataVisible & scene::EDS_MESH_WIRE_OVERLAY)
         {
             m.Wireframe = true;
             driver->setMaterial(m);
@@ -177,8 +182,8 @@ void CSkyDomeSceneNode::render()
 }
 
 
-//! returns the axis aligned bounding box of this node
-const core::aabbox3d<f32>& CSkyDomeSceneNode::getBoundingBox() const
+// ! returns the axis aligned bounding box of this node
+const core::aabbox3d<f32>&CSkyDomeSceneNode::getBoundingBox() const
 {
     return Buffer->BoundingBox;
 }
@@ -188,33 +193,33 @@ void CSkyDomeSceneNode::OnRegisterSceneNode()
 {
     if (IsVisible)
     {
-        SceneManager->registerNodeForRendering(this, ESNRP_SKY_BOX );
+        SceneManager->registerNodeForRendering(this, ESNRP_SKY_BOX);
     }
 
     ISceneNode::OnRegisterSceneNode();
 }
 
 
-//! returns the material based on the zero based index i. To get the amount
-//! of materials used by this scene node, use getMaterialCount().
-//! This function is needed for inserting the node into the scene hirachy on a
-//! optimal position for minimizing renderstate changes, but can also be used
-//! to directly modify the material of a scene node.
-video::SMaterial& CSkyDomeSceneNode::getMaterial(u32 i)
+// ! returns the material based on the zero based index i. To get the amount
+// ! of materials used by this scene node, use getMaterialCount().
+// ! This function is needed for inserting the node into the scene hirachy on a
+// ! optimal position for minimizing renderstate changes, but can also be used
+// ! to directly modify the material of a scene node.
+video::SMaterial&CSkyDomeSceneNode::getMaterial(u32 i)
 {
     return Buffer->Material;
 }
 
 
-//! returns amount of materials used by this scene node.
+// ! returns amount of materials used by this scene node.
 u32 CSkyDomeSceneNode::getMaterialCount() const
 {
     return 1;
 }
 
 
-//! Writes attributes of the scene node.
-void CSkyDomeSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
+// ! Writes attributes of the scene node.
+void CSkyDomeSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
 {
     ISceneNode::serializeAttributes(out, options);
 
@@ -226,8 +231,8 @@ void CSkyDomeSceneNode::serializeAttributes(io::IAttributes* out, io::SAttribute
 }
 
 
-//! Reads attributes of the scene node.
-void CSkyDomeSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
+// ! Reads attributes of the scene node.
+void CSkyDomeSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
 {
     HorizontalResolution = in->getAttributeAsInt  ("HorizontalResolution");
     VerticalResolution   = in->getAttributeAsInt  ("VerticalResolution");
@@ -241,24 +246,24 @@ void CSkyDomeSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttribut
     generateMesh();
 }
 
-//! Creates a clone of this scene node and its children.
-ISceneNode* CSkyDomeSceneNode::clone(ISceneNode* newParent, ISceneManager* newManager)
+// ! Creates a clone of this scene node and its children.
+ISceneNode* CSkyDomeSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
 {
     if (!newParent)
         newParent = Parent;
+
     if (!newManager)
         newManager = SceneManager;
 
-    CSkyDomeSceneNode* nb = new CSkyDomeSceneNode(Buffer->Material.TextureLayer[0].Texture, HorizontalResolution, VerticalResolution, TexturePercentage,
-        SpherePercentage, Radius, newParent, newManager, ID);
+    CSkyDomeSceneNode *nb = new CSkyDomeSceneNode(Buffer->Material.TextureLayer[0].Texture, HorizontalResolution, VerticalResolution, TexturePercentage,
+                                                  SpherePercentage, Radius, newParent, newManager, ID);
 
     nb->cloneMembers(this, newManager);
 
-    if ( newParent )
+    if (newParent)
         nb->drop();
+
     return nb;
 }
-
-
-} // namespace scene
+}   // namespace scene
 } // namespace irr

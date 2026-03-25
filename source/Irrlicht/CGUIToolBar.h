@@ -14,39 +14,33 @@ namespace irr
 {
 namespace gui
 {
+// ! Stays at the top of its parent like the menu bar and contains tool buttons
+class CGUIToolBar : public IGUIToolBar
+{
+public:
 
-    //! Stays at the top of its parent like the menu bar and contains tool buttons
-    class CGUIToolBar : public IGUIToolBar
-    {
-    public:
+    // ! constructor
+    CGUIToolBar(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle);
 
-        //! constructor
-        CGUIToolBar(IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle);
+    // ! called if an event happened.
+    virtual bool OnEvent(const SEvent &event);
 
-        //! called if an event happened.
-        virtual bool OnEvent(const SEvent& event);
+    // ! draws the element and its children
+    virtual void draw();
 
-        //! draws the element and its children
-        virtual void draw();
+    // ! Updates the absolute position.
+    virtual void updateAbsolutePosition();
 
-        //! Updates the absolute position.
-        virtual void updateAbsolutePosition();
+    // ! Adds a button to the tool bar
+    virtual IGUIButton* addButton(s32 id = -1, const wchar_t *text = 0, const wchar_t *tooltiptext = 0,
+                                  video::ITexture *img = 0, video::ITexture *pressed = 0,
+                                  bool isPushButton = false, bool useAlphaChannel = false);
 
-        //! Adds a button to the tool bar
-        virtual IGUIButton* addButton(s32 id=-1, const wchar_t* text=0,const wchar_t* tooltiptext=0,
-            video::ITexture* img=0, video::ITexture* pressed=0,
-            bool isPushButton=false, bool useAlphaChannel=false);
+private:
 
-    private:
-
-        s32 ButtonX;
-    };
-
-
-} // end namespace gui
+    s32 ButtonX;
+};
+}   // end namespace gui
 } // end namespace irr
-
 #endif // _IRR_COMPILE_WITH_GUI_
-
 #endif
-

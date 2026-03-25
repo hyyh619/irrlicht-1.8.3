@@ -2,7 +2,7 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in irrlicht.h
 
-#include "IrrCompileConfig.h" 
+#include "IrrCompileConfig.h"
 
 #ifdef _IRR_COMPILE_WITH_PLY_WRITER_
 
@@ -16,7 +16,6 @@ namespace irr
 {
 namespace scene
 {
-
 CPLYMeshWriter::CPLYMeshWriter()
 {
     #ifdef _DEBUG
@@ -25,14 +24,14 @@ CPLYMeshWriter::CPLYMeshWriter()
 }
 
 
-//! Returns the type of the mesh writer
+// ! Returns the type of the mesh writer
 EMESH_WRITER_TYPE CPLYMeshWriter::getType() const
 {
     return EMWT_PLY;
 }
 
-//! writes a mesh
-bool CPLYMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 flags)
+// ! writes a mesh
+bool CPLYMeshWriter::writeMesh(io::IWriteFile *file, scene::IMesh *mesh, s32 flags)
 {
     if (!file || !mesh)
         return false;
@@ -40,17 +39,17 @@ bool CPLYMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
     os::Printer::log("Writing mesh", file->getFileName());
 
     // write PLY header
-    core::stringc header = 
-            "ply\n"
-        "format ascii 1.0\n" 
+    core::stringc header =
+        "ply\n"
+        "format ascii 1.0\n"
         "comment Irrlicht Engine ";
-    header +=  IRRLICHT_SDK_VERSION;
+    header += IRRLICHT_SDK_VERSION;
 
     // get vertex and triangle counts
     u32 VertexCount   = 0;
     u32 TriangleCount = 0;
 
-    for (u32 i=0; i < mesh->getMeshBufferCount(); ++i)
+    for (u32 i = 0; i < mesh->getMeshBufferCount(); ++i)
     {
         VertexCount   += mesh->getMeshBuffer(i)->getVertexCount();
         TriangleCount += mesh->getMeshBuffer(i)->getIndexCount() / 3;
@@ -61,12 +60,12 @@ bool CPLYMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
     header += VertexCount;
 
     header += "\n"
-        "property float x\n"
-        "property float y\n"
-        "property float z\n"
-        "property float nx\n"
-        "property float ny\n"
-        "property float nz\n";
+              "property float x\n"
+              "property float y\n"
+              "property float z\n"
+              "property float nx\n"
+              "property float ny\n"
+              "property float nz\n";
     // todo: writer flags for extended (r,g,b,u,v) and non-standard (alpha,u1,uv,tx,ty,tz) properties
     //    "property uchar red\n"
     //    "property uchar green\n"
@@ -84,9 +83,9 @@ bool CPLYMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
 
     header += "element face ";
     header += TriangleCount;
-    header += "\n" 
-        "property list uchar int vertex_indices\n"
-        "end_header\n";
+    header += "\n"
+              "property list uchar int vertex_indices\n"
+              "end_header\n";
 
     // write header
     file->write(header.c_str(), header.size());
@@ -95,37 +94,42 @@ bool CPLYMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
 
     c8 outLine[1024];
 
-    for (u32 i=0; i < mesh->getMeshBufferCount(); ++i)
+    for (u32 i = 0; i < mesh->getMeshBufferCount(); ++i)
     {
-        scene::IMeshBuffer* mb = mesh->getMeshBuffer(i);
-        for (u32 j=0; j < mb->getVertexCount(); ++j)
+        scene::IMeshBuffer *mb = mesh->getMeshBuffer(i);
+
+        for (u32 j = 0; j < mb->getVertexCount(); ++j)
         {
-            const core::vector3df& pos = mb->getPosition(j);
-            const core::vector3df& n   = mb->getNormal(j);
+            const core::vector3df &pos = mb->getPosition(j);
+            const core::vector3df &n   = mb->getNormal(j);
 //            const core::vector2df& tc  = mb->getTCoords(j);
 
-            u8 *buf  = (u8*)mb->getVertices();
-            switch(mb->getVertexType())
+            u8 *buf = (u8*)mb->getVertices();
+
+            switch (mb->getVertexType())
             {
             case video::EVT_STANDARD:
-                buf += sizeof(video::S3DVertex)*j;
+                buf += sizeof(video::S3DVertex) * j;
                 break;
+
             case video::EVT_2TCOORDS:
-                buf += sizeof(video::S3DVertex2TCoords)*j;
+                buf += sizeof(video::S3DVertex2TCoords) * j;
                 break;
+
             case video::EVT_TANGENTS:
-                buf += sizeof(video::S3DVertexTangents)*j;
+                buf += sizeof(video::S3DVertexTangents) * j;
                 break;
             }
+
 //            video::SColor &col = ( (video::S3DVertex*)buf )->Color;
 
             // x y z nx ny nz red green blue alpha u v [u1 v1 | tx ty tz]\n
-            snprintf(outLine, 1024, 
-                "%f %f %f %f %f %f\n",// %u %u %u %u %f %f\n", 
-                pos.X, pos.Z, pos.Y, // Y and Z are flipped
-                n.X, n.Z, n.Y); 
-                /*col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha(), 
-                tc.X, tc.Y);*/
+            snprintf(outLine, 1024,
+                     "%f %f %f %f %f %f\n",// %u %u %u %u %f %f\n",
+                     pos.X, pos.Z, pos.Y, // Y and Z are flipped
+                     n.X, n.Z, n.Y);
+            /*col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha(),
+               tc.X, tc.Y);*/
 
             // write the line
             file->write(outLine, (irr::u32)strlen(outLine));
@@ -136,27 +140,29 @@ bool CPLYMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
     u32 StartOffset = 0;
 
     // write triangles
-    for (u32 i=0; i < mesh->getMeshBufferCount(); ++i)
+    for (u32 i = 0; i < mesh->getMeshBufferCount(); ++i)
     {
-        scene::IMeshBuffer* mb = mesh->getMeshBuffer(i);
-        for (u32 j=0; j < mb->getIndexCount(); j+=3)
+        scene::IMeshBuffer *mb = mesh->getMeshBuffer(i);
+
+        for (u32 j = 0; j < mb->getIndexCount(); j += 3)
         {
             // y and z are flipped so triangles are reversed
-            u32 a=StartOffset, 
-                b=StartOffset, 
-                c=StartOffset;
+            u32 a = StartOffset,
+                b = StartOffset,
+                c = StartOffset;
 
-            switch(mb->getIndexType())
+            switch (mb->getIndexType())
             {
             case video::EIT_16BIT:
-                a += mb->getIndices()[j+0];
-                c += mb->getIndices()[j+1];
-                b += mb->getIndices()[j+2];
+                a += mb->getIndices()[j + 0];
+                c += mb->getIndices()[j + 1];
+                b += mb->getIndices()[j + 2];
                 break;
+
             case video::EIT_32BIT:
-                a += ((u32*)mb->getIndices()) [j+0];
-                c += ((u32*)mb->getIndices()) [j+0];
-                b += ((u32*)mb->getIndices()) [j+0];
+                a += ((u32*)mb->getIndices())[j + 0];
+                c += ((u32*)mb->getIndices())[j + 0];
+                b += ((u32*)mb->getIndices())[j + 0];
                 break;
             }
 
@@ -171,13 +177,10 @@ bool CPLYMeshWriter::writeMesh(io::IWriteFile* file, scene::IMesh* mesh, s32 fla
     }
 
     // all done!
-    
+
 
     return true;
 }
-
+}   // end namespace
 } // end namespace
-} // end namespace
-
 #endif // _IRR_COMPILE_WITH_PLY_WRITER_
-

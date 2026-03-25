@@ -11,7 +11,7 @@
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
 #if defined(__BORLANDC__) || defined (__BCPLUSPLUS__)
 #include "irrMath.h"    // needed by borland for sqrtf define
-#endif 
+#endif
 #include <d3d9.h>
 
 #include "CD3D9ShaderMaterialRenderer.h"
@@ -21,36 +21,31 @@ namespace irr
 {
 namespace video
 {
-
-//! Renderer for normal maps
+// ! Renderer for normal maps
 class CD3D9NormalMapRenderer :
     public CD3D9ShaderMaterialRenderer, IShaderConstantSetCallBack
 {
 public:
 
     CD3D9NormalMapRenderer(
-        IDirect3DDevice9* d3ddev, video::IVideoDriver* driver,
-        s32& outMaterialTypeNr, IMaterialRenderer* baseMaterial);
+        IDirect3DDevice9 *d3ddev, video::IVideoDriver *driver,
+        s32 &outMaterialTypeNr, IMaterialRenderer *baseMaterial);
 
     ~CD3D9NormalMapRenderer();
 
-    //! Called by the engine when the vertex and/or pixel shader constants for an
-    //! material renderer should be set.
-    virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData);
+    // ! Called by the engine when the vertex and/or pixel shader constants for an
+    // ! material renderer should be set.
+    virtual void OnSetConstants(IMaterialRendererServices *services, s32 userData);
 
-    virtual bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype);
+    virtual bool OnRender(IMaterialRendererServices *service, E_VERTEX_TYPE vtxtype);
 
-    //! Returns the render capability of the material.
+    // ! Returns the render capability of the material.
     virtual s32 getRenderCapability() const;
 
 private:
-
 };
-
-} // end namespace video
+}   // end namespace video
 } // end namespace irr
-
 #endif
 #endif
 #endif
-

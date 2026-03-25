@@ -13,11 +13,10 @@ namespace irr
 {
 namespace scene
 {
-
-//! constructor
-CSphereSceneNode::CSphereSceneNode(f32 radius, u32 polyCountX, u32 polyCountY, ISceneNode* parent, ISceneManager* mgr, s32 id,
-            const core::vector3df& position, const core::vector3df& rotation, const core::vector3df& scale)
-: IMeshSceneNode(parent, mgr, id, position, rotation, scale), Mesh(0), Shadow(0),
+// ! constructor
+CSphereSceneNode::CSphereSceneNode(f32 radius, u32 polyCountX, u32 polyCountY, ISceneNode *parent, ISceneManager *mgr, s32 id,
+                                   const core::vector3df &position, const core::vector3df &rotation, const core::vector3df &scale)
+    : IMeshSceneNode(parent, mgr, id, position, rotation, scale), Mesh(0), Shadow(0),
     Radius(radius), PolyCountX(polyCountX), PolyCountY(polyCountY)
 {
     #ifdef _DEBUG
@@ -29,20 +28,21 @@ CSphereSceneNode::CSphereSceneNode(f32 radius, u32 polyCountX, u32 polyCountY, I
 
 
 
-//! destructor
+// ! destructor
 CSphereSceneNode::~CSphereSceneNode()
 {
     if (Shadow)
         Shadow->drop();
+
     if (Mesh)
         Mesh->drop();
 }
 
 
-//! renders the node.
+// ! renders the node.
 void CSphereSceneNode::render()
 {
-    video::IVideoDriver* driver = SceneManager->getVideoDriver();
+    video::IVideoDriver *driver = SceneManager->getVideoDriver();
 
     if (Mesh && driver)
     {
@@ -52,21 +52,21 @@ void CSphereSceneNode::render()
             Shadow->updateShadowVolumes();
 
         driver->drawMeshBuffer(Mesh->getMeshBuffer(0));
-        if ( DebugDataVisible & scene::EDS_BBOX )
+        if (DebugDataVisible & scene::EDS_BBOX)
         {
             video::SMaterial m;
             m.Lighting = false;
             driver->setMaterial(m);
-            driver->draw3DBox(Mesh->getMeshBuffer(0)->getBoundingBox(), video::SColor(255,255,255,255));
+            driver->draw3DBox(Mesh->getMeshBuffer(0)->getBoundingBox(), video::SColor(255, 255, 255, 255));
         }
     }
 }
 
 
-//! Removes a child from this scene node.
-//! Implemented here, to be able to remove the shadow properly, if there is one,
-//! or to remove attached childs.
-bool CSphereSceneNode::removeChild(ISceneNode* child)
+// ! Removes a child from this scene node.
+// ! Implemented here, to be able to remove the shadow properly, if there is one,
+// ! or to remove attached childs.
+bool CSphereSceneNode::removeChild(ISceneNode *child)
 {
     if (child && Shadow == child)
     {
@@ -78,10 +78,10 @@ bool CSphereSceneNode::removeChild(ISceneNode* child)
 }
 
 
-//! Creates shadow volume scene node as child of this node
-//! and returns a pointer to it.
+// ! Creates shadow volume scene node as child of this node
+// ! and returns a pointer to it.
 IShadowVolumeSceneNode* CSphereSceneNode::addShadowVolumeSceneNode(
-        const IMesh* shadowMesh, s32 id, bool zfailmethod, f32 infinity)
+    const IMesh *shadowMesh, s32 id, bool zfailmethod, f32 infinity)
 {
     if (!SceneManager->getVideoDriver()->queryFeature(video::EVDF_STENCIL_BUFFER))
         return 0;
@@ -97,8 +97,8 @@ IShadowVolumeSceneNode* CSphereSceneNode::addShadowVolumeSceneNode(
 }
 
 
-//! returns the axis aligned bounding box of this node
-const core::aabbox3d<f32>& CSphereSceneNode::getBoundingBox() const
+// ! returns the axis aligned bounding box of this node
+const core::aabbox3d<f32>&CSphereSceneNode::getBoundingBox() const
 {
     return Mesh ? Mesh->getBoundingBox() : Box;
 }
@@ -113,12 +113,12 @@ void CSphereSceneNode::OnRegisterSceneNode()
 }
 
 
-//! returns the material based on the zero based index i. To get the amount
-//! of materials used by this scene node, use getMaterialCount().
-//! This function is needed for inserting the node into the scene hirachy on a
-//! optimal position for minimizing renderstate changes, but can also be used
-//! to directly modify the material of a scene node.
-video::SMaterial& CSphereSceneNode::getMaterial(u32 i)
+// ! returns the material based on the zero based index i. To get the amount
+// ! of materials used by this scene node, use getMaterialCount().
+// ! This function is needed for inserting the node into the scene hirachy on a
+// ! optimal position for minimizing renderstate changes, but can also be used
+// ! to directly modify the material of a scene node.
+video::SMaterial&CSphereSceneNode::getMaterial(u32 i)
 {
     if (i>0 || !Mesh)
         return ISceneNode::getMaterial(i);
@@ -127,15 +127,15 @@ video::SMaterial& CSphereSceneNode::getMaterial(u32 i)
 }
 
 
-//! returns amount of materials used by this scene node.
+// ! returns amount of materials used by this scene node.
 u32 CSphereSceneNode::getMaterialCount() const
 {
     return 1;
 }
 
 
-//! Writes attributes of the scene node.
-void CSphereSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeReadWriteOptions* options) const
+// ! Writes attributes of the scene node.
+void CSphereSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
 {
     ISceneNode::serializeAttributes(out, options);
 
@@ -145,14 +145,14 @@ void CSphereSceneNode::serializeAttributes(io::IAttributes* out, io::SAttributeR
 }
 
 
-//! Reads attributes of the scene node.
-void CSphereSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttributeReadWriteOptions* options)
+// ! Reads attributes of the scene node.
+void CSphereSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
 {
-    f32 oldRadius = Radius;
+    f32 oldRadius     = Radius;
     u32 oldPolyCountX = PolyCountX;
     u32 oldPolyCountY = PolyCountY;
 
-    Radius = in->getAttributeAsFloat("Radius");
+    Radius     = in->getAttributeAsFloat("Radius");
     PolyCountX = in->getAttributeAsInt("PolyCountX");
     PolyCountY = in->getAttributeAsInt("PolyCountY");
     // legacy values read for compatibility with older versions
@@ -162,38 +162,39 @@ void CSphereSceneNode::deserializeAttributes(io::IAttributes* in, io::SAttribute
 
     Radius = core::max_(Radius, 0.0001f);
 
-    if ( !core::equals(Radius, oldRadius) || PolyCountX != oldPolyCountX || PolyCountY != oldPolyCountY)
+    if (!core::equals(Radius, oldRadius) || PolyCountX != oldPolyCountX || PolyCountY != oldPolyCountY)
     {
         if (Mesh)
             Mesh->drop();
+
         Mesh = SceneManager->getGeometryCreator()->createSphereMesh(Radius, PolyCountX, PolyCountY);
     }
 
     ISceneNode::deserializeAttributes(in, options);
 }
 
-//! Creates a clone of this scene node and its children.
-ISceneNode* CSphereSceneNode::clone(ISceneNode* newParent, ISceneManager* newManager)
+// ! Creates a clone of this scene node and its children.
+ISceneNode* CSphereSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
 {
     if (!newParent)
         newParent = Parent;
+
     if (!newManager)
         newManager = SceneManager;
 
-    CSphereSceneNode* nb = new CSphereSceneNode(Radius, PolyCountX, PolyCountY, newParent,
-        newManager, ID, RelativeTranslation);
+    CSphereSceneNode *nb = new CSphereSceneNode(Radius, PolyCountX, PolyCountY, newParent,
+                                                newManager, ID, RelativeTranslation);
 
     nb->cloneMembers(this, newManager);
     nb->getMaterial(0) = Mesh->getMeshBuffer(0)->getMaterial();
-    nb->Shadow = Shadow;
-    if ( nb->Shadow )
+    nb->Shadow         = Shadow;
+    if (nb->Shadow)
         nb->Shadow->grab();
 
-    if ( newParent )
+    if (newParent)
         nb->drop();
+
     return nb;
 }
-
-} // end namespace scene
+}   // end namespace scene
 } // end namespace irr
-

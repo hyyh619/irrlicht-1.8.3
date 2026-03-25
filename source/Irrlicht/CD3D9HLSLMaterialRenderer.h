@@ -17,69 +17,64 @@ namespace irr
 {
 namespace video
 {
-
 class IVideoDriver;
 class IShaderConstantSetCallBack;
 class IMaterialRenderer;
 
-//! Class for using vertex and pixel shaders via HLSL with D3D9
+// ! Class for using vertex and pixel shaders via HLSL with D3D9
 class CD3D9HLSLMaterialRenderer : public CD3D9ShaderMaterialRenderer
 {
 public:
 
-    //! Public constructor
-    CD3D9HLSLMaterialRenderer(IDirect3DDevice9* d3ddev, video::IVideoDriver* driver,
-        s32& outMaterialTypeNr,
-        const c8* vertexShaderProgram,
-        const c8* vertexShaderEntryPointName,
-        E_VERTEX_SHADER_TYPE vsCompileTarget,
-        const c8* pixelShaderProgram,
-        const c8* pixelShaderEntryPointName,
-        E_PIXEL_SHADER_TYPE psCompileTarget,
-        IShaderConstantSetCallBack* callback,
-        IMaterialRenderer* baseMaterial,
-        s32 userData);
+    // ! Public constructor
+    CD3D9HLSLMaterialRenderer(IDirect3DDevice9 *d3ddev, video::IVideoDriver *driver,
+                              s32 &outMaterialTypeNr,
+                              const c8 *vertexShaderProgram,
+                              const c8 *vertexShaderEntryPointName,
+                              E_VERTEX_SHADER_TYPE vsCompileTarget,
+                              const c8 *pixelShaderProgram,
+                              const c8 *pixelShaderEntryPointName,
+                              E_PIXEL_SHADER_TYPE psCompileTarget,
+                              IShaderConstantSetCallBack *callback,
+                              IMaterialRenderer *baseMaterial,
+                              s32 userData);
 
-    //! Destructor
+    // ! Destructor
     ~CD3D9HLSLMaterialRenderer();
 
-    //! sets a variable in the shader.
-    //! \param vertexShader: True if this should be set in the vertex shader, false if
-    //! in the pixel shader.
-    //! \param name: Name of the variable
-    //! \param floats: Pointer to array of floats
-    //! \param count: Amount of floats in array.
-    virtual bool setVariable(bool vertexShader, const c8* name, const f32* floats, int count);
+    // ! sets a variable in the shader.
+    // ! \param vertexShader: True if this should be set in the vertex shader, false if
+    // ! in the pixel shader.
+    // ! \param name: Name of the variable
+    // ! \param floats: Pointer to array of floats
+    // ! \param count: Amount of floats in array.
+    virtual bool setVariable(bool vertexShader, const c8 *name, const f32 *floats, int count);
 
-    //! Bool interface for the above.
-    virtual bool setVariable(bool vertexShader, const c8* name, const bool* bools, int count);
+    // ! Bool interface for the above.
+    virtual bool setVariable(bool vertexShader, const c8 *name, const bool *bools, int count);
 
-    //! Int interface for the above.
-    virtual bool setVariable(bool vertexShader, const c8* name, const s32* ints, int count);
+    // ! Int interface for the above.
+    virtual bool setVariable(bool vertexShader, const c8 *name, const s32 *ints, int count);
 
-    bool OnRender(IMaterialRendererServices* service, E_VERTEX_TYPE vtxtype);
+    bool OnRender(IMaterialRendererServices *service, E_VERTEX_TYPE vtxtype);
 
 protected:
 
-    bool createHLSLVertexShader(const char* vertexShaderProgram,
-        const char* shaderEntryPointName,
-        const char* shaderTargetName);
+    bool createHLSLVertexShader(const char *vertexShaderProgram,
+                                const char *shaderEntryPointName,
+                                const char *shaderTargetName);
 
-    bool createHLSLPixelShader(const char* pixelShaderProgram,
-        const char* shaderEntryPointName,
-        const char* shaderTargetName);
+    bool createHLSLPixelShader(const char *pixelShaderProgram,
+                               const char *shaderEntryPointName,
+                               const char *shaderTargetName);
 
     void printHLSLVariables(LPD3DXCONSTANTTABLE table);
 
     LPD3DXCONSTANTTABLE VSConstantsTable;
     LPD3DXCONSTANTTABLE PSConstantsTable;
 };
-
-
-} // end namespace video
+}   // end namespace video
 } // end namespace irr
-
 #endif
 #endif
 #endif
-

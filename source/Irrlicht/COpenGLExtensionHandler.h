@@ -13,7 +13,7 @@
 #include "os.h"
 
 #if defined(_IRR_WINDOWS_API_)
-    // include windows headers for HWND
+// include windows headers for HWND
     #define WIN32_LEAN_AND_MEAN
     #include <windows.h>
     #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
@@ -39,10 +39,10 @@
     #endif
 #elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-        #define GL_GLEXT_LEGACY 1
+        #define GL_GLEXT_LEGACY   1
         #define GLX_GLXEXT_LEGACY 1
     #else
-        #define GL_GLEXT_PROTOTYPES 1
+        #define GL_GLEXT_PROTOTYPES   1
         #define GLX_GLXEXT_PROTOTYPES 1
     #endif
     #define NO_SDL_GLEXT
@@ -51,10 +51,10 @@
     #include "glext.h"
 #else
     #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-        #define GL_GLEXT_LEGACY 1
+        #define GL_GLEXT_LEGACY   1
         #define GLX_GLXEXT_LEGACY 1
     #else
-        #define GL_GLEXT_PROTOTYPES 1
+        #define GL_GLEXT_PROTOTYPES   1
         #define GLX_GLXEXT_PROTOTYPES 1
     #endif
     #include <GL/gl.h>
@@ -82,9 +82,8 @@ namespace irr
 {
 namespace video
 {
-
-
-static const char* const OpenGLFeatureStrings[] = {
+static const char* const OpenGLFeatureStrings[] =
+{
     "GL_3DFX_multisample",
     "GL_3DFX_tbuffer",
     "GL_3DFX_texture_compression_FXT1",
@@ -501,8 +500,9 @@ static const char* const OpenGLFeatureStrings[] = {
 
 class COpenGLExtensionHandler
 {
-    public:
-    enum EOpenGLFeatures {
+public:
+    enum EOpenGLFeatures
+    {
         IRR_3DFX_multisample = 0,
         IRR_3DFX_tbuffer,
         IRR_3DFX_texture_compression_FXT1,
@@ -923,16 +923,16 @@ class COpenGLExtensionHandler
     // deferred initialization
     void initExtensions(bool stencilBuffer);
 
-    //! queries the features of the driver, returns true if feature is available
+    // ! queries the features of the driver, returns true if feature is available
     bool queryFeature(E_VIDEO_DRIVER_FEATURE feature) const;
 
-    //! queries the features of the driver, returns true if feature is available
+    // ! queries the features of the driver, returns true if feature is available
     bool queryOpenGLFeature(EOpenGLFeatures feature) const
     {
         return FeatureAvailable[feature];
     }
 
-    //! show all features with availablity
+    // ! show all features with availablity
     void dump() const;
 
     void dumpFramebufferFormats() const;
@@ -943,40 +943,40 @@ class COpenGLExtensionHandler
     bool TextureCompressionExtension;
 
     // Some non-boolean properties
-    //! Maxmimum texture layers supported by the fixed pipeline
+    // ! Maxmimum texture layers supported by the fixed pipeline
     u8 MaxSupportedTextures;
-    //! Maxmimum texture layers supported by the engine
+    // ! Maxmimum texture layers supported by the engine
     u8 MaxTextureUnits;
-    //! Maximum hardware lights supported
+    // ! Maximum hardware lights supported
     u8 MaxLights;
-    //! Maximal Anisotropy
+    // ! Maximal Anisotropy
     u8 MaxAnisotropy;
-    //! Number of user clipplanes
+    // ! Number of user clipplanes
     u8 MaxUserClipPlanes;
-    //! Number of auxiliary buffers
+    // ! Number of auxiliary buffers
     u8 MaxAuxBuffers;
-    //! Number of rendertargets available as MRTs
+    // ! Number of rendertargets available as MRTs
     u8 MaxMultipleRenderTargets;
-    //! Optimal number of indices per meshbuffer
+    // ! Optimal number of indices per meshbuffer
     u32 MaxIndices;
-    //! Maximal texture dimension
+    // ! Maximal texture dimension
     u32 MaxTextureSize;
-    //! Maximal vertices handled by geometry shaders
+    // ! Maximal vertices handled by geometry shaders
     u32 MaxGeometryVerticesOut;
-    //! Maximal LOD Bias
+    // ! Maximal LOD Bias
     f32 MaxTextureLODBias;
-    //! Minimal and maximal supported thickness for lines without smoothing
+    // ! Minimal and maximal supported thickness for lines without smoothing
     GLfloat DimAliasedLine[2];
-    //! Minimal and maximal supported thickness for points without smoothing
+    // ! Minimal and maximal supported thickness for points without smoothing
     GLfloat DimAliasedPoint[2];
-    //! Minimal and maximal supported thickness for lines with smoothing
+    // ! Minimal and maximal supported thickness for lines with smoothing
     GLfloat DimSmoothedLine[2];
-    //! Minimal and maximal supported thickness for points with smoothing
+    // ! Minimal and maximal supported thickness for points with smoothing
     GLfloat DimSmoothedPoint[2];
 
-    //! OpenGL version as Integer: 100*Major+Minor, i.e. 2.1 becomes 201
+    // ! OpenGL version as Integer: 100*Major+Minor, i.e. 2.1 becomes 201
     u16 Version;
-    //! GLSL version as Integer: 100*Major+Minor
+    // ! GLSL version as Integer: 100*Major+Minor
     u16 ShaderLanguageVersion;
 
     bool OcclusionQuerySupport;
@@ -987,11 +987,11 @@ class COpenGLExtensionHandler
     void extGlClientActiveTexture(GLenum texture);
     void extGlPointParameterf(GLint loc, GLfloat f);
     void extGlPointParameterfv(GLint loc, const GLfloat *v);
-    void extGlStencilFuncSeparate (GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask);
-    void extGlStencilOpSeparate (GLenum face, GLenum fail, GLenum zfail, GLenum zpass);
+    void extGlStencilFuncSeparate(GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask);
+    void extGlStencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass);
     void extGlCompressedTexImage2D(GLenum target, GLint level,
-        GLenum internalformat, GLsizei width, GLsizei height,
-        GLint border, GLsizei imageSize, const void* data);
+                                   GLenum internalformat, GLsizei width, GLsizei height,
+                                   GLint border, GLsizei imageSize, const void *data);
 
     // shader programming
     void extGlGenPrograms(GLsizei n, GLuint *programs);
@@ -999,7 +999,7 @@ class COpenGLExtensionHandler
     void extGlProgramString(GLenum target, GLenum format, GLsizei len, const GLvoid *string);
     void extGlLoadProgram(GLenum target, GLuint id, GLsizei len, const GLubyte *string);
     void extGlDeletePrograms(GLsizei n, const GLuint *programs);
-    void extGlProgramLocalParameter4fv(GLenum, GLuint, const GLfloat *);
+    void extGlProgramLocalParameter4fv(GLenum, GLuint, const GLfloat*);
     GLhandleARB extGlCreateShaderObject(GLenum shaderType);
     GLuint extGlCreateShader(GLenum shaderType);
     // note: Due to the type confusion between shader_objects and OpenGL 2.0
@@ -1026,8 +1026,8 @@ class COpenGLExtensionHandler
     void extGlDeleteObject(GLhandleARB object);
     void extGlDeleteProgram(GLuint object);
     void extGlDeleteShader(GLuint shader);
-    void extGlGetAttachedShaders(GLuint program, GLsizei maxcount, GLsizei* count, GLuint* shaders);
-    void extGlGetAttachedObjects(GLhandleARB program, GLsizei maxcount, GLsizei* count, GLhandleARB* shaders);
+    void extGlGetAttachedShaders(GLuint program, GLsizei maxcount, GLsizei *count, GLuint *shaders);
+    void extGlGetAttachedObjects(GLhandleARB program, GLsizei maxcount, GLsizei *count, GLhandleARB *shaders);
     void extGlGetInfoLog(GLhandleARB object, GLsizei maxLength, GLsizei *length, GLcharARB *infoLog);
     void extGlGetShaderInfoLog(GLuint shader, GLsizei maxLength, GLsizei *length, GLchar *infoLog);
     void extGlGetProgramInfoLog(GLuint program, GLsizei maxLength, GLsizei *length, GLchar *infoLog);
@@ -1074,13 +1074,13 @@ class COpenGLExtensionHandler
     void extGlBindBuffer(GLenum target, GLuint buffer);
     void extGlBufferData(GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage);
     void extGlDeleteBuffers(GLsizei n, const GLuint *buffers);
-    void extGlBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data);
-    void extGlGetBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data);
-    void *extGlMapBuffer (GLenum target, GLenum access);
-    GLboolean extGlUnmapBuffer (GLenum target);
-    GLboolean extGlIsBuffer (GLuint buffer);
-    void extGlGetBufferParameteriv (GLenum target, GLenum pname, GLint *params);
-    void extGlGetBufferPointerv (GLenum target, GLenum pname, GLvoid **params);
+    void extGlBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data);
+    void extGlGetBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data);
+    void* extGlMapBuffer(GLenum target, GLenum access);
+    GLboolean extGlUnmapBuffer(GLenum target);
+    GLboolean extGlIsBuffer(GLuint buffer);
+    void extGlGetBufferParameteriv(GLenum target, GLenum pname, GLint *params);
+    void extGlGetBufferPointerv(GLenum target, GLenum pname, GLvoid **params);
     void extGlProvokingVertex(GLenum mode);
     void extGlColorMaskIndexed(GLuint buf, GLboolean r, GLboolean g, GLboolean b, GLboolean a);
     void extGlEnableIndexed(GLenum target, GLuint index);
@@ -1108,143 +1108,143 @@ class COpenGLExtensionHandler
     // the global feature array
     bool FeatureAvailable[IRR_OpenGL_Feature_Count];
 
-    protected:
+protected:
     #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
-        PFNGLACTIVETEXTUREARBPROC pGlActiveTextureARB;
-        PFNGLCLIENTACTIVETEXTUREARBPROC    pGlClientActiveTextureARB;
-        PFNGLGENPROGRAMSARBPROC pGlGenProgramsARB;
-        PFNGLGENPROGRAMSNVPROC pGlGenProgramsNV;
-        PFNGLBINDPROGRAMARBPROC pGlBindProgramARB;
-        PFNGLBINDPROGRAMNVPROC pGlBindProgramNV;
-        PFNGLDELETEPROGRAMSARBPROC pGlDeleteProgramsARB;
-        PFNGLDELETEPROGRAMSNVPROC pGlDeleteProgramsNV;
-        PFNGLPROGRAMSTRINGARBPROC pGlProgramStringARB;
-        PFNGLLOADPROGRAMNVPROC pGlLoadProgramNV;
-        PFNGLPROGRAMLOCALPARAMETER4FVARBPROC pGlProgramLocalParameter4fvARB;
-        PFNGLCREATESHADEROBJECTARBPROC pGlCreateShaderObjectARB;
-        PFNGLSHADERSOURCEARBPROC pGlShaderSourceARB;
-        PFNGLCOMPILESHADERARBPROC pGlCompileShaderARB;
-        PFNGLCREATEPROGRAMOBJECTARBPROC pGlCreateProgramObjectARB;
-        PFNGLATTACHOBJECTARBPROC pGlAttachObjectARB;
-        PFNGLLINKPROGRAMARBPROC pGlLinkProgramARB;
-        PFNGLUSEPROGRAMOBJECTARBPROC pGlUseProgramObjectARB;
-        PFNGLDELETEOBJECTARBPROC pGlDeleteObjectARB;
-        PFNGLCREATEPROGRAMPROC pGlCreateProgram;
-        PFNGLUSEPROGRAMPROC pGlUseProgram;
-        PFNGLDELETEPROGRAMPROC pGlDeleteProgram;
-        PFNGLDELETESHADERPROC pGlDeleteShader;
-        PFNGLGETATTACHEDOBJECTSARBPROC pGlGetAttachedObjectsARB;
-        PFNGLGETATTACHEDSHADERSPROC pGlGetAttachedShaders;
-        PFNGLCREATESHADERPROC pGlCreateShader;
-        PFNGLSHADERSOURCEPROC pGlShaderSource;
-        PFNGLCOMPILESHADERPROC pGlCompileShader;
-        PFNGLATTACHSHADERPROC pGlAttachShader;
-        PFNGLLINKPROGRAMPROC pGlLinkProgram;
-        PFNGLGETINFOLOGARBPROC pGlGetInfoLogARB;
-        PFNGLGETSHADERINFOLOGPROC pGlGetShaderInfoLog;
-        PFNGLGETPROGRAMINFOLOGPROC pGlGetProgramInfoLog;
-        PFNGLGETOBJECTPARAMETERIVARBPROC pGlGetObjectParameterivARB;
-        PFNGLGETSHADERIVPROC pGlGetShaderiv;
-        PFNGLGETSHADERIVPROC pGlGetProgramiv;
-        PFNGLGETUNIFORMLOCATIONARBPROC pGlGetUniformLocationARB;
-        PFNGLGETUNIFORMLOCATIONPROC pGlGetUniformLocation;
-        PFNGLUNIFORM1FVARBPROC pGlUniform1fvARB;
-        PFNGLUNIFORM2FVARBPROC pGlUniform2fvARB;
-        PFNGLUNIFORM3FVARBPROC pGlUniform3fvARB;
-        PFNGLUNIFORM4FVARBPROC pGlUniform4fvARB;
-        PFNGLUNIFORM1IVARBPROC pGlUniform1ivARB;
-        PFNGLUNIFORM2IVARBPROC pGlUniform2ivARB;
-        PFNGLUNIFORM3IVARBPROC pGlUniform3ivARB;
-        PFNGLUNIFORM4IVARBPROC pGlUniform4ivARB;
-        PFNGLUNIFORMMATRIX2FVARBPROC pGlUniformMatrix2fvARB;
-        PFNGLUNIFORMMATRIX3FVARBPROC pGlUniformMatrix3fvARB;
-        PFNGLUNIFORMMATRIX4FVARBPROC pGlUniformMatrix4fvARB;
-        PFNGLGETACTIVEUNIFORMARBPROC pGlGetActiveUniformARB;
-        PFNGLGETACTIVEUNIFORMPROC pGlGetActiveUniform;
-        PFNGLPOINTPARAMETERFARBPROC  pGlPointParameterfARB;
-        PFNGLPOINTPARAMETERFVARBPROC pGlPointParameterfvARB;
-        PFNGLSTENCILFUNCSEPARATEPROC pGlStencilFuncSeparate;
-        PFNGLSTENCILOPSEPARATEPROC pGlStencilOpSeparate;
-        PFNGLSTENCILFUNCSEPARATEATIPROC pGlStencilFuncSeparateATI;
-        PFNGLSTENCILOPSEPARATEATIPROC pGlStencilOpSeparateATI;
-        PFNGLCOMPRESSEDTEXIMAGE2DPROC pGlCompressedTexImage2D;
-        // ARB framebuffer object
-        PFNGLBINDFRAMEBUFFERPROC pGlBindFramebuffer;
-        PFNGLDELETEFRAMEBUFFERSPROC pGlDeleteFramebuffers;
-        PFNGLGENFRAMEBUFFERSPROC pGlGenFramebuffers;
-        PFNGLCHECKFRAMEBUFFERSTATUSPROC pGlCheckFramebufferStatus;
-        PFNGLFRAMEBUFFERTEXTURE2DPROC pGlFramebufferTexture2D;
-        PFNGLBINDRENDERBUFFERPROC pGlBindRenderbuffer;
-        PFNGLDELETERENDERBUFFERSPROC pGlDeleteRenderbuffers;
-        PFNGLGENRENDERBUFFERSPROC pGlGenRenderbuffers;
-        PFNGLRENDERBUFFERSTORAGEPROC pGlRenderbufferStorage;
-        PFNGLFRAMEBUFFERRENDERBUFFERPROC pGlFramebufferRenderbuffer;
-        PFNGLGENERATEMIPMAPPROC pGlGenerateMipmap;
-        // EXT framebuffer object
-        PFNGLBINDFRAMEBUFFEREXTPROC pGlBindFramebufferEXT;
-        PFNGLDELETEFRAMEBUFFERSEXTPROC pGlDeleteFramebuffersEXT;
-        PFNGLGENFRAMEBUFFERSEXTPROC pGlGenFramebuffersEXT;
-        PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC pGlCheckFramebufferStatusEXT;
-        PFNGLFRAMEBUFFERTEXTURE2DEXTPROC pGlFramebufferTexture2DEXT;
-        PFNGLBINDRENDERBUFFEREXTPROC pGlBindRenderbufferEXT;
-        PFNGLDELETERENDERBUFFERSEXTPROC pGlDeleteRenderbuffersEXT;
-        PFNGLGENRENDERBUFFERSEXTPROC pGlGenRenderbuffersEXT;
-        PFNGLRENDERBUFFERSTORAGEEXTPROC pGlRenderbufferStorageEXT;
-        PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC pGlFramebufferRenderbufferEXT;
-        PFNGLGENERATEMIPMAPEXTPROC pGlGenerateMipmapEXT;
-        PFNGLACTIVESTENCILFACEEXTPROC pGlActiveStencilFaceEXT;
-        PFNGLDRAWBUFFERSARBPROC pGlDrawBuffersARB;
-        PFNGLDRAWBUFFERSATIPROC pGlDrawBuffersATI;
-        PFNGLGENBUFFERSARBPROC pGlGenBuffersARB;
-        PFNGLBINDBUFFERARBPROC pGlBindBufferARB;
-        PFNGLBUFFERDATAARBPROC pGlBufferDataARB;
-        PFNGLDELETEBUFFERSARBPROC pGlDeleteBuffersARB;
-        PFNGLBUFFERSUBDATAARBPROC pGlBufferSubDataARB;
-        PFNGLGETBUFFERSUBDATAARBPROC pGlGetBufferSubDataARB;
-        PFNGLMAPBUFFERARBPROC pGlMapBufferARB;
-        PFNGLUNMAPBUFFERARBPROC pGlUnmapBufferARB;
-        PFNGLISBUFFERARBPROC pGlIsBufferARB;
-        PFNGLGETBUFFERPARAMETERIVARBPROC pGlGetBufferParameterivARB;
-        PFNGLGETBUFFERPOINTERVARBPROC pGlGetBufferPointervARB;
-        PFNGLPROVOKINGVERTEXPROC pGlProvokingVertexARB;
-        PFNGLPROVOKINGVERTEXEXTPROC pGlProvokingVertexEXT;
-        PFNGLCOLORMASKINDEXEDEXTPROC pGlColorMaskIndexedEXT;
-        PFNGLENABLEINDEXEDEXTPROC pGlEnableIndexedEXT;
-        PFNGLDISABLEINDEXEDEXTPROC pGlDisableIndexedEXT;
-        PFNGLBLENDFUNCINDEXEDAMDPROC pGlBlendFuncIndexedAMD;
-        PFNGLBLENDFUNCIPROC pGlBlendFunciARB;
-        PFNGLBLENDEQUATIONINDEXEDAMDPROC pGlBlendEquationIndexedAMD;
-        PFNGLBLENDEQUATIONIPROC pGlBlendEquationiARB;
-        PFNGLPROGRAMPARAMETERIARBPROC pGlProgramParameteriARB;
-        PFNGLPROGRAMPARAMETERIEXTPROC pGlProgramParameteriEXT;
-        PFNGLGENQUERIESARBPROC pGlGenQueriesARB;
-        PFNGLDELETEQUERIESARBPROC pGlDeleteQueriesARB;
-        PFNGLISQUERYARBPROC pGlIsQueryARB;
-        PFNGLBEGINQUERYARBPROC pGlBeginQueryARB;
-        PFNGLENDQUERYARBPROC pGlEndQueryARB;
-        PFNGLGETQUERYIVARBPROC pGlGetQueryivARB;
-        PFNGLGETQUERYOBJECTIVARBPROC pGlGetQueryObjectivARB;
-        PFNGLGETQUERYOBJECTUIVARBPROC pGlGetQueryObjectuivARB;
-        PFNGLGENOCCLUSIONQUERIESNVPROC pGlGenOcclusionQueriesNV;
-        PFNGLDELETEOCCLUSIONQUERIESNVPROC pGlDeleteOcclusionQueriesNV;
-        PFNGLISOCCLUSIONQUERYNVPROC pGlIsOcclusionQueryNV;
-        PFNGLBEGINOCCLUSIONQUERYNVPROC pGlBeginOcclusionQueryNV;
-        PFNGLENDOCCLUSIONQUERYNVPROC pGlEndOcclusionQueryNV;
-        PFNGLGETOCCLUSIONQUERYIVNVPROC pGlGetOcclusionQueryivNV;
-        PFNGLGETOCCLUSIONQUERYUIVNVPROC pGlGetOcclusionQueryuivNV;
-        PFNGLBLENDEQUATIONEXTPROC pGlBlendEquationEXT;
-        PFNGLBLENDEQUATIONPROC pGlBlendEquation;
+    PFNGLACTIVETEXTUREARBPROC pGlActiveTextureARB;
+    PFNGLCLIENTACTIVETEXTUREARBPROC      pGlClientActiveTextureARB;
+    PFNGLGENPROGRAMSARBPROC              pGlGenProgramsARB;
+    PFNGLGENPROGRAMSNVPROC               pGlGenProgramsNV;
+    PFNGLBINDPROGRAMARBPROC              pGlBindProgramARB;
+    PFNGLBINDPROGRAMNVPROC               pGlBindProgramNV;
+    PFNGLDELETEPROGRAMSARBPROC           pGlDeleteProgramsARB;
+    PFNGLDELETEPROGRAMSNVPROC            pGlDeleteProgramsNV;
+    PFNGLPROGRAMSTRINGARBPROC            pGlProgramStringARB;
+    PFNGLLOADPROGRAMNVPROC               pGlLoadProgramNV;
+    PFNGLPROGRAMLOCALPARAMETER4FVARBPROC pGlProgramLocalParameter4fvARB;
+    PFNGLCREATESHADEROBJECTARBPROC       pGlCreateShaderObjectARB;
+    PFNGLSHADERSOURCEARBPROC             pGlShaderSourceARB;
+    PFNGLCOMPILESHADERARBPROC            pGlCompileShaderARB;
+    PFNGLCREATEPROGRAMOBJECTARBPROC      pGlCreateProgramObjectARB;
+    PFNGLATTACHOBJECTARBPROC             pGlAttachObjectARB;
+    PFNGLLINKPROGRAMARBPROC              pGlLinkProgramARB;
+    PFNGLUSEPROGRAMOBJECTARBPROC         pGlUseProgramObjectARB;
+    PFNGLDELETEOBJECTARBPROC             pGlDeleteObjectARB;
+    PFNGLCREATEPROGRAMPROC               pGlCreateProgram;
+    PFNGLUSEPROGRAMPROC                  pGlUseProgram;
+    PFNGLDELETEPROGRAMPROC               pGlDeleteProgram;
+    PFNGLDELETESHADERPROC                pGlDeleteShader;
+    PFNGLGETATTACHEDOBJECTSARBPROC       pGlGetAttachedObjectsARB;
+    PFNGLGETATTACHEDSHADERSPROC          pGlGetAttachedShaders;
+    PFNGLCREATESHADERPROC                pGlCreateShader;
+    PFNGLSHADERSOURCEPROC                pGlShaderSource;
+    PFNGLCOMPILESHADERPROC               pGlCompileShader;
+    PFNGLATTACHSHADERPROC                pGlAttachShader;
+    PFNGLLINKPROGRAMPROC                 pGlLinkProgram;
+    PFNGLGETINFOLOGARBPROC               pGlGetInfoLogARB;
+    PFNGLGETSHADERINFOLOGPROC            pGlGetShaderInfoLog;
+    PFNGLGETPROGRAMINFOLOGPROC           pGlGetProgramInfoLog;
+    PFNGLGETOBJECTPARAMETERIVARBPROC     pGlGetObjectParameterivARB;
+    PFNGLGETSHADERIVPROC                 pGlGetShaderiv;
+    PFNGLGETSHADERIVPROC                 pGlGetProgramiv;
+    PFNGLGETUNIFORMLOCATIONARBPROC       pGlGetUniformLocationARB;
+    PFNGLGETUNIFORMLOCATIONPROC          pGlGetUniformLocation;
+    PFNGLUNIFORM1FVARBPROC               pGlUniform1fvARB;
+    PFNGLUNIFORM2FVARBPROC               pGlUniform2fvARB;
+    PFNGLUNIFORM3FVARBPROC               pGlUniform3fvARB;
+    PFNGLUNIFORM4FVARBPROC               pGlUniform4fvARB;
+    PFNGLUNIFORM1IVARBPROC               pGlUniform1ivARB;
+    PFNGLUNIFORM2IVARBPROC               pGlUniform2ivARB;
+    PFNGLUNIFORM3IVARBPROC               pGlUniform3ivARB;
+    PFNGLUNIFORM4IVARBPROC               pGlUniform4ivARB;
+    PFNGLUNIFORMMATRIX2FVARBPROC         pGlUniformMatrix2fvARB;
+    PFNGLUNIFORMMATRIX3FVARBPROC         pGlUniformMatrix3fvARB;
+    PFNGLUNIFORMMATRIX4FVARBPROC         pGlUniformMatrix4fvARB;
+    PFNGLGETACTIVEUNIFORMARBPROC         pGlGetActiveUniformARB;
+    PFNGLGETACTIVEUNIFORMPROC            pGlGetActiveUniform;
+    PFNGLPOINTPARAMETERFARBPROC          pGlPointParameterfARB;
+    PFNGLPOINTPARAMETERFVARBPROC         pGlPointParameterfvARB;
+    PFNGLSTENCILFUNCSEPARATEPROC         pGlStencilFuncSeparate;
+    PFNGLSTENCILOPSEPARATEPROC           pGlStencilOpSeparate;
+    PFNGLSTENCILFUNCSEPARATEATIPROC      pGlStencilFuncSeparateATI;
+    PFNGLSTENCILOPSEPARATEATIPROC        pGlStencilOpSeparateATI;
+    PFNGLCOMPRESSEDTEXIMAGE2DPROC        pGlCompressedTexImage2D;
+    // ARB framebuffer object
+    PFNGLBINDFRAMEBUFFERPROC         pGlBindFramebuffer;
+    PFNGLDELETEFRAMEBUFFERSPROC      pGlDeleteFramebuffers;
+    PFNGLGENFRAMEBUFFERSPROC         pGlGenFramebuffers;
+    PFNGLCHECKFRAMEBUFFERSTATUSPROC  pGlCheckFramebufferStatus;
+    PFNGLFRAMEBUFFERTEXTURE2DPROC    pGlFramebufferTexture2D;
+    PFNGLBINDRENDERBUFFERPROC        pGlBindRenderbuffer;
+    PFNGLDELETERENDERBUFFERSPROC     pGlDeleteRenderbuffers;
+    PFNGLGENRENDERBUFFERSPROC        pGlGenRenderbuffers;
+    PFNGLRENDERBUFFERSTORAGEPROC     pGlRenderbufferStorage;
+    PFNGLFRAMEBUFFERRENDERBUFFERPROC pGlFramebufferRenderbuffer;
+    PFNGLGENERATEMIPMAPPROC          pGlGenerateMipmap;
+    // EXT framebuffer object
+    PFNGLBINDFRAMEBUFFEREXTPROC         pGlBindFramebufferEXT;
+    PFNGLDELETEFRAMEBUFFERSEXTPROC      pGlDeleteFramebuffersEXT;
+    PFNGLGENFRAMEBUFFERSEXTPROC         pGlGenFramebuffersEXT;
+    PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC  pGlCheckFramebufferStatusEXT;
+    PFNGLFRAMEBUFFERTEXTURE2DEXTPROC    pGlFramebufferTexture2DEXT;
+    PFNGLBINDRENDERBUFFEREXTPROC        pGlBindRenderbufferEXT;
+    PFNGLDELETERENDERBUFFERSEXTPROC     pGlDeleteRenderbuffersEXT;
+    PFNGLGENRENDERBUFFERSEXTPROC        pGlGenRenderbuffersEXT;
+    PFNGLRENDERBUFFERSTORAGEEXTPROC     pGlRenderbufferStorageEXT;
+    PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC pGlFramebufferRenderbufferEXT;
+    PFNGLGENERATEMIPMAPEXTPROC          pGlGenerateMipmapEXT;
+    PFNGLACTIVESTENCILFACEEXTPROC       pGlActiveStencilFaceEXT;
+    PFNGLDRAWBUFFERSARBPROC             pGlDrawBuffersARB;
+    PFNGLDRAWBUFFERSATIPROC             pGlDrawBuffersATI;
+    PFNGLGENBUFFERSARBPROC              pGlGenBuffersARB;
+    PFNGLBINDBUFFERARBPROC              pGlBindBufferARB;
+    PFNGLBUFFERDATAARBPROC              pGlBufferDataARB;
+    PFNGLDELETEBUFFERSARBPROC           pGlDeleteBuffersARB;
+    PFNGLBUFFERSUBDATAARBPROC           pGlBufferSubDataARB;
+    PFNGLGETBUFFERSUBDATAARBPROC        pGlGetBufferSubDataARB;
+    PFNGLMAPBUFFERARBPROC               pGlMapBufferARB;
+    PFNGLUNMAPBUFFERARBPROC             pGlUnmapBufferARB;
+    PFNGLISBUFFERARBPROC                pGlIsBufferARB;
+    PFNGLGETBUFFERPARAMETERIVARBPROC    pGlGetBufferParameterivARB;
+    PFNGLGETBUFFERPOINTERVARBPROC       pGlGetBufferPointervARB;
+    PFNGLPROVOKINGVERTEXPROC            pGlProvokingVertexARB;
+    PFNGLPROVOKINGVERTEXEXTPROC         pGlProvokingVertexEXT;
+    PFNGLCOLORMASKINDEXEDEXTPROC        pGlColorMaskIndexedEXT;
+    PFNGLENABLEINDEXEDEXTPROC           pGlEnableIndexedEXT;
+    PFNGLDISABLEINDEXEDEXTPROC          pGlDisableIndexedEXT;
+    PFNGLBLENDFUNCINDEXEDAMDPROC        pGlBlendFuncIndexedAMD;
+    PFNGLBLENDFUNCIPROC                 pGlBlendFunciARB;
+    PFNGLBLENDEQUATIONINDEXEDAMDPROC    pGlBlendEquationIndexedAMD;
+    PFNGLBLENDEQUATIONIPROC             pGlBlendEquationiARB;
+    PFNGLPROGRAMPARAMETERIARBPROC       pGlProgramParameteriARB;
+    PFNGLPROGRAMPARAMETERIEXTPROC       pGlProgramParameteriEXT;
+    PFNGLGENQUERIESARBPROC              pGlGenQueriesARB;
+    PFNGLDELETEQUERIESARBPROC           pGlDeleteQueriesARB;
+    PFNGLISQUERYARBPROC                 pGlIsQueryARB;
+    PFNGLBEGINQUERYARBPROC              pGlBeginQueryARB;
+    PFNGLENDQUERYARBPROC                pGlEndQueryARB;
+    PFNGLGETQUERYIVARBPROC              pGlGetQueryivARB;
+    PFNGLGETQUERYOBJECTIVARBPROC        pGlGetQueryObjectivARB;
+    PFNGLGETQUERYOBJECTUIVARBPROC       pGlGetQueryObjectuivARB;
+    PFNGLGENOCCLUSIONQUERIESNVPROC      pGlGenOcclusionQueriesNV;
+    PFNGLDELETEOCCLUSIONQUERIESNVPROC   pGlDeleteOcclusionQueriesNV;
+    PFNGLISOCCLUSIONQUERYNVPROC         pGlIsOcclusionQueryNV;
+    PFNGLBEGINOCCLUSIONQUERYNVPROC      pGlBeginOcclusionQueryNV;
+    PFNGLENDOCCLUSIONQUERYNVPROC        pGlEndOcclusionQueryNV;
+    PFNGLGETOCCLUSIONQUERYIVNVPROC      pGlGetOcclusionQueryivNV;
+    PFNGLGETOCCLUSIONQUERYUIVNVPROC     pGlGetOcclusionQueryuivNV;
+    PFNGLBLENDEQUATIONEXTPROC           pGlBlendEquationEXT;
+    PFNGLBLENDEQUATIONPROC              pGlBlendEquation;
         #if defined(WGL_EXT_swap_control)
-        PFNWGLSWAPINTERVALEXTPROC pWglSwapIntervalEXT;
+    PFNWGLSWAPINTERVALEXTPROC pWglSwapIntervalEXT;
         #endif
         #if defined(GLX_SGI_swap_control)
-        PFNGLXSWAPINTERVALSGIPROC pGlxSwapIntervalSGI;
+    PFNGLXSWAPINTERVALSGIPROC pGlxSwapIntervalSGI;
         #endif
         #if defined(GLX_EXT_swap_control)
-        PFNGLXSWAPINTERVALEXTPROC pGlxSwapIntervalEXT;
+    PFNGLXSWAPINTERVALEXTPROC pGlxSwapIntervalEXT;
         #endif
         #if defined(GLX_MESA_swap_control)
-        PFNGLXSWAPINTERVALMESAPROC pGlxSwapIntervalMESA;
+    PFNGLXSWAPINTERVALMESAPROC pGlxSwapIntervalMESA;
         #endif
     #endif
 };
@@ -1254,10 +1254,12 @@ inline void COpenGLExtensionHandler::extGlActiveTexture(GLenum texture)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (MultiTextureExtension && pGlActiveTextureARB)
         pGlActiveTextureARB(texture);
+
 #else
     if (MultiTextureExtension)
 #ifdef GL_ARB_multitexture
         glActiveTextureARB(texture);
+
 #else
         glActiveTexture(texture);
 #endif
@@ -1269,6 +1271,7 @@ inline void COpenGLExtensionHandler::extGlClientActiveTexture(GLenum texture)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (MultiTextureExtension && pGlClientActiveTextureARB)
         pGlClientActiveTextureARB(texture);
+
 #else
     if (MultiTextureExtension)
         glClientActiveTextureARB(texture);
@@ -1278,16 +1281,18 @@ inline void COpenGLExtensionHandler::extGlClientActiveTexture(GLenum texture)
 inline void COpenGLExtensionHandler::extGlGenPrograms(GLsizei n, GLuint *programs)
 {
     if (programs)
-        memset(programs,0,n*sizeof(GLuint));
+        memset(programs, 0, n * sizeof(GLuint));
+
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGenProgramsARB)
         pGlGenProgramsARB(n, programs);
     else if (pGlGenProgramsNV)
         pGlGenProgramsNV(n, programs);
+
 #elif defined(GL_ARB_vertex_program) || defined(GL_ARB_fragment_program)
-    glGenProgramsARB(n,programs);
+    glGenProgramsARB(n, programs);
 #elif defined(GL_NV_vertex_program) || defined(GL_NV_fragment_program)
-    glGenProgramsNV(n,programs);
+    glGenProgramsNV(n, programs);
 #else
     os::Printer::log("glGenPrograms not supported", ELL_ERROR);
 #endif
@@ -1300,6 +1305,7 @@ inline void COpenGLExtensionHandler::extGlBindProgram(GLenum target, GLuint prog
         pGlBindProgramARB(target, program);
     else if (pGlBindProgramNV)
         pGlBindProgramNV(target, program);
+
 #elif defined(GL_ARB_vertex_program) || defined(GL_ARB_fragment_program)
     glBindProgramARB(target, program);
 #elif defined(GL_NV_vertex_program) || defined(GL_NV_fragment_program)
@@ -1314,8 +1320,9 @@ inline void COpenGLExtensionHandler::extGlProgramString(GLenum target, GLenum fo
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlProgramStringARB)
         pGlProgramStringARB(target, format, len, string);
+
 #elif defined(GL_ARB_vertex_program) || defined(GL_ARB_fragment_program)
-    glProgramStringARB(target,format,len,string);
+    glProgramStringARB(target, format, len, string);
 #else
     os::Printer::log("glProgramString not supported", ELL_ERROR);
 #endif
@@ -1326,8 +1333,9 @@ inline void COpenGLExtensionHandler::extGlLoadProgram(GLenum target, GLuint id, 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlLoadProgramNV)
         pGlLoadProgramNV(target, id, len, string);
+
 #elif defined(GL_NV_vertex_program) || defined(GL_NV_fragment_program)
-    glLoadProgramNV(target,id,len,string);
+    glLoadProgramNV(target, id, len, string);
 #else
     os::Printer::log("glLoadProgram not supported", ELL_ERROR);
 #endif
@@ -1340,10 +1348,11 @@ inline void COpenGLExtensionHandler::extGlDeletePrograms(GLsizei n, const GLuint
         pGlDeleteProgramsARB(n, programs);
     else if (pGlDeleteProgramsNV)
         pGlDeleteProgramsNV(n, programs);
+
 #elif defined(GL_ARB_vertex_program) || defined(GL_ARB_fragment_program)
-    glDeleteProgramsARB(n,programs);
+    glDeleteProgramsARB(n, programs);
 #elif defined(GL_NV_vertex_program) || defined(GL_NV_fragment_program)
-    glDeleteProgramsNV(n,programs);
+    glDeleteProgramsNV(n, programs);
 #else
     os::Printer::log("glDeletePrograms not supported", ELL_ERROR);
 #endif
@@ -1353,9 +1362,10 @@ inline void COpenGLExtensionHandler::extGlProgramLocalParameter4fv(GLenum n, GLu
 {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlProgramLocalParameter4fvARB)
-        pGlProgramLocalParameter4fvARB(n,i,f);
+        pGlProgramLocalParameter4fvARB(n, i, f);
+
 #elif defined(GL_ARB_vertex_program) || defined(GL_ARB_fragment_program)
-    glProgramLocalParameter4fvARB(n,i,f);
+    glProgramLocalParameter4fvARB(n, i, f);
 #else
     os::Printer::log("glProgramLocalParameter4fv not supported", ELL_ERROR);
 #endif
@@ -1366,6 +1376,7 @@ inline GLhandleARB COpenGLExtensionHandler::extGlCreateShaderObject(GLenum shade
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlCreateShaderObjectARB)
         return pGlCreateShaderObjectARB(shaderType);
+
 #elif defined(GL_ARB_shader_objects)
     return glCreateShaderObjectARB(shaderType);
 #else
@@ -1379,6 +1390,7 @@ inline GLuint COpenGLExtensionHandler::extGlCreateShader(GLenum shaderType)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlCreateShader)
         return pGlCreateShader(shaderType);
+
 #elif defined(GL_VERSION_2_0)
     return glCreateShader(shaderType);
 #else
@@ -1392,8 +1404,9 @@ inline void COpenGLExtensionHandler::extGlShaderSourceARB(GLhandleARB shader, GL
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlShaderSourceARB)
         pGlShaderSourceARB(shader, numOfStrings, strings, lenOfStrings);
+
 #elif defined(GL_ARB_shader_objects)
-    glShaderSourceARB(shader, numOfStrings, strings, (GLint *)lenOfStrings);
+    glShaderSourceARB(shader, numOfStrings, strings, (GLint*)lenOfStrings);
 #else
     os::Printer::log("glShaderSource not supported", ELL_ERROR);
 #endif
@@ -1404,8 +1417,9 @@ inline void COpenGLExtensionHandler::extGlShaderSource(GLuint shader, GLsizei nu
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlShaderSource)
         pGlShaderSource(shader, numOfStrings, strings, lenOfStrings);
+
 #elif defined(GL_VERSION_2_0)
-    glShaderSource(shader, numOfStrings, strings, (GLint *)lenOfStrings);
+    glShaderSource(shader, numOfStrings, strings, (GLint*)lenOfStrings);
 #else
     os::Printer::log("glShaderSource not supported", ELL_ERROR);
 #endif
@@ -1416,6 +1430,7 @@ inline void COpenGLExtensionHandler::extGlCompileShaderARB(GLhandleARB shader)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlCompileShaderARB)
         pGlCompileShaderARB(shader);
+
 #elif defined(GL_ARB_shader_objects)
     glCompileShaderARB(shader);
 #else
@@ -1428,6 +1443,7 @@ inline void COpenGLExtensionHandler::extGlCompileShader(GLuint shader)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlCompileShader)
         pGlCompileShader(shader);
+
 #elif defined(GL_VERSION_2_0)
     glCompileShader(shader);
 #else
@@ -1440,6 +1456,7 @@ inline GLhandleARB COpenGLExtensionHandler::extGlCreateProgramObject(void)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlCreateProgramObjectARB)
         return pGlCreateProgramObjectARB();
+
 #elif defined(GL_ARB_shader_objects)
     return glCreateProgramObjectARB();
 #else
@@ -1453,6 +1470,7 @@ inline GLuint COpenGLExtensionHandler::extGlCreateProgram(void)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlCreateProgram)
         return pGlCreateProgram();
+
 #elif defined(GL_VERSION_2_0)
     return glCreateProgram();
 #else
@@ -1466,6 +1484,7 @@ inline void COpenGLExtensionHandler::extGlAttachObject(GLhandleARB program, GLha
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlAttachObjectARB)
         pGlAttachObjectARB(program, shader);
+
 #elif defined(GL_ARB_shader_objects)
     glAttachObjectARB(program, shader);
 #else
@@ -1478,6 +1497,7 @@ inline void COpenGLExtensionHandler::extGlAttachShader(GLuint program, GLuint sh
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlAttachShader)
         pGlAttachShader(program, shader);
+
 #elif defined(GL_VERSION_2_0)
     glAttachShader(program, shader);
 #else
@@ -1490,6 +1510,7 @@ inline void COpenGLExtensionHandler::extGlLinkProgramARB(GLhandleARB program)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlLinkProgramARB)
         pGlLinkProgramARB(program);
+
 #elif defined(GL_ARB_shader_objects)
     glLinkProgramARB(program);
 #else
@@ -1502,6 +1523,7 @@ inline void COpenGLExtensionHandler::extGlLinkProgram(GLuint program)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlLinkProgram)
         pGlLinkProgram(program);
+
 #elif defined(GL_VERSION_2_0)
     glLinkProgram(program);
 #else
@@ -1514,6 +1536,7 @@ inline void COpenGLExtensionHandler::extGlUseProgramObject(GLhandleARB prog)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUseProgramObjectARB)
         pGlUseProgramObjectARB(prog);
+
 #elif defined(GL_ARB_shader_objects)
     glUseProgramObjectARB(prog);
 #else
@@ -1526,6 +1549,7 @@ inline void COpenGLExtensionHandler::extGlUseProgram(GLuint prog)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUseProgram)
         pGlUseProgram(prog);
+
 #elif defined(GL_VERSION_2_0)
     glUseProgram(prog);
 #else
@@ -1538,6 +1562,7 @@ inline void COpenGLExtensionHandler::extGlDeleteObject(GLhandleARB object)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlDeleteObjectARB)
         pGlDeleteObjectARB(object);
+
 #elif defined(GL_ARB_shader_objects)
     glDeleteObjectARB(object);
 #else
@@ -1550,6 +1575,7 @@ inline void COpenGLExtensionHandler::extGlDeleteProgram(GLuint object)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlDeleteProgram)
         pGlDeleteProgram(object);
+
 #elif defined(GL_VERSION_2_0)
     glDeleteProgram(object);
 #else
@@ -1562,6 +1588,7 @@ inline void COpenGLExtensionHandler::extGlDeleteShader(GLuint shader)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlDeleteShader)
         pGlDeleteShader(shader);
+
 #elif defined(GL_VERSION_2_0)
     glDeleteShader(shader);
 #else
@@ -1569,13 +1596,15 @@ inline void COpenGLExtensionHandler::extGlDeleteShader(GLuint shader)
 #endif
 }
 
-inline void COpenGLExtensionHandler::extGlGetAttachedObjects(GLhandleARB program, GLsizei maxcount, GLsizei* count, GLhandleARB* shaders)
+inline void COpenGLExtensionHandler::extGlGetAttachedObjects(GLhandleARB program, GLsizei maxcount, GLsizei *count, GLhandleARB *shaders)
 {
     if (count)
-        *count=0;
+        *count = 0;
+
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetAttachedObjectsARB)
         pGlGetAttachedObjectsARB(program, maxcount, count, shaders);
+
 #elif defined(GL_ARB_shader_objects)
     glGetAttachedObjectsARB(program, maxcount, count, shaders);
 #else
@@ -1583,13 +1612,15 @@ inline void COpenGLExtensionHandler::extGlGetAttachedObjects(GLhandleARB program
 #endif
 }
 
-inline void COpenGLExtensionHandler::extGlGetAttachedShaders(GLuint program, GLsizei maxcount, GLsizei* count, GLuint* shaders)
+inline void COpenGLExtensionHandler::extGlGetAttachedShaders(GLuint program, GLsizei maxcount, GLsizei *count, GLuint *shaders)
 {
     if (count)
-        *count=0;
+        *count = 0;
+
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetAttachedShaders)
         pGlGetAttachedShaders(program, maxcount, count, shaders);
+
 #elif defined(GL_VERSION_2_0)
     glGetAttachedShaders(program, maxcount, count, shaders);
 #else
@@ -1600,10 +1631,12 @@ inline void COpenGLExtensionHandler::extGlGetAttachedShaders(GLuint program, GLs
 inline void COpenGLExtensionHandler::extGlGetInfoLog(GLhandleARB object, GLsizei maxLength, GLsizei *length, GLcharARB *infoLog)
 {
     if (length)
-        *length=0;
+        *length = 0;
+
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetInfoLogARB)
         pGlGetInfoLogARB(object, maxLength, length, infoLog);
+
 #elif defined(GL_ARB_shader_objects)
     glGetInfoLogARB(object, maxLength, length, infoLog);
 #else
@@ -1614,10 +1647,12 @@ inline void COpenGLExtensionHandler::extGlGetInfoLog(GLhandleARB object, GLsizei
 inline void COpenGLExtensionHandler::extGlGetShaderInfoLog(GLuint shader, GLsizei maxLength, GLsizei *length, GLchar *infoLog)
 {
     if (length)
-        *length=0;
+        *length = 0;
+
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetShaderInfoLog)
         pGlGetShaderInfoLog(shader, maxLength, length, infoLog);
+
 #elif defined(GL_VERSION_2_0)
     glGetShaderInfoLog(shader, maxLength, length, infoLog);
 #else
@@ -1628,10 +1663,12 @@ inline void COpenGLExtensionHandler::extGlGetShaderInfoLog(GLuint shader, GLsize
 inline void COpenGLExtensionHandler::extGlGetProgramInfoLog(GLuint program, GLsizei maxLength, GLsizei *length, GLchar *infoLog)
 {
     if (length)
-        *length=0;
+        *length = 0;
+
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetProgramInfoLog)
         pGlGetProgramInfoLog(program, maxLength, length, infoLog);
+
 #elif defined(GL_VERSION_2_0)
     glGetProgramInfoLog(program, maxLength, length, infoLog);
 #else
@@ -1644,6 +1681,7 @@ inline void COpenGLExtensionHandler::extGlGetObjectParameteriv(GLhandleARB objec
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetObjectParameterivARB)
         pGlGetObjectParameterivARB(object, type, param);
+
 #elif defined(GL_ARB_shader_objects)
     glGetObjectParameterivARB(object, type, param);
 #else
@@ -1656,6 +1694,7 @@ inline void COpenGLExtensionHandler::extGlGetShaderiv(GLuint shader, GLenum type
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetShaderiv)
         pGlGetShaderiv(shader, type, param);
+
 #elif defined(GL_VERSION_2_0)
     glGetShaderiv(shader, type, param);
 #else
@@ -1668,6 +1707,7 @@ inline void COpenGLExtensionHandler::extGlGetProgramiv(GLuint program, GLenum ty
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetProgramiv)
         pGlGetProgramiv(program, type, param);
+
 #elif defined(GL_VERSION_2_0)
     glGetProgramiv(program, type, param);
 #else
@@ -1680,6 +1720,7 @@ inline GLint COpenGLExtensionHandler::extGlGetUniformLocationARB(GLhandleARB pro
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetUniformLocationARB)
         return pGlGetUniformLocationARB(program, name);
+
 #elif defined(GL_ARB_shader_objects)
     return glGetUniformLocationARB(program, name);
 #else
@@ -1693,6 +1734,7 @@ inline GLint COpenGLExtensionHandler::extGlGetUniformLocation(GLuint program, co
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetUniformLocation)
         return pGlGetUniformLocation(program, name);
+
 #elif defined(GL_VERSION_2_0)
     return glGetUniformLocation(program, name);
 #else
@@ -1706,6 +1748,7 @@ inline void COpenGLExtensionHandler::extGlUniform1fv(GLint loc, GLsizei count, c
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUniform1fvARB)
         pGlUniform1fvARB(loc, count, v);
+
 #elif defined(GL_ARB_shader_objects)
     glUniform1fvARB(loc, count, v);
 #else
@@ -1718,6 +1761,7 @@ inline void COpenGLExtensionHandler::extGlUniform2fv(GLint loc, GLsizei count, c
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUniform2fvARB)
         pGlUniform2fvARB(loc, count, v);
+
 #elif defined(GL_ARB_shader_objects)
     glUniform2fvARB(loc, count, v);
 #else
@@ -1730,6 +1774,7 @@ inline void COpenGLExtensionHandler::extGlUniform3fv(GLint loc, GLsizei count, c
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUniform3fvARB)
         pGlUniform3fvARB(loc, count, v);
+
 #elif defined(GL_ARB_shader_objects)
     glUniform3fvARB(loc, count, v);
 #else
@@ -1742,6 +1787,7 @@ inline void COpenGLExtensionHandler::extGlUniform4fv(GLint loc, GLsizei count, c
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUniform4fvARB)
         pGlUniform4fvARB(loc, count, v);
+
 #elif defined(GL_ARB_shader_objects)
     glUniform4fvARB(loc, count, v);
 #else
@@ -1754,6 +1800,7 @@ inline void COpenGLExtensionHandler::extGlUniform1iv(GLint loc, GLsizei count, c
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUniform1ivARB)
         pGlUniform1ivARB(loc, count, v);
+
 #elif defined(GL_ARB_shader_objects)
     glUniform1ivARB(loc, count, v);
 #else
@@ -1766,6 +1813,7 @@ inline void COpenGLExtensionHandler::extGlUniform2iv(GLint loc, GLsizei count, c
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUniform2ivARB)
         pGlUniform2ivARB(loc, count, v);
+
 #elif defined(GL_ARB_shader_objects)
     glUniform2ivARB(loc, count, v);
 #else
@@ -1778,6 +1826,7 @@ inline void COpenGLExtensionHandler::extGlUniform3iv(GLint loc, GLsizei count, c
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUniform3ivARB)
         pGlUniform3ivARB(loc, count, v);
+
 #elif defined(GL_ARB_shader_objects)
     glUniform3ivARB(loc, count, v);
 #else
@@ -1790,6 +1839,7 @@ inline void COpenGLExtensionHandler::extGlUniform4iv(GLint loc, GLsizei count, c
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUniform4ivARB)
         pGlUniform4ivARB(loc, count, v);
+
 #elif defined(GL_ARB_shader_objects)
     glUniform4ivARB(loc, count, v);
 #else
@@ -1802,6 +1852,7 @@ inline void COpenGLExtensionHandler::extGlUniformMatrix2fv(GLint loc, GLsizei co
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUniformMatrix2fvARB)
         pGlUniformMatrix2fvARB(loc, count, transpose, v);
+
 #elif defined(GL_ARB_shader_objects)
     glUniformMatrix2fvARB(loc, count, transpose, v);
 #else
@@ -1814,6 +1865,7 @@ inline void COpenGLExtensionHandler::extGlUniformMatrix3fv(GLint loc, GLsizei co
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUniformMatrix3fvARB)
         pGlUniformMatrix3fvARB(loc, count, transpose, v);
+
 #elif defined(GL_ARB_shader_objects)
     glUniformMatrix3fvARB(loc, count, transpose, v);
 #else
@@ -1826,6 +1878,7 @@ inline void COpenGLExtensionHandler::extGlUniformMatrix4fv(GLint loc, GLsizei co
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUniformMatrix4fvARB)
         pGlUniformMatrix4fvARB(loc, count, transpose, v);
+
 #elif defined(GL_ARB_shader_objects)
     glUniformMatrix4fvARB(loc, count, transpose, v);
 #else
@@ -1834,14 +1887,16 @@ inline void COpenGLExtensionHandler::extGlUniformMatrix4fv(GLint loc, GLsizei co
 }
 
 inline void COpenGLExtensionHandler::extGlGetActiveUniformARB(GLhandleARB program,
-        GLuint index, GLsizei maxlength, GLsizei *length,
-        GLint *size, GLenum *type, GLcharARB *name)
+                                                              GLuint index, GLsizei maxlength, GLsizei *length,
+                                                              GLint *size, GLenum *type, GLcharARB *name)
 {
     if (length)
-        *length=0;
+        *length = 0;
+
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetActiveUniformARB)
         pGlGetActiveUniformARB(program, index, maxlength, length, size, type, name);
+
 #elif defined(GL_ARB_shader_objects)
     glGetActiveUniformARB(program, index, maxlength, length, size, type, name);
 #else
@@ -1850,14 +1905,16 @@ inline void COpenGLExtensionHandler::extGlGetActiveUniformARB(GLhandleARB progra
 }
 
 inline void COpenGLExtensionHandler::extGlGetActiveUniform(GLuint program,
-        GLuint index, GLsizei maxlength, GLsizei *length,
-        GLint *size, GLenum *type, GLchar *name)
+                                                           GLuint index, GLsizei maxlength, GLsizei *length,
+                                                           GLint *size, GLenum *type, GLchar *name)
 {
     if (length)
-        *length=0;
+        *length = 0;
+
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetActiveUniform)
         pGlGetActiveUniform(program, index, maxlength, length, size, type, name);
+
 #elif defined(GL_VERSION_2_0)
     glGetActiveUniform(program, index, maxlength, length, size, type, name);
 #else
@@ -1870,6 +1927,7 @@ inline void COpenGLExtensionHandler::extGlPointParameterf(GLint loc, GLfloat f)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlPointParameterfARB)
         pGlPointParameterfARB(loc, f);
+
 #elif defined(GL_ARB_point_parameters)
     glPointParameterfARB(loc, f);
 #else
@@ -1882,6 +1940,7 @@ inline void COpenGLExtensionHandler::extGlPointParameterfv(GLint loc, const GLfl
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlPointParameterfvARB)
         pGlPointParameterfvARB(loc, v);
+
 #elif defined(GL_ARB_point_parameters)
     glPointParameterfvARB(loc, v);
 #else
@@ -1889,13 +1948,14 @@ inline void COpenGLExtensionHandler::extGlPointParameterfv(GLint loc, const GLfl
 #endif
 }
 
-inline void COpenGLExtensionHandler::extGlStencilFuncSeparate (GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask)
+inline void COpenGLExtensionHandler::extGlStencilFuncSeparate(GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask)
 {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlStencilFuncSeparate)
         pGlStencilFuncSeparate(frontfunc, backfunc, ref, mask);
     else if (pGlStencilFuncSeparateATI)
         pGlStencilFuncSeparateATI(frontfunc, backfunc, ref, mask);
+
 #elif defined(GL_VERSION_2_0)
     glStencilFuncSeparate(frontfunc, backfunc, ref, mask);
 #elif defined(GL_ATI_separate_stencil)
@@ -1905,13 +1965,14 @@ inline void COpenGLExtensionHandler::extGlStencilFuncSeparate (GLenum frontfunc,
 #endif
 }
 
-inline void COpenGLExtensionHandler::extGlStencilOpSeparate (GLenum face, GLenum fail, GLenum zfail, GLenum zpass)
+inline void COpenGLExtensionHandler::extGlStencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass)
 {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlStencilOpSeparate)
         pGlStencilOpSeparate(face, fail, zfail, zpass);
     else if (pGlStencilOpSeparateATI)
         pGlStencilOpSeparateATI(face, fail, zfail, zpass);
+
 #elif defined(GL_VERSION_2_0)
     glStencilOpSeparate(face, fail, zfail, zpass);
 #elif defined(GL_ATI_separate_stencil)
@@ -1921,12 +1982,13 @@ inline void COpenGLExtensionHandler::extGlStencilOpSeparate (GLenum face, GLenum
 #endif
 }
 
-inline void COpenGLExtensionHandler::extGlCompressedTexImage2D (GLenum target, GLint level, GLenum internalformat, GLsizei width,
-        GLsizei height, GLint border, GLsizei imageSize, const void* data)
+inline void COpenGLExtensionHandler::extGlCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width,
+                                                               GLsizei height, GLint border, GLsizei imageSize, const void *data)
 {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlCompressedTexImage2D)
         pGlCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
+
 #elif defined(GL_ARB_texture_compression)
     glCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
 #else
@@ -1941,6 +2003,7 @@ inline void COpenGLExtensionHandler::extGlBindFramebuffer(GLenum target, GLuint 
         pGlBindFramebuffer(target, framebuffer);
     else if (pGlBindFramebufferEXT)
         pGlBindFramebufferEXT(target, framebuffer);
+
 #elif defined(GL_ARB_framebuffer_object)
     glBindFramebuffer(target, framebuffer);
 #elif defined(GL_EXT_framebuffer_object)
@@ -1957,6 +2020,7 @@ inline void COpenGLExtensionHandler::extGlDeleteFramebuffers(GLsizei n, const GL
         pGlDeleteFramebuffers(n, framebuffers);
     else if (pGlDeleteFramebuffersEXT)
         pGlDeleteFramebuffersEXT(n, framebuffers);
+
 #elif defined(GL_ARB_framebuffer_object)
     glDeleteFramebuffers(n, framebuffers);
 #elif defined(GL_EXT_framebuffer_object)
@@ -1969,12 +2033,14 @@ inline void COpenGLExtensionHandler::extGlDeleteFramebuffers(GLsizei n, const GL
 inline void COpenGLExtensionHandler::extGlGenFramebuffers(GLsizei n, GLuint *framebuffers)
 {
     if (framebuffers)
-        memset(framebuffers,0,n*sizeof(GLuint));
+        memset(framebuffers, 0, n * sizeof(GLuint));
+
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGenFramebuffers)
         pGlGenFramebuffers(n, framebuffers);
     else if (pGlGenFramebuffersEXT)
         pGlGenFramebuffersEXT(n, framebuffers);
+
 #elif defined(GL_ARB_framebuffer_object)
     glGenFramebuffers(n, framebuffers);
 #elif defined(GL_EXT_framebuffer_object)
@@ -1993,6 +2059,7 @@ inline GLenum COpenGLExtensionHandler::extGlCheckFramebufferStatus(GLenum target
         return pGlCheckFramebufferStatusEXT(target);
     else
         return 0;
+
 #elif defined(GL_ARB_framebuffer_object)
     return glCheckFramebufferStatus(target);
 #elif defined(GL_EXT_framebuffer_object)
@@ -2010,6 +2077,7 @@ inline void COpenGLExtensionHandler::extGlFramebufferTexture2D(GLenum target, GL
         pGlFramebufferTexture2D(target, attachment, textarget, texture, level);
     else if (pGlFramebufferTexture2DEXT)
         pGlFramebufferTexture2DEXT(target, attachment, textarget, texture, level);
+
 #elif defined(GL_ARB_framebuffer_object)
     glFramebufferTexture2D(target, attachment, textarget, texture, level);
 #elif defined(GL_EXT_framebuffer_object)
@@ -2026,6 +2094,7 @@ inline void COpenGLExtensionHandler::extGlBindRenderbuffer(GLenum target, GLuint
         pGlBindRenderbuffer(target, renderbuffer);
     else if (pGlBindRenderbufferEXT)
         pGlBindRenderbufferEXT(target, renderbuffer);
+
 #elif defined(GL_ARB_framebuffer_object)
     glBindRenderbuffer(target, renderbuffer);
 #elif defined(GL_EXT_framebuffer_object)
@@ -2042,6 +2111,7 @@ inline void COpenGLExtensionHandler::extGlDeleteRenderbuffers(GLsizei n, const G
         pGlDeleteRenderbuffers(n, renderbuffers);
     else if (pGlDeleteRenderbuffersEXT)
         pGlDeleteRenderbuffersEXT(n, renderbuffers);
+
 #elif defined(GL_ARB_framebuffer_object)
     glDeleteRenderbuffers(n, renderbuffers);
 #elif defined(GL_EXT_framebuffer_object)
@@ -2054,12 +2124,14 @@ inline void COpenGLExtensionHandler::extGlDeleteRenderbuffers(GLsizei n, const G
 inline void COpenGLExtensionHandler::extGlGenRenderbuffers(GLsizei n, GLuint *renderbuffers)
 {
     if (renderbuffers)
-        memset(renderbuffers,0,n*sizeof(GLuint));
+        memset(renderbuffers, 0, n * sizeof(GLuint));
+
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGenRenderbuffers)
         pGlGenRenderbuffers(n, renderbuffers);
     else if (pGlGenRenderbuffersEXT)
         pGlGenRenderbuffersEXT(n, renderbuffers);
+
 #elif defined(GL_ARB_framebuffer_object)
     glGenRenderbuffers(n, renderbuffers);
 #elif defined(GL_EXT_framebuffer_object)
@@ -2076,6 +2148,7 @@ inline void COpenGLExtensionHandler::extGlRenderbufferStorage(GLenum target, GLe
         pGlRenderbufferStorage(target, internalformat, width, height);
     else if (pGlRenderbufferStorageEXT)
         pGlRenderbufferStorageEXT(target, internalformat, width, height);
+
 #elif defined(GL_ARB_framebuffer_object)
     glRenderbufferStorage(target, internalformat, width, height);
 #elif defined(GL_EXT_framebuffer_object)
@@ -2092,6 +2165,7 @@ inline void COpenGLExtensionHandler::extGlFramebufferRenderbuffer(GLenum target,
         pGlFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
     else if (pGlFramebufferRenderbufferEXT)
         pGlFramebufferRenderbufferEXT(target, attachment, renderbuffertarget, renderbuffer);
+
 #elif defined(GL_ARB_framebuffer_object)
     glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
 #elif defined(GL_EXT_framebuffer_object)
@@ -2108,6 +2182,7 @@ inline void COpenGLExtensionHandler::extGlGenerateMipmap(GLenum target)
         pGlGenerateMipmap(target);
     else if (pGlGenerateMipmapEXT)
         pGlGenerateMipmapEXT(target);
+
 #elif defined(GL_ARB_framebuffer_object)
     glGenerateMipmap(target);
 #elif defined(GL_EXT_framebuffer_object)
@@ -2122,6 +2197,7 @@ inline void COpenGLExtensionHandler::extGlActiveStencilFace(GLenum face)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlActiveStencilFaceEXT)
         pGlActiveStencilFaceEXT(face);
+
 #elif defined(GL_EXT_stencil_two_side)
     glActiveStencilFaceEXT(face);
 #else
@@ -2136,6 +2212,7 @@ inline void COpenGLExtensionHandler::extGlDrawBuffers(GLsizei n, const GLenum *b
         pGlDrawBuffersARB(n, bufs);
     else if (pGlDrawBuffersATI)
         pGlDrawBuffersATI(n, bufs);
+
 #elif defined(GL_ARB_draw_buffers)
     glDrawBuffersARB(n, bufs);
 #elif defined(GL_ATI_draw_buffers)
@@ -2149,10 +2226,12 @@ inline void COpenGLExtensionHandler::extGlDrawBuffers(GLsizei n, const GLenum *b
 inline void COpenGLExtensionHandler::extGlGenBuffers(GLsizei n, GLuint *buffers)
 {
     if (buffers)
-        memset(buffers,0,n*sizeof(GLuint));
+        memset(buffers, 0, n * sizeof(GLuint));
+
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGenBuffersARB)
         pGlGenBuffersARB(n, buffers);
+
 #elif defined(GL_ARB_vertex_buffer_object)
     glGenBuffers(n, buffers);
 #else
@@ -2165,6 +2244,7 @@ inline void COpenGLExtensionHandler::extGlBindBuffer(GLenum target, GLuint buffe
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlBindBufferARB)
         pGlBindBufferARB(target, buffer);
+
 #elif defined(GL_ARB_vertex_buffer_object)
     glBindBuffer(target, buffer);
 #else
@@ -2177,6 +2257,7 @@ inline void COpenGLExtensionHandler::extGlBufferData(GLenum target, GLsizeiptrAR
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlBufferDataARB)
         pGlBufferDataARB(target, size, data, usage);
+
 #elif defined(GL_ARB_vertex_buffer_object)
     glBufferData(target, size, data, usage);
 #else
@@ -2189,6 +2270,7 @@ inline void COpenGLExtensionHandler::extGlDeleteBuffers(GLsizei n, const GLuint 
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlDeleteBuffersARB)
         pGlDeleteBuffersARB(n, buffers);
+
 #elif defined(GL_ARB_vertex_buffer_object)
     glDeleteBuffers(n, buffers);
 #else
@@ -2201,6 +2283,7 @@ inline void COpenGLExtensionHandler::extGlBufferSubData(GLenum target, GLintptrA
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlBufferSubDataARB)
         pGlBufferSubDataARB(target, offset, size, data);
+
 #elif defined(GL_ARB_vertex_buffer_object)
     glBufferSubData(target, offset, size, data);
 #else
@@ -2213,6 +2296,7 @@ inline void COpenGLExtensionHandler::extGlGetBufferSubData(GLenum target, GLintp
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetBufferSubDataARB)
         pGlGetBufferSubDataARB(target, offset, size, data);
+
 #elif defined(GL_ARB_vertex_buffer_object)
     glGetBufferSubData(target, offset, size, data);
 #else
@@ -2220,11 +2304,12 @@ inline void COpenGLExtensionHandler::extGlGetBufferSubData(GLenum target, GLintp
 #endif
 }
 
-inline void *COpenGLExtensionHandler::extGlMapBuffer(GLenum target, GLenum access)
+inline void* COpenGLExtensionHandler::extGlMapBuffer(GLenum target, GLenum access)
 {
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlMapBufferARB)
         return pGlMapBufferARB(target, access);
+
     return 0;
 #elif defined(GL_ARB_vertex_buffer_object)
     return glMapBuffer(target, access);
@@ -2239,6 +2324,7 @@ inline GLboolean COpenGLExtensionHandler::extGlUnmapBuffer(GLenum target)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlUnmapBufferARB)
         return pGlUnmapBufferARB(target);
+
     return false;
 #elif defined(GL_ARB_vertex_buffer_object)
     return glUnmapBuffer(target);
@@ -2253,6 +2339,7 @@ inline GLboolean COpenGLExtensionHandler::extGlIsBuffer(GLuint buffer)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlIsBufferARB)
         return pGlIsBufferARB(buffer);
+
     return false;
 #elif defined(GL_ARB_vertex_buffer_object)
     return glIsBuffer(buffer);
@@ -2267,6 +2354,7 @@ inline void COpenGLExtensionHandler::extGlGetBufferParameteriv(GLenum target, GL
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetBufferParameterivARB)
         pGlGetBufferParameterivARB(target, pname, params);
+
 #elif defined(GL_ARB_vertex_buffer_object)
     glGetBufferParameteriv(target, pname, params);
 #else
@@ -2279,6 +2367,7 @@ inline void COpenGLExtensionHandler::extGlGetBufferPointerv(GLenum target, GLenu
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetBufferPointervARB)
         pGlGetBufferPointervARB(target, pname, params);
+
 #elif defined(GL_ARB_vertex_buffer_object)
     glGetBufferPointerv(target, pname, params);
 #else
@@ -2294,6 +2383,7 @@ inline void COpenGLExtensionHandler::extGlProvokingVertex(GLenum mode)
         pGlProvokingVertexARB(mode);
     else if (FeatureAvailable[IRR_EXT_provoking_vertex] && pGlProvokingVertexEXT)
         pGlProvokingVertexEXT(mode);
+
 #elif defined(GL_ARB_provoking_vertex)
     glProvokingVertex(mode);
 #elif defined(GL_EXT_provoking_vertex)
@@ -2309,6 +2399,7 @@ inline void COpenGLExtensionHandler::extGlColorMaskIndexed(GLuint buf, GLboolean
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (FeatureAvailable[IRR_EXT_draw_buffers2] && pGlColorMaskIndexedEXT)
         pGlColorMaskIndexedEXT(buf, r, g, b, a);
+
 #elif defined(GL_EXT_draw_buffers2)
     glColorMaskIndexedEXT(buf, r, g, b, a);
 #else
@@ -2322,6 +2413,7 @@ inline void COpenGLExtensionHandler::extGlEnableIndexed(GLenum target, GLuint in
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (FeatureAvailable[IRR_EXT_draw_buffers2] && pGlEnableIndexedEXT)
         pGlEnableIndexedEXT(target, index);
+
 #elif defined(GL_EXT_draw_buffers2)
     glEnableIndexedEXT(target, index);
 #else
@@ -2334,6 +2426,7 @@ inline void COpenGLExtensionHandler::extGlDisableIndexed(GLenum target, GLuint i
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (FeatureAvailable[IRR_EXT_draw_buffers2] && pGlDisableIndexedEXT)
         pGlDisableIndexedEXT(target, index);
+
 #elif defined(GL_EXT_draw_buffers2)
     glDisableIndexedEXT(target, index);
 #else
@@ -2348,6 +2441,7 @@ inline void COpenGLExtensionHandler::extGlBlendFuncIndexed(GLuint buf, GLenum sr
         pGlBlendFunciARB(buf, src, dst);
     else if (FeatureAvailable[IRR_AMD_draw_buffers_blend] && pGlBlendFuncIndexedAMD)
         pGlBlendFuncIndexedAMD(buf, src, dst);
+
 #elif defined(GL_ARB_draw_buffers_blend)
     glBlendFunciARB(buf, src, dst);
 #elif defined(GL_AMD_draw_buffers_blend)
@@ -2364,6 +2458,7 @@ inline void COpenGLExtensionHandler::extGlBlendEquationIndexed(GLuint buf, GLenu
         pGlBlendEquationiARB(buf, mode);
     else if (FeatureAvailable[IRR_AMD_draw_buffers_blend] && pGlBlendEquationIndexedAMD)
         pGlBlendEquationIndexedAMD(buf, mode);
+
 #elif defined(GL_ARB_draw_buffers_blend)
     glBlendEquationiARB(buf, mode);
 #elif defined(GL_AMD_draw_buffers_blend)
@@ -2383,6 +2478,7 @@ inline void COpenGLExtensionHandler::extGlProgramParameteri(GLuint program, GLen
         else if (pGlProgramParameteriEXT)
             pGlProgramParameteriEXT(program, pname, value);
     }
+
 #elif defined(GL_ARB_geometry_shader4)
     glProgramParameteriARB(program, pname, value);
 #elif defined(GL_EXT_geometry_shader4)
@@ -2401,6 +2497,7 @@ inline void COpenGLExtensionHandler::extGlGenQueries(GLsizei n, GLuint *ids)
         pGlGenQueriesARB(n, ids);
     else if (pGlGenOcclusionQueriesNV)
         pGlGenOcclusionQueriesNV(n, ids);
+
 #elif defined(GL_ARB_occlusion_query)
     glGenQueriesARB(n, ids);
 #elif defined(GL_NV_occlusion_query)
@@ -2417,6 +2514,7 @@ inline void COpenGLExtensionHandler::extGlDeleteQueries(GLsizei n, const GLuint 
         pGlDeleteQueriesARB(n, ids);
     else if (pGlDeleteOcclusionQueriesNV)
         pGlDeleteOcclusionQueriesNV(n, ids);
+
 #elif defined(GL_ARB_occlusion_query)
     glDeleteQueriesARB(n, ids);
 #elif defined(GL_NV_occlusion_query)
@@ -2433,6 +2531,7 @@ inline GLboolean COpenGLExtensionHandler::extGlIsQuery(GLuint id)
         return pGlIsQueryARB(id);
     else if (pGlIsOcclusionQueryNV)
         return pGlIsOcclusionQueryNV(id);
+
     return false;
 #elif defined(GL_ARB_occlusion_query)
     return glIsQueryARB(id);
@@ -2450,6 +2549,7 @@ inline void COpenGLExtensionHandler::extGlBeginQuery(GLenum target, GLuint id)
         pGlBeginQueryARB(target, id);
     else if (pGlBeginOcclusionQueryNV)
         pGlBeginOcclusionQueryNV(id);
+
 #elif defined(GL_ARB_occlusion_query)
     glBeginQueryARB(target, id);
 #elif defined(GL_NV_occlusion_query)
@@ -2466,6 +2566,7 @@ inline void COpenGLExtensionHandler::extGlEndQuery(GLenum target)
         pGlEndQueryARB(target);
     else if (pGlEndOcclusionQueryNV)
         pGlEndOcclusionQueryNV();
+
 #elif defined(GL_ARB_occlusion_query)
     glEndQueryARB(target);
 #elif defined(GL_NV_occlusion_query)
@@ -2480,6 +2581,7 @@ inline void COpenGLExtensionHandler::extGlGetQueryiv(GLenum target, GLenum pname
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlGetQueryivARB)
         pGlGetQueryivARB(target, pname, params);
+
 #elif defined(GL_ARB_occlusion_query)
     glGetQueryivARB(target, pname, params);
 #else
@@ -2494,6 +2596,7 @@ inline void COpenGLExtensionHandler::extGlGetQueryObjectiv(GLuint id, GLenum pna
         pGlGetQueryObjectivARB(id, pname, params);
     else if (pGlGetOcclusionQueryivNV)
         pGlGetOcclusionQueryivNV(id, pname, params);
+
 #elif defined(GL_ARB_occlusion_query)
     glGetQueryObjectivARB(id, pname, params);
 #elif defined(GL_NV_occlusion_query)
@@ -2510,6 +2613,7 @@ inline void COpenGLExtensionHandler::extGlGetQueryObjectuiv(GLuint id, GLenum pn
         pGlGetQueryObjectuivARB(id, pname, params);
     else if (pGlGetOcclusionQueryuivNV)
         pGlGetOcclusionQueryuivNV(id, pname, params);
+
 #elif defined(GL_ARB_occlusion_query)
     glGetQueryObjectuivARB(id, pname, params);
 #elif defined(GL_NV_occlusion_query)
@@ -2529,23 +2633,25 @@ inline void COpenGLExtensionHandler::extGlSwapInterval(int interval)
 #endif
 #endif
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-    //TODO: Check GLX_EXT_swap_control and GLX_MESA_swap_control
+    // TODO: Check GLX_EXT_swap_control and GLX_MESA_swap_control
 #ifdef GLX_SGI_swap_control
     // does not work with interval==0
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (interval && pGlxSwapIntervalSGI)
         pGlxSwapIntervalSGI(interval);
+
 #else
     if (interval)
         glXSwapIntervalSGI(interval);
 #endif
 #elif defined(GLX_EXT_swap_control)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
-    Display *dpy = glXGetCurrentDisplay();
+    Display     *dpy     = glXGetCurrentDisplay();
     GLXDrawable drawable = glXGetCurrentDrawable();
 
     if (pGlxSwapIntervalEXT)
         pGlxSwapIntervalEXT(dpy, drawable, interval);
+
 #else
     pGlXSwapIntervalEXT(dpy, drawable, interval);
 #endif
@@ -2553,6 +2659,7 @@ inline void COpenGLExtensionHandler::extGlSwapInterval(int interval)
 #ifdef _IRR_OPENGL_USE_EXTPOINTER_
     if (pGlxSwapIntervalMESA)
         pGlxSwapIntervalMESA(interval);
+
 #else
     pGlXSwapIntervalMESA(interval);
 #endif
@@ -2567,6 +2674,7 @@ inline void COpenGLExtensionHandler::extGlBlendEquation(GLenum mode)
         pGlBlendEquation(mode);
     else if (pGlBlendEquationEXT)
         pGlBlendEquationEXT(mode);
+
 #elif defined(GL_EXT_blend_minmax) || defined(GL_EXT_blend_subtract) || defined(GL_EXT_blend_logic_op)
     glBlendEquationEXT(mode);
 #elif defined(GL_VERSION_1_2)
@@ -2575,12 +2683,7 @@ inline void COpenGLExtensionHandler::extGlBlendEquation(GLenum mode)
     os::Printer::log("glBlendEquation not supported", ELL_ERROR);
 #endif
 }
-
-
 }
 }
-
 #endif
-
 #endif
-

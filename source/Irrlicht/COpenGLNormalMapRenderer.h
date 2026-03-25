@@ -15,35 +15,30 @@ namespace irr
 {
 namespace video
 {
-
-//! Class for rendering normal maps with OpenGL
+// ! Class for rendering normal maps with OpenGL
 class COpenGLNormalMapRenderer : public COpenGLShaderMaterialRenderer, public IShaderConstantSetCallBack
 {
 public:
 
-    //! Constructor
-    COpenGLNormalMapRenderer(video::COpenGLDriver* driver,
-        s32& outMaterialTypeNr, IMaterialRenderer* baseMaterial);
+    // ! Constructor
+    COpenGLNormalMapRenderer(video::COpenGLDriver *driver,
+                             s32 &outMaterialTypeNr, IMaterialRenderer *baseMaterial);
 
-    //! Destructor
+    // ! Destructor
     ~COpenGLNormalMapRenderer();
 
-    //! Called by the engine when the vertex and/or pixel shader constants for an
-    //! material renderer should be set.
-    virtual void OnSetConstants(IMaterialRendererServices* services, s32 userData);
+    // ! Called by the engine when the vertex and/or pixel shader constants for an
+    // ! material renderer should be set.
+    virtual void OnSetConstants(IMaterialRendererServices *services, s32 userData);
 
-    //! Returns the render capability of the material.
+    // ! Returns the render capability of the material.
     virtual s32 getRenderCapability() const;
 
 protected:
 
     bool CompiledShaders;
 };
-
-
-} // end namespace video
+}   // end namespace video
 } // end namespace irr
-
 #endif
 #endif
-

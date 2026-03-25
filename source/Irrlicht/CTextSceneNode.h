@@ -16,145 +16,146 @@ namespace irr
 {
 namespace scene
 {
+class CTextSceneNode : public ITextSceneNode
+{
+public:
 
+    // ! constructor
+    CTextSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
+                   gui::IGUIFont *font, scene::ISceneCollisionManager *coll,
+                   const core::vector3df &position = core::vector3df(0, 0, 0), const wchar_t *text = 0,
+                   video::SColor color = video::SColor(100, 0, 0, 0));
 
-    class CTextSceneNode : public ITextSceneNode
+    // ! destructor
+    virtual ~CTextSceneNode();
+
+    virtual void OnRegisterSceneNode();
+
+    // ! renders the node.
+    virtual void render();
+
+    // ! returns the axis aligned bounding box of this node
+    virtual const core::aabbox3d<f32>&getBoundingBox() const;
+
+    // ! sets the text string
+    virtual void setText(const wchar_t *text);
+
+    // ! sets the color of the text
+    virtual void setTextColor(video::SColor color);
+
+    // ! Returns type of the scene node
+    virtual ESCENE_NODE_TYPE getType() const
     {
-    public:
+        return ESNT_TEXT;
+    }
 
-        //! constructor
-        CTextSceneNode(ISceneNode* parent, ISceneManager* mgr, s32 id,
-            gui::IGUIFont* font, scene::ISceneCollisionManager* coll,
-            const core::vector3df& position = core::vector3df(0,0,0), const wchar_t* text=0,
-            video::SColor color=video::SColor(100,0,0,0));
+private:
 
-        //! destructor
-        virtual ~CTextSceneNode();
+    core::stringw                 Text;
+    video::SColor                 Color;
+    gui::IGUIFont                 *Font;
+    scene::ISceneCollisionManager *Coll;
+    core::aabbox3d<f32>           Box;
+};
 
-        virtual void OnRegisterSceneNode();
+class CBillboardTextSceneNode : public IBillboardTextSceneNode
+{
+public:
 
-        //! renders the node.
-        virtual void render();
+    CBillboardTextSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
+                            gui::IGUIFont *font, const wchar_t *text,
+                            const core::vector3df &position, const core::dimension2d<f32> &size,
+                            video::SColor colorTop, video::SColor shade_bottom);
 
-        //! returns the axis aligned bounding box of this node
-        virtual const core::aabbox3d<f32>& getBoundingBox() const;
+    // ! destructor
+    virtual ~CBillboardTextSceneNode();
 
-        //! sets the text string
-        virtual void setText(const wchar_t* text);
+    // ! sets the vertex positions etc
+    virtual void OnAnimate(u32 timeMs);
 
-        //! sets the color of the text
-        virtual void setTextColor(video::SColor color);
+    // ! registers the node into the transparent pass
+    virtual void OnRegisterSceneNode();
 
-        //! Returns type of the scene node
-        virtual ESCENE_NODE_TYPE getType() const { return ESNT_TEXT; }
+    // ! renders the node.
+    virtual void render();
 
-    private:
+    // ! returns the axis aligned bounding box of this node
+    virtual const core::aabbox3d<f32>&getBoundingBox() const;
 
-        core::stringw Text;
-        video::SColor Color;
-        gui::IGUIFont* Font;
-        scene::ISceneCollisionManager* Coll;
-        core::aabbox3d<f32> Box;
+    // ! sets the text string
+    virtual void setText(const wchar_t *text);
+
+    // ! sets the color of the text
+    virtual void setTextColor(video::SColor color);
+
+    // ! sets the size of the billboard
+    virtual void setSize(const core::dimension2d<f32> &size);
+
+    // ! gets the size of the billboard
+    virtual const core::dimension2d<f32>&getSize() const;
+
+    virtual video::SMaterial&getMaterial(u32 i);
+
+    // ! returns amount of materials used by this scene node.
+    virtual u32 getMaterialCount() const;
+
+    // ! Returns type of the scene node
+    virtual ESCENE_NODE_TYPE getType() const
+    {
+        return ESNT_TEXT;
+    }
+
+    // ! Set the color of all vertices of the billboard
+    // ! \param overallColor: the color to set
+    virtual void setColor(const video::SColor &overallColor);
+
+    // ! Set the color of the top and bottom vertices of the billboard
+    // ! \param topColor: the color to set the top vertices
+    // ! \param bottomColor: the color to set the bottom vertices
+    virtual void setColor(const video::SColor &topColor, const video::SColor &bottomColor);
+
+    // ! Gets the color of the top and bottom vertices of the billboard
+    // ! \param topColor: stores the color of the top vertices
+    // ! \param bottomColor: stores the color of the bottom vertices
+    virtual void getColor(video::SColor &topColor, video::SColor &bottomColor) const;
+
+    virtual void setSize(f32 height, f32 bottomEdgeWidth, f32 topEdgeWidth)
+    {
+        setSize(core::dimension2df(bottomEdgeWidth, height));
+    }
+
+    virtual void getSize(f32 &height, f32 &bottomEdgeWidth, f32 &topEdgeWidth) const
+    {
+        height          = Size.Height;
+        bottomEdgeWidth = Size.Width;
+        topEdgeWidth    = Size.Width;
+    }
+
+private:
+
+    core::stringw       Text;
+    video::SColor       Color;
+    gui::IGUIFontBitmap *Font;
+
+    core::dimension2d<f32> Size;
+    core::aabbox3d<f32>    BBox;
+    video::SMaterial       Material;
+
+    video::SColor ColorTop;
+    video::SColor ColorBottom;
+    struct SSymbolInfo
+    {
+        u32 bufNo;
+        f32 Width;
+        f32 Kerning;
+        u32 firstInd;
+        u32 firstVert;
     };
 
-    class CBillboardTextSceneNode : public IBillboardTextSceneNode
-    {
-    public:
+    core::array<SSymbolInfo> Symbol;
 
-        CBillboardTextSceneNode(ISceneNode* parent, ISceneManager* mgr, s32 id,
-            gui::IGUIFont* font,const wchar_t* text,
-            const core::vector3df& position, const core::dimension2d<f32>& size,
-            video::SColor colorTop, video::SColor shade_bottom);
-
-        //! destructor
-        virtual ~CBillboardTextSceneNode();
-
-        //! sets the vertex positions etc
-        virtual void OnAnimate(u32 timeMs);
-
-        //! registers the node into the transparent pass
-        virtual void OnRegisterSceneNode();
-
-        //! renders the node.
-        virtual void render();
-
-        //! returns the axis aligned bounding box of this node
-        virtual const core::aabbox3d<f32>& getBoundingBox() const;
-
-        //! sets the text string
-        virtual void setText(const wchar_t* text);
-
-        //! sets the color of the text
-        virtual void setTextColor(video::SColor color);
-
-        //! sets the size of the billboard
-        virtual void setSize(const core::dimension2d<f32>& size);
-
-        //! gets the size of the billboard
-        virtual const core::dimension2d<f32>& getSize() const;
-
-        virtual video::SMaterial& getMaterial(u32 i);
-
-        //! returns amount of materials used by this scene node.
-        virtual u32 getMaterialCount() const;
-
-        //! Returns type of the scene node
-        virtual ESCENE_NODE_TYPE getType() const { return ESNT_TEXT; }
-
-        //! Set the color of all vertices of the billboard
-        //! \param overallColor: the color to set
-        virtual void setColor(const video::SColor & overallColor);
-
-        //! Set the color of the top and bottom vertices of the billboard
-        //! \param topColor: the color to set the top vertices
-        //! \param bottomColor: the color to set the bottom vertices
-        virtual void setColor(const video::SColor & topColor, const video::SColor & bottomColor);
-
-        //! Gets the color of the top and bottom vertices of the billboard
-        //! \param topColor: stores the color of the top vertices
-        //! \param bottomColor: stores the color of the bottom vertices
-        virtual void getColor(video::SColor & topColor, video::SColor & bottomColor) const;
-
-        virtual void setSize(f32 height, f32 bottomEdgeWidth, f32 topEdgeWidth)
-        {
-            setSize(core::dimension2df(bottomEdgeWidth, height));
-        }
-
-        virtual void getSize(f32& height, f32& bottomEdgeWidth, f32& topEdgeWidth) const
-        {
-            height = Size.Height;
-            bottomEdgeWidth = Size.Width;
-            topEdgeWidth = Size.Width;
-        }
-
-    private:
-
-        core::stringw Text;
-        video::SColor Color;
-        gui::IGUIFontBitmap* Font;
-
-        core::dimension2d<f32> Size;
-        core::aabbox3d<f32> BBox;
-        video::SMaterial Material;
-
-        video::SColor ColorTop;
-        video::SColor ColorBottom;
-        struct SSymbolInfo
-        {
-            u32 bufNo;
-            f32 Width;
-            f32 Kerning;
-            u32 firstInd;
-            u32 firstVert;
-        };
-
-        core::array < SSymbolInfo > Symbol;
-
-        SMesh *Mesh;
-    };
-
-} // end namespace scene
+    SMesh *Mesh;
+};
+}   // end namespace scene
 } // end namespace irr
-
 #endif
-

@@ -15,23 +15,19 @@ namespace irr
 {
 namespace video
 {
-
 class CImageWriterPSD : public IImageWriter
 {
 public:
-    //! constructor
+    // ! constructor
     CImageWriterPSD();
 
-    //! return true if this writer can write a file with the given extension
-    virtual bool isAWriteableFileExtension(const io::path& filename) const;
+    // ! return true if this writer can write a file with the given extension
+    virtual bool isAWriteableFileExtension(const io::path &filename) const;
 
-    //! write image to file
-    virtual bool writeImage(io::IWriteFile *file, IImage *image,u32 param) const;
+    // ! write image to file
+    virtual bool writeImage(io::IWriteFile *file, IImage *image, u32 param) const;
 };
-
-} // namespace video
+}   // namespace video
 } // namespace irr
-
 #endif // _I_IMAGE_WRITER_PSD_H_INCLUDED__
 #endif
-

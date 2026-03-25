@@ -11,10 +11,9 @@ namespace irr
 {
 namespace scene
 {
-
-//! constructor
-CTriangleSelector::CTriangleSelector(ISceneNode* node)
-: SceneNode(node), AnimatedNode(0), LastMeshFrame(0)
+// ! constructor
+CTriangleSelector::CTriangleSelector(ISceneNode *node)
+    : SceneNode(node), AnimatedNode(0), LastMeshFrame(0)
 {
     #ifdef _DEBUG
     setDebugName("CTriangleSelector");
@@ -24,22 +23,22 @@ CTriangleSelector::CTriangleSelector(ISceneNode* node)
 }
 
 
-//! constructor
-CTriangleSelector::CTriangleSelector(const core::aabbox3d<f32>& box, ISceneNode* node)
-: SceneNode(node), AnimatedNode(0), LastMeshFrame(0)
+// ! constructor
+CTriangleSelector::CTriangleSelector(const core::aabbox3d<f32> &box, ISceneNode *node)
+    : SceneNode(node), AnimatedNode(0), LastMeshFrame(0)
 {
     #ifdef _DEBUG
     setDebugName("CTriangleSelector");
     #endif
 
-    BoundingBox=box;
+    BoundingBox = box;
     // TODO
 }
 
 
-//! constructor
-CTriangleSelector::CTriangleSelector(const IMesh* mesh, ISceneNode* node)
-: SceneNode(node), AnimatedNode(0), LastMeshFrame(0)
+// ! constructor
+CTriangleSelector::CTriangleSelector(const IMesh *mesh, ISceneNode *node)
+    : SceneNode(node), AnimatedNode(0), LastMeshFrame(0)
 {
     #ifdef _DEBUG
     setDebugName("CTriangleSelector");
@@ -49,8 +48,8 @@ CTriangleSelector::CTriangleSelector(const IMesh* mesh, ISceneNode* node)
 }
 
 
-CTriangleSelector::CTriangleSelector(IAnimatedMeshSceneNode* node)
-: SceneNode(node), AnimatedNode(node), LastMeshFrame(0)
+CTriangleSelector::CTriangleSelector(IAnimatedMeshSceneNode *node)
+    : SceneNode(node), AnimatedNode(node), LastMeshFrame(0)
 {
     #ifdef _DEBUG
     setDebugName("CTriangleSelector");
@@ -59,42 +58,44 @@ CTriangleSelector::CTriangleSelector(IAnimatedMeshSceneNode* node)
     if (!AnimatedNode)
         return;
 
-    IAnimatedMesh* animatedMesh = AnimatedNode->getMesh();
+    IAnimatedMesh *animatedMesh = AnimatedNode->getMesh();
     if (!animatedMesh)
         return;
 
     LastMeshFrame = (u32)AnimatedNode->getFrameNr();
-    IMesh* mesh = animatedMesh->getMesh(LastMeshFrame);
+    IMesh *mesh = animatedMesh->getMesh(LastMeshFrame);
 
     if (mesh)
         createFromMesh(mesh);
 }
 
 
-void CTriangleSelector::createFromMesh(const IMesh* mesh)
+void CTriangleSelector::createFromMesh(const IMesh *mesh)
 {
-    const u32 cnt = mesh->getMeshBufferCount();
-    u32 totalFaceCount = 0;
-    for (u32 j=0; j<cnt; ++j)
+    const u32 cnt            = mesh->getMeshBufferCount();
+    u32       totalFaceCount = 0;
+
+    for (u32 j = 0; j<cnt; ++j)
         totalFaceCount += mesh->getMeshBuffer(j)->getIndexCount();
+
     totalFaceCount /= 3;
     Triangles.reallocate(totalFaceCount);
     BoundingBox.reset(0.f, 0.f, 0.f);
 
-    for (u32 i=0; i<cnt; ++i)
+    for (u32 i = 0; i<cnt; ++i)
     {
-        const IMeshBuffer* buf = mesh->getMeshBuffer(i);
+        const IMeshBuffer *buf = mesh->getMeshBuffer(i);
 
-        const u32 idxCnt = buf->getIndexCount();
+        const u32        idxCnt  = buf->getIndexCount();
         const u16* const indices = buf->getIndices();
 
-        for (u32 j=0; j<idxCnt; j+=3)
+        for (u32 j = 0; j<idxCnt; j += 3)
         {
             Triangles.push_back(core::triangle3df(
-                    buf->getPosition(indices[j+0]),
-                    buf->getPosition(indices[j+1]),
-                    buf->getPosition(indices[j+2])));
-            const core::triangle3df& tri = Triangles.getLast();
+                                    buf->getPosition(indices[j + 0]),
+                                    buf->getPosition(indices[j + 1]),
+                                    buf->getPosition(indices[j + 2])));
+            const core::triangle3df &tri = Triangles.getLast();
             BoundingBox.addInternalPoint(tri.pointA);
             BoundingBox.addInternalPoint(tri.pointB);
             BoundingBox.addInternalPoint(tri.pointC);
@@ -103,24 +104,25 @@ void CTriangleSelector::createFromMesh(const IMesh* mesh)
 }
 
 
-void CTriangleSelector::updateFromMesh(const IMesh* mesh) const
+void CTriangleSelector::updateFromMesh(const IMesh *mesh) const
 {
     if (!mesh)
         return;
 
-    u32 meshBuffers = mesh->getMeshBufferCount();
+    u32 meshBuffers   = mesh->getMeshBufferCount();
     u32 triangleCount = 0;
 
     BoundingBox.reset(0.f, 0.f, 0.f);
+
     for (u32 i = 0; i < meshBuffers; ++i)
     {
-        IMeshBuffer* buf = mesh->getMeshBuffer(i);
-        u32 idxCnt = buf->getIndexCount();
-        const u16* indices = buf->getIndices();
+        IMeshBuffer *buf     = mesh->getMeshBuffer(i);
+        u32         idxCnt   = buf->getIndexCount();
+        const u16   *indices = buf->getIndices();
 
         for (u32 index = 0; index < idxCnt; index += 3)
         {
-            core::triangle3df& tri = Triangles[triangleCount++];
+            core::triangle3df &tri = Triangles[triangleCount++];
             tri.pointA = buf->getPosition(indices[index + 0]);
             tri.pointB = buf->getPosition(indices[index + 1]);
             tri.pointC = buf->getPosition(indices[index + 2]);
@@ -135,18 +137,18 @@ void CTriangleSelector::updateFromMesh(const IMesh* mesh) const
 void CTriangleSelector::update(void) const
 {
     if (!AnimatedNode)
-        return; //< harmless no-op
+        return; // < harmless no-op
 
     const u32 currentFrame = (u32)AnimatedNode->getFrameNr();
     if (currentFrame == LastMeshFrame)
-        return; //< Nothing to do
+        return; // < Nothing to do
 
     LastMeshFrame = currentFrame;
-    IAnimatedMesh * animatedMesh = AnimatedNode->getMesh();
+    IAnimatedMesh *animatedMesh = AnimatedNode->getMesh();
 
     if (animatedMesh)
     {
-        IMesh * mesh = animatedMesh->getMesh(LastMeshFrame);
+        IMesh *mesh = animatedMesh->getMesh(LastMeshFrame);
 
         if (mesh)
             updateFromMesh(mesh);
@@ -154,10 +156,10 @@ void CTriangleSelector::update(void) const
 }
 
 
-//! Gets all triangles.
-void CTriangleSelector::getTriangles(core::triangle3df* triangles,
-                    s32 arraySize, s32& outTriangleCount,
-                    const core::matrix4* transform) const
+// ! Gets all triangles.
+void CTriangleSelector::getTriangles(core::triangle3df *triangles,
+                                     s32 arraySize, s32 &outTriangleCount,
+                                     const core::matrix4 *transform) const
 {
     // Update my triangles if necessary
     update();
@@ -169,30 +171,31 @@ void CTriangleSelector::getTriangles(core::triangle3df* triangles,
     core::matrix4 mat;
     if (transform)
         mat = *transform;
+
     if (SceneNode)
         mat *= SceneNode->getAbsoluteTransformation();
 
-    for (u32 i=0; i<cnt; ++i)
+    for (u32 i = 0; i<cnt; ++i)
     {
-        mat.transformVect( triangles[i].pointA, Triangles[i].pointA );
-        mat.transformVect( triangles[i].pointB, Triangles[i].pointB );
-        mat.transformVect( triangles[i].pointC, Triangles[i].pointC );
+        mat.transformVect(triangles[i].pointA, Triangles[i].pointA);
+        mat.transformVect(triangles[i].pointB, Triangles[i].pointB);
+        mat.transformVect(triangles[i].pointC, Triangles[i].pointC);
     }
 
     outTriangleCount = cnt;
 }
 
 
-//! Gets all triangles which lie within a specific bounding box.
-void CTriangleSelector::getTriangles(core::triangle3df* triangles,
-                    s32 arraySize, s32& outTriangleCount,
-                    const core::aabbox3d<f32>& box,
-                    const core::matrix4* transform) const
+// ! Gets all triangles which lie within a specific bounding box.
+void CTriangleSelector::getTriangles(core::triangle3df *triangles,
+                                     s32 arraySize, s32 &outTriangleCount,
+                                     const core::aabbox3d<f32> &box,
+                                     const core::matrix4 *transform) const
 {
     // Update my triangles if necessary
     update();
 
-    core::matrix4 mat(core::matrix4::EM4CONST_NOTHING);
+    core::matrix4   mat(core::matrix4::EM4CONST_NOTHING);
     core::aabbox3df tBox(box);
 
     if (SceneNode)
@@ -200,10 +203,12 @@ void CTriangleSelector::getTriangles(core::triangle3df* triangles,
         SceneNode->getAbsoluteTransformation().getInverse(mat);
         mat.transformBoxEx(tBox);
     }
+
     if (transform)
         mat = *transform;
     else
         mat.makeIdentity();
+
     if (SceneNode)
         mat *= SceneNode->getAbsoluteTransformation();
 
@@ -212,14 +217,15 @@ void CTriangleSelector::getTriangles(core::triangle3df* triangles,
     if (!tBox.intersectsWithBox(BoundingBox))
         return;
 
-    s32 triangleCount = 0;
-    const u32 cnt = Triangles.size();
-    for (u32 i=0; i<cnt; ++i)
+    s32       triangleCount = 0;
+    const u32 cnt           = Triangles.size();
+
+    for (u32 i = 0; i<cnt; ++i)
     {
-        // This isn't an accurate test, but it's fast, and the 
+        // This isn't an accurate test, but it's fast, and the
         // API contract doesn't guarantee complete accuracy.
         if (Triangles[i].isTotalOutsideBox(tBox))
-           continue;
+            continue;
 
         triangles[triangleCount] = Triangles[i];
         mat.transformVect(triangles[triangleCount].pointA);
@@ -236,11 +242,11 @@ void CTriangleSelector::getTriangles(core::triangle3df* triangles,
 }
 
 
-//! Gets all triangles which have or may have contact with a 3d line.
-void CTriangleSelector::getTriangles(core::triangle3df* triangles,
-                    s32 arraySize, s32& outTriangleCount,
-                    const core::line3d<f32>& line,
-                    const core::matrix4* transform) const
+// ! Gets all triangles which have or may have contact with a 3d line.
+void CTriangleSelector::getTriangles(core::triangle3df *triangles,
+                                     s32 arraySize, s32 &outTriangleCount,
+                                     const core::line3d<f32> &line,
+                                     const core::matrix4 *transform) const
 {
     // Update my triangles if necessary
     update();
@@ -250,11 +256,11 @@ void CTriangleSelector::getTriangles(core::triangle3df* triangles,
 
     // TODO: Could be optimized for line a little bit more.
     getTriangles(triangles, arraySize, outTriangleCount,
-                box, transform);
+                 box, transform);
 }
 
 
-//! Returns amount of all available triangles in this selector
+// ! Returns amount of all available triangles in this selector
 s32 CTriangleSelector::getTriangleCount() const
 {
     return Triangles.size();
@@ -262,8 +268,8 @@ s32 CTriangleSelector::getTriangleCount() const
 
 
 /* Get the number of TriangleSelectors that are part of this one.
-Only useful for MetaTriangleSelector others return 1
-*/
+   Only useful for MetaTriangleSelector others return 1
+ */
 u32 CTriangleSelector::getSelectorCount() const
 {
     return 1;
@@ -271,8 +277,8 @@ u32 CTriangleSelector::getSelectorCount() const
 
 
 /* Get the TriangleSelector based on index based on getSelectorCount.
-Only useful for MetaTriangleSelector others return 'this' or 0
-*/
+   Only useful for MetaTriangleSelector others return 'this' or 0
+ */
 ITriangleSelector* CTriangleSelector::getSelector(u32 index)
 {
     if (index)
@@ -283,8 +289,8 @@ ITriangleSelector* CTriangleSelector::getSelector(u32 index)
 
 
 /* Get the TriangleSelector based on index based on getSelectorCount.
-Only useful for MetaTriangleSelector others return 'this' or 0
-*/
+   Only useful for MetaTriangleSelector others return 'this' or 0
+ */
 const ITriangleSelector* CTriangleSelector::getSelector(u32 index) const
 {
     if (index)
@@ -292,7 +298,5 @@ const ITriangleSelector* CTriangleSelector::getSelector(u32 index) const
     else
         return this;
 }
-
-
-} // end namespace scene
+}   // end namespace scene
 } // end namespace irr

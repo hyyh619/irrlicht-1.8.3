@@ -11,23 +11,21 @@ namespace irr
 {
 namespace io
 {
-
-
-//! Constructor
-CXMLWriter::CXMLWriter(IWriteFile* file)
-: File(file), Tabs(0), TextWrittenLast(false)
+// ! Constructor
+CXMLWriter::CXMLWriter(IWriteFile *file)
+    : File(file), Tabs(0), TextWrittenLast(false)
 {
     #ifdef _DEBUG
     setDebugName("CXMLWriter");
     #endif
-    
+
     if (File)
         File->grab();
 }
 
 
 
-//! Destructor
+// ! Destructor
 CXMLWriter::~CXMLWriter()
 {
     if (File)
@@ -36,7 +34,7 @@ CXMLWriter::~CXMLWriter()
 
 
 
-//! Writes a xml 1.0 header like <?xml version="1.0"?>
+// ! Writes a xml 1.0 header like <?xml version="1.0"?>
 void CXMLWriter::writeXMLHeader()
 {
     if (!File)
@@ -54,7 +52,7 @@ void CXMLWriter::writeXMLHeader()
     }
 
     const wchar_t* const p = L"<?xml version=\"1.0\"?>";
-    File->write(p, irr::u32(wcslen(p)*sizeof(wchar_t)));
+    File->write(p, irr::u32(wcslen(p) * sizeof(wchar_t)));
 
     writeLineBreak();
     TextWrittenLast = false;
@@ -62,27 +60,27 @@ void CXMLWriter::writeXMLHeader()
 
 
 
-//! Writes an xml element with maximal 5 attributes
-void CXMLWriter::writeElement(const wchar_t* name, bool empty,
-    const wchar_t* attr1Name, const wchar_t* attr1Value,
-    const wchar_t* attr2Name, const wchar_t* attr2Value,
-    const wchar_t* attr3Name, const wchar_t* attr3Value,
-    const wchar_t* attr4Name, const wchar_t* attr4Value,
-    const wchar_t* attr5Name, const wchar_t* attr5Value)
+// ! Writes an xml element with maximal 5 attributes
+void CXMLWriter::writeElement(const wchar_t *name, bool empty,
+                              const wchar_t *attr1Name, const wchar_t *attr1Value,
+                              const wchar_t *attr2Name, const wchar_t *attr2Value,
+                              const wchar_t *attr3Name, const wchar_t *attr3Value,
+                              const wchar_t *attr4Name, const wchar_t *attr4Value,
+                              const wchar_t *attr5Name, const wchar_t *attr5Value)
 {
     if (!File || !name)
         return;
 
     if (Tabs > 0)
     {
-        for (int i=0; i<Tabs; ++i)
+        for (int i = 0; i<Tabs; ++i)
             File->write(L"\t", sizeof(wchar_t));
     }
-    
+
     // write name
 
     File->write(L"<", sizeof(wchar_t));
-    File->write(name, wcslen(name)*sizeof(wchar_t));
+    File->write(name, wcslen(name) * sizeof(wchar_t));
 
     // write attributes
 
@@ -94,80 +92,81 @@ void CXMLWriter::writeElement(const wchar_t* name, bool empty,
 
     // write closing tag
     if (empty)
-        File->write(L" />", 3*sizeof(wchar_t));
+        File->write(L" />", 3 * sizeof(wchar_t));
     else
     {
         File->write(L">", sizeof(wchar_t));
         ++Tabs;
     }
-    
+
     TextWrittenLast = false;
 }
 
-//! Writes an xml element with any number of attributes
-void CXMLWriter::writeElement(const wchar_t* name, bool empty,
-                  core::array<core::stringw> &names,
-                  core::array<core::stringw> &values)
+// ! Writes an xml element with any number of attributes
+void CXMLWriter::writeElement(const wchar_t *name, bool empty,
+                              core::array<core::stringw> &names,
+                              core::array<core::stringw> &values)
 {
     if (!File || !name)
         return;
 
     if (Tabs > 0)
     {
-        for (int i=0; i<Tabs; ++i)
+        for (int i = 0; i<Tabs; ++i)
             File->write(L"\t", sizeof(wchar_t));
     }
-    
+
     // write name
 
     File->write(L"<", sizeof(wchar_t));
-    File->write(name, wcslen(name)*sizeof(wchar_t));
+    File->write(name, wcslen(name) * sizeof(wchar_t));
 
     // write attributes
-    u32 i=0;
+    u32 i = 0;
+
     for (; i < names.size() && i < values.size(); ++i)
         writeAttribute(names[i].c_str(), values[i].c_str());
 
     // write closing tag
     if (empty)
-        File->write(L" />", 3*sizeof(wchar_t));
+        File->write(L" />", 3 * sizeof(wchar_t));
     else
     {
         File->write(L">", sizeof(wchar_t));
         ++Tabs;
     }
-    
+
     TextWrittenLast = false;
 }
 
 
-void CXMLWriter::writeAttribute(const wchar_t* name, const wchar_t* value)
+void CXMLWriter::writeAttribute(const wchar_t *name, const wchar_t *value)
 {
     if (!name || !value)
         return;
 
     File->write(L" ", sizeof(wchar_t));
-    File->write(name, wcslen(name)*sizeof(wchar_t));
-    File->write(L"=\"", 2*sizeof(wchar_t));
+    File->write(name, wcslen(name) * sizeof(wchar_t));
+    File->write(L"=\"", 2 * sizeof(wchar_t));
     writeText(value);
     File->write(L"\"", sizeof(wchar_t));
 }
 
 
-//! Writes a comment into the xml file
-void CXMLWriter::writeComment(const wchar_t* comment)
+// ! Writes a comment into the xml file
+void CXMLWriter::writeComment(const wchar_t *comment)
 {
     if (!File || !comment)
         return;
 
-    File->write(L"<!--", 4*sizeof(wchar_t));
+    File->write(L"<!--", 4 * sizeof(wchar_t));
     writeText(comment);
-    File->write(L"-->", 3*sizeof(wchar_t));
+    File->write(L"-->", 3 * sizeof(wchar_t));
 }
 
 
-//! Writes the closing tag for an element. Like </foo>
-void CXMLWriter::writeClosingTag(const wchar_t* name)
+// ! Writes the closing tag for an element. Like </foo>
+void CXMLWriter::writeClosingTag(const wchar_t *name)
 {
     if (!File || !name)
         return;
@@ -176,19 +175,19 @@ void CXMLWriter::writeClosingTag(const wchar_t* name)
 
     if (Tabs > 0 && !TextWrittenLast)
     {
-        for (int i=0; i<Tabs; ++i)
+        for (int i = 0; i<Tabs; ++i)
             File->write(L"\t", sizeof(wchar_t));
     }
 
-    File->write(L"</", 2*sizeof(wchar_t));
-    File->write(name, wcslen(name)*sizeof(wchar_t));
+    File->write(L"</", 2 * sizeof(wchar_t));
+    File->write(name, wcslen(name) * sizeof(wchar_t));
     File->write(L">", sizeof(wchar_t));
     TextWrittenLast = false;
 }
 
 
 
-const CXMLWriter::XMLSpecialCharacters XMLWSChar[] = 
+const CXMLWriter::XMLSpecialCharacters XMLWSChar[] =
 {
     { L'&', L"&amp;" },
     { L'<', L"&lt;" },
@@ -198,9 +197,9 @@ const CXMLWriter::XMLSpecialCharacters XMLWSChar[] =
 };
 
 
-//! Writes a text into the file. All occurrences of special characters like
-//! & (&amp;), < (&lt;), > (&gt;), and " (&quot;) are automaticly replaced.
-void CXMLWriter::writeText(const wchar_t* text)
+// ! Writes a text into the file. All occurrences of special characters like
+// ! & (&amp;), < (&lt;), > (&gt;), and " (&quot;) are automaticly replaced.
+void CXMLWriter::writeText(const wchar_t *text)
 {
     if (!File || !text)
         return;
@@ -209,14 +208,15 @@ void CXMLWriter::writeText(const wchar_t* text)
     // Making a member-variable would work, but a lot of memory would stay around after writing.
     // So the correct solution is probably using fixed block here and always write when that is full.
     core::stringw s;
-    s.reserve(wcslen(text)+1);    
-    const wchar_t* p = text;
+    s.reserve(wcslen(text) + 1);
+    const wchar_t *p = text;
 
-    while(*p)
+    while (*p)
     {
         // check if it is matching
         bool found = false;
-        for (s32 i=0; XMLWSChar[i].Character != '\0'; ++i)
+
+        for (s32 i = 0; XMLWSChar[i].Character != '\0'; ++i)
             if (*p == XMLWSChar[i].Character)
             {
                 s.append(XMLWSChar[i].Symbol);
@@ -226,16 +226,17 @@ void CXMLWriter::writeText(const wchar_t* text)
 
         if (!found)
             s.append(*p);
+
         ++p;
     }
 
     // write new string
-    File->write(s.c_str(), s.size()*sizeof(wchar_t));
+    File->write(s.c_str(), s.size() * sizeof(wchar_t));
     TextWrittenLast = true;
 }
 
 
-//! Writes a line break
+// ! Writes a line break
 void CXMLWriter::writeLineBreak()
 {
     if (!File)
@@ -244,14 +245,10 @@ void CXMLWriter::writeLineBreak()
 #if defined(_IRR_OSX_PLATFORM_)
     File->write(L"\r", sizeof(wchar_t));
 #elif defined(_IRR_WINDOWS_API_)
-    File->write(L"\r\n", 2*sizeof(wchar_t));
+    File->write(L"\r\n", 2 * sizeof(wchar_t));
 #else
     File->write(L"\n", sizeof(wchar_t));
 #endif
-
 }
-
-
-} // end namespace irr
+}   // end namespace irr
 } // end namespace io
-

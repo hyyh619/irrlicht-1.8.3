@@ -10,17 +10,16 @@ namespace irr
 {
 namespace scene
 {
-
-//! constructor
+// ! constructor
 CParticleMeshEmitter::CParticleMeshEmitter(
-    IMesh* mesh, bool useNormalDirection,
-    const core::vector3df& direction, f32 normalDirectionModifier,
+    IMesh *mesh, bool useNormalDirection,
+    const core::vector3df &direction, f32 normalDirectionModifier,
     s32 mbNumber, bool everyMeshVertex,
     u32 minParticlesPerSecond, u32 maxParticlesPerSecond,
-    const video::SColor& minStartColor, const video::SColor& maxStartColor,
+    const video::SColor &minStartColor, const video::SColor &maxStartColor,
     u32 lifeTimeMin, u32 lifeTimeMax, s32 maxAngleDegrees,
-    const core::dimension2df& minStartSize,
-    const core::dimension2df& maxStartSize )
+    const core::dimension2df &minStartSize,
+    const core::dimension2df &maxStartSize)
     : Mesh(0), TotalVertices(0), MBCount(0), MBNumber(mbNumber),
     NormalDirectionModifier(normalDirectionModifier), Direction(direction),
     MaxStartSize(maxStartSize), MinStartSize(minStartSize),
@@ -37,44 +36,44 @@ CParticleMeshEmitter::CParticleMeshEmitter(
 }
 
 
-//! Prepares an array with new particles to emitt into the system
-//! and returns how much new particles there are.
-s32 CParticleMeshEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle*& outArray)
+// ! Prepares an array with new particles to emitt into the system
+// ! and returns how much new particles there are.
+s32 CParticleMeshEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle* &outArray)
 {
     Time += timeSinceLastCall;
 
-    const u32 pps = (MaxParticlesPerSecond - MinParticlesPerSecond);
-    const f32 perSecond = pps ? ((f32)MinParticlesPerSecond + os::Randomizer::frand() * pps) : MinParticlesPerSecond;
+    const u32 pps                  = (MaxParticlesPerSecond - MinParticlesPerSecond);
+    const f32 perSecond            = pps ? ((f32)MinParticlesPerSecond + os::Randomizer::frand() * pps) : MinParticlesPerSecond;
     const f32 everyWhatMillisecond = 1000.0f / perSecond;
 
-    if(Time > everyWhatMillisecond)
+    if (Time > everyWhatMillisecond)
     {
         Particles.set_used(0);
         u32 amount = (u32)((Time / everyWhatMillisecond) + 0.5f);
         Time = 0;
         SParticle p;
 
-        if(amount > MaxParticlesPerSecond * 2)
+        if (amount > MaxParticlesPerSecond * 2)
             amount = MaxParticlesPerSecond * 2;
 
-        for(u32 i=0; i<amount; ++i)
+        for (u32 i = 0; i<amount; ++i)
         {
-            if( EveryMeshVertex )
+            if (EveryMeshVertex)
             {
-                for( u32 j=0; j<Mesh->getMeshBufferCount(); ++j )
+                for (u32 j = 0; j<Mesh->getMeshBufferCount(); ++j)
                 {
-                    for( u32 k=0; k<Mesh->getMeshBuffer(j)->getVertexCount(); ++k )
+                    for (u32 k = 0; k<Mesh->getMeshBuffer(j)->getVertexCount(); ++k)
                     {
                         p.pos = Mesh->getMeshBuffer(j)->getPosition(k);
-                        if( UseNormalDirection )
+                        if (UseNormalDirection)
                             p.vector = Mesh->getMeshBuffer(j)->getNormal(k) /
-                                NormalDirectionModifier;
+                                       NormalDirectionModifier;
                         else
                             p.vector = Direction;
 
                         p.startTime = now;
 
-                        if( MaxAngleDegrees )
+                        if (MaxAngleDegrees)
                         {
                             core::vector3df tgt = p.vector;
                             tgt.rotateXYBy(os::Randomizer::frand() * MaxAngleDegrees);
@@ -88,17 +87,18 @@ s32 CParticleMeshEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle*& outA
                             p.endTime += os::Randomizer::rand() % (MaxLifeTime - MinLifeTime);
 
                         if (MinStartColor==MaxStartColor)
-                            p.color=MinStartColor;
+                            p.color = MinStartColor;
                         else
                             p.color = MinStartColor.getInterpolated(MaxStartColor, os::Randomizer::frand());
 
-                        p.startColor = p.color;
+                        p.startColor  = p.color;
                         p.startVector = p.vector;
 
                         if (MinStartSize==MaxStartSize)
                             p.startSize = MinStartSize;
                         else
                             p.startSize = MinStartSize.getInterpolated(MaxStartSize, os::Randomizer::frand());
+
                         p.size = p.startSize;
 
                         Particles.push_back(p);
@@ -112,18 +112,19 @@ s32 CParticleMeshEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle*& outA
                 u32 vertexNumber = Mesh->getMeshBuffer(randomMB)->getVertexCount();
                 if (!vertexNumber)
                     continue;
+
                 vertexNumber = os::Randomizer::rand() % vertexNumber;
 
                 p.pos = Mesh->getMeshBuffer(randomMB)->getPosition(vertexNumber);
-                if( UseNormalDirection )
+                if (UseNormalDirection)
                     p.vector = Mesh->getMeshBuffer(randomMB)->getNormal(vertexNumber) /
-                            NormalDirectionModifier;
+                               NormalDirectionModifier;
                 else
                     p.vector = Direction;
 
                 p.startTime = now;
 
-                if( MaxAngleDegrees )
+                if (MaxAngleDegrees)
                 {
                     core::vector3df tgt = Direction;
                     tgt.rotateXYBy(os::Randomizer::frand() * MaxAngleDegrees);
@@ -137,17 +138,18 @@ s32 CParticleMeshEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle*& outA
                     p.endTime += os::Randomizer::rand() % (MaxLifeTime - MinLifeTime);
 
                 if (MinStartColor==MaxStartColor)
-                    p.color=MinStartColor;
+                    p.color = MinStartColor;
                 else
                     p.color = MinStartColor.getInterpolated(MaxStartColor, os::Randomizer::frand());
 
-                p.startColor = p.color;
+                p.startColor  = p.color;
                 p.startVector = p.vector;
 
                 if (MinStartSize==MaxStartSize)
                     p.startSize = MinStartSize;
                 else
                     p.startSize = MinStartSize.getInterpolated(MaxStartSize, os::Randomizer::frand());
+
                 p.size = p.startSize;
 
                 Particles.push_back(p);
@@ -163,28 +165,26 @@ s32 CParticleMeshEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle*& outA
 }
 
 
-//! Set Mesh to emit particles from
-void CParticleMeshEmitter::setMesh(IMesh* mesh)
+// ! Set Mesh to emit particles from
+void CParticleMeshEmitter::setMesh(IMesh *mesh)
 {
     Mesh = mesh;
 
     TotalVertices = 0;
-    MBCount = 0;
+    MBCount       = 0;
     VertexPerMeshBufferList.clear();
 
-    if ( !Mesh )
+    if (!Mesh)
         return;
 
     MBCount = Mesh->getMeshBufferCount();
     VertexPerMeshBufferList.reallocate(MBCount);
-    for( u32 i = 0; i < MBCount; ++i )
+
+    for (u32 i = 0; i < MBCount; ++i)
     {
-        VertexPerMeshBufferList.push_back( Mesh->getMeshBuffer(i)->getVertexCount() );
+        VertexPerMeshBufferList.push_back(Mesh->getMeshBuffer(i)->getVertexCount());
         TotalVertices += Mesh->getMeshBuffer(i)->getVertexCount();
     }
 }
-
-
-} // end namespace scene
+}   // end namespace scene
 } // end namespace irr
-

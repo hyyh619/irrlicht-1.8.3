@@ -16,11 +16,9 @@ namespace irr
 {
 namespace video
 {
-
-
-//! constructor
-CSoftwareDriver::CSoftwareDriver(const core::dimension2d<u32>& windowSize, bool fullscreen, io::IFileSystem* io, video::IImagePresenter* presenter)
-: CNullDriver(io, windowSize), BackBuffer(0), Presenter(presenter), WindowId(0),
+// ! constructor
+CSoftwareDriver::CSoftwareDriver(const core::dimension2d<u32> &windowSize, bool fullscreen, io::IFileSystem *io, video::IImagePresenter *presenter)
+    : CNullDriver(io, windowSize), BackBuffer(0), Presenter(presenter), WindowId(0),
     SceneSourceRect(0), RenderTargetTexture(0), RenderTargetSurface(0),
     CurrentTriangleRenderer(0), ZBuffer(0), Texture(0)
 {
@@ -40,22 +38,22 @@ CSoftwareDriver::CSoftwareDriver(const core::dimension2d<u32>& windowSize, bool 
     }
 
     DriverAttributes->setAttribute("MaxTextures", 1);
-    DriverAttributes->setAttribute("MaxIndices", 1<<16);
+    DriverAttributes->setAttribute("MaxIndices", 1 << 16);
     DriverAttributes->setAttribute("MaxTextureSize", 1024);
     DriverAttributes->setAttribute("Version", 1);
 
     // create triangle renderers
 
-    TriangleRenderers[ETR_FLAT] = createTriangleRendererFlat(ZBuffer);
-    TriangleRenderers[ETR_FLAT_WIRE] = createTriangleRendererFlatWire(ZBuffer);
-    TriangleRenderers[ETR_GOURAUD] = createTriangleRendererGouraud(ZBuffer);
-    TriangleRenderers[ETR_GOURAUD_WIRE] = createTriangleRendererGouraudWire(ZBuffer);
-    TriangleRenderers[ETR_TEXTURE_FLAT] = createTriangleRendererTextureFlat(ZBuffer);
-    TriangleRenderers[ETR_TEXTURE_FLAT_WIRE] = createTriangleRendererTextureFlatWire(ZBuffer);
-    TriangleRenderers[ETR_TEXTURE_GOURAUD] = createTriangleRendererTextureGouraud(ZBuffer);
+    TriangleRenderers[ETR_FLAT]                 = createTriangleRendererFlat(ZBuffer);
+    TriangleRenderers[ETR_FLAT_WIRE]            = createTriangleRendererFlatWire(ZBuffer);
+    TriangleRenderers[ETR_GOURAUD]              = createTriangleRendererGouraud(ZBuffer);
+    TriangleRenderers[ETR_GOURAUD_WIRE]         = createTriangleRendererGouraudWire(ZBuffer);
+    TriangleRenderers[ETR_TEXTURE_FLAT]         = createTriangleRendererTextureFlat(ZBuffer);
+    TriangleRenderers[ETR_TEXTURE_FLAT_WIRE]    = createTriangleRendererTextureFlatWire(ZBuffer);
+    TriangleRenderers[ETR_TEXTURE_GOURAUD]      = createTriangleRendererTextureGouraud(ZBuffer);
     TriangleRenderers[ETR_TEXTURE_GOURAUD_WIRE] = createTriangleRendererTextureGouraudWire(ZBuffer);
-    TriangleRenderers[ETR_TEXTURE_GOURAUD_NOZ] = createTriangleRendererTextureGouraudNoZ();
-    TriangleRenderers[ETR_TEXTURE_GOURAUD_ADD] = createTriangleRendererTextureGouraudAdd(ZBuffer);
+    TriangleRenderers[ETR_TEXTURE_GOURAUD_NOZ]  = createTriangleRendererTextureGouraudNoZ();
+    TriangleRenderers[ETR_TEXTURE_GOURAUD_ADD]  = createTriangleRendererTextureGouraudAdd(ZBuffer);
 
     // select render target
 
@@ -68,7 +66,7 @@ CSoftwareDriver::CSoftwareDriver(const core::dimension2d<u32>& windowSize, bool 
 
 
 
-//! destructor
+// ! destructor
 CSoftwareDriver::~CSoftwareDriver()
 {
     // delete Backbuffer
@@ -77,7 +75,7 @@ CSoftwareDriver::~CSoftwareDriver()
 
     // delete triangle renderers
 
-    for (s32 i=0; i<ETR_COUNT; ++i)
+    for (s32 i = 0; i<ETR_COUNT; ++i)
         if (TriangleRenderers[i])
             TriangleRenderers[i]->drop();
 
@@ -100,10 +98,11 @@ CSoftwareDriver::~CSoftwareDriver()
 
 
 
-//! switches to a triangle renderer
+// ! switches to a triangle renderer
 void CSoftwareDriver::switchToTriangleRenderer(ETriangleRenderer renderer)
 {
-    video::IImage* s = 0;
+    video::IImage *s = 0;
+
     if (Texture)
         s = ((CSoftwareTexture*)Texture)->getTexture();
 
@@ -114,10 +113,9 @@ void CSoftwareDriver::switchToTriangleRenderer(ETriangleRenderer renderer)
 }
 
 
-//! void selects the right triangle renderer based on the render states.
+// ! void selects the right triangle renderer based on the render states.
 void CSoftwareDriver::selectRightTriangleRenderer()
 {
-
     ETriangleRenderer renderer = ETR_FLAT;
 
     if (Texture)
@@ -131,15 +129,14 @@ void CSoftwareDriver::selectRightTriangleRenderer()
             else
             {
                 if (Material.MaterialType == EMT_TRANSPARENT_ADD_COLOR ||
-                        Material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL ||
-                        Material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA)
+                    Material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL ||
+                    Material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA)
                 {
                     // simply draw all transparent stuff with the same renderer. at
                     // least it is transparent then.
                     renderer = ETR_TEXTURE_GOURAUD_ADD;
                 }
-                else
-                if ((Material.ZBuffer==ECFN_NEVER) && !Material.ZWriteEnable)
+                else if ((Material.ZBuffer==ECFN_NEVER) && !Material.ZWriteEnable)
                     renderer = ETR_TEXTURE_GOURAUD_NOZ;
                 else
                 {
@@ -160,7 +157,7 @@ void CSoftwareDriver::selectRightTriangleRenderer()
 }
 
 
-//! queries the features of the driver, returns true if feature is available
+// ! queries the features of the driver, returns true if feature is available
 bool CSoftwareDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 {
     switch (feature)
@@ -168,21 +165,24 @@ bool CSoftwareDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
     case EVDF_RENDER_TO_TARGET:
     case EVDF_TEXTURE_NSQUARE:
         return FeatureEnabled[feature];
+
     default:
         return false;
-    };
+    }
+
+    ;
 }
 
 
-//! sets transformation
-void CSoftwareDriver::setTransform(E_TRANSFORMATION_STATE state, const core::matrix4& mat)
+// ! sets transformation
+void CSoftwareDriver::setTransform(E_TRANSFORMATION_STATE state, const core::matrix4 &mat)
 {
     TransformationMatrix[state] = mat;
 }
 
 
-//! sets the current Texture
-bool CSoftwareDriver::setActiveTexture(u32 stage, video::ITexture* texture)
+// ! sets the current Texture
+bool CSoftwareDriver::setActiveTexture(u32 stage, video::ITexture *texture)
 {
     if (texture && texture->getDriverType() != EDT_SOFTWARE)
     {
@@ -203,8 +203,8 @@ bool CSoftwareDriver::setActiveTexture(u32 stage, video::ITexture* texture)
 }
 
 
-//! sets a material
-void CSoftwareDriver::setMaterial(const SMaterial& material)
+// ! sets a material
+void CSoftwareDriver::setMaterial(const SMaterial &material)
 {
     Material = material;
     OverrideMaterial.apply(Material);
@@ -212,18 +212,19 @@ void CSoftwareDriver::setMaterial(const SMaterial& material)
     for (u32 i = 0; i < 1; ++i)
     {
         setActiveTexture(i, Material.getTexture(i));
-        setTransform ((E_TRANSFORMATION_STATE) ( ETS_TEXTURE_0 + i ),
-                material.getTextureMatrix(i));
+        setTransform ((E_TRANSFORMATION_STATE) (ETS_TEXTURE_0 + i),
+                      material.getTextureMatrix(i));
     }
 }
 
 
-//! clears the zbuffer
+// ! clears the zbuffer
 bool CSoftwareDriver::beginScene(bool backBuffer, bool zBuffer, SColor color,
-        const SExposedVideoData& videoData, core::rect<s32>* sourceRect)
+                                 const SExposedVideoData &videoData, core::rect<s32> *sourceRect)
 {
     CNullDriver::beginScene(backBuffer, zBuffer, color, videoData, sourceRect);
-    WindowId=videoData.D3D9.HWnd;
+
+    WindowId        = videoData.D3D9.HWnd;
     SceneSourceRect = sourceRect;
 
     if (backBuffer && BackBuffer)
@@ -236,7 +237,7 @@ bool CSoftwareDriver::beginScene(bool backBuffer, bool zBuffer, SColor color,
 }
 
 
-//! presents the rendered scene on the screen, returns false if failed
+// ! presents the rendered scene on the screen, returns false if failed
 bool CSoftwareDriver::endScene()
 {
     CNullDriver::endScene();
@@ -245,17 +246,17 @@ bool CSoftwareDriver::endScene()
 }
 
 
-//! returns a device dependent texture from a software surface (IImage)
-//! THIS METHOD HAS TO BE OVERRIDDEN BY DERIVED DRIVERS WITH OWN TEXTURES
-ITexture* CSoftwareDriver::createDeviceDependentTexture(IImage* surface, const io::path& name, void* mipmapData)
+// ! returns a device dependent texture from a software surface (IImage)
+// ! THIS METHOD HAS TO BE OVERRIDDEN BY DERIVED DRIVERS WITH OWN TEXTURES
+ITexture* CSoftwareDriver::createDeviceDependentTexture(IImage *surface, const io::path &name, void *mipmapData)
 {
     return new CSoftwareTexture(surface, name, false, mipmapData);
 }
 
 
-//! sets a render target
-bool CSoftwareDriver::setRenderTarget(video::ITexture* texture, bool clearBackBuffer,
-                                bool clearZBuffer, SColor color)
+// ! sets a render target
+bool CSoftwareDriver::setRenderTarget(video::ITexture *texture, bool clearBackBuffer,
+                                      bool clearZBuffer, SColor color)
 {
     if (texture && texture->getDriverType() != EDT_SOFTWARE)
     {
@@ -291,17 +292,17 @@ bool CSoftwareDriver::setRenderTarget(video::ITexture* texture, bool clearBackBu
 }
 
 
-//! sets a render target
-void CSoftwareDriver::setRenderTarget(video::CImage* image)
+// ! sets a render target
+void CSoftwareDriver::setRenderTarget(video::CImage *image)
 {
     if (RenderTargetSurface)
         RenderTargetSurface->drop();
 
-    RenderTargetSurface = image;
-    RenderTargetSize.Width = 0;
+    RenderTargetSurface     = image;
+    RenderTargetSize.Width  = 0;
     RenderTargetSize.Height = 0;
-    Render2DTranslation.X = 0;
-    Render2DTranslation.Y = 0;
+    Render2DTranslation.X   = 0;
+    Render2DTranslation.Y   = 0;
 
     if (RenderTargetSurface)
     {
@@ -309,24 +310,24 @@ void CSoftwareDriver::setRenderTarget(video::CImage* image)
         RenderTargetSize = RenderTargetSurface->getDimension();
     }
 
-    setViewPort(core::rect<s32>(0,0,RenderTargetSize.Width,RenderTargetSize.Height));
+    setViewPort(core::rect<s32>(0, 0, RenderTargetSize.Width, RenderTargetSize.Height));
 
     if (ZBuffer)
         ZBuffer->setSize(RenderTargetSize);
 }
 
 
-//! sets a viewport
-void CSoftwareDriver::setViewPort(const core::rect<s32>& area)
+// ! sets a viewport
+void CSoftwareDriver::setViewPort(const core::rect<s32> &area)
 {
     ViewPort = area;
 
-    //TODO: the clipping is not correct, because the projection is affected.
+    // TODO: the clipping is not correct, because the projection is affected.
     // to correct this, ViewPortSize and Render2DTranslation will have to be corrected.
-    core::rect<s32> rendert(0,0,RenderTargetSize.Width,RenderTargetSize.Height);
+    core::rect<s32> rendert(0, 0, RenderTargetSize.Width, RenderTargetSize.Height);
     ViewPort.clipAgainst(rendert);
 
-    ViewPortSize = core::dimension2du(ViewPort.getSize());
+    ViewPortSize          = core::dimension2du(ViewPort.getSize());
     Render2DTranslation.X = (ViewPortSize.Width / 2) + ViewPort.UpperLeftCorner.X;
     Render2DTranslation.Y = ViewPort.UpperLeftCorner.Y + ViewPortSize.Height - (ViewPortSize.Height / 2);// + ViewPort.UpperLeftCorner.Y;
 
@@ -335,155 +336,174 @@ void CSoftwareDriver::setViewPort(const core::rect<s32>& area)
 }
 
 
-void CSoftwareDriver::drawVertexPrimitiveList(const void* vertices, u32 vertexCount,
-                const void* indexList, u32 primitiveCount,
-                E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType)
+void CSoftwareDriver::drawVertexPrimitiveList(const void *vertices, u32 vertexCount,
+                                              const void *indexList, u32 primitiveCount,
+                                              E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType)
 
 {
     switch (iType)
     {
-        case (EIT_16BIT):
-        {
-            drawVertexPrimitiveList16(vertices, vertexCount, (const u16*)indexList, primitiveCount, vType, pType);
-            break;
-        }
-        case (EIT_32BIT):
-        {
-            os::Printer::log("Software driver can not render 32bit buffers", ELL_ERROR);
-            break;
-        }
+    case (EIT_16BIT):
+    {
+        drawVertexPrimitiveList16(vertices, vertexCount, (const u16*)indexList, primitiveCount, vType, pType);
+        break;
+    }
+
+    case (EIT_32BIT):
+    {
+        os::Printer::log("Software driver can not render 32bit buffers", ELL_ERROR);
+        break;
+    }
     }
 }
 
 
-//! draws a vertex primitive list
-void CSoftwareDriver::drawVertexPrimitiveList16(const void* vertices, u32 vertexCount, const u16* indexList, u32 primitiveCount, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType)
+// ! draws a vertex primitive list
+void CSoftwareDriver::drawVertexPrimitiveList16(const void *vertices, u32 vertexCount, const u16 *indexList, u32 primitiveCount, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType)
 {
-    const u16* indexPointer=0;
+    const u16        *indexPointer = 0;
     core::array<u16> newBuffer;
+
     switch (pType)
     {
-        case scene::EPT_LINE_STRIP:
-            {
-                switch (vType)
-                {
-                    case EVT_STANDARD:
-                        {
-                            for (u32 i=0; i < primitiveCount-1; ++i)
-                                draw3DLine(((S3DVertex*)vertices)[indexList[i]].Pos,
-                                    ((S3DVertex*)vertices)[indexList[i+1]].Pos,
-                                    ((S3DVertex*)vertices)[indexList[i]].Color);
-                        }
-                        break;
-                    case EVT_2TCOORDS:
-                        {
-                            for (u32 i=0; i < primitiveCount-1; ++i)
-                                draw3DLine(((S3DVertex2TCoords*)vertices)[indexList[i]].Pos,
-                                    ((S3DVertex2TCoords*)vertices)[indexList[i+1]].Pos,
-                                    ((S3DVertex2TCoords*)vertices)[indexList[i]].Color);
-                        }
-                        break;
-                    case EVT_TANGENTS:
-                        {
-                            for (u32 i=0; i < primitiveCount-1; ++i)
-                                draw3DLine(((S3DVertexTangents*)vertices)[indexList[i]].Pos,
-                                    ((S3DVertexTangents*)vertices)[indexList[i+1]].Pos,
-                                    ((S3DVertexTangents*)vertices)[indexList[i]].Color);
-                        }
-                        break;
-                }
-            }
-            return;
-        case scene::EPT_LINE_LOOP:
-            drawVertexPrimitiveList16(vertices, vertexCount, indexList, primitiveCount-1, vType, scene::EPT_LINE_STRIP);
-            switch (vType)
-            {
-                case EVT_STANDARD:
-                    draw3DLine(((S3DVertex*)vertices)[indexList[primitiveCount-1]].Pos,
-                        ((S3DVertex*)vertices)[indexList[0]].Pos,
-                        ((S3DVertex*)vertices)[indexList[primitiveCount-1]].Color);
-                    break;
-                case EVT_2TCOORDS:
-                    draw3DLine(((S3DVertex2TCoords*)vertices)[indexList[primitiveCount-1]].Pos,
-                        ((S3DVertex2TCoords*)vertices)[indexList[0]].Pos,
-                        ((S3DVertex2TCoords*)vertices)[indexList[primitiveCount-1]].Color);
-                    break;
-                case EVT_TANGENTS:
-                    draw3DLine(((S3DVertexTangents*)vertices)[indexList[primitiveCount-1]].Pos,
-                        ((S3DVertexTangents*)vertices)[indexList[0]].Pos,
-                        ((S3DVertexTangents*)vertices)[indexList[primitiveCount-1]].Color);
-                    break;
-            }
-            return;
-        case scene::EPT_LINES:
-            {
-                switch (vType)
-                {
-                    case EVT_STANDARD:
-                        {
-                            for (u32 i=0; i < 2*primitiveCount; i+=2)
-                                draw3DLine(((S3DVertex*)vertices)[indexList[i]].Pos,
-                                    ((S3DVertex*)vertices)[indexList[i+1]].Pos,
-                                    ((S3DVertex*)vertices)[indexList[i]].Color);
-                        }
-                        break;
-                    case EVT_2TCOORDS:
-                        {
-                            for (u32 i=0; i < 2*primitiveCount; i+=2)
-                                draw3DLine(((S3DVertex2TCoords*)vertices)[indexList[i]].Pos,
-                                    ((S3DVertex2TCoords*)vertices)[indexList[i+1]].Pos,
-                                    ((S3DVertex2TCoords*)vertices)[indexList[i]].Color);
-                        }
-                        break;
-                    case EVT_TANGENTS:
-                        {
-                            for (u32 i=0; i < 2*primitiveCount; i+=2)
-                                draw3DLine(((S3DVertexTangents*)vertices)[indexList[i]].Pos,
-                                    ((S3DVertexTangents*)vertices)[indexList[i+1]].Pos,
-                                    ((S3DVertexTangents*)vertices)[indexList[i]].Color);
-                        }
-                        break;
-                }
-            }
-            return;
-        case scene::EPT_TRIANGLE_FAN:
-            {
-                // TODO: don't convert fan to list
-                newBuffer.reallocate(primitiveCount*3);
-                for( u32 t=0; t<primitiveCount; ++t )
-                {
-                    newBuffer.push_back(indexList[0]);
-                    newBuffer.push_back(indexList[t+1]);
-                    newBuffer.push_back(indexList[t+2]);
-                }
+    case scene::EPT_LINE_STRIP:
+    {
+        switch (vType)
+        {
+        case EVT_STANDARD:
+        {
+            for (u32 i = 0; i < primitiveCount - 1; ++i)
+                draw3DLine(((S3DVertex*)vertices)[indexList[i]].Pos,
+                           ((S3DVertex*)vertices)[indexList[i + 1]].Pos,
+                           ((S3DVertex*)vertices)[indexList[i]].Color);
+        }
+        break;
 
-                indexPointer = newBuffer.pointer();
-            }
-            break;
-        case scene::EPT_TRIANGLES:
-            indexPointer=indexList;
-            break;
-        default:
-            return;
+        case EVT_2TCOORDS:
+        {
+            for (u32 i = 0; i < primitiveCount - 1; ++i)
+                draw3DLine(((S3DVertex2TCoords*)vertices)[indexList[i]].Pos,
+                           ((S3DVertex2TCoords*)vertices)[indexList[i + 1]].Pos,
+                           ((S3DVertex2TCoords*)vertices)[indexList[i]].Color);
+        }
+        break;
+
+        case EVT_TANGENTS:
+        {
+            for (u32 i = 0; i < primitiveCount - 1; ++i)
+                draw3DLine(((S3DVertexTangents*)vertices)[indexList[i]].Pos,
+                           ((S3DVertexTangents*)vertices)[indexList[i + 1]].Pos,
+                           ((S3DVertexTangents*)vertices)[indexList[i]].Color);
+        }
+        break;
+        }
     }
+        return;
+
+    case scene::EPT_LINE_LOOP:
+        drawVertexPrimitiveList16(vertices, vertexCount, indexList, primitiveCount - 1, vType, scene::EPT_LINE_STRIP);
+
+        switch (vType)
+        {
+        case EVT_STANDARD:
+            draw3DLine(((S3DVertex*)vertices)[indexList[primitiveCount - 1]].Pos,
+                       ((S3DVertex*)vertices)[indexList[0]].Pos,
+                       ((S3DVertex*)vertices)[indexList[primitiveCount - 1]].Color);
+            break;
+
+        case EVT_2TCOORDS:
+            draw3DLine(((S3DVertex2TCoords*)vertices)[indexList[primitiveCount - 1]].Pos,
+                       ((S3DVertex2TCoords*)vertices)[indexList[0]].Pos,
+                       ((S3DVertex2TCoords*)vertices)[indexList[primitiveCount - 1]].Color);
+            break;
+
+        case EVT_TANGENTS:
+            draw3DLine(((S3DVertexTangents*)vertices)[indexList[primitiveCount - 1]].Pos,
+                       ((S3DVertexTangents*)vertices)[indexList[0]].Pos,
+                       ((S3DVertexTangents*)vertices)[indexList[primitiveCount - 1]].Color);
+            break;
+        }
+
+        return;
+
+    case scene::EPT_LINES:
+    {
+        switch (vType)
+        {
+        case EVT_STANDARD:
+        {
+            for (u32 i = 0; i < 2 * primitiveCount; i += 2)
+                draw3DLine(((S3DVertex*)vertices)[indexList[i]].Pos,
+                           ((S3DVertex*)vertices)[indexList[i + 1]].Pos,
+                           ((S3DVertex*)vertices)[indexList[i]].Color);
+        }
+        break;
+
+        case EVT_2TCOORDS:
+        {
+            for (u32 i = 0; i < 2 * primitiveCount; i += 2)
+                draw3DLine(((S3DVertex2TCoords*)vertices)[indexList[i]].Pos,
+                           ((S3DVertex2TCoords*)vertices)[indexList[i + 1]].Pos,
+                           ((S3DVertex2TCoords*)vertices)[indexList[i]].Color);
+        }
+        break;
+
+        case EVT_TANGENTS:
+        {
+            for (u32 i = 0; i < 2 * primitiveCount; i += 2)
+                draw3DLine(((S3DVertexTangents*)vertices)[indexList[i]].Pos,
+                           ((S3DVertexTangents*)vertices)[indexList[i + 1]].Pos,
+                           ((S3DVertexTangents*)vertices)[indexList[i]].Color);
+        }
+        break;
+        }
+    }
+        return;
+
+    case scene::EPT_TRIANGLE_FAN:
+    {
+        // TODO: don't convert fan to list
+        newBuffer.reallocate(primitiveCount * 3);
+
+        for (u32 t = 0; t<primitiveCount; ++t)
+        {
+            newBuffer.push_back(indexList[0]);
+            newBuffer.push_back(indexList[t + 1]);
+            newBuffer.push_back(indexList[t + 2]);
+        }
+
+        indexPointer = newBuffer.pointer();
+    }
+    break;
+
+    case scene::EPT_TRIANGLES:
+        indexPointer = indexList;
+        break;
+
+    default:
+        return;
+    }
+
     switch (vType)
     {
-        case EVT_STANDARD:
-            drawClippedIndexedTriangleListT((S3DVertex*)vertices, vertexCount, indexPointer, primitiveCount);
-            break;
-        case EVT_2TCOORDS:
-            drawClippedIndexedTriangleListT((S3DVertex2TCoords*)vertices, vertexCount, indexPointer, primitiveCount);
-            break;
-        case EVT_TANGENTS:
-            drawClippedIndexedTriangleListT((S3DVertexTangents*)vertices, vertexCount, indexPointer, primitiveCount);
-            break;
+    case EVT_STANDARD:
+        drawClippedIndexedTriangleListT((S3DVertex*)vertices, vertexCount, indexPointer, primitiveCount);
+        break;
+
+    case EVT_2TCOORDS:
+        drawClippedIndexedTriangleListT((S3DVertex2TCoords*)vertices, vertexCount, indexPointer, primitiveCount);
+        break;
+
+    case EVT_TANGENTS:
+        drawClippedIndexedTriangleListT((S3DVertexTangents*)vertices, vertexCount, indexPointer, primitiveCount);
+        break;
     }
 }
 
 
 template<class VERTEXTYPE>
-void CSoftwareDriver::drawClippedIndexedTriangleListT(const VERTEXTYPE* vertices,
-    s32 vertexCount, const u16* indexList, s32 triangleCount)
+void CSoftwareDriver::drawClippedIndexedTriangleListT(const VERTEXTYPE *vertices,
+                                                      s32 vertexCount, const u16 *indexList, s32 triangleCount)
 {
     if (!RenderTargetSurface || !ZBuffer || !triangleCount)
         return;
@@ -493,7 +513,7 @@ void CSoftwareDriver::drawClippedIndexedTriangleListT(const VERTEXTYPE* vertices
 
     // arrays for storing clipped vertices
     core::array<VERTEXTYPE> clippedVertices;
-    core::array<u16> clippedIndices;
+    core::array<u16>        clippedIndices;
 
     // calculate inverse world transformation
     core::matrix4 worldinv(TransformationMatrix[ETS_WORLD]);
@@ -504,150 +524,150 @@ void CSoftwareDriver::drawClippedIndexedTriangleListT(const VERTEXTYPE* vertices
 
     // copy and transform clipping planes ignoring far plane
     core::plane3df planes[5]; // ordered by near, left, right, bottom, top
-    for (int p=0; p<5; ++p)
-        worldinv.transformPlane(frustum.planes[p+1], planes[p]);
+
+    for (int p = 0; p<5; ++p)
+        worldinv.transformPlane(frustum.planes[p + 1], planes[p]);
 
     core::EIntersectionRelation3D inout[3]; // is point in front or back of plane?
 
     // temporary buffer for vertices to be clipped by all planes
     core::array<VERTEXTYPE> tClpBuf;
-    int t;
+    int                     t;
 
     int i;
-    for (i=0; i<triangleCount; ++i) // for all input triangles
+
+    for (i = 0; i<triangleCount; ++i) // for all input triangles
     {
         // add next triangle to tempClipBuffer
-        for (t=0; t<3; ++t)
-            tClpBuf.push_back(vertices[indexList[(i*3)+t]]);
+        for (t = 0; t<3; ++t)
+            tClpBuf.push_back(vertices[indexList[(i * 3) + t]]);
 
-        for (int p=0; p<5; ++p) // for all clip planes
-        for (int v=0; v<(int)tClpBuf.size(); v+=3) // for all vertices in temp clip buffer
-        {
-            int inside = 0;
-            int outside = 0;
-
-            // test intersection relation of the current vertices
-            for (t=0; t<3; ++t)
+        for (int p = 0; p<5; ++p) // for all clip planes
+            for (int v = 0; v<(int)tClpBuf.size(); v += 3) // for all vertices in temp clip buffer
             {
-                inout[t] = planes[p].classifyPointRelation(tClpBuf[v+t].Pos);
-                if (inout[t] != core::ISREL3D_FRONT)
-                    ++inside;
-                else
-                if (inout[t] == core::ISREL3D_FRONT)
-                    ++outside;
-            }
+                int inside  = 0;
+                int outside = 0;
 
-            if (!outside)
-            {
-                // add all vertices to new buffer, this triangle needs no clipping.
-                // so simply don't change this part of the temporary triangle buffer
-                continue;
-            }
+                // test intersection relation of the current vertices
+                for (t = 0; t<3; ++t)
+                {
+                    inout[t] = planes[p].classifyPointRelation(tClpBuf[v + t].Pos);
+                    if (inout[t] != core::ISREL3D_FRONT)
+                        ++inside;
+                    else if (inout[t] == core::ISREL3D_FRONT)
+                        ++outside;
+                }
 
-            if (!inside)
-            {
-                // all vertices are outside, don't add this triangle, so erase this
-                // triangle from the tClpBuf
-                tClpBuf.erase(v,3);
-                v -= 3;
-                continue;
-            }
+                if (!outside)
+                {
+                    // add all vertices to new buffer, this triangle needs no clipping.
+                    // so simply don't change this part of the temporary triangle buffer
+                    continue;
+                }
 
-            // this vertex has to be clipped by this clipping plane.
+                if (!inside)
+                {
+                    // all vertices are outside, don't add this triangle, so erase this
+                    // triangle from the tClpBuf
+                    tClpBuf.erase(v, 3);
+                    v -= 3;
+                    continue;
+                }
 
-            // The following lines represent my try to implement some real clipping.
-            // There is a bug somewhere, and after some time I've given up.
-            // So now it is commented out, resulting that triangles which would need clipping
-            // are simply taken out (in the next two lines).
+                // this vertex has to be clipped by this clipping plane.
+
+                // The following lines represent my try to implement some real clipping.
+                // There is a bug somewhere, and after some time I've given up.
+                // So now it is commented out, resulting that triangles which would need clipping
+                // are simply taken out (in the next two lines).
 #ifndef __SOFTWARE_CLIPPING_PROBLEM__
-            tClpBuf.erase(v,3);
-            v -= 3;
+                tClpBuf.erase(v, 3);
+                v -= 3;
 #endif
 
-            /*
-            // my idea is the following:
-            // current vertex to next vertex relation:
-            // out - out : add nothing
-            // out -  in : add middle point
-            // in -  out : add first and middle point
-            // in -   in : add both
+                /*
+                   // my idea is the following:
+                   // current vertex to next vertex relation:
+                   // out - out : add nothing
+                   // out -  in : add middle point
+                   // in -  out : add first and middle point
+                   // in -   in : add both
 
 
-            // now based on the number of intersections, create new vertices
-            // into tClpBuf (at the front for not letting them be clipped again)
+                   // now based on the number of intersections, create new vertices
+                   // into tClpBuf (at the front for not letting them be clipped again)
 
-            int added = 0;
-            int prev = v+2;
-            for (int index=v; index<v+3; ++index)
-            {
-                if (inout[prev] == core::ISREL3D_BACK)
-                {
-                    if (inout[index] != core::ISREL3D_BACK)
+                   int added = 0;
+                   int prev = v+2;
+                   for (int index=v; index<v+3; ++index)
+                   {
+                    if (inout[prev] == core::ISREL3D_BACK)
                     {
-                        VERTEXTYPE& vt1 = tClpBuf[prev];
-                        VERTEXTYPE& vt2 = tClpBuf[index];
+                        if (inout[index] != core::ISREL3D_BACK)
+                        {
+                            VERTEXTYPE& vt1 = tClpBuf[prev];
+                            VERTEXTYPE& vt2 = tClpBuf[index];
 
-                        f32 fact = planes[p].getKnownIntersectionWithLine(vt1.Pos, vt2.Pos);
-                        VERTEXTYPE nvt;
-                        nvt.Pos = vt1.Pos.getInterpolated(vt2.Pos, fact);
-                        nvt.Color = vt1.Color.getInterpolated(vt2.Color, fact);
-                        nvt.TCoords = vt1.TCoords.getInterpolated(vt2.TCoords, fact);
+                            f32 fact = planes[p].getKnownIntersectionWithLine(vt1.Pos, vt2.Pos);
+                            VERTEXTYPE nvt;
+                            nvt.Pos = vt1.Pos.getInterpolated(vt2.Pos, fact);
+                            nvt.Color = vt1.Color.getInterpolated(vt2.Color, fact);
+                            nvt.TCoords = vt1.TCoords.getInterpolated(vt2.TCoords, fact);
 
-                        tClpBuf.push_front(nvt); ++index; ++prev; ++v;
-                        ++added;
-                    }
-                }
-                else
-                {
-                    if (inout[index] != core::ISREL3D_BACK)
-                    {
-                        VERTEXTYPE vt1 = tClpBuf[index];
-                        VERTEXTYPE vt2 = tClpBuf[prev];
-                        tClpBuf.push_front(vt1); ++index; ++prev; ++v;
-                        tClpBuf.push_front(vt2); ++index; ++prev; ++v;
-                        added+= 2;
+                            tClpBuf.push_front(nvt); ++index; ++prev; ++v;
+                   ++added;
+                        }
                     }
                     else
                     {
-                        // same as above, but other way round.
-                        VERTEXTYPE vt1 = tClpBuf[index];
-                        VERTEXTYPE vt2 = tClpBuf[prev];
+                        if (inout[index] != core::ISREL3D_BACK)
+                        {
+                            VERTEXTYPE vt1 = tClpBuf[index];
+                            VERTEXTYPE vt2 = tClpBuf[prev];
+                            tClpBuf.push_front(vt1); ++index; ++prev; ++v;
+                            tClpBuf.push_front(vt2); ++index; ++prev; ++v;
+                            added+= 2;
+                        }
+                        else
+                        {
+                            // same as above, but other way round.
+                            VERTEXTYPE vt1 = tClpBuf[index];
+                            VERTEXTYPE vt2 = tClpBuf[prev];
 
-                        f32 fact = planes[p].getKnownIntersectionWithLine(vt1.Pos, vt2.Pos);
-                        VERTEXTYPE nvt;
-                        nvt.Pos = vt1.Pos.getInterpolated(vt2.Pos, fact);
-                        nvt.Color = vt1.Color.getInterpolated(vt2.Color, fact);
-                        nvt.TCoords = vt1.TCoords.getInterpolated(vt2.TCoords, fact);
+                            f32 fact = planes[p].getKnownIntersectionWithLine(vt1.Pos, vt2.Pos);
+                            VERTEXTYPE nvt;
+                            nvt.Pos = vt1.Pos.getInterpolated(vt2.Pos, fact);
+                            nvt.Color = vt1.Color.getInterpolated(vt2.Color, fact);
+                            nvt.TCoords = vt1.TCoords.getInterpolated(vt2.TCoords, fact);
 
-                        tClpBuf.push_front(vt2); ++index; ++prev; ++v;
-                        tClpBuf.push_front(nvt); ++index; ++prev; ++v;
-                        added += 2;
+                            tClpBuf.push_front(vt2); ++index; ++prev; ++v;
+                            tClpBuf.push_front(nvt); ++index; ++prev; ++v;
+                            added += 2;
+                        }
                     }
-                }
 
-                prev = index;
+                    prev = index;
+                   }
+
+                   // erase original vertices
+                   tClpBuf.erase(v,3);
+                   v -= 3;
+                 */
             }
 
-            // erase original vertices
-            tClpBuf.erase(v,3);
-            v -= 3;
-            */
-
-
-        } // end for all clip planes
+        // end for all clip planes
 
         // now add all remaining triangles in tempClipBuffer to clippedIndices
         // and clippedVertices array.
         if (clippedIndices.size() + tClpBuf.size() < 65535)
-        for (t=0; t<(int)tClpBuf.size(); ++t)
-        {
-            clippedIndices.push_back(clippedVertices.size());
-            clippedVertices.push_back(tClpBuf[t]);
-        }
+            for (t = 0; t<(int)tClpBuf.size(); ++t)
+            {
+                clippedIndices.push_back(clippedVertices.size());
+                clippedVertices.push_back(tClpBuf[t]);
+            }
+
         tClpBuf.clear();
-
-    } // end for all input triangles
-
+    }       // end for all input triangles
 
     // draw newly created triangles.
 
@@ -660,7 +680,7 @@ void CSoftwareDriver::drawClippedIndexedTriangleListT(const VERTEXTYPE* vertices
     // draw triangles
 
     CNullDriver::drawVertexPrimitiveList(clippedVertices.pointer(), clippedVertices.size(),
-        clippedIndices.pointer(), clippedIndices.size()/3, EVT_STANDARD, scene::EPT_TRIANGLES, EIT_16BIT);
+                                         clippedIndices.pointer(), clippedIndices.size() / 3, EVT_STANDARD, scene::EPT_TRIANGLES, EIT_16BIT);
 
     if (TransformedPoints.size() < clippedVertices.size())
         TransformedPoints.set_used(clippedVertices.size());
@@ -668,11 +688,11 @@ void CSoftwareDriver::drawClippedIndexedTriangleListT(const VERTEXTYPE* vertices
     if (TransformedPoints.empty())
         return;
 
-    const VERTEXTYPE* currentVertex = clippedVertices.pointer();
-    S2DVertex* tp = &TransformedPoints[0];
+    const VERTEXTYPE *currentVertex = clippedVertices.pointer();
+    S2DVertex        *tp            = &TransformedPoints[0];
 
-    core::dimension2d<u32> textureSize(0,0);
-    f32 zDiv;
+    core::dimension2d<u32> textureSize(0, 0);
+    f32                    zDiv;
 
     if (Texture)
         textureSize = ((CSoftwareTexture*)Texture)->getTexture()->getDimension();
@@ -683,10 +703,10 @@ void CSoftwareDriver::drawClippedIndexedTriangleListT(const VERTEXTYPE* vertices
     matrix *= TransformationMatrix[ETS_VIEW];
     matrix *= TransformationMatrix[ETS_WORLD];
 
-    s32 ViewTransformWidth = (ViewPortSize.Width>>1);
-    s32 ViewTransformHeight = (ViewPortSize.Height>>1);
+    s32 ViewTransformWidth  = (ViewPortSize.Width >> 1);
+    s32 ViewTransformHeight = (ViewPortSize.Height >> 1);
 
-    for (i=0; i<(int)clippedVertices.size(); ++i)
+    for (i = 0; i<(int)clippedVertices.size(); ++i)
     {
         transformedPos[0] = currentVertex->Pos.X;
         transformedPos[1] = currentVertex->Pos.Y;
@@ -696,14 +716,14 @@ void CSoftwareDriver::drawClippedIndexedTriangleListT(const VERTEXTYPE* vertices
         matrix.multiplyWith1x4Matrix(transformedPos);
         zDiv = transformedPos[3] == 0.0f ? 1.0f : (1.0f / transformedPos[3]);
 
-        tp->Pos.X = (s32)(ViewTransformWidth * (transformedPos[0] * zDiv) + (Render2DTranslation.X));
-        tp->Pos.Y = (Render2DTranslation.Y - (s32)(ViewTransformHeight * (transformedPos[1] * zDiv)));
-        tp->Color = currentVertex->Color.toA1R5G5B5();
+        tp->Pos.X  = (s32)(ViewTransformWidth * (transformedPos[0] * zDiv) + (Render2DTranslation.X));
+        tp->Pos.Y  = (Render2DTranslation.Y - (s32)(ViewTransformHeight * (transformedPos[1] * zDiv)));
+        tp->Color  = currentVertex->Color.toA1R5G5B5();
         tp->ZValue = (TZBufferType)(32767.0f * zDiv);
 
-        tp->TCoords.X = (s32)(currentVertex->TCoords.X * textureSize.Width);
+        tp->TCoords.X   = (s32)(currentVertex->TCoords.X * textureSize.Width);
         tp->TCoords.X <<= 8;
-        tp->TCoords.Y = (s32)(currentVertex->TCoords.Y * textureSize.Height);
+        tp->TCoords.Y   = (s32)(currentVertex->TCoords.Y * textureSize.Height);
         tp->TCoords.Y <<= 8;
 
         ++currentVertex;
@@ -712,17 +732,18 @@ void CSoftwareDriver::drawClippedIndexedTriangleListT(const VERTEXTYPE* vertices
 
     // draw all transformed points from the index list
     CurrentTriangleRenderer->drawIndexedTriangleList(&TransformedPoints[0],
-        clippedVertices.size(), clippedIndices.pointer(), clippedIndices.size()/3);
+                                                     clippedVertices.size(), clippedIndices.pointer(), clippedIndices.size() / 3);
 }
 
 
-//! Draws a 3d line.
-void CSoftwareDriver::draw3DLine(const core::vector3df& start,
-                const core::vector3df& end, SColor color)
+// ! Draws a 3d line.
+void CSoftwareDriver::draw3DLine(const core::vector3df &start,
+                                 const core::vector3df &end, SColor color)
 {
     core::vector3df vect = start.crossProduct(end);
+
     vect.normalize();
-    vect *= Material.Thickness*0.3f;
+    vect *= Material.Thickness * 0.3f;
 
     S3DVertex vtx[4];
 
@@ -737,21 +758,20 @@ void CSoftwareDriver::draw3DLine(const core::vector3df& start,
     vtx[2].Pos = start + vect;
     vtx[3].Pos = end + vect;
 
-    u16 idx[12] = {0,1,2, 0,2,1, 0,1,3, 0,3,1};
+    u16 idx[12] = {0, 1, 2, 0, 2, 1, 0, 1, 3, 0, 3, 1};
 
     drawIndexedTriangleList(vtx, 4, idx, 4);
 }
 
 
-//! clips a triangle against the viewing frustum
-void CSoftwareDriver::clipTriangle(f32* transformedPos)
-{
-}
+// ! clips a triangle against the viewing frustum
+void CSoftwareDriver::clipTriangle(f32 *transformedPos)
+{}
 
 
-//! Only used by the internal engine. Used to notify the driver that
-//! the window was resized.
-void CSoftwareDriver::OnResize(const core::dimension2d<u32>& size)
+// ! Only used by the internal engine. Used to notify the driver that
+// ! the window was resized.
+void CSoftwareDriver::OnResize(const core::dimension2d<u32> &size)
 {
     // make sure width and height are multiples of 2
     core::dimension2d<u32> realSize(size);
@@ -767,8 +787,8 @@ void CSoftwareDriver::OnResize(const core::dimension2d<u32>& size)
         if (ViewPort.getWidth() == (s32)ScreenSize.Width &&
             ViewPort.getHeight() == (s32)ScreenSize.Height)
         {
-            ViewPort = core::rect<s32>(core::position2d<s32>(0,0),
-                                        core::dimension2di(realSize));
+            ViewPort = core::rect<s32>(core::position2d<s32>(0, 0),
+                                       core::dimension2di(realSize));
         }
 
         ScreenSize = realSize;
@@ -777,6 +797,7 @@ void CSoftwareDriver::OnResize(const core::dimension2d<u32>& size)
 
         if (BackBuffer)
             BackBuffer->drop();
+
         BackBuffer = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, realSize);
 
         if (resetRT)
@@ -784,18 +805,18 @@ void CSoftwareDriver::OnResize(const core::dimension2d<u32>& size)
     }
 }
 
-//! returns the current render target size
-const core::dimension2d<u32>& CSoftwareDriver::getCurrentRenderTargetSize() const
+// ! returns the current render target size
+const core::dimension2d<u32>&CSoftwareDriver::getCurrentRenderTargetSize() const
 {
     return RenderTargetSize;
 }
 
 
-//! draws an 2d image, using a color (if color is other then Color(255,255,255,255)) and the alpha channel of the texture if wanted.
-void CSoftwareDriver::draw2DImage(const video::ITexture* texture, const core::position2d<s32>& destPos,
-                    const core::rect<s32>& sourceRect,
-                    const core::rect<s32>* clipRect, SColor color,
-                    bool useAlphaChannelOfTexture)
+// ! draws an 2d image, using a color (if color is other then Color(255,255,255,255)) and the alpha channel of the texture if wanted.
+void CSoftwareDriver::draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos,
+                                  const core::rect<s32> &sourceRect,
+                                  const core::rect<s32> *clipRect, SColor color,
+                                  bool useAlphaChannelOfTexture)
 {
     if (texture)
     {
@@ -816,25 +837,25 @@ void CSoftwareDriver::draw2DImage(const video::ITexture* texture, const core::po
 
 
 
-//! Draws a 2d line.
-void CSoftwareDriver::draw2DLine(const core::position2d<s32>& start,
-                const core::position2d<s32>& end,
-                SColor color)
+// ! Draws a 2d line.
+void CSoftwareDriver::draw2DLine(const core::position2d<s32> &start,
+                                 const core::position2d<s32> &end,
+                                 SColor color)
 {
-    drawLine(RenderTargetSurface, start, end, color );
+    drawLine(RenderTargetSurface, start, end, color);
 }
 
 
-//! Draws a pixel
-void CSoftwareDriver::drawPixel(u32 x, u32 y, const SColor & color)
+// ! Draws a pixel
+void CSoftwareDriver::drawPixel(u32 x, u32 y, const SColor &color)
 {
     BackBuffer->setPixel(x, y, color, true);
 }
 
 
-//! draw a 2d rectangle
-void CSoftwareDriver::draw2DRectangle(SColor color, const core::rect<s32>& pos,
-                    const core::rect<s32>* clip)
+// ! draw a 2d rectangle
+void CSoftwareDriver::draw2DRectangle(SColor color, const core::rect<s32> &pos,
+                                      const core::rect<s32> *clip)
 {
     if (clip)
     {
@@ -842,14 +863,14 @@ void CSoftwareDriver::draw2DRectangle(SColor color, const core::rect<s32>& pos,
 
         p.clipAgainst(*clip);
 
-        if(!p.isValid())
+        if (!p.isValid())
             return;
 
         drawRectangle(RenderTargetSurface, p, color);
     }
     else
     {
-        if(!pos.isValid())
+        if (!pos.isValid())
             return;
 
         drawRectangle(RenderTargetSurface, pos, color);
@@ -857,32 +878,32 @@ void CSoftwareDriver::draw2DRectangle(SColor color, const core::rect<s32>& pos,
 }
 
 
-//!Draws an 2d rectangle with a gradient.
-void CSoftwareDriver::draw2DRectangle(const core::rect<s32>& pos,
-    SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown,
-    const core::rect<s32>* clip)
+// !Draws an 2d rectangle with a gradient.
+void CSoftwareDriver::draw2DRectangle(const core::rect<s32> &pos,
+                                      SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown,
+                                      const core::rect<s32> *clip)
 {
     // TODO: implement
     draw2DRectangle(colorLeftUp, pos, clip);
 }
 
 
-//! \return Returns the name of the video driver. Example: In case of the Direct3D8
-//! driver, it would return "Direct3D8.1".
+// ! \return Returns the name of the video driver. Example: In case of the Direct3D8
+// ! driver, it would return "Direct3D8.1".
 const wchar_t* CSoftwareDriver::getName() const
 {
     return L"Irrlicht Software Driver 1.0";
 }
 
 
-//! Returns type of video driver
+// ! Returns type of video driver
 E_DRIVER_TYPE CSoftwareDriver::getDriverType() const
 {
     return EDT_SOFTWARE;
 }
 
 
-//! returns color format
+// ! returns color format
 ECOLOR_FORMAT CSoftwareDriver::getColorFormat() const
 {
     if (BackBuffer)
@@ -892,20 +913,21 @@ ECOLOR_FORMAT CSoftwareDriver::getColorFormat() const
 }
 
 
-//! Returns the transformation set by setTransform
-const core::matrix4& CSoftwareDriver::getTransform(E_TRANSFORMATION_STATE state) const
+// ! Returns the transformation set by setTransform
+const core::matrix4&CSoftwareDriver::getTransform(E_TRANSFORMATION_STATE state) const
 {
     return TransformationMatrix[state];
 }
 
 
-//! Creates a render target texture.
-ITexture* CSoftwareDriver::addRenderTargetTexture(const core::dimension2d<u32>& size,
-                                                  const io::path& name,
+// ! Creates a render target texture.
+ITexture* CSoftwareDriver::addRenderTargetTexture(const core::dimension2d<u32> &size,
+                                                  const io::path &name,
                                                   const ECOLOR_FORMAT format)
 {
-    IImage* img = createImage(video::ECOLOR_FORMAT::ECF_A1R5G5B5, size);
-    ITexture* tex = new CSoftwareTexture(img, name, true);
+    IImage   *img = createImage(video::ECOLOR_FORMAT::ECF_A1R5G5B5, size);
+    ITexture *tex = new CSoftwareTexture(img, name, true);
+
     img->drop();
     addTexture(tex);
     tex->drop();
@@ -913,7 +935,7 @@ ITexture* CSoftwareDriver::addRenderTargetTexture(const core::dimension2d<u32>& 
 }
 
 
-//! Clears the ZBuffer.
+// ! Clears the ZBuffer.
 void CSoftwareDriver::clearZBuffer()
 {
     if (ZBuffer)
@@ -921,7 +943,7 @@ void CSoftwareDriver::clearZBuffer()
 }
 
 
-//! Returns an image created from the last rendered frame.
+// ! Returns an image created from the last rendered frame.
 IImage* CSoftwareDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RENDER_TARGET target)
 {
     if (target != video::ERT_FRAME_BUFFER)
@@ -929,7 +951,7 @@ IImage* CSoftwareDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_
 
     if (BackBuffer)
     {
-        IImage* tmp = createImage(BackBuffer->getColorFormat(), BackBuffer->getDimension());
+        IImage *tmp = createImage(BackBuffer->getColorFormat(), BackBuffer->getDimension());
         BackBuffer->copyTo(tmp);
         return tmp;
     }
@@ -938,27 +960,23 @@ IImage* CSoftwareDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_
 }
 
 
-//! Returns the maximum amount of primitives (mostly vertices) which
-//! the device is able to render with one drawIndexedTriangleList
-//! call.
+// ! Returns the maximum amount of primitives (mostly vertices) which
+// ! the device is able to render with one drawIndexedTriangleList
+// ! call.
 u32 CSoftwareDriver::getMaximalPrimitiveCount() const
 {
     return 0x00800000;
 }
-
-} // end namespace video
+}   // end namespace video
 } // end namespace irr
-
 #endif // _IRR_COMPILE_WITH_SOFTWARE_
 
 namespace irr
 {
 namespace video
 {
-
-
-//! creates a video driver
-IVideoDriver* createSoftwareDriver(const core::dimension2d<u32>& windowSize, bool fullscreen, io::IFileSystem* io, video::IImagePresenter* presenter)
+// ! creates a video driver
+IVideoDriver* createSoftwareDriver(const core::dimension2d<u32> &windowSize, bool fullscreen, io::IFileSystem *io, video::IImagePresenter *presenter)
 {
     #ifdef _IRR_COMPILE_WITH_SOFTWARE_
     return new CSoftwareDriver(windowSize, fullscreen, io, presenter);
@@ -966,8 +984,5 @@ IVideoDriver* createSoftwareDriver(const core::dimension2d<u32>& windowSize, boo
     return 0;
     #endif
 }
-
-
-} // end namespace video
+}   // end namespace video
 } // end namespace irr
-
