@@ -152,3 +152,6 @@ v16
 .agents
 .opencode
 *.log
+
+source/Irrlicht/html
+source/Irrlicht/latex
