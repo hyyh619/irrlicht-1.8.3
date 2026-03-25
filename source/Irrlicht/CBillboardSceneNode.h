@@ -12,85 +12,151 @@ namespace irr
 {
 namespace scene
 {
-// ! Scene node which is a billboard. A billboard is like a 3d sprite: A 2d element,
-// ! which always looks to the camera.
+
+/**
+ * @brief Billboard scene node
+ * 
+ * A billboard is a 2D element that always faces the camera,
+ * commonly used for particles, sprites, and effects.
+ */
 class CBillboardSceneNode : virtual public IBillboardSceneNode
 {
 public:
 
-    // ! constructor
+    /**
+     * @brief Constructor
+     * @param parent Parent scene node
+     * @param mgr Scene manager
+     * @param id Node ID
+     * @param position Billboard position
+     * @param size Billboard size
+     * @param colorTop Top vertex color
+     * @param colorBottom Bottom vertex color
+     */
     CBillboardSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
                         const core::vector3df &position, const core::dimension2d<f32> &size,
                         video::SColor colorTop = video::SColor(0xFFFFFFFF),
                         video::SColor colorBottom = video::SColor(0xFFFFFFFF));
 
-    // ! pre render event
+    /**
+     * @brief Called when node is registered to scene
+     */
     virtual void OnRegisterSceneNode();
 
-    // ! render
+    /**
+     * @brief Render the billboard
+     */
     virtual void render();
 
-    // ! returns the axis aligned bounding box of this node
+    /**
+     * @brief Get bounding box
+     * @return Axis-aligned bounding box
+     */
     virtual const core::aabbox3d<f32>&getBoundingBox() const;
 
-    // ! sets the size of the billboard
+    /**
+     * @brief Set billboard size
+     * @param size New size
+     */
     virtual void setSize(const core::dimension2d<f32> &size);
 
-    // ! Sets the widths of the top and bottom edges of the billboard independently.
+    /**
+     * @brief Set billboard size with different edge widths
+     * @param height Billboard height
+     * @param bottomEdgeWidth Width of bottom edge
+     * @param topEdgeWidth Width of top edge
+     */
     virtual void setSize(f32 height, f32 bottomEdgeWidth, f32 topEdgeWidth);
 
-    // ! gets the size of the billboard
+    /**
+     * @brief Get billboard size
+     * @return Current size
+     */
     virtual const core::dimension2d<f32>&getSize() const;
 
-    // ! Gets the widths of the top and bottom edges of the billboard.
+    /**
+     * @brief Get billboard size with edge widths
+     * @param height Height output
+     * @param bottomEdgeWidth Bottom edge width output
+     * @param topEdgeWidth Top edge width output
+     */
     virtual void getSize(f32 &height, f32 &bottomEdgeWidth, f32 &topEdgeWidth) const;
 
+    /**
+     * @brief Get material by index
+     * @param i Material index
+     * @return Reference to material
+     */
     virtual video::SMaterial&getMaterial(u32 i);
 
-    // ! returns amount of materials used by this scene node.
+    /**
+     * @brief Get material count
+     * @return Number of materials
+     */
     virtual u32 getMaterialCount() const;
 
-    // ! Set the color of all vertices of the billboard
-    // ! \param overallColor: the color to set
+    /**
+     * @brief Set vertex color
+     * @param overallColor Color for all vertices
+     */
     virtual void setColor(const video::SColor &overallColor);
 
-    // ! Set the color of the top and bottom vertices of the billboard
-    // ! \param topColor: the color to set the top vertices
-    // ! \param bottomColor: the color to set the bottom vertices
+    /**
+     * @brief Set vertex colors separately
+     * @param topColor Color for top vertices
+     * @param bottomColor Color for bottom vertices
+     */
     virtual void setColor(const video::SColor &topColor,
                           const video::SColor &bottomColor);
 
-    // ! Gets the color of the top and bottom vertices of the billboard
-    // ! \param[out] topColor: stores the color of the top vertices
-    // ! \param[out] bottomColor: stores the color of the bottom vertices
+    /**
+     * @brief Get vertex colors
+     * @param topColor Top vertex color output
+     * @param bottomColor Bottom vertex color output
+     */
     virtual void getColor(video::SColor &topColor,
                           video::SColor &bottomColor) const;
 
-    // ! Writes attributes of the scene node.
+    /**
+     * @brief Serialize node attributes
+     * @param out Output attributes
+     * @param options Read/write options
+     */
     virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const;
 
-    // ! Reads attributes of the scene node.
+    /**
+     * @brief Deserialize node attributes
+     * @param in Input attributes
+     * @param options Read/write options
+     */
     virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0);
 
-    // ! Returns type of the scene node
+    /**
+     * @brief Get node type
+     * @return Scene node type identifier
+     */
     virtual ESCENE_NODE_TYPE getType() const
     {
         return ESNT_BILLBOARD;
     }
 
-    // ! Creates a clone of this scene node and its children.
+    /**
+     * @brief Clone this node and children
+     * @param newParent New parent node
+     * @param newManager New scene manager
+     * @return Cloned scene node
+     */
     virtual ISceneNode* clone(ISceneNode *newParent = 0, ISceneManager *newManager = 0);
 
 private:
 
-    // ! Size.Width is the bottom edge width
-    core::dimension2d<f32> Size;
-    f32                    TopEdgeWidth;
-    core::aabbox3d<f32>    BBox;
-    video::SMaterial       Material;
+    core::dimension2d<f32> Size;          ///< Billboard size (width = bottom edge)
+    f32                    TopEdgeWidth;  ///< Top edge width
+    core::aabbox3d<f32>    BBox;          ///< Bounding box
+    video::SMaterial       Material;      ///< Material
 
-    video::S3DVertex vertices[4];
-    u16              indices[6];
+    video::S3DVertex vertices[4];  ///< Billboard vertices
+    u16              indices[6];    ///< Triangle indices
 };
 }   // end namespace scene
 } // end namespace irr

@@ -16,29 +16,44 @@ namespace irr
 {
 namespace scene
 {
-// ! Meshloader capable of loading obj meshes.
+//! Meshloader capable of loading obj meshes.
 class COBJMeshFileLoader : public IMeshLoader
 {
 public:
 
-    // ! Constructor
+    /**
+     * @brief Constructor
+     * @param smgr Pointer to the scene manager
+     * @param fs Pointer to the file system
+     */
     COBJMeshFileLoader(scene::ISceneManager *smgr, io::IFileSystem *fs);
 
-    // ! destructor
+    /**
+     * @brief Destructor
+     */
     virtual ~COBJMeshFileLoader();
 
-    // ! returns true if the file maybe is able to be loaded by this class
-    // ! based on the file extension (e.g. ".obj")
+    /**
+     * @brief Check if the file can be loaded based on extension
+     * @param filename The file name to check
+     * @return true if the file extension is loadable by this loader
+     */
     virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-    // ! creates/loads an animated mesh from the file.
-    // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-    // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-    // ! See IReferenceCounted::drop() for more information.
+    /**
+     * @brief Create an animated mesh from the OBJ file
+     * @param file Pointer to the file to load
+     * @return Pointer to the created animated mesh, or 0 if loading failed
+     * @note The returned mesh must be dropped by the caller when no longer needed
+     * @see IAnimatedMesh::drop()
+     */
     virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
 private:
 
+    /**
+     * @brief Material structure for OBJ files
+     */
     struct SObjMtl
     {
         SObjMtl() : Meshbuffer(0), Bumpiness (1.0f), Illumination(0),
@@ -60,50 +75,140 @@ private:
             Meshbuffer->Material = o.Meshbuffer->Material;
         }
 
-        core::map<video::S3DVertex, int> VertMap;
-        scene::SMeshBuffer               *Meshbuffer;
-        core::stringc                    Name;
-        core::stringc                    Group;
-        f32                              Bumpiness;
-        c8                               Illumination;
-        bool                             RecalculateNormals;
+        core::map<video::S3DVertex, int> VertMap;           ///< Vertex map for deduplication
+        scene::SMeshBuffer               *Meshbuffer;       ///< Mesh buffer holding geometry
+        core::stringc                    Name;             ///< Material name
+        core::stringc                    Group;            ///< Group name
+        f32                              Bumpiness;        ///< Bumpiness factor
+        c8                               Illumination;     ///< Illumination model
+        bool                             RecalculateNormals; ///< Whether to recalculate normals
     };
 
-    // helper method for material reading
+    /**
+     * @brief Read texture information from buffer
+     * @param bufPtr Current buffer position
+     * @param bufEnd End of buffer
+     * @param currMaterial Current material to populate
+     * @param relPath Relative path for textures
+     * @return Pointer to next unprocessed position
+     */
     const c8* readTextures(const c8 *bufPtr, const c8* const bufEnd, SObjMtl *currMaterial, const io::path &relPath);
 
-    // returns a pointer to the first printable character available in the buffer
+    /**
+     * @brief Move to first printable character
+     * @param buf Buffer to process
+     * @param bufEnd End of buffer
+     * @param acrossNewlines Whether to cross newlines
+     * @return Pointer to first word
+     */
     const c8* goFirstWord(const c8 *buf, const c8* const bufEnd, bool acrossNewlines = true);
-    // returns a pointer to the first printable character after the first non-printable
+    
+    /**
+     * @brief Move to next word
+     * @param buf Buffer to process
+     * @param bufEnd End of buffer
+     * @param acrossNewlines Whether to cross newlines
+     * @return Pointer to next word
+     */
     const c8* goNextWord(const c8 *buf, const c8* const bufEnd, bool acrossNewlines = true);
-    // returns a pointer to the next printable character after the first line break
+    
+    /**
+     * @brief Move to next line
+     * @param buf Buffer to process
+     * @param bufEnd End of buffer
+     * @return Pointer to next line
+     */
     const c8* goNextLine(const c8 *buf, const c8* const bufEnd);
-    // copies the current word from the inBuf to the outBuf
+    
+    /**
+     * @brief Copy current word to output buffer
+     * @param outBuf Output buffer
+     * @param inBuf Input buffer
+     * @param outBufLength Maximum output length
+     * @param pBufEnd End of input buffer
+     * @return Number of characters copied
+     */
     u32 copyWord(c8 *outBuf, const c8 *inBuf, u32 outBufLength, const c8* const pBufEnd);
-    // copies the current line from the inBuf to the outBuf
+    
+    /**
+     * @brief Copy current line to string
+     * @param inBuf Input buffer
+     * @param bufEnd End of buffer
+     * @return The copied line
+     */
     core::stringc copyLine(const c8 *inBuf, const c8* const bufEnd);
 
-    // combination of goNextWord followed by copyWord
+    /**
+     * @brief Move to next word and copy it
+     * @param outBuf Output buffer
+     * @param inBuf Input buffer
+     * @param outBufLength Maximum output length
+     * @param pBufEnd End of input buffer
+     * @return Pointer after copied word
+     */
     const c8* goAndCopyNextWord(c8 *outBuf, const c8 *inBuf, u32 outBufLength, const c8* const pBufEnd);
 
-    // ! Read the material from the given file
+    /**
+     * @brief Read material from MTL file
+     * @param fileName Name of the material file
+     * @param relPath Relative path for texture resolution
+     */
     void readMTL(const c8 *fileName, const io::path &relPath);
 
-    // ! Find and return the material with the given name
+    /**
+     * @brief Find material by name
+     * @param mtlName Material name to find
+     * @param grpName Group name to search
+     * @return Pointer to found material, or 0
+     */
     SObjMtl* findMtl(const core::stringc &mtlName, const core::stringc &grpName);
 
-    // ! Read RGB color
+    /**
+     * @brief Read RGB color from buffer
+     * @param bufPtr Current buffer position
+     * @param color Color to populate
+     * @param pBufEnd End of buffer
+     * @return Pointer after parsed data
+     */
     const c8* readColor(const c8 *bufPtr, video::SColor &color, const c8* const pBufEnd);
-    // ! Read 3d vector of floats
+    
+    /**
+     * @brief Read 3D vector from buffer
+     * @param bufPtr Current buffer position
+     * @param vec Vector to populate
+     * @param pBufEnd End of buffer
+     * @return Pointer after parsed data
+     */
     const c8* readVec3(const c8 *bufPtr, core::vector3df &vec, const c8* const pBufEnd);
-    // ! Read 2d vector of floats
+    
+    /**
+     * @brief Read 2D vector from buffer
+     * @param bufPtr Current buffer position
+     * @param vec Vector to populate
+     * @param pBufEnd End of buffer
+     * @return Pointer after parsed data
+     */
     const c8* readUV(const c8 *bufPtr, core::vector2df &vec, const c8* const pBufEnd);
-    // ! Read boolean value represented as 'on' or 'off'
+    
+    /**
+     * @brief Read boolean value
+     * @param bufPtr Current buffer position
+     * @param tf Boolean to populate
+     * @param bufEnd End of buffer
+     * @return Pointer after parsed data
+     */
     const c8* readBool(const c8 *bufPtr, bool &tf, const c8* const bufEnd);
 
-    // reads and convert to integer the vertex indices in a line of obj file's face statement
-    // -1 for the index if it doesn't exist
-    // indices are changed to 0-based index instead of 1-based from the obj file
+    /**
+     * @brief Parse vertex indices from face data
+     * @param vertexData Face vertex data
+     * @param idx Array to store indices (vertex, UV, normal)
+     * @param bufEnd End of buffer
+     * @param vbsize Vertex buffer size
+     * @param vtsize UV buffer size
+     * @param vnsize Normal buffer size
+     * @return true if successful
+     */
     bool retrieveVertexIndices(c8 *vertexData, s32 *idx, const c8 *bufEnd, u32 vbsize, u32 vtsize, u32 vnsize);
 
     void cleanUp();

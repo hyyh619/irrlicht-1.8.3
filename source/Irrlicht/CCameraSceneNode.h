@@ -12,159 +12,250 @@ namespace irr
 {
 namespace scene
 {
+
+/**
+ * @brief Camera scene node for 3D rendering
+ * 
+ * Provides camera functionality with configurable projection and view matrices,
+ * near/far clipping planes, FOV, and input handling.
+ */
 class CCameraSceneNode : public ICameraSceneNode
 {
 public:
 
-    // ! constructor
+    /**
+     * @brief Constructor
+     * @param parent Parent scene node
+     * @param mgr Scene manager
+     * @param id Node ID
+     * @param position Initial camera position
+     * @param lookat Initial look-at target
+     */
     CCameraSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
                      const core::vector3df &position = core::vector3df(0, 0, 0),
                      const core::vector3df &lookat = core::vector3df(0, 0, 100));
 
-    // ! Sets the projection matrix of the camera.
-    /** The core::matrix4 class has some methods
-       to build a projection matrix. e.g: core::matrix4::buildProjectionMatrixPerspectiveFovLH.
-       Note that the matrix will only stay as set by this method until one of
-       the following Methods are called: setNearValue, setFarValue, setAspectRatio, setFOV.
-       \param projection The new projection matrix of the camera.
-       \param isOrthogonal Set this to true if the matrix is an orthogonal one (e.g.
-       from matrix4::buildProjectionMatrixOrthoLH(). */
+    /**
+     * @brief Set projection matrix
+     * @param projection New projection matrix
+     * @param isOrthogonal true for orthogonal projection
+     * @note Matrix persists until setNearValue, setFarValue, setAspectRatio, or setFOV is called
+     */
     virtual void setProjectionMatrix(const core::matrix4 &projection, bool isOrthogonal = false);
 
-    // ! Gets the current projection matrix of the camera
-    // ! \return Returns the current projection matrix of the camera.
+    /**
+     * @brief Get current projection matrix
+     * @return Current projection matrix
+     */
     virtual const core::matrix4&getProjectionMatrix() const;
 
-    // ! Gets the current view matrix of the camera
-    // ! \return Returns the current view matrix of the camera.
+    /**
+     * @brief Get current view matrix
+     * @return Current view matrix
+     */
     virtual const core::matrix4&getViewMatrix() const;
 
-    // ! Sets a custom view matrix affector.
-    /** \param affector: The affector matrix. */
+    /**
+     * @brief Set view matrix affector
+     * @param affector Affector matrix to apply to view matrix
+     */
     virtual void setViewMatrixAffector(const core::matrix4 &affector);
 
-    // ! Gets the custom view matrix affector.
+    /**
+     * @brief Get view matrix affector
+     * @return Current view matrix affector
+     */
     virtual const core::matrix4&getViewMatrixAffector() const;
 
-    // ! It is possible to send mouse and key events to the camera. Most cameras
-    // ! may ignore this input, but camera scene nodes which are created for
-    // ! example with scene::ISceneManager::addMayaCameraSceneNode or
-    // ! scene::ISceneManager::addMeshViewerCameraSceneNode, may want to get this input
-    // ! for changing their position, look at target or whatever.
+    /**
+     * @brief Handle input events
+     * @param event Input event to handle
+     * @return true if event was consumed
+     */
     virtual bool OnEvent(const SEvent &event);
 
-    // ! Sets the look at target of the camera
-    /** If the camera's target and rotation are bound ( @see bindTargetAndRotation() )
-       then calling this will also change the camera's scene node rotation to match the target.
-       \param pos: Look at target of the camera. */
+    /**
+     * @brief Set look-at target
+     * @param pos Target position
+     * @note May also change rotation if bound via bindTargetAndRotation()
+     */
     virtual void setTarget(const core::vector3df &pos);
 
-    // ! Sets the rotation of the node.
-    /** This only modifies the relative rotation of the node.
-       If the camera's target and rotation are bound ( @see bindTargetAndRotation() )
-       then calling this will also change the camera's target to match the rotation.
-       \param rotation New rotation of the node in degrees. */
+    /**
+     * @brief Set camera rotation
+     * @param rotation Rotation in degrees
+     * @note May also change target if bound via bindTargetAndRotation()
+     */
     virtual void setRotation(const core::vector3df &rotation);
 
-    // ! Gets the current look at target of the camera
-    /** \return The current look at target of the camera */
+    /**
+     * @brief Get look-at target
+     * @return Current target position
+     */
     virtual const core::vector3df&getTarget() const;
 
-    // ! Sets the up vector of the camera.
-    // ! \param pos: New upvector of the camera.
+    /**
+     * @brief Set up vector
+     * @param pos Up vector direction
+     */
     virtual void setUpVector(const core::vector3df &pos);
 
-    // ! Gets the up vector of the camera.
-    // ! \return Returns the up vector of the camera.
+    /**
+     * @brief Get up vector
+     * @return Current up vector
+     */
     virtual const core::vector3df&getUpVector() const;
 
-    // ! Gets distance from the camera to the near plane.
-    // ! \return Value of the near plane of the camera.
+    /**
+     * @brief Get near clipping plane distance
+     * @return Near plane distance
+     */
     virtual f32 getNearValue() const;
 
-    // ! Gets the distance from the camera to the far plane.
-    // ! \return Value of the far plane of the camera.
+    /**
+     * @brief Get far clipping plane distance
+     * @return Far plane distance
+     */
     virtual f32 getFarValue() const;
 
-    // ! Get the aspect ratio of the camera.
-    // ! \return The aspect ratio of the camera.
+    /**
+     * @brief Get aspect ratio
+     * @return Current aspect ratio
+     */
     virtual f32 getAspectRatio() const;
 
-    // ! Gets the field of view of the camera.
-    // ! \return Field of view of the camera
+    /**
+     * @brief Get field of view
+     * @return FOV in radians
+     */
     virtual f32 getFOV() const;
 
-    // ! Sets the value of the near clipping plane. (default: 1.0f)
+    /**
+     * @brief Set near clipping plane
+     * @param zn Near plane distance (default: 1.0f)
+     */
     virtual void setNearValue(f32 zn);
 
-    // ! Sets the value of the far clipping plane (default: 2000.0f)
+    /**
+     * @brief Set far clipping plane
+     * @param zf Far plane distance (default: 2000.0f)
+     */
     virtual void setFarValue(f32 zf);
 
-    // ! Sets the aspect ratio (default: 4.0f / 3.0f)
+    /**
+     * @brief Set aspect ratio
+     * @param aspect Aspect ratio (default: 4.0f/3.0f)
+     */
     virtual void setAspectRatio(f32 aspect);
 
-    // ! Sets the field of view (Default: PI / 3.5f)
+    /**
+     * @brief Set field of view
+     * @param fovy FOV in radians (default: PI/3.5f)
+     */
     virtual void setFOV(f32 fovy);
 
-    // ! PreRender event
+    /**
+     * @brief Called when node is registered to scene
+     */
     virtual void OnRegisterSceneNode();
 
-    // ! Render
+    /**
+     * @brief Render the camera
+     */
     virtual void render();
 
-    // ! Returns the axis aligned bounding box of this node
+    /**
+     * @brief Get bounding box
+     * @return Axis-aligned bounding box
+     */
     virtual const core::aabbox3d<f32>&getBoundingBox() const;
 
-    // ! Returns the view area. Sometimes needed by bsp or lod render nodes.
+    /**
+     * @brief Get view frustum
+     * @return Pointer to view frustum
+     */
     virtual const SViewFrustum* getViewFrustum() const;
 
-    // ! Disables or enables the camera to get key or mouse inputs.
-    // ! If this is set to true, the camera will respond to key inputs
-    // ! otherwise not.
+    /**
+     * @brief Enable/disable input handling
+     * @param enabled true to enable input handling
+     */
     virtual void setInputReceiverEnabled(bool enabled);
 
-    // ! Returns if the input receiver of the camera is currently enabled.
+    /**
+     * @brief Check if input handling is enabled
+     * @return true if input handling is enabled
+     */
     virtual bool isInputReceiverEnabled() const;
 
-    // ! Writes attributes of the scene node.
+    /**
+     * @brief Serialize node attributes
+     * @param out Output attributes
+     * @param options Read/write options
+     */
     virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const;
 
-    // ! Reads attributes of the scene node.
+    /**
+     * @brief Deserialize node attributes
+     * @param in Input attributes
+     * @param options Read/write options
+     */
     virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0);
 
-    // ! Returns type of the scene node
+    /**
+     * @brief Get node type
+     * @return Scene node type identifier
+     */
     virtual ESCENE_NODE_TYPE getType() const
     {
         return ESNT_CAMERA;
     }
 
-    // ! Binds the camera scene node's rotation to its target position and vice vera, or unbinds them.
+    /**
+     * @brief Bind target and rotation together
+     * @param bound true to bind, false to unbind
+     */
     virtual void bindTargetAndRotation(bool bound);
 
-    // ! Queries if the camera scene node's rotation and its target position are bound together.
+    /**
+     * @brief Check if target and rotation are bound
+     * @return true if bound together
+     */
     virtual bool getTargetAndRotationBinding(void) const;
 
-    // ! Creates a clone of this scene node and its children.
+    /**
+     * @brief Clone this camera and children
+     * @param newParent New parent node
+     * @param newManager New scene manager
+     * @return Cloned scene node
+     */
     virtual ISceneNode* clone(ISceneNode *newParent = 0, ISceneManager *newManager = 0);
 
 protected:
 
+    /**
+     * @brief Recalculate projection matrix
+     */
     void recalculateProjectionMatrix();
+    
+    /**
+     * @brief Recalculate view frustum
+     */
     void recalculateViewArea();
 
-    core::vector3df Target;
-    core::vector3df UpVector;
+    core::vector3df Target;      ///< Look-at target
+    core::vector3df UpVector;    ///< Up vector
 
-    f32 Fovy;        // Field of view, in radians.
-    f32 Aspect;        // Aspect ratio.
-    f32 ZNear;        // value of the near view-plane.
-    f32 ZFar;        // Z-value of the far view-plane.
+    f32 Fovy;     ///< Field of view in radians
+    f32 Aspect;    ///< Aspect ratio
+    f32 ZNear;     ///< Near clipping plane
+    f32 ZFar;      ///< Far clipping plane
 
-    SViewFrustum  ViewArea;
-    core::matrix4 Affector;
+    SViewFrustum  ViewArea;  ///< View frustum
+    core::matrix4 Affector;  ///< View matrix affector
 
-    bool InputReceiverEnabled;
-    bool TargetAndRotationAreBound;
+    bool InputReceiverEnabled;       ///< Input handling enabled
+    bool TargetAndRotationAreBound;   ///< Target and rotation bound
 };
 }   // end namespace
 } // end namespace

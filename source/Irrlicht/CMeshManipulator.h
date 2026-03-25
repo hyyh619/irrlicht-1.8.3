@@ -11,79 +11,171 @@ namespace irr
 {
 namespace scene
 {
-// ! An interface for easy manipulation of meshes.
-/** Scale, set alpha value, flip surfaces, and so on. This exists for fixing
-   problems with wrong imported or exported meshes quickly after loading. It is
-   not intended for doing mesh modifications and/or animations during runtime.
+
+/**
+ * @brief Mesh manipulation utilities
+ * 
+ * Provides easy mesh manipulation operations including:
+ * - Normal recalculation
+ * - Texture coordinate mapping
+ * - Tangent space calculation
+ * - Vertex optimization
+ * - Mesh copying and conversion
+ * 
+ * @note Intended for fixing imported meshes, not runtime animation
  */
 class CMeshManipulator : public IMeshManipulator
 {
 public:
-    // ! Flips the direction of surfaces.
-    /** Changes backfacing triangles to frontfacing triangles and vice versa.
-       \param mesh: Mesh on which the operation is performed. */
+
+    /**
+     * @brief Flip surface normals
+     * @param mesh Mesh to modify
+     */
     virtual void flipSurfaces(scene::IMesh *mesh) const;
 
-    // ! Recalculates all normals of the mesh.
-    /** \param mesh: Mesh on which the operation is performed.
-        \param smooth: Whether to use smoothed normals. */
+    /**
+     * @brief Recalculate mesh normals
+     * @param mesh Mesh to modify
+     * @param smooth Use smooth normals
+     * @param angleWeighted Angle-weighted normals
+     */
     virtual void recalculateNormals(scene::IMesh *mesh, bool smooth = false, bool angleWeighted = false) const;
 
-    // ! Recalculates all normals of the mesh buffer.
-    /** \param buffer: Mesh buffer on which the operation is performed.
-        \param smooth: Whether to use smoothed normals. */
+    /**
+     * @brief Recalculate mesh buffer normals
+     * @param buffer Mesh buffer to modify
+     * @param smooth Use smooth normals
+     * @param angleWeighted Angle-weighted normals
+     */
     virtual void recalculateNormals(IMeshBuffer *buffer, bool smooth = false, bool angleWeighted = false) const;
 
-    // ! Clones a static IMesh into a modifiable SMesh.
+    /**
+     * @brief Create modifiable mesh copy
+     * @param mesh Source mesh
+     * @return New SMesh copy
+     */
     virtual SMesh* createMeshCopy(scene::IMesh *mesh) const;
 
-    // ! Creates a planar texture mapping on the mesh
-    /** \param mesh: Mesh on which the operation is performed.
-       \param resolution: resolution of the planar mapping. This is the value
-       specifying which is the relation between world space and
-       texture coordinate space. */
+    /**
+     * @brief Create planar UV mapping
+     * @param mesh Mesh to modify
+     * @param resolution Texture resolution
+     */
     virtual void makePlanarTextureMapping(scene::IMesh *mesh, f32 resolution = 0.001f) const;
 
-    // ! Creates a planar texture mapping on the meshbuffer
+    /**
+     * @brief Create planar UV mapping for buffer
+     * @param meshbuffer Mesh buffer to modify
+     * @param resolution Texture resolution
+     */
     virtual void makePlanarTextureMapping(scene::IMeshBuffer *meshbuffer, f32 resolution = 0.001f) const;
 
-    // ! Creates a planar texture mapping on the meshbuffer
+    /**
+     * @brief Create planar UV mapping with custom parameters
+     * @param buffer Mesh buffer
+     * @param resolutionS S resolution
+     * @param resolutionT T resolution
+     * @param axis Axis (0=X, 1=Y, 2=Z)
+     * @param offset UV offset
+     */
     void makePlanarTextureMapping(scene::IMeshBuffer *buffer, f32 resolutionS, f32 resolutionT, u8 axis, const core::vector3df &offset) const;
 
-    // ! Creates a planar texture mapping on the mesh
+    /**
+     * @brief Create planar UV mapping for mesh
+     * @param mesh Mesh
+     * @param resolutionS S resolution
+     * @param resolutionT T resolution
+     * @param axis Axis
+     * @param offset UV offset
+     */
     void makePlanarTextureMapping(scene::IMesh *mesh, f32 resolutionS, f32 resolutionT, u8 axis, const core::vector3df &offset) const;
 
-    // ! Recalculates tangents, requires a tangent mesh buffer
+    /**
+     * @brief Recalculate tangent vectors
+     * @param buffer Mesh buffer (must be tangent type)
+     * @param recalculateNormals Recalculate normals too
+     * @param smooth Use smooth normals
+     * @param angleWeighted Angle-weighted
+     */
     virtual void recalculateTangents(IMeshBuffer *buffer, bool recalculateNormals = false, bool smooth = false, bool angleWeighted = false) const;
 
-    // ! Recalculates tangents, requires a tangent mesh
+    /**
+     * @brief Recalculate tangents for mesh
+     * @param mesh Mesh
+     * @param recalculateNormals Recalculate normals too
+     * @param smooth Use smooth normals
+     * @param angleWeighted Angle-weighted
+     */
     virtual void recalculateTangents(IMesh *mesh, bool recalculateNormals = false, bool smooth = false, bool angleWeighted = false) const;
 
-    // ! Creates a copy of the mesh, which will only consist of S3DVertexTangents vertices.
+    /**
+     * @brief Create mesh with tangent vectors
+     * @param mesh Source mesh
+     * @param recalculateNormals Recalculate normals
+     * @param smooth Smooth normals
+     * @param angleWeighted Angle-weighted
+     * @param recalculateTangents Calculate tangents
+     * @return New mesh with tangents
+     */
     virtual IMesh* createMeshWithTangents(IMesh *mesh, bool recalculateNormals = false, bool smooth = false, bool angleWeighted = false, bool recalculateTangents = true) const;
 
-    // ! Creates a copy of the mesh, which will only consist of S3D2TCoords vertices.
+    /**
+     * @brief Create mesh with 2 texture coordinates
+     * @param mesh Source mesh
+     * @return New mesh with 2 UV sets
+     */
     virtual IMesh* createMeshWith2TCoords(IMesh *mesh) const;
 
-    // ! Creates a copy of the mesh, which will only consist of S3DVertex vertices.
+    /**
+     * @brief Create mesh with 1 texture coordinate
+     * @param mesh Source mesh
+     * @return New mesh with 1 UV set
+     */
     virtual IMesh* createMeshWith1TCoords(IMesh *mesh) const;
 
-    // ! Creates a copy of the mesh, which will only consist of unique triangles, i.e. no vertices are shared.
+    /**
+     * @brief Create mesh with unique primitives
+     * @param mesh Source mesh
+     * @return New mesh with unique triangles (no shared vertices)
+     */
     virtual IMesh* createMeshUniquePrimitives(IMesh *mesh) const;
 
-    // ! Creates a copy of the mesh, which will have all duplicated vertices removed, i.e. maximal amount of vertices are shared via indexing.
+    /**
+     * @brief Create welded mesh
+     * @param mesh Source mesh
+     * @param tolerance Welding tolerance
+     * @return New mesh with duplicated vertices removed
+     */
     virtual IMesh* createMeshWelded(IMesh *mesh, f32 tolerance = core::ROUNDING_ERROR_f32) const;
 
-    // ! Returns amount of polygons in mesh.
+    /**
+     * @brief Get polygon count
+     * @param mesh Source mesh
+     * @return Number of polygons
+     */
     virtual s32 getPolyCount(scene::IMesh *mesh) const;
 
-    // ! Returns amount of polygons in mesh.
+    /**
+     * @brief Get polygon count from animated mesh
+     * @param mesh Source animated mesh
+     * @return Number of polygons
+     */
     virtual s32 getPolyCount(scene::IAnimatedMesh *mesh) const;
 
-    // ! create a new AnimatedMesh and adds the mesh to it
+    /**
+     * @brief Create animated mesh from static mesh
+     * @param mesh Source mesh
+     * @param type Animation type
+     * @return New animated mesh
+     */
     virtual IAnimatedMesh* createAnimatedMesh(scene::IMesh *mesh, scene::E_ANIMATED_MESH_TYPE type) const;
 
-    // ! create a mesh optimized for the vertex cache
+    /**
+     * @brief Optimize mesh for vertex cache
+     * @param mesh Source mesh
+     * @return Optimized mesh
+     */
     virtual IMesh* createForsythOptimizedMesh(const scene::IMesh *mesh) const;
 };
 }   // end namespace scene

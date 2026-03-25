@@ -25,78 +25,114 @@ namespace scene
 struct SMesh;
 class ITextSceneNode;
 
-// ! A scene node for displaying terrain using the geo mip map algorithm.
+/**
+ * @brief Terrain scene node using GeoMipMap algorithm
+ * 
+ * Renders terrain from heightmaps with:
+ * - Level of Detail (LOD) management
+ * - Multiple patch sizes
+ * - Heightmap loading (image and RAW formats)
+ * - Smooth terrain
+ * - Rotation and scaling
+ */
 class CTerrainSceneNode : public ITerrainSceneNode
 {
 public:
 
-    // ! constructor
-    // ! \param parent: The node which this node is a child of.  Making this node a child of another node, or
-    // ! making it a parent of another node is yet untested and most likely does not work properly.
-    // ! \param mgr: Pointer to the scene manager.
-    // ! \param id: The id of the node
-    // ! \param maxLOD: The maximum LOD ( Level of Detail ) for the node.
-    // ! \param patchSize: An E_GEOMIPMAP_PATCH_SIZE enumeration defining the size of each patch of the terrain.
-    // ! \param position: The absolute position of this node.
-    // ! \param rotation: The absolute rotation of this node. ( NOT YET IMPLEMENTED )
-    // ! \param scale: The scale factor for the terrain.  If you're using a heightmap of size 128x128 and would like
-    // ! your terrain to be 12800x12800 in game units, then use a scale factor of ( core::vector ( 100.0f, 100.0f, 100.0f ).
-    // ! If you use a Y scaling factor of 0.0f, then your terrain will be flat.
+    /**
+     * @brief Constructor
+     * @param parent Parent node
+     * @param mgr Scene manager
+     * @param fs File system
+     * @param id Node ID
+     * @param maxLOD Maximum LOD level
+     * @param patchSize Patch size
+     * @param position Position
+     * @param rotation Rotation (not implemented)
+     * @param scale Scale factor
+     */
     CTerrainSceneNode(ISceneNode *parent, ISceneManager *mgr, io::IFileSystem *fs, s32 id,
                       s32 maxLOD = 4, E_TERRAIN_PATCH_SIZE patchSize = ETPS_17,
                       const core::vector3df &position = core::vector3df(0.0f, 0.0f, 0.0f),
                       const core::vector3df &rotation = core::vector3df(0.0f, 0.0f, 0.0f),
-                      const core::vector3df &scale = core::vector3df(1.0f, 1.0f, 1.0f));
+                      const core::vector3df &scale = core::vector3df(1.0f, 1.0f, 1.0f)));
 
+    /**
+     * @brief Destructor
+     */
     virtual ~CTerrainSceneNode();
 
-    // ! Initializes the terrain data.  Loads the vertices from the heightMapFile.
+    /**
+     * @brief Load heightmap from file
+     * @param file Heightmap file
+     * @param vertexColor Vertex color
+     * @param smoothFactor Smoothing factor
+     * @return true if successful
+     */
     virtual bool loadHeightMap(io::IReadFile *file,
                                video::SColor vertexColor = video::SColor ( 255, 255, 255, 255 ), s32 smoothFactor = 0);
 
-    // ! Initializes the terrain data.  Loads the vertices from the heightMapFile.
+    /**
+     * @brief Load RAW heightmap
+     * @param file RAW heightmap file
+     * @param bitsPerPixel Bits per pixel
+     * @param signedData Signed data flag
+     * @param floatVals Float values flag
+     * @param width Width (0 = auto)
+     * @param vertexColor Vertex color
+     * @param smoothFactor Smoothing factor
+     * @return true if successful
+     */
     virtual bool loadHeightMapRAW(io::IReadFile *file, s32 bitsPerPixel = 16,
                                   bool signedData = true, bool floatVals = false, s32 width = 0, video::SColor vertexColor = video::SColor ( 255, 255, 255, 255 ), s32 smoothFactor = 0);
 
-    // ! Returns the material based on the zero based index i. This scene node only uses
-    // ! 1 material.
-    // ! \param i: Zero based index i. UNUSED, left in for virtual purposes.
-    // ! \return Returns the single material this scene node uses.
+    /**
+     * @brief Get material
+     * @param i Material index (unused)
+     * @return Material reference
+     */
     virtual video::SMaterial&getMaterial(u32 i);
 
-    // ! Returns amount of materials used by this scene node ( always 1 )
-    // ! \return Returns current count of materials used by this scene node ( always 1 )
+    /**
+     * @brief Get material count
+     * @return Always 1
+     */
     virtual u32 getMaterialCount() const;
 
-    // ! Gets the last scaling factor applied to the scene node.  This value only represents the
-    // ! last scaling factor presented to the node.  For instance, if you make create the node
-    // ! with a scale factor of ( 1.0f, 1.0f, 1.0f ) then call setScale ( 50.0f, 5.0f, 50.0f ),
-    // ! then make another call to setScale with the values ( 2.0f, 2.0f, 2.0f ), this will return
-    // ! core::vector3df ( 2.0f, 2.0f, 2.0f ), although the total scaling of the scene node is
-    // ! core::vector3df ( 100.0f, 10.0f, 100.0f ).
-    // ! \return Returns the last scaling factor passed to the scene node.
+    /**
+     * @brief Get scale
+     * @return Last scale factor
+     */
     virtual const core::vector3df&getScale() const
     {
         return TerrainData.Scale;
     }
 
-    // ! Scales the scene nodes vertices by the vector specified.
-    // ! \param scale: Scaling factor to apply to the node.
+    /**
+     * @brief Set scale
+     * @param scale Scaling factor
+     */
     virtual void setScale(const core::vector3df &scale);
 
-    // ! Gets the last rotation factor applied to the scene node.
-    // ! \return Returns the last rotation factor applied to the scene node.
+    /**
+     * @brief Get rotation
+     * @return Last rotation factor
+     */
     virtual const core::vector3df&getRotation() const
     {
         return TerrainData.Rotation;
     }
 
-    // ! Rotates the node. This only modifies the relative rotation of the node.
-    // ! \param rotation: New rotation of the node in degrees.
+    /**
+     * @brief Set rotation
+     * @param rotation Rotation in degrees
+     */
     virtual void setRotation(const core::vector3df &rotation);
 
-    // ! Sets the pivot point for rotation of this node.
-    // ! NOTE: The default for the RotationPivot will be the center of the individual tile.
+    /**
+     * @brief Set rotation pivot
+     * @param pivot Pivot point
+     */
     virtual void setRotationPivot(const core::vector3df &pivot);
 
     // ! Gets the last positioning vector applied to the scene node.

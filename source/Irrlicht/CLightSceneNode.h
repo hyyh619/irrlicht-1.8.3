@@ -11,94 +11,149 @@ namespace irr
 {
 namespace scene
 {
-// ! Scene node which is a dynamic light. You can switch the light on and off by
-// ! making it visible or not, and let it be animated by ordinary scene node animators.
+
+/**
+ * @brief Dynamic light scene node
+ * 
+ * Scene node representing a dynamic light source.
+ * Can be switched on/off by making it visible or not.
+ */
 class CLightSceneNode : public ILightSceneNode
 {
 public:
 
-    // ! constructor
+    /**
+     * @brief Constructor
+     * @param parent Parent scene node
+     * @param mgr Scene manager
+     * @param id Node ID
+     * @param position Light position
+     * @param color Light color
+     * @param range Light range
+     */
     CLightSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
                     const core::vector3df &position, video::SColorf color, f32 range);
 
     virtual ~CLightSceneNode() { }
 
-    // ! pre render event
+    /**
+     * @brief Called when node is registered to scene
+     */
     virtual void OnRegisterSceneNode();
 
-    // ! render
+    /**
+     * @brief Render the light
+     */
     virtual void render();
 
-    // ! set node light data from light info
+    /**
+     * @brief Set light data
+     * @param light Light parameters
+     */
     virtual void setLightData(const video::SLight &light);
 
-    // ! \return Returns the light data.
+    /**
+     * @brief Get light data (const)
+     * @return Light parameters
+     */
     virtual const video::SLight&getLightData() const;
 
-    // ! \return Returns the light data.
+    /**
+     * @brief Get light data
+     * @return Light parameters
+     */
     virtual video::SLight&getLightData();
 
-    // ! Sets if the node should be visible or not.
-    /** All children of this node won't be visible either, when set
-       to true.
-       \param isVisible If the node shall be visible. */
+    /**
+     * @brief Set visibility
+     * @param isVisible Visibility state
+     */
     virtual void setVisible(bool isVisible);
 
-    // ! returns the axis aligned bounding box of this node
+    /**
+     * @brief Get bounding box
+     * @return Axis-aligned bounding box
+     */
     virtual const core::aabbox3d<f32>&getBoundingBox() const;
 
-    // ! Returns type of the scene node
+    /**
+     * @brief Get node type
+     * @return Scene node type identifier
+     */
     virtual ESCENE_NODE_TYPE getType() const
     {
         return ESNT_LIGHT;
     }
 
-    // ! Writes attributes of the scene node.
+    /**
+     * @brief Serialize node attributes
+     * @param out Output attributes
+     * @param options Read/write options
+     */
     virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const;
 
-    // ! Reads attributes of the scene node.
+    /**
+     * @brief Deserialize node attributes
+     * @param in Input attributes
+     * @param options Read/write options
+     */
     virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0);
 
-    // ! Creates a clone of this scene node and its children.
+    /**
+     * @brief Clone this node and children
+     * @param newParent New parent node
+     * @param newManager New scene manager
+     * @return Cloned scene node
+     */
     virtual ISceneNode* clone(ISceneNode *newParent = 0, ISceneManager *newManager = 0);
 
 
-    // ! Sets the light's radius of influence.
-    /** Outside this radius the light won't lighten geometry and cast no
-       shadows. Setting the radius will also influence the attenuation, setting
-       it to (0,1/radius,0). If you want to override this behavior, set the
-       attenuation after the radius.
-       \param radius The new radius. */
+    /**
+     * @brief Set light radius
+     * @param radius Light influence radius
+     * @note Sets attenuation to (0, 1/radius, 0)
+     */
     virtual void setRadius(f32 radius);
 
-    // ! Gets the light's radius of influence.
-    /** \return The current radius. */
+    /**
+     * @brief Get light radius
+     * @return Current radius
+     */
     virtual f32 getRadius() const;
 
-    // ! Sets the light type.
-    /** \param type The new type. */
+    /**
+     * @brief Set light type
+     * @param type Light type
+     */
     virtual void setLightType(video::E_LIGHT_TYPE type);
 
-    // ! Gets the light type.
-    /** \return The current light type. */
+    /**
+     * @brief Get light type
+     * @return Current light type
+     */
     virtual video::E_LIGHT_TYPE getLightType() const;
 
-    // ! Sets whether this light casts shadows.
-    /** Enabling this flag won't automatically cast shadows, the meshes
-       will still need shadow scene nodes attached. But one can enable or
-       disable distinct lights for shadow casting for performance reasons.
-       \param shadow True if this light shall cast shadows. */
+    /**
+     * @brief Enable shadow casting
+     * @param shadow Enable/disable shadow casting
+     */
     virtual void enableCastShadow(bool shadow = true);
 
-    // ! Check whether this light casts shadows.
-    /** \return True if light would cast shadows, else false. */
+    /**
+     * @brief Check if shadow casting is enabled
+     * @return true if shadows are enabled
+     */
     virtual bool getCastShadow() const;
 private:
 
-    video::SLight       LightData;
-    core::aabbox3d<f32> BBox;
-    s32                 DriverLightIndex;
-    bool                LightIsOn;
+    video::SLight       LightData;       ///< Light parameters
+    core::aabbox3d<f32> BBox;           ///< Bounding box
+    s32                 DriverLightIndex; ///< GPU light index
+    bool                LightIsOn;       ///< Light on/off state
+    
+    /**
+     * @brief Recalculate light
+     */
     void doLightRecalc();
 };
 }   // end namespace scene

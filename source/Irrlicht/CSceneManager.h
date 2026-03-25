@@ -28,35 +28,64 @@ class IGeometryCreator;
 
 /*!
     The Scene Manager manages scene nodes, mesh recources, cameras and all the other stuff.
- */
+*/
 class CSceneManager : public ISceneManager, public ISceneNode
 {
 public:
 
-    // ! constructor
+    /**
+     * @brief Constructor
+     * @param driver Video driver for rendering
+     * @param fs File system for loading assets
+     * @param cursorControl Cursor control
+     * @param cache Mesh cache (optional)
+     * @param guiEnvironment GUI environment (optional)
+     */
     CSceneManager(video::IVideoDriver *driver, io::IFileSystem *fs,
                   gui::ICursorControl *cursorControl, IMeshCache *cache = 0,
                   gui::IGUIEnvironment *guiEnvironment = 0);
 
-    // ! destructor
+    /**
+     * @brief Destructor
+     */
     virtual ~CSceneManager();
 
-    // ! gets an animateable mesh. loads it if needed. returned pointer must not be dropped.
+    /**
+     * @brief Get animated mesh from file
+     * @param filename Path to mesh file
+     * @return Animated mesh (do not drop - managed by scene manager)
+     */
     virtual IAnimatedMesh* getMesh(const io::path &filename);
 
-    // ! gets an animateable mesh. loads it if needed. returned pointer must not be dropped.
+    /**
+     * @brief Get animated mesh from file handle
+     * @param file File handle
+     * @return Animated mesh (do not drop - managed by scene manager)
+     */
     virtual IAnimatedMesh* getMesh(io::IReadFile *file);
 
-    // ! Returns an interface to the mesh cache which is shared beween all existing scene managers.
+    /**
+     * @brief Get mesh cache
+     * @return Shared mesh cache
+     */
     virtual IMeshCache* getMeshCache();
 
-    // ! returns the video driver
+    /**
+     * @brief Get video driver
+     * @return Video driver instance
+     */
     virtual video::IVideoDriver* getVideoDriver();
 
-    // ! return the gui environment
+    /**
+     * @brief Get GUI environment
+     * @return GUI environment
+     */
     virtual gui::IGUIEnvironment* getGUIEnvironment();
 
-    // ! return the filesystem
+    /**
+     * @brief Get file system
+     * @return File system
+     */
     virtual io::IFileSystem* getFileSystem();
 
     // ! adds Volume Lighting Scene Node.
