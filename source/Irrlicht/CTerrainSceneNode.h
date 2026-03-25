@@ -55,7 +55,7 @@ public:
                       s32 maxLOD = 4, E_TERRAIN_PATCH_SIZE patchSize = ETPS_17,
                       const core::vector3df &position = core::vector3df(0.0f, 0.0f, 0.0f),
                       const core::vector3df &rotation = core::vector3df(0.0f, 0.0f, 0.0f),
-                      const core::vector3df &scale = core::vector3df(1.0f, 1.0f, 1.0f)));
+                      const core::vector3df &scale = core::vector3df(1.0f, 1.0f, 1.0f));
 
     /**
      * @brief Destructor
