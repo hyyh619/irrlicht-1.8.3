@@ -13,18 +13,18 @@
 // his permission to add it into Irrlicht.
 
 /*
-   CDMFLoader by Salvatore Russo
-   Version 1.3
-
-   This loader is used to load DMF files in Irrlicht.
-   Look at the documentation for a sample application.
-
-   Parts of this code are from Murphy McCauley COCTLoader just like
-   GetFaceNormal() or indexes creation routines and a routine to add faces. So
-   please refer to COCTLoader.h to know more about rights granted.
-
-   You can use this software as you wish but you must not remove these notes about license nor
-   credits to others for parts of this code.
+ * CDMFLoader by Salvatore Russo
+ * Version 1.3
+ *
+ * This loader is used to load DMF files in Irrlicht.
+ * Look at the documentation for a sample application.
+ *
+ * Parts of this code are from Murphy McCauley COCTLoader just like
+ * GetFaceNormal() or indexes creation routines and a routine to add faces. So
+ * please refer to COCTLoader.h to know more about rights granted.
+ *
+ * You can use this software as you wish but you must not remove these notes about license nor
+ * credits to others for parts of this code.
  */
 
 #ifndef __C_DMF_LOADER_H_INCLUDED__
@@ -40,49 +40,49 @@
 
 namespace irr
 {
-namespace scene
-{
-/** A class to load DeleD mesh files.*/
-class CDMFLoader : public IMeshLoader
-{
+    namespace scene
+    {
+        /** A class to load DeleD mesh files.*/
+        class CDMFLoader : public IMeshLoader
+        {
 public:
 
-    /** constructor*/
-    CDMFLoader(ISceneManager *smgr, io::IFileSystem *filesys);
+            /** constructor*/
+            CDMFLoader(ISceneManager *smgr, io::IFileSystem *filesys);
 
-    // ! returns true if the file maybe is able to be loaded by this class
-    // ! based on the file extension (e.g. ".cob")
-    virtual bool isALoadableFileExtension(const io::path &filename) const;
+            // ! returns true if the file maybe is able to be loaded by this class
+            // ! based on the file extension (e.g. ".cob")
+            virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-    /** creates/loads an animated mesh from the file.
-       \return Pointer to the created mesh. Returns 0 if loading failed.
-       If you no longer need the mesh, you should call IAnimatedMesh::drop().
-       See IReferenceCounted::drop() for more information.*/
-    virtual IAnimatedMesh* createMesh(io::IReadFile *file);
+            /** creates/loads an animated mesh from the file.
+             * \return Pointer to the created mesh. Returns 0 if loading failed.
+             * If you no longer need the mesh, you should call IAnimatedMesh::drop().
+             * See IReferenceCounted::drop() for more information.*/
+            virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
-    /** loads dynamic lights present in this scene.
-       Note that loaded lights from DeleD must have the suffix \b dynamic_ and must be \b pointlight.
-       Irrlicht correctly loads specular color, diffuse color , position and distance of object affected by light.
-       \return number of lights loaded or 0 if loading failed.*/
-    int loadLights(const c8 *filename, ISceneManager *smgr,
-                   ISceneNode *parent = 0, s32 base_id = 1000);
+            /** loads dynamic lights present in this scene.
+             * Note that loaded lights from DeleD must have the suffix \b dynamic_ and must be \b pointlight.
+             * Irrlicht correctly loads specular color, diffuse color , position and distance of object affected by light.
+             * \return number of lights loaded or 0 if loading failed.*/
+            int loadLights(const c8 *filename, ISceneManager *smgr,
+                ISceneNode *parent = 0, s32 base_id = 1000);
 
-    /** loads water plains present in this scene.
-       Note that loaded water plains from DeleD must have the suffix \b water_ and must be \b rectangle (with just 1 rectangular face).
-       Irrlicht correctly loads position and rotation of water plain as well as texture layers.
-       \return number of water plains loaded or 0 if loading failed.*/
-    int loadWaterPlains(const c8 *filename,
-                        ISceneManager *smgr,
-                        ISceneNode *parent = 0,
-                        s32 base_id = 2000,
-                        bool mode = true);
+            /** loads water plains present in this scene.
+             * Note that loaded water plains from DeleD must have the suffix \b water_ and must be \b rectangle (with just 1 rectangular face).
+             * Irrlicht correctly loads position and rotation of water plain as well as texture layers.
+             * \return number of water plains loaded or 0 if loading failed.*/
+            int loadWaterPlains(const c8 *filename,
+                ISceneManager *smgr,
+                ISceneNode *parent = 0,
+                s32 base_id = 2000,
+                bool mode = true);
 
 private:
-    void findFile(bool use_mat_dirs, const core::stringc &path, const core::stringc &matPath, core::stringc &filename);
+            void findFile(bool use_mat_dirs, const core::stringc &path, const core::stringc &matPath, core::stringc &filename);
 
-    ISceneManager   *SceneMgr;
-    io::IFileSystem *FileSystem;
-};
-}   // end namespace scene
+            ISceneManager   *SceneMgr;
+            io::IFileSystem *FileSystem;
+        };
+    } // end namespace scene
 } // end namespace irr
 #endif

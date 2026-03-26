@@ -13,21 +13,21 @@
 
 namespace irr
 {
-namespace video
-{
-class CImageWriterPPM : public IImageWriter
-{
+    namespace video
+    {
+        class CImageWriterPPM : public IImageWriter
+        {
 public:
-    // ! constructor
-    CImageWriterPPM();
+            // ! constructor
+            CImageWriterPPM();
 
-    // ! return true if this writer can write a file with the given extension
-    virtual bool isAWriteableFileExtension(const io::path &filename) const;
+            // ! return true if this writer can write a file with the given extension
+            virtual bool isAWriteableFileExtension(const io::path &filename) const;
 
-    // ! write image to file
-    virtual bool writeImage(io::IWriteFile *file, IImage *image, u32 param) const;
-};
-}   // namespace video
+            // ! write image to file
+            virtual bool writeImage(io::IWriteFile *file, IImage *image, u32 param) const;
+        };
+    } // namespace video
 } // namespace irr
 #endif // _C_IMAGE_WRITER_PPM_H_INCLUDED__
 #endif

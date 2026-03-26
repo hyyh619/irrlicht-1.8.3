@@ -7,63 +7,63 @@
 
 namespace irr
 {
-namespace scene
-{
-// ! constructor
-CEmptySceneNode::CEmptySceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id)
-    : ISceneNode(parent, mgr, id)
-{
+    namespace scene
+    {
+        // ! constructor
+        CEmptySceneNode::CEmptySceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id)
+            : ISceneNode(parent, mgr, id)
+        {
     #ifdef _DEBUG
-    setDebugName("CEmptySceneNode");
+            setDebugName("CEmptySceneNode");
     #endif
 
-    setAutomaticCulling(scene::EAC_OFF);
-}
+            setAutomaticCulling(scene::EAC_OFF);
+        }
 
 
-// ! pre render event
-void CEmptySceneNode::OnRegisterSceneNode()
-{
-    if (IsVisible)
-        SceneManager->registerNodeForRendering(this);
+        // ! pre render event
+        void CEmptySceneNode::OnRegisterSceneNode()
+        {
+            if (IsVisible)
+                SceneManager->registerNodeForRendering(this);
 
-    ISceneNode::OnRegisterSceneNode();
-}
-
-
-// ! render
-void CEmptySceneNode::render()
-{
-    // do nothing
-}
+            ISceneNode::OnRegisterSceneNode();
+        }
 
 
-// ! returns the axis aligned bounding box of this node
-const core::aabbox3d<f32>&CEmptySceneNode::getBoundingBox() const
-{
-    return Box;
-}
+        // ! render
+        void CEmptySceneNode::render()
+        {
+            // do nothing
+        }
 
 
-// ! Creates a clone of this scene node and its children.
-ISceneNode* CEmptySceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
-{
-    if (!newParent)
-        newParent = Parent;
+        // ! returns the axis aligned bounding box of this node
+        const core::aabbox3d<f32>&CEmptySceneNode::getBoundingBox() const
+        {
+            return Box;
+        }
 
-    if (!newManager)
-        newManager = SceneManager;
 
-    CEmptySceneNode *nb = new CEmptySceneNode(newParent,
-                                              newManager, ID);
+        // ! Creates a clone of this scene node and its children.
+        ISceneNode* CEmptySceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
+        {
+            if (!newParent)
+                newParent = Parent;
 
-    nb->cloneMembers(this, newManager);
-    nb->Box = Box;
+            if (!newManager)
+                newManager = SceneManager;
 
-    if (newParent)
-        nb->drop();
+            CEmptySceneNode *nb = new CEmptySceneNode(newParent,
+                    newManager, ID);
 
-    return nb;
-}
-}   // end namespace scene
+            nb->cloneMembers(this, newManager);
+            nb->Box = Box;
+
+            if (newParent)
+                nb->drop();
+
+            return nb;
+        }
+    } // end namespace scene
 } // end namespace irr

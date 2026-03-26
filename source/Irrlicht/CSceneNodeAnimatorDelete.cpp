@@ -7,40 +7,40 @@
 
 namespace irr
 {
-namespace scene
-{
-// ! constructor
-CSceneNodeAnimatorDelete::CSceneNodeAnimatorDelete(ISceneManager *manager, u32 time)
-    : ISceneNodeAnimatorFinishing(time), SceneManager(manager)
-{
-    #ifdef _DEBUG
-    setDebugName("CSceneNodeAnimatorDelete");
-    #endif
-}
-
-
-// ! animates a scene node
-void CSceneNodeAnimatorDelete::animateNode(ISceneNode *node, u32 timeMs)
-{
-    if (timeMs > FinishTime)
+    namespace scene
     {
-        HasFinished = true;
-        if (node && SceneManager)
+        // ! constructor
+        CSceneNodeAnimatorDelete::CSceneNodeAnimatorDelete(ISceneManager *manager, u32 time)
+            : ISceneNodeAnimatorFinishing(time), SceneManager(manager)
         {
-            // don't delete if scene manager is attached to an editor
-            if (!SceneManager->getParameters()->getAttributeAsBool(IRR_SCENE_MANAGER_IS_EDITOR))
-                SceneManager->addToDeletionQueue(node);
+    #ifdef _DEBUG
+            setDebugName("CSceneNodeAnimatorDelete");
+    #endif
         }
-    }
-}
 
 
-ISceneNodeAnimator* CSceneNodeAnimatorDelete::createClone(ISceneNode *node, ISceneManager *newManager)
-{
-    CSceneNodeAnimatorDelete *newAnimator =
-        new CSceneNodeAnimatorDelete(SceneManager, FinishTime);
+        // ! animates a scene node
+        void CSceneNodeAnimatorDelete::animateNode(ISceneNode *node, u32 timeMs)
+        {
+            if (timeMs > FinishTime)
+            {
+                HasFinished = true;
+                if (node && SceneManager)
+                {
+                    // don't delete if scene manager is attached to an editor
+                    if (!SceneManager->getParameters()->getAttributeAsBool(IRR_SCENE_MANAGER_IS_EDITOR))
+                        SceneManager->addToDeletionQueue(node);
+                }
+            }
+        }
 
-    return newAnimator;
-}
-}   // end namespace scene
+
+        ISceneNodeAnimator* CSceneNodeAnimatorDelete::createClone(ISceneNode *node, ISceneManager *newManager)
+        {
+            CSceneNodeAnimatorDelete *newAnimator =
+                new CSceneNodeAnimatorDelete(SceneManager, FinishTime);
+
+            return newAnimator;
+        }
+    } // end namespace scene
 } // end namespace irr

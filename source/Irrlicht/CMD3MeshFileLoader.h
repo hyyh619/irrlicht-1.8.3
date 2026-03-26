@@ -13,32 +13,32 @@
 
 namespace irr
 {
-namespace scene
-{
-// ! Meshloader capable of loading md3 files.
-class CMD3MeshFileLoader : public IMeshLoader
-{
+    namespace scene
+    {
+        // ! Meshloader capable of loading md3 files.
+        class CMD3MeshFileLoader : public IMeshLoader
+        {
 public:
 
-    // ! Constructor
-    CMD3MeshFileLoader(scene::ISceneManager *smgr);
+            // ! Constructor
+            CMD3MeshFileLoader(scene::ISceneManager *smgr);
 
-    // ! destructor
-    virtual ~CMD3MeshFileLoader();
+            // ! destructor
+            virtual ~CMD3MeshFileLoader();
 
-    // ! returns true if the file maybe is able to be loaded by this class
-    // ! based on the file extension (e.g. ".bsp")
-    virtual bool isALoadableFileExtension(const io::path &filename) const;
+            // ! returns true if the file maybe is able to be loaded by this class
+            // ! based on the file extension (e.g. ".bsp")
+            virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-    // ! creates/loads an animated mesh from the file.
-    // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-    // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-    // ! See IReferenceCounted::drop() for more information.
-    virtual IAnimatedMesh* createMesh(io::IReadFile *file);
+            // ! creates/loads an animated mesh from the file.
+            // ! \return Pointer to the created mesh. Returns 0 if loading failed.
+            // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+            // ! See IReferenceCounted::drop() for more information.
+            virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
 private:
-    scene::ISceneManager *SceneManager;
-};
-}   // end namespace scene
+            scene::ISceneManager *SceneManager;
+        };
+    } // end namespace scene
 } // end namespace irr
 #endif

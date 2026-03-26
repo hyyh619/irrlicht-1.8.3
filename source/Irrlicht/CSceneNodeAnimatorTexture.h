@@ -10,49 +10,49 @@
 
 namespace irr
 {
-namespace scene
-{
-class CSceneNodeAnimatorTexture : public ISceneNodeAnimatorFinishing
-{
+    namespace scene
+    {
+        class CSceneNodeAnimatorTexture : public ISceneNodeAnimatorFinishing
+        {
 public:
 
-    // ! constructor
-    CSceneNodeAnimatorTexture(const core::array<video::ITexture*> &textures,
-                              s32 timePerFrame, bool loop, u32 now);
+            // ! constructor
+            CSceneNodeAnimatorTexture(const core::array<video::ITexture*> &textures,
+                s32 timePerFrame, bool loop, u32 now);
 
-    // ! destructor
-    virtual ~CSceneNodeAnimatorTexture();
+            // ! destructor
+            virtual ~CSceneNodeAnimatorTexture();
 
-    // ! animates a scene node
-    virtual void animateNode(ISceneNode *node, u32 timeMs);
+            // ! animates a scene node
+            virtual void animateNode(ISceneNode *node, u32 timeMs);
 
-    // ! Writes attributes of the scene node animator.
-    virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const;
+            // ! Writes attributes of the scene node animator.
+            virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const;
 
-    // ! Reads attributes of the scene node animator.
-    virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0);
+            // ! Reads attributes of the scene node animator.
+            virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0);
 
-    // ! Returns type of the scene node animator
-    virtual ESCENE_NODE_ANIMATOR_TYPE getType() const
-    {
-        return ESNAT_TEXTURE;
-    }
+            // ! Returns type of the scene node animator
+            virtual ESCENE_NODE_ANIMATOR_TYPE getType() const
+            {
+                return ESNAT_TEXTURE;
+            }
 
-    // ! Creates a clone of this animator.
-    /** Please note that you will have to drop
-       (IReferenceCounted::drop()) the returned pointer after calling
-       this. */
-    virtual ISceneNodeAnimator* createClone(ISceneNode *node, ISceneManager *newManager = 0);
+            // ! Creates a clone of this animator.
+            /** Please note that you will have to drop
+             * (IReferenceCounted::drop()) the returned pointer after calling
+             * this. */
+            virtual ISceneNodeAnimator* createClone(ISceneNode *node, ISceneManager *newManager = 0);
 
 private:
 
-    void clearTextures();
+            void clearTextures();
 
-    core::array<video::ITexture*> Textures;
-    u32                           TimePerFrame;
-    u32                           StartTime;
-    bool                          Loop;
-};
-}   // end namespace scene
+            core::array<video::ITexture*> Textures;
+            u32                           TimePerFrame;
+            u32                           StartTime;
+            bool                          Loop;
+        };
+    } // end namespace scene
 } // end namespace irr
 #endif

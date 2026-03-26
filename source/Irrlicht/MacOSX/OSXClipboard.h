@@ -7,8 +7,8 @@
 extern "C" {
 #endif
 
-	void	OSXCopyToClipboard(const char *text);
-	char*	OSXCopyFromClipboard();
+void    OSXCopyToClipboard(const char *text);
+char*   OSXCopyFromClipboard();
 
 #ifdef __cplusplus
 }

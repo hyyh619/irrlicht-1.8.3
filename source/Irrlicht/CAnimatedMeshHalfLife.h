@@ -17,7 +17,7 @@ namespace irr
 {
     namespace scene
     {
-// STUDIO MODELS, Copyright (c) 1998, Valve LLC. All rights reserved.
+        // STUDIO MODELS, Copyright (c) 1998, Valve LLC. All rights reserved.
     #define MAXSTUDIOTRIANGLES   20000     // TODO: tune this
     #define MAXSTUDIOVERTS       2048     // TODO: tune this
     #define MAXSTUDIOSEQUENCES   256         // total animation sequences
@@ -36,7 +36,7 @@ namespace irr
         typedef f32 vec3_hl[3]; // x,y,z
         typedef f32 vec4_hl[4]; // x,y,z,w
 
-// byte-align structures
+        // byte-align structures
 #include "irrpack.h"
 
         struct SHalflifeHeader
@@ -94,7 +94,7 @@ namespace irr
             s32 transitionindex;
         } PACK_STRUCT;
 
-// header for demand loaded sequence group data
+        // header for demand loaded sequence group data
         struct studioseqhdr_t
         {
             s32 id;
@@ -104,7 +104,7 @@ namespace irr
             s32 length;
         } PACK_STRUCT;
 
-// bones
+        // bones
         struct SHalflifeBone
         {
             c8  name[32]; // bone name for symbolic links
@@ -116,7 +116,7 @@ namespace irr
         } PACK_STRUCT;
 
 
-// bone controllers
+        // bone controllers
         struct SHalflifeBoneController
         {
             s32 bone; // -1 == 0
@@ -127,7 +127,7 @@ namespace irr
             s32 index; // 0-3 user set controller, 4 mouth
         } PACK_STRUCT;
 
-// intersection boxes
+        // intersection boxes
         struct SHalflifeBBox
         {
             s32     bone;
@@ -137,12 +137,12 @@ namespace irr
         } PACK_STRUCT;
 
 #ifndef ZONE_H
-// NOTE: this was a void*, but that crashes on 64bit.
-// I have found no mdl format desc, so not sure what it's meant to be, but s32 at least works.
+        // NOTE: this was a void*, but that crashes on 64bit.
+        // I have found no mdl format desc, so not sure what it's meant to be, but s32 at least works.
         typedef s32 cache_user_t;
 #endif
 
-// demand loaded sequence groups
+        // demand loaded sequence groups
         struct SHalflifeSequenceGroup
         {
             c8           label[32]; // textual name
@@ -151,7 +151,7 @@ namespace irr
             s32          data; // hack for group 0
         } PACK_STRUCT;
 
-// sequence descriptions
+        // sequence descriptions
         struct SHalflifeSequence
         {
             c8 label[32]; // sequence label
@@ -197,7 +197,7 @@ namespace irr
             s32 nextseq;    // auto advancing sequences
         } PACK_STRUCT;
 
-// events
+        // events
         struct mstudioevent_t
         {
             s32 frame;
@@ -207,7 +207,7 @@ namespace irr
         } PACK_STRUCT;
 
 
-// pivots
+        // pivots
         struct mstudiopivot_t
         {
             vec3_hl org; // pivot point
@@ -215,7 +215,7 @@ namespace irr
             s32     end;
         } PACK_STRUCT;
 
-// attachment
+        // attachment
         struct SHalflifeAttachment
         {
             c8      name[32];
@@ -230,7 +230,7 @@ namespace irr
             u16 offset[6];
         } PACK_STRUCT;
 
-// animation frames
+        // animation frames
         union SHalflifeAnimationFrame
         {
             struct
@@ -242,7 +242,7 @@ namespace irr
         } PACK_STRUCT;
 
 
-// body part index
+        // body part index
         struct SHalflifeBody
         {
             c8  name[64];
@@ -252,7 +252,7 @@ namespace irr
         } PACK_STRUCT;
 
 
-// skin info
+        // skin info
         struct SHalflifeTexture
         {
             c8  name[64];
@@ -263,10 +263,10 @@ namespace irr
         } PACK_STRUCT;
 
 
-// skin families
-// short    index[skinfamilies][skinref]
+        // skin families
+        // short    index[skinfamilies][skinref]
 
-// studio models
+        // studio models
         struct SHalflifeModel
         {
             c8  name[64];
@@ -289,7 +289,7 @@ namespace irr
         } PACK_STRUCT;
 
 
-// meshes
+        // meshes
         struct SHalflifeMesh
         {
             u32 numtris;
@@ -299,15 +299,15 @@ namespace irr
             u32 normindex;       // normal vec3_hl
         } PACK_STRUCT;
 
-// Default alignment
+        // Default alignment
 #include "irrunpack.h"
 
-// lighting options
+        // lighting options
     #define STUDIO_NF_FLATSHADE  0x0001
     #define STUDIO_NF_CHROME     0x0002
     #define STUDIO_NF_FULLBRIGHT 0x0004
 
-// motion flags
+        // motion flags
     #define STUDIO_X     0x0001
     #define STUDIO_Y     0x0002
     #define STUDIO_Z     0x0004
@@ -326,10 +326,10 @@ namespace irr
     #define STUDIO_TYPES 0x7FFF
     #define STUDIO_RLOOP 0x8000       // controller that wraps shortest distance
 
-// sequence flags
+        // sequence flags
     #define STUDIO_LOOPING 0x0001
 
-// bone flags
+        // bone flags
     #define STUDIO_HAS_NORMALS  0x0001
     #define STUDIO_HAS_VERTICES 0x0002
     #define STUDIO_HAS_BBOX     0x0004
@@ -338,11 +338,11 @@ namespace irr
     #define RAD_TO_STUDIO (32768.0 / M_PI)
     #define STUDIO_TO_RAD (M_PI / 32768.0)
 
-/*!
-    Textureatlas
-    Combine Source Images with arbitrary size and bithdepth to an Image with 2^n size
-    borders from the source images are copied around for allowing filtering ( bilinear, mipmap )
- */
+        /*!
+         *  Textureatlas
+         *  Combine Source Images with arbitrary size and bithdepth to an Image with 2^n size
+         *  borders from the source images are copied around for allowing filtering ( bilinear, mipmap )
+         */
         struct STextureAtlas
         {
             STextureAtlas ()
@@ -383,7 +383,7 @@ namespace irr
         };
 
 
-// ! Possible types of Animation Type
+        // ! Possible types of Animation Type
         enum E_ANIMATION_TYPE
         {
             // ! No Animation
@@ -396,7 +396,7 @@ namespace irr
             EAMT_PINGPONG
         };
 
-// ! Names for Animation Type
+        // ! Names for Animation Type
         const c8* const MeshAnimationTypeNames[] =
         {
             "still",
@@ -407,7 +407,7 @@ namespace irr
         };
 
 
-// ! Data for holding named Animation Info
+        // ! Data for holding named Animation Info
         struct KeyFrameInterpolation
         {
             core::stringc    Name; // Name of the current Animation/Bone
@@ -445,14 +445,14 @@ namespace irr
         };
 
 
-// ! a List holding named Animations
+        // ! a List holding named Animations
         typedef core::array<KeyFrameInterpolation> IAnimationList;
 
-// ! a List holding named Skins
+        // ! a List holding named Skins
         typedef core::array<core::stringc> ISkinList;
 
 
-// Current Model per Body
+        // Current Model per Body
         struct SubModel
         {
             core::stringc name;
@@ -467,7 +467,7 @@ namespace irr
             u32                   defaultModel;
             core::array<SubModel> model;
         };
-// ! a List holding named Models and SubModels
+        // ! a List holding named Models and SubModels
         typedef core::array<BodyPart> IBodyList;
 
 
@@ -518,7 +518,7 @@ public:
 
             // ! Gets the frame count of the animated mesh.
             /** \param fps Frames per second to play the animation with. If the amount is 0, it is not animated.
-               The actual speed is set in the scene node the mesh is instantiated in.*/
+             * The actual speed is set in the scene node the mesh is instantiated in.*/
             virtual void setAnimationSpeed(f32 fps)
             {
                 FramesPerSecond = fps;
@@ -601,7 +601,7 @@ private:
         };
 
 
-// ! Meshloader capable of loading HalfLife Model files
+        // ! Meshloader capable of loading HalfLife Model files
         class CHalflifeMDLMeshFileLoader : public IMeshLoader
         {
 public:
@@ -615,8 +615,8 @@ public:
 
             // ! creates/loads an animated mesh from the file.
             /** \return Pointer to the created mesh. Returns 0 if loading failed.
-               If you no longer need the mesh, you should call IAnimatedMesh::drop().
-               See IReferenceCounted::drop() for more information.
+             * If you no longer need the mesh, you should call IAnimatedMesh::drop().
+             * See IReferenceCounted::drop() for more information.
              */
             virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 

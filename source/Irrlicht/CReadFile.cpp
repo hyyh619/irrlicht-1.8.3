@@ -6,105 +6,105 @@
 
 namespace irr
 {
-namespace io
-{
-CReadFile::CReadFile(const io::path &fileName)
-    : File(0), FileSize(0), Filename(fileName)
-{
+    namespace io
+    {
+        CReadFile::CReadFile(const io::path &fileName)
+            : File(0), FileSize(0), Filename(fileName)
+        {
     #ifdef _DEBUG
-    setDebugName("CReadFile");
+            setDebugName("CReadFile");
     #endif
 
-    openFile();
-}
+            openFile();
+        }
 
 
-CReadFile::~CReadFile()
-{
-    if (File)
-        fclose(File);
-}
+        CReadFile::~CReadFile()
+        {
+            if (File)
+                fclose(File);
+        }
 
 
-// ! returns how much was read
-s32 CReadFile::read(void *buffer, u32 sizeToRead)
-{
-    if (!isOpen())
-        return 0;
+        // ! returns how much was read
+        s32 CReadFile::read(void *buffer, u32 sizeToRead)
+        {
+            if (!isOpen())
+                return 0;
 
-    return (s32)fread(buffer, 1, sizeToRead, File);
-}
-
-
-// ! changes position in file, returns true if successful
-// ! if relativeMovement==true, the pos is changed relative to current pos,
-// ! otherwise from begin of file
-bool CReadFile::seek(long finalPos, bool relativeMovement)
-{
-    if (!isOpen())
-        return false;
-
-    return fseek(File, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET) == 0;
-}
+            return (s32)fread(buffer, 1, sizeToRead, File);
+        }
 
 
-// ! returns size of file
-long CReadFile::getSize() const
-{
-    return FileSize;
-}
+        // ! changes position in file, returns true if successful
+        // ! if relativeMovement==true, the pos is changed relative to current pos,
+        // ! otherwise from begin of file
+        bool CReadFile::seek(long finalPos, bool relativeMovement)
+        {
+            if (!isOpen())
+                return false;
+
+            return fseek(File, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET) == 0;
+        }
 
 
-// ! returns where in the file we are.
-long CReadFile::getPos() const
-{
-    return ftell(File);
-}
+        // ! returns size of file
+        long CReadFile::getSize() const
+        {
+            return FileSize;
+        }
 
 
-// ! opens the file
-void CReadFile::openFile()
-{
-    if (Filename.size() == 0) // bugfix posted by rt
-    {
-        File = 0;
-        return;
-    }
+        // ! returns where in the file we are.
+        long CReadFile::getPos() const
+        {
+            return ftell(File);
+        }
+
+
+        // ! opens the file
+        void CReadFile::openFile()
+        {
+            if (Filename.size() == 0) // bugfix posted by rt
+            {
+                File = 0;
+                return;
+            }
 
 #if defined (_IRR_WCHAR_FILESYSTEM)
-    File = _wfopen(Filename.c_str(), L"rb");
+            File = _wfopen(Filename.c_str(), L"rb");
 #else
-    File = fopen(Filename.c_str(), "rb");
+            File = fopen(Filename.c_str(), "rb");
 #endif
 
-    if (File)
-    {
-        // get FileSize
+            if (File)
+            {
+                // get FileSize
 
-        fseek(File, 0, SEEK_END);
-        FileSize = getPos();
-        fseek(File, 0, SEEK_SET);
-    }
-}
-
-
-// ! returns name of file
-const io::path&CReadFile::getFileName() const
-{
-    return Filename;
-}
+                fseek(File, 0, SEEK_END);
+                FileSize = getPos();
+                fseek(File, 0, SEEK_SET);
+            }
+        }
 
 
+        // ! returns name of file
+        const io::path&CReadFile::getFileName() const
+        {
+            return Filename;
+        }
 
-IReadFile* createReadFile(const io::path &fileName)
-{
-    CReadFile *file = new CReadFile(fileName);
 
-    if (file->isOpen())
-        return file;
 
-    file->drop();
-    return 0;
-}
-}   // end namespace io
+        IReadFile* createReadFile(const io::path &fileName)
+        {
+            CReadFile *file = new CReadFile(fileName);
+
+            if (file->isOpen())
+                return file;
+
+            file->drop();
+            return 0;
+        }
+    } // end namespace io
 } // end namespace irr

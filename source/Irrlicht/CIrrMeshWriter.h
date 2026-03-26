@@ -12,49 +12,49 @@
 
 namespace irr
 {
-namespace io
-{
-class IXMLWriter;
-}
-namespace scene
-{
-class IMeshBuffer;
+    namespace io
+    {
+        class IXMLWriter;
+    }
+    namespace scene
+    {
+        class IMeshBuffer;
 
 
-// ! class to write meshes, implementing a IrrMesh (.irrmesh, .xml) writer
-/** This writer implementation has been originally developed for irrEdit and then
-   merged out to the Irrlicht Engine */
-class CIrrMeshWriter : public IMeshWriter
-{
+        // ! class to write meshes, implementing a IrrMesh (.irrmesh, .xml) writer
+        /** This writer implementation has been originally developed for irrEdit and then
+         * merged out to the Irrlicht Engine */
+        class CIrrMeshWriter : public IMeshWriter
+        {
 public:
 
-    CIrrMeshWriter(video::IVideoDriver *driver, io::IFileSystem *fs);
-    virtual ~CIrrMeshWriter();
+            CIrrMeshWriter(video::IVideoDriver *driver, io::IFileSystem *fs);
+            virtual ~CIrrMeshWriter();
 
-    // ! Returns the type of the mesh writer
-    virtual EMESH_WRITER_TYPE getType() const;
+            // ! Returns the type of the mesh writer
+            virtual EMESH_WRITER_TYPE getType() const;
 
-    // ! writes a mesh
-    virtual bool writeMesh(io::IWriteFile *file, scene::IMesh *mesh, s32 flags = EMWF_NONE);
+            // ! writes a mesh
+            virtual bool writeMesh(io::IWriteFile *file, scene::IMesh *mesh, s32 flags = EMWF_NONE);
 
 protected:
 
-    void writeBoundingBox(const core::aabbox3df &box);
+            void writeBoundingBox(const core::aabbox3df &box);
 
-    void writeMeshBuffer(const scene::IMeshBuffer *buffer);
+            void writeMeshBuffer(const scene::IMeshBuffer *buffer);
 
-    void writeMaterial(const video::SMaterial &material);
+            void writeMaterial(const video::SMaterial &material);
 
-    core::stringw getVectorAsStringLine(const core::vector3df &v) const;
+            core::stringw getVectorAsStringLine(const core::vector3df &v) const;
 
-    core::stringw getVectorAsStringLine(const core::vector2df &v) const;
+            core::stringw getVectorAsStringLine(const core::vector2df &v) const;
 
-    // member variables:
+            // member variables:
 
-    io::IFileSystem     *FileSystem;
-    video::IVideoDriver *VideoDriver;
-    io::IXMLWriter      *Writer;
-};
-}   // end namespace
+            io::IFileSystem     *FileSystem;
+            video::IVideoDriver *VideoDriver;
+            io::IXMLWriter      *Writer;
+        };
+    } // end namespace
 } // end namespace
 #endif

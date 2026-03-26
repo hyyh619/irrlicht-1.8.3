@@ -11,38 +11,38 @@
 
 namespace irr
 {
-namespace scene
-{
-class CSkyDomeSceneNode : public ISceneNode
-{
-public:
-    CSkyDomeSceneNode(video::ITexture *texture, u32 horiRes, u32 vertRes,
-                      f32 texturePercentage, f32 spherePercentage, f32 radius,
-                      ISceneNode *parent, ISceneManager *smgr, s32 id);
-    virtual ~CSkyDomeSceneNode();
-    virtual void OnRegisterSceneNode();
-    virtual void render();
-    virtual const core::aabbox3d<f32>&getBoundingBox() const;
-    virtual video::SMaterial&getMaterial(u32 i);
-    virtual u32 getMaterialCount() const;
-    virtual ESCENE_NODE_TYPE getType() const
+    namespace scene
     {
-        return ESNT_SKY_DOME;
-    }
+        class CSkyDomeSceneNode : public ISceneNode
+        {
+public:
+            CSkyDomeSceneNode(video::ITexture *texture, u32 horiRes, u32 vertRes,
+                f32 texturePercentage, f32 spherePercentage, f32 radius,
+                ISceneNode *parent, ISceneManager *smgr, s32 id);
+            virtual ~CSkyDomeSceneNode();
+            virtual void OnRegisterSceneNode();
+            virtual void render();
+            virtual const core::aabbox3d<f32>&getBoundingBox() const;
+            virtual video::SMaterial&getMaterial(u32 i);
+            virtual u32 getMaterialCount() const;
+            virtual ESCENE_NODE_TYPE getType() const
+            {
+                return ESNT_SKY_DOME;
+            }
 
-    virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const;
-    virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options);
-    virtual ISceneNode* clone(ISceneNode *newParent = 0, ISceneManager *newManager = 0);
+            virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const;
+            virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options);
+            virtual ISceneNode* clone(ISceneNode *newParent = 0, ISceneManager *newManager = 0);
 
 private:
 
-    void generateMesh();
+            void generateMesh();
 
-    SMeshBuffer *Buffer;
+            SMeshBuffer *Buffer;
 
-    u32 HorizontalResolution, VerticalResolution;
-    f32 TexturePercentage, SpherePercentage, Radius;
-};
-}
+            u32 HorizontalResolution, VerticalResolution;
+            f32 TexturePercentage, SpherePercentage, Radius;
+        };
+    }
 }
 #endif

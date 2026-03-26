@@ -12,97 +12,97 @@
 
 namespace irr
 {
-namespace video
-{
-// ! Base class for all internal Software2 material renderers
-class CSoftware2MaterialRenderer : public IMaterialRenderer
-{
+    namespace video
+    {
+        // ! Base class for all internal Software2 material renderers
+        class CSoftware2MaterialRenderer : public IMaterialRenderer
+        {
 public:
 
-    // ! Constructor
-    CSoftware2MaterialRenderer(video::CBurningVideoDriver *driver)
-        : Driver(driver)
-    {}
+            // ! Constructor
+            CSoftware2MaterialRenderer(video::CBurningVideoDriver *driver)
+                : Driver(driver)
+            {}
 
 protected:
 
-    video::CBurningVideoDriver *Driver;
-};
+            video::CBurningVideoDriver *Driver;
+        };
 
-// ! solid material renderer
-class CSoftware2MaterialRenderer_SOLID : public CSoftware2MaterialRenderer
-{
+        // ! solid material renderer
+        class CSoftware2MaterialRenderer_SOLID : public CSoftware2MaterialRenderer
+        {
 public:
-    CSoftware2MaterialRenderer_SOLID (video::CBurningVideoDriver *driver)
-        : CSoftware2MaterialRenderer (driver) {}
+            CSoftware2MaterialRenderer_SOLID (video::CBurningVideoDriver *driver)
+                : CSoftware2MaterialRenderer (driver) {}
 
-    // ! Returns if the material is transparent.
-    virtual bool isTransparent() const
-    {
-        return false;
-    }
-};
+            // ! Returns if the material is transparent.
+            virtual bool isTransparent() const
+            {
+                return false;
+            }
+        };
 
 
 
-// ! Transparent material renderer
-class CSoftware2MaterialRenderer_TRANSPARENT_ADD_COLOR : public CSoftware2MaterialRenderer
-{
+        // ! Transparent material renderer
+        class CSoftware2MaterialRenderer_TRANSPARENT_ADD_COLOR : public CSoftware2MaterialRenderer
+        {
 public:
-    CSoftware2MaterialRenderer_TRANSPARENT_ADD_COLOR (video::CBurningVideoDriver *driver)
-        : CSoftware2MaterialRenderer (driver) {}
+            CSoftware2MaterialRenderer_TRANSPARENT_ADD_COLOR (video::CBurningVideoDriver *driver)
+                : CSoftware2MaterialRenderer (driver) {}
 
 
-    // ! Returns if the material is transparent.
-    virtual bool isTransparent() const
-    {
-        return true;
-    }
-};
+            // ! Returns if the material is transparent.
+            virtual bool isTransparent() const
+            {
+                return true;
+            }
+        };
 
-// ! unsupported material renderer
-class CSoftware2MaterialRenderer_UNSUPPORTED : public CSoftware2MaterialRenderer
-{
+        // ! unsupported material renderer
+        class CSoftware2MaterialRenderer_UNSUPPORTED : public CSoftware2MaterialRenderer
+        {
 public:
-    CSoftware2MaterialRenderer_UNSUPPORTED (video::CBurningVideoDriver *driver)
-        : CSoftware2MaterialRenderer (driver) {}
+            CSoftware2MaterialRenderer_UNSUPPORTED (video::CBurningVideoDriver *driver)
+                : CSoftware2MaterialRenderer (driver) {}
 
-    virtual s32 getRenderCapability() const
-    {
-        return 1;
-    }
-};
+            virtual s32 getRenderCapability() const
+            {
+                return 1;
+            }
+        };
 
-// ! unsupported material renderer
-class CBurningShader_REFERENCE : public CSoftware2MaterialRenderer
-{
+        // ! unsupported material renderer
+        class CBurningShader_REFERENCE : public CSoftware2MaterialRenderer
+        {
 public:
-    CBurningShader_REFERENCE (video::CBurningVideoDriver *driver)
-        : CSoftware2MaterialRenderer (driver) {}
+            CBurningShader_REFERENCE (video::CBurningVideoDriver *driver)
+                : CSoftware2MaterialRenderer (driver) {}
 
-    virtual void OnSetMaterial(const SMaterial &material, const SMaterial &lastMaterial,
-                               bool resetAllRenderstates, IMaterialRendererServices *services)
-    {}
+            virtual void OnSetMaterial(const SMaterial &material, const SMaterial &lastMaterial,
+                bool resetAllRenderstates, IMaterialRendererServices *services)
+            {}
 
-    virtual void OnUnsetMaterial()
-    {}
+            virtual void OnUnsetMaterial()
+            {}
 
-    virtual bool isTransparent() const
-    {
-        return false;
-    }
+            virtual bool isTransparent() const
+            {
+                return false;
+            }
 
-    virtual bool OnRender(IMaterialRendererServices *service, E_VERTEX_TYPE vtxtype)
-    {
-        return true;
-    };
+            virtual bool OnRender(IMaterialRendererServices *service, E_VERTEX_TYPE vtxtype)
+            {
+                return true;
+            };
 
 
-    virtual s32 getRenderCapability() const
-    {
-        return 1;
-    }
-};
-}   // end namespace video
+            virtual s32 getRenderCapability() const
+            {
+                return 1;
+            }
+        };
+    } // end namespace video
 } // end namespace irr
 #endif

@@ -172,7 +172,7 @@ namespace irr
         }
 
 
-// ! Constructor
+        // ! Constructor
         CHalflifeMDLMeshFileLoader::CHalflifeMDLMeshFileLoader(
             scene::ISceneManager *smgr) : SceneManager(smgr)
         {
@@ -182,18 +182,18 @@ namespace irr
         }
 
 
-// ! returns true if the file maybe is able to be loaded by this class
-// ! based on the file extension (e.g. ".bsp")
+        // ! returns true if the file maybe is able to be loaded by this class
+        // ! based on the file extension (e.g. ".bsp")
         bool CHalflifeMDLMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension(filename, "mdl");
         }
 
 
-// ! creates/loads an animated mesh from the file.
-// ! \return Pointer to the created mesh. Returns 0 if loading failed.
-// ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-// ! See IReferenceCounted::drop() for more information.
+        // ! creates/loads an animated mesh from the file.
+        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
+        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        // ! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* CHalflifeMDLMeshFileLoader::createMesh(io::IReadFile *file)
         {
             CAnimatedMeshHalfLife *msh = new CAnimatedMeshHalfLife();
@@ -210,7 +210,7 @@ namespace irr
         }
 
 
-// ! Constructor
+        // ! Constructor
         CAnimatedMeshHalfLife::CAnimatedMeshHalfLife()
             : FrameCount(0), MeshIPol(0), SceneManager(0), Header(0), TextureHeader(0),
             OwnTexModel(false), SequenceIndex(0), CurrentFrame(0), FramesPerSecond(25.f),
@@ -225,9 +225,9 @@ namespace irr
             initData();
         }
 
-/*!
-    loads a complete model
- */
+        /*!
+         *  loads a complete model
+         */
         bool CAnimatedMeshHalfLife::loadModelFile(io::IReadFile *file,
             ISceneManager *smgr)
         {
@@ -250,7 +250,7 @@ namespace irr
         }
 
 
-// ! Destructor
+        // ! Destructor
         CAnimatedMeshHalfLife::~CAnimatedMeshHalfLife()
         {
             delete[] (u8*) Header;
@@ -265,29 +265,29 @@ namespace irr
         }
 
 
-// ! Returns the amount of frames in milliseconds. If the amount is 1, it is a static (=non animated) mesh.
+        // ! Returns the amount of frames in milliseconds. If the amount is 1, it is a static (=non animated) mesh.
         u32 CAnimatedMeshHalfLife::getFrameCount() const
         {
             return FrameCount;
         }
 
 
-// ! set the hardware mapping hint, for driver
+        // ! set the hardware mapping hint, for driver
         void CAnimatedMeshHalfLife::setHardwareMappingHint(E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer)
         {}
 
 
-// ! flags the meshbuffer as changed, reloads hardware buffers
+        // ! flags the meshbuffer as changed, reloads hardware buffers
         void CAnimatedMeshHalfLife::setDirty(E_BUFFER_TYPE buffer)
         {}
 
 
         static core::vector3df TransformedVerts[MAXSTUDIOVERTS]; // transformed vertices
-// static core::vector3df TransformedNormals[MAXSTUDIOVERTS];    // light surface normals
+        // static core::vector3df TransformedNormals[MAXSTUDIOVERTS];    // light surface normals
 
 
-/*!
- */
+        /*!
+         */
         void CAnimatedMeshHalfLife::initModel()
         {
             // init Sequences to Animation
@@ -315,23 +315,23 @@ namespace irr
             }
 
             // initBoneControllers
-/*
-    SHalflifeBoneController *bonecontroller = (SHalflifeBoneController *)((u8*) Header + Header->bonecontrollerindex);
-    for ( i = 0; i < Header->numbonecontrollers; i++)
-    {
-        printf ( "BoneController%d index:%d%s range:%f - %f\n",
-            i,
-            bonecontroller[i].index, bonecontroller[i].index == MOUTH_CONTROLLER ? " (Mouth)": "",
-            bonecontroller[i].start,bonecontroller[i].end
-            );
-    }
-
-    // initSkins
-    for (i = 0; i < TextureHeader->numskinfamilies; i++)
-    {
-        printf ( "Skin%d\n", i + 1);
-    }
- */
+            /*
+             *  SHalflifeBoneController *bonecontroller = (SHalflifeBoneController *)((u8*) Header + Header->bonecontrollerindex);
+             *  for ( i = 0; i < Header->numbonecontrollers; i++)
+             *  {
+             *      printf ( "BoneController%d index:%d%s range:%f - %f\n",
+             *          i,
+             *          bonecontroller[i].index, bonecontroller[i].index == MOUTH_CONTROLLER ? " (Mouth)": "",
+             *          bonecontroller[i].start,bonecontroller[i].end
+             *          );
+             *  }
+             *
+             *  // initSkins
+             *  for (i = 0; i < TextureHeader->numskinfamilies; i++)
+             *  {
+             *      printf ( "Skin%d\n", i + 1);
+             *  }
+             */
 
             // initBodyparts
             u32 meshBuffer = 0;
@@ -542,15 +542,15 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void CAnimatedMeshHalfLife::buildVertices()
         {
-/*
-    const u16 *skinref = (u16 *)((u8*)TextureHeader + TextureHeader->skinindex);
-    if (SkinGroupSelection != 0 && SkinGroupSelection < TextureHeader->numskinfamilies)
-        skinref += (SkinGroupSelection * TextureHeader->numskinref);
- */
+            /*
+             *  const u16 *skinref = (u16 *)((u8*)TextureHeader + TextureHeader->skinindex);
+             *  if (SkinGroupSelection != 0 && SkinGroupSelection < TextureHeader->numskinfamilies)
+             *      skinref += (SkinGroupSelection * TextureHeader->numskinref);
+             */
             u32       i;
             s32       c, g;
             const s16 *tricmd;
@@ -575,12 +575,12 @@ namespace irr
                     }
 
                     /*
-                            const u8 *normbone = ((u8*)Header + model->norminfoindex);
-                            const vec3_hl *studionorms = (vec3_hl *)((u8*)Header + model->normindex);
-                            for ( i = 0; i < model->numnorms; i++)
-                            {
-                                VectorTransform ( studionorms[i],  BoneTransform[normbone[i]], TransformedNormals[i]  );
-                            }
+                     *      const u8 *normbone = ((u8*)Header + model->norminfoindex);
+                     *      const vec3_hl *studionorms = (vec3_hl *)((u8*)Header + model->normindex);
+                     *      for ( i = 0; i < model->numnorms; i++)
+                     *      {
+                     *          VectorTransform ( studionorms[i],  BoneTransform[normbone[i]], TransformedNormals[i]  );
+                     *      }
                      */
                     for (i = 0; i < model->nummesh; i++)
                     {
@@ -602,9 +602,9 @@ namespace irr
                                 const core::vector3df &av = TransformedVerts[tricmd[0]];
                                 v->Pos = av;
                                 /*
-                                                    const core::vector3df& an = TransformedNormals[tricmd[1]];
-                                                    v->Normal = an;
-                                                    //v->Normal.normalize();
+                                 *                  const core::vector3df& an = TransformedNormals[tricmd[1]];
+                                 *                  v->Normal = an;
+                                 *                  //v->Normal.normalize();
                                  */
                             }
                         } // tricmd
@@ -614,9 +614,9 @@ namespace irr
         }
 
 
-/*!
-    render Bones
- */
+        /*!
+         *  render Bones
+         */
         void CAnimatedMeshHalfLife::renderModel(u32 param, IVideoDriver *driver, const core::matrix4 &absoluteTransformation)
         {
             SHalflifeBone *bone = (SHalflifeBone*) ((u8*) Header + Header->boneindex);
@@ -734,12 +734,12 @@ namespace irr
         }
 
 
-// ! Returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail.
+        // ! Returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail.
         IMesh* CAnimatedMeshHalfLife::getMesh(s32 frameInt, s32 detailLevel, s32 startFrameLoop, s32 endFrameLoop)
         {
             f32 frame  = frameInt + (detailLevel * 0.001f);
             u32 frameA = core::floor32 (frame);
-//    f32 blend = core::fract ( frame );
+            //    f32 blend = core::fract ( frame );
 
             SHalflifeSequence *seq = (SHalflifeSequence*) ((u8*) Header + Header->seqindex);
 
@@ -777,8 +777,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void CAnimatedMeshHalfLife::initData()
         {
             u32 i;
@@ -815,8 +815,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void STextureAtlas::release()
         {
             for (u32 i = 0; i < atlas.size(); i++)
@@ -832,8 +832,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void STextureAtlas::addSource(const c8 *name, video::IImage *image)
         {
             TextureAtlasEntry entry;
@@ -848,8 +848,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void STextureAtlas::getScale(core::vector2df &scale)
         {
             for (s32 i = static_cast<s32>(atlas.size()) - 1; i >= 0; --i)
@@ -867,8 +867,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void STextureAtlas::getTranslation(const c8 *name, core::vector2di &pos)
         {
             for (u32 i = 0; i < atlas.size(); ++i)
@@ -882,8 +882,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void STextureAtlas::create(u32 border, E_TEXTURE_CLAMP texmode)
         {
             u32           i = 0;
@@ -1006,8 +1006,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         SHalflifeHeader* CAnimatedMeshHalfLife::loadModel(io::IReadFile *file, const io::path &filename)
         {
             bool closefile = false;
@@ -1108,8 +1108,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         f32 CAnimatedMeshHalfLife::SetController(s32 controllerIndex, f32 value)
         {
             if (!Header)
@@ -1170,8 +1170,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         u32 CAnimatedMeshHalfLife::SetSkin(u32 value)
         {
             if (value < Header->numskinfamilies)
@@ -1181,8 +1181,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         bool CAnimatedMeshHalfLife::postLoadModel(const io::path &filename)
         {
             io::path path;
@@ -1228,8 +1228,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void CAnimatedMeshHalfLife::dumpModelInfo(u32 level) const
         {
             const u8              *phdr = (const u8*) Header;
@@ -1376,8 +1376,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void CAnimatedMeshHalfLife::ExtractBbox(s32 sequence, core::aabbox3df &box) const
         {
             const SHalflifeSequence *seq = (const SHalflifeSequence*)((const u8*)Header + Header->seqindex) + sequence;
@@ -1392,8 +1392,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void CAnimatedMeshHalfLife::calcBoneAdj()
         {
             const SHalflifeBoneController *bonecontroller =
@@ -1433,8 +1433,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void CAnimatedMeshHalfLife::calcBoneQuaternion(const s32 frame, const SHalflifeBone* const bone,
             SHalflifeAnimOffset *anim, const u32 j, f32 &angle1, f32 &angle2) const
         {
@@ -1496,8 +1496,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void CAnimatedMeshHalfLife::calcBonePosition(const s32 frame, f32 s,
             const SHalflifeBone* const bone, SHalflifeAnimOffset *anim, f32 *pos) const
         {
@@ -1552,8 +1552,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void CAnimatedMeshHalfLife::calcRotations(vec3_hl *pos, vec4_hl *q,
             SHalflifeSequence *seq, SHalflifeAnimOffset *anim, f32 f)
         {
@@ -1598,8 +1598,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         SHalflifeAnimOffset* CAnimatedMeshHalfLife::getAnim(SHalflifeSequence *seq)
         {
             SHalflifeSequenceGroup *seqgroup = (SHalflifeSequenceGroup*)((u8*)Header + Header->seqgroupindex) + seq->seqgroup;
@@ -1613,8 +1613,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void CAnimatedMeshHalfLife::slerpBones(vec4_hl q1[], vec3_hl pos1[], vec4_hl q2[], vec3_hl pos2[], f32 s)
         {
             if (s < 0)
@@ -1639,8 +1639,8 @@ namespace irr
         }
 
 
-/*!
- */
+        /*!
+         */
         void CAnimatedMeshHalfLife::setUpBones()
         {
             static vec3_hl pos[MAXSTUDIOBONES];
@@ -1708,38 +1708,38 @@ namespace irr
         }
 
 
-// ! Returns an axis aligned bounding box
+        // ! Returns an axis aligned bounding box
         const core::aabbox3d<f32>&CAnimatedMeshHalfLife::getBoundingBox() const
         {
             return MeshIPol->BoundingBox;
         }
 
 
-// ! Returns the type of the animated mesh.
+        // ! Returns the type of the animated mesh.
         E_ANIMATED_MESH_TYPE CAnimatedMeshHalfLife::getMeshType() const
         {
             return EAMT_MDL_HALFLIFE;
         }
 
 
-// ! returns amount of mesh buffers.
+        // ! returns amount of mesh buffers.
         u32 CAnimatedMeshHalfLife::getMeshBufferCount() const
         {
             return MeshIPol->getMeshBufferCount();
         }
 
 
-// ! returns pointer to a mesh buffer
+        // ! returns pointer to a mesh buffer
         IMeshBuffer* CAnimatedMeshHalfLife::getMeshBuffer(u32 nr) const
         {
             return MeshIPol->getMeshBuffer(nr);
         }
 
 
-// ! Returns pointer to a mesh buffer which fits a material
-/** \param material: material to search for
-   \return Returns the pointer to the mesh buffer or
-   NULL if there is no such mesh buffer. */
+        // ! Returns pointer to a mesh buffer which fits a material
+        /** \param material: material to search for
+         * \return Returns the pointer to the mesh buffer or
+         * NULL if there is no such mesh buffer. */
         IMeshBuffer* CAnimatedMeshHalfLife::getMeshBuffer(const video::SMaterial &material) const
         {
             return MeshIPol->getMeshBuffer(material);
@@ -1752,7 +1752,7 @@ namespace irr
         }
 
 
-// ! set user axis aligned bounding box
+        // ! set user axis aligned bounding box
         void CAnimatedMeshHalfLife::setBoundingBox(const core::aabbox3df &box)
         {
             MeshIPol->setBoundingBox(box);

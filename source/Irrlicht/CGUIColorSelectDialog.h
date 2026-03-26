@@ -17,53 +17,53 @@
 
 namespace irr
 {
-namespace gui
-{
-class CGUIColorSelectDialog : public IGUIColorSelectDialog
-{
+    namespace gui
+    {
+        class CGUIColorSelectDialog : public IGUIColorSelectDialog
+        {
 public:
 
-    // ! constructor
-    CGUIColorSelectDialog(const wchar_t *title, IGUIEnvironment *environment, IGUIElement *parent, s32 id);
+            // ! constructor
+            CGUIColorSelectDialog(const wchar_t *title, IGUIEnvironment *environment, IGUIElement *parent, s32 id);
 
-    // ! destructor
-    virtual ~CGUIColorSelectDialog();
+            // ! destructor
+            virtual ~CGUIColorSelectDialog();
 
-    // ! called if an event happened.
-    virtual bool OnEvent(const SEvent &event);
+            // ! called if an event happened.
+            virtual bool OnEvent(const SEvent &event);
 
-    // ! draws the element and its children
-    virtual void draw();
+            // ! draws the element and its children
+            virtual void draw();
 
-    virtual video::SColor getColor();
-    virtual video::SColorHSL getColorHSL();
+            virtual video::SColor getColor();
+            virtual video::SColorHSL getColorHSL();
 
 private:
 
-    // ! sends the event that the file has been selected.
-    void sendSelectedEvent();
+            // ! sends the event that the file has been selected.
+            void sendSelectedEvent();
 
-    // ! sends the event that the file choose process has been canceld
-    void sendCancelEvent();
+            // ! sends the event that the file choose process has been canceld
+            void sendCancelEvent();
 
-    core::position2d<s32> DragStart;
-    bool                  Dragging;
-    IGUIButton            *CloseButton;
-    IGUIButton            *OKButton;
-    IGUIButton            *CancelButton;
+            core::position2d<s32> DragStart;
+            bool                  Dragging;
+            IGUIButton            *CloseButton;
+            IGUIButton            *OKButton;
+            IGUIButton            *CancelButton;
 
-    core::array<IGUISpinBox*> Battery;
+            core::array<IGUISpinBox*> Battery;
 
-    struct SColorCircle
-    {
-        IGUIImage       *Control;
-        video::ITexture *Texture;
-    };
-    SColorCircle ColorRing;
+            struct SColorCircle
+            {
+                IGUIImage       *Control;
+                video::ITexture *Texture;
+            };
+            SColorCircle ColorRing;
 
-    void buildColorRing(const core::dimension2d<u32> &dim, s32 supersample, const video::SColor &borderColor);
-};
-}   // end namespace gui
+            void buildColorRing(const core::dimension2d<u32> &dim, s32 supersample, const video::SColor &borderColor);
+        };
+    } // end namespace gui
 } // end namespace irr
 #endif // _IRR_COMPILE_WITH_GUI_
 #endif // __C_GUI_COLOR_SELECT_DIALOG_H_INCLUDED__

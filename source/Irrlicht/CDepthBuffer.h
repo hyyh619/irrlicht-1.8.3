@@ -9,94 +9,94 @@
 
 namespace irr
 {
-namespace video
-{
-class CDepthBuffer : public IDepthBuffer
-{
+    namespace video
+    {
+        class CDepthBuffer : public IDepthBuffer
+        {
 public:
 
-    // ! constructor
-    CDepthBuffer(const core::dimension2d<u32> &size);
+            // ! constructor
+            CDepthBuffer(const core::dimension2d<u32> &size);
 
-    // ! destructor
-    virtual ~CDepthBuffer();
+            // ! destructor
+            virtual ~CDepthBuffer();
 
-    // ! clears the zbuffer
-    virtual void clear();
+            // ! clears the zbuffer
+            virtual void clear();
 
-    // ! sets the new size of the zbuffer
-    virtual void setSize(const core::dimension2d<u32> &size);
+            // ! sets the new size of the zbuffer
+            virtual void setSize(const core::dimension2d<u32> &size);
 
-    // ! returns the size of the zbuffer
-    virtual const core::dimension2d<u32>&getSize() const;
+            // ! returns the size of the zbuffer
+            virtual const core::dimension2d<u32>&getSize() const;
 
-    // ! locks the zbuffer
-    virtual void* lock()
-    {
-        return (void*) Buffer;
-    }
+            // ! locks the zbuffer
+            virtual void* lock()
+            {
+                return (void*) Buffer;
+            }
 
-    // ! unlocks the zbuffer
-    virtual void unlock() {}
+            // ! unlocks the zbuffer
+            virtual void unlock() {}
 
-    // ! returns pitch of depthbuffer (in bytes)
-    virtual u32 getPitch() const
-    {
-        return Pitch;
-    }
+            // ! returns pitch of depthbuffer (in bytes)
+            virtual u32 getPitch() const
+            {
+                return Pitch;
+            }
 
 
 private:
 
-    u8                     *Buffer;
-    core::dimension2d<u32> Size;
-    u32                    TotalSize;
-    u32                    Pitch;
-};
+            u8                     *Buffer;
+            core::dimension2d<u32> Size;
+            u32                    TotalSize;
+            u32                    Pitch;
+        };
 
 
-class CStencilBuffer : public IStencilBuffer
-{
+        class CStencilBuffer : public IStencilBuffer
+        {
 public:
 
-    // ! constructor
-    CStencilBuffer(const core::dimension2d<u32> &size);
+            // ! constructor
+            CStencilBuffer(const core::dimension2d<u32> &size);
 
-    // ! destructor
-    virtual ~CStencilBuffer();
+            // ! destructor
+            virtual ~CStencilBuffer();
 
-    // ! clears the zbuffer
-    virtual void clear();
+            // ! clears the zbuffer
+            virtual void clear();
 
-    // ! sets the new size of the zbuffer
-    virtual void setSize(const core::dimension2d<u32> &size);
+            // ! sets the new size of the zbuffer
+            virtual void setSize(const core::dimension2d<u32> &size);
 
-    // ! returns the size of the zbuffer
-    virtual const core::dimension2d<u32>&getSize() const;
+            // ! returns the size of the zbuffer
+            virtual const core::dimension2d<u32>&getSize() const;
 
-    // ! locks the zbuffer
-    virtual void* lock()
-    {
-        return (void*) Buffer;
-    }
+            // ! locks the zbuffer
+            virtual void* lock()
+            {
+                return (void*) Buffer;
+            }
 
-    // ! unlocks the zbuffer
-    virtual void unlock() {}
+            // ! unlocks the zbuffer
+            virtual void unlock() {}
 
-    // ! returns pitch of depthbuffer (in bytes)
-    virtual u32 getPitch() const
-    {
-        return Pitch;
-    }
+            // ! returns pitch of depthbuffer (in bytes)
+            virtual u32 getPitch() const
+            {
+                return Pitch;
+            }
 
 
 private:
 
-    u8                     *Buffer;
-    core::dimension2d<u32> Size;
-    u32                    TotalSize;
-    u32                    Pitch;
-};
-}   // end namespace video
+            u8                     *Buffer;
+            core::dimension2d<u32> Size;
+            u32                    TotalSize;
+            u32                    Pitch;
+        };
+    } // end namespace video
 } // end namespace irr
 #endif

@@ -12,13 +12,12 @@
 
 @interface AppDelegate : NSObject
 {
-	BOOL			_quit;
-	irr::CIrrDeviceMacOSX	*_device;
+    BOOL                  _quit;
+    irr::CIrrDeviceMacOSX *_device;
 }
 
-- (id)initWithDevice:(irr::CIrrDeviceMacOSX *)device;
+- (id)initWithDevice:(irr::CIrrDeviceMacOSX*)device;
 - (BOOL)isQuit;
 
 @end
-
 #endif // _IRR_COMPILE_WITH_OSX_DEVICE_

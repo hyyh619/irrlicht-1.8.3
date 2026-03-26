@@ -9,40 +9,40 @@
 
 namespace irr
 {
-namespace scene
-{
-class CSceneNodeAnimatorRotation : public ISceneNodeAnimator
-{
+    namespace scene
+    {
+        class CSceneNodeAnimatorRotation : public ISceneNodeAnimator
+        {
 public:
 
-    // ! constructor
-    CSceneNodeAnimatorRotation(u32 time, const core::vector3df &rotation);
+            // ! constructor
+            CSceneNodeAnimatorRotation(u32 time, const core::vector3df &rotation);
 
-    // ! animates a scene node
-    virtual void animateNode(ISceneNode *node, u32 timeMs);
+            // ! animates a scene node
+            virtual void animateNode(ISceneNode *node, u32 timeMs);
 
-    // ! Writes attributes of the scene node animator.
-    virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const;
+            // ! Writes attributes of the scene node animator.
+            virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const;
 
-    // ! Reads attributes of the scene node animator.
-    virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0);
+            // ! Reads attributes of the scene node animator.
+            virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0);
 
-    // ! Returns type of the scene node animator
-    virtual ESCENE_NODE_ANIMATOR_TYPE getType() const
-    {
-        return ESNAT_ROTATION;
-    }
+            // ! Returns type of the scene node animator
+            virtual ESCENE_NODE_ANIMATOR_TYPE getType() const
+            {
+                return ESNAT_ROTATION;
+            }
 
-    // ! Creates a clone of this animator.
-    /** Please note that you will have to drop
-       (IReferenceCounted::drop()) the returned pointer after calling this. */
-    virtual ISceneNodeAnimator* createClone(ISceneNode *node, ISceneManager *newManager = 0);
+            // ! Creates a clone of this animator.
+            /** Please note that you will have to drop
+             * (IReferenceCounted::drop()) the returned pointer after calling this. */
+            virtual ISceneNodeAnimator* createClone(ISceneNode *node, ISceneManager *newManager = 0);
 
 private:
 
-    core::vector3df Rotation;
-    u32             StartTime;
-};
-}   // end namespace scene
+            core::vector3df Rotation;
+            u32             StartTime;
+        };
+    } // end namespace scene
 } // end namespace irr
 #endif

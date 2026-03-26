@@ -13,31 +13,31 @@
 
 namespace irr
 {
-namespace video
-{
-IImageWriter* createImageWriterPSD()
-{
-    return new CImageWriterPSD;
-}
+    namespace video
+    {
+        IImageWriter* createImageWriterPSD()
+        {
+            return new CImageWriterPSD;
+        }
 
-CImageWriterPSD::CImageWriterPSD()
-{
+        CImageWriterPSD::CImageWriterPSD()
+        {
 #ifdef _DEBUG
-    setDebugName("CImageWriterPSD");
+            setDebugName("CImageWriterPSD");
 #endif
-}
+        }
 
-bool CImageWriterPSD::isAWriteableFileExtension(const io::path &filename) const
-{
-    return core::hasFileExtension (filename, "psd");
-}
+        bool CImageWriterPSD::isAWriteableFileExtension(const io::path &filename) const
+        {
+            return core::hasFileExtension (filename, "psd");
+        }
 
-bool CImageWriterPSD::writeImage(io::IWriteFile *file, IImage *image, u32 param) const
-{
-    os::Printer::log("PSD writer not yet implemented. Image not written.", ELL_WARNING);
+        bool CImageWriterPSD::writeImage(io::IWriteFile *file, IImage *image, u32 param) const
+        {
+            os::Printer::log("PSD writer not yet implemented. Image not written.", ELL_WARNING);
 
-    return false;
-}
-}   // namespace video
+            return false;
+        }
+    } // namespace video
 } // namespace irr
 #endif

@@ -10,193 +10,193 @@
 
 namespace irr
 {
-namespace scene
-{
-// ! constructor
-CVolumeLightSceneNode::CVolumeLightSceneNode(ISceneNode *parent, ISceneManager *mgr,
-                                             s32 id, const u32 subdivU, const u32 subdivV,
-                                             const video::SColor foot,
-                                             const video::SColor tail,
-                                             const core::vector3df &position,
-                                             const core::vector3df &rotation, const core::vector3df &scale)
-    : IVolumeLightSceneNode(parent, mgr, id, position, rotation, scale),
-    Mesh(0), LPDistance(8.0f),
-    SubdivideU(subdivU), SubdivideV(subdivV),
-    FootColor(foot), TailColor(tail),
-    LightDimensions(core::vector3df(1.0f, 1.2f, 1.0f))
-{
+    namespace scene
+    {
+        // ! constructor
+        CVolumeLightSceneNode::CVolumeLightSceneNode(ISceneNode *parent, ISceneManager *mgr,
+            s32 id, const u32 subdivU, const u32 subdivV,
+            const video::SColor foot,
+            const video::SColor tail,
+            const core::vector3df &position,
+            const core::vector3df &rotation, const core::vector3df &scale)
+            : IVolumeLightSceneNode(parent, mgr, id, position, rotation, scale),
+            Mesh(0), LPDistance(8.0f),
+            SubdivideU(subdivU), SubdivideV(subdivV),
+            FootColor(foot), TailColor(tail),
+            LightDimensions(core::vector3df(1.0f, 1.2f, 1.0f))
+        {
     #ifdef _DEBUG
-    setDebugName("CVolumeLightSceneNode");
+            setDebugName("CVolumeLightSceneNode");
     #endif
 
-    constructLight();
-}
+            constructLight();
+        }
 
 
-CVolumeLightSceneNode::~CVolumeLightSceneNode()
-{
-    if (Mesh)
-        Mesh->drop();
-}
+        CVolumeLightSceneNode::~CVolumeLightSceneNode()
+        {
+            if (Mesh)
+                Mesh->drop();
+        }
 
 
-void CVolumeLightSceneNode::constructLight()
-{
-    if (Mesh)
-        Mesh->drop();
+        void CVolumeLightSceneNode::constructLight()
+        {
+            if (Mesh)
+                Mesh->drop();
 
-    Mesh = SceneManager->getGeometryCreator()->createVolumeLightMesh(SubdivideU, SubdivideV, FootColor, TailColor, LPDistance, LightDimensions);
-}
-
-
-// ! renders the node.
-void CVolumeLightSceneNode::render()
-{
-    if (!Mesh)
-        return;
-
-    video::IVideoDriver *driver = SceneManager->getVideoDriver();
-    driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
-
-    driver->setMaterial(Mesh->getMeshBuffer(0)->getMaterial());
-    driver->drawMeshBuffer(Mesh->getMeshBuffer(0));
-}
+            Mesh = SceneManager->getGeometryCreator()->createVolumeLightMesh(SubdivideU, SubdivideV, FootColor, TailColor, LPDistance, LightDimensions);
+        }
 
 
-// ! returns the axis aligned bounding box of this node
-const core::aabbox3d<f32>&CVolumeLightSceneNode::getBoundingBox() const
-{
-    return Mesh->getBoundingBox();
-}
+        // ! renders the node.
+        void CVolumeLightSceneNode::render()
+        {
+            if (!Mesh)
+                return;
+
+            video::IVideoDriver *driver = SceneManager->getVideoDriver();
+            driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
+
+            driver->setMaterial(Mesh->getMeshBuffer(0)->getMaterial());
+            driver->drawMeshBuffer(Mesh->getMeshBuffer(0));
+        }
 
 
-void CVolumeLightSceneNode::OnRegisterSceneNode()
-{
-    if (IsVisible)
-    {
-        SceneManager->registerNodeForRendering(this, ESNRP_TRANSPARENT);
-    }
-
-    ISceneNode::OnRegisterSceneNode();
-}
+        // ! returns the axis aligned bounding box of this node
+        const core::aabbox3d<f32>&CVolumeLightSceneNode::getBoundingBox() const
+        {
+            return Mesh->getBoundingBox();
+        }
 
 
-// ! returns the material based on the zero based index i. To get the amount
-// ! of materials used by this scene node, use getMaterialCount().
-// ! This function is needed for inserting the node into the scene hirachy on a
-// ! optimal position for minimizing renderstate changes, but can also be used
-// ! to directly modify the material of a scene node.
-video::SMaterial&CVolumeLightSceneNode::getMaterial(u32 i)
-{
-    return Mesh->getMeshBuffer(i)->getMaterial();
-}
+        void CVolumeLightSceneNode::OnRegisterSceneNode()
+        {
+            if (IsVisible)
+            {
+                SceneManager->registerNodeForRendering(this, ESNRP_TRANSPARENT);
+            }
+
+            ISceneNode::OnRegisterSceneNode();
+        }
 
 
-// ! returns amount of materials used by this scene node.
-u32 CVolumeLightSceneNode::getMaterialCount() const
-{
-    return 1;
-}
+        // ! returns the material based on the zero based index i. To get the amount
+        // ! of materials used by this scene node, use getMaterialCount().
+        // ! This function is needed for inserting the node into the scene hirachy on a
+        // ! optimal position for minimizing renderstate changes, but can also be used
+        // ! to directly modify the material of a scene node.
+        video::SMaterial&CVolumeLightSceneNode::getMaterial(u32 i)
+        {
+            return Mesh->getMeshBuffer(i)->getMaterial();
+        }
 
 
-void CVolumeLightSceneNode::setSubDivideU(const u32 inU)
-{
-    if (inU != SubdivideU)
-    {
-        SubdivideU = inU;
-        constructLight();
-    }
-}
+        // ! returns amount of materials used by this scene node.
+        u32 CVolumeLightSceneNode::getMaterialCount() const
+        {
+            return 1;
+        }
 
 
-void CVolumeLightSceneNode::setSubDivideV(const u32 inV)
-{
-    if (inV != SubdivideV)
-    {
-        SubdivideV = inV;
-        constructLight();
-    }
-}
+        void CVolumeLightSceneNode::setSubDivideU(const u32 inU)
+        {
+            if (inU != SubdivideU)
+            {
+                SubdivideU = inU;
+                constructLight();
+            }
+        }
 
 
-void CVolumeLightSceneNode::setFootColor(const video::SColor inColor)
-{
-    if (inColor != FootColor)
-    {
-        FootColor = inColor;
-        constructLight();
-    }
-}
+        void CVolumeLightSceneNode::setSubDivideV(const u32 inV)
+        {
+            if (inV != SubdivideV)
+            {
+                SubdivideV = inV;
+                constructLight();
+            }
+        }
 
 
-void CVolumeLightSceneNode::setTailColor(const video::SColor inColor)
-{
-    if (inColor != TailColor)
-    {
-        TailColor = inColor;
-        constructLight();
-    }
-}
+        void CVolumeLightSceneNode::setFootColor(const video::SColor inColor)
+        {
+            if (inColor != FootColor)
+            {
+                FootColor = inColor;
+                constructLight();
+            }
+        }
 
 
-// ! Writes attributes of the scene node.
-void CVolumeLightSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
-{
-    ISceneNode::serializeAttributes(out, options);
-
-    out->addFloat("lpDistance", LPDistance);
-    out->addInt("subDivideU", SubdivideU);
-    out->addInt("subDivideV", SubdivideV);
-
-    out->addColor("footColor", FootColor);
-    out->addColor("tailColor", TailColor);
-
-    out->addVector3d("lightDimension", LightDimensions);
-}
+        void CVolumeLightSceneNode::setTailColor(const video::SColor inColor)
+        {
+            if (inColor != TailColor)
+            {
+                TailColor = inColor;
+                constructLight();
+            }
+        }
 
 
-// ! Reads attributes of the scene node.
-void CVolumeLightSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
-{
-    LPDistance = in->getAttributeAsFloat("lpDistance");
-    LPDistance = core::max_(LPDistance, 8.0f);
+        // ! Writes attributes of the scene node.
+        void CVolumeLightSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
+        {
+            ISceneNode::serializeAttributes(out, options);
 
-    SubdivideU = in->getAttributeAsInt("subDivideU");
-    SubdivideU = core::max_(SubdivideU, 1u);
+            out->addFloat("lpDistance", LPDistance);
+            out->addInt("subDivideU", SubdivideU);
+            out->addInt("subDivideV", SubdivideV);
 
-    SubdivideV = in->getAttributeAsInt("subDivideV");
-    SubdivideV = core::max_(SubdivideV, 1u);
+            out->addColor("footColor", FootColor);
+            out->addColor("tailColor", TailColor);
 
-    FootColor = in->getAttributeAsColor("footColor");
-    TailColor = in->getAttributeAsColor("tailColor");
-
-    LightDimensions = in->getAttributeAsVector3d("lightDimension");
-
-    constructLight();
-
-    ISceneNode::deserializeAttributes(in, options);
-}
+            out->addVector3d("lightDimension", LightDimensions);
+        }
 
 
-// ! Creates a clone of this scene node and its children.
-ISceneNode* CVolumeLightSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
-{
-    if (!newParent)
-        newParent = Parent;
+        // ! Reads attributes of the scene node.
+        void CVolumeLightSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
+        {
+            LPDistance = in->getAttributeAsFloat("lpDistance");
+            LPDistance = core::max_(LPDistance, 8.0f);
 
-    if (!newManager)
-        newManager = SceneManager;
+            SubdivideU = in->getAttributeAsInt("subDivideU");
+            SubdivideU = core::max_(SubdivideU, 1u);
 
-    CVolumeLightSceneNode *nb = new CVolumeLightSceneNode(newParent,
-                                                          newManager, ID, SubdivideU, SubdivideV, FootColor, TailColor, RelativeTranslation);
+            SubdivideV = in->getAttributeAsInt("subDivideV");
+            SubdivideV = core::max_(SubdivideV, 1u);
 
-    nb->cloneMembers(this, newManager);
-    nb->getMaterial(0) = Mesh->getMeshBuffer(0)->getMaterial();
+            FootColor = in->getAttributeAsColor("footColor");
+            TailColor = in->getAttributeAsColor("tailColor");
 
-    if (newParent)
-        nb->drop();
+            LightDimensions = in->getAttributeAsVector3d("lightDimension");
 
-    return nb;
-}
-}   // end namespace scene
+            constructLight();
+
+            ISceneNode::deserializeAttributes(in, options);
+        }
+
+
+        // ! Creates a clone of this scene node and its children.
+        ISceneNode* CVolumeLightSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
+        {
+            if (!newParent)
+                newParent = Parent;
+
+            if (!newManager)
+                newManager = SceneManager;
+
+            CVolumeLightSceneNode *nb = new CVolumeLightSceneNode(newParent,
+                    newManager, ID, SubdivideU, SubdivideV, FootColor, TailColor, RelativeTranslation);
+
+            nb->cloneMembers(this, newManager);
+            nb->getMaterial(0) = Mesh->getMeshBuffer(0)->getMaterial();
+
+            if (newParent)
+                nb->drop();
+
+            return nb;
+        }
+    } // end namespace scene
 } // end namespace irr
