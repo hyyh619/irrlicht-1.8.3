@@ -40,7 +40,7 @@ namespace irr
             c8 id[2] = {0};
 
             file->read(&id, 2);
-            return (id[0]=='P' && id[1]>'0' && id[1]<'7');
+            return (id[0] == 'P' && id[1] > '0' && id[1] < '7');
         }
 
 
@@ -55,11 +55,11 @@ namespace irr
             c8 id[2];
             file->read(&id, 2);
 
-            if (id[0]!='P' || id[1]<'1' || id[1]>'6')
+            if (id[0] != 'P' || id[1] < '1' || id[1] > '6')
                 return 0;
 
             const u8   format = id[1] - '0';
-            const bool binary = format>3;
+            const bool binary = format > 3;
 
             core::stringc token;
             getNextToken(file, token);
@@ -70,7 +70,7 @@ namespace irr
 
             u8        *data = 0;
             const u32 size  = width * height;
-            if (format==1 || format==4)
+            if (format == 1 || format == 4)
             {
                 skipToNextToken(file); // go to start of data
 
@@ -92,7 +92,7 @@ namespace irr
                     memset(data, 0, bytesize);
                     u32 shift = 0;
 
-                    for (u32 i = 0; i<size; ++i)
+                    for (u32 i = 0; i < size; ++i)
                     {
                         getNextToken(file, token);
                         if (token == "1")
@@ -116,7 +116,7 @@ namespace irr
 
                 skipToNextToken(file); // go to start of data
 
-                if (format==2 || format==5)
+                if (format == 2 || format == 5)
                 {
                     if (binary)
                     {
@@ -130,7 +130,7 @@ namespace irr
                         {
                             u8 *ptr = (u8*)image->lock();
 
-                            for (u32 i = 0; i<size; ++i)
+                            for (u32 i = 0; i < size; ++i)
                             {
                                 *ptr++ = data[i];
                                 *ptr++ = data[i];
@@ -149,7 +149,7 @@ namespace irr
                         {
                             u8 *ptr = (u8*)image->lock();
 
-                            for (u32 i = 0; i<size; ++i)
+                            for (u32 i = 0; i < size; ++i)
                             {
                                 getNextToken(file, token);
                                 const u8 num = (u8)core::strtoul10(token.c_str());
@@ -176,7 +176,7 @@ namespace irr
                         {
                             u8 *ptr = (u8*)image->lock();
 
-                            for (u32 i = 0; i<size; ++i)
+                            for (u32 i = 0; i < size; ++i)
                             {
                                 *ptr++ = data[3 * i];
                                 *ptr++ = data[3 * i + 1];
@@ -195,7 +195,7 @@ namespace irr
                         {
                             u8 *ptr = (u8*)image->lock();
 
-                            for (u32 i = 0; i<size; ++i)
+                            for (u32 i = 0; i < size; ++i)
                             {
                                 getNextToken(file, token);
                                 *ptr++ = (u8)core::strtoul10(token.c_str());
@@ -225,12 +225,12 @@ namespace irr
             token = "";
             c8 c;
 
-            while (file->getPos()<file->getSize())
+            while (file->getPos() < file->getSize())
             {
                 file->read(&c, 1);
-                if (c=='#')
+                if (c == '#')
                 {
-                    while (c!='\n' && c!='\r' && (file->getPos()<file->getSize()))
+                    while (c != '\n' && c != '\r' && (file->getPos() < file->getSize()))
                         file->read(&c, 1);
                 }
                 else if (!core::isspace(c))
@@ -240,12 +240,12 @@ namespace irr
                 }
             }
 
-            while (file->getPos()<file->getSize())
+            while (file->getPos() < file->getSize())
             {
                 file->read(&c, 1);
-                if (c=='#')
+                if (c == '#')
                 {
-                    while (c!='\n' && c!='\r' && (file->getPos()<file->getSize()))
+                    while (c != '\n' && c != '\r' && (file->getPos() < file->getSize()))
                         file->read(&c, 1);
                 }
                 else if (!core::isspace(c))
@@ -261,12 +261,12 @@ namespace irr
         {
             c8 c;
 
-            while (file->getPos()<file->getSize())
+            while (file->getPos() < file->getSize())
             {
                 file->read(&c, 1);
-                if (c=='#')
+                if (c == '#')
                 {
-                    while (c!='\n' && c!='\r' && (file->getPos()<file->getSize()))
+                    while (c != '\n' && c != '\r' && (file->getPos() < file->getSize()))
                         file->read(&c, 1);
                 }
                 else if (!core::isspace(c))

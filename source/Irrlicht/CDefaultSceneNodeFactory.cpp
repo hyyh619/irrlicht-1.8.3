@@ -153,7 +153,7 @@ namespace irr
         // ! returns type of a createable scene node type
         ESCENE_NODE_TYPE CDefaultSceneNodeFactory::getCreateableSceneNodeType(u32 idx) const
         {
-            if (idx<SupportedSceneNodeTypes.size())
+            if (idx < SupportedSceneNodeTypes.size())
                 return SupportedSceneNodeTypes[idx].Type;
             else
                 return ESNT_UNKNOWN;
@@ -163,7 +163,7 @@ namespace irr
         // ! returns type name of a createable scene node type
         const c8* CDefaultSceneNodeFactory::getCreateableSceneNodeTypeName(u32 idx) const
         {
-            if (idx<SupportedSceneNodeTypes.size())
+            if (idx < SupportedSceneNodeTypes.size())
                 return SupportedSceneNodeTypes[idx].TypeName.c_str();
             else
                 return 0;
@@ -173,7 +173,7 @@ namespace irr
         // ! returns type name of a createable scene node type
         const c8* CDefaultSceneNodeFactory::getCreateableSceneNodeTypeName(ESCENE_NODE_TYPE type) const
         {
-            for (u32 i = 0; i<SupportedSceneNodeTypes.size(); ++i)
+            for (u32 i = 0; i < SupportedSceneNodeTypes.size(); ++i)
                 if (SupportedSceneNodeTypes[i].Type == type)
                     return SupportedSceneNodeTypes[i].TypeName.c_str();
 
@@ -183,7 +183,7 @@ namespace irr
 
         ESCENE_NODE_TYPE CDefaultSceneNodeFactory::getTypeFromName(const c8 *name) const
         {
-            for (u32 i = 0; i<SupportedSceneNodeTypes.size(); ++i)
+            for (u32 i = 0; i < SupportedSceneNodeTypes.size(); ++i)
                 if (SupportedSceneNodeTypes[i].TypeName == name)
                     return SupportedSceneNodeTypes[i].Type;
 

@@ -188,7 +188,7 @@ private:
 
             bool operator<(const SKeyMap &o) const
             {
-                return X11Key<o.X11Key;
+                return X11Key < o.X11Key;
             }
         };
 

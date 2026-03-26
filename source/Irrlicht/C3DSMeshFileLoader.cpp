@@ -184,7 +184,7 @@ namespace irr
             {
                 // success
 
-                for (u32 i = 0; i<Mesh->getMeshBufferCount(); ++i)
+                for (u32 i = 0; i < Mesh->getMeshBufferCount(); ++i)
                 {
                     SMeshBuffer *mb = ((SMeshBuffer*)Mesh->getMeshBuffer(i));
                     // drop empty buffers
@@ -386,7 +386,7 @@ namespace irr
                     {
                         f32 percentage;
                         readPercentageChunk(file, &data, percentage);
-                        if (percentage>0.0f)
+                        if (percentage > 0.0f)
                         {
                             CurrentMaterial.Material.MaterialTypeParam = percentage;
                             CurrentMaterial.Material.MaterialType      = video::EMT_TRANSPARENT_VERTEX_ALPHA;
@@ -615,7 +615,7 @@ namespace irr
             data.read += 20;
 
             f32 angle = 0.0f;
-            if (data.header.id== C3DS_ROT_TRACK_TAG)
+            if (data.header.id == C3DS_ROT_TRACK_TAG)
             {
                 // Angle
                 file->read(&angle, sizeof(f32));
@@ -641,16 +641,16 @@ namespace irr
             if (false)// mb)
             {
                 video::S3DVertex *vertices = (video::S3DVertex*)mb->getVertices();
-                if (data.header.id==C3DS_POS_TRACK_TAG)
+                if (data.header.id == C3DS_POS_TRACK_TAG)
                 {
-                    for (u32 i = 0; i<mb->getVertexCount(); ++i)
+                    for (u32 i = 0; i < mb->getVertexCount(); ++i)
                         vertices[i].Pos += vec;
                 }
-                else if (data.header.id==C3DS_ROT_TRACK_TAG)
+                else if (data.header.id == C3DS_ROT_TRACK_TAG)
                 {
                     // TODO
                 }
-                else if (data.header.id==C3DS_SCL_TRACK_TAG)
+                else if (data.header.id == C3DS_SCL_TRACK_TAG)
                 {
                     // TODO
                 }
@@ -745,9 +745,9 @@ namespace irr
                         file->read(c, data.header.length - data.read - 6);
 
                         // search mesh buffer to apply these transformations to
-                        for (u32 i = 0; i<MeshBufferNames.size(); ++i)
+                        for (u32 i = 0; i < MeshBufferNames.size(); ++i)
                         {
-                            if (MeshBufferNames[i]==c)
+                            if (MeshBufferNames[i] == c)
                             {
                                 mb = Mesh->getMeshBuffer(i);
                                 break;
@@ -977,7 +977,7 @@ namespace irr
                         numVertex = os::Byteswap::byteswap(numVertex);
 #endif
 
-                        for (u16 i = 0; i<numVertex; ++i)
+                        for (u16 i = 0; i < numVertex; ++i)
                         {
                             file->read(&flags, sizeof(u16));
 #ifdef __BIG_ENDIAN__
@@ -1008,9 +1008,9 @@ namespace irr
                         file->read(&mat, 12 * sizeof(f32));
                         TransformationMatrix.makeIdentity();
 
-                        for (int i = 0; i<4; ++i)
+                        for (int i = 0; i < 4; ++i)
                         {
-                            for (int j = 0; j<3; ++j)
+                            for (int j = 0; j < 3; ++j)
                             {
 #ifdef __BIG_ENDIAN__
                                 TransformationMatrix(i, j) = os::Byteswap::byteswap(mat[i][j]);
@@ -1037,7 +1037,7 @@ namespace irr
                         SmoothingGroups = new u32[CountFaces];
                         file->read(SmoothingGroups, CountFaces * sizeof(u32));
 #ifdef __BIG_ENDIAN__
-                        for (u16 i = 0; i<CountFaces; ++i)
+                        for (u16 i = 0; i < CountFaces; ++i)
                             SmoothingGroups[i] = os::Byteswap::byteswap(SmoothingGroups[i]);
 #endif
                         data.read += CountFaces * sizeof(u32);
@@ -1072,7 +1072,7 @@ namespace irr
                 group.faceCount = CountFaces;
                 group.faces     = new u16[group.faceCount];
 
-                for (u16 i = 0; i<group.faceCount; ++i)
+                for (u16 i = 0; i < group.faceCount; ++i)
                     group.faces[i] = i;
 
                 MaterialGroups.push_back(group);
@@ -1091,7 +1091,7 @@ namespace irr
                 }
             }
 
-            for (u32 i = 0; i<MaterialGroups.size(); ++i)
+            for (u32 i = 0; i < MaterialGroups.size(); ++i)
             {
                 SMeshBuffer      *mb  = 0;
                 video::SMaterial *mat = 0;
@@ -1100,7 +1100,7 @@ namespace irr
                 u32 maxPrimitives = core::min_(SceneManager->getVideoDriver()->getMaximalPrimitiveCount(), (u32)((1 << 16) - 1)) - 3; // currently hardcoded s16 max value for index pointers
 
                 // find mesh buffer for this group
-                for (mbPos = 0; mbPos<Materials.size(); ++mbPos)
+                for (mbPos = 0; mbPos < Materials.size(); ++mbPos)
                 {
                     if (MaterialGroups[i].MaterialName == Materials[mbPos].Name)
                     {
@@ -1118,17 +1118,17 @@ namespace irr
                     video::S3DVertex vtx;
                     core::vector3df  vec;
                     vtx.Color = mat->DiffuseColor;
-                    if (mat->MaterialType==video::EMT_TRANSPARENT_VERTEX_ALPHA)
+                    if (mat->MaterialType == video::EMT_TRANSPARENT_VERTEX_ALPHA)
                     {
                         vtx.Color.setAlpha((int)(255.0f * mat->MaterialTypeParam));
                     }
 
                     vtx.Normal.set(0, 0, 0);
 
-                    for (s32 f = 0; f<MaterialGroups[i].faceCount; ++f)
+                    for (s32 f = 0; f < MaterialGroups[i].faceCount; ++f)
                     {
                         u32 vtxCount = mb->Vertices.size();
-                        if (vtxCount>maxPrimitives)
+                        if (vtxCount > maxPrimitives)
                         {
                             IMeshBuffer *tmp = mb;
                             mb = new SMeshBuffer();
@@ -1140,7 +1140,7 @@ namespace irr
                             vtxCount                                        = 0;
                         }
 
-                        for (s32 v = 0; v<3; ++v)
+                        for (s32 v = 0; v < 3; ++v)
                         {
                             s32 idx = Indices[MaterialGroups[i].faces[f] * 4 + v];
 
@@ -1194,7 +1194,7 @@ namespace irr
 
             MeshBufferNames.reallocate(Materials.size());
 
-            for (u32 i = 0; i<Materials.size(); ++i)
+            for (u32 i = 0; i < Materials.size(); ++i)
             {
                 MeshBufferNames.push_back("");
                 SMeshBuffer *m = new scene::SMeshBuffer();
@@ -1342,7 +1342,7 @@ namespace irr
             TCoords = new f32[CountTCoords * 3];
             file->read(TCoords, tcoordsBufferByteSize);
 #ifdef __BIG_ENDIAN__
-            for (int i = 0; i<CountTCoords * 2; i++)
+            for (int i = 0; i < CountTCoords * 2; i++)
                 TCoords[i] = os::Byteswap::byteswap(TCoords[i]);
 #endif
             data.read += tcoordsBufferByteSize;
@@ -1368,7 +1368,7 @@ namespace irr
             group.faces = new u16[group.faceCount];
             file->read(group.faces, sizeof(u16) * group.faceCount);
 #ifdef __BIG_ENDIAN__
-            for (u32 i = 0; i<group.faceCount; ++i)
+            for (u32 i = 0; i < group.faceCount; ++i)
                 group.faces[i] = os::Byteswap::byteswap(group.faces[i]);
 #endif
             data.read += sizeof(u16) * group.faceCount;
@@ -1395,7 +1395,7 @@ namespace irr
             Indices = new u16[CountFaces * 4];
             file->read(Indices, indexBufferByteSize);
 #ifdef __BIG_ENDIAN__
-            for (int i = 0; i<CountFaces * 4; ++i)
+            for (int i = 0; i < CountFaces * 4; ++i)
                 Indices[i] = os::Byteswap::byteswap(Indices[i]);
 #endif
             data.read += indexBufferByteSize;
@@ -1424,7 +1424,7 @@ namespace irr
             Vertices = new f32[CountVertices * 3];
             file->read(Vertices, vertexBufferByteSize);
 #ifdef __BIG_ENDIAN__
-            for (int i = 0; i<CountVertices * 3; i++)
+            for (int i = 0; i < CountVertices * 3; i++)
                 Vertices[i] = os::Byteswap::byteswap(Vertices[i]);
 #endif
             data.read += vertexBufferByteSize;

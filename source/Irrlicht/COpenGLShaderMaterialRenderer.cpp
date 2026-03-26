@@ -29,7 +29,7 @@ namespace irr
 
             PixelShader.set_used(4);
 
-            for (u32 i = 0; i<4; ++i)
+            for (u32 i = 0; i < 4; ++i)
             {
                 PixelShader[i] = 0;
             }
@@ -54,7 +54,7 @@ namespace irr
         {
             PixelShader.set_used(4);
 
-            for (u32 i = 0; i<4; ++i)
+            for (u32 i = 0; i < 4; ++i)
             {
                 PixelShader[i] = 0;
             }
@@ -76,7 +76,7 @@ namespace irr
             if (VertexShader)
                 Driver->extGlDeletePrograms(1, &VertexShader);
 
-            for (u32 i = 0; i<PixelShader.size(); ++i)
+            for (u32 i = 0; i < PixelShader.size(); ++i)
                 if (PixelShader[i])
                     Driver->extGlDeletePrograms(1, &PixelShader[i]);
 
@@ -141,12 +141,12 @@ namespace irr
                         GLint curFogMode;
                         glGetIntegerv(GL_FOG_MODE, &curFogMode);
                         //                if (Driver->LinearFog && PixelShader[1])
-                        if (curFogMode==GL_LINEAR && PixelShader[1])
+                        if (curFogMode == GL_LINEAR && PixelShader[1])
                             nextShader = PixelShader[1];
                         //                else if (!Driver->LinearFog && PixelShader[2])
-                        else if (curFogMode==GL_EXP && PixelShader[2])
+                        else if (curFogMode == GL_EXP && PixelShader[2])
                             nextShader = PixelShader[2];
-                        else if (curFogMode==GL_EXP2 && PixelShader[3])
+                        else if (curFogMode == GL_EXP2 && PixelShader[3])
                             nextShader = PixelShader[3];
                     }
 
@@ -167,7 +167,7 @@ namespace irr
             if (CallBack)
                 CallBack->OnSetMaterial(material);
 
-            for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 Driver->setActiveTexture(i, material.getTexture(i));
 
             Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
@@ -250,9 +250,9 @@ namespace irr
             const s32           pos        = inshdr.find("#_IRR_FOG_MODE_");
             const u32           numShaders = (-1 != pos) ? 4 : 1;
 
-            for (u32 i = 0; i<numShaders; ++i)
+            for (u32 i = 0; i < numShaders; ++i)
             {
-                if (i==0)
+                if (i == 0)
                 {
                     shdr = inshdr;
                 }

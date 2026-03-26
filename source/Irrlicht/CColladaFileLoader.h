@@ -56,7 +56,7 @@ namespace irr
             SColladaParam()
                 : Name(ECPN_COUNT), Type(ECPT_COUNT)
             {
-                for (int i = 0; i<4; ++i)
+                for (int i = 0; i < 4; ++i)
                     Floats[i] = 0;
             }
 
@@ -360,7 +360,7 @@ private:
             // ! meshbuffer reference ("geomid/matname") -> index into MeshesToBind
             core::map<core::stringc, u32> MaterialsToBind;
             // ! Array of buffers for each material binding
-            core::array<core::array<irr::scene::IMeshBuffer*> > MeshesToBind;
+            core::array<core::array<irr::scene::IMeshBuffer*>> MeshesToBind;
 
             bool CreateInstances;
         };

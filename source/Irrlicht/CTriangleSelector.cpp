@@ -75,21 +75,21 @@ namespace irr
             const u32 cnt            = mesh->getMeshBufferCount();
             u32       totalFaceCount = 0;
 
-            for (u32 j = 0; j<cnt; ++j)
+            for (u32 j = 0; j < cnt; ++j)
                 totalFaceCount += mesh->getMeshBuffer(j)->getIndexCount();
 
             totalFaceCount /= 3;
             Triangles.reallocate(totalFaceCount);
             BoundingBox.reset(0.f, 0.f, 0.f);
 
-            for (u32 i = 0; i<cnt; ++i)
+            for (u32 i = 0; i < cnt; ++i)
             {
                 const IMeshBuffer *buf = mesh->getMeshBuffer(i);
 
                 const u32        idxCnt  = buf->getIndexCount();
                 const u16* const indices = buf->getIndices();
 
-                for (u32 j = 0; j<idxCnt; j += 3)
+                for (u32 j = 0; j < idxCnt; j += 3)
                 {
                     Triangles.push_back(core::triangle3df(
                             buf->getPosition(indices[j + 0]),
@@ -175,7 +175,7 @@ namespace irr
             if (SceneNode)
                 mat *= SceneNode->getAbsoluteTransformation();
 
-            for (u32 i = 0; i<cnt; ++i)
+            for (u32 i = 0; i < cnt; ++i)
             {
                 mat.transformVect(triangles[i].pointA, Triangles[i].pointA);
                 mat.transformVect(triangles[i].pointB, Triangles[i].pointB);
@@ -220,7 +220,7 @@ namespace irr
             s32       triangleCount = 0;
             const u32 cnt           = Triangles.size();
 
-            for (u32 i = 0; i<cnt; ++i)
+            for (u32 i = 0; i < cnt; ++i)
             {
                 // This isn't an accurate test, but it's fast, and the
                 // API contract doesn't guarantee complete accuracy.

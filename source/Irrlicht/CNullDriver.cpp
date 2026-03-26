@@ -182,7 +182,7 @@ namespace irr
             // set ExposedData to 0
             memset(&ExposedData, 0, sizeof(ExposedData));
 
-            for (u32 i = 0; i<video::EVDF_COUNT; ++i)
+            for (u32 i = 0; i < video::EVDF_COUNT; ++i)
                 FeatureEnabled[i] = true;
 
             InitMaterial2D.AntiAliasing = video::EAAM_OFF;
@@ -191,7 +191,7 @@ namespace irr
             InitMaterial2D.ZBuffer      = video::ECFN_NEVER;
             InitMaterial2D.UseMipMaps   = false;
 
-            for (u32 i = 0; i<video::MATERIAL_MAX_TEXTURES; ++i)
+            for (u32 i = 0; i < video::MATERIAL_MAX_TEXTURES; ++i)
             {
                 InitMaterial2D.TextureLayer[i].BilinearFilter = false;
                 InitMaterial2D.TextureLayer[i].TextureWrapU   = video::ETC_REPEAT;
@@ -218,10 +218,10 @@ namespace irr
 
             u32 i;
 
-            for (i = 0; i<SurfaceLoader.size(); ++i)
+            for (i = 0; i < SurfaceLoader.size(); ++i)
                 SurfaceLoader[i]->drop();
 
-            for (i = 0; i<SurfaceWriter.size(); ++i)
+            for (i = 0; i < SurfaceWriter.size(); ++i)
                 SurfaceWriter[i]->drop();
 
             // delete material renderers
@@ -295,7 +295,7 @@ namespace irr
             // last set material member. Could be optimized to reduce state changes.
             setMaterial(SMaterial());
 
-            for (u32 i = 0; i<Textures.size(); ++i)
+            for (u32 i = 0; i < Textures.size(); ++i)
                 Textures[i].Surface->drop();
 
             Textures.clear();
@@ -369,7 +369,7 @@ namespace irr
             if (!texture)
                 return;
 
-            for (u32 i = 0; i<Textures.size(); ++i)
+            for (u32 i = 0; i < Textures.size(); ++i)
             {
                 if (Textures[i].Surface == texture)
                 {
@@ -615,7 +615,7 @@ namespace irr
         bool CNullDriver::setRenderTarget(video::E_RENDER_TARGET target, bool clearTarget,
             bool clearZBuffer, SColor color)
         {
-            if (ERT_FRAME_BUFFER==target)
+            if (ERT_FRAME_BUFFER == target)
                 return setRenderTarget(0, clearTarget, clearZBuffer, color);
             else
                 return false;
@@ -653,7 +653,7 @@ namespace irr
         // ! draws a vertex primitive list
         void CNullDriver::drawVertexPrimitiveList(const void *vertices, u32 vertexCount, const void *indexList, u32 primitiveCount, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType)
         {
-            if ((iType==EIT_16BIT) && (vertexCount>65536))
+            if ((iType == EIT_16BIT) && (vertexCount > 65536))
                 os::Printer::log("Too many vertices for 16bit index type, render artifacts may occur.");
 
             PrimitivesDrawn += primitiveCount;
@@ -663,7 +663,7 @@ namespace irr
         // ! draws a vertex primitive list in 2d
         void CNullDriver::draw2DVertexPrimitiveList(const void *vertices, u32 vertexCount, const void *indexList, u32 primitiveCount, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType)
         {
-            if ((iType==EIT_16BIT) && (vertexCount>65536))
+            if ((iType == EIT_16BIT) && (vertexCount > 65536))
                 os::Printer::log("Too many vertices for 16bit index type, render artifacts may occur.");
 
             PrimitivesDrawn += primitiveCount;
@@ -742,7 +742,7 @@ namespace irr
         // ! by the indices given.
         void CNullDriver::draw2DImageBatch(const video::ITexture *texture,
             const core::position2d<s32> &pos,
-            const core::array<core::rect<s32> > &sourceRects,
+            const core::array<core::rect<s32>> &sourceRects,
             const core::array<s32> &indices,
             s32 kerningWidth,
             const core::rect<s32> *clipRect, SColor color,
@@ -750,7 +750,7 @@ namespace irr
         {
             core::position2d<s32> target(pos);
 
-            for (u32 i = 0; i<indices.size(); ++i)
+            for (u32 i = 0; i < indices.size(); ++i)
             {
                 draw2DImage(texture, target, sourceRects[indices[i]],
                     clipRect, color, useAlphaChannelOfTexture);
@@ -762,15 +762,15 @@ namespace irr
         // ! draws a set of 2d images, using a color and the alpha channel of the
         // ! texture if desired.
         void CNullDriver::draw2DImageBatch(const video::ITexture *texture,
-            const core::array<core::position2d<s32> > &positions,
-            const core::array<core::rect<s32> > &sourceRects,
+            const core::array<core::position2d<s32>> &positions,
+            const core::array<core::rect<s32>> &sourceRects,
             const core::rect<s32> *clipRect,
             SColor color,
             bool useAlphaChannelOfTexture)
         {
             const irr::u32 drawCount = core::min_<u32>(positions.size(), sourceRects.size());
 
-            for (u32 i = 0; i<drawCount; ++i)
+            for (u32 i = 0; i < drawCount; ++i)
             {
                 draw2DImage(texture, positions[i], sourceRects[i],
                     clipRect, color, useAlphaChannelOfTexture);
@@ -844,14 +844,14 @@ namespace irr
             core::position2d<s32> first;
             core::position2d<s32> a, b;
 
-            for (s32 j = 0; j<count; ++j)
+            for (s32 j = 0; j < count; ++j)
             {
                 b = a;
 
                 f32 p = j / (f32)count * (core::PI * 2);
                 a = center + core::position2d<s32>((s32)(sin(p) * radius), (s32)(cos(p) * radius));
 
-                if (j==0)
+                if (j == 0)
                     first = a;
                 else
                     draw2DLine(a, b, color);
@@ -1293,7 +1293,7 @@ namespace irr
         // ! Returns if a texture creation flag is enabled or disabled.
         bool CNullDriver::getTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag) const
         {
-            return (TextureCreationFlags & flag)!=0;
+            return (TextureCreationFlags & flag) != 0;
         }
 
 
@@ -1329,7 +1329,7 @@ namespace irr
             s32 i;
 
             // try to load file based on file extension
-            for (i = SurfaceLoader.size() - 1; i>=0; --i)
+            for (i = SurfaceLoader.size() - 1; i >= 0; --i)
             {
                 if (SurfaceLoader[i]->isALoadableFileExtension(file->getFileName()))
                 {
@@ -1342,7 +1342,7 @@ namespace irr
             }
 
             // try to load file based on what is in it
-            for (i = SurfaceLoader.size() - 1; i>=0; --i)
+            for (i = SurfaceLoader.size() - 1; i >= 0; --i)
             {
                 // dito
                 file->seek(0);
@@ -1379,7 +1379,7 @@ namespace irr
             if (!file)
                 return false;
 
-            for (s32 i = SurfaceWriter.size() - 1; i>=0; --i)
+            for (s32 i = SurfaceWriter.size() - 1; i >= 0; --i)
             {
                 if (SurfaceWriter[i]->isAWriteableFileExtension(file->getFileName()))
                 {
@@ -1453,7 +1453,7 @@ namespace irr
         // ! Creates a software image from part of a texture.
         IImage* CNullDriver::createImage(ITexture *texture, const core::position2d<s32> &pos, const core::dimension2d<u32> &size)
         {
-            if ((pos==core::position2di(0, 0)) && (size == texture->getSize()))
+            if ((pos == core::position2di(0, 0)) && (size == texture->getSize()))
             {
                 IImage *image = new CImage(texture->getColorFormat(), size, texture->lock(ETLM_READ_ONLY), false);
                 texture->unlock();
@@ -1479,7 +1479,7 @@ namespace irr
                 u8     *dst   = static_cast<u8*>(image->lock());
                 src += clamped.UpperLeftCorner.Y * texture->getPitch() + image->getBytesPerPixel() * clamped.UpperLeftCorner.X;
 
-                for (u32 i = 0; i<clamped.getHeight(); ++i)
+                for (u32 i = 0; i < clamped.getHeight(); ++i)
                 {
                     video::CColorConverter::convert_viaFormat(src, texture->getColorFormat(), clamped.getWidth(), dst, image->getColorFormat());
                     src += texture->getPitch();
@@ -1577,7 +1577,7 @@ namespace irr
                 SHWBufferLink *Link = Iterator.getNode()->getValue();
 
                 Link->LastUsed++;
-                if (Link->LastUsed>20000)
+                if (Link->LastUsed > 20000)
                 {
                     deleteHardwareBuffer(Link);
 
@@ -1618,10 +1618,10 @@ namespace irr
 
         bool CNullDriver::isHardwareBufferRecommend(const scene::IMeshBuffer *mb)
         {
-            if (!mb || (mb->getHardwareMappingHint_Index()==scene::EHM_NEVER && mb->getHardwareMappingHint_Vertex()==scene::EHM_NEVER))
+            if (!mb || (mb->getHardwareMappingHint_Index() == scene::EHM_NEVER && mb->getHardwareMappingHint_Vertex() == scene::EHM_NEVER))
                 return false;
 
-            if (mb->getVertexCount()<MinVertexCountForVBO)
+            if (mb->getVertexCount() < MinVertexCountForVBO)
                 return false;
 
             return true;
@@ -1684,7 +1684,7 @@ namespace irr
         // ! Remove all occlusion queries.
         void CNullDriver::removeAllOcclusionQueries()
         {
-            for (s32 i = OcclusionQueries.size() - 1; i>=0; --i)
+            for (s32 i = OcclusionQueries.size() - 1; i >= 0; --i)
             {
                 removeOcclusionQuery(OcclusionQueries[i].Node);
             }
@@ -1700,7 +1700,7 @@ namespace irr
                 return;
 
             s32 index = OcclusionQueries.linear_search(SOccQuery(node));
-            if (index==-1)
+            if (index == -1)
                 return;
 
             OcclusionQueries[index].Run = 0;
@@ -1718,7 +1718,7 @@ namespace irr
             setTransform(video::ETS_WORLD, node->getAbsoluteTransformation());
             const scene::IMesh *mesh = OcclusionQueries[index].Mesh;
 
-            for (u32 i = 0; i<mesh->getMeshBufferCount(); ++i)
+            for (u32 i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
                 if (visible)
                     setMaterial(mesh->getMeshBuffer(i)->getMaterial());
@@ -1733,7 +1733,7 @@ namespace irr
          * overrideMaterial to disable the color and depth buffer. */
         void CNullDriver::runAllOcclusionQueries(bool visible)
         {
-            for (u32 i = 0; i<OcclusionQueries.size(); ++i)
+            for (u32 i = 0; i < OcclusionQueries.size(); ++i)
                 runOcclusionQuery(OcclusionQueries[i].Node, visible);
         }
 
@@ -1750,14 +1750,14 @@ namespace irr
          * Update might not occur in this case, though */
         void CNullDriver::updateAllOcclusionQueries(bool block)
         {
-            for (u32 i = 0; i<OcclusionQueries.size(); ++i)
+            for (u32 i = 0; i < OcclusionQueries.size(); ++i)
             {
-                if (OcclusionQueries[i].Run==u32(~0))
+                if (OcclusionQueries[i].Run == u32(~0))
                     continue;
 
                 updateOcclusionQuery(OcclusionQueries[i].Node, block);
                 ++OcclusionQueries[i].Run;
-                if (OcclusionQueries[i].Run>1000)
+                if (OcclusionQueries[i].Run > 1000)
                     removeOcclusionQuery(OcclusionQueries[i].Node);
             }
         }
@@ -1853,7 +1853,7 @@ namespace irr
             core::stringc prefix = "Texture";
             u32           i;
 
-            for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
                 if (options && (options->Flags & io::EARWF_USE_RELATIVE_PATHS) && options->Filename && material.getTexture(i))
                 {
@@ -1883,32 +1883,32 @@ namespace irr
 
             prefix = "BilinearFilter";
 
-            for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 attr->addBool((prefix + core::stringc(i + 1)).c_str(), material.TextureLayer[i].BilinearFilter);
 
             prefix = "TrilinearFilter";
 
-            for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 attr->addBool((prefix + core::stringc(i + 1)).c_str(), material.TextureLayer[i].TrilinearFilter);
 
             prefix = "AnisotropicFilter";
 
-            for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 attr->addInt((prefix + core::stringc(i + 1)).c_str(), material.TextureLayer[i].AnisotropicFilter);
 
             prefix = "TextureWrapU";
 
-            for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 attr->addEnum((prefix + core::stringc(i + 1)).c_str(), material.TextureLayer[i].TextureWrapU, aTextureClampNames);
 
             prefix = "TextureWrapV";
 
-            for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 attr->addEnum((prefix + core::stringc(i + 1)).c_str(), material.TextureLayer[i].TextureWrapV, aTextureClampNames);
 
             prefix = "LODBias";
 
-            for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 attr->addInt((prefix + core::stringc(i + 1)).c_str(), material.TextureLayer[i].LODBias);
 
             return attr;
@@ -1942,7 +1942,7 @@ namespace irr
 
             core::stringc prefix = "Texture";
 
-            for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 outMaterial.setTexture(i, attr->getAttributeAsTexture((prefix + core::stringc(i + 1)).c_str()));
 
             outMaterial.Wireframe        = attr->getAttributeAsBool("Wireframe");
@@ -1977,27 +1977,27 @@ namespace irr
             if (attr->existsAttribute(prefix.c_str())) // legacy
                 outMaterial.setFlag(EMF_BILINEAR_FILTER, attr->getAttributeAsBool(prefix.c_str()));
             else
-                for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                     outMaterial.TextureLayer[i].BilinearFilter = attr->getAttributeAsBool((prefix + core::stringc(i + 1)).c_str());
 
             prefix = "TrilinearFilter";
             if (attr->existsAttribute(prefix.c_str())) // legacy
                 outMaterial.setFlag(EMF_TRILINEAR_FILTER, attr->getAttributeAsBool(prefix.c_str()));
             else
-                for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                     outMaterial.TextureLayer[i].TrilinearFilter = attr->getAttributeAsBool((prefix + core::stringc(i + 1)).c_str());
 
             prefix = "AnisotropicFilter";
             if (attr->existsAttribute(prefix.c_str())) // legacy
                 outMaterial.setFlag(EMF_ANISOTROPIC_FILTER, attr->getAttributeAsBool(prefix.c_str()));
             else
-                for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                     outMaterial.TextureLayer[i].AnisotropicFilter = attr->getAttributeAsInt((prefix + core::stringc(i + 1)).c_str());
 
             prefix = "TextureWrap";
             if (attr->existsAttribute(prefix.c_str())) // legacy
             {
-                for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 {
                     outMaterial.TextureLayer[i].TextureWrapU = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix + core::stringc(i + 1)).c_str(), aTextureClampNames);
                     outMaterial.TextureLayer[i].TextureWrapV = outMaterial.TextureLayer[i].TextureWrapU;
@@ -2005,7 +2005,7 @@ namespace irr
             }
             else
             {
-                for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 {
                     outMaterial.TextureLayer[i].TextureWrapU = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix + "U" + core::stringc(i + 1)).c_str(), aTextureClampNames);
                     outMaterial.TextureLayer[i].TextureWrapV = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix + "V" + core::stringc(i + 1)).c_str(), aTextureClampNames);
@@ -2015,7 +2015,7 @@ namespace irr
             // default 0 is ok
             prefix = "LODBias";
 
-            for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 outMaterial.TextureLayer[i].LODBias = attr->getAttributeAsInt((prefix + core::stringc(i + 1)).c_str());
         }
 
@@ -2038,7 +2038,7 @@ namespace irr
         void CNullDriver::deleteMaterialRenders()
         {
             // delete material renderers
-            for (u32 i = 0; i<MaterialRenderers.size(); ++i)
+            for (u32 i = 0; i < MaterialRenderers.size(); ++i)
                 if (MaterialRenderers[i].Renderer)
                     MaterialRenderers[i].Renderer->drop();
 
@@ -2214,7 +2214,7 @@ namespace irr
                 if (size)
                 {
                     // if both handles are the same we must reset the file
-                    if (pixelShaderProgram==vertexShaderProgram)
+                    if (pixelShaderProgram == vertexShaderProgram)
                         pixelShaderProgram->seek(0);
 
                     ps = new c8[size + 1];
@@ -2229,8 +2229,8 @@ namespace irr
                 if (size)
                 {
                     // if both handles are the same we must reset the file
-                    if ((geometryShaderProgram==vertexShaderProgram) ||
-                        (geometryShaderProgram==pixelShaderProgram))
+                    if ((geometryShaderProgram == vertexShaderProgram) ||
+                        (geometryShaderProgram == pixelShaderProgram))
                         geometryShaderProgram->seek(0);
 
                     gs = new c8[size + 1];

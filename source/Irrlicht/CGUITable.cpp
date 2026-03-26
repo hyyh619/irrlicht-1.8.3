@@ -869,12 +869,12 @@ namespace irr
                 return;
 
             // find new selected item.
-            if (ItemHeight!=0)
+            if (ItemHeight != 0)
                 Selected = ((ypos - AbsoluteRect.UpperLeftCorner.Y - ItemHeight - 1) + VerticalScrollBar->getPos()) / ItemHeight;
 
             if (Selected >= (s32)Rows.size())
                 Selected = Rows.size() - 1;
-            else if (Selected<0)
+            else if (Selected < 0)
                 Selected = 0;
 
             // post the news
@@ -1079,7 +1079,7 @@ namespace irr
 
             u32 i;
 
-            for (i = 0; i<size; ++i)
+            for (i = 0; i < size; ++i)
             {
                 c[0] = text[i];
 
@@ -1125,7 +1125,7 @@ namespace irr
             out->addInt("ColumnCount", Columns.size());
             u32 i;
 
-            for (i = 0; i<Columns.size(); ++i)
+            for (i = 0; i < Columns.size(); ++i)
             {
                 core::stringc label;
 
@@ -1139,7 +1139,7 @@ namespace irr
 
             out->addInt("RowCount", Rows.size());
 
-            for (i = 0; i<Rows.size(); ++i)
+            for (i = 0; i < Rows.size(); ++i)
             {
                 core::stringc label;
 
@@ -1197,7 +1197,7 @@ namespace irr
             u32 columnCount = in->getAttributeAsInt("ColumnCount");
             u32 i;
 
-            for (i = 0; i<columnCount; ++i)
+            for (i = 0; i < columnCount; ++i)
             {
                 core::stringc label;
                 Column        column;
@@ -1219,7 +1219,7 @@ namespace irr
             Rows.clear();
             u32 rowCount = in->getAttributeAsInt("RowCount");
 
-            for (i = 0; i<rowCount; ++i)
+            for (i = 0; i < rowCount; ++i)
             {
                 core::stringc label;
 

@@ -168,7 +168,7 @@ namespace irr
             // allocate space in vertex arrays
             s32 i;
 
-            for (i = 0; i<header.numFrames; ++i)
+            for (i = 0; i < header.numFrames; ++i)
                 mesh->FrameList[i].reallocate(header.numVertices);
 
             // allocate interpolation buffer vertices
@@ -178,7 +178,7 @@ namespace irr
             mesh->InterpolationBuffer->Indices.reallocate(header.numTriangles * 3);
             const s32 count = header.numTriangles * 3;
 
-            for (i = 0; i<count; i += 3)
+            for (i = 0; i < count; i += 3)
             {
                 mesh->InterpolationBuffer->Indices.push_back(i);
                 mesh->InterpolationBuffer->Indices.push_back(i + 1);
@@ -200,7 +200,7 @@ namespace irr
             }
 
 #ifdef __BIG_ENDIAN__
-            for (i = 0; i<header.numTexcoords; ++i)
+            for (i = 0; i < header.numTexcoords; ++i)
             {
                 textureCoords[i].s = os::Byteswap::byteswap(textureCoords[i].s);
                 textureCoords[i].t = os::Byteswap::byteswap(textureCoords[i].t);
@@ -222,7 +222,7 @@ namespace irr
             }
 
 #ifdef __BIG_ENDIAN__
-            for (i = 0; i<header.numTriangles; ++i)
+            for (i = 0; i < header.numTriangles; ++i)
             {
                 triangles[i].vertexIndices[0]  = os::Byteswap::byteswap(triangles[i].vertexIndices[0]);
                 triangles[i].vertexIndices[1]  = os::Byteswap::byteswap(triangles[i].vertexIndices[1]);
@@ -240,7 +240,7 @@ namespace irr
 
             file->seek(header.offsetFrames);
 
-            for (i = 0; i<header.numFrames; ++i)
+            for (i = 0; i < header.numFrames; ++i)
             {
                 // read vertices
 
@@ -267,7 +267,7 @@ namespace irr
                 if (frame->name[0])
                 {
                     // get animation name
-                    for (s32 s = 0; s < 16 && frame->name[s]!=0 && (frame->name[s] < '0' || frame->name[s] > '9'); ++s)
+                    for (s32 s = 0; s < 16 && frame->name[s] != 0 && (frame->name[s] < '0' || frame->name[s] > '9'); ++s)
                     {
                         adata.name += frame->name[s];
                     }
@@ -295,9 +295,9 @@ namespace irr
                 mesh->FrameTransforms[i].translate.Y = frame->translate[2];
 
                 // add vertices
-                for (s32 j = 0; j<header.numTriangles; ++j)
+                for (s32 j = 0; j < header.numTriangles; ++j)
                 {
-                    for (u32 ti = 0; ti<3; ++ti)
+                    for (u32 ti = 0; ti < 3; ++ti)
                     {
                         CAnimatedMeshMD2::SMD2Vert v;
                         u32                        num = triangles[j].vertexIndices[ti];
@@ -321,7 +321,7 @@ namespace irr
 
                     box.reset(pos);
 
-                    for (s32 j = 1; j<header.numTriangles * 3; ++j)
+                    for (s32 j = 1; j < header.numTriangles * 3; ++j)
                     {
                         pos.X = f32(mesh->FrameList[i][j].Pos.X) * mesh->FrameTransforms[i].scale.X + mesh->FrameTransforms[i].translate.X;
                         pos.Y = f32(mesh->FrameList[i][j].Pos.Y) * mesh->FrameTransforms[i].scale.Y + mesh->FrameTransforms[i].translate.Y;
@@ -340,9 +340,9 @@ namespace irr
                 f32 dmaxs = 1.0f / (header.skinWidth);
                 f32 dmaxt = 1.0f / (header.skinHeight);
 
-                for (s32 t = 0; t<header.numTriangles; ++t)
+                for (s32 t = 0; t < header.numTriangles; ++t)
                 {
-                    for (s32 n = 0; n<3; ++n)
+                    for (s32 n = 0; n < 3; ++n)
                     {
                         mesh->InterpolationBuffer->Vertices[t * 3 + n].TCoords.X = (textureCoords[triangles[t].textureIndices[n]].s + 0.5f) * dmaxs;
                         mesh->InterpolationBuffer->Vertices[t * 3 + n].TCoords.Y = (textureCoords[triangles[t].textureIndices[n]].t + 0.5f) * dmaxt;

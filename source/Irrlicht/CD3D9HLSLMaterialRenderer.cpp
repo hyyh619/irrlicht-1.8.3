@@ -398,7 +398,7 @@ namespace irr
 
             if (!FAILED(hr))
             {
-                for (int i = 0; i<(int)tblDesc.Constants; ++i)
+                for (int i = 0; i < (int)tblDesc.Constants; ++i)
                 {
                     D3DXCONSTANT_DESC d;
                     UINT              n     = 1;

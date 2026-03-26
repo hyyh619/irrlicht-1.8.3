@@ -269,11 +269,11 @@ namespace irr
             XF86VidModeGetAllModeLines(display, screennr, &modeCount, &modes);
 
             // find fitting mode
-            for (s32 i = 0; i<modeCount; ++i)
+            for (s32 i = 0; i < modeCount; ++i)
             {
-                if (bestMode==-1 && modes[i]->hdisplay >= Width && modes[i]->vdisplay >= Height)
+                if (bestMode == -1 && modes[i]->hdisplay >= Width && modes[i]->vdisplay >= Height)
                     bestMode = i;
-                else if (bestMode!=-1 &&
+                else if (bestMode != -1 &&
                     modes[i]->hdisplay >= Width &&
                     modes[i]->vdisplay >= Height &&
                     modes[i]->hdisplay <= modes[bestMode]->hdisplay &&
@@ -308,11 +308,11 @@ namespace irr
             XRRScreenConfiguration *config = XRRGetScreenInfo(display, DefaultRootWindow(display));
             XRRScreenSize          *modes  = XRRConfigSizes(config, &modeCount);
 
-            for (s32 i = 0; i<modeCount; ++i)
+            for (s32 i = 0; i < modeCount; ++i)
             {
-                if (bestMode==-1 && (u32)modes[i].width >= Width && (u32)modes[i].height >= Height)
+                if (bestMode == -1 && (u32)modes[i].width >= Width && (u32)modes[i].height >= Height)
                     bestMode = i;
-                else if (bestMode!=-1 &&
+                else if (bestMode != -1 &&
                     (u32)modes[i].width >= Width &&
                     (u32)modes[i].height >= Height &&
                     modes[i].width <= modes[bestMode].width &&
@@ -407,7 +407,7 @@ namespace irr
         GLXFBConfig glxFBConfig;
         int         major, minor;
         bool        isAvailableGLX = false;
-        if (CreationParams.DriverType==video::EDT_OPENGL)
+        if (CreationParams.DriverType == video::EDT_OPENGL)
         {
             isAvailableGLX = glXQueryExtension(display, &major, &minor);
             if (isAvailableGLX && glXQueryVersion(display, &major, &minor))
@@ -420,7 +420,7 @@ namespace irr
 #else
                 PFNGLXCHOOSEFBCONFIGPROC glxChooseFBConfig = glXChooseFBConfig;
 #endif
-                if (major==1 && minor>2 && glxChooseFBConfig)
+                if (major == 1 && minor > 2 && glxChooseFBConfig)
                 {
                     // attribute array for the draw buffer
                     int visualAttrBuffer[] =
@@ -454,7 +454,7 @@ namespace irr
 
                     GLXFBConfig *configList = 0;
                     int         nitems      = 0;
-                    if (CreationParams.AntiAlias<2)
+                    if (CreationParams.AntiAlias < 2)
                     {
                         visualAttrBuffer[17] = 0;
                         visualAttrBuffer[19] = 0;
@@ -465,7 +465,7 @@ namespace irr
                         configList = glxChooseFBConfig(display, screennr, visualAttrBuffer, &nitems);
                         if (!configList && CreationParams.AntiAlias)
                         {
-                            while (!configList && (visualAttrBuffer[19]>1))
+                            while (!configList && (visualAttrBuffer[19] > 1))
                             {
                                 visualAttrBuffer[19] -= 1;
                                 configList            = glxChooseFBConfig(display, screennr, visualAttrBuffer, &nitems);
@@ -505,7 +505,7 @@ namespace irr
                         configList = glxChooseFBConfig(display, screennr, visualAttrBuffer, &nitems);
                         if (!configList && CreationParams.AntiAlias)
                         {
-                            while (!configList && (visualAttrBuffer[19]>1))
+                            while (!configList && (visualAttrBuffer[19] > 1))
                             {
                                 visualAttrBuffer[19] -= 1;
                                 configList            = glxChooseFBConfig(display, screennr, visualAttrBuffer, &nitems);
@@ -542,7 +542,7 @@ namespace irr
                         configList                   = glxChooseFBConfig(display, screennr, visualAttrBuffer, &nitems);
                         if (!configList && CreationParams.AntiAlias)
                         {
-                            while (!configList && (visualAttrBuffer[19]>1))
+                            while (!configList && (visualAttrBuffer[19] > 1))
                             {
                                 visualAttrBuffer[19] -= 1;
                                 configList            = glxChooseFBConfig(display, screennr, visualAttrBuffer, &nitems);
@@ -648,7 +648,7 @@ namespace irr
             // ARGB visuals should be avoided for usual applications
             visTempl.depth = CreationParams.WithAlphaChannel ? 32 : 24;
 
-            while ((!visual) && (visTempl.depth>=16))
+            while ((!visual) && (visTempl.depth >= 16))
             {
                 visual = XGetVisualInfo(display, VisualScreenMask | VisualDepthMask,
                         &visTempl, &visNumber);
@@ -740,7 +740,7 @@ namespace irr
 #ifdef _IRR_COMPILE_WITH_OPENGL_
         // connect glx context to window
         Context = 0;
-        if (isAvailableGLX && CreationParams.DriverType==video::EDT_OPENGL)
+        if (isAvailableGLX && CreationParams.DriverType == video::EDT_OPENGL)
         {
             if (UseGLXWindow)
             {
@@ -1229,7 +1229,7 @@ namespace irr
             return;
 
         XTextProperty txt;
-        if (Success==XwcTextListToTextProperty(display, const_cast<wchar_t**>(&text),
+        if (Success == XwcTextListToTextProperty(display, const_cast<wchar_t**>(&text),
             1, XStdICCTextStyle, &txt))
         {
             XSetWMName(display, window, &txt);
@@ -1260,7 +1260,7 @@ namespace irr
         switch (SoftwareImage->bits_per_pixel)
         {
             case 16:
-                if (SoftwareImage->depth==16)
+                if (SoftwareImage->depth == 16)
                     destColor = video::ECF_R5G6B5;
                 else
                     destColor = video::ECF_A1R5G5B5;
@@ -1283,7 +1283,7 @@ namespace irr
         const u32 srcheight  = core::min_(image->getDimension().Height, destheight);
         const u32 srcPitch   = image->getPitch();
 
-        for (u32 y = 0; y!=srcheight; ++y)
+        for (u32 y = 0; y != srcheight; ++y)
         {
             video::CColorConverter::convert_viaFormat(srcdata, image->getColorFormat(), minWidth, destData, destColor);
             srcdata  += srcPitch;
@@ -1409,7 +1409,7 @@ namespace irr
                     VideoModeList->setDesktop(defaultDepth, core::dimension2d<u32>(
                             modes[0]->hdisplay, modes[0]->vdisplay));
 
-                    for (int i = 0; i<modeCount; ++i)
+                    for (int i = 0; i < modeCount; ++i)
                     {
                         VideoModeList->addMode(core::dimension2d<u32>(
                                 modes[i]->hdisplay, modes[i]->vdisplay), defaultDepth);
@@ -1429,7 +1429,7 @@ namespace irr
                     VideoModeList->setDesktop(defaultDepth, core::dimension2d<u32>(
                             modes[oldRandrMode].width, modes[oldRandrMode].height));
 
-                    for (int i = 0; i<modeCount; ++i)
+                    for (int i = 0; i < modeCount; ++i)
                     {
                         VideoModeList->addMode(core::dimension2d<u32>(
                                 modes[i].width, modes[i].height), defaultDepth);
@@ -1775,7 +1775,7 @@ namespace irr
         if (0 == ActiveJoysticks.size())
             return;
 
-        for (u32 j = 0; j< ActiveJoysticks.size(); ++j)
+        for (u32 j = 0; j < ActiveJoysticks.size(); ++j)
         {
             JoystickInfo &info = ActiveJoysticks[j];
 
@@ -1845,9 +1845,9 @@ namespace irr
         if (XRRQueryExtension(display, &eventbase, &errorbase))
         {
             XRRQueryVersion(display, &eventbase, &errorbase); // major, minor
-            if (eventbase>=1 && errorbase>1)
+            if (eventbase >= 1 && errorbase > 1)
             {
-        #if (RANDR_MAJOR>1 || RANDR_MINOR>1)
+        #if (RANDR_MAJOR > 1 || RANDR_MINOR > 1)
                 XRRCrtcGamma *gamma = XRRGetCrtcGamma(display, screennr);
                 if (gamma)
                 {
@@ -1892,9 +1892,9 @@ namespace irr
         if (XRRQueryExtension(display, &eventbase, &errorbase))
         {
             XRRQueryVersion(display, &eventbase, &errorbase); // major, minor
-            if (eventbase>=1 && errorbase>1)
+            if (eventbase >= 1 && errorbase > 1)
             {
-        #if (RANDR_MAJOR>1 || RANDR_MINOR>1)
+        #if (RANDR_MAJOR > 1 || RANDR_MINOR > 1)
                 XRRCrtcGamma *gamma = XRRGetCrtcGamma(display, screennr);
                 if (gamma)
                 {

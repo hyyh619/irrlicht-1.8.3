@@ -514,7 +514,7 @@ namespace irr
 
             // delete triangle renderers
 
-            for (s32 i = 0; i<ETR2_COUNT; ++i)
+            for (s32 i = 0; i < ETR2_COUNT; ++i)
             {
                 if (BurningShader[i])
                     BurningShader[i]->drop();
@@ -1398,7 +1398,7 @@ namespace irr
 
                         case ETC_MIRROR:
                             dest->Tex[t].x = M[0] * srcT.x + M[4] * srcT.y + M[8];
-                            if (core::fract(dest->Tex[t].x)>0.5f)
+                            if (core::fract(dest->Tex[t].x) > 0.5f)
                                 dest->Tex[t].x = 1.f - dest->Tex[t].x;
 
                             break;
@@ -1407,7 +1407,7 @@ namespace irr
                         case ETC_MIRROR_CLAMP_TO_EDGE:
                         case ETC_MIRROR_CLAMP_TO_BORDER:
                             dest->Tex[t].x = core::clamp ((f32) (M[0] * srcT.x + M[4] * srcT.y + M[8]), 0.f, 1.f);
-                            if (core::fract(dest->Tex[t].x)>0.5f)
+                            if (core::fract(dest->Tex[t].x) > 0.5f)
                                 dest->Tex[t].x = 1.f - dest->Tex[t].x;
 
                             break;
@@ -1428,7 +1428,7 @@ namespace irr
 
                         case ETC_MIRROR:
                             dest->Tex[t].y = M[1] * srcT.x + M[5] * srcT.y + M[9];
-                            if (core::fract(dest->Tex[t].y)>0.5f)
+                            if (core::fract(dest->Tex[t].y) > 0.5f)
                                 dest->Tex[t].y = 1.f - dest->Tex[t].y;
 
                             break;
@@ -1437,7 +1437,7 @@ namespace irr
                         case ETC_MIRROR_CLAMP_TO_EDGE:
                         case ETC_MIRROR_CLAMP_TO_BORDER:
                             dest->Tex[t].y = core::clamp ((f32) (M[1] * srcT.x + M[5] * srcT.y + M[9]), 0.f, 1.f);
-                            if (core::fract(dest->Tex[t].y)>0.5f)
+                            if (core::fract(dest->Tex[t].y) > 0.5f)
                                 dest->Tex[t].y = 1.f - dest->Tex[t].y;
 
                             break;
@@ -1645,13 +1645,13 @@ clipandproject:
                 }
 
                 // clear marks
-                for (i = 0; i!= VERTEXCACHE_ELEMENT; ++i)
+                for (i = 0; i != VERTEXCACHE_ELEMENT; ++i)
                 {
                     VertexCache.info[i].hit = 0;
                 }
 
                 // mark all existing
-                for (i = 0; i!= fillIndex; ++i)
+                for (i = 0; i != fillIndex; ++i)
                 {
                     for (dIndex = 0; dIndex < VERTEXCACHE_ELEMENT; ++dIndex)
                     {
@@ -1665,7 +1665,7 @@ clipandproject:
                 }
 
                 // fill new
-                for (i = 0; i!= fillIndex; ++i)
+                for (i = 0; i != fillIndex; ++i)
                 {
                     if (info[i].hit != VERTEXCACHE_MISS)
                         continue;
@@ -1855,9 +1855,9 @@ clipandproject:
 
             // These calls would lead to crashes due to wrong index usage.
             // The vertex cache needs to be rewritten for these primitives.
-            if (pType==scene::EPT_POINTS || pType==scene::EPT_LINE_STRIP ||
-                pType==scene::EPT_LINE_LOOP || pType==scene::EPT_LINES || pType==scene::EPT_POLYGON ||
-                pType==scene::EPT_POINT_SPRITES)
+            if (pType == scene::EPT_POINTS || pType == scene::EPT_LINE_STRIP ||
+                pType == scene::EPT_LINE_LOOP || pType == scene::EPT_LINES || pType == scene::EPT_POLYGON ||
+                pType == scene::EPT_POINT_SPRITES)
                 return;
 
             if (0 == CurrentShader)
@@ -2208,7 +2208,7 @@ clipandproject:
             sVec4 vp;    // unit vector vertex to light
             sVec4 lightHalf; // blinn-phong reflection
 
-            for (i = 0; i!= LightSpace.Light.size (); ++i)
+            for (i = 0; i != LightSpace.Light.size (); ++i)
             {
                 const SBurningShaderLight &light = LightSpace.Light[i];
 
@@ -2494,7 +2494,7 @@ clipandproject:
             s32 i;
             u32 g;
 
-            for (i = 0; i!= 8; i += 2)
+            for (i = 0; i != 8; i += 2)
             {
                 v[i + 0].flag = clipToFrustumTest (v + i);
                 v[i + 1].flag = 0;
@@ -2514,7 +2514,7 @@ clipandproject:
 
             s4DVertex *face[3];
 
-            for (i = 0; i!= 6; i += 3)
+            for (i = 0; i != 6; i += 3)
             {
                 face[0] = VertexCache_getVertex (indexList[i + 0]);
                 face[1] = VertexCache_getVertex (indexList[i + 1]);

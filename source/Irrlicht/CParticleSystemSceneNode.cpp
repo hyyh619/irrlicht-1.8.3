@@ -334,7 +334,7 @@ namespace irr
             // create particle vertex data
             s32 idx = 0;
 
-            for (u32 i = 0; i<Particles.size(); ++i)
+            for (u32 i = 0; i < Particles.size(); ++i)
             {
                 const SParticle &particle = Particles[i];
 
@@ -409,7 +409,7 @@ namespace irr
 
         void CParticleSystemSceneNode::doParticleSystem(u32 time)
         {
-            if (LastEmitTime==0)
+            if (LastEmitTime == 0)
             {
                 LastEmitTime = time;
                 return;
@@ -434,7 +434,7 @@ namespace irr
 
                     Particles.set_used(j + newParticles);
 
-                    for (s32 i = j; i<j + newParticles; ++i)
+                    for (s32 i = j; i < j + newParticles; ++i)
                     {
                         Particles[i] = array[i - j];
                         AbsoluteTransformation.rotateVect(Particles[i].startVector);
@@ -458,7 +458,7 @@ namespace irr
             // animate all particles
             f32 scale = (f32)timediff;
 
-            for (u32 i = 0; i<Particles.size();)
+            for (u32 i = 0; i < Particles.size();)
             {
                 // erase is pretty expensive!
                 if (now > Particles[i].endTime)
@@ -536,7 +536,7 @@ namespace irr
                 u32 i;
 
                 // fill remaining vertices
-                for (i = oldSize; i<Buffer->Vertices.size(); i += 4)
+                for (i = oldSize; i < Buffer->Vertices.size(); i += 4)
                 {
                     Buffer->Vertices[0 + i].TCoords.set(0.0f, 0.0f);
                     Buffer->Vertices[1 + i].TCoords.set(0.0f, 1.0f);
@@ -549,7 +549,7 @@ namespace irr
                 u32 oldvertices = oldSize;
                 Buffer->Indices.set_used(Particles.size() * 6);
 
-                for (i = oldIdxSize; i<Buffer->Indices.size(); i += 6)
+                for (i = oldIdxSize; i < Buffer->Indices.size(); i += 6)
                 {
                     Buffer->Indices[0 + i] = (u16)0 + oldvertices;
                     Buffer->Indices[1 + i] = (u16)2 + oldvertices;

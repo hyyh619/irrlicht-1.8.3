@@ -366,7 +366,7 @@ namespace irr
         // ---------------------------------------------------
         void put_byte(unsigned char ch, unsigned char *out_buf, int out_buf_size)
         {
-            if (nCodedBytes<=(out_buf_size - 1))
+            if (nCodedBytes <= (out_buf_size - 1))
             {
                 out_buf[nCodedBytes++] = ch;
                 out_buf[nCodedBytes]   = 0;
@@ -382,7 +382,7 @@ namespace irr
             unsigned char *out_buf, int out_buf_size
             )
         {
-            if (nReadedBytes>=in_buf_size)
+            if (nReadedBytes >= in_buf_size)
             {
                 // there are either 0, 1, or 2 char's to write before we quit
                 if (tmpbuf_cnt == 1)
@@ -418,7 +418,7 @@ namespace irr
 
             while (1)
             {
-                if (nReadedBytes>=in_buf_size)
+                if (nReadedBytes >= in_buf_size)
                     break;
                 else
                     ch = in_buf[nReadedBytes];
@@ -429,7 +429,7 @@ namespace irr
                 {
                     i = ch - 127; // i is the number of repetitions
                     // get the byte to be repeated
-                    if (nReadedBytes>=in_buf_size)
+                    if (nReadedBytes >= in_buf_size)
                         break;
                     else
                         ch = in_buf[nReadedBytes];
@@ -439,7 +439,7 @@ namespace irr
                     // uncompress a chunk
                     for (; i; i--)
                     {
-                        if (nDecodedBytes<out_buf_size)
+                        if (nDecodedBytes < out_buf_size)
                             out_buf[nDecodedBytes] = ch;
 
                         nDecodedBytes++;
@@ -453,14 +453,14 @@ namespace irr
                     // uncompress a chunk
                     for (; i; i--)
                     {
-                        if (nReadedBytes>=in_buf_size)
+                        if (nReadedBytes >= in_buf_size)
                             break;
                         else
                             ch = in_buf[nReadedBytes];
 
                         nReadedBytes++;
 
-                        if (nDecodedBytes<out_buf_size)
+                        if (nDecodedBytes < out_buf_size)
                             out_buf[nDecodedBytes] = ch;
 
                         nDecodedBytes++;

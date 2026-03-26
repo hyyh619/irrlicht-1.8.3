@@ -345,7 +345,7 @@ namespace irr
                     extraHeader.Size = os::Byteswap::byteswap(extraHeader.Size);
 #endif
                     restSize -= sizeof(extraHeader);
-                    if (extraHeader.ID==(s16)0x9901)
+                    if (extraHeader.ID == (s16)0x9901)
                     {
                         SZipFileAESExtraData data;
                         File->read(&data, sizeof(data));
@@ -354,7 +354,7 @@ namespace irr
                         data.CompressionMode = os::Byteswap::byteswap(data.CompressionMode);
 #endif
                         restSize -= sizeof(data);
-                        if (data.Vendor[0]=='A' && data.Vendor[1]=='E')
+                        if (data.Vendor[0] == 'A' && data.Vendor[1] == 'E')
                         {
                             // encode values into Sig
                             // AE-Version | Strength | ActualMode
@@ -387,7 +387,7 @@ namespace irr
                 bool       found   = false;
 
                 // search for the end record ID
-                while (!found && File->getPos()>0)
+                while (!found && File->getPos() > 0)
                 {
                     int seek = 8;
                     File->read(tmp, 4);
@@ -447,7 +447,7 @@ namespace irr
             // os::Debuginfo::print("added file from archive", ZipFileName.c_str());
     #endif
 
-            addItem(ZipFileName, entry.Offset, entry.header.DataDescriptor.UncompressedSize, ZipFileName.lastChar()=='/', FileInfo.size());
+            addItem(ZipFileName, entry.Offset, entry.header.DataDescriptor.UncompressedSize, ZipFileName.lastChar() == '/', FileInfo.size());
             FileInfo.push_back(entry);
 
             return true;
@@ -582,7 +582,7 @@ namespace irr
                 decryptedBuf  = new u8[decryptedSize];
                 u32 c = 0;
 
-                while ((c + 32768)<=decryptedSize)
+                while ((c + 32768) <= decryptedSize)
                 {
                     File->read(decryptedBuf + c, 32768);
                     fcrypt_decrypt(
@@ -621,9 +621,9 @@ namespace irr
                 decrypted               = io::createMemoryReadFile(decryptedBuf, decryptedSize, Files[index].FullName, true);
                 actualCompressionMethod = (e.header.Sig & 0xffff);
 #if 0
-                if ((e.header.Sig & 0xff000000)==0x01000000)
+                if ((e.header.Sig & 0xff000000) == 0x01000000)
                 {}
-                else if ((e.header.Sig & 0xff000000)==0x02000000)
+                else if ((e.header.Sig & 0xff000000) == 0x02000000)
                 {}
                 else
                 {

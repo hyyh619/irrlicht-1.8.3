@@ -75,7 +75,7 @@ namespace irr
 
             u32 allVertexCount = 1; // count vertices over the whole file
 
-            for (u32 i = 0; i<mesh->getMeshBufferCount(); ++i)
+            for (u32 i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
                 core::stringc num(i + 1);
                 IMeshBuffer   *buffer = mesh->getMeshBuffer(i);
@@ -88,21 +88,21 @@ namespace irr
                     u32       j;
                     const u32 vertexCount = buffer->getVertexCount();
 
-                    for (j = 0; j<vertexCount; ++j)
+                    for (j = 0; j < vertexCount; ++j)
                     {
                         file->write("v ", 2);
                         getVectorAsStringLine(buffer->getPosition(j), num);
                         file->write(num.c_str(), num.size());
                     }
 
-                    for (j = 0; j<vertexCount; ++j)
+                    for (j = 0; j < vertexCount; ++j)
                     {
                         file->write("vt ", 3);
                         getVectorAsStringLine(buffer->getTCoords(j), num);
                         file->write(num.c_str(), num.size());
                     }
 
-                    for (j = 0; j<vertexCount; ++j)
+                    for (j = 0; j < vertexCount; ++j)
                     {
                         file->write("vn ", 3);
                         getVectorAsStringLine(buffer->getNormal(j), num);
@@ -112,9 +112,9 @@ namespace irr
                     file->write("usemtl mat", 10);
                     num = "";
 
-                    for (j = 0; j<mat.size(); ++j)
+                    for (j = 0; j < mat.size(); ++j)
                     {
-                        if (*mat[j]==buffer->getMaterial())
+                        if (*mat[j] == buffer->getMaterial())
                         {
                             num = core::stringc(j);
                             break;
@@ -132,7 +132,7 @@ namespace irr
 
                     const u32 indexCount = buffer->getIndexCount();
 
-                    for (j = 0; j<indexCount; j += 3)
+                    for (j = 0; j < indexCount; j += 3)
                     {
                         file->write("f ", 2);
                         num = core::stringc(buffer->getIndices()[j + 2] + allVertexCount);
@@ -177,7 +177,7 @@ namespace irr
 
                 file->write("# exported by Irrlicht\n\n", 24);
 
-                for (u32 i = 0; i<mat.size(); ++i)
+                for (u32 i = 0; i < mat.size(); ++i)
                 {
                     core::stringc num(i);
                     file->write("newmtl mat", 10);

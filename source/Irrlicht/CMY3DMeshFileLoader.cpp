@@ -83,7 +83,7 @@ namespace irr
 
             // working directory (from which we load the scene)
             core::stringc filepath = FileSystem->getFileDir(file->getFileName());
-            if (filepath==".")
+            if (filepath == ".")
                 filepath = "";
             else
                 filepath.append("/");
@@ -96,7 +96,7 @@ namespace irr
             fileHeader.Ver  = os::Byteswap::byteswap(fileHeader.Ver);
 #endif
 
-            if (fileHeader.MyId!=MY3D_ID || fileHeader.Ver!=MY3D_VER)
+            if (fileHeader.MyId != MY3D_ID || fileHeader.Ver != MY3D_VER)
             {
                 os::Printer::log("Bad MY3D file header, loading failed!", ELL_ERROR);
                 return 0;
@@ -109,7 +109,7 @@ namespace irr
             id = os::Byteswap::byteswap(id);
 #endif
 
-            if (id!=MY3D_SCENE_HEADER_ID)
+            if (id != MY3D_SCENE_HEADER_ID)
             {
                 os::Printer::log("Cannot find MY3D_SCENE_HEADER_ID, loading failed!", ELL_ERROR);
                 return 0;
@@ -127,7 +127,7 @@ namespace irr
             id = os::Byteswap::byteswap(id);
 #endif
 
-            if (id!=MY3D_MAT_LIST_ID)
+            if (id != MY3D_MAT_LIST_ID)
             {
                 os::Printer::log("Can not find MY3D_MAT_LIST_ID, loading failed!", ELL_ERROR);
                 return 0;
@@ -143,7 +143,7 @@ namespace irr
 
             c8 namebuf[256];
 
-            for (s32 m = 0; m<sceneHeader.MaterialCount; ++m)
+            for (s32 m = 0; m < sceneHeader.MaterialCount; ++m)
             {
                 if (id != MY3D_MAT_HEADER_ID)
                 {
@@ -164,9 +164,9 @@ namespace irr
 
                 bool gotLightMap = false, gotMainMap = false;
 
-                for (u32 t = 0; t<me.Header.TextureCount; ++t)
+                for (u32 t = 0; t < me.Header.TextureCount; ++t)
                 {
-                    if (id==MY3D_TEX_FNAME_ID)
+                    if (id == MY3D_TEX_FNAME_ID)
                         file->read(namebuf, 256);
                     else
                     {
@@ -182,8 +182,8 @@ namespace irr
                     const core::stringc LightingMapStr = "LightingMap";
                     const s32           ls             = LightingMapStr.size();
                     const bool          isSubString    = (LightingMapStr == name.subString(core::max_(0, (pos - ls)), ls));
-                    if ((isSubString || (name[pos - 1]=='m' &&
-                        name[pos - 2]=='l' && name[pos - 3]=='_')) &&
+                    if ((isSubString || (name[pos - 1] == 'm' &&
+                        name[pos - 2] == 'l' && name[pos - 3] == '_')) &&
                         !gotLightMap)
                     {
                         const bool oldMipMapState = SceneManager->getVideoDriver()->getTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS);
@@ -241,7 +241,7 @@ namespace irr
 
             // loading meshes
 
-            if (id!=MY3D_MESH_LIST_ID)
+            if (id != MY3D_MESH_LIST_ID)
             {
                 os::Printer::log("Can not find MY3D_MESH_LIST_ID, loading failed!", ELL_ERROR);
                 return 0;
@@ -252,15 +252,15 @@ namespace irr
             id = os::Byteswap::byteswap(id);
 #endif
 
-            for (s32 mesh_id = 0; mesh_id<sceneHeader.MeshCount; mesh_id++)
+            for (s32 mesh_id = 0; mesh_id < sceneHeader.MeshCount; mesh_id++)
             {
                 // Warning!!! In some cases MY3D exporter uncorrectly calculates
                 // MeshCount (it's a problem, has to be solved) thats why
                 // i added this code line
-                if (id!=MY3D_MESH_HEADER_ID)
+                if (id != MY3D_MESH_HEADER_ID)
                     break;
 
-                if (id!=MY3D_MESH_HEADER_ID)
+                if (id != MY3D_MESH_HEADER_ID)
                 {
                     os::Printer::log("Can not find MY3D_MESH_HEADER_ID, loading failed!", ELL_ERROR);
                     return 0;
@@ -282,7 +282,7 @@ namespace irr
 #ifdef __BIG_ENDIAN__
                 id = os::Byteswap::byteswap(id);
 #endif
-                if (id!=MY3D_VERTS_ID)
+                if (id != MY3D_VERTS_ID)
                 {
                     os::Printer::log("Can not find MY3D_VERTS_ID, loading failed!", ELL_ERROR);
                     return 0;
@@ -297,7 +297,7 @@ namespace irr
 #ifdef __BIG_ENDIAN__
                 id = os::Byteswap::byteswap(id);
 #endif
-                if (id!=MY3D_FACES_ID)
+                if (id != MY3D_FACES_ID)
                 {
                     os::Printer::log("Can not find MY3D_FACES_ID, loading failed!", ELL_ERROR);
                     return 0;
@@ -308,7 +308,7 @@ namespace irr
                 file->read(Face.pointer(), sizeof(SMyFace) * facesNum);
 
                 // reading texture channels
-                for (s32 tex = 0; tex<(s32)meshHeader.TChannelCnt; tex++)
+                for (s32 tex = 0; tex < (s32)meshHeader.TChannelCnt; tex++)
                 {
                     // Max 2 texture channels allowed (but in format .my3d can be more)
                     s32 tVertsNum = 0, tFacesNum = 0;
@@ -319,7 +319,7 @@ namespace irr
                     id = os::Byteswap::byteswap(id);
 #endif
 
-                    if (id!=MY3D_TVERTS_ID)
+                    if (id != MY3D_TVERTS_ID)
                     {
                         core::stringc msg = "Can not find MY3D_TVERTS_ID (";
                         msg.append(core::stringc(tex));
@@ -330,13 +330,13 @@ namespace irr
 
                     file->read(&tVertsNum, sizeof(tVertsNum));
 
-                    if (tex==0)
+                    if (tex == 0)
                     {
                         // 1st texture channel
                         TVertex1.set_used(tVertsNum);
                         file->read(TVertex1.pointer(), sizeof(SMyTVertex) * tVertsNum);
                     }
-                    else if (tex==1)
+                    else if (tex == 1)
                     {
                         // 2nd texture channel
                         TVertex2.set_used(tVertsNum);
@@ -354,7 +354,7 @@ namespace irr
                     id = os::Byteswap::byteswap(id);
 #endif
 
-                    if (id!=MY3D_TFACES_ID)
+                    if (id != MY3D_TFACES_ID)
                     {
                         core::stringc msg = "Can not find MY3D_TFACES_ID (";
                         msg.append(core::stringc(tex));
@@ -365,13 +365,13 @@ namespace irr
 
                     file->read(&tFacesNum, sizeof(tFacesNum));
 
-                    if (tex==0)
+                    if (tex == 0)
                     {
                         // 1st texture channel
                         TFace1.set_used(tFacesNum);
                         file->read(TFace1.pointer(), sizeof(SMyFace) * tFacesNum);
                     }
-                    else if (tex==1)
+                    else if (tex == 1)
                     {
                         // 2nd texture channel
                         TFace2.set_used(tFacesNum);
@@ -457,7 +457,7 @@ namespace irr
                         buffer->Material.SpecularColor = video::SColor(0, 0, 0, 0);
                     }
 
-                    if (matEnt && matEnt->Header.Transparency!=0)
+                    if (matEnt && matEnt->Header.Transparency != 0)
                     {
                         if (buffer->Material.MaterialType == video::EMT_REFLECTION_2_LAYER)
                         {
@@ -518,7 +518,7 @@ namespace irr
                     buffer->Vertices.reallocate(buffer->Vertices.size() + 3 * facesNum);
                 }
 
-                for (int f = 0; f<facesNum; f++)
+                for (int f = 0; f < facesNum; f++)
                 {
                     // vertex A
 
@@ -530,13 +530,13 @@ namespace irr
                     VertexA.Normal.Y = Vertex[Face[f].C].Normal.Y;
                     VertexA.Normal.Z = Vertex[Face[f].C].Normal.Z;
 
-                    if (meshHeader.TChannelCnt>0)
+                    if (meshHeader.TChannelCnt > 0)
                     {
                         VertexA.TCoords.X = TVertex1[TFace1[f].C].TCoord.X;
                         VertexA.TCoords.Y = TVertex1[TFace1[f].C].TCoord.Y;
                     }
 
-                    if (meshHeader.TChannelCnt>1)
+                    if (meshHeader.TChannelCnt > 1)
                     {
                         VertexA.TCoords2.X = TVertex2[TFace2[f].C].TCoord.X;
                         VertexA.TCoords2.Y = TVertex2[TFace2[f].C].TCoord.Y;
@@ -552,13 +552,13 @@ namespace irr
                     VertexB.Normal.Y = Vertex[Face[f].B].Normal.Y;
                     VertexB.Normal.Z = Vertex[Face[f].B].Normal.Z;
 
-                    if (meshHeader.TChannelCnt>0)
+                    if (meshHeader.TChannelCnt > 0)
                     {
                         VertexB.TCoords.X = TVertex1[TFace1[f].B].TCoord.X;
                         VertexB.TCoords.Y = TVertex1[TFace1[f].B].TCoord.Y;
                     }
 
-                    if (meshHeader.TChannelCnt>1)
+                    if (meshHeader.TChannelCnt > 1)
                     {
                         VertexB.TCoords2.X = TVertex2[TFace2[f].B].TCoord.X;
                         VertexB.TCoords2.Y = TVertex2[TFace2[f].B].TCoord.Y;
@@ -574,13 +574,13 @@ namespace irr
                     VertexC.Normal.Y = Vertex[Face[f].A].Normal.Y;
                     VertexC.Normal.Z = Vertex[Face[f].A].Normal.Z;
 
-                    if (meshHeader.TChannelCnt>0)
+                    if (meshHeader.TChannelCnt > 0)
                     {
                         VertexC.TCoords.X = TVertex1[TFace1[f].A].TCoord.X;
                         VertexC.TCoords.Y = TVertex1[TFace1[f].A].TCoord.Y;
                     }
 
-                    if (meshHeader.TChannelCnt>1)
+                    if (meshHeader.TChannelCnt > 1)
                     {
                         VertexC.TCoords2.X = TVertex2[TFace2[f].A].TCoord.X;
                         VertexC.TCoords2.Y = TVertex2[TFace2[f].A].TCoord.Y;
@@ -633,7 +633,7 @@ namespace irr
             // creating mesh
             SMesh *mesh = new SMesh();
 
-            for (u32 num = 0; num<MeshBufferEntry.size(); ++num)
+            for (u32 num = 0; num < MeshBufferEntry.size(); ++num)
             {
                 SMeshBufferLightMap *buffer = MeshBufferEntry[num].MeshBuffer;
 
@@ -670,7 +670,7 @@ namespace irr
 #ifdef __BIG_ENDIAN__
             id = os::Byteswap::byteswap(id);
 #endif
-            if (id!=MY3D_TEXDATA_HEADER_ID)
+            if (id != MY3D_TEXDATA_HEADER_ID)
             {
                 os::Printer::log("Can not find MY3D_TEXDATA_HEADER_ID, loading failed!", ELL_ERROR);
                 return 0;
@@ -711,7 +711,7 @@ namespace irr
 
             void *data = 0;
 
-            if (texDataHeader.ComprMode==MY3D_TEXDATA_COMPR_NONE_ID)
+            if (texDataHeader.ComprMode == MY3D_TEXDATA_COMPR_NONE_ID)
             {
                 // none compressed image data
                 if (texDataHeader.PixelFormat == MY3D_PIXEL_FORMAT_24)
@@ -725,14 +725,14 @@ namespace irr
                     file->read(data, sizeof(SMyPixelColor16) * num_pixels);
                 }
             }
-            else if (texDataHeader.ComprMode==MY3D_TEXDATA_COMPR_RLE_ID)
+            else if (texDataHeader.ComprMode == MY3D_TEXDATA_COMPR_RLE_ID)
             {
                 // read RLE header identificator
                 file->read(&id, sizeof(id));
 #ifdef __BIG_ENDIAN__
                 id = os::Byteswap::byteswap(id);
 #endif
-                if (id!=MY3D_TEXDATA_RLE_HEADER_ID)
+                if (id != MY3D_TEXDATA_RLE_HEADER_ID)
                 {
                     os::Printer::log("Can not find MY3D_TEXDATA_RLE_HEADER_ID, loading failed!", ELL_ERROR);
                     return 0;
@@ -755,7 +755,7 @@ namespace irr
                     (unsigned char*)input_buffer,  rleHeader.nEncodedBytes,
                     (unsigned char*)output_buffer, rleHeader.nDecodedBytes);
 
-                if (decodedBytes!=(s32)rleHeader.nDecodedBytes)
+                if (decodedBytes != (s32)rleHeader.nDecodedBytes)
                 {
                     os::Printer::log("Error extracting data from RLE compression, loading failed!", ELL_ERROR);
                     return 0;
@@ -767,7 +767,7 @@ namespace irr
                 // here decoded data
                 data = output_buffer;
             }
-            else if (texDataHeader.ComprMode==MY3D_TEXDATA_COMPR_SIMPLE_ID)
+            else if (texDataHeader.ComprMode == MY3D_TEXDATA_COMPR_SIMPLE_ID)
             {
                 // simple compressed image data
                 if (texDataHeader.PixelFormat == MY3D_PIXEL_FORMAT_24)
@@ -789,7 +789,7 @@ namespace irr
                         SMyPixelColor24 col24;
                         file->read(&col24, sizeof(SMyPixelColor24));
 
-                        for (u32 p = 0; p<nToRead; p++)
+                        for (u32 p = 0; p < nToRead; p++)
                         {
                             ((SMyPixelColor24*)data)[nReadedPixels + p] =
                                 SMyPixelColor24(col24.r, col24.g, col24.b);
@@ -800,7 +800,7 @@ namespace irr
                         SMyPixelColor16 col16;
                         file->read(&col16, sizeof(SMyPixelColor16));
 
-                        for (u32 p = 0; p<nToRead; p++)
+                        for (u32 p = 0; p < nToRead; p++)
                             ((SMyPixelColor16*)data)[nReadedPixels + p].argb = col16.argb;
                     }
 
@@ -849,7 +849,7 @@ namespace irr
 
         CMY3DMeshFileLoader::SMyMaterialEntry* CMY3DMeshFileLoader::getMaterialEntryByIndex(u32 matInd)
         {
-            for (u32 m = 0; m<MaterialEntry.size(); ++m)
+            for (u32 m = 0; m < MaterialEntry.size(); ++m)
                 if (MaterialEntry[m].Header.Index == matInd)
                     return &MaterialEntry[m];
 
@@ -860,7 +860,7 @@ namespace irr
 
         SMeshBufferLightMap* CMY3DMeshFileLoader::getMeshBufferByMaterialIndex(u32 matInd)
         {
-            for (u32 m = 0; m<MeshBufferEntry.size(); ++m)
+            for (u32 m = 0; m < MeshBufferEntry.size(); ++m)
             {
                 if (MeshBufferEntry[m].MaterialIndex == (s32)matInd)
                     return MeshBufferEntry[m].MeshBuffer;

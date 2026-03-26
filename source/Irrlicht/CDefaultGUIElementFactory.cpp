@@ -140,7 +140,7 @@ namespace irr
         // ! Returns the type of a createable element type.
         EGUI_ELEMENT_TYPE CDefaultGUIElementFactory::getCreateableGUIElementType(s32 idx) const
         {
-            if (idx>=0 && idx<EGUIET_COUNT)
+            if (idx >= 0 && idx < EGUIET_COUNT)
                 return (EGUI_ELEMENT_TYPE)idx;
 
             return EGUIET_ELEMENT;
@@ -150,7 +150,7 @@ namespace irr
         // ! Returns the type name of a createable element type.
         const c8* CDefaultGUIElementFactory::getCreateableGUIElementTypeName(s32 idx) const
         {
-            if (idx>=0 && idx<EGUIET_COUNT)
+            if (idx >= 0 && idx < EGUIET_COUNT)
                 return GUIElementTypeNames[idx];
 
             return 0;
@@ -162,7 +162,7 @@ namespace irr
         {
             // for this factory, type == index
 
-            if (type>=0 && type<EGUIET_COUNT)
+            if (type >= 0 && type < EGUIET_COUNT)
                 return GUIElementTypeNames[type];
 
             return 0;

@@ -214,7 +214,7 @@ namespace irr
         // ! destructor
         CGUITabControl::~CGUITabControl()
         {
-            for (u32 i = 0; i<Tabs.size(); ++i)
+            for (u32 i = 0; i < Tabs.size(); ++i)
             {
                 if (Tabs[i])
                     Tabs[i]->drop();
@@ -358,7 +358,7 @@ namespace irr
         // ! Clears the tabcontrol removing all tabs
         void CGUITabControl::clear()
         {
-            for (u32 i = 0; i<Tabs.size(); ++i)
+            for (u32 i = 0; i < Tabs.size(); ++i)
             {
                 if (Tabs[i])
                     Tabs[i]->drop();
@@ -519,7 +519,7 @@ namespace irr
 
             s32 pos = frameRect.UpperLeftCorner.X + 2;
 
-            for (s32 i = startIndex; i<(s32)Tabs.size(); ++i)
+            for (s32 i = startIndex; i < (s32)Tabs.size(); ++i)
             {
                 // get Text
                 const wchar_t *text = 0;
@@ -626,7 +626,7 @@ namespace irr
             // const wchar_t* activetext = 0;
             CGUITab *activeTab = 0;
 
-            for (u32 i = CurrentScrollTabIndex; i<Tabs.size(); ++i)
+            for (u32 i = CurrentScrollTabIndex; i < Tabs.size(); ++i)
             {
                 // get Text
                 const wchar_t *text = 0;
@@ -838,7 +838,7 @@ namespace irr
 
             core::rect<s32> r(calcTabPos());
 
-            for (u32 i = 0; i<Tabs.size(); ++i)
+            for (u32 i = 0; i < Tabs.size(); ++i)
             {
                 Tabs[i]->setRelativePosition(r);
             }
@@ -911,7 +911,7 @@ namespace irr
             if (!frameRect.isPointInside(p))
                 return -1;
 
-            for (s32 i = CurrentScrollTabIndex; i<(s32)Tabs.size(); ++i)
+            for (s32 i = CurrentScrollTabIndex; i < (s32)Tabs.size(); ++i)
             {
                 // get Text
                 const wchar_t *text = 0;
@@ -954,7 +954,7 @@ namespace irr
 
             ActiveTab = idx;
 
-            for (s32 i = 0; i<(s32)Tabs.size(); ++i)
+            for (s32 i = 0; i < (s32)Tabs.size(); ++i)
                 if (Tabs[i])
                     Tabs[i]->setVisible(i == ActiveTab);
 
@@ -974,7 +974,7 @@ namespace irr
 
         bool CGUITabControl::setActiveTab(IGUITab *tab)
         {
-            for (s32 i = 0; i<(s32)Tabs.size(); ++i)
+            for (s32 i = 0; i < (s32)Tabs.size(); ++i)
                 if (Tabs[i] == tab)
                     return setActiveTab(i);
 
@@ -990,7 +990,7 @@ namespace irr
             u32 i = 0;
 
             // check if it is a tab
-            while (i<Tabs.size())
+            while (i < Tabs.size())
             {
                 if (Tabs[i] == child)
                 {
@@ -1005,7 +1005,7 @@ namespace irr
             // reassign numbers
             if (isTab)
             {
-                for (i = 0; i<Tabs.size(); ++i)
+                for (i = 0; i < Tabs.size(); ++i)
                     if (Tabs[i])
                         Tabs[i]->setNumber(i);
             }

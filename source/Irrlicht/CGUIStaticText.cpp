@@ -121,7 +121,7 @@ namespace irr
                             r.UpperLeftCorner.Y = r.LowerRightCorner.Y - totalHeight;
                         }
 
-                        for (u32 i = 0; i<BrokenText.size(); ++i)
+                        for (u32 i = 0; i < BrokenText.size(); ++i)
                         {
                             if (HAlign == EGUIA_LOWERRIGHT)
                             {
@@ -338,7 +338,7 @@ namespace irr
             if (!RightToLeft)
             {
                 // regular (left-to-right)
-                for (s32 i = 0; i<size; ++i)
+                for (s32 i = 0; i < size; ++i)
                 {
                     c = Text[i];
                     bool lineBreak = false;
@@ -448,7 +448,7 @@ namespace irr
             else
             {
                 // right-to-left
-                for (s32 i = size; i>=0; --i)
+                for (s32 i = size; i >= 0; --i)
                 {
                     c = Text[i];
                     bool lineBreak = false;
@@ -456,7 +456,7 @@ namespace irr
                     if (c == L'\r') // Mac or Windows breaks
                     {
                         lineBreak = true;
-                        if ((i>0) && Text[i - 1] == L'\n') // Windows breaks
+                        if ((i > 0) && Text[i - 1] == L'\n') // Windows breaks
                         {
                             Text.erase(i - 1);
                             --size;
@@ -470,7 +470,7 @@ namespace irr
                         c         = '\0';
                     }
 
-                    if (c==L' ' || c==0 || i==0)
+                    if (c == L' ' || c == 0 || i == 0)
                     {
                         if (word.size())
                         {

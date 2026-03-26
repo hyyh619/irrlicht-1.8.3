@@ -53,7 +53,7 @@ namespace irr
              * -11-1 3---------2  |        |/
              |   7- - -| -4 1-11    *---->x
              | -1-11   |  /       3-------|2
-             ||||/        | /         |    //|
+             ||||||/        | /         |    //|
              |  0---------1/          |  //  |
              | -1-1-1     1-1-1         |//    |
              |                   0--------1
@@ -158,7 +158,7 @@ namespace irr
 
                 driver->setTransform(video::ETS_WORLD, translate * scale);
 
-                for (s32 i = 0; i<6; ++i)
+                for (s32 i = 0; i < 6; ++i)
                 {
                     driver->setMaterial(Material[i]);
                     driver->drawIndexedTriangleFan(&Vertices[i * 4], 4, Indices, 2);
@@ -258,7 +258,7 @@ namespace irr
 
             nb->cloneMembers(this, newManager);
 
-            for (u32 i = 0; i<6; ++i)
+            for (u32 i = 0; i < 6; ++i)
                 nb->Material[i] = Material[i];
 
             if (newParent)

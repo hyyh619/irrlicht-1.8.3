@@ -63,7 +63,7 @@ private:
             core::array<SShadowVolume> ShadowVolumes;
 
             // a back cap bounding box for every light
-            core::array<core::aabbox3d<f32> > ShadowBBox;
+            core::array<core::aabbox3d<f32>> ShadowBBox;
 
             core::array<core::vector3df> Vertices;
             core::array<u16>             Indices;

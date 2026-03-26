@@ -94,10 +94,10 @@ public:
                 HWnd(hwnd), BorderX(0), BorderY(0),
                 UseReferenceRect(false), IsVisible(true)
             {
-                if (WindowSize.Width!=0)
+                if (WindowSize.Width != 0)
                     InvWindowSize.Width = 1.0f / WindowSize.Width;
 
-                if (WindowSize.Height!=0)
+                if (WindowSize.Height != 0)
                     InvWindowSize.Height = 1.0f / WindowSize.Height;
 
                 if (!fullscreen)
@@ -207,12 +207,12 @@ public:
             virtual void OnResize(const core::dimension2d<u32> &size)
             {
                 WindowSize = size;
-                if (size.Width!=0)
+                if (size.Width != 0)
                     InvWindowSize.Width = 1.0f / size.Width;
                 else
                     InvWindowSize.Width = 0.f;
 
-                if (size.Height!=0)
+                if (size.Height != 0)
                     InvWindowSize.Height = 1.0f / size.Height;
                 else
                     InvWindowSize.Height = 0.f;

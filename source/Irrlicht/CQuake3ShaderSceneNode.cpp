@@ -95,7 +95,7 @@ namespace irr
 
             dest->Vertices.set_used(vsize);
 
-            for (u32 i = 0; i!= vsize; ++i)
+            for (u32 i = 0; i != vsize; ++i)
             {
                 const video::S3DVertex2TCoords &src = buffer->Vertices[i];
                 video::S3DVertex               &dst = dest->Vertices[i];

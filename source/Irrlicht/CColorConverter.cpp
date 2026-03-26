@@ -20,17 +20,17 @@ namespace irr
             if (flip)
                 out += width * height;
 
-            for (s32 y = 0; y<height; ++y)
+            for (s32 y = 0; y < height; ++y)
             {
                 s32 shift = 7;
                 if (flip)
                     out -= width;
 
-                for (s32 x = 0; x<width; ++x)
+                for (s32 x = 0; x < width; ++x)
                 {
                     out[x] = *in >> shift & 0x01 ? (s16)0xffff : (s16)0x8000;
 
-                    if ((--shift)<0) // 8 pixel done
+                    if ((--shift) < 0) // 8 pixel done
                     {
                         shift = 7;
                         ++in;
@@ -58,17 +58,17 @@ namespace irr
             if (flip)
                 out += width * height;
 
-            for (s32 y = 0; y<height; ++y)
+            for (s32 y = 0; y < height; ++y)
             {
                 s32 shift = 4;
                 if (flip)
                     out -= width;
 
-                for (s32 x = 0; x<width; ++x)
+                for (s32 x = 0; x < width; ++x)
                 {
                     out[x] = X8R8G8B8toA1R5G5B5(palette[(u8)((*in >> shift) & 0xf)]);
 
-                    if (shift==0)
+                    if (shift == 0)
                     {
                         shift = 4;
                         ++in;
@@ -98,12 +98,12 @@ namespace irr
             if (flip)
                 out += width * height;
 
-            for (s32 y = 0; y<height; ++y)
+            for (s32 y = 0; y < height; ++y)
             {
                 if (flip)
                     out -= width; // one line back
 
-                for (s32 x = 0; x<width; ++x)
+                for (s32 x = 0; x < width; ++x)
                 {
                     out[x] = X8R8G8B8toA1R5G5B5(palette[(u8)(*in)]);
                     ++in;
@@ -126,12 +126,12 @@ namespace irr
             if (flip)
                 out += lineWidth * height;
 
-            for (s32 y = 0; y<height; ++y)
+            for (s32 y = 0; y < height; ++y)
             {
                 if (flip)
                     out -= lineWidth; // one line back
 
-                for (s32 x = 0; x< lineWidth; x += 3)
+                for (s32 x = 0; x < lineWidth; x += 3)
                 {
                     if (palette)
                     {
@@ -219,13 +219,13 @@ namespace irr
             if (flip)
                 out += width * height;
 
-            for (s32 y = 0; y<height; ++y)
+            for (s32 y = 0; y < height; ++y)
             {
                 if (flip)
                     out -= width;
 
 #ifdef __BIG_ENDIAN__
-                for (s32 x = 0; x<width; ++x)
+                for (s32 x = 0; x < width; ++x)
                     out[x] = os::Byteswap::byteswap(in[x]);
 
 #else
@@ -251,14 +251,14 @@ namespace irr
             if (flip)
                 out += lineWidth * height;
 
-            for (s32 y = 0; y<height; ++y)
+            for (s32 y = 0; y < height; ++y)
             {
                 if (flip)
                     out -= lineWidth;
 
                 if (bgr)
                 {
-                    for (s32 x = 0; x<lineWidth; x += 3)
+                    for (s32 x = 0; x < lineWidth; x += 3)
                     {
                         out[x + 0] = in[x + 2];
                         out[x + 1] = in[x + 1];
@@ -295,11 +295,11 @@ namespace irr
             f32 sy;
             s32 t;
 
-            for (s32 x = 0; x<newWidth; ++x)
+            for (s32 x = 0; x < newWidth; ++x)
             {
                 sy = 0.0f;
 
-                for (s32 y = 0; y<newHeight; ++y)
+                for (s32 y = 0; y < newHeight; ++y)
                 {
                     t = in[(s32)(((s32)sy) * currentWidth + x * sourceXStep)];
                     t = (((t >> 15) & 0x1) << 31) | (((t >> 10) & 0x1F) << 19) |
@@ -322,13 +322,13 @@ namespace irr
             if (flip)
                 out += width * height;
 
-            for (s32 y = 0; y<height; ++y)
+            for (s32 y = 0; y < height; ++y)
             {
                 if (flip)
                     out -= width;
 
 #ifdef __BIG_ENDIAN__
-                for (s32 x = 0; x<width; ++x)
+                for (s32 x = 0; x < width; ++x)
                     out[x] = os::Byteswap::byteswap(in[x]);
 
 #else

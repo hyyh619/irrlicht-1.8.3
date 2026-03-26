@@ -461,7 +461,7 @@ private:
                 // skip '<![CDATA['
                 int count = 0;
 
-                while (*P && count<8)
+                while (*P && count < 8)
                 {
                     ++P;
                     ++count;
@@ -510,7 +510,7 @@ private:
 
                 core::string<char_type> n = name;
 
-                for (int i = 0; i<(int)Attributes.size(); ++i)
+                for (int i = 0; i < (int)Attributes.size(); ++i)
                     if (Attributes[i].Name == n)
                         return &Attributes[i];
 
@@ -535,7 +535,7 @@ private:
 
                     int specialChar = -1;
 
-                    for (int i = 0; i<(int)SpecialCharacters.size(); ++i)
+                    for (int i = 0; i < (int)SpecialCharacters.size(); ++i)
                     {
                         const char_type *p = &origstr.c_str()[pos] + 1;
 
@@ -576,7 +576,7 @@ private:
             {
                 long size = callback->getSize();
 
-                if (size<0)
+                if (size < 0)
                     return false;
 
                 size += 4; // We need four terminating 0's at the end.
@@ -633,7 +633,7 @@ private:
                     SourceFormat = ETF_UTF16_LE;
                     convertTextData(data16 + 1, data8, (size / 2) - 1); // data16+1 because we need to skip the header
                 }
-                else if (size >= 3 && memcmp(data8, UTF8, 3)==0)
+                else if (size >= 3 && memcmp(data8, UTF8, 3) == 0)
                 {
                     // UTF-8
                     SourceFormat = ETF_UTF8;
@@ -684,14 +684,14 @@ private:
                     if (sizeof(src_char_type) == 1)
                     {
                         // we have to cast away negative numbers or results might add the sign instead of just doing a copy
-                        for (int i = 0; i<sizeWithoutHeader; ++i)
+                        for (int i = 0; i < sizeWithoutHeader; ++i)
                         {
                             TextData[i] = static_cast<char_type>(static_cast<unsigned char>(source[i]));
                         }
                     }
                     else
                     {
-                        for (int i = 0; i<sizeWithoutHeader; ++i)
+                        for (int i = 0; i < sizeWithoutHeader; ++i)
                             TextData[i] = static_cast<char_type>(source[i]);
                     }
 
@@ -745,7 +745,7 @@ private:
             // ! returns true if a character is whitespace
             inline bool isWhiteSpace(char_type c)
             {
-                return (c==' ' || c=='\t' || c=='\n' || c=='\r');
+                return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
             }
 
 
@@ -821,7 +821,7 @@ private:
 
             bool IsEmptyElement; // is the currently parsed node empty?
 
-            core::array<core::string<char_type> > SpecialCharacters;// see createSpecialCharacterList()
+            core::array<core::string<char_type>> SpecialCharacters; // see createSpecialCharacterList()
 
             core::array<SAttribute> Attributes; // attributes of current element
         }; // end CXMLReaderImpl

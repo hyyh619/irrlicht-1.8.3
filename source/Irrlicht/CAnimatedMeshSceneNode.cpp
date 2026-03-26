@@ -82,7 +82,7 @@ namespace irr
         // ! Get CurrentFrameNr and update transiting settings
         void CAnimatedMeshSceneNode::buildFrameNr(u32 timeMs)
         {
-            if (Transiting!=0.f)
+            if (Transiting != 0.f)
             {
                 TransitingBlend += (f32)(timeMs) * Transiting;
                 if (TransitingBlend > 1.f)
@@ -92,7 +92,7 @@ namespace irr
                 }
             }
 
-            if ((StartFrame==EndFrame))
+            if ((StartFrame == EndFrame))
             {
                 CurrentFrameNr = (f32)StartFrame; // Support for non animated meshes
             }
@@ -157,7 +157,7 @@ namespace irr
                 int solidCount       = 0;
 
                 // count transparent and solid materials in this scene node
-                for (u32 i = 0; i<Materials.size(); ++i)
+                for (u32 i = 0; i < Materials.size(); ++i)
                 {
                     video::IMaterialRenderer *rnd =
                         driver->getMaterialRenderer(Materials[i].MaterialType);
@@ -214,8 +214,8 @@ namespace irr
                     skinnedMesh->recoverJointsFromMesh(JointChildSceneNodes);
 
                     // ---slow---
-                    for (u32 n = 0; n<JointChildSceneNodes.size(); ++n)
-                        if (JointChildSceneNodes[n]->getParent()==this)
+                    for (u32 n = 0; n < JointChildSceneNodes.size(); ++n)
+                        if (JointChildSceneNodes[n]->getParent() == this)
                         {
                             JointChildSceneNodes[n]->updateAbsolutePositionOfAllChildren(); // temp, should be an option
                         }
@@ -236,7 +236,7 @@ namespace irr
         // ! OnAnimate() is called just before rendering the whole scene.
         void CAnimatedMeshSceneNode::OnAnimate(u32 timeMs)
         {
-            if (LastTimeMs==0) // first frame
+            if (LastTimeMs == 0) // first frame
             {
                 LastTimeMs = timeMs;
             }
@@ -288,19 +288,19 @@ namespace irr
 
             driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
 
-            if (Shadow && PassCount==1)
+            if (Shadow && PassCount == 1)
                 Shadow->updateShadowVolumes();
 
             // for debug purposes only:
 
             bool             renderMeshes = true;
             video::SMaterial mat;
-            if (DebugDataVisible && PassCount==1)
+            if (DebugDataVisible && PassCount == 1)
             {
                 // overwrite half transparency
                 if (DebugDataVisible & scene::EDS_HALF_TRANSPARENCY)
                 {
-                    for (u32 i = 0; i<m->getMeshBufferCount(); ++i)
+                    for (u32 i = 0; i < m->getMeshBufferCount(); ++i)
                     {
                         scene::IMeshBuffer *mb = m->getMeshBuffer(i);
                         mat              = ReadOnlyMaterials ? mb->getMaterial() : Materials[i];
@@ -321,7 +321,7 @@ namespace irr
             // render original meshes
             if (renderMeshes)
             {
-                for (u32 i = 0; i<m->getMeshBufferCount(); ++i)
+                for (u32 i = 0; i < m->getMeshBufferCount(); ++i)
                 {
                     video::IMaterialRenderer *rnd        = driver->getMaterialRenderer(Materials[i].MaterialType);
                     bool                     transparent = (rnd && rnd->isTransparent());
@@ -346,7 +346,7 @@ namespace irr
             driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
 
             // for debug purposes only:
-            if (DebugDataVisible && PassCount==1)
+            if (DebugDataVisible && PassCount == 1)
             {
                 video::SMaterial debug_mat;
                 debug_mat.Lighting     = false;
@@ -376,7 +376,7 @@ namespace irr
                 // show bounding box
                 if (DebugDataVisible & scene::EDS_BBOX_BUFFERS)
                 {
-                    for (u32 g = 0; g< m->getMeshBufferCount(); ++g)
+                    for (u32 g = 0; g < m->getMeshBufferCount(); ++g)
                     {
                         const IMeshBuffer *mb = m->getMeshBuffer(g);
 
@@ -398,7 +398,7 @@ namespace irr
                         {
                             ISkinnedMesh::SJoint *joint = ((ISkinnedMesh*)Mesh)->getAllJoints()[g];
 
-                            for (u32 n = 0; n<joint->Children.size(); ++n)
+                            for (u32 n = 0; n < joint->Children.size(); ++n)
                             {
                                 driver->draw3DLine(joint->GlobalAnimatedMatrix.getTranslation(),
                                     joint->Children[n]->GlobalAnimatedMatrix.getTranslation(),
@@ -451,7 +451,7 @@ namespace irr
                     debug_mat.ZBuffer   = video::ECFN_NEVER;
                     driver->setMaterial(debug_mat);
 
-                    for (u32 g = 0; g<m->getMeshBufferCount(); ++g)
+                    for (u32 g = 0; g < m->getMeshBufferCount(); ++g)
                     {
                         const IMeshBuffer *mb = m->getMeshBuffer(g);
                         if (RenderFromIdentity)
@@ -676,7 +676,7 @@ namespace irr
             {
                 if (JointsUsed) // stop weird bugs caused while changing parents as the joints are being created
                 {
-                    for (u32 i = 0; i<JointChildSceneNodes.size(); ++i)
+                    for (u32 i = 0; i < JointChildSceneNodes.size(); ++i)
                     {
                         if (JointChildSceneNodes[i] == child)
                         {
@@ -848,7 +848,7 @@ namespace irr
                 Materials.clear();
                 Materials.reallocate(m->getMeshBufferCount());
 
-                for (u32 i = 0; i<m->getMeshBufferCount(); ++i)
+                for (u32 i = 0; i < m->getMeshBufferCount(); ++i)
                 {
                     IMeshBuffer *mb = m->getMeshBuffer(i);
                     if (mb)
@@ -910,7 +910,7 @@ namespace irr
 
                 MD3Special->AbsoluteTagList.set_used (taglist->size ());
 
-                for (u32 i = 0; i!= taglist->size (); ++i)
+                for (u32 i = 0; i != taglist->size (); ++i)
                 {
                     MD3Special->AbsoluteTagList[i].position = parent.position + (*taglist)[i].position + relative.position;
                     MD3Special->AbsoluteTagList[i].rotation = parent.rotation * (*taglist)[i].rotation * relative.rotation;
@@ -931,7 +931,7 @@ namespace irr
         {
             const u32 ttime = (u32)core::floor32(time * 1000.0f);
 
-            if (TransitionTime==ttime)
+            if (TransitionTime == ttime)
                 return;
 
             TransitionTime = ttime;
@@ -973,13 +973,13 @@ namespace irr
                 if (Transiting != 0.f)
                 {
                     // Init additional matrices
-                    if (PretransitingSave.size()<JointChildSceneNodes.size())
+                    if (PretransitingSave.size() < JointChildSceneNodes.size())
                     {
-                        for (u32 n = PretransitingSave.size(); n<JointChildSceneNodes.size(); ++n)
+                        for (u32 n = PretransitingSave.size(); n < JointChildSceneNodes.size(); ++n)
                             PretransitingSave.push_back(core::matrix4());
                     }
 
-                    for (u32 n = 0; n<JointChildSceneNodes.size(); ++n)
+                    for (u32 n = 0; n < JointChildSceneNodes.size(); ++n)
                     {
                         // ------Position------
 
@@ -1017,9 +1017,9 @@ namespace irr
                 if (CalculateAbsolutePositions)
                 {
                     // ---slow---
-                    for (u32 n = 0; n<JointChildSceneNodes.size(); ++n)
+                    for (u32 n = 0; n < JointChildSceneNodes.size(); ++n)
                     {
-                        if (JointChildSceneNodes[n]->getParent()==this)
+                        if (JointChildSceneNodes[n]->getParent() == this)
                         {
                             JointChildSceneNodes[n]->updateAbsolutePositionOfAllChildren(); // temp, should be an option
                         }
@@ -1041,7 +1041,7 @@ namespace irr
 
             if (!JointsUsed)
             {
-                for (u32 i = 0; i<JointChildSceneNodes.size(); ++i)
+                for (u32 i = 0; i < JointChildSceneNodes.size(); ++i)
                     removeChild(JointChildSceneNodes[i]);
 
                 JointChildSceneNodes.clear();
@@ -1066,14 +1066,14 @@ namespace irr
             if (TransitionTime != 0)
             {
                 // Check the array is big enough
-                if (PretransitingSave.size()<JointChildSceneNodes.size())
+                if (PretransitingSave.size() < JointChildSceneNodes.size())
                 {
-                    for (u32 n = PretransitingSave.size(); n<JointChildSceneNodes.size(); ++n)
+                    for (u32 n = PretransitingSave.size(); n < JointChildSceneNodes.size(); ++n)
                         PretransitingSave.push_back(core::matrix4());
                 }
 
                 // Copy the position of joints
-                for (u32 n = 0; n<JointChildSceneNodes.size(); ++n)
+                for (u32 n = 0; n < JointChildSceneNodes.size(); ++n)
                     PretransitingSave[n] = JointChildSceneNodes[n]->getRelativeTransformation();
 
                 Transiting = core::reciprocal((f32)TransitionTime);

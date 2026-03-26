@@ -30,7 +30,7 @@ public:
             CGUISpriteBank(IGUIEnvironment *env);
             virtual ~CGUISpriteBank();
 
-            virtual core::array<core::rect<s32> >&getPositions();
+            virtual core::array<core::rect<s32>>&getPositions();
             virtual core::array<SGUISprite>&getSprites();
 
             virtual u32 getTextureCount() const;
@@ -66,7 +66,7 @@ protected:
             };
 
             core::array<SGUISprite>       Sprites;
-            core::array<core::rect<s32> > Rectangles;
+            core::array<core::rect<s32>>  Rectangles;
             core::array<video::ITexture*> Textures;
             IGUIEnvironment               *Environment;
             video::IVideoDriver           *Driver;

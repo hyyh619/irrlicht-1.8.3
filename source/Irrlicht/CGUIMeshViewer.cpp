@@ -148,7 +148,7 @@ namespace irr
 
                 const scene::IMesh* const m = Mesh->getMesh(frame);
 
-                for (u32 i = 0; i<m->getMeshBufferCount(); ++i)
+                for (u32 i = 0; i < m->getMeshBufferCount(); ++i)
                 {
                     scene::IMeshBuffer *mb = m->getMeshBuffer(i);
                     driver->drawVertexPrimitiveList(mb->getVertices(),

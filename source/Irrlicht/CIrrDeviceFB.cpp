@@ -87,11 +87,11 @@ namespace irr
             munmap(SoftwareImage, CreationParams.WindowSize.Height * Pitch);
 
         // go back to previous format
-        if (ioctl(Framebuffer, FBIOPUT_VSCREENINFO, &oldscreeninfo) <0)
+        if (ioctl(Framebuffer, FBIOPUT_VSCREENINFO, &oldscreeninfo) < 0)
             perror("Restoring old fb mode");
 
         if (KeyboardDevice != -1)
-            if (ioctl(KeyboardDevice, KDSETMODE, &KeyboardMode) <0)
+            if (ioctl(KeyboardDevice, KDSETMODE, &KeyboardMode) < 0)
                 perror("Restoring keyboard mode");
 
         if (EventDevice != -1)
@@ -116,10 +116,10 @@ namespace irr
         if (KeyboardDevice == -1)
             perror("Open keyboard");
 
-        if (ioctl(KeyboardDevice, KDGETMODE, &KeyboardMode) <0)
+        if (ioctl(KeyboardDevice, KDGETMODE, &KeyboardMode) < 0)
             perror("Read keyboard mode");
 
-        if (ioctl(KeyboardDevice, KDSETMODE, KD_GRAPHICS) <0)
+        if (ioctl(KeyboardDevice, KDSETMODE, KD_GRAPHICS) < 0)
             perror("Set keyboard mode");
 
         Framebuffer = open("/dev/fb/0", O_RDWR);
@@ -183,7 +183,7 @@ namespace irr
                     FBColorFormat = video::ECF_A8R8G8B8;
             }
 
-            if (MAP_FAILED==(SoftwareImage = (u8*)mmap(0, CreationParams.WindowSize.Height * Pitch, PROT_READ | PROT_WRITE, MAP_SHARED, Framebuffer, 0)))
+            if (MAP_FAILED == (SoftwareImage = (u8*)mmap(0, CreationParams.WindowSize.Height * Pitch, PROT_READ | PROT_WRITE, MAP_SHARED, Framebuffer, 0)))
             {
                 perror("mmap render target");
                 return false;
@@ -236,7 +236,7 @@ namespace irr
 
         struct input_event ev;
 
-        if (EventDevice>=0)
+        if (EventDevice >= 0)
         {
             if ((read(EventDevice, &ev, sizeof(input_event)) < 0) &&
                 errno != EAGAIN)
@@ -345,7 +345,7 @@ namespace irr
 
         u8 *srcdata = (u8*)image->lock();
 
-        for (u32 y = 0; y<srcheight; ++y)
+        for (u32 y = 0; y < srcheight; ++y)
         {
             video::CColorConverter::convert_viaFormat(srcdata, image->getColorFormat(), srcwidth, destData, FBColorFormat);
             srcdata  += image->getPitch();

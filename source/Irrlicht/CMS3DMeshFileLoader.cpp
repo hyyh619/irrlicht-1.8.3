@@ -213,7 +213,7 @@ namespace irr
                 return false;
             }
 
-            for (u16 tmp = 0; tmp<numVertices; ++tmp)
+            for (u16 tmp = 0; tmp < numVertices; ++tmp)
             {
 #ifdef __BIG_ENDIAN__
                 vertices[tmp].Vertex[0] = os::Byteswap::byteswap(vertices[tmp].Vertex[0]);
@@ -242,12 +242,12 @@ namespace irr
                 return false;
             }
 
-            for (u16 tmp = 0; tmp<numTriangles; ++tmp)
+            for (u16 tmp = 0; tmp < numTriangles; ++tmp)
             {
 #ifdef __BIG_ENDIAN__
                 triangles[tmp].Flags = os::Byteswap::byteswap(triangles[tmp].Flags);
 
-                for (u16 j = 0; j<3; ++j)
+                for (u16 j = 0; j < 3; ++j)
                 {
                     triangles[tmp].VertexIndices[j]    = os::Byteswap::byteswap(triangles[tmp].VertexIndices[j]);
                     triangles[tmp].VertexNormals[j][0] = os::Byteswap::byteswap(triangles[tmp].VertexNormals[j][0]);
@@ -280,7 +280,7 @@ namespace irr
             // store groups
             u32 i;
 
-            for (i = 0; i<numGroups; ++i)
+            for (i = 0; i < numGroups; ++i)
             {
                 groups.push_back(SGroup());
                 SGroup &grp = groups.getLast();
@@ -297,7 +297,7 @@ namespace irr
                 grp.VertexIds.reallocate(triangleCount);
 
                 // pPtr += sizeof(u16) * triangleCount; // triangle indices
-                for (u16 j = 0; j<triangleCount; ++j)
+                for (u16 j = 0; j < triangleCount; ++j)
                 {
 #ifdef __BIG_ENDIAN__
                     grp.VertexIds.push_back(os::Byteswap::byteswap(*(u16*)pPtr));
@@ -336,20 +336,20 @@ namespace irr
                 AnimatedMesh->addMeshBuffer();
             }
 
-            for (i = 0; i<numMaterials; ++i)
+            for (i = 0; i < numMaterials; ++i)
             {
                 MS3DMaterial *material = (MS3DMaterial*)pPtr;
 #ifdef __BIG_ENDIAN__
-                for (u16 j = 0; j<4; ++j)
+                for (u16 j = 0; j < 4; ++j)
                     material->Ambient[j] = os::Byteswap::byteswap(material->Ambient[j]);
 
-                for (u16 j = 0; j<4; ++j)
+                for (u16 j = 0; j < 4; ++j)
                     material->Diffuse[j] = os::Byteswap::byteswap(material->Diffuse[j]);
 
-                for (u16 j = 0; j<4; ++j)
+                for (u16 j = 0; j < 4; ++j)
                     material->Specular[j] = os::Byteswap::byteswap(material->Specular[j]);
 
-                for (u16 j = 0; j<4; ++j)
+                for (u16 j = 0; j < 4; ++j)
                     material->Emissive[j] = os::Byteswap::byteswap(material->Emissive[j]);
 
                 material->Shininess    = os::Byteswap::byteswap(material->Shininess);
@@ -374,14 +374,14 @@ namespace irr
                 tmpBuffer->Material.Shininess     = material->Shininess;
 
                 core::stringc TexturePath(material->Texture);
-                if (TexturePath.trim()!="")
+                if (TexturePath.trim() != "")
                 {
                     TexturePath = stripPathFromString(file->getFileName(), true) + stripPathFromString(TexturePath, false);
                     tmpBuffer->Material.setTexture(0, Driver->getTexture(TexturePath));
                 }
 
                 core::stringc AlphamapPath = (const c8*)material->Alphamap;
-                if (AlphamapPath.trim()!="")
+                if (AlphamapPath.trim() != "")
                 {
                     AlphamapPath = stripPathFromString(file->getFileName(), true) + stripPathFromString(AlphamapPath, false);
                     tmpBuffer->Material.setTexture(2, Driver->getTexture(AlphamapPath));
@@ -398,7 +398,7 @@ namespace irr
 #endif
             pPtr += sizeof(float) * 2; // fps and current time
 
-            if (framesPerSecond<1.f)
+            if (framesPerSecond < 1.f)
                 framesPerSecond = 1.f;
 
             AnimatedMesh->setAnimationSpeed(framesPerSecond);
@@ -429,15 +429,15 @@ namespace irr
             parentNames.reallocate(jointCount);
 
             // load joints
-            for (i = 0; i<jointCount; ++i)
+            for (i = 0; i < jointCount; ++i)
             {
                 u32       j;
                 MS3DJoint *pJoint = (MS3DJoint*)pPtr;
 #ifdef __BIG_ENDIAN__
-                for (j = 0; j<3; ++j)
+                for (j = 0; j < 3; ++j)
                     pJoint->Rotation[j] = os::Byteswap::byteswap(pJoint->Rotation[j]);
 
-                for (j = 0; j<3; ++j)
+                for (j = 0; j < 3; ++j)
                     pJoint->Translation[j] = os::Byteswap::byteswap(pJoint->Translation[j]);
 
                 pJoint->NumRotationKeyframes    = os::Byteswap::byteswap(pJoint->NumRotationKeyframes);
@@ -489,7 +489,7 @@ namespace irr
 #ifdef __BIG_ENDIAN__
                     kf->Time = os::Byteswap::byteswap(kf->Time);
 
-                    for (u32 l = 0; l<3; ++l)
+                    for (u32 l = 0; l < 3; ++l)
                         kf->Parameter[l] = os::Byteswap::byteswap(kf->Parameter[l]);
 #endif
                     pPtr += sizeof(MS3DKeyframe);
@@ -523,13 +523,13 @@ namespace irr
                 // get translation keyframes
                 const u16 numTranslationKeyframes = pJoint->NumTranslationKeyframes;
 
-                for (j = 0; j<numTranslationKeyframes; ++j)
+                for (j = 0; j < numTranslationKeyframes; ++j)
                 {
                     MS3DKeyframe *kf = (MS3DKeyframe*)pPtr;
 #ifdef __BIG_ENDIAN__
                     kf->Time = os::Byteswap::byteswap(kf->Time);
 
-                    for (u32 l = 0; l<3; ++l)
+                    for (u32 l = 0; l < 3; ++l)
                         kf->Parameter[l] = os::Byteswap::byteswap(kf->Parameter[l]);
 #endif
                     pPtr += sizeof(MS3DKeyframe);
@@ -561,7 +561,7 @@ namespace irr
 #endif
                 pPtr += sizeof(s32);
 
-                for (u32 j = 0; j<4; ++j) // four comment groups
+                for (u32 j = 0; j < 4; ++j) // four comment groups
                 {
 #ifdef _IRR_DEBUG_MS3D_LOADER_
                     os::Printer::log("Skipping comment group", core::stringc(j + 1).c_str());
@@ -572,12 +572,12 @@ namespace irr
 #endif
                     pPtr += sizeof(u32);
 
-                    for (i = 0; i<numComments; ++i)
+                    for (i = 0; i < numComments; ++i)
                     {
                         // according to scorpiomidget this field does
                         // not exist for model comments. So avoid to
                         // read it
-                        if (j!=3)
+                        if (j != 3)
                             pPtr += sizeof(s32); // index
 
                         s32 commentLength = *(s32*)pPtr;
@@ -602,7 +602,7 @@ namespace irr
 #ifdef __BIG_ENDIAN__
                     subVersion = os::Byteswap::byteswap(subVersion);
 #endif
-                    if (subVersion==1)
+                    if (subVersion == 1)
                         weightFactor = 1.f / 255.f;
                     else
                         weightFactor = 1.f / 100.f;
@@ -614,9 +614,9 @@ namespace irr
 #endif
                     // read vertex weights, ignoring data 'extra' from 1.8.2
                     vertexWeights.reallocate(numVertices);
-                    const char offset = (subVersion==1) ? 6 : 10;
+                    const char offset = (subVersion == 1) ? 6 : 10;
 
-                    for (i = 0; i<numVertices; ++i)
+                    for (i = 0; i < numVertices; ++i)
                     {
                         vertexWeights.push_back(*(MS3DVertexWeights*)pPtr);
                         pPtr += offset;
@@ -667,9 +667,9 @@ namespace irr
             }
 
             // find parent of every joint
-            for (u32 jointnum = 0; jointnum<AnimatedMesh->getAllJoints().size(); ++jointnum)
+            for (u32 jointnum = 0; jointnum < AnimatedMesh->getAllJoints().size(); ++jointnum)
             {
-                for (u32 j2 = 0; j2<AnimatedMesh->getAllJoints().size(); ++j2)
+                for (u32 j2 = 0; j2 < AnimatedMesh->getAllJoints().size(); ++j2)
                 {
                     if (jointnum != j2 && parentNames[jointnum] == AnimatedMesh->getAllJoints()[j2]->Name)
                     {
@@ -684,12 +684,12 @@ namespace irr
             core::array<video::S3DVertex> *Vertices;
             core::array<u16>              Indices;
 
-            for (i = 0; i<numTriangles; ++i)
+            for (i = 0; i < numTriangles; ++i)
             {
                 u32 tmp = groups[triangles[i].GroupIndex].MaterialIdx;
                 Vertices = &AnimatedMesh->getMeshBuffers()[tmp]->Vertices_Standard;
 
-                for (s32 j = 2; j!=-1; --j)
+                for (s32 j = 2; j != -1; --j)
                 {
                     const u32 vertidx = triangles[i].VertexIndices[j];
 
@@ -726,7 +726,7 @@ namespace irr
                     {
                         index = Vertices->size();
                         const u32 matidx = groups[triangles[i].GroupIndex].MaterialIdx;
-                        if (vertexWeights.size()==0)
+                        if (vertexWeights.size() == 0)
                         {
                             const s32 boneid = vertices[vertidx].BoneID;
                             if ((u32)boneid < AnimatedMesh->getAllJoints().size())
@@ -797,7 +797,7 @@ namespace irr
             // create groups
             s32 iIndex = -1;
 
-            for (i = 0; i<groups.size(); ++i)
+            for (i = 0; i < groups.size(); ++i)
             {
                 SGroup &grp = groups[i];
 
@@ -807,7 +807,7 @@ namespace irr
                 core::array<u16> &indices = AnimatedMesh->getMeshBuffers()[grp.MaterialIdx]->Indices;
 
                 for (u32 k = 0; k < grp.VertexIds.size(); ++k)
-                    for (u32 l = 0; l<3; ++l)
+                    for (u32 l = 0; l < 3; ++l)
                         indices.push_back(Indices[++iIndex]);
             }
 
@@ -822,10 +822,10 @@ namespace irr
             s32 slashIndex = inString.findLast('/'); // forward slash
             s32 backSlash  = inString.findLast('\\'); // back slash
 
-            if (backSlash>slashIndex)
+            if (backSlash > slashIndex)
                 slashIndex = backSlash;
 
-            if (slashIndex==-1)// no slashes found
+            if (slashIndex == -1)// no slashes found
             {
                 if (returnPath)
                     return core::stringc(); // no path to return

@@ -37,7 +37,7 @@ namespace irr
             if (!mesh)
                 return;
 
-            for (u32 i = 0; i<Meshes.size(); ++i)
+            for (u32 i = 0; i < Meshes.size(); ++i)
             {
                 if (Meshes[i].Mesh == mesh || (Meshes[i].Mesh && Meshes[i].Mesh->getMesh(0) == mesh))
                 {
@@ -59,7 +59,7 @@ namespace irr
         // ! Returns current number of the mesh
         s32 CMeshCache::getMeshIndex(const IMesh* const mesh) const
         {
-            for (u32 i = 0; i<Meshes.size(); ++i)
+            for (u32 i = 0; i < Meshes.size(); ++i)
             {
                 if (Meshes[i].Mesh == mesh || (Meshes[i].Mesh && Meshes[i].Mesh->getMesh(0) == mesh))
                     return (s32)i;
@@ -105,7 +105,7 @@ namespace irr
             if (!mesh)
                 return emptyNamedPath;
 
-            for (u32 i = 0; i<Meshes.size(); ++i)
+            for (u32 i = 0; i < Meshes.size(); ++i)
             {
                 if (Meshes[i].Mesh == mesh || (Meshes[i].Mesh && Meshes[i].Mesh->getMesh(0) == mesh))
                     return Meshes[i].NamedPath;
@@ -129,7 +129,7 @@ namespace irr
         // ! Renames a loaded mesh.
         bool CMeshCache::renameMesh(const IMesh* const mesh, const io::path &name)
         {
-            for (u32 i = 0; i<Meshes.size(); ++i)
+            for (u32 i = 0; i < Meshes.size(); ++i)
             {
                 if (Meshes[i].Mesh == mesh || (Meshes[i].Mesh && Meshes[i].Mesh->getMesh(0) == mesh))
                 {
@@ -153,7 +153,7 @@ namespace irr
         // ! Clears the whole mesh cache, removing all meshes.
         void CMeshCache::clear()
         {
-            for (u32 i = 0; i<Meshes.size(); ++i)
+            for (u32 i = 0; i < Meshes.size(); ++i)
                 Meshes[i].Mesh->drop();
 
             Meshes.clear();
@@ -162,7 +162,7 @@ namespace irr
         // ! Clears all meshes that are held in the mesh cache but not used anywhere else.
         void CMeshCache::clearUnusedMeshes()
         {
-            for (u32 i = 0; i<Meshes.size(); ++i)
+            for (u32 i = 0; i < Meshes.size(); ++i)
             {
                 if (Meshes[i].Mesh->getReferenceCount() == 1)
                 {

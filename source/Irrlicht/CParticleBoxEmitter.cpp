@@ -53,7 +53,7 @@ namespace irr
                 if (amount > MaxParticlesPerSecond * 2)
                     amount = MaxParticlesPerSecond * 2;
 
-                for (u32 i = 0; i<amount; ++i)
+                for (u32 i = 0; i < amount; ++i)
                 {
                     p.pos.X = Box.MinEdge.X + os::Randomizer::frand() * extent.X;
                     p.pos.Y = Box.MinEdge.Y + os::Randomizer::frand() * extent.Y;
@@ -75,7 +75,7 @@ namespace irr
                     if (MaxLifeTime != MinLifeTime)
                         p.endTime += os::Randomizer::rand() % (MaxLifeTime - MinLifeTime);
 
-                    if (MinStartColor==MaxStartColor)
+                    if (MinStartColor == MaxStartColor)
                         p.color = MinStartColor;
                     else
                         p.color = MinStartColor.getInterpolated(MaxStartColor, os::Randomizer::frand());
@@ -83,7 +83,7 @@ namespace irr
                     p.startColor  = p.color;
                     p.startVector = p.vector;
 
-                    if (MinStartSize==MaxStartSize)
+                    if (MinStartSize == MaxStartSize)
                         p.startSize = MinStartSize;
                     else
                         p.startSize = MinStartSize.getInterpolated(MaxStartSize, os::Randomizer::frand());

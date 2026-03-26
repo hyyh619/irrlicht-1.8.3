@@ -221,7 +221,7 @@ namespace irr
             D3DLOCKED_RECT rect;
             if (!IsRenderTarget)
             {
-                hr = Texture->LockRect(mipmapLevel, &rect, 0, (mode==ETLM_READ_ONLY) ? D3DLOCK_READONLY : 0);
+                hr = Texture->LockRect(mipmapLevel, &rect, 0, (mode == ETLM_READ_ONLY) ? D3DLOCK_READONLY : 0);
                 if (FAILED(hr))
                 {
                     os::Printer::log("Could not lock DIRECT3D9 Texture.", ELL_ERROR);
@@ -259,7 +259,7 @@ namespace irr
                     return 0;
                 }
 
-                hr = RTTSurface->LockRect(&rect, 0, (mode==ETLM_READ_ONLY) ? D3DLOCK_READONLY : 0);
+                hr = RTTSurface->LockRect(&rect, 0, (mode == ETLM_READ_ONLY) ? D3DLOCK_READONLY : 0);
                 if (FAILED(hr))
                 {
                     os::Printer::log("Could not lock DIRECT3D8 Texture.", "LockRect failed.", ELL_ERROR);
@@ -339,7 +339,7 @@ namespace irr
         // compiling with both D3D 8 and 9.
         bool CD3D8Texture::createMipMaps(u32 level)
         {
-            if (level==0)
+            if (level == 0)
                 return true;
 
             IDirect3DSurface8 *upperSurface = 0;
@@ -462,15 +462,15 @@ namespace irr
         {
             u16 c;
 
-            for (int x = 0; x<width; ++x)
+            for (int x = 0; x < width; ++x)
             {
-                for (int y = 0; y<height; ++y)
+                for (int y = 0; y < height; ++y)
                 {
                     s32 a = 0, r = 0, g = 0, b = 0;
 
-                    for (int dx = 0; dx<2; ++dx)
+                    for (int dx = 0; dx < 2; ++dx)
                     {
-                        for (int dy = 0; dy<2; ++dy)
+                        for (int dy = 0; dy < 2; ++dy)
                         {
                             int tgx = (x * 2) + dx;
                             int tgy = (y * 2) + dy;
@@ -502,15 +502,15 @@ namespace irr
         {
             SColor c;
 
-            for (int x = 0; x<width; ++x)
+            for (int x = 0; x < width; ++x)
             {
-                for (int y = 0; y<height; ++y)
+                for (int y = 0; y < height; ++y)
                 {
                     s32 a = 0, r = 0, g = 0, b = 0;
 
-                    for (int dx = 0; dx<2; ++dx)
+                    for (int dx = 0; dx < 2; ++dx)
                     {
-                        for (int dy = 0; dy<2; ++dy)
+                        for (int dy = 0; dy < 2; ++dy)
                         {
                             int tgx = (x * 2) + dx;
                             int tgy = (y * 2) + dy;
@@ -595,10 +595,10 @@ namespace irr
 
                 do
                 {
-                    if (size.Width>1)
+                    if (size.Width > 1)
                         size.Width /= 2;
 
-                    if (size.Height>1)
+                    if (size.Height > 1)
                         size.Height /= 2;
 
                     ++level;

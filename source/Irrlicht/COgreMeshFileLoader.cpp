@@ -146,7 +146,7 @@ namespace irr
                 }
                 else
                 {
-                    for (u32 i = 0; i<Mesh->getMeshBufferCount(); ++i)
+                    for (u32 i = 0; i < Mesh->getMeshBufferCount(); ++i)
                         ((SMeshBuffer*)Mesh->getMeshBuffer(i))->recalculateBoundingBox();
 
                     ((SMesh*)Mesh)->recalculateBoundingBox();
@@ -419,7 +419,7 @@ namespace irr
                 readInt(file, parent, subMesh.Indices.pointer(), numIndices);
             else
             {
-                for (s32 i = 0; i<numIndices; ++i)
+                for (s32 i = 0; i < numIndices; ++i)
                 {
                     u16 num;
                     readShort(file, parent, &num);
@@ -495,13 +495,13 @@ namespace irr
         {
             video::SMaterial &material = mb->getMaterial();
 
-            for (u32 k = 0; k<Materials.size(); ++k)
+            for (u32 k = 0; k < Materials.size(); ++k)
             {
-                if ((materialName==Materials[k].Name) && (Materials[k].Techniques.size()) && (Materials[k].Techniques[0].Passes.size()))
+                if ((materialName == Materials[k].Name) && (Materials[k].Techniques.size()) && (Materials[k].Techniques[0].Passes.size()))
                 {
                     material = Materials[k].Techniques[0].Passes[0].Material;
 
-                    for (u32 i = 0; i<Materials[k].Techniques[0].Passes[0].Texture.Filename.size(); ++i)
+                    for (u32 i = 0; i < Materials[k].Techniques[0].Passes[0].Texture.Filename.size(); ++i)
                     {
                         if (FileSystem->existFile(Materials[k].Techniques[0].Passes[0].Texture.Filename[i]))
                             material.setTexture(i, Driver->getTexture(Materials[k].Techniques[0].Passes[0].Texture.Filename[i]));
@@ -523,23 +523,23 @@ namespace irr
 
             mb->Indices.set_used(indices.size());
 
-            for (i = 0; i<indices.size(); ++i)
+            for (i = 0; i < indices.size(); ++i)
                 mb->Indices[i] = indices[i];
 
             mb->Vertices.set_used(geom.NumVertex);
 
-            for (i = 0; i<geom.Elements.size(); ++i)
+            for (i = 0; i < geom.Elements.size(); ++i)
             {
-                if (geom.Elements[i].Semantic==1) // Pos
+                if (geom.Elements[i].Semantic == 1) // Pos
                 {
-                    for (u32 j = 0; j<geom.Buffers.size(); ++j)
+                    for (u32 j = 0; j < geom.Buffers.size(); ++j)
                     {
-                        if (geom.Elements[i].Source==geom.Buffers[j].BindIndex)
+                        if (geom.Elements[i].Source == geom.Buffers[j].BindIndex)
                         {
                             u32 eSize = geom.Buffers[j].VertexSize;
                             u32 ePos  = geom.Elements[i].Offset;
 
-                            for (s32 k = 0; k<geom.NumVertex; ++k)
+                            for (s32 k = 0; k < geom.NumVertex; ++k)
                             {
                                 mb->Vertices[k].Color = mb->Material.DiffuseColor;
                                 mb->Vertices[k].Pos.set(geom.Buffers[j].Data[ePos], geom.Buffers[j].Data[ePos + 1], geom.Buffers[j].Data[ePos + 2]);
@@ -549,16 +549,16 @@ namespace irr
                     }
                 }
 
-                if (geom.Elements[i].Semantic==4) // Normal
+                if (geom.Elements[i].Semantic == 4) // Normal
                 {
-                    for (u32 j = 0; j<geom.Buffers.size(); ++j)
+                    for (u32 j = 0; j < geom.Buffers.size(); ++j)
                     {
-                        if (geom.Elements[i].Source==geom.Buffers[j].BindIndex)
+                        if (geom.Elements[i].Source == geom.Buffers[j].BindIndex)
                         {
                             u32 eSize = geom.Buffers[j].VertexSize;
                             u32 ePos  = geom.Elements[i].Offset;
 
-                            for (s32 k = 0; k<geom.NumVertex; ++k)
+                            for (s32 k = 0; k < geom.NumVertex; ++k)
                             {
                                 mb->Vertices[k].Normal.set(geom.Buffers[j].Data[ePos], geom.Buffers[j].Data[ePos + 1], geom.Buffers[j].Data[ePos + 2]);
                                 ePos += eSize;
@@ -567,16 +567,16 @@ namespace irr
                     }
                 }
 
-                if (geom.Elements[i].Semantic==7) // TexCoord
+                if (geom.Elements[i].Semantic == 7) // TexCoord
                 {
-                    for (u32 j = 0; j<geom.Buffers.size(); ++j)
+                    for (u32 j = 0; j < geom.Buffers.size(); ++j)
                     {
-                        if (geom.Elements[i].Source==geom.Buffers[j].BindIndex)
+                        if (geom.Elements[i].Source == geom.Buffers[j].BindIndex)
                         {
                             u32 eSize = geom.Buffers[j].VertexSize;
                             u32 ePos  = geom.Elements[i].Offset;
 
-                            for (s32 k = 0; k<geom.NumVertex; ++k)
+                            for (s32 k = 0; k < geom.NumVertex; ++k)
                             {
                                 mb->Vertices[k].TCoords.set(geom.Buffers[j].Data[ePos], geom.Buffers[j].Data[ePos + 1]);
                                 ePos += eSize;
@@ -598,23 +598,23 @@ namespace irr
 
             mb->Indices.set_used(indices.size());
 
-            for (i = 0; i<indices.size(); ++i)
+            for (i = 0; i < indices.size(); ++i)
                 mb->Indices[i] = indices[i];
 
             mb->Vertices.set_used(geom.NumVertex);
 
-            for (i = 0; i<geom.Elements.size(); ++i)
+            for (i = 0; i < geom.Elements.size(); ++i)
             {
-                if (geom.Elements[i].Semantic==1) // Pos
+                if (geom.Elements[i].Semantic == 1) // Pos
                 {
-                    for (u32 j = 0; j<geom.Buffers.size(); ++j)
+                    for (u32 j = 0; j < geom.Buffers.size(); ++j)
                     {
-                        if (geom.Elements[i].Source==geom.Buffers[j].BindIndex)
+                        if (geom.Elements[i].Source == geom.Buffers[j].BindIndex)
                         {
                             u32 eSize = geom.Buffers[j].VertexSize;
                             u32 ePos  = geom.Elements[i].Offset;
 
-                            for (s32 k = 0; k<geom.NumVertex; ++k)
+                            for (s32 k = 0; k < geom.NumVertex; ++k)
                             {
                                 mb->Vertices[k].Color = mb->Material.DiffuseColor;
                                 mb->Vertices[k].Pos.set(geom.Buffers[j].Data[ePos], geom.Buffers[j].Data[ePos + 1], geom.Buffers[j].Data[ePos + 2]);
@@ -624,16 +624,16 @@ namespace irr
                     }
                 }
 
-                if (geom.Elements[i].Semantic==4) // Normal
+                if (geom.Elements[i].Semantic == 4) // Normal
                 {
-                    for (u32 j = 0; j<geom.Buffers.size(); ++j)
+                    for (u32 j = 0; j < geom.Buffers.size(); ++j)
                     {
-                        if (geom.Elements[i].Source==geom.Buffers[j].BindIndex)
+                        if (geom.Elements[i].Source == geom.Buffers[j].BindIndex)
                         {
                             u32 eSize = geom.Buffers[j].VertexSize;
                             u32 ePos  = geom.Elements[i].Offset;
 
-                            for (s32 k = 0; k<geom.NumVertex; ++k)
+                            for (s32 k = 0; k < geom.NumVertex; ++k)
                             {
                                 mb->Vertices[k].Normal.set(geom.Buffers[j].Data[ePos], geom.Buffers[j].Data[ePos + 1], geom.Buffers[j].Data[ePos + 2]);
                                 ePos += eSize;
@@ -642,18 +642,18 @@ namespace irr
                     }
                 }
 
-                if (geom.Elements[i].Semantic==7) // TexCoord
+                if (geom.Elements[i].Semantic == 7) // TexCoord
                 {
-                    for (u32 j = 0; j<geom.Buffers.size(); ++j)
+                    for (u32 j = 0; j < geom.Buffers.size(); ++j)
                     {
-                        if (geom.Elements[i].Source==geom.Buffers[j].BindIndex)
+                        if (geom.Elements[i].Source == geom.Buffers[j].BindIndex)
                         {
                             u32 eSize = geom.Buffers[j].VertexSize;
                             u32 ePos  = geom.Elements[i].Offset;
                             // make sure we have data for a second texture coord
-                            const bool secondCoord = (eSize>ePos + 3);
+                            const bool secondCoord = (eSize > ePos + 3);
 
-                            for (s32 k = 0; k<geom.NumVertex; ++k)
+                            for (s32 k = 0; k < geom.NumVertex; ++k)
                             {
                                 mb->Vertices[k].TCoords.set(geom.Buffers[j].Data[ePos], geom.Buffers[j].Data[ePos + 1]);
                                 if (secondCoord)
@@ -676,7 +676,7 @@ namespace irr
         {
             scene::SSkinMeshBuffer *mb = mesh.addMeshBuffer();
 
-            if (NumUV>1)
+            if (NumUV > 1)
             {
                 mb->convertTo2TCoords();
                 mb->Vertices_2TCoords.set_used(geom.NumVertex);
@@ -687,27 +687,27 @@ namespace irr
             u32 i;
             mb->Indices.set_used(indices.size());
 
-            for (i = 0; i<indices.size(); i += 3)
+            for (i = 0; i < indices.size(); i += 3)
             {
                 mb->Indices[i + 0] = indices[i + 2];
                 mb->Indices[i + 1] = indices[i + 1];
                 mb->Indices[i + 2] = indices[i + 0];
             }
 
-            for (i = 0; i<geom.Elements.size(); ++i)
+            for (i = 0; i < geom.Elements.size(); ++i)
             {
-                if (geom.Elements[i].Semantic==1) // Pos
+                if (geom.Elements[i].Semantic == 1) // Pos
                 {
-                    for (u32 j = 0; j<geom.Buffers.size(); ++j)
+                    for (u32 j = 0; j < geom.Buffers.size(); ++j)
                     {
-                        if (geom.Elements[i].Source==geom.Buffers[j].BindIndex)
+                        if (geom.Elements[i].Source == geom.Buffers[j].BindIndex)
                         {
                             u32 eSize = geom.Buffers[j].VertexSize;
                             u32 ePos  = geom.Elements[i].Offset;
 
-                            for (s32 k = 0; k<geom.NumVertex; ++k)
+                            for (s32 k = 0; k < geom.NumVertex; ++k)
                             {
-                                if (NumUV>1)
+                                if (NumUV > 1)
                                     mb->Vertices_2TCoords[k].Color = mb->Material.DiffuseColor;
                                 else
                                     mb->Vertices_Standard[k].Color = mb->Material.DiffuseColor;
@@ -719,16 +719,16 @@ namespace irr
                     }
                 }
 
-                if (geom.Elements[i].Semantic==4) // Normal
+                if (geom.Elements[i].Semantic == 4) // Normal
                 {
-                    for (u32 j = 0; j<geom.Buffers.size(); ++j)
+                    for (u32 j = 0; j < geom.Buffers.size(); ++j)
                     {
-                        if (geom.Elements[i].Source==geom.Buffers[j].BindIndex)
+                        if (geom.Elements[i].Source == geom.Buffers[j].BindIndex)
                         {
                             u32 eSize = geom.Buffers[j].VertexSize;
                             u32 ePos  = geom.Elements[i].Offset;
 
-                            for (s32 k = 0; k<geom.NumVertex; ++k)
+                            for (s32 k = 0; k < geom.NumVertex; ++k)
                             {
                                 mb->getNormal(k).set(-geom.Buffers[j].Data[ePos], geom.Buffers[j].Data[ePos + 1], geom.Buffers[j].Data[ePos + 2]);
                                 ePos += eSize;
@@ -737,21 +737,21 @@ namespace irr
                     }
                 }
 
-                if (geom.Elements[i].Semantic==7) // TexCoord
+                if (geom.Elements[i].Semantic == 7) // TexCoord
                 {
-                    for (u32 j = 0; j<geom.Buffers.size(); ++j)
+                    for (u32 j = 0; j < geom.Buffers.size(); ++j)
                     {
-                        if (geom.Elements[i].Source==geom.Buffers[j].BindIndex)
+                        if (geom.Elements[i].Source == geom.Buffers[j].BindIndex)
                         {
                             u32 eSize = geom.Buffers[j].VertexSize;
                             u32 ePos  = geom.Elements[i].Offset;
                             // make sure we have data for a second texture coord
-                            const bool secondCoord = (eSize>ePos + 3);
+                            const bool secondCoord = (eSize > ePos + 3);
 
-                            for (s32 k = 0; k<geom.NumVertex; ++k)
+                            for (s32 k = 0; k < geom.NumVertex; ++k)
                             {
                                 mb->getTCoords(k).set(geom.Buffers[j].Data[ePos], geom.Buffers[j].Data[ePos + 1]);
-                                if (NumUV>1)
+                                if (NumUV > 1)
                                 {
                                     if (secondCoord)
                                         mb->Vertices_2TCoords[k].TCoords2.set(geom.Buffers[j].Data[ePos + 2], geom.Buffers[j].Data[ePos + 3]);
@@ -772,9 +772,9 @@ namespace irr
 
         void COgreMeshFileLoader::composeObject(void)
         {
-            for (u32 i = 0; i<Meshes.size(); ++i)
+            for (u32 i = 0; i < Meshes.size(); ++i)
             {
-                for (u32 j = 0; j<Meshes[i].SubMeshes.size(); ++j)
+                for (u32 j = 0; j < Meshes[i].SubMeshes.size(); ++j)
                 {
                     IMeshBuffer *mb;
                     if (Meshes[i].SubMeshes[j].SharedVertices)
@@ -825,7 +825,7 @@ namespace irr
                 CSkinnedMesh *m = (CSkinnedMesh*)Mesh;
 
                 // Create Joints
-                for (u32 i = 0; i<Skeleton.Bones.size(); ++i)
+                for (u32 i = 0; i < Skeleton.Bones.size(); ++i)
                 {
                     ISkinnedMesh::SJoint *joint = m->addJoint();
                     joint->Name = Skeleton.Bones[i].Name;
@@ -845,9 +845,9 @@ namespace irr
                 }
 
                 // Joints hierarchy
-                for (u32 i = 0; i<Skeleton.Bones.size(); ++i)
+                for (u32 i = 0; i < Skeleton.Bones.size(); ++i)
                 {
-                    if (Skeleton.Bones[i].Parent<m->getJointCount())
+                    if (Skeleton.Bones[i].Parent < m->getJointCount())
                     {
                         m->getAllJoints()[Skeleton.Bones[i].Parent]->Children.push_back(m->getAllJoints()[Skeleton.Bones[i].Handle]);
                     }
@@ -856,14 +856,14 @@ namespace irr
                 // Weights
                 u32 bufCount = 0;
 
-                for (u32 i = 0; i<Meshes.size(); ++i)
+                for (u32 i = 0; i < Meshes.size(); ++i)
                 {
-                    for (u32 j = 0; j<Meshes[i].SubMeshes.size(); ++j)
+                    for (u32 j = 0; j < Meshes[i].SubMeshes.size(); ++j)
                     {
-                        for (u32 k = 0; k<Meshes[i].SubMeshes[j].BoneAssignments.size(); ++k)
+                        for (u32 k = 0; k < Meshes[i].SubMeshes[j].BoneAssignments.size(); ++k)
                         {
                             const OgreBoneAssignment &ba = Meshes[i].SubMeshes[j].BoneAssignments[k];
-                            if (ba.BoneID<m->getJointCount())
+                            if (ba.BoneID < m->getJointCount())
                             {
                                 ISkinnedMesh::SWeight *w = m->addWeight(m->getAllJoints()[ba.BoneID]);
                                 w->strength  = ba.Weight;
@@ -876,9 +876,9 @@ namespace irr
                     }
                 }
 
-                for (u32 i = 0; i<Skeleton.Animations.size(); ++i)
+                for (u32 i = 0; i < Skeleton.Animations.size(); ++i)
                 {
-                    for (u32 j = 0; j<Skeleton.Animations[i].Keyframes.size(); ++j)
+                    for (u32 j = 0; j < Skeleton.Animations[i].Keyframes.size(); ++j)
                     {
                         OgreKeyframe               &frame    = Skeleton.Animations[i].Keyframes[j];
                         ISkinnedMesh::SJoint       *keyjoint = m->getAllJoints()[frame.BoneID];
@@ -918,7 +918,7 @@ namespace irr
             // search for word beginning
             while (core::isspace(c) && (file->getPos() < file->getSize()))
             {
-                if (noNewLine && c=='\n')
+                if (noNewLine && c == '\n')
                 {
                     file->seek(-1, true);
                     return;
@@ -928,7 +928,7 @@ namespace irr
             }
 
             // check if we read a string
-            if (c=='"')
+            if (c == '"')
             {
                 parseString = true;
                 file->read(&c, sizeof(c8));
@@ -936,14 +936,14 @@ namespace irr
 
             do
             {
-                if (c=='/')
+                if (c == '/')
                 {
                     file->read(&c, sizeof(c8));
                     // check for comments, cannot be part of strings
-                    if (!parseString && (c=='/'))
+                    if (!parseString && (c == '/'))
                     {
                         // skip comments
-                        while (c!='\n')
+                        while (c != '\n')
                             file->read(&c, sizeof(c8));
 
                         if (!token.size())
@@ -966,7 +966,7 @@ namespace irr
                         // ends this token
                         token.append('/');
                         if ((!parseString && core::isspace(c)) ||
-                            (parseString && (c=='"')))
+                            (parseString && (c == '"')))
                             return;
                     }
                 }
@@ -975,7 +975,7 @@ namespace irr
                 file->read(&c, sizeof(c8));
                 // read until a token delimiter is found
             }
-            while (((!parseString && !core::isspace(c)) || (parseString && (c!='"'))) &&
+            while (((!parseString && !core::isspace(c)) || (parseString && (c != '"'))) &&
                 (file->getPos() < file->getSize()));
 
             // we want to skip the last quotes of a string , but other chars might be the next
@@ -990,7 +990,7 @@ namespace irr
             core::stringc token;
 
             getMaterialToken(file, token);
-            if (token!="vertexcolour")
+            if (token != "vertexcolour")
             {
                 video::SColorf col_f;
                 col_f.r = core::fast_atof(token.c_str());
@@ -1004,7 +1004,7 @@ namespace irr
                 else
                     col_f.a = 1.0f;
 
-                if ((col_f.r==0.0f) && (col_f.g==0.0f) && (col_f.b==0.0f))
+                if ((col_f.r == 0.0f) && (col_f.g == 0.0f) && (col_f.b == 0.0f))
                     col.set(255, 255, 255, 255);
                 else
                     col = col_f.toSColor();
@@ -1038,140 +1038,140 @@ namespace irr
 
             while (inBlocks)
             {
-                if (token=="ambient")
+                if (token == "ambient")
                     pass.AmbientTokenColor = readColor(file, pass.Material.AmbientColor);
-                else if (token=="diffuse")
+                else if (token == "diffuse")
                     pass.DiffuseTokenColor = readColor(file, pass.Material.DiffuseColor);
-                else if (token=="specular")
+                else if (token == "specular")
                 {
                     pass.SpecularTokenColor = readColor(file, pass.Material.SpecularColor);
                     getMaterialToken(file, token);
                     pass.Material.Shininess = core::fast_atof(token.c_str());
                 }
-                else if (token=="emissive")
+                else if (token == "emissive")
                     pass.EmissiveTokenColor = readColor(file, pass.Material.EmissiveColor);
-                else if (token=="scene_blend")
+                else if (token == "scene_blend")
                 {   // TODO: Choose correct values
                     getMaterialToken(file, token);
-                    if (token=="add")
+                    if (token == "add")
                         pass.Material.MaterialType = video::EMT_TRANSPARENT_ADD_COLOR;
-                    else if (token=="modulate")
+                    else if (token == "modulate")
                         pass.Material.MaterialType = video::EMT_SOLID;
-                    else if (token=="alpha_blend")
+                    else if (token == "alpha_blend")
                         pass.Material.MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL;
-                    else if (token=="colour_blend")
+                    else if (token == "colour_blend")
                         pass.Material.MaterialType = video::EMT_TRANSPARENT_VERTEX_ALPHA;
                     else
                         getMaterialToken(file, token);
                 }
-                else if (token=="depth_check")
+                else if (token == "depth_check")
                 {
                     getMaterialToken(file, token);
-                    if (token!="on")
+                    if (token != "on")
                         pass.Material.ZBuffer = video::ECFN_NEVER;
                 }
-                else if (token=="depth_write")
+                else if (token == "depth_write")
                 {
                     getMaterialToken(file, token);
-                    pass.Material.ZWriteEnable = (token=="on");
+                    pass.Material.ZWriteEnable = (token == "on");
                 }
-                else if (token=="depth_func")
+                else if (token == "depth_func")
                 {
                     getMaterialToken(file, token); // Function name
-                    if (token=="always_fail")
+                    if (token == "always_fail")
                         pass.Material.ZBuffer = video::ECFN_NEVER;
-                    else if (token=="always_pass")
+                    else if (token == "always_pass")
                         pass.Material.ZBuffer = video::ECFN_ALWAYS;
-                    else if (token=="equal")
+                    else if (token == "equal")
                         pass.Material.ZBuffer = video::ECFN_EQUAL;
-                    else if (token=="greater")
+                    else if (token == "greater")
                         pass.Material.ZBuffer = video::ECFN_GREATER;
-                    else if (token=="greater_equal")
+                    else if (token == "greater_equal")
                         pass.Material.ZBuffer = video::ECFN_GREATEREQUAL;
-                    else if (token=="less")
+                    else if (token == "less")
                         pass.Material.ZBuffer = video::ECFN_LESS;
-                    else if (token=="less_equal")
+                    else if (token == "less_equal")
                         pass.Material.ZBuffer = video::ECFN_LESSEQUAL;
-                    else if (token=="not_equal")
+                    else if (token == "not_equal")
                         pass.Material.ZBuffer = video::ECFN_NOTEQUAL;
                 }
-                else if (token=="normalise_normals")
+                else if (token == "normalise_normals")
                 {
                     getMaterialToken(file, token);
-                    pass.Material.NormalizeNormals = (token=="on");
+                    pass.Material.NormalizeNormals = (token == "on");
                 }
-                else if (token=="depth_bias")
+                else if (token == "depth_bias")
                 {
                     getMaterialToken(file, token); // bias value
                 }
-                else if (token=="alpha_rejection")
+                else if (token == "alpha_rejection")
                 {
                     getMaterialToken(file, token); // function name
                     getMaterialToken(file, token); // value
                     pass.Material.MaterialTypeParam = core::fast_atof(token.c_str());
                 }
-                else if (token=="alpha_to_coverage")
+                else if (token == "alpha_to_coverage")
                 {
                     getMaterialToken(file, token);
-                    if (token=="on")
+                    if (token == "on")
                         pass.Material.AntiAliasing |= video::EAAM_ALPHA_TO_COVERAGE;
                 }
-                else if (token=="colour_write")
+                else if (token == "colour_write")
                 {
                     getMaterialToken(file, token);
-                    pass.Material.ColorMask = (token=="on") ? video::ECP_ALL : video::ECP_NONE;
+                    pass.Material.ColorMask = (token == "on") ? video::ECP_ALL : video::ECP_NONE;
                 }
-                else if (token=="cull_hardware")
+                else if (token == "cull_hardware")
                 {
                     getMaterialToken(file, token); // rotation name
                 }
-                else if (token=="cull_software")
+                else if (token == "cull_software")
                 {
                     getMaterialToken(file, token); // culling side
                 }
-                else if (token=="lighting")
+                else if (token == "lighting")
                 {
                     getMaterialToken(file, token);
-                    pass.Material.Lighting = (token=="on");
+                    pass.Material.Lighting = (token == "on");
                 }
-                else if (token=="shading")
+                else if (token == "shading")
                 {
                     getMaterialToken(file, token);
                     // We take phong as gouraud
-                    pass.Material.GouraudShading = (token!="flat");
+                    pass.Material.GouraudShading = (token != "flat");
                 }
-                else if (token=="polygon_mode")
+                else if (token == "polygon_mode")
                 {
                     getMaterialToken(file, token);
-                    pass.Material.Wireframe  = (token=="wireframe");
-                    pass.Material.PointCloud = (token=="points");
+                    pass.Material.Wireframe  = (token == "wireframe");
+                    pass.Material.PointCloud = (token == "points");
                 }
-                else if (token=="max_lights")
+                else if (token == "max_lights")
                 {
                     getMaterialToken(file, token);
                     pass.MaxLights = core::strtoul10(token.c_str());
                 }
-                else if (token=="point_size")
+                else if (token == "point_size")
                 {
                     getMaterialToken(file, token);
                     pass.PointSize = core::fast_atof(token.c_str());
                 }
-                else if (token=="point_sprites")
+                else if (token == "point_sprites")
                 {
                     getMaterialToken(file, token);
-                    pass.PointSprites = (token=="on");
+                    pass.PointSprites = (token == "on");
                 }
-                else if (token=="point_size_min")
+                else if (token == "point_size_min")
                 {
                     getMaterialToken(file, token);
                     pass.PointSizeMin = core::strtoul10(token.c_str());
                 }
-                else if (token=="point_size_max")
+                else if (token == "point_size_max")
                 {
                     getMaterialToken(file, token);
                     pass.PointSizeMax = core::strtoul10(token.c_str());
                 }
-                else if (token=="texture_unit")
+                else if (token == "texture_unit")
                 {
 #ifdef IRR_OGRE_LOADER_DEBUG
                     os::Printer::log("Read Texture unit", ELL_DEBUG);
@@ -1181,7 +1181,7 @@ namespace irr
 
                     while (token != "}")
                     {
-                        if (token=="texture")
+                        if (token == "texture")
                         {
                             getMaterialToken(file, token);
                             pass.Texture.Filename.push_back(token);
@@ -1192,24 +1192,24 @@ namespace irr
                             getMaterialToken(file, pass.Texture.MipMaps, true);
                             getMaterialToken(file, pass.Texture.Alpha, true);
                             // Hmm, we might need more hints for other material types using two textures...
-                            if (textureUnit>0)
+                            if (textureUnit > 0)
                                 pass.Material.MaterialType = video::EMT_LIGHTMAP;
                         }
-                        else if (token=="filtering")
+                        else if (token == "filtering")
                         {
                             getMaterialToken(file, token);
                             pass.Material.TextureLayer[textureUnit].AnisotropicFilter = 0;
-                            if (token=="point")
+                            if (token == "point")
                             {
                                 pass.Material.TextureLayer[textureUnit].BilinearFilter  = false;
                                 pass.Material.TextureLayer[textureUnit].TrilinearFilter = false;
                                 getMaterialToken(file, token);
                                 getMaterialToken(file, token);
                             }
-                            else if (token=="linear")
+                            else if (token == "linear")
                             {
                                 getMaterialToken(file, token);
-                                if (token=="point")
+                                if (token == "point")
                                 {
                                     pass.Material.TextureLayer[textureUnit].BilinearFilter  = false;
                                     pass.Material.TextureLayer[textureUnit].TrilinearFilter = false;
@@ -1219,40 +1219,40 @@ namespace irr
                                 {
                                     pass.Material.TextureLayer[textureUnit].BilinearFilter = true;
                                     getMaterialToken(file, token);
-                                    pass.Material.TextureLayer[textureUnit].TrilinearFilter = (token=="linear");
+                                    pass.Material.TextureLayer[textureUnit].TrilinearFilter = (token == "linear");
                                 }
                             }
                             else
                             {
-                                pass.Material.TextureLayer[textureUnit].BilinearFilter    = (token=="bilinear");
-                                pass.Material.TextureLayer[textureUnit].TrilinearFilter   = (token=="trilinear");
-                                pass.Material.TextureLayer[textureUnit].AnisotropicFilter = (token=="anisotropic") ? 2 : 1;
+                                pass.Material.TextureLayer[textureUnit].BilinearFilter    = (token == "bilinear");
+                                pass.Material.TextureLayer[textureUnit].TrilinearFilter   = (token == "trilinear");
+                                pass.Material.TextureLayer[textureUnit].AnisotropicFilter = (token == "anisotropic") ? 2 : 1;
                             }
                         }
-                        else if (token=="max_anisotropy")
+                        else if (token == "max_anisotropy")
                         {
                             getMaterialToken(file, token);
                             pass.Material.TextureLayer[textureUnit].AnisotropicFilter = (u8)core::strtoul10(token.c_str());
                         }
-                        else if (token=="texture_alias")
+                        else if (token == "texture_alias")
                         {
                             getMaterialToken(file, pass.Texture.Alias);
                         }
-                        else if (token=="mipmap_bias")
+                        else if (token == "mipmap_bias")
                         {
                             getMaterialToken(file, token);
                             pass.Material.TextureLayer[textureUnit].LODBias = (s8)core::fast_atof(token.c_str());
                         }
-                        else if (token=="colour_op")
+                        else if (token == "colour_op")
                         {   // TODO: Choose correct values
                             getMaterialToken(file, token);
-                            if (token=="add")
+                            if (token == "add")
                                 pass.Material.MaterialType = video::EMT_TRANSPARENT_ADD_COLOR;
-                            else if (token=="modulate")
+                            else if (token == "modulate")
                                 pass.Material.MaterialType = video::EMT_SOLID;
-                            else if (token=="alpha_blend")
+                            else if (token == "alpha_blend")
                                 pass.Material.MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL;
-                            else if (token=="colour_blend")
+                            else if (token == "colour_blend")
                                 pass.Material.MaterialType = video::EMT_TRANSPARENT_VERTEX_ALPHA;
                             else
                                 getMaterialToken(file, token);
@@ -1263,7 +1263,7 @@ namespace irr
 
                     ++textureUnit;
                 }
-                else if (token=="shadow_caster_program_ref")
+                else if (token == "shadow_caster_program_ref")
                 {
                     do
                     {
@@ -1271,7 +1271,7 @@ namespace irr
                     }
                     while (token != "}");
                 }
-                else if (token=="shadow_caster_vertex_program_ref")
+                else if (token == "shadow_caster_vertex_program_ref")
                 {
                     do
                     {
@@ -1279,7 +1279,7 @@ namespace irr
                     }
                     while (token != "}");
                 }
-                else if (token=="vertex_program_ref")
+                else if (token == "vertex_program_ref")
                 {
                     do
                     {
@@ -1291,9 +1291,9 @@ namespace irr
                 // fog_override, iteration, point_size_attenuation
                 // not considered yet!
                 getMaterialToken(file, token);
-                if (token=="{")
+                if (token == "{")
                     ++inBlocks;
-                else if (token=="}")
+                else if (token == "}")
                     --inBlocks;
             }
         }
@@ -1398,24 +1398,24 @@ namespace irr
 
                 while (token != "}")
                 {
-                    if (token=="lod_distances") // can have several items
+                    if (token == "lod_distances") // can have several items
                         getMaterialToken(file, token);
-                    else if (token=="receive_shadows")
+                    else if (token == "receive_shadows")
                     {
                         getMaterialToken(file, token);
-                        mat.ReceiveShadows = (token=="on");
+                        mat.ReceiveShadows = (token == "on");
                     }
-                    else if (token=="transparency_casts_shadows")
+                    else if (token == "transparency_casts_shadows")
                     {
                         getMaterialToken(file, token);
-                        mat.TransparencyCastsShadows = (token=="on");
+                        mat.TransparencyCastsShadows = (token == "on");
                     }
-                    else if (token=="set_texture_alias")
+                    else if (token == "set_texture_alias")
                     {
                         getMaterialToken(file, token);
                         getMaterialToken(file, token);
                     }
-                    else if (token=="technique")
+                    else if (token == "technique")
                         readTechnique(file, mat);
 
                     getMaterialToken(file, token);
@@ -1500,7 +1500,7 @@ namespace irr
                         //                rot *= core::RADTODEG;
                         //                os::Printer::log("Rotation", core::stringc(rot.X)+" "+core::stringc(rot.Y)+" "+core::stringc(rot.Z));
 #endif
-                        if (data.read<(data.header.length - bone.Name.size()))
+                        if (data.read < (data.header.length - bone.Name.size()))
                         {
                             readVector(file, data, bone.Scale);
                             bone.Scale.X *= -1.f;
@@ -1517,7 +1517,7 @@ namespace irr
                         u16 parent;
                         readShort(file, data, &bone);
                         readShort(file, data, &parent);
-                        if (bone<Skeleton.Bones.size() && parent<Skeleton.Bones.size())
+                        if (bone < Skeleton.Bones.size() && parent < Skeleton.Bones.size())
                             Skeleton.Bones[bone].Parent = parent;
                     }
                     break;
@@ -1553,7 +1553,7 @@ namespace irr
                         keyframe.Time += animationTotal;
                         readQuaternion(file, data, keyframe.Orientation);
                         readVector(file, data, keyframe.Position);
-                        if (data.read<data.header.length)
+                        if (data.read < data.header.length)
                         {
                             readVector(file, data, keyframe.Scale);
                             keyframe.Scale.X *= -1.f;
@@ -1600,10 +1600,10 @@ namespace irr
 
             out = "";
 
-            while (c!='\n')
+            while (c != '\n')
             {
                 file->read(&c, sizeof(c8));
-                if (c!='\n')
+                if (c != '\n')
                     out.append(c);
             }
 
@@ -1617,7 +1617,7 @@ namespace irr
             char c = 0;
 
             file->read(&c, sizeof(char));
-            out = (c!=0);
+            out = (c != 0);
             ++data.read;
         }
 
@@ -1628,7 +1628,7 @@ namespace irr
             file->read(out, sizeof(int) * num);
             if (SwapEndian)
             {
-                for (u32 i = 0; i<num; ++i)
+                for (u32 i = 0; i < num; ++i)
                     out[i] = os::Byteswap::byteswap(out[i]);
             }
 
@@ -1642,7 +1642,7 @@ namespace irr
             file->read(out, sizeof(short) * num);
             if (SwapEndian)
             {
-                for (u32 i = 0; i<num; ++i)
+                for (u32 i = 0; i < num; ++i)
                     out[i] = os::Byteswap::byteswap(out[i]);
             }
 
@@ -1656,7 +1656,7 @@ namespace irr
             file->read(out, sizeof(float) * num);
             if (SwapEndian)
             {
-                for (u32 i = 0; i<num; ++i)
+                for (u32 i = 0; i < num; ++i)
                     out[i] = os::Byteswap::byteswap(out[i]);
             }
 
@@ -1682,14 +1682,14 @@ namespace irr
 
         void COgreMeshFileLoader::clearMeshes()
         {
-            for (u32 i = 0; i<Meshes.size(); ++i)
+            for (u32 i = 0; i < Meshes.size(); ++i)
             {
-                for (int k = 0; k<(int)Meshes[i].Geometry.Buffers.size(); ++k)
+                for (int k = 0; k < (int)Meshes[i].Geometry.Buffers.size(); ++k)
                     Meshes[i].Geometry.Buffers[k].Data.clear();
 
-                for (u32 j = 0; j<Meshes[i].SubMeshes.size(); ++j)
+                for (u32 j = 0; j < Meshes[i].SubMeshes.size(); ++j)
                 {
-                    for (int h = 0; h<(int)Meshes[i].SubMeshes[j].Geometry.Buffers.size(); ++h)
+                    for (int h = 0; h < (int)Meshes[i].SubMeshes[j].Geometry.Buffers.size(); ++h)
                         Meshes[i].SubMeshes[j].Geometry.Buffers[h].Data.clear();
                 }
             }

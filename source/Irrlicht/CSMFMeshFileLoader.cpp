@@ -100,7 +100,7 @@ namespace irr
             // find the correct mesh buffer
             u32 i;
 
-            for (i = 0; i<mesh->MeshBuffers.size(); ++i)
+            for (i = 0; i < mesh->MeshBuffers.size(); ++i)
                 if (mesh->MeshBuffers[i]->getMaterial().TextureLayer[0].Texture == texture)
                     break;
 
@@ -127,7 +127,7 @@ namespace irr
             mb->Vertices.reallocate(mb->Vertices.size() + vertexCount);
 
             // add vertices and set positions
-            for (i = 0; i<vertexCount; ++i)
+            for (i = 0; i < vertexCount; ++i)
             {
                 core::vector3df pos;
                 io::BinaryFile::read(file, pos);

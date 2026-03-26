@@ -91,7 +91,7 @@ namespace irr
                 paletteData = new s32[256];
                 file->read(tempPalette, 768);
 
-                for (s32 i = 0; i<256; i++)
+                for (s32 i = 0; i < 256; i++)
                 {
                     paletteData[i] = (0xff000000 |
                         (tempPalette[i * 3 + 0] << 16) |
@@ -107,7 +107,7 @@ namespace irr
             {
                 paletteData = new s32[16];
 
-                for (s32 i = 0; i<16; i++)
+                for (s32 i = 0; i < 16; i++)
                 {
                     paletteData[i] = (0xff000000 |
                         (header.Palette[i * 3 + 0] << 16) |
@@ -139,21 +139,21 @@ namespace irr
                     file->read(&value, 1);
                 }
 
-                if (header.Planes==1)
+                if (header.Planes == 1)
                     memset(PCXData + offset, value, cnt);
                 else
                 {
-                    for (u8 i = 0; i<cnt; ++i)
+                    for (u8 i = 0; i < cnt; ++i)
                     {
                         PCXData[linestart + lineoffset] = value;
                         lineoffset                     += 3;
-                        if (lineoffset>=3 * header.BytesPerLine)
+                        if (lineoffset >= 3 * header.BytesPerLine)
                         {
                             lineoffset = nextmode;
-                            if (++nextmode==3)
+                            if (++nextmode == 3)
                                 nextmode = 0;
 
-                            if (lineoffset==0)
+                            if (lineoffset == 0)
                                 linestart += 3 * header.BytesPerLine;
                         }
                     }
@@ -167,7 +167,7 @@ namespace irr
             if (pad < 0)
                 pad = -pad;
 
-            if (header.BitsPerPixel==8)
+            if (header.BitsPerPixel == 8)
             {
                 switch (header.Planes) // TODO: Other formats
                 {
@@ -186,24 +186,24 @@ namespace irr
                         break;
                 }
             }
-            else if (header.BitsPerPixel==4)
+            else if (header.BitsPerPixel == 4)
             {
-                if (header.Planes==1)
+                if (header.Planes == 1)
                 {
                     image = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, core::dimension2d<u32>(width, height));
                     if (image)
                         CColorConverter::convert4BitTo16Bit(PCXData, (s16*)image->lock(), width, height, paletteData, pad);
                 }
             }
-            else if (header.BitsPerPixel==1)
+            else if (header.BitsPerPixel == 1)
             {
-                if (header.Planes==4)
+                if (header.Planes == 4)
                 {
                     image = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, core::dimension2d<u32>(width, height));
                     if (image)
                         CColorConverter::convert4BitTo16Bit(PCXData, (s16*)image->lock(), width, height, paletteData, pad);
                 }
-                else if (header.Planes==1)
+                else if (header.Planes == 1)
                 {
                     image = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, core::dimension2d<u32>(width, height));
                     if (image)

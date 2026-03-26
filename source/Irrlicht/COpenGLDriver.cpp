@@ -166,7 +166,7 @@ namespace irr
 
             GLuint PixelFormat;
 
-            for (u32 i = 0; i<6; ++i)
+            for (u32 i = 0; i < 6; ++i)
             {
                 if (i == 1)
                 {
@@ -185,7 +185,7 @@ namespace irr
                 }
                 else if (i == 3)
                 {
-                    if (Params.Bits!=16)
+                    if (Params.Bits != 16)
                         pfd.cDepthBits = 16;
                     else
                         continue;
@@ -276,8 +276,8 @@ namespace irr
                     WGL_DRAW_TO_WINDOW_ARB, 1,
                     WGL_SUPPORT_OPENGL_ARB, 1,
                     WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
-                    WGL_COLOR_BITS_ARB, (Params.Bits==32) ? 24 : 15,
-                    WGL_ALPHA_BITS_ARB, (Params.Bits==32) ? 8 : 1,
+                    WGL_COLOR_BITS_ARB, (Params.Bits == 32) ? 24 : 15,
+                    WGL_ALPHA_BITS_ARB, (Params.Bits == 32) ? 8 : 1,
                     WGL_DEPTH_BITS_ARB, Params.ZBufferBits, // 10,11
                     WGL_STENCIL_BITS_ARB, Params.Stencilbuffer ? 1 : 0,
                     WGL_DOUBLE_BUFFER_ARB, Params.Doublebuffer ? 1 : 0,
@@ -330,7 +330,7 @@ namespace irr
                     else
                         iAttributes[21] -= 1;
                 }
-                while (rv==0 && iAttributes[21]>1);
+                while (rv == 0 && iAttributes[21] > 1);
 
                 if (rv)
                 {
@@ -357,9 +357,9 @@ namespace irr
             }
 
             // search for pixel format the simple way
-            if (PixelFormat==0 || (!SetPixelFormat(HDc, PixelFormat, &pfd)))
+            if (PixelFormat == 0 || (!SetPixelFormat(HDc, PixelFormat, &pfd)))
             {
-                for (u32 i = 0; i<5; ++i)
+                for (u32 i = 0; i < 5; ++i)
                 {
                     if (i == 1)
                     {
@@ -379,7 +379,7 @@ namespace irr
 
                     if (i == 3)
                     {
-                        if (Params.Bits!=16)
+                        if (Params.Bits != 16)
                             pfd.cDepthBits = 16;
                         else
                             continue;
@@ -709,10 +709,10 @@ namespace irr
 
             UserClipPlanes.reallocate(MaxUserClipPlanes);
 
-            for (i = 0; i<MaxUserClipPlanes; ++i)
+            for (i = 0; i < MaxUserClipPlanes; ++i)
                 UserClipPlanes.push_back(SUserClipPlane());
 
-            for (i = 0; i<ETS_COUNT; ++i)
+            for (i = 0; i < ETS_COUNT; ++i)
                 setTransform(static_cast<E_TRANSFORMATION_STATE>(i), core::IdentityMatrix);
 
             setAmbientLight(SColorf(0.0f, 0.0f, 0.0f, 0.0f));
@@ -958,7 +958,7 @@ namespace irr
                     glLoadMatrixf((Matrices[ETS_VIEW]).pointer());
 
                     // we have to update the clip planes to the latest view matrix
-                    for (u32 i = 0; i<MaxUserClipPlanes; ++i)
+                    for (u32 i = 0; i < MaxUserClipPlanes; ++i)
                         if (UserClipPlanes[i].Enabled)
                             uploadClipPlane(i);
 
@@ -1040,7 +1040,7 @@ namespace irr
                         S3DVertex       *pb = reinterpret_cast<S3DVertex*>(buffer.pointer());
                         const S3DVertex *po = static_cast<const S3DVertex*>(vertices);
 
-                        for (u32 i = 0; i<vertexCount; i++)
+                        for (u32 i = 0; i < vertexCount; i++)
                         {
                             po[i].Color.toOpenGLColor((u8*)&(pb[i].Color));
                         }
@@ -1052,7 +1052,7 @@ namespace irr
                         S3DVertex2TCoords       *pb = reinterpret_cast<S3DVertex2TCoords*>(buffer.pointer());
                         const S3DVertex2TCoords *po = static_cast<const S3DVertex2TCoords*>(vertices);
 
-                        for (u32 i = 0; i<vertexCount; i++)
+                        for (u32 i = 0; i < vertexCount; i++)
                         {
                             po[i].Color.toOpenGLColor((u8*)&(pb[i].Color));
                         }
@@ -1064,7 +1064,7 @@ namespace irr
                         S3DVertexTangents       *pb = reinterpret_cast<S3DVertexTangents*>(buffer.pointer());
                         const S3DVertexTangents *po = static_cast<const S3DVertexTangents*>(vertices);
 
-                        for (u32 i = 0; i<vertexCount; i++)
+                        for (u32 i = 0; i < vertexCount; i++)
                         {
                             po[i].Color.toOpenGLColor((u8*)&(pb[i].Color));
                         }
@@ -1103,9 +1103,9 @@ namespace irr
             {
                 HWBuffer->vbo_verticesSize = vertexCount * vertexSize;
 
-                if (HWBuffer->Mapped_Vertex==scene::EHM_STATIC)
+                if (HWBuffer->Mapped_Vertex == scene::EHM_STATIC)
                     extGlBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize, vbuf, GL_STATIC_DRAW);
-                else if (HWBuffer->Mapped_Vertex==scene::EHM_DYNAMIC)
+                else if (HWBuffer->Mapped_Vertex == scene::EHM_DYNAMIC)
                     extGlBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize, vbuf, GL_DYNAMIC_DRAW);
                 else // scene::EHM_STREAM
                     extGlBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize, vbuf, GL_STREAM_DRAW);
@@ -1182,9 +1182,9 @@ namespace irr
             {
                 HWBuffer->vbo_indicesSize = indexCount * indexSize;
 
-                if (HWBuffer->Mapped_Index==scene::EHM_STATIC)
+                if (HWBuffer->Mapped_Index == scene::EHM_STATIC)
                     extGlBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * indexSize, indices, GL_STATIC_DRAW);
-                else if (HWBuffer->Mapped_Index==scene::EHM_DYNAMIC)
+                else if (HWBuffer->Mapped_Index == scene::EHM_DYNAMIC)
                     extGlBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * indexSize, indices, GL_DYNAMIC_DRAW);
                 else // scene::EHM_STREAM
                     extGlBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * indexSize, indices, GL_STREAM_DRAW);
@@ -1205,7 +1205,7 @@ namespace irr
             if (!HWBuffer)
                 return false;
 
-            if (HWBuffer->Mapped_Vertex!=scene::EHM_NEVER)
+            if (HWBuffer->Mapped_Vertex != scene::EHM_NEVER)
             {
                 if (HWBuffer->ChangedID_Vertex != HWBuffer->MeshBuffer->getChangedID_Vertex()
                     || !((SHWBufferLink_opengl*)HWBuffer)->vbo_verticesID)
@@ -1217,7 +1217,7 @@ namespace irr
                 }
             }
 
-            if (HWBuffer->Mapped_Index!=scene::EHM_NEVER)
+            if (HWBuffer->Mapped_Index != scene::EHM_NEVER)
             {
                 if (HWBuffer->ChangedID_Index != HWBuffer->MeshBuffer->getChangedID_Index()
                     || !((SHWBufferLink_opengl*)HWBuffer)->vbo_indicesID)
@@ -1237,7 +1237,7 @@ namespace irr
         COpenGLDriver::SHWBufferLink* COpenGLDriver::createHardwareBuffer(const scene::IMeshBuffer *mb)
         {
 #if defined(GL_ARB_vertex_buffer_object)
-            if (!mb || (mb->getHardwareMappingHint_Index()==scene::EHM_NEVER && mb->getHardwareMappingHint_Vertex()==scene::EHM_NEVER))
+            if (!mb || (mb->getHardwareMappingHint_Index() == scene::EHM_NEVER && mb->getHardwareMappingHint_Vertex() == scene::EHM_NEVER))
                 return 0;
 
             SHWBufferLink_opengl *HWBuffer = new SHWBufferLink_opengl(mb);
@@ -1308,13 +1308,13 @@ namespace irr
             const void               *vertices  = mb->getVertices();
             const void               *indexList = mb->getIndices();
 
-            if (HWBuffer->Mapped_Vertex!=scene::EHM_NEVER)
+            if (HWBuffer->Mapped_Vertex != scene::EHM_NEVER)
             {
                 extGlBindBuffer(GL_ARRAY_BUFFER, HWBuffer->vbo_verticesID);
                 vertices = 0;
             }
 
-            if (HWBuffer->Mapped_Index!=scene::EHM_NEVER)
+            if (HWBuffer->Mapped_Index != scene::EHM_NEVER)
             {
                 extGlBindBuffer(GL_ELEMENT_ARRAY_BUFFER, HWBuffer->vbo_indicesID);
                 indexList = 0;
@@ -1322,10 +1322,10 @@ namespace irr
 
             drawVertexPrimitiveList(vertices, mb->getVertexCount(), indexList, mb->getIndexCount() / 3, mb->getVertexType(), scene::EPT_TRIANGLES, mb->getIndexType());
 
-            if (HWBuffer->Mapped_Vertex!=scene::EHM_NEVER)
+            if (HWBuffer->Mapped_Vertex != scene::EHM_NEVER)
                 extGlBindBuffer(GL_ARRAY_BUFFER, 0);
 
-            if (HWBuffer->Mapped_Index!=scene::EHM_NEVER)
+            if (HWBuffer->Mapped_Index != scene::EHM_NEVER)
                 extGlBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 #endif
         }
@@ -1421,7 +1421,7 @@ namespace irr
                         &available);
 
                 testGLError();
-                if (available==GL_TRUE)
+                if (available == GL_TRUE)
                 {
                     extGlGetQueryObjectiv(OcclusionQueries[index].UID,
 #ifdef GL_ARB_occlusion_query
@@ -1487,10 +1487,10 @@ namespace irr
 
             glEnableClientState(GL_COLOR_ARRAY);
             glEnableClientState(GL_VERTEX_ARRAY);
-            if ((pType!=scene::EPT_POINTS) && (pType!=scene::EPT_POINT_SPRITES))
+            if ((pType != scene::EPT_POINTS) && (pType != scene::EPT_POINT_SPRITES))
                 glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-            if ((pType!=scene::EPT_POINTS) && (pType!=scene::EPT_POINT_SPRITES))
+            if ((pType != scene::EPT_POINTS) && (pType != scene::EPT_POINT_SPRITES))
                 glEnableClientState(GL_NORMAL_ARRAY);
 
             // due to missing defines in OSX headers, we have to be more specific with this check
@@ -1522,7 +1522,7 @@ namespace irr
                 else
                 {
                     // avoid passing broken pointer to OpenGL
-                    _IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+                    _IRR_DEBUG_BREAK_IF(ColorBuffer.size() == 0);
                     glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
                 }
             }
@@ -1623,13 +1623,13 @@ namespace irr
 
             if (MultiTextureExtension)
             {
-                if (vType==EVT_TANGENTS)
+                if (vType == EVT_TANGENTS)
                 {
                     extGlClientActiveTexture(GL_TEXTURE2_ARB);
                     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
                 }
 
-                if ((vType!=EVT_STANDARD) || CurrentTexture[1])
+                if ((vType != EVT_STANDARD) || CurrentTexture[1])
                 {
                     extGlClientActiveTexture(GL_TEXTURE1_ARB);
                     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -1658,7 +1658,7 @@ namespace irr
                 {
                     const S3DVertex *p = static_cast<const S3DVertex*>(vertices);
 
-                    for (i = 0; i<vertexCount; i += 4)
+                    for (i = 0; i < vertexCount; i += 4)
                     {
                         p->Color.toOpenGLColor(&ColorBuffer[i]);
                         ++p;
@@ -1670,7 +1670,7 @@ namespace irr
                 {
                     const S3DVertex2TCoords *p = static_cast<const S3DVertex2TCoords*>(vertices);
 
-                    for (i = 0; i<vertexCount; i += 4)
+                    for (i = 0; i < vertexCount; i += 4)
                     {
                         p->Color.toOpenGLColor(&ColorBuffer[i]);
                         ++p;
@@ -1682,7 +1682,7 @@ namespace irr
                 {
                     const S3DVertexTangents *p = static_cast<const S3DVertexTangents*>(vertices);
 
-                    for (i = 0; i<vertexCount; i += 4)
+                    for (i = 0; i < vertexCount; i += 4)
                     {
                         p->Color.toOpenGLColor(&ColorBuffer[i]);
                         ++p;
@@ -1719,7 +1719,7 @@ namespace irr
                 case scene::EPT_POINT_SPRITES:
                 {
 #ifdef GL_ARB_point_sprite
-                    if (pType==scene::EPT_POINT_SPRITES && FeatureAvailable[IRR_ARB_point_sprite])
+                    if (pType == scene::EPT_POINT_SPRITES && FeatureAvailable[IRR_ARB_point_sprite])
                         glEnable(GL_POINT_SPRITE_ARB);
 #endif
 
@@ -1756,12 +1756,12 @@ namespace irr
                     glPointSize(particleSize);
 
 #ifdef GL_ARB_point_sprite
-                    if (pType==scene::EPT_POINT_SPRITES && FeatureAvailable[IRR_ARB_point_sprite])
+                    if (pType == scene::EPT_POINT_SPRITES && FeatureAvailable[IRR_ARB_point_sprite])
                         glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE, GL_TRUE);
 #endif
                     glDrawArrays(GL_POINTS, 0, primitiveCount);
 #ifdef GL_ARB_point_sprite
-                    if (pType==scene::EPT_POINT_SPRITES && FeatureAvailable[IRR_ARB_point_sprite])
+                    if (pType == scene::EPT_POINT_SPRITES && FeatureAvailable[IRR_ARB_point_sprite])
                     {
                         glDisable(GL_POINT_SPRITE_ARB);
                         glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE, GL_FALSE);
@@ -1827,7 +1827,7 @@ namespace irr
 
             // draw everything
             this->setActiveTexture(0, Material.getTexture(0));
-            if (Material.MaterialType==EMT_ONETEXTURE_BLEND)
+            if (Material.MaterialType == EMT_ONETEXTURE_BLEND)
             {
                 E_BLEND_FACTOR  srcFact;
                 E_BLEND_FACTOR  dstFact;
@@ -1837,14 +1837,14 @@ namespace irr
                 setRenderStates2DMode(alphaSource & video::EAS_VERTEX_COLOR, (Material.getTexture(0) != 0), (alphaSource&video::EAS_TEXTURE) != 0);
             }
             else
-                setRenderStates2DMode(Material.MaterialType==EMT_TRANSPARENT_VERTEX_ALPHA, (Material.getTexture(0) != 0), Material.MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL);
+                setRenderStates2DMode(Material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA, (Material.getTexture(0) != 0), Material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL);
 
             if (MultiTextureExtension)
                 extGlClientActiveTexture(GL_TEXTURE0_ARB);
 
             glEnableClientState(GL_COLOR_ARRAY);
             glEnableClientState(GL_VERTEX_ARRAY);
-            if ((pType!=scene::EPT_POINTS) && (pType!=scene::EPT_POINT_SPRITES))
+            if ((pType != scene::EPT_POINTS) && (pType != scene::EPT_POINT_SPRITES))
                 glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
             // due to missing defines in OSX headers, we have to be more specific with this check
@@ -1876,7 +1876,7 @@ namespace irr
                 else
                 {
                     // avoid passing broken pointer to OpenGL
-                    _IRR_DEBUG_BREAK_IF(ColorBuffer.size()==0);
+                    _IRR_DEBUG_BREAK_IF(ColorBuffer.size() == 0);
                     glColorPointer(colorSize, GL_UNSIGNED_BYTE, 0, &ColorBuffer[0]);
                 }
             }
@@ -1953,7 +1953,7 @@ namespace irr
 
             if (MultiTextureExtension)
             {
-                if ((vType!=EVT_STANDARD) || CurrentTexture[1])
+                if ((vType != EVT_STANDARD) || CurrentTexture[1])
                 {
                     extGlClientActiveTexture(GL_TEXTURE1_ARB);
                     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -1971,8 +1971,8 @@ namespace irr
         // ! draws a set of 2d images, using a color and the alpha channel of the
         // ! texture if desired.
         void COpenGLDriver::draw2DImageBatch(const video::ITexture *texture,
-            const core::array<core::position2d<s32> > &positions,
-            const core::array<core::rect<s32> > &sourceRects,
+            const core::array<core::position2d<s32>> &positions,
+            const core::array<core::rect<s32>> &sourceRects,
             const core::rect<s32> *clipRect,
             SColor color,
             bool useAlphaChannelOfTexture)
@@ -1991,12 +1991,12 @@ namespace irr
             if (!setActiveTexture(0, texture))
                 return;
 
-            setRenderStates2DMode(color.getAlpha()<255, true, useAlphaChannelOfTexture);
+            setRenderStates2DMode(color.getAlpha() < 255, true, useAlphaChannelOfTexture);
 
             glColor4ub(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
             glBegin(GL_QUADS);
 
-            for (u32 i = 0; i<drawCount; ++i)
+            for (u32 i = 0; i < drawCount; ++i)
             {
                 if (!sourceRects[i].isValid())
                     continue;
@@ -2044,7 +2044,7 @@ namespace irr
 
                 // clip these coordinates
 
-                if (targetPos.X<0)
+                if (targetPos.X < 0)
                 {
                     sourceSize.Width += targetPos.X;
                     if (sourceSize.Width <= 0)
@@ -2061,7 +2061,7 @@ namespace irr
                         continue;
                 }
 
-                if (targetPos.Y<0)
+                if (targetPos.Y < 0)
                 {
                     sourceSize.Height += targetPos.Y;
                     if (sourceSize.Height <= 0)
@@ -2164,7 +2164,7 @@ namespace irr
 
             // clip these coordinates
 
-            if (targetPos.X<0)
+            if (targetPos.X < 0)
             {
                 sourceSize.Width += targetPos.X;
                 if (sourceSize.Width <= 0)
@@ -2183,7 +2183,7 @@ namespace irr
                     return;
             }
 
-            if (targetPos.Y<0)
+            if (targetPos.Y < 0)
             {
                 sourceSize.Height += targetPos.Y;
                 if (sourceSize.Height <= 0)
@@ -2218,7 +2218,7 @@ namespace irr
             if (!setActiveTexture(0, texture))
                 return;
 
-            setRenderStates2DMode(color.getAlpha()<255, true, useAlphaChannelOfTexture);
+            setRenderStates2DMode(color.getAlpha() < 255, true, useAlphaChannelOfTexture);
 
             glColor4ub(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
             glBegin(GL_QUADS);
@@ -2268,8 +2268,8 @@ namespace irr
 
             disableTextures(1);
             setActiveTexture(0, texture);
-            setRenderStates2DMode(useColor[0].getAlpha()<255 || useColor[1].getAlpha()<255 ||
-                useColor[2].getAlpha()<255 || useColor[3].getAlpha()<255,
+            setRenderStates2DMode(useColor[0].getAlpha() < 255 || useColor[1].getAlpha() < 255 ||
+                useColor[2].getAlpha() < 255 || useColor[3].getAlpha() < 255,
                 true, useAlphaChannelOfTexture);
 
             if (clipRect)
@@ -2315,7 +2315,7 @@ namespace irr
         // ! by the indices given.
         void COpenGLDriver::draw2DImage(const video::ITexture *texture,
             const core::position2d<s32> &pos,
-            const core::array<core::rect<s32> > &sourceRects,
+            const core::array<core::rect<s32>> &sourceRects,
             const core::array<s32> &indices,
             const core::rect<s32> *clipRect, SColor color,
             bool useAlphaChannelOfTexture)
@@ -2327,7 +2327,7 @@ namespace irr
             if (!setActiveTexture(0, texture))
                 return;
 
-            setRenderStates2DMode(color.getAlpha()<255, true, useAlphaChannelOfTexture);
+            setRenderStates2DMode(color.getAlpha() < 255, true, useAlphaChannelOfTexture);
 
             glColor4ub(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
             if (clipRect)
@@ -2346,7 +2346,7 @@ namespace irr
             const f32                    invW = 1.f / static_cast<f32>(ss.Width);
             const f32                    invH = 1.f / static_cast<f32>(ss.Height);
 
-            for (u32 i = 0; i<indices.size(); ++i)
+            for (u32 i = 0; i < indices.size(); ++i)
             {
                 const s32 currentIndex = indices[i];
                 if (!sourceRects[currentIndex].isValid())
@@ -2449,7 +2449,7 @@ namespace irr
         void COpenGLDriver::draw2DLine(const core::position2d<s32> &start,
             const core::position2d<s32> &end, SColor color)
         {
-            if (start==end)
+            if (start == end)
                 drawPixel(start.X, start.Y, color);
             else
             {
@@ -2460,19 +2460,19 @@ namespace irr
                 glColor4ub(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
                 GLfloat x = (GLfloat)start.X;
                 GLfloat y = (GLfloat)start.Y;
-                if (x>end.X)
+                if (x > end.X)
                     x += 0.5f;
 
-                if (y>end.Y)
+                if (y > end.Y)
                     y += 0.5f;
 
                 glVertex2f(GLfloat(x), GLfloat(y));
                 x = (GLfloat)end.X;
                 y = (GLfloat)end.Y;
-                if (x>start.X)
+                if (x > start.X)
                     x += 0.5f;
 
-                if (y>start.Y)
+                if (y > start.Y)
                     y += 0.5f;
 
                 glVertex2f(GLfloat(x),   GLfloat(y));
@@ -2502,7 +2502,7 @@ namespace irr
             if (stage >= MaxSupportedTextures)
                 return false;
 
-            if (CurrentTexture[stage]==texture)
+            if (CurrentTexture[stage] == texture)
                 return true;
 
             if (MultiTextureExtension)
@@ -2540,7 +2540,7 @@ namespace irr
         {
             bool result = true;
 
-            for (u32 i = fromStage; i<MaxSupportedTextures; ++i)
+            for (u32 i = fromStage; i < MaxSupportedTextures; ++i)
                 result &= setActiveTexture(i, 0);
 
             return result;
@@ -2592,7 +2592,7 @@ namespace irr
             Material = material;
             OverrideMaterial.apply(Material);
 
-            for (s32 i = MaxTextureUnits - 1; i>= 0; --i)
+            for (s32 i = MaxTextureUnits - 1; i >= 0; --i)
             {
                 setActiveTexture(i, material.getTexture(i));
                 setTransform ((E_TRANSFORMATION_STATE) (ETS_TEXTURE_0 + i),
@@ -2713,7 +2713,7 @@ namespace irr
 
                 case ETC_CLAMP_TO_EDGE:
 #ifdef GL_VERSION_1_2
-                    if (Version>101)
+                    if (Version > 101)
                         mode = GL_CLAMP_TO_EDGE;
                     else
 #endif
@@ -2728,7 +2728,7 @@ namespace irr
 
                 case ETC_CLAMP_TO_BORDER:
 #ifdef GL_VERSION_1_3
-                    if (Version>102)
+                    if (Version > 102)
                         mode = GL_CLAMP_TO_BORDER;
                     else
 #endif
@@ -2748,7 +2748,7 @@ namespace irr
 
                 case ETC_MIRROR:
 #ifdef GL_VERSION_1_4
-                    if (Version>103)
+                    if (Version > 103)
                         mode = GL_MIRRORED_REPEAT;
                     else
 #endif
@@ -2814,14 +2814,14 @@ namespace irr
         {
             // texture address mode
             // Has to be checked always because it depends on the textures
-            for (u32 u = 0; u<MaxTextureUnits; ++u)
+            for (u32 u = 0; u < MaxTextureUnits; ++u)
             {
                 if (!CurrentTexture[u])
                     continue;
 
                 if (MultiTextureExtension)
                     extGlActiveTexture(GL_TEXTURE0_ARB + u);
-                else if (u>0)
+                else if (u > 0)
                     break; // stop loop
 
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, getTextureWrapMode(material.TextureLayer[u].TextureWrapU));
@@ -2941,14 +2941,14 @@ namespace irr
             // Texture filter
             // Has to be checked always because it depends on the textures
             // Filtering has to be set for each texture layer
-            for (u32 i = 0; i<MaxTextureUnits; ++i)
+            for (u32 i = 0; i < MaxTextureUnits; ++i)
             {
                 if (!CurrentTexture[i])
                     continue;
 
                 if (MultiTextureExtension)
                     extGlActiveTexture(GL_TEXTURE0_ARB + i);
-                else if (i>0)
+                else if (i > 0)
                     break;
 
 #ifdef GL_EXT_texture_lod_bias
@@ -2979,7 +2979,7 @@ namespace irr
 #ifdef GL_EXT_texture_filter_anisotropic
                 if (FeatureAvailable[IRR_EXT_texture_filter_anisotropic])
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-                        material.TextureLayer[i].AnisotropicFilter>1 ? core::min_(MaxAnisotropy, material.TextureLayer[i].AnisotropicFilter) : 1);
+                        material.TextureLayer[i].AnisotropicFilter > 1 ? core::min_(MaxAnisotropy, material.TextureLayer[i].AnisotropicFilter) : 1);
 #endif
             }
 
@@ -3118,7 +3118,7 @@ namespace irr
             if (queryFeature(EVDF_BLEND_OPERATIONS) &&
                 (resetAllRenderStates || lastmaterial.BlendOperation != material.BlendOperation))
             {
-                if (material.BlendOperation==EBO_NONE)
+                if (material.BlendOperation == EBO_NONE)
                     glDisable(GL_BLEND);
                 else
                 {
@@ -3128,44 +3128,44 @@ namespace irr
                     {
                         case EBO_SUBTRACT:
 #if defined(GL_EXT_blend_subtract)
-                            if (FeatureAvailable[IRR_EXT_blend_subtract] || (Version>=120))
+                            if (FeatureAvailable[IRR_EXT_blend_subtract] || (Version >= 120))
                                 extGlBlendEquation(GL_FUNC_SUBTRACT_EXT);
 
 #elif defined(GL_VERSION_1_2)
-                            if (Version>=120)
+                            if (Version >= 120)
                                 extGlBlendEquation(GL_FUNC_SUBTRACT);
 #endif
                             break;
 
                         case EBO_REVSUBTRACT:
 #if defined(GL_EXT_blend_subtract)
-                            if (FeatureAvailable[IRR_EXT_blend_subtract] || (Version>=120))
+                            if (FeatureAvailable[IRR_EXT_blend_subtract] || (Version >= 120))
                                 extGlBlendEquation(GL_FUNC_REVERSE_SUBTRACT_EXT);
 
 #elif defined(GL_VERSION_1_2)
-                            if (Version>=120)
+                            if (Version >= 120)
                                 extGlBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
 #endif
                             break;
 
                         case EBO_MIN:
 #if defined(GL_EXT_blend_minmax)
-                            if (FeatureAvailable[IRR_EXT_blend_minmax] || (Version>=120))
+                            if (FeatureAvailable[IRR_EXT_blend_minmax] || (Version >= 120))
                                 extGlBlendEquation(GL_MIN_EXT);
 
 #elif defined(GL_VERSION_1_2)
-                            if (Version>=120)
+                            if (Version >= 120)
                                 extGlBlendEquation(GL_MIN);
 #endif
                             break;
 
                         case EBO_MAX:
 #if defined(GL_EXT_blend_minmax)
-                            if (FeatureAvailable[IRR_EXT_blend_minmax] || (Version>=120))
+                            if (FeatureAvailable[IRR_EXT_blend_minmax] || (Version >= 120))
                                 extGlBlendEquation(GL_MAX_EXT);
 
 #elif defined(GL_VERSION_1_2)
-                            if (Version>=120)
+                            if (Version >= 120)
                                 extGlBlendEquation(GL_MAX);
 #endif
                             break;
@@ -3180,7 +3180,7 @@ namespace irr
 #if defined(GL_AMD_blend_minmax_factor)
                             else
 #endif
-                            if (Version>=120)
+                            if (Version >= 120)
                                 extGlBlendEquation(GL_MIN);
 #endif
                             break;
@@ -3195,7 +3195,7 @@ namespace irr
 #if defined(GL_AMD_blend_minmax_factor)
                             else
 #endif
-                            if (Version>=120)
+                            if (Version >= 120)
                                 extGlBlendEquation(GL_MAX);
 #endif
                             break;
@@ -3244,7 +3244,7 @@ namespace irr
                     glEnable(material.Wireframe ? GL_POLYGON_OFFSET_LINE : material.PointCloud ? GL_POLYGON_OFFSET_POINT : GL_POLYGON_OFFSET_FILL);
                 }
 
-                if (material.PolygonOffsetDirection==EPO_BACK)
+                if (material.PolygonOffsetDirection == EPO_BACK)
                     glPolygonOffset(1.0f, (GLfloat)material.PolygonOffsetFactor);
                 else
                     glPolygonOffset(-1.0f, (GLfloat) - material.PolygonOffsetFactor);
@@ -3499,7 +3499,7 @@ namespace irr
         // ! deletes all dynamic lights there are
         void COpenGLDriver::deleteAllDynamicLights()
         {
-            for (s32 i = 0; i<MaxLights; ++i)
+            for (s32 i = 0; i < MaxLights; ++i)
                 glDisable(GL_LIGHT0 + i);
 
             RequestedLights.clear();
@@ -3693,7 +3693,7 @@ namespace irr
             core::rect<s32> rendert(0, 0, getCurrentRenderTargetSize().Width, getCurrentRenderTargetSize().Height);
             vp.clipAgainst(rendert);
 
-            if (vp.getHeight()>0 && vp.getWidth()>0)
+            if (vp.getHeight() > 0 && vp.getWidth() > 0)
             {
                 glViewport(vp.UpperLeftCorner.X,
                     getCurrentRenderTargetSize().Height - vp.UpperLeftCorner.Y - vp.getHeight(),
@@ -3915,7 +3915,7 @@ namespace irr
         {
             CNullDriver::setFog(c, fogType, start, end, density, pixelFog, rangeFog);
 
-            glFogf(GL_FOG_MODE, GLfloat((fogType==EFT_FOG_LINEAR) ? GL_LINEAR : (fogType==EFT_FOG_EXP) ? GL_EXP : GL_EXP2));
+            glFogf(GL_FOG_MODE, GLfloat((fogType == EFT_FOG_LINEAR) ? GL_LINEAR : (fogType == EFT_FOG_EXP) ? GL_EXP : GL_EXP2));
 
 #ifdef GL_EXT_fog_coord
             if (FeatureAvailable[IRR_EXT_fog_coord])
@@ -3931,7 +3931,7 @@ namespace irr
             }
 #endif
 
-            if (fogType==EFT_FOG_LINEAR)
+            if (fogType == EFT_FOG_LINEAR)
             {
                 glFogf(GL_FOG_START, start);
                 glFogf(GL_FOG_END, end);
@@ -4006,7 +4006,7 @@ namespace irr
         void COpenGLDriver::setVertexShaderConstant(const f32 *data, s32 startRegister, s32 constantAmount)
         {
 #ifdef GL_ARB_vertex_program
-            for (s32 i = 0; i<constantAmount; ++i)
+            for (s32 i = 0; i < constantAmount; ++i)
                 extGlProgramLocalParameter4fv(GL_VERTEX_PROGRAM_ARB, startRegister + i, &data[i * 4]);
 #endif
         }
@@ -4015,7 +4015,7 @@ namespace irr
         void COpenGLDriver::setPixelShaderConstant(const f32 *data, s32 startRegister, s32 constantAmount)
         {
 #ifdef GL_ARB_fragment_program
-            for (s32 i = 0; i<constantAmount; ++i)
+            for (s32 i = 0; i < constantAmount; ++i)
                 extGlProgramLocalParameter4fv(GL_FRAGMENT_PROGRAM_ARB, startRegister + i, &data[i * 4]);
 #endif
         }
@@ -4185,7 +4185,7 @@ namespace irr
                 // the simple texture is only possible for size <= screensize
                 // we try to find an optimal size with the original constraints
                 core::dimension2du destSize(core::min_(size.Width, ScreenSize.Width), core::min_(size.Height, ScreenSize.Height));
-                destSize = destSize.getOptimalSize((size==size.getOptimalSize()), false, false);
+                destSize = destSize.getOptimalSize((size == size.getOptimalSize()), false, false);
                 rtt      = addTexture(destSize, name, ECOLOR_FORMAT::ECF_A8R8G8B8);
                 if (rtt)
                 {
@@ -4277,14 +4277,14 @@ namespace irr
             }
 
 #if defined(GL_EXT_framebuffer_object)
-            if (CurrentTarget==ERT_MULTI_RENDER_TEXTURES)
+            if (CurrentTarget == ERT_MULTI_RENDER_TEXTURES)
             {
-                for (u32 i = 0; i<MRTargets.size(); ++i)
+                for (u32 i = 0; i < MRTargets.size(); ++i)
                 {
-                    if (MRTargets[i].TargetType==ERT_RENDER_TEXTURE)
+                    if (MRTargets[i].TargetType == ERT_RENDER_TEXTURE)
                     {
-                        for (++i; i<MRTargets.size(); ++i)
-                            if (MRTargets[i].TargetType==ERT_RENDER_TEXTURE)
+                        for (++i; i < MRTargets.size(); ++i)
+                            if (MRTargets[i].TargetType == ERT_RENDER_TEXTURE)
                                 extGlFramebufferTexture2D(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + i, GL_TEXTURE_2D, 0, 0);
                     }
                 }
@@ -4295,11 +4295,11 @@ namespace irr
 
             // check if we should set the previous RT back
             if ((RenderTargetTexture != texture) ||
-                (CurrentTarget==ERT_MULTI_RENDER_TEXTURES))
+                (CurrentTarget == ERT_MULTI_RENDER_TEXTURES))
             {
                 setActiveTexture(0, 0);
                 ResetRenderStates = true;
-                if (RenderTargetTexture!=0)
+                if (RenderTargetTexture != 0)
                 {
                     RenderTargetTexture->unbindRTT();
                 }
@@ -4338,11 +4338,11 @@ namespace irr
             bool clearBackBuffer, bool clearZBuffer, SColor color)
         {
             // if simply disabling the MRT via array call
-            if (targets.size()==0)
+            if (targets.size() == 0)
                 return setRenderTarget(0, clearBackBuffer, clearZBuffer, color);
 
             // if disabling old MRT, but enabling new one as well
-            if ((MRTargets.size()!=0) && (targets != MRTargets))
+            if ((MRTargets.size() != 0) && (targets != MRTargets))
                 setRenderTarget(0, clearBackBuffer, clearZBuffer, color);
             // if no change, simply clear buffers
             else if (targets == MRTargets)
@@ -4358,7 +4358,7 @@ namespace irr
 
             // determine common size
             core::dimension2du rttSize = CurrentRendertargetSize;
-            if (targets[0].TargetType==ERT_RENDER_TEXTURE)
+            if (targets[0].TargetType == ERT_RENDER_TEXTURE)
             {
                 if (!targets[0].RenderTexture)
                 {
@@ -4372,7 +4372,7 @@ namespace irr
             for (u32 i = 0; i < maxMultipleRTTs; ++i)
             {
                 // check for right driver type
-                if (targets[i].TargetType==ERT_RENDER_TEXTURE)
+                if (targets[i].TargetType == ERT_RENDER_TEXTURE)
                 {
                     if (!targets[i].RenderTexture)
                     {
@@ -4407,16 +4407,16 @@ namespace irr
                 }
             }
 
-            if (maxMultipleRTTs==0)
+            if (maxMultipleRTTs == 0)
             {
                 os::Printer::log("No valid MRTs.", ELL_ERROR);
                 return false;
             }
 
             // init FBO, if any
-            for (u32 i = 0; i<maxMultipleRTTs; ++i)
+            for (u32 i = 0; i < maxMultipleRTTs; ++i)
             {
-                if (targets[i].TargetType==ERT_RENDER_TEXTURE)
+                if (targets[i].TargetType == ERT_RENDER_TEXTURE)
                 {
                     setRenderTarget(targets[i].RenderTexture, false, false, 0x0);
                     break; // bind only first RTT
@@ -4424,7 +4424,7 @@ namespace irr
             }
 
             // init other main buffer, if necessary
-            if (targets[0].TargetType!=ERT_RENDER_TEXTURE)
+            if (targets[0].TargetType != ERT_RENDER_TEXTURE)
                 setRenderTarget(targets[0].TargetType, false, false, 0x0);
 
             // attach other textures and store buffers into array
@@ -4443,7 +4443,7 @@ namespace irr
                             (targets[i].ColorMask & ECP_GREEN) ? GL_TRUE : GL_FALSE,
                             (targets[i].ColorMask & ECP_BLUE) ? GL_TRUE : GL_FALSE,
                             (targets[i].ColorMask & ECP_ALPHA) ? GL_TRUE : GL_FALSE);
-                        if (targets[i].BlendOp==EBO_NONE)
+                        if (targets[i].BlendOp == EBO_NONE)
                             extGlDisableIndexed(GL_BLEND, i);
                         else
                             extGlEnableIndexed(GL_BLEND, i);
@@ -4500,7 +4500,7 @@ namespace irr
                         }
                     }
 #endif
-                    if (targets[i].TargetType==ERT_RENDER_TEXTURE)
+                    if (targets[i].TargetType == ERT_RENDER_TEXTURE)
                     {
                         GLenum attachment = GL_NONE;
 #ifdef GL_EXT_framebuffer_object
@@ -4567,7 +4567,7 @@ namespace irr
         // ! Returns an image created from the last rendered frame.
         IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RENDER_TARGET target)
         {
-            if (target==video::ERT_MULTI_RENDER_TEXTURES || target==video::ERT_RENDER_TEXTURE || target==video::ERT_STEREO_BOTH_BUFFERS)
+            if (target == video::ERT_MULTI_RENDER_TEXTURES || target == video::ERT_RENDER_TEXTURE || target == video::ERT_STEREO_BOTH_BUFFERS)
                 return 0;
 
             // allows to read pixels in top-to-bottom order
@@ -4576,7 +4576,7 @@ namespace irr
                 glPixelStorei(GL_PACK_INVERT_MESA, GL_TRUE);
 #endif
 
-            if (format==video::ECOLOR_FORMAT::ECF_UNKNOWN)
+            if (format == video::ECOLOR_FORMAT::ECF_UNKNOWN)
                 format = getColorFormat();
 
             GLenum fmt;
@@ -4782,9 +4782,9 @@ namespace irr
 
             if (shared)
             {
-                for (u32 i = 0; i<DepthTextures.size(); ++i)
+                for (u32 i = 0; i < DepthTextures.size(); ++i)
                 {
-                    if (DepthTextures[i]->getSize()==texture->getSize())
+                    if (DepthTextures[i]->getSize() == texture->getSize())
                     {
                         DepthTextures[i]->grab();
                         return DepthTextures[i];
@@ -4801,9 +4801,9 @@ namespace irr
 
         void COpenGLDriver::removeDepthTexture(ITexture *texture)
         {
-            for (u32 i = 0; i<DepthTextures.size(); ++i)
+            for (u32 i = 0; i < DepthTextures.size(); ++i)
             {
-                if (texture==DepthTextures[i])
+                if (texture == DepthTextures[i])
                 {
                     DepthTextures.erase(i);
                     return;

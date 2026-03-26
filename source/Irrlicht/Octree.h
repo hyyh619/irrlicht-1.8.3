@@ -74,7 +74,7 @@ public:
             core::array<SIndexChunk> *indexChunks = new core::array<SIndexChunk>;
             indexChunks->reallocate(meshes.size());
 
-            for (u32 i = 0; i!=meshes.size(); ++i)
+            for (u32 i = 0; i != meshes.size(); ++i)
             {
                 IndexData[i].CurrentSize = 0;
                 IndexData[i].MaxSize     = meshes[i].Indices.size();
@@ -95,7 +95,7 @@ public:
         // ! by this bounding box.
         void calculatePolys(const core::aabbox3d<f32> &box)
         {
-            for (u32 i = 0; i!=IndexDataCount; ++i)
+            for (u32 i = 0; i != IndexDataCount; ++i)
                 IndexData[i].CurrentSize = 0;
 
             Root->getPolys(box, IndexData, 0);
@@ -105,7 +105,7 @@ public:
         // ! by a view frustum.
         void calculatePolys(const scene::SViewFrustum &frustum)
         {
-            for (u32 i = 0; i!=IndexDataCount; ++i)
+            for (u32 i = 0; i != IndexDataCount; ++i)
                 IndexData[i].CurrentSize = 0;
 
             Root->getPolys(frustum, IndexData, 0);
@@ -136,7 +136,7 @@ public:
         // ! destructor
         ~Octree()
         {
-            for (u32 i = 0; i<IndexDataCount; ++i)
+            for (u32 i = 0; i < IndexDataCount; ++i)
                 delete[] IndexData[i].Indices;
 
             delete[] IndexData;
@@ -160,7 +160,7 @@ public:
 
                 u32 i; // new ISO for scoping problem with different compilers
 
-                for (i = 0; i!=8; ++i)
+                for (i = 0; i != 8; ++i)
                     Children[i] = 0;
 
                 if (indices->empty())
@@ -173,7 +173,7 @@ public:
 
                 // find first point for bounding box
 
-                for (i = 0; i<indices->size(); ++i)
+                for (i = 0; i < indices->size(); ++i)
                 {
                     if (!(*indices)[i].Indices.empty())
                     {
@@ -192,11 +192,11 @@ public:
                 s32 totalPrimitives = 0;
 
                 // now lets calculate our bounding box
-                for (i = 0; i<indices->size(); ++i)
+                for (i = 0; i < indices->size(); ++i)
                 {
                     totalPrimitives += (*indices)[i].Indices.size();
 
-                    for (u32 j = 0; j<(*indices)[i].Indices.size(); ++j)
+                    for (u32 j = 0; j < (*indices)[i].Indices.size(); ++j)
                         Box.addInternalPoint(allmeshdata[i].Vertices[(*indices)[i].Indices[j]].Pos);
                 }
 
@@ -209,7 +209,7 @@ public:
                 core::array<u16>    keepIndices;
 
                 if (totalPrimitives > minimalPolysPerNode && !Box.isEmpty())
-                    for (u32 ch = 0; ch!=8; ++ch)
+                    for (u32 ch = 0; ch != 8; ++ch)
                     {
                         box.reset(middle);
                         box.addInternalPoint(edges[ch]);
@@ -219,13 +219,13 @@ public:
                         core::array<SIndexChunk> *cindexChunks = new core::array<SIndexChunk>;
                         cindexChunks->reallocate(allmeshdata.size());
 
-                        for (i = 0; i<allmeshdata.size(); ++i)
+                        for (i = 0; i < allmeshdata.size(); ++i)
                         {
                             cindexChunks->push_back(SIndexChunk());
                             SIndexChunk &tic = cindexChunks->getLast();
                             tic.MaterialId = allmeshdata[i].MaterialId;
 
-                            for (u32 t = 0; t<(*indices)[i].Indices.size(); t += 3)
+                            for (u32 t = 0; t < (*indices)[i].Indices.size(); t += 3)
                             {
                                 if (box.isPointInside(allmeshdata[i].Vertices[(*indices)[i].Indices[t]].Pos) &&
                                     box.isPointInside(allmeshdata[i].Vertices[(*indices)[i].Indices[t + 1]].Pos) &&
@@ -267,7 +267,7 @@ public:
             {
                 delete IndexData;
 
-                for (u32 i = 0; i<8; ++i)
+                for (u32 i = 0; i < 8; ++i)
                     delete Children[i];
             }
 
@@ -294,7 +294,7 @@ public:
                     const u32 cnt = IndexData->size();
                     u32       i; // new ISO for scoping problem in some compilers
 
-                    for (i = 0; i<cnt; ++i)
+                    for (i = 0; i < cnt; ++i)
                     {
                         const s32 idxcnt = (*IndexData)[i].Indices.size();
 
@@ -306,7 +306,7 @@ public:
                         }
                     }
 
-                    for (i = 0; i!=8; ++i)
+                    for (i = 0; i != 8; ++i)
                         if (Children[i])
                             Children[i]->getPolys(box, idxdata, parentTest);
                 }
@@ -327,7 +327,7 @@ public:
                     parentTest = 2;
 #endif
 
-                    for (i = 0; i!=scene::SViewFrustum::VF_PLANE_COUNT; ++i)
+                    for (i = 0; i != scene::SViewFrustum::VF_PLANE_COUNT; ++i)
                     {
                         core::EIntersectionRelation3D r = Box.classifyPlaneRelation(frustum.planes[i]);
                         if (r == core::ISREL3D_FRONT)
@@ -343,7 +343,7 @@ public:
 
                 const u32 cnt = IndexData->size();
 
-                for (i = 0; i!=cnt; ++i)
+                for (i = 0; i != cnt; ++i)
                 {
                     s32 idxcnt = (*IndexData)[i].Indices.size();
 
@@ -355,7 +355,7 @@ public:
                     }
                 }
 
-                for (i = 0; i!=8; ++i)
+                for (i = 0; i != 8; ++i)
                     if (Children[i])
                         Children[i]->getPolys(frustum, idxdata, parentTest);
             }
@@ -368,7 +368,7 @@ public:
                 {
                     outBoxes.push_back(&Box);
 
-                    for (u32 i = 0; i!=8; ++i)
+                    for (u32 i = 0; i != 8; ++i)
                         if (Children[i])
                             Children[i]->getBoundingBoxes(box, outBoxes);
                 }

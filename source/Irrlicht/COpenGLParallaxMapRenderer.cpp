@@ -232,7 +232,7 @@ namespace irr
             }
 
             // fallback if compilation has failed
-            if (-1==outMaterialTypeNr)
+            if (-1 == outMaterialTypeNr)
                 outMaterialTypeNr = driver->addMaterialRenderer(this);
         }
 
@@ -302,11 +302,11 @@ namespace irr
             core::matrix4 invWorldMat;
             driver->getTransform(video::ETS_WORLD).getInverse(invWorldMat);
 
-            for (u32 i = 0; i<2; ++i)
+            for (u32 i = 0; i < 2; ++i)
             {
                 video::SLight light;
 
-                if (i<cnt)
+                if (i < cnt)
                     light = driver->getDynamicLight(i);
                 else
                 {

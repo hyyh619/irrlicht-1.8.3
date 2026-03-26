@@ -78,7 +78,7 @@ namespace irr
         // ! returns string of a list item. the may be a value from 0 to itemCount-1
         const wchar_t* CGUIListBox::getListItem(u32 id) const
         {
-            if (id>=Items.size())
+            if (id >= Items.size())
                 return 0;
 
             return Items[id].text.c_str();
@@ -88,7 +88,7 @@ namespace irr
         // ! Returns the icon of an item
         s32 CGUIListBox::getIcon(u32 id) const
         {
-            if (id>=Items.size())
+            if (id >= Items.size())
                 return -1;
 
             return Items[id].icon;
@@ -108,7 +108,7 @@ namespace irr
             if (id >= Items.size())
                 return;
 
-            if ((u32)Selected==id)
+            if ((u32)Selected == id)
             {
                 Selected = -1;
             }
@@ -200,7 +200,7 @@ namespace irr
         // ! sets the selected item. Set this to -1 if no item should be selected
         void CGUIListBox::setSelected(s32 id)
         {
-            if ((u32)id>=Items.size())
+            if ((u32)id >= Items.size())
                 Selected = -1;
             else
                 Selected = id;
@@ -275,7 +275,7 @@ namespace irr
                                     break;
                             }
 
-                            if (Selected<0)
+                            if (Selected < 0)
                                 Selected = 0;
 
                             if (Selected >= (s32)Items.size())
@@ -477,7 +477,7 @@ namespace irr
             s32 oldSelected = Selected;
 
             Selected = getItemAt(AbsoluteRect.UpperLeftCorner.X, ypos);
-            if (Selected<0 && !Items.empty())
+            if (Selected < 0 && !Items.empty())
                 Selected = 0;
 
             recalculateScrollPos();
@@ -550,7 +550,7 @@ namespace irr
 
             bool hl = (HighlightWhenNotFocused || Environment->hasFocus(this) || Environment->hasFocus(ScrollBar));
 
-            for (s32 i = 0; i<(s32)Items.size(); ++i)
+            for (s32 i = 0; i < (s32)Items.size(); ++i)
             {
                 if (frameRect.LowerRightCorner.Y >= AbsoluteRect.UpperLeftCorner.Y &&
                     frameRect.UpperLeftCorner.Y <= AbsoluteRect.LowerRightCorner.Y)
@@ -569,7 +569,7 @@ namespace irr
                             iconPos.Y += textRect.getHeight() / 2;
                             iconPos.X += ItemsIconWidth / 2;
 
-                            if (i==Selected && hl)
+                            if (i == Selected && hl)
                             {
                                 IconBank->draw2DSprite((u32)Items[i].icon, iconPos, &clientClip,
                                     hasItemOverrideColor(i, EGUI_LBC_ICON_HIGHLIGHT) ?
@@ -580,13 +580,13 @@ namespace irr
                             {
                                 IconBank->draw2DSprite((u32)Items[i].icon, iconPos, &clientClip,
                                     hasItemOverrideColor(i, EGUI_LBC_ICON) ? getItemOverrideColor(i, EGUI_LBC_ICON) : getItemDefaultColor(EGUI_LBC_ICON),
-                                    0, (i==Selected) ? os::Timer::getTime() : 0, false, true);
+                                    0, (i == Selected) ? os::Timer::getTime() : 0, false, true);
                             }
                         }
 
                         textRect.UpperLeftCorner.X += ItemsIconWidth + 3;
 
-                        if (i==Selected && hl)
+                        if (i == Selected && hl)
                         {
                             Font->draw(Items[i].text.c_str(), textRect,
                                 hasItemOverrideColor(i, EGUI_LBC_TEXT_HIGHLIGHT) ?
@@ -717,7 +717,7 @@ namespace irr
 
             out->addInt("ItemCount", Items.size());
 
-            for (u32 i = 0; i<Items.size(); ++i)
+            for (u32 i = 0; i < Items.size(); ++i)
             {
                 core::stringc label("text");
                 label += i;
@@ -758,7 +758,7 @@ namespace irr
 
             const s32 count = in->getAttributeAsInt("ItemCount");
 
-            for (s32 i = 0; i<count; ++i)
+            for (s32 i = 0; i < count; ++i)
             {
                 core::stringc label("text");
                 ListItem      item;

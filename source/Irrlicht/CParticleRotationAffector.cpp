@@ -34,7 +34,7 @@ namespace irr
             if (!Enabled)
                 return;
 
-            for (u32 i = 0; i<count; ++i)
+            for (u32 i = 0; i < count; ++i)
             {
                 if (Speed.X != 0.0f)
                     particlearray[i].pos.rotateYZBy(timeDelta * Speed.X, PivotPoint);

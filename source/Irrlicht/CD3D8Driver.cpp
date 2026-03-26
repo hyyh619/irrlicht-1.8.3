@@ -39,7 +39,7 @@ namespace irr
 
             printVersion();
 
-            for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 CurrentTexture[i] = 0;
 
             MaxLightDistance = sqrtf(FLT_MAX);
@@ -249,7 +249,7 @@ namespace irr
                     --Params.AntiAlias;
                 }
 
-                if (Params.AntiAlias==0)
+                if (Params.AntiAlias == 0)
                     os::Printer::log("Anti aliasing disabled because hardware/driver lacks necessary caps.", ELL_WARNING);
             }
 
@@ -377,7 +377,7 @@ namespace irr
             setVertexShader(EVT_STANDARD);
 
             // enable antialiasing
-            if (Params.AntiAlias>0)
+            if (Params.AntiAlias > 0)
                 pID3DDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, TRUE);
 
             // set fog mode
@@ -525,7 +525,7 @@ namespace irr
             u32 i;
             os::Printer::log("Resetting D3D8 device.", ELL_INFORMATION);
 
-            for (i = 0; i<Textures.size(); ++i)
+            for (i = 0; i < Textures.size(); ++i)
             {
                 if (Textures[i].Surface->isRenderTarget())
                 {
@@ -539,7 +539,7 @@ namespace irr
 
             HRESULT hr = pID3DDevice->Reset(&present);
 
-            for (i = 0; i<Textures.size(); ++i)
+            for (i = 0; i < Textures.size(); ++i)
             {
                 if (Textures[i].Surface->isRenderTarget())
                     ((CD3D8Texture*)(Textures[i].Surface))->createRenderTarget();
@@ -562,7 +562,7 @@ namespace irr
             ResetRenderStates = true;
             LastVertexType    = (E_VERTEX_TYPE)-1;
 
-            for (i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 CurrentTexture[i] = 0;
 
             setVertexShader(EVT_STANDARD);
@@ -717,7 +717,7 @@ namespace irr
             Material = material;
             OverrideMaterial.apply(Material);
 
-            for (u32 i = 0; i<MaxTextureUnits; ++i)
+            for (u32 i = 0; i < MaxTextureUnits; ++i)
             {
                 setActiveTexture(i, Material.getTexture(i));
                 setTransform((E_TRANSFORMATION_STATE) (ETS_TEXTURE_0 + i),
@@ -886,7 +886,7 @@ namespace irr
             viewPort.MaxZ   = 1.0f;
 
             HRESULT hr = D3DERR_INVALIDCALL;
-            if (vp.getHeight()>0 && vp.getWidth()>0)
+            if (vp.getHeight() > 0 && vp.getWidth() > 0)
                 hr = pID3DDevice->SetViewport(&viewPort);
 
             if (FAILED(hr))
@@ -974,7 +974,7 @@ namespace irr
             }
             else
             {
-                if (Material.MaterialType==EMT_ONETEXTURE_BLEND)
+                if (Material.MaterialType == EMT_ONETEXTURE_BLEND)
                 {
                     E_BLEND_FACTOR  srcFact;
                     E_BLEND_FACTOR  dstFact;
@@ -984,7 +984,7 @@ namespace irr
                     setRenderStates2DMode(alphaSource & video::EAS_VERTEX_COLOR, (Material.getTexture(0) != 0), (alphaSource&video::EAS_TEXTURE) != 0);
                 }
                 else
-                    setRenderStates2DMode(Material.MaterialType==EMT_TRANSPARENT_VERTEX_ALPHA, (Material.getTexture(0) != 0), Material.MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL);
+                    setRenderStates2DMode(Material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA, (Material.getTexture(0) != 0), Material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL);
             }
 
             switch (pType)
@@ -993,7 +993,7 @@ namespace irr
                 case scene::EPT_POINTS:
                 {
                     f32 tmp = Material.Thickness / getScreenSize().Height;
-                    if (pType==scene::EPT_POINT_SPRITES)
+                    if (pType == scene::EPT_POINT_SPRITES)
                         pID3DDevice->SetRenderState(D3DRS_POINTSPRITEENABLE, TRUE);
 
                     pID3DDevice->SetRenderState(D3DRS_POINTSCALEENABLE, TRUE);
@@ -1007,7 +1007,7 @@ namespace irr
                     pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_POINTLIST, 0, vertexCount,
                         primitiveCount, indexList, indexType, vertices, stride);
                     pID3DDevice->SetRenderState(D3DRS_POINTSCALEENABLE, FALSE);
-                    if (pType==scene::EPT_POINT_SPRITES)
+                    if (pType == scene::EPT_POINT_SPRITES)
                         pID3DDevice->SetRenderState(D3DRS_POINTSPRITEENABLE, FALSE);
                 }
                 break;
@@ -1111,7 +1111,7 @@ namespace irr
 
             // clip these coordinates
 
-            if (targetPos.X<0)
+            if (targetPos.X < 0)
             {
                 sourceSize.Width += targetPos.X;
                 if (sourceSize.Width <= 0)
@@ -1128,7 +1128,7 @@ namespace irr
                     return;
             }
 
-            if (targetPos.Y<0)
+            if (targetPos.Y < 0)
             {
                 sourceSize.Height += targetPos.Y;
                 if (sourceSize.Height <= 0)
@@ -1156,7 +1156,7 @@ namespace irr
 
             const core::rect<s32> poss(targetPos, sourceSize);
 
-            setRenderStates2DMode(color.getAlpha()<255, true, useAlphaChannelOfTexture);
+            setRenderStates2DMode(color.getAlpha() < 255, true, useAlphaChannelOfTexture);
 
             S3DVertex vtx[4];
             vtx[0] = S3DVertex((f32)poss.UpperLeftCorner.X,
@@ -1250,8 +1250,8 @@ namespace irr
 
             const s16 indices[6] = {0, 1, 2, 0, 2, 3};
 
-            setRenderStates2DMode(useColor[0].getAlpha()<255 || useColor[1].getAlpha()<255 ||
-                useColor[2].getAlpha()<255 || useColor[3].getAlpha()<255,
+            setRenderStates2DMode(useColor[0].getAlpha() < 255 || useColor[1].getAlpha() < 255 ||
+                useColor[2].getAlpha() < 255 || useColor[3].getAlpha() < 255,
                 true, useAlphaChannelOfTexture);
 
             setActiveTexture(0, texture);
@@ -1308,7 +1308,7 @@ namespace irr
             const core::position2d<s32> &end,
             SColor color)
         {
-            if (start==end)
+            if (start == end)
                 drawPixel(start.X, start.Y, color);
             else
             {
@@ -1618,7 +1618,7 @@ namespace irr
             // specular highlights
             if (resetAllRenderstates || !core::equals(lastmaterial.Shininess, material.Shininess))
             {
-                bool enable = (material.Shininess!=0);
+                bool enable = (material.Shininess != 0);
                 pID3DDevice->SetRenderState(D3DRS_SPECULARENABLE, enable);
                 pID3DDevice->SetRenderState(D3DRS_NORMALIZENORMALS, enable);
                 pID3DDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
@@ -1645,7 +1645,7 @@ namespace irr
             if (queryFeature(EVDF_BLEND_OPERATIONS) &&
                 (resetAllRenderstates || lastmaterial.BlendOperation != material.BlendOperation))
             {
-                if (material.BlendOperation==EBO_NONE)
+                if (material.BlendOperation == EBO_NONE)
                     pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
                 else
                 {
@@ -1695,7 +1695,7 @@ namespace irr
             }
 
             // texture address mode
-            for (u32 st = 0; st<MaxTextureUnits; ++st)
+            for (u32 st = 0; st < MaxTextureUnits; ++st)
             {
                 if (resetAllRenderstates || lastmaterial.TextureLayer[st].LODBias != material.TextureLayer[st].LODBias)
                 {
@@ -1719,7 +1719,7 @@ namespace irr
                     lastmaterial.TextureLayer[st].AnisotropicFilter != material.TextureLayer[st].AnisotropicFilter ||
                     lastmaterial.UseMipMaps != material.UseMipMaps)
                 {
-                    if (material.TextureLayer[st].BilinearFilter || material.TextureLayer[st].TrilinearFilter || material.TextureLayer[st].AnisotropicFilter>1)
+                    if (material.TextureLayer[st].BilinearFilter || material.TextureLayer[st].TrilinearFilter || material.TextureLayer[st].AnisotropicFilter > 1)
                     {
                         const D3DTEXTUREFILTERTYPE tftMag = ((Caps.TextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC) &&
                             material.TextureLayer[st].AnisotropicFilter) ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;
@@ -1727,7 +1727,7 @@ namespace irr
                             material.TextureLayer[st].AnisotropicFilter) ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;
                         const D3DTEXTUREFILTERTYPE tftMip = material.UseMipMaps ? (material.TextureLayer[st].TrilinearFilter ? D3DTEXF_LINEAR : D3DTEXF_POINT) : D3DTEXF_NONE;
 
-                        if (tftMag==D3DTEXF_ANISOTROPIC || tftMin == D3DTEXF_ANISOTROPIC)
+                        if (tftMag == D3DTEXF_ANISOTROPIC || tftMin == D3DTEXF_ANISOTROPIC)
                             pID3DDevice->SetTextureStageState(st, D3DTSS_MAXANISOTROPY, core::min_((DWORD)material.TextureLayer[st].AnisotropicFilter, Caps.MaxAnisotropy));
 
                         pID3DDevice->SetTextureStageState(st, D3DTSS_MAGFILTER, tftMag);
@@ -1979,7 +1979,7 @@ namespace irr
         // ! deletes all dynamic lights there are
         void CD3D8Driver::deleteAllDynamicLights()
         {
-            for (s32 i = 0; i<LastSetLight + 1; ++i)
+            for (s32 i = 0; i < LastSetLight + 1; ++i)
                 pID3DDevice->LightEnable(i, false);
 
             LastSetLight = -1;
@@ -2182,9 +2182,9 @@ namespace irr
 #else
                 pixelFog ? D3DRS_FOGTABLEMODE : D3DRS_FOGVERTEXMODE,
 #endif
-                (fogType==EFT_FOG_LINEAR) ? D3DFOG_LINEAR : (fogType==EFT_FOG_EXP) ? D3DFOG_EXP : D3DFOG_EXP2);
+                (fogType == EFT_FOG_LINEAR) ? D3DFOG_LINEAR : (fogType == EFT_FOG_EXP) ? D3DFOG_EXP : D3DFOG_EXP2);
 
-            if (fogType==EFT_FOG_LINEAR)
+            if (fogType == EFT_FOG_LINEAR)
             {
                 pID3DDevice->SetRenderState(D3DRS_FOGSTART, *(DWORD*)(&start));
                 pID3DDevice->SetRenderState(D3DRS_FOGEND, *(DWORD*)(&end));
@@ -2355,7 +2355,7 @@ namespace irr
             D3DDISPLAYMODE displayMode;
             pID3DDevice->GetDisplayMode(&displayMode);
 
-            if (format==video::ECF_UNKNOWN)
+            if (format == video::ECF_UNKNOWN)
                 format = video::ECF_A8R8G8B8;
 
             // create the image surface to store the front buffer image [always A8R8G8B8]

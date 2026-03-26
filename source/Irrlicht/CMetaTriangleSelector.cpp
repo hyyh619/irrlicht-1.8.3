@@ -29,7 +29,7 @@ namespace irr
         {
             s32 count = 0;
 
-            for (u32 i = 0; i<TriangleSelectors.size(); ++i)
+            for (u32 i = 0; i < TriangleSelectors.size(); ++i)
                 count += TriangleSelectors[i]->getTriangleCount();
 
             return count;
@@ -42,13 +42,13 @@ namespace irr
         {
             s32 outWritten = 0;
 
-            for (u32 i = 0; i<TriangleSelectors.size(); ++i)
+            for (u32 i = 0; i < TriangleSelectors.size(); ++i)
             {
                 s32 t = 0;
                 TriangleSelectors[i]->getTriangles(triangles + outWritten,
                     arraySize - outWritten, t, transform);
                 outWritten += t;
-                if (outWritten==arraySize)
+                if (outWritten == arraySize)
                     break;
             }
 
@@ -63,13 +63,13 @@ namespace irr
         {
             s32 outWritten = 0;
 
-            for (u32 i = 0; i<TriangleSelectors.size(); ++i)
+            for (u32 i = 0; i < TriangleSelectors.size(); ++i)
             {
                 s32 t = 0;
                 TriangleSelectors[i]->getTriangles(triangles + outWritten,
                     arraySize - outWritten, t, box, transform);
                 outWritten += t;
-                if (outWritten==arraySize)
+                if (outWritten == arraySize)
                     break;
             }
 
@@ -84,13 +84,13 @@ namespace irr
         {
             s32 outWritten = 0;
 
-            for (u32 i = 0; i<TriangleSelectors.size(); ++i)
+            for (u32 i = 0; i < TriangleSelectors.size(); ++i)
             {
                 s32 t = 0;
                 TriangleSelectors[i]->getTriangles(triangles + outWritten,
                     arraySize - outWritten, t, line, transform);
                 outWritten += t;
-                if (outWritten==arraySize)
+                if (outWritten == arraySize)
                     break;
             }
 
@@ -113,7 +113,7 @@ namespace irr
         // ! Removes a specific triangle selector which was added before    from the collection.
         bool CMetaTriangleSelector::removeTriangleSelector(ITriangleSelector *toRemove)
         {
-            for (u32 i = 0; i<TriangleSelectors.size(); ++i)
+            for (u32 i = 0; i < TriangleSelectors.size(); ++i)
             {
                 if (toRemove == TriangleSelectors[i])
                 {
@@ -130,7 +130,7 @@ namespace irr
         // ! Removes all triangle selectors from the collection.
         void CMetaTriangleSelector::removeAllTriangleSelectors()
         {
-            for (u32 i = 0; i<TriangleSelectors.size(); ++i)
+            for (u32 i = 0; i < TriangleSelectors.size(); ++i)
                 TriangleSelectors[i]->drop();
 
             TriangleSelectors.clear();
@@ -142,7 +142,7 @@ namespace irr
         {
             u32 totalTriangles = 0;
 
-            for (u32 i = 0; i<TriangleSelectors.size(); ++i)
+            for (u32 i = 0; i < TriangleSelectors.size(); ++i)
             {
                 totalTriangles += TriangleSelectors[i]->getTriangleCount();
 

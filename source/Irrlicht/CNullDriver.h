@@ -162,7 +162,7 @@ public:
              * used to draw the image. */
             virtual void draw2DImageBatch(const video::ITexture *texture,
                 const core::position2d<s32> &pos,
-                const core::array<core::rect<s32> > &sourceRects,
+                const core::array<core::rect<s32>> &sourceRects,
                 const core::array<s32> &indices,
                 s32 kerningWidth = 0,
                 const core::rect<s32> *clipRect = 0,
@@ -186,8 +186,8 @@ public:
              * \param useAlphaChannelOfTexture: If true, the alpha channel of
              * the texture is used to draw the image. */
             virtual void draw2DImageBatch(const video::ITexture *texture,
-                const core::array<core::position2d<s32> > &positions,
-                const core::array<core::rect<s32> > &sourceRects,
+                const core::array<core::position2d<s32>> &positions,
+                const core::array<core::rect<s32>> &sourceRects,
                 const core::rect<s32> *clipRect = 0,
                 SColor color = SColor(255, 255, 255, 255),
                 bool useAlphaChannelOfTexture = false);
@@ -838,7 +838,7 @@ protected:
 
                 bool operator==(const SOccQuery &other) const
                 {
-                    return other.Node==Node;
+                    return other.Node == Node;
                 }
 
                 scene::ISceneNode  *Node;

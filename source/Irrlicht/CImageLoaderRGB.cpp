@@ -232,7 +232,7 @@ namespace irr
                             // BW (grayscale) image
                             paletteData = new s32[256];
 
-                            for (int n = 0; n<256; n++)
+                            for (int n = 0; n < 256; n++)
                                 paletteData[n] = n;
 
                             image = new CImage(ECOLOR_FORMAT::ECF_A1R5G5B5, core::dimension2d<u32>(rgb.Header.Xsize, rgb.Header.Ysize));
@@ -377,7 +377,7 @@ namespace irr
 #ifndef __BIG_ENDIAN__
             const u32 length = rgb.TableLen;
 
-            for (u32 i = 0; i<length; ++i)
+            for (u32 i = 0; i < length; ++i)
             {
                 rgb.StartTable[i]  = os::Byteswap::byteswap(rgb.StartTable[i]);
                 rgb.LengthTable[i] = os::Byteswap::byteswap(rgb.LengthTable[i]);
@@ -408,7 +408,7 @@ namespace irr
             for (u16 i = 0; i < rgb.Header.Ysize; ++i)
 #else
             // invert the image to make it upright
-            for (s32 i = (s32)(rgb.Header.Ysize) - 1; i>=0; --i)
+            for (s32 i = (s32)(rgb.Header.Ysize) - 1; i >= 0; --i)
 #endif
             {
                 // check the number of channels and read a row of data
@@ -528,7 +528,7 @@ namespace irr
                 {
                     u16 *tmpbuf = (u16*)(buf);
 
-                    for (u16 i = 0; i<rgb.Header.Xsize; ++i)
+                    for (u16 i = 0; i < rgb.Header.Xsize; ++i)
                         tmpbuf[i] = os::Byteswap::byteswap(tmpbuf[i]);
                 }
 #endif
@@ -580,7 +580,7 @@ namespace irr
                     count = (irr::s32)((((buf + (size_t)(rgb.Header.Xsize) * rgb.Header.BPC)) - oPtr) / rgb.Header.BPC);
                 }
 
-                if (count<=0)
+                if (count <= 0)
                     break;
                 else if (pixel & 0x80)
                 {

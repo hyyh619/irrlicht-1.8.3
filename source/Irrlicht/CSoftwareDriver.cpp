@@ -75,7 +75,7 @@ namespace irr
 
             // delete triangle renderers
 
-            for (s32 i = 0; i<ETR_COUNT; ++i)
+            for (s32 i = 0; i < ETR_COUNT; ++i)
                 if (TriangleRenderers[i])
                     TriangleRenderers[i]->drop();
 
@@ -136,7 +136,7 @@ namespace irr
                             // least it is transparent then.
                             renderer = ETR_TEXTURE_GOURAUD_ADD;
                         }
-                        else if ((Material.ZBuffer==ECFN_NEVER) && !Material.ZWriteEnable)
+                        else if ((Material.ZBuffer == ECFN_NEVER) && !Material.ZWriteEnable)
                             renderer = ETR_TEXTURE_GOURAUD_NOZ;
                         else
                         {
@@ -465,7 +465,7 @@ namespace irr
                     // TODO: don't convert fan to list
                     newBuffer.reallocate(primitiveCount * 3);
 
-                    for (u32 t = 0; t<primitiveCount; ++t)
+                    for (u32 t = 0; t < primitiveCount; ++t)
                     {
                         newBuffer.push_back(indexList[0]);
                         newBuffer.push_back(indexList[t + 1]);
@@ -525,7 +525,7 @@ namespace irr
             // copy and transform clipping planes ignoring far plane
             core::plane3df planes[5]; // ordered by near, left, right, bottom, top
 
-            for (int p = 0; p<5; ++p)
+            for (int p = 0; p < 5; ++p)
                 worldinv.transformPlane(frustum.planes[p + 1], planes[p]);
 
             core::EIntersectionRelation3D inout[3]; // is point in front or back of plane?
@@ -536,20 +536,20 @@ namespace irr
 
             int i;
 
-            for (i = 0; i<triangleCount; ++i) // for all input triangles
+            for (i = 0; i < triangleCount; ++i) // for all input triangles
             {
                 // add next triangle to tempClipBuffer
-                for (t = 0; t<3; ++t)
+                for (t = 0; t < 3; ++t)
                     tClpBuf.push_back(vertices[indexList[(i * 3) + t]]);
 
-                for (int p = 0; p<5; ++p) // for all clip planes
-                    for (int v = 0; v<(int)tClpBuf.size(); v += 3) // for all vertices in temp clip buffer
+                for (int p = 0; p < 5; ++p) // for all clip planes
+                    for (int v = 0; v < (int)tClpBuf.size(); v += 3) // for all vertices in temp clip buffer
                     {
                         int inside  = 0;
                         int outside = 0;
 
                         // test intersection relation of the current vertices
-                        for (t = 0; t<3; ++t)
+                        for (t = 0; t < 3; ++t)
                         {
                             inout[t] = planes[p].classifyPointRelation(tClpBuf[v + t].Pos);
                             if (inout[t] != core::ISREL3D_FRONT)
@@ -660,7 +660,7 @@ namespace irr
                 // now add all remaining triangles in tempClipBuffer to clippedIndices
                 // and clippedVertices array.
                 if (clippedIndices.size() + tClpBuf.size() < 65535)
-                    for (t = 0; t<(int)tClpBuf.size(); ++t)
+                    for (t = 0; t < (int)tClpBuf.size(); ++t)
                     {
                         clippedIndices.push_back(clippedVertices.size());
                         clippedVertices.push_back(tClpBuf[t]);
@@ -706,7 +706,7 @@ namespace irr
             s32 ViewTransformWidth  = (ViewPortSize.Width >> 1);
             s32 ViewTransformHeight = (ViewPortSize.Height >> 1);
 
-            for (i = 0; i<(int)clippedVertices.size(); ++i)
+            for (i = 0; i < (int)clippedVertices.size(); ++i)
             {
                 transformedPos[0] = currentVertex->Pos.X;
                 transformedPos[1] = currentVertex->Pos.Y;

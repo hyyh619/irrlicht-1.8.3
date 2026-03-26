@@ -92,7 +92,7 @@ namespace irr
 #endif
 #endif  // _IRR_OPENGL_USE_EXTPOINTER_
         {
-            for (u32 i = 0; i<IRR_OpenGL_Feature_Count; ++i)
+            for (u32 i = 0; i < IRR_OpenGL_Feature_Count; ++i)
                 FeatureAvailable[i] = false;
 
             DimAliasedLine[0]   = 1.f;
@@ -108,7 +108,7 @@ namespace irr
 
         void COpenGLExtensionHandler::dump() const
         {
-            for (u32 i = 0; i<IRR_OpenGL_Feature_Count; ++i)
+            for (u32 i = 0; i < IRR_OpenGL_Feature_Count; ++i)
                 os::Printer::log(OpenGLFeatureStrings[i], FeatureAvailable[i] ? " true" : " false");
         }
 
@@ -251,14 +251,14 @@ namespace irr
                     const int count = vals[0];
                     atts[0] = WGL_DRAW_TO_WINDOW_ARB;
 
-                    for (int i = 1; i<count; ++i)
+                    for (int i = 1; i < count; ++i)
                     {
                         memset(vals, 0, sizeof(vals));
 
 #define tmplog(x, y) os::Printer::log(x, core::stringc(y).c_str())
 
                         const BOOL res = wglGetPixelFormatAttribiv_ARB(hdc, i, 0, (irr::u32)nums, atts, vals);
-                        if (FALSE==res)
+                        if (FALSE == res)
                             continue;
 
                         tmplog("Pixel format ", i);
@@ -266,14 +266,14 @@ namespace irr
                         tmplog("Draw to window ", vals[j]);
                         tmplog("Draw to bitmap ", vals[++j]);
                         ++j;
-                        tmplog("Acceleration ", (vals[j]==WGL_NO_ACCELERATION_ARB ? "No" :
-                            vals[j]==WGL_GENERIC_ACCELERATION_ARB ? "Generic" : vals[j]==WGL_FULL_ACCELERATION_ARB ? "Full" : "ERROR"));
+                        tmplog("Acceleration ", (vals[j] == WGL_NO_ACCELERATION_ARB ? "No" :
+                            vals[j] == WGL_GENERIC_ACCELERATION_ARB ? "Generic" : vals[j] == WGL_FULL_ACCELERATION_ARB ? "Full" : "ERROR"));
                         tmplog("Need palette ", vals[++j]);
                         tmplog("Need system palette ", vals[++j]);
                         tmplog("Swap layer buffers ", vals[++j]);
                         ++j;
-                        tmplog("Swap method ", (vals[j]==WGL_SWAP_EXCHANGE_ARB ? "Exchange" :
-                            vals[j]==WGL_SWAP_COPY_ARB ? "Copy" : vals[j]==WGL_SWAP_UNDEFINED_ARB ? "Undefined" : "ERROR"));
+                        tmplog("Swap method ", (vals[j] == WGL_SWAP_EXCHANGE_ARB ? "Exchange" :
+                            vals[j] == WGL_SWAP_COPY_ARB ? "Copy" : vals[j] == WGL_SWAP_UNDEFINED_ARB ? "Undefined" : "ERROR"));
                         tmplog("Number of overlays ", vals[++j]);
                         tmplog("Number of underlays ", vals[++j]);
                         tmplog("Transparent ", vals[++j]);
@@ -365,7 +365,7 @@ namespace irr
 
                 c8 *p = str;
 
-                for (size_t i = 0; i<len; ++i)
+                for (size_t i = 0; i < len; ++i)
                 {
                     str[i] = static_cast<char>(t[i]);
 
@@ -373,7 +373,7 @@ namespace irr
                     {
                         str[i] = 0;
 
-                        for (u32 j = 0; j<IRR_OpenGL_Feature_Count; ++j)
+                        for (u32 j = 0; j < IRR_OpenGL_Feature_Count; ++j)
                         {
                             if (!strcmp(OpenGLFeatureStrings[j], p))
                             {
@@ -415,7 +415,7 @@ namespace irr
             if (glXGetCurrentDisplay())
                 glXQueryVersion(glXGetCurrentDisplay(), &major, &minor);
 
-            if ((major>1) || (minor>3))
+            if ((major > 1) || (minor > 3))
                 IRR_OGL_LOAD_EXTENSION_FUNCP = glXGetProcAddress;
             else
     #endif
@@ -585,7 +585,7 @@ namespace irr
             GLint num = 0;
             // set some properties
 #if defined(GL_ARB_multitexture) || defined(GL_VERSION_1_3)
-            if (Version>102 || FeatureAvailable[IRR_ARB_multitexture])
+            if (Version > 102 || FeatureAvailable[IRR_ARB_multitexture])
             {
 #if defined(GL_MAX_TEXTURE_UNITS)
                 glGetIntegerv(GL_MAX_TEXTURE_UNITS, &num);
@@ -596,7 +596,7 @@ namespace irr
             }
 #endif
 #if defined(GL_ARB_vertex_shader) || defined(GL_VERSION_2_0)
-            if (Version>=200 || FeatureAvailable[IRR_ARB_vertex_shader])
+            if (Version >= 200 || FeatureAvailable[IRR_ARB_vertex_shader])
             {
                 num = 0;
 #if defined(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS)
@@ -617,7 +617,7 @@ namespace irr
             }
 #endif
 #ifdef GL_VERSION_1_2
-            if (Version>101)
+            if (Version > 101)
             {
                 glGetIntegerv(GL_MAX_ELEMENTS_INDICES, &num);
                 MaxIndices = num;
@@ -666,7 +666,7 @@ namespace irr
             glGetFloatv(GL_SMOOTH_LINE_WIDTH_RANGE, DimSmoothedLine);
             glGetFloatv(GL_SMOOTH_POINT_SIZE_RANGE, DimSmoothedPoint);
 #if defined(GL_ARB_shading_language_100) || defined (GL_VERSION_2_0)
-            if (FeatureAvailable[IRR_ARB_shading_language_100] || Version>=200)
+            if (FeatureAvailable[IRR_ARB_shading_language_100] || Version >= 200)
             {
                 glGetError(); // clean error buffer
 #ifdef GL_SHADING_LANGUAGE_VERSION
@@ -704,7 +704,7 @@ namespace irr
             {
                 extGlGetQueryiv(GL_SAMPLES_PASSED_ARB, GL_QUERY_COUNTER_BITS_ARB,
                     &num);
-                OcclusionQuerySupport = (num>0);
+                OcclusionQuerySupport = (num > 0);
             }
             else
 #endif
@@ -712,7 +712,7 @@ namespace irr
             if (FeatureAvailable[IRR_NV_occlusion_query])
             {
                 glGetIntegerv(GL_PIXEL_COUNTER_BITS_NV, &num);
-                OcclusionQuerySupport = (num>0);
+                OcclusionQuerySupport = (num > 0);
             }
             else
 #endif
@@ -783,7 +783,7 @@ namespace irr
                 case EVDF_PIXEL_SHADER_2_0:
                 case EVDF_VERTEX_SHADER_2_0:
                 case EVDF_ARB_GLSL:
-                    return (FeatureAvailable[IRR_ARB_shading_language_100] || Version>=200);
+                    return (FeatureAvailable[IRR_ARB_shading_language_100] || Version >= 200);
 
                 case EVDF_TEXTURE_NSQUARE:
                     return true; // non-square is always supported
@@ -825,10 +825,10 @@ namespace irr
 
                 case EVDF_POLYGON_OFFSET:
                     // both features supported with OpenGL 1.1
-                    return Version>=110;
+                    return Version >= 110;
 
                 case EVDF_BLEND_OPERATIONS:
-                    return (Version>=120) || FeatureAvailable[IRR_EXT_blend_minmax] ||
+                    return (Version >= 120) || FeatureAvailable[IRR_EXT_blend_minmax] ||
                            FeatureAvailable[IRR_EXT_blend_subtract] || FeatureAvailable[IRR_EXT_blend_logic_op];
 
                 case EVDF_TEXTURE_MATRIX:

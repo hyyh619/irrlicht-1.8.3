@@ -56,13 +56,13 @@ namespace irr
                 if (amount > MaxParticlesPerSecond * 2)
                     amount = MaxParticlesPerSecond * 2;
 
-                for (u32 i = 0; i<amount; ++i)
+                for (u32 i = 0; i < amount; ++i)
                 {
                     if (EveryMeshVertex)
                     {
-                        for (u32 j = 0; j<Mesh->getMeshBufferCount(); ++j)
+                        for (u32 j = 0; j < Mesh->getMeshBufferCount(); ++j)
                         {
-                            for (u32 k = 0; k<Mesh->getMeshBuffer(j)->getVertexCount(); ++k)
+                            for (u32 k = 0; k < Mesh->getMeshBuffer(j)->getVertexCount(); ++k)
                             {
                                 p.pos = Mesh->getMeshBuffer(j)->getPosition(k);
                                 if (UseNormalDirection)
@@ -86,7 +86,7 @@ namespace irr
                                 if (MaxLifeTime != MinLifeTime)
                                     p.endTime += os::Randomizer::rand() % (MaxLifeTime - MinLifeTime);
 
-                                if (MinStartColor==MaxStartColor)
+                                if (MinStartColor == MaxStartColor)
                                     p.color = MinStartColor;
                                 else
                                     p.color = MinStartColor.getInterpolated(MaxStartColor, os::Randomizer::frand());
@@ -94,7 +94,7 @@ namespace irr
                                 p.startColor  = p.color;
                                 p.startVector = p.vector;
 
-                                if (MinStartSize==MaxStartSize)
+                                if (MinStartSize == MaxStartSize)
                                     p.startSize = MinStartSize;
                                 else
                                     p.startSize = MinStartSize.getInterpolated(MaxStartSize, os::Randomizer::frand());
@@ -137,7 +137,7 @@ namespace irr
                         if (MaxLifeTime != MinLifeTime)
                             p.endTime += os::Randomizer::rand() % (MaxLifeTime - MinLifeTime);
 
-                        if (MinStartColor==MaxStartColor)
+                        if (MinStartColor == MaxStartColor)
                             p.color = MinStartColor;
                         else
                             p.color = MinStartColor.getInterpolated(MaxStartColor, os::Randomizer::frand());
@@ -145,7 +145,7 @@ namespace irr
                         p.startColor  = p.color;
                         p.startVector = p.vector;
 
-                        if (MinStartSize==MaxStartSize)
+                        if (MinStartSize == MaxStartSize)
                             p.startSize = MinStartSize;
                         else
                             p.startSize = MinStartSize.getInterpolated(MaxStartSize, os::Randomizer::frand());

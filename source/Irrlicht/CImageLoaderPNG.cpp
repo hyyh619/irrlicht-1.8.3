@@ -163,13 +163,13 @@ namespace irr
             }
 
             // Convert palette color to true color
-            if (ColorType==PNG_COLOR_TYPE_PALETTE)
+            if (ColorType == PNG_COLOR_TYPE_PALETTE)
                 png_set_palette_to_rgb(png_ptr);
 
             // Convert low bit colors to 8 bit colors
             if (BitDepth < 8)
             {
-                if (ColorType==PNG_COLOR_TYPE_GRAY || ColorType==PNG_COLOR_TYPE_GRAY_ALPHA)
+                if (ColorType == PNG_COLOR_TYPE_GRAY || ColorType == PNG_COLOR_TYPE_GRAY_ALPHA)
                     png_set_expand_gray_1_2_4_to_8(png_ptr);
                 else
                     png_set_packing(png_ptr);
@@ -183,7 +183,7 @@ namespace irr
                 png_set_strip_16(png_ptr);
 
             // Convert gray color to true color
-            if (ColorType==PNG_COLOR_TYPE_GRAY || ColorType==PNG_COLOR_TYPE_GRAY_ALPHA)
+            if (ColorType == PNG_COLOR_TYPE_GRAY || ColorType == PNG_COLOR_TYPE_GRAY_ALPHA)
                 png_set_gray_to_rgb(png_ptr);
 
             int              intent;
@@ -215,7 +215,7 @@ namespace irr
             }
 
             // Convert RGBA to BGRA
-            if (ColorType==PNG_COLOR_TYPE_RGB_ALPHA)
+            if (ColorType == PNG_COLOR_TYPE_RGB_ALPHA)
             {
 #ifdef __BIG_ENDIAN__
                 png_set_swap_alpha(png_ptr);
@@ -225,7 +225,7 @@ namespace irr
             }
 
             // Create the image structure to be filled by png data
-            if (ColorType==PNG_COLOR_TYPE_RGB_ALPHA)
+            if (ColorType == PNG_COLOR_TYPE_RGB_ALPHA)
                 image = new CImage(ECOLOR_FORMAT::ECF_A8R8G8B8, core::dimension2d<u32>(Width, Height));
             else
                 image = new CImage(ECOLOR_FORMAT::ECF_R8G8B8, core::dimension2d<u32>(Width, Height));
@@ -250,7 +250,7 @@ namespace irr
             // Fill array of pointers to rows in image data
             unsigned char *data = (unsigned char*)image->lock();
 
-            for (u32 i = 0; i<Height; ++i)
+            for (u32 i = 0; i < Height; ++i)
             {
                 RowPointers[i] = data;
                 data          += image->getPitch();

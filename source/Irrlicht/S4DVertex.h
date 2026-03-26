@@ -465,7 +465,7 @@ namespace irr
 #ifdef SOFTWARE_DRIVER_2_USE_VERTEX_COLOR
                 size = (flag & VERTEX4D_FORMAT_MASK_COLOR) >> 20;
 
-                for (i = 0; i!= size; ++i)
+                for (i = 0; i != size; ++i)
                 {
                     Color[i].interpolate (a.Color[i], b.Color[i], t);
                 }
@@ -473,14 +473,14 @@ namespace irr
 
                 size = (flag & VERTEX4D_FORMAT_MASK_TEXTURE) >> 16;
 
-                for (i = 0; i!= size; ++i)
+                for (i = 0; i != size; ++i)
                 {
                     Tex[i].interpolate (a.Tex[i], b.Tex[i], t);
                 }
 
                 size = (flag & VERTEX4D_FORMAT_MASK_BUMP) >> 24;
 
-                for (i = 0; i!= size; ++i)
+                for (i = 0; i != size; ++i)
                 {
                     LightTangent[i].interpolate (a.LightTangent[i], b.LightTangent[i], t);
                 }

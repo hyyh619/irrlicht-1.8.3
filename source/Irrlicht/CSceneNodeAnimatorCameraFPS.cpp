@@ -69,7 +69,7 @@ namespace irr
             {
                 case EET_KEY_INPUT_EVENT:
 
-                    for (u32 i = 0; i<KeyMap.size(); ++i)
+                    for (u32 i = 0; i < KeyMap.size(); ++i)
                     {
                         if (KeyMap[i].KeyCode == evt.KeyInput.Key)
                         {
@@ -268,7 +268,7 @@ namespace irr
 
         void CSceneNodeAnimatorCameraFPS::allKeysUp()
         {
-            for (u32 i = 0; i<EKA_COUNT; ++i)
+            for (u32 i = 0; i < EKA_COUNT; ++i)
                 CursorKeys[i] = false;
         }
 
@@ -308,7 +308,7 @@ namespace irr
             KeyMap.clear();
 
             // add actions
-            for (u32 i = 0; i<count; ++i)
+            for (u32 i = 0; i < count; ++i)
             {
                 KeyMap.push_back(map[i]);
             }

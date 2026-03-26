@@ -70,7 +70,7 @@ namespace irr
             file->write(&d2, 2);
             d2 = 0; // palette (not used)
 
-            for (i = 0; i<24; ++i)
+            for (i = 0; i < 24; ++i)
             {
                 file->write(&d2, 2);
             }
@@ -104,35 +104,35 @@ namespace irr
             file->write(&d2, 2);
             d2 = 0; // filler (not used)
 
-            for (i = 0; i<27; ++i)
+            for (i = 0; i < 27; ++i)
             {
                 file->write(&d2, 2);
             }
 
             u8 cnt, value;
 
-            for (i = 0; i<image->getDimension().Height; ++i)
+            for (i = 0; i < image->getDimension().Height; ++i)
             {
                 cnt   = 0;
                 value = 0;
 
-                for (u32 j = 0; j<3; ++j) // color planes
+                for (u32 j = 0; j < 3; ++j) // color planes
                 {
-                    for (u32 k = 0; k<image->getDimension().Width; ++k)
+                    for (u32 k = 0; k < image->getDimension().Width; ++k)
                     {
                         const SColor pix = image->getPixel(k, i);
-                        if ((cnt!=0) && (cnt<63) &&
-                            (((j==0) && (value==pix.getRed())) ||
-                            ((j==1) && (value==pix.getGreen())) ||
-                            ((j==2) && (value==pix.getBlue()))))
+                        if ((cnt != 0) && (cnt < 63) &&
+                            (((j == 0) && (value == pix.getRed())) ||
+                            ((j == 1) && (value == pix.getGreen())) ||
+                            ((j == 2) && (value == pix.getBlue()))))
                         {
                             ++cnt;
                         }
                         else
                         {
-                            if (cnt!=0)
+                            if (cnt != 0)
                             {
-                                if ((cnt>1) || ((value & 0xc0)==0xc0))
+                                if ((cnt > 1) || ((value & 0xc0) == 0xc0))
                                 {
                                     cnt |= 0xc0;
                                     file->write(&cnt, 1);
@@ -142,17 +142,17 @@ namespace irr
                             }
 
                             cnt = 1;
-                            if (j==0)
+                            if (j == 0)
                                 value = (u8)pix.getRed();
-                            else if (j==1)
+                            else if (j == 1)
                                 value = (u8)pix.getGreen();
-                            else if (j==2)
+                            else if (j == 2)
                                 value = (u8)pix.getBlue();
                         }
                     }
                 }
 
-                if ((cnt>1) || ((value & 0xc0)==0xc0))
+                if ((cnt > 1) || ((value & 0xc0) == 0xc0))
                 {
                     cnt |= 0xc0;
                     file->write(&cnt, 1);

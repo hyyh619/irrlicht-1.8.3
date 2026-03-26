@@ -159,11 +159,11 @@ public:
 
                     if (textureBlendFunc_hasAlpha (srcFact) || textureBlendFunc_hasAlpha (dstFact))
                     {
-                        if (alphaSource==EAS_VERTEX_COLOR)
+                        if (alphaSource == EAS_VERTEX_COLOR)
                         {
                             setTextureAlphaStage(pID3DDevice, 0, D3DTA_DIFFUSE);
                         }
-                        else if (alphaSource==EAS_TEXTURE)
+                        else if (alphaSource == EAS_TEXTURE)
                         {
                             setTextureAlphaStage(pID3DDevice, 0, D3DTA_TEXTURE);
                         }

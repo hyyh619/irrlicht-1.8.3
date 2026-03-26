@@ -639,7 +639,7 @@ namespace irr
                     driver->draw3DLine (box.MinEdge, box.MaxEdge, blue);
 
                     // draw parent bone node
-                    if (bone[bone[i].parent].parent >=0)
+                    if (bone[bone[i].parent].parent >= 0)
                     {
                         getBoneBox (box, bone[i].parent);
                         driver->draw3DBox (box, blue);
@@ -1065,7 +1065,7 @@ namespace irr
                     {
                         const u8 *pal = src + tex[i].width * tex[i].height;
 
-                        for (u32 g = 0; g<256; ++g)
+                        for (u32 g = 0; g < 256; ++g)
                         {
                             palette[g] = 0xFF000000 | pal[0] << 16 | pal[1] << 8 | pal[2];
                             pal       += 3;

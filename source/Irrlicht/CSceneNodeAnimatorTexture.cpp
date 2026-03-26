@@ -19,7 +19,7 @@ namespace irr
             setDebugName("CSceneNodeAnimatorTexture");
     #endif
 
-            for (u32 i = 0; i<textures.size(); ++i)
+            for (u32 i = 0; i < textures.size(); ++i)
             {
                 if (textures[i])
                     textures[i]->grab();
@@ -40,7 +40,7 @@ namespace irr
 
         void CSceneNodeAnimatorTexture::clearTextures()
         {
-            for (u32 i = 0; i<Textures.size(); ++i)
+            for (u32 i = 0; i < Textures.size(); ++i)
                 if (Textures[i])
                     Textures[i]->drop();
         }
@@ -86,12 +86,12 @@ namespace irr
             if (options && (options->Flags & io::EARWF_FOR_EDITOR))
                 count += 1;
 
-            for (u32 i = 0; i<count; ++i)
+            for (u32 i = 0; i < count; ++i)
             {
                 core::stringc tname = "Texture";
                 tname += (int)(i + 1);
 
-                out->addTexture(tname.c_str(), i<Textures.size() ? Textures[i] : 0);
+                out->addTexture(tname.c_str(), i < Textures.size() ? Textures[i] : 0);
             }
         }
 

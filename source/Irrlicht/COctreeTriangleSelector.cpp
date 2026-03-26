@@ -54,7 +54,7 @@ namespace irr
             // get bounding box
             const u32 cnt = node->Triangles.size();
 
-            for (u32 i = 0; i<cnt; ++i)
+            for (u32 i = 0; i < cnt; ++i)
             {
                 node->Box.addInternalPoint(node->Triangles[i].pointA);
                 node->Box.addInternalPoint(node->Triangles[i].pointB);
@@ -71,13 +71,13 @@ namespace irr
             // calculate children
 
             if (!node->Box.isEmpty() && (s32)node->Triangles.size() > MinimalPolysPerNode)
-                for (s32 ch = 0; ch<8; ++ch)
+                for (s32 ch = 0; ch < 8; ++ch)
                 {
                     box.reset(middle);
                     box.addInternalPoint(edges[ch]);
                     node->Child[ch] = new SOctreeNode();
 
-                    for (s32 i = 0; i<(s32)node->Triangles.size(); ++i)
+                    for (s32 i = 0; i < (s32)node->Triangles.size(); ++i)
                     {
                         if (node->Triangles[i].isTotalInsideBox(box))
                         {
@@ -151,7 +151,7 @@ namespace irr
 
             const u32 cnt = node->Triangles.size();
 
-            for (u32 i = 0; i<cnt; ++i)
+            for (u32 i = 0; i < cnt; ++i)
             {
                 const core::triangle3df &srcTri = node->Triangles[i];
                 // This isn't an accurate test, but it's fast, and the
@@ -170,7 +170,7 @@ namespace irr
                     return;
             }
 
-            for (u32 i = 0; i<8; ++i)
+            for (u32 i = 0; i < 8; ++i)
                 if (node->Child[i])
                     getTrianglesFromOctree(node->Child[i], trianglesWritten,
                         maximumSize, box, mat, triangles);
@@ -236,7 +236,7 @@ namespace irr
 
             if (transform->isIdentity())
             {
-                for (i = 0; i<cnt; ++i)
+                for (i = 0; i < cnt; ++i)
                 {
                     triangles[trianglesWritten] = node->Triangles[i];
                     ++trianglesWritten;
@@ -244,7 +244,7 @@ namespace irr
             }
             else
             {
-                for (i = 0; i<cnt; ++i)
+                for (i = 0; i < cnt; ++i)
                 {
                     triangles[trianglesWritten] = node->Triangles[i];
                     transform->transformVect(triangles[trianglesWritten].pointA);
@@ -254,7 +254,7 @@ namespace irr
                 }
             }
 
-            for (i = 0; i<8; ++i)
+            for (i = 0; i < 8; ++i)
                 if (node->Child[i])
                     getTrianglesFromOctree(node->Child[i], trianglesWritten,
                         maximumSize, line, transform, triangles);

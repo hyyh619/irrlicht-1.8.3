@@ -49,7 +49,7 @@ namespace irr
 
             printVersion();
 
-            for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
                 CurrentTexture[i]              = 0;
                 LastTextureMipMapsAvailable[i] = false;
@@ -86,7 +86,7 @@ namespace irr
             removeAllOcclusionQueries();
             removeAllHardwareBuffers();
 
-            for (u32 i = 0; i<DepthBuffers.size(); ++i)
+            for (u32 i = 0; i < DepthBuffers.size(); ++i)
             {
                 DepthBuffers[i]->drop();
             }
@@ -324,7 +324,7 @@ namespace irr
                     --Params.AntiAlias;
                 }
 
-                if (Params.AntiAlias==0)
+                if (Params.AntiAlias == 0)
                 {
                     os::Printer::log("Anti aliasing disabled because hardware/driver lacks necessary caps.", ELL_WARNING);
                 }
@@ -455,11 +455,11 @@ namespace irr
             MaxMRTs               = (s32)Caps.NumSimultaneousRTs;
             OcclusionQuerySupport = (pID3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, NULL) == S_OK);
 
-            if (VendorID==0x10DE) // NVidia
+            if (VendorID == 0x10DE) // NVidia
                 AlphaToCoverageSupport = (pID3D->CheckDeviceFormat(adapter, D3DDEVTYPE_HAL,
                     D3DFMT_X8R8G8B8, 0, D3DRTYPE_SURFACE,
                     (D3DFORMAT)MAKEFOURCC('A', 'T', 'O', 'C')) == S_OK);
-            else if (VendorID==0x1002) // ATI
+            else if (VendorID == 0x1002) // ATI
                 AlphaToCoverageSupport = true; // TODO: Check unknown
 
 #if 0
@@ -815,7 +815,7 @@ namespace irr
             Material = material;
             OverrideMaterial.apply(Material);
 
-            for (u32 i = 0; i<MaxTextureUnits; ++i)
+            for (u32 i = 0; i < MaxTextureUnits; ++i)
             {
                 setActiveTexture(i, Material.getTexture(i));
                 setTransform((E_TRANSFORMATION_STATE) (ETS_TEXTURE_0 + i),
@@ -948,7 +948,7 @@ namespace irr
         bool CD3D9Driver::setRenderTarget(const core::array<video::IRenderTarget> &targets,
             bool clearBackBuffer, bool clearZBuffer, SColor color)
         {
-            if (targets.size()==0)
+            if (targets.size() == 0)
                 return setRenderTarget(0, clearBackBuffer, clearZBuffer, color);
 
             u32 maxMultipleRTTs = core::min_(MaxMRTs, targets.size());
@@ -990,7 +990,7 @@ namespace irr
                 }
             }
 
-            if (maxMultipleRTTs==0)
+            if (maxMultipleRTTs == 0)
             {
                 os::Printer::log("Fatal Error: No valid MRT found.", ELL_ERROR);
                 return false;
@@ -1027,7 +1027,7 @@ namespace irr
                     return false;
                 }
 
-                if (i<4 && (i==0 || queryFeature(EVDF_MRT_COLOR_MASK)))
+                if (i < 4 && (i == 0 || queryFeature(EVDF_MRT_COLOR_MASK)))
                 {
                     const DWORD flag =
                         ((targets[i].ColorMask & ECP_RED) ? D3DCOLORWRITEENABLE_RED : 0) |
@@ -1076,7 +1076,7 @@ namespace irr
             core::rect<s32> rendert(0, 0, getCurrentRenderTargetSize().Width, getCurrentRenderTargetSize().Height);
 
             vp.clipAgainst(rendert);
-            if (vp.getHeight()>0 && vp.getWidth()>0)
+            if (vp.getHeight() > 0 && vp.getWidth() > 0)
             {
                 D3DVIEWPORT9 viewPort;
                 viewPort.X      = vp.UpperLeftCorner.X;
@@ -1250,7 +1250,7 @@ namespace irr
             if (!hwBuffer)
                 return false;
 
-            if (hwBuffer->Mapped_Vertex!=scene::EHM_NEVER)
+            if (hwBuffer->Mapped_Vertex != scene::EHM_NEVER)
             {
                 if (hwBuffer->ChangedID_Vertex != hwBuffer->MeshBuffer->getChangedID_Vertex()
                     || !((SHWBufferLink_d3d9*)hwBuffer)->vertexBuffer)
@@ -1262,7 +1262,7 @@ namespace irr
                 }
             }
 
-            if (hwBuffer->Mapped_Index!=scene::EHM_NEVER)
+            if (hwBuffer->Mapped_Index != scene::EHM_NEVER)
             {
                 if (hwBuffer->ChangedID_Index != hwBuffer->MeshBuffer->getChangedID_Index()
                     || !((SHWBufferLink_d3d9*)hwBuffer)->indexBuffer)
@@ -1283,7 +1283,7 @@ namespace irr
         {
             // Looks like d3d does not support only partial buffering, so refuse
             // in any case of NEVER
-            if (!mb || (mb->getHardwareMappingHint_Index()==scene::EHM_NEVER || mb->getHardwareMappingHint_Vertex()==scene::EHM_NEVER))
+            if (!mb || (mb->getHardwareMappingHint_Index() == scene::EHM_NEVER || mb->getHardwareMappingHint_Vertex() == scene::EHM_NEVER))
                 return 0;
 
             SHWBufferLink_d3d9 *hwBuffer = new SHWBufferLink_d3d9(mb);
@@ -1439,14 +1439,14 @@ namespace irr
                 bool available = block ? true : false;
                 int  tmp       = 0;
                 if (!block)
-                    available = (static_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->GetData(&tmp, sizeof(DWORD), 0)==S_OK);
+                    available = (static_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->GetData(&tmp, sizeof(DWORD), 0) == S_OK);
                 else
                 {
                     do
                     {
                         HRESULT hr = static_cast<IDirect3DQuery9*>(OcclusionQueries[index].PID)->GetData(&tmp, sizeof(DWORD), D3DGETDATA_FLUSH);
                         available = (hr == S_OK);
-                        if (hr!=S_FALSE)
+                        if (hr != S_FALSE)
                             break;
                     }
                     while (!available);
@@ -1544,7 +1544,7 @@ namespace irr
             }
             else
             {
-                if (Material.MaterialType==EMT_ONETEXTURE_BLEND)
+                if (Material.MaterialType == EMT_ONETEXTURE_BLEND)
                 {
                     E_BLEND_FACTOR  srcFact;
                     E_BLEND_FACTOR  dstFact;
@@ -1554,7 +1554,7 @@ namespace irr
                     setRenderStates2DMode(alphaSource & video::EAS_VERTEX_COLOR, (Material.getTexture(0) != 0), (alphaSource&video::EAS_TEXTURE) != 0);
                 }
                 else
-                    setRenderStates2DMode(Material.MaterialType==EMT_TRANSPARENT_VERTEX_ALPHA, (Material.getTexture(0) != 0), Material.MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL);
+                    setRenderStates2DMode(Material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA, (Material.getTexture(0) != 0), Material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL);
             }
 
             switch (pType)
@@ -1563,7 +1563,7 @@ namespace irr
                 case scene::EPT_POINTS:
                 {
                     f32 tmp = Material.Thickness / getScreenSize().Height;
-                    if (pType==scene::EPT_POINT_SPRITES)
+                    if (pType == scene::EPT_POINT_SPRITES)
                         pID3DDevice->SetRenderState(D3DRS_POINTSPRITEENABLE, TRUE);
 
                     pID3DDevice->SetRenderState(D3DRS_POINTSCALEENABLE, TRUE);
@@ -1586,7 +1586,7 @@ namespace irr
                     }
 
                     pID3DDevice->SetRenderState(D3DRS_POINTSCALEENABLE, FALSE);
-                    if (pType==scene::EPT_POINT_SPRITES)
+                    if (pType == scene::EPT_POINT_SPRITES)
                         pID3DDevice->SetRenderState(D3DRS_POINTSPRITEENABLE, FALSE);
                 }
                 break;
@@ -1713,8 +1713,8 @@ namespace irr
 
             setActiveTexture(0, const_cast<video::ITexture*>(texture));
 
-            setRenderStates2DMode(useColor[0].getAlpha()<255 || useColor[1].getAlpha()<255 ||
-                useColor[2].getAlpha()<255 || useColor[3].getAlpha()<255,
+            setRenderStates2DMode(useColor[0].getAlpha() < 255 || useColor[1].getAlpha() < 255 ||
+                useColor[2].getAlpha() < 255 || useColor[3].getAlpha() < 255,
                 true, useAlphaChannelOfTexture);
 
             setVertexShader(EVT_STANDARD);
@@ -1739,8 +1739,8 @@ namespace irr
 
 
         void CD3D9Driver::draw2DImageBatch(const video::ITexture *texture,
-            const core::array<core::position2d<s32> > &positions,
-            const core::array<core::rect<s32> > &sourceRects,
+            const core::array<core::position2d<s32>> &positions,
+            const core::array<core::rect<s32>> &sourceRects,
             const core::rect<s32> *clipRect,
             SColor color,
             bool useAlphaChannelOfTexture)
@@ -1751,7 +1751,7 @@ namespace irr
             if (!setActiveTexture(0, const_cast<video::ITexture*>(texture)))
                 return;
 
-            setRenderStates2DMode(color.getAlpha()<255, true, useAlphaChannelOfTexture);
+            setRenderStates2DMode(color.getAlpha() < 255, true, useAlphaChannelOfTexture);
 
             const irr::u32 drawCount = core::min_<u32>(positions.size(), sourceRects.size());
 
@@ -1804,7 +1804,7 @@ namespace irr
 
                 // clip these coordinates
 
-                if (targetPos.X<0)
+                if (targetPos.X < 0)
                 {
                     sourceSize.Width += targetPos.X;
                     if (sourceSize.Width <= 0)
@@ -1823,7 +1823,7 @@ namespace irr
                         continue;
                 }
 
-                if (targetPos.Y<0)
+                if (targetPos.Y < 0)
                 {
                     sourceSize.Height += targetPos.Y;
                     if (sourceSize.Height <= 0)
@@ -1945,7 +1945,7 @@ namespace irr
 
             // clip these coordinates
 
-            if (targetPos.X<0)
+            if (targetPos.X < 0)
             {
                 sourceSize.Width += targetPos.X;
                 if (sourceSize.Width <= 0)
@@ -1964,7 +1964,7 @@ namespace irr
                     return;
             }
 
-            if (targetPos.Y<0)
+            if (targetPos.Y < 0)
             {
                 sourceSize.Height += targetPos.Y;
                 if (sourceSize.Height <= 0)
@@ -1992,7 +1992,7 @@ namespace irr
 
             const core::rect<s32> poss(targetPos, sourceSize);
 
-            setRenderStates2DMode(color.getAlpha()<255, true, useAlphaChannelOfTexture);
+            setRenderStates2DMode(color.getAlpha() < 255, true, useAlphaChannelOfTexture);
 
             S3DVertex vtx[4];
             vtx[0] = S3DVertex((f32)poss.UpperLeftCorner.X, (f32)poss.UpperLeftCorner.Y, 0.0f,
@@ -2062,7 +2062,7 @@ namespace irr
             const core::position2d<s32> &end,
             SColor color)
         {
-            if (start==end)
+            if (start == end)
                 drawPixel(start.X, start.Y, color);
             else
             {
@@ -2382,7 +2382,7 @@ namespace irr
             // specular highlights
             if (resetAllRenderstates || !core::equals(lastmaterial.Shininess, material.Shininess))
             {
-                const bool enable = (material.Shininess!=0.0f);
+                const bool enable = (material.Shininess != 0.0f);
                 pID3DDevice->SetRenderState(D3DRS_SPECULARENABLE, enable);
                 pID3DDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
             }
@@ -2408,7 +2408,7 @@ namespace irr
             if (queryFeature(EVDF_BLEND_OPERATIONS) &&
                 (resetAllRenderstates || lastmaterial.BlendOperation != material.BlendOperation))
             {
-                if (material.BlendOperation==EBO_NONE)
+                if (material.BlendOperation == EBO_NONE)
                     pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
                 else
                 {
@@ -2450,7 +2450,7 @@ namespace irr
             {
                 if (material.PolygonOffsetFactor)
                 {
-                    if (material.PolygonOffsetDirection==EPO_BACK)
+                    if (material.PolygonOffsetDirection == EPO_BACK)
                     {
                         pID3DDevice->SetRenderState(D3DRS_SLOPESCALEDEPTHBIAS, F2DW(1.f));
                         pID3DDevice->SetRenderState(D3DRS_DEPTHBIAS, F2DW((FLOAT)material.PolygonOffsetFactor));
@@ -2473,17 +2473,17 @@ namespace irr
             {
                 if (AlphaToCoverageSupport && (material.AntiAliasing & EAAM_ALPHA_TO_COVERAGE))
                 {
-                    if (VendorID==0x10DE) // NVidia
+                    if (VendorID == 0x10DE) // NVidia
                         pID3DDevice->SetRenderState(D3DRS_ADAPTIVETESS_Y, MAKEFOURCC('A', 'T', 'O', 'C'));
                     // SSAA could give better results on NVidia cards
-                    else if (VendorID==0x1002) // ATI
+                    else if (VendorID == 0x1002) // ATI
                         pID3DDevice->SetRenderState(D3DRS_POINTSIZE, MAKEFOURCC('A', '2', 'M', '1'));
                 }
                 else if (AlphaToCoverageSupport && (lastmaterial.AntiAliasing & EAAM_ALPHA_TO_COVERAGE))
                 {
-                    if (VendorID==0x10DE)
+                    if (VendorID == 0x10DE)
                         pID3DDevice->SetRenderState(D3DRS_ADAPTIVETESS_Y, D3DFMT_UNKNOWN);
-                    else if (VendorID==0x1002)
+                    else if (VendorID == 0x1002)
                         pID3DDevice->SetRenderState(D3DRS_POINTSIZE, MAKEFOURCC('A', '2', 'M', '0'));
                 }
 
@@ -2509,7 +2509,7 @@ namespace irr
             }
 
             // texture address mode
-            for (u32 st = 0; st<MaxTextureUnits; ++st)
+            for (u32 st = 0; st < MaxTextureUnits; ++st)
             {
                 if (resetAllRenderstates && Params.HandleSRGB)
                     pID3DDevice->SetSamplerState(st, D3DSAMP_SRGBTEXTURE, TRUE);
@@ -2544,7 +2544,7 @@ namespace irr
                             material.TextureLayer[st].AnisotropicFilter) ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;
                         D3DTEXTUREFILTERTYPE tftMip = material.UseMipMaps ? (material.TextureLayer[st].TrilinearFilter ? D3DTEXF_LINEAR : D3DTEXF_POINT) : D3DTEXF_NONE;
 
-                        if (tftMag==D3DTEXF_ANISOTROPIC || tftMin == D3DTEXF_ANISOTROPIC)
+                        if (tftMag == D3DTEXF_ANISOTROPIC || tftMin == D3DTEXF_ANISOTROPIC)
                             pID3DDevice->SetSamplerState(st, D3DSAMP_MAXANISOTROPY, core::min_((DWORD)material.TextureLayer[st].AnisotropicFilter, Caps.MaxAnisotropy));
 
                         pID3DDevice->SetSamplerState(st, D3DSAMP_MAGFILTER, tftMag);
@@ -2811,7 +2811,7 @@ namespace irr
         // ! deletes all dynamic lights there are
         void CD3D9Driver::deleteAllDynamicLights()
         {
-            for (s32 i = 0; i<LastSetLight + 1; ++i)
+            for (s32 i = 0; i < LastSetLight + 1; ++i)
                 pID3DDevice->LightEnable(i, false);
 
             LastSetLight = -1;
@@ -3014,9 +3014,9 @@ namespace irr
 
             pID3DDevice->SetRenderState(
                 pixelFog ? D3DRS_FOGTABLEMODE : D3DRS_FOGVERTEXMODE,
-                (fogType==EFT_FOG_LINEAR) ? D3DFOG_LINEAR : (fogType==EFT_FOG_EXP) ? D3DFOG_EXP : D3DFOG_EXP2);
+                (fogType == EFT_FOG_LINEAR) ? D3DFOG_LINEAR : (fogType == EFT_FOG_EXP) ? D3DFOG_EXP : D3DFOG_EXP2);
 
-            if (fogType==EFT_FOG_LINEAR)
+            if (fogType == EFT_FOG_LINEAR)
             {
                 pID3DDevice->SetRenderState(D3DRS_FOGSTART, F2DW(start));
                 pID3DDevice->SetRenderState(D3DRS_FOGEND, F2DW(end));
@@ -3051,7 +3051,7 @@ namespace irr
             u32 i;
             os::Printer::log("Resetting D3D9 device.", ELL_INFORMATION);
 
-            for (i = 0; i<Textures.size(); ++i)
+            for (i = 0; i < Textures.size(); ++i)
             {
                 if (Textures[i].Surface->isRenderTarget())
                 {
@@ -3061,13 +3061,13 @@ namespace irr
                 }
             }
 
-            for (i = 0; i<DepthBuffers.size(); ++i)
+            for (i = 0; i < DepthBuffers.size(); ++i)
             {
                 if (DepthBuffers[i]->Surface)
                     DepthBuffers[i]->Surface->Release();
             }
 
-            for (i = 0; i<OcclusionQueries.size(); ++i)
+            for (i = 0; i < OcclusionQueries.size(); ++i)
             {
                 if (OcclusionQueries[i].PID)
                 {
@@ -3085,7 +3085,7 @@ namespace irr
             HRESULT hr = pID3DDevice->Reset(&present);
 
             // restore RTTs
-            for (i = 0; i<Textures.size(); ++i)
+            for (i = 0; i < Textures.size(); ++i)
             {
                 if (Textures[i].Surface->isRenderTarget())
                     ((CD3D9Texture*)(Textures[i].Surface))->createRenderTarget();
@@ -3100,13 +3100,13 @@ namespace irr
             // multisampling is taken from rendertarget
             D3DSURFACE_DESC desc2 = {};
 
-            for (i = 1; i<DepthBuffers.size(); ++i)
+            for (i = 1; i < DepthBuffers.size(); ++i)
             {
-                for (u32 j = 0; j<Textures.size(); ++j)
+                for (u32 j = 0; j < Textures.size(); ++j)
                 {
                     // all textures sharing this depth buffer must have the same setting
                     // so take first one
-                    if (((CD3D9Texture*)(Textures[j].Surface))->DepthSurface==DepthBuffers[i])
+                    if (((CD3D9Texture*)(Textures[j].Surface))->DepthSurface == DepthBuffers[i])
                     {
                         ((CD3D9Texture*)(Textures[j].Surface))->Texture->GetLevelDesc(0, &desc2);
                         break;
@@ -3123,7 +3123,7 @@ namespace irr
                     NULL);
             }
 
-            for (i = 0; i<OcclusionQueries.size(); ++i)
+            for (i = 0; i < OcclusionQueries.size(); ++i)
             {
                 pID3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, reinterpret_cast<IDirect3DQuery9**>(&OcclusionQueries[i].PID));
             }
@@ -3169,7 +3169,7 @@ namespace irr
             ResetRenderStates = true;
             LastVertexType    = (E_VERTEX_TYPE)-1;
 
-            for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 CurrentTexture[i] = 0;
 
             setVertexShader(EVT_STANDARD);
@@ -3425,7 +3425,7 @@ namespace irr
             D3DDISPLAYMODE displayMode;
             pID3DDevice->GetDisplayMode(0, &displayMode);
 
-            if (format==video::ECOLOR_FORMAT::ECF_UNKNOWN)
+            if (format == video::ECOLOR_FORMAT::ECF_UNKNOWN)
                 format = video::ECOLOR_FORMAT::ECF_A8R8G8B8;
 
             // create the image surface to store the front buffer image [always A8R8G8B8]
@@ -3678,13 +3678,13 @@ namespace irr
             SDepthSurface      *depth = 0;
             core::dimension2du destSize(0x7fffffff, 0x7fffffff);
 
-            for (u32 i = 0; i<DepthBuffers.size(); ++i)
+            for (u32 i = 0; i < DepthBuffers.size(); ++i)
             {
-                if ((DepthBuffers[i]->Size.Width>=optSize.Width) &&
-                    (DepthBuffers[i]->Size.Height>=optSize.Height))
+                if ((DepthBuffers[i]->Size.Width >= optSize.Width) &&
+                    (DepthBuffers[i]->Size.Height >= optSize.Height))
                 {
-                    if ((DepthBuffers[i]->Size.Width<destSize.Width) &&
-                        (DepthBuffers[i]->Size.Height<destSize.Height))
+                    if ((DepthBuffers[i]->Size.Width < destSize.Width) &&
+                        (DepthBuffers[i]->Size.Height < destSize.Height))
                     {
                         depth    = DepthBuffers[i];
                         destSize = DepthBuffers[i]->Size;
@@ -3739,9 +3739,9 @@ namespace irr
 
         void CD3D9Driver::removeDepthSurface(SDepthSurface *depth)
         {
-            for (u32 i = 0; i<DepthBuffers.size(); ++i)
+            for (u32 i = 0; i < DepthBuffers.size(); ++i)
             {
-                if (DepthBuffers[i]==depth)
+                if (DepthBuffers[i] == depth)
                 {
                     DepthBuffers.erase(i);
                     return;

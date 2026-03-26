@@ -279,20 +279,20 @@ namespace irr
                 {
                     scene::SSkinMeshBuffer *meshBuffer = AnimatedMesh->addMeshBuffer();
 
-                    if (brushID!=-1)
+                    if (brushID != -1)
                     {
                         loadTextures(Materials[brushID]);
                         meshBuffer->Material = Materials[brushID].Material;
                     }
 
-                    if (readChunkTRIS(meshBuffer, AnimatedMesh->getMeshBuffers().size() - 1, VerticesStart)==false)
+                    if (readChunkTRIS(meshBuffer, AnimatedMesh->getMeshBuffers().size() - 1, VerticesStart) == false)
                         return false;
 
                     if (!NormalsInFile)
                     {
                         s32 i;
 
-                        for (i = 0; i<(s32)meshBuffer->Indices.size(); i += 3)
+                        for (i = 0; i < (s32)meshBuffer->Indices.size(); i += 3)
                         {
                             core::plane3df p(meshBuffer->getVertex(meshBuffer->Indices[i + 0])->Pos,
                                 meshBuffer->getVertex(meshBuffer->Indices[i + 1])->Pos,
@@ -303,7 +303,7 @@ namespace irr
                             meshBuffer->getVertex(meshBuffer->Indices[i + 2])->Normal += p.Normal;
                         }
 
-                        for (i = 0; i<(s32)meshBuffer->getVertexCount(); ++i)
+                        for (i = 0; i < (s32)meshBuffer->getVertexCount(); ++i)
                         {
                             meshBuffer->getVertex(i)->Normal.normalize();
                             BaseVertices[VerticesStart + i].Normal = meshBuffer->getVertex(i)->Normal;
@@ -407,7 +407,7 @@ namespace irr
                 if (flags & 2)
                     readFloats(color, 4);
 
-                for (s32 i = 0; i<tex_coord_sets; ++i)
+                for (s32 i = 0; i < tex_coord_sets; ++i)
                     readFloats(tex_coords[i], tex_coord_set_size);
 
                 f32 tu = 0.0f, tv = 0.0f;
@@ -418,7 +418,7 @@ namespace irr
                 }
 
                 f32 tu2 = 0.0f, tv2 = 0.0f;
-                if (tex_coord_sets>1 && tex_coord_set_size>1)
+                if (tex_coord_sets > 1 && tex_coord_set_size > 1)
                 {
                     tu2 = tex_coords[1][0];
                     tv2 = tex_coords[1][1];
@@ -497,7 +497,7 @@ namespace irr
                 vertex_id[1] += vertices_Start;
                 vertex_id[2] += vertices_Start;
 
-                for (s32 i = 0; i<3; ++i)
+                for (s32 i = 0; i < 3; ++i)
                 {
                     if ((u32)vertex_id[i] >= AnimatedVertices_VertexID.size())
                     {
@@ -599,11 +599,11 @@ namespace irr
 #endif
                     globalVertexID += VerticesStart;
 
-                    if (AnimatedVertices_VertexID[globalVertexID]==-1)
+                    if (AnimatedVertices_VertexID[globalVertexID] == -1)
                     {
                         os::Printer::log("B3dMeshLoader: Weight has bad vertex id (no link to meshbuffer index found)");
                     }
-                    else if (strength >0)
+                    else if (strength > 0)
                     {
                         CSkinnedMesh::SWeight *weight = AnimatedMesh->addWeight(inJoint);
                         weight->strength = strength;
@@ -663,10 +663,10 @@ namespace irr
                 if (flags & 1)
                 {
                     readFloats(data, 3);
-                    if ((oldPosKey!=0) && (oldPos[0]==oldPos[1]))
+                    if ((oldPosKey != 0) && (oldPos[0] == oldPos[1]))
                     {
                         const core::vector3df pos(data[0], data[1], data[2]);
-                        if (oldPos[1]==pos)
+                        if (oldPos[1] == pos)
                             oldPosKey->frame = (f32)frame - 1;
                         else
                         {
@@ -676,7 +676,7 @@ namespace irr
                             oldPos[1].set(oldPosKey->position.set(pos));
                         }
                     }
-                    else if (oldPosKey==0 && isFirst[0])
+                    else if (oldPosKey == 0 && isFirst[0])
                     {
                         oldPosKey        = AnimatedMesh->addPositionKey(inJoint);
                         oldPosKey->frame = (f32)frame - 1;
@@ -686,7 +686,7 @@ namespace irr
                     }
                     else
                     {
-                        if (oldPosKey!=0)
+                        if (oldPosKey != 0)
                             oldPos[0] = oldPos[1];
 
                         oldPosKey        = AnimatedMesh->addPositionKey(inJoint);
@@ -698,10 +698,10 @@ namespace irr
                 if (flags & 2)
                 {
                     readFloats(data, 3);
-                    if ((oldScaleKey!=0) && (oldScale[0]==oldScale[1]))
+                    if ((oldScaleKey != 0) && (oldScale[0] == oldScale[1]))
                     {
                         const core::vector3df scale(data[0], data[1], data[2]);
-                        if (oldScale[1]==scale)
+                        if (oldScale[1] == scale)
                             oldScaleKey->frame = (f32)frame - 1;
                         else
                         {
@@ -711,7 +711,7 @@ namespace irr
                             oldScale[1].set(oldScaleKey->scale.set(scale));
                         }
                     }
-                    else if (oldScaleKey==0 && isFirst[1])
+                    else if (oldScaleKey == 0 && isFirst[1])
                     {
                         oldScaleKey        = AnimatedMesh->addScaleKey(inJoint);
                         oldScaleKey->frame = (f32)frame - 1;
@@ -721,7 +721,7 @@ namespace irr
                     }
                     else
                     {
-                        if (oldScaleKey!=0)
+                        if (oldScaleKey != 0)
                             oldScale[0] = oldScale[1];
 
                         oldScaleKey        = AnimatedMesh->addScaleKey(inJoint);
@@ -733,11 +733,11 @@ namespace irr
                 if (flags & 4)
                 {
                     readFloats(data, 4);
-                    if ((oldRotKey!=0) && (oldRot[0]==oldRot[1]))
+                    if ((oldRotKey != 0) && (oldRot[0] == oldRot[1]))
                     {
                         // meant to be in this order since b3d stores W first
                         const core::quaternion rot(data[1], data[2], data[3], data[0]);
-                        if (oldRot[1]==rot)
+                        if (oldRot[1] == rot)
                             oldRotKey->frame = (f32)frame - 1;
                         else
                         {
@@ -748,7 +748,7 @@ namespace irr
                             oldRot[1].normalize();
                         }
                     }
-                    else if (oldRotKey==0 && isFirst[2])
+                    else if (oldRotKey == 0 && isFirst[2])
                     {
                         oldRotKey        = AnimatedMesh->addRotationKey(inJoint);
                         oldRotKey->frame = (f32)frame - 1;
@@ -760,7 +760,7 @@ namespace irr
                     }
                     else
                     {
-                        if (oldRotKey!=0)
+                        if (oldRotKey != 0)
                             oldRot[0] = oldRot[1];
 
                         oldRotKey        = AnimatedMesh->addRotationKey(inJoint);
@@ -796,7 +796,7 @@ namespace irr
             B3DFile->read(&animFlags, sizeof(s32));
             B3DFile->read(&animFrames, sizeof(s32));
             readFloats(&animFPS, 1);
-            if (animFPS>0.f)
+            if (animFPS > 0.f)
                 AnimatedMesh->setAnimationSpeed(animFPS);
 
             os::Printer::log("FPS", io::path((double)animFPS), ELL_DEBUG);
@@ -878,7 +878,7 @@ namespace irr
             // number of texture ids read for Irrlicht
             const u32 num_textures = core::min_(n_texs, video::MATERIAL_MAX_TEXTURES);
             // number of bytes to skip (for ignored texture ids)
-            const u32 n_texs_offset = (num_textures<n_texs) ? (n_texs - num_textures) : 0;
+            const u32 n_texs_offset = (num_textures < n_texs) ? (n_texs - num_textures) : 0;
 
             while ((B3dStack.getLast().startposition + B3dStack.getLast().length) > B3DFile->getPos()) // this chunk repeats
             {
@@ -911,7 +911,7 @@ namespace irr
 
                 u32 i;
 
-                for (i = 0; i<num_textures; ++i)
+                for (i = 0; i < num_textures; ++i)
                 {
                     s32 texture_id = -1;
                     B3DFile->read(&texture_id, sizeof(s32));
@@ -932,14 +932,14 @@ namespace irr
                 }
 
                 // skip other texture ids
-                for (i = 0; i<n_texs_offset; ++i)
+                for (i = 0; i < n_texs_offset; ++i)
                 {
                     s32 texture_id = -1;
                     B3DFile->read(&texture_id, sizeof(s32));
 #ifdef __BIG_ENDIAN__
                     texture_id = os::Byteswap::byteswap(texture_id);
 #endif
-                    if (ShowWarning && (texture_id != -1) && (n_texs>video::MATERIAL_MAX_TEXTURES))
+                    if (ShowWarning && (texture_id != -1) && (n_texs > video::MATERIAL_MAX_TEXTURES))
                     {
                         os::Printer::log("Too many textures used in one material", B3DFile->getFileName(), ELL_WARNING);
                         ShowWarning = false;
@@ -959,9 +959,9 @@ namespace irr
                 }
 
                 // If a preceeding texture slot is empty move the others down:
-                for (i = num_textures; i>0; --i)
+                for (i = num_textures; i > 0; --i)
                 {
-                    for (u32 j = i - 1; j<num_textures - 1; ++j)
+                    for (u32 j = i - 1; j < num_textures - 1; ++j)
                     {
                         if (B3dMaterial.Textures[j + 1] != 0 && B3dMaterial.Textures[j] == 0)
                         {
@@ -976,7 +976,7 @@ namespace irr
                 // Two textures:
                 if (B3dMaterial.Textures[1])
                 {
-                    if (B3dMaterial.alpha==1.f)
+                    if (B3dMaterial.alpha == 1.f)
                     {
                         if (B3dMaterial.Textures[1]->Blend == 5) // (Multiply 2)
                             B3dMaterial.Material.MaterialType = video::EMT_LIGHTMAP_M2;
@@ -1071,7 +1071,7 @@ namespace irr
             // note that mipmaps might be disabled by Flags & 0x8
             const bool doMipMaps = SceneManager->getVideoDriver()->getTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS);
 
-            for (u32 i = 0; i<video::MATERIAL_MAX_TEXTURES; ++i)
+            for (u32 i = 0; i < video::MATERIAL_MAX_TEXTURES; ++i)
             {
                 SB3dTexture *B3dTexture = material.Textures[i];
                 if (B3dTexture && B3dTexture->TextureName.size() && !material.Material.getTexture(i))
@@ -1121,7 +1121,7 @@ namespace irr
             {
                 c8 character;
                 B3DFile->read(&character, sizeof(character));
-                if (character==0)
+                if (character == 0)
                     return;
 
                 newstring.append(character);
@@ -1133,7 +1133,7 @@ namespace irr
         {
             B3DFile->read(vec, count * sizeof(f32));
     #ifdef __BIG_ENDIAN__
-            for (u32 n = 0; n<count; ++n)
+            for (u32 n = 0; n < count; ++n)
                 vec[n] = os::Byteswap::byteswap(vec[n]);
     #endif
         }

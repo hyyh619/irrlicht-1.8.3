@@ -164,7 +164,7 @@ namespace irr
 
         bool CD3D9Texture::createMipMaps(u32 level)
         {
-            if (level==0)
+            if (level == 0)
                 return true;
 
             if (HardwareMipMaps && Texture)
@@ -318,7 +318,7 @@ namespace irr
                 D3DDISPLAYMODE d3ddm;
                 intf->GetAdapterDisplayMode(Driver->Params.DisplayAdapter, &d3ddm);
 
-                if (D3D_OK==intf->CheckDeviceFormat(Driver->Params.DisplayAdapter, D3DDEVTYPE_HAL, d3ddm.Format, D3DUSAGE_AUTOGENMIPMAP, D3DRTYPE_TEXTURE, format))
+                if (D3D_OK == intf->CheckDeviceFormat(Driver->Params.DisplayAdapter, D3DDEVTYPE_HAL, d3ddm.Format, D3DUSAGE_AUTOGENMIPMAP, D3DRTYPE_TEXTURE, format))
                 {
                     usage           = D3DUSAGE_AUTOGENMIPMAP;
                     HardwareMipMaps = true;
@@ -397,7 +397,7 @@ namespace irr
             D3DLOCKED_RECT rect;
             if (!IsRenderTarget)
             {
-                hr = Texture->LockRect(mipmapLevel, &rect, 0, (mode==ETLM_READ_ONLY) ? D3DLOCK_READONLY : 0);
+                hr = Texture->LockRect(mipmapLevel, &rect, 0, (mode == ETLM_READ_ONLY) ? D3DLOCK_READONLY : 0);
                 if (FAILED(hr))
                 {
                     os::Printer::log("Could not lock DIRECT3D9 Texture.", ELL_ERROR);
@@ -435,7 +435,7 @@ namespace irr
                     return 0;
                 }
 
-                hr = RTTSurface->LockRect(&rect, 0, (mode==ETLM_READ_ONLY) ? D3DLOCK_READONLY : 0);
+                hr = RTTSurface->LockRect(&rect, 0, (mode == ETLM_READ_ONLY) ? D3DLOCK_READONLY : 0);
                 if (FAILED(hr))
                 {
                     os::Printer::log("Could not lock DIRECT3D9 Texture", "LockRect failed.", ELL_ERROR);
@@ -513,17 +513,17 @@ namespace irr
             s32 width, s32 height,
             s32 pitchsrc, s32 pitchtgt) const
         {
-            for (s32 y = 0; y<height; ++y)
+            for (s32 y = 0; y < height; ++y)
             {
-                for (s32 x = 0; x<width; ++x)
+                for (s32 x = 0; x < width; ++x)
                 {
                     u32 a = 0, r = 0, g = 0, b = 0;
 
-                    for (s32 dy = 0; dy<2; ++dy)
+                    for (s32 dy = 0; dy < 2; ++dy)
                     {
                         const s32 tgy = (y * 2) + dy;
 
-                        for (s32 dx = 0; dx<2; ++dx)
+                        for (s32 dx = 0; dx < 2; ++dx)
                         {
                             const s32 tgx = (x * 2) + dx;
 
@@ -561,18 +561,18 @@ namespace irr
             s32 width, s32 height,
             s32 pitchsrc, s32 pitchtgt) const
         {
-            for (s32 y = 0; y<height; ++y)
+            for (s32 y = 0; y < height; ++y)
             {
-                for (s32 x = 0; x<width; ++x)
+                for (s32 x = 0; x < width; ++x)
                 {
                     u32    a = 0, r = 0, g = 0, b = 0;
                     SColor c;
 
-                    for (s32 dy = 0; dy<2; ++dy)
+                    for (s32 dy = 0; dy < 2; ++dy)
                     {
                         const s32 tgy = (y * 2) + dy;
 
-                        for (s32 dx = 0; dx<2; ++dx)
+                        for (s32 dx = 0; dx < 2; ++dx)
                         {
                             const s32 tgx = (x * 2) + dx;
 
@@ -608,10 +608,10 @@ namespace irr
 
                 do
                 {
-                    if (size.Width>1)
+                    if (size.Width > 1)
                         size.Width /= 2;
 
-                    if (size.Height>1)
+                    if (size.Height > 1)
                         size.Height /= 2;
 
                     ++level;

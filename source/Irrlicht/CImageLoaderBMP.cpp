@@ -87,14 +87,14 @@ namespace irr
                             s32 readAdditional = ((2 - (count % 2)) % 2);
                             s32 i;
 
-                            for (i = 0; i<count; ++i)
+                            for (i = 0; i < count; ++i)
                             {
                                 *d = *p;
                                 ++p;
                                 ++d;
                             }
 
-                            for (i = 0; i<readAdditional; ++i)
+                            for (i = 0; i < readAdditional; ++i)
                                 ++p;
                         }
                     }
@@ -104,7 +104,7 @@ namespace irr
                     s32 count = (u8) * p; ++p;
                     u8  color = *p; ++p;
 
-                    for (s32 i = 0; i<count; ++i)
+                    for (s32 i = 0; i < count; ++i)
                     {
                         *d = color;
                         ++d;
@@ -153,7 +153,7 @@ namespace irr
                             s32 x = (u8) * p; ++p;
                             s32 y = (u8) * p; ++p;
                             d    += x / 2 + y * lineWidth;
-                            shift = x % 2==0 ? 4 : 0;
+                            shift = x % 2 == 0 ? 4 : 0;
                         }
                         break;
 
@@ -165,7 +165,7 @@ namespace irr
                             s32 readShift      = 4;
                             s32 i;
 
-                            for (i = 0; i<count; ++i)
+                            for (i = 0; i < count; ++i)
                             {
                                 s32 color = (((u8) * p) >> readShift) & 0x0f;
                                 readShift -= 4;
@@ -186,7 +186,7 @@ namespace irr
                                 }
                             }
 
-                            for (i = 0; i<readAdditional; ++i)
+                            for (i = 0; i < readAdditional; ++i)
                                 ++p;
                         }
                     }
@@ -198,10 +198,10 @@ namespace irr
                     s32 color2 = (u8) * p; color2 = (color2 >> 4) & 0x0f;
                     ++p;
 
-                    for (s32 i = 0; i<count; ++i)
+                    for (s32 i = 0; i < count; ++i)
                     {
                         u8 mask  = 0x0f << shift;
-                        u8 toSet = (shift==0 ? color1 : color2) << shift;
+                        u8 toSet = (shift == 0 ? color1 : color2) << shift;
                         *d = (*d & (~mask)) | (toSet & mask);
 
                         shift -= 4;
@@ -271,7 +271,7 @@ namespace irr
                 paletteData = new s32[paletteSize];
                 file->read(paletteData, paletteSize * sizeof(s32));
 #ifdef __BIG_ENDIAN__
-                for (s32 i = 0; i<paletteSize; ++i)
+                for (s32 i = 0; i < paletteSize; ++i)
                     paletteData[i] = os::Byteswap::byteswap(paletteData[i]);
 #endif
             }
@@ -290,7 +290,7 @@ namespace irr
             f32 t            = (header.Width) * (header.BPP / 8.0f);
             s32 widthInBytes = (s32)t;
             t -= widthInBytes;
-            if (t!=0.0f)
+            if (t != 0.0f)
                 ++widthInBytes;
 
             s32 lineData = widthInBytes + ((4 - (widthInBytes % 4))) % 4;

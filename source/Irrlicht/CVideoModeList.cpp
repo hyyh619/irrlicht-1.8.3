@@ -52,22 +52,22 @@ namespace irr
             u32 best = VideoModes.size();
 
             // if only one or no mode
-            if (best<2)
+            if (best < 2)
                 return getVideoModeResolution(0);
 
             u32 i;
 
-            for (i = 0; i<VideoModes.size(); ++i)
+            for (i = 0; i < VideoModes.size(); ++i)
             {
-                if (VideoModes[i].size.Width>=minSize.Width &&
-                    VideoModes[i].size.Height>=minSize.Height &&
-                    VideoModes[i].size.Width<=maxSize.Width &&
-                    VideoModes[i].size.Height<=maxSize.Height)
+                if (VideoModes[i].size.Width >= minSize.Width &&
+                    VideoModes[i].size.Height >= minSize.Height &&
+                    VideoModes[i].size.Width <= maxSize.Width &&
+                    VideoModes[i].size.Height <= maxSize.Height)
                     best = i;
             }
 
             // we take the last one found, the largest one fitting
-            if (best<VideoModes.size())
+            if (best < VideoModes.size())
                 return VideoModes[best].size;
 
             const u32 minArea = minSize.getArea();
@@ -75,11 +75,11 @@ namespace irr
             u32       minDist = 0xffffffff;
             best = 0;
 
-            for (i = 0; i<VideoModes.size(); ++i)
+            for (i = 0; i < VideoModes.size(); ++i)
             {
                 const u32 area = VideoModes[i].size.getArea();
                 const u32 dist = core::min_(abs(int(minArea - area)), abs(int(maxArea - area)));
-                if (dist<minDist)
+                if (dist < minDist)
                 {
                     minDist = dist;
                     best    = i;
@@ -122,7 +122,7 @@ namespace irr
             m.depth = depth;
             m.size  = size;
 
-            for (u32 i = 0; i<VideoModes.size(); ++i)
+            for (u32 i = 0; i < VideoModes.size(); ++i)
             {
                 if (VideoModes[i] == m)
                     return;

@@ -157,7 +157,7 @@ namespace irr
             Icons[EGDI_FILE]      = 245;
             Icons[EGDI_DIRECTORY] = 246;
 
-            for (u32 i = 0; i<EGDF_COUNT; ++i)
+            for (u32 i = 0; i < EGDF_COUNT; ++i)
                 Fonts[i] = 0;
 
             UseGradient = (Type == EGST_WINDOWS_METALLIC) || (Type == EGST_BURNING_SKIN);
@@ -167,7 +167,7 @@ namespace irr
         // ! destructor
         CGUISkin::~CGUISkin()
         {
-            for (u32 i = 0; i<EGDF_COUNT; ++i)
+            for (u32 i = 0; i < EGDF_COUNT; ++i)
             {
                 if (Fonts[i])
                     Fonts[i]->drop();
@@ -976,16 +976,16 @@ namespace irr
         {
             u32 i;
 
-            for (i = 0; i<EGDC_COUNT; ++i)
+            for (i = 0; i < EGDC_COUNT; ++i)
                 out->addColor(GUISkinColorNames[i], Colors[i]);
 
-            for (i = 0; i<EGDS_COUNT; ++i)
+            for (i = 0; i < EGDS_COUNT; ++i)
                 out->addInt(GUISkinSizeNames[i], Sizes[i]);
 
-            for (i = 0; i<EGDT_COUNT; ++i)
+            for (i = 0; i < EGDT_COUNT; ++i)
                 out->addString(GUISkinTextNames[i], Texts[i].c_str());
 
-            for (i = 0; i<EGDI_COUNT; ++i)
+            for (i = 0; i < EGDI_COUNT; ++i)
                 out->addInt(GUISkinIconNames[i], Icons[i]);
         }
 
@@ -999,16 +999,16 @@ namespace irr
             // load an old skin the corresponding values will be set to 0.
             u32 i;
 
-            for (i = 0; i<EGDC_COUNT; ++i)
+            for (i = 0; i < EGDC_COUNT; ++i)
                 Colors[i] = in->getAttributeAsColor(GUISkinColorNames[i]);
 
-            for (i = 0; i<EGDS_COUNT; ++i)
+            for (i = 0; i < EGDS_COUNT; ++i)
                 Sizes[i] = in->getAttributeAsInt(GUISkinSizeNames[i]);
 
-            for (i = 0; i<EGDT_COUNT; ++i)
+            for (i = 0; i < EGDT_COUNT; ++i)
                 Texts[i] = in->getAttributeAsStringW(GUISkinTextNames[i]);
 
-            for (i = 0; i<EGDI_COUNT; ++i)
+            for (i = 0; i < EGDI_COUNT; ++i)
                 Icons[i] = in->getAttributeAsInt(GUISkinIconNames[i]);
         }
     } // end namespace gui

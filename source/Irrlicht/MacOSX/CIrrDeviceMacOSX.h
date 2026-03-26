@@ -123,10 +123,10 @@ public:
                 : WindowSize(wsize), InvWindowSize(0.0f, 0.0f), Device(device), IsVisible(true), UseReferenceRect(false)
             {
                 CursorPos.X = CursorPos.Y = 0;
-                if (WindowSize.Width!=0)
+                if (WindowSize.Width != 0)
                     InvWindowSize.Width = 1.0f / WindowSize.Width;
 
-                if (WindowSize.Height!=0)
+                if (WindowSize.Height != 0)
                     InvWindowSize.Height = 1.0f / WindowSize.Height;
             }
 

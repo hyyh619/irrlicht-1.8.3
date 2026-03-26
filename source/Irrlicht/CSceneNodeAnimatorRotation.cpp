@@ -30,13 +30,13 @@ namespace irr
                     // clip the rotation to small values, to avoid
                     // precision problems with huge floats.
                     core::vector3df rot = node->getRotation() + Rotation * (diffTime * 0.1f);
-                    if (rot.X>360.f)
+                    if (rot.X > 360.f)
                         rot.X = fmodf(rot.X, 360.f);
 
-                    if (rot.Y>360.f)
+                    if (rot.Y > 360.f)
                         rot.Y = fmodf(rot.Y, 360.f);
 
-                    if (rot.Z>360.f)
+                    if (rot.Z > 360.f)
                         rot.Z = fmodf(rot.Z, 360.f);
 
                     node->setRotation(rot);

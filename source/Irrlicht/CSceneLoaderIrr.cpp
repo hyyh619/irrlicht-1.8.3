@@ -84,9 +84,9 @@ namespace irr
 
             scene::ISceneNode *node = 0;
 
-            if (!parent && IRR_XML_FORMAT_SCENE==reader->getNodeName())
+            if (!parent && IRR_XML_FORMAT_SCENE == reader->getNodeName())
                 node = SceneManager->getRootSceneNode();
-            else if (parent && IRR_XML_FORMAT_NODE==reader->getNodeName())
+            else if (parent && IRR_XML_FORMAT_NODE == reader->getNodeName())
             {
                 // find node type and create it
                 core::stringc attrName = reader->getAttributeValue(IRR_XML_FORMAT_NODE_ATTR_TYPE.c_str());

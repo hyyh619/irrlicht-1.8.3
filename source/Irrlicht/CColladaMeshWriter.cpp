@@ -482,7 +482,7 @@ namespace irr
                 else
                 {
                     // write node materials
-                    for (u32 i = 0; i<node->getMaterialCount(); ++i)
+                    for (u32 i = 0; i < node->getMaterialCount(); ++i)
                     {
                         video::SMaterial &material = node->getMaterial(i);
                         core::stringw    strMat(nameForMaterial(material, i, mesh, node));
@@ -567,7 +567,7 @@ namespace irr
                 else
                 {
                     // write node materials
-                    for (u32 i = 0; i<node->getMaterialCount(); ++i)
+                    for (u32 i = 0; i < node->getMaterialCount(); ++i)
                     {
                         video::SMaterial   &material = node->getMaterial(i);
                         irr::core::stringw materialfxname(nameForMaterial(material, i, mesh, node));
@@ -743,7 +743,7 @@ namespace irr
 
                 if (getGeometryWriting() == ECGI_PER_MESH_AND_MATERIAL && colladaMesh.GeometryMeshMaterials.size() > 1)
                 {
-                    for (u32 i = 0; i<colladaMesh.GeometryMeshMaterials.size(); ++i)
+                    for (u32 i = 0; i < colladaMesh.GeometryMeshMaterials.size(); ++i)
                     {
                         writeMeshGeometry(colladaMesh.GeometryMeshMaterials[i].GeometryName, mesh);
                     }
@@ -952,7 +952,7 @@ namespace irr
             // <instance_material symbol="leaf" target="#MidsummerLeaf01"/>
             bool useNodeMaterials = node && node->getMaterialCount() == mesh->getMeshBufferCount();
 
-            for (u32 i = 0; i<mesh->getMeshBufferCount(); ++i)
+            for (u32 i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
                 irr::core::stringw strMatSymbol(nameForMaterialSymbol(mesh, i));
                 core::stringw      strMatTarget = "#";
@@ -1167,7 +1167,7 @@ namespace irr
 
         irr::core::stringw CColladaMeshWriter::findCachedMaterialName(const irr::video::SMaterial &material) const
         {
-            for (u32 i = 0; i<MaterialNameCache.size(); ++i)
+            for (u32 i = 0; i < MaterialNameCache.size(); ++i)
             {
                 if (MaterialNameCache[i].Material == material)
                     return MaterialNameCache[i].Name;
@@ -1315,7 +1315,7 @@ namespace irr
         {
             u32 i;
 
-            for (i = 0; i<mesh->getMeshBufferCount(); ++i)
+            for (i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
                 video::SMaterial &material = mesh->getMeshBuffer(i)->getMaterial();
                 core::stringw    strMat(nameForMaterial(material, i, mesh, NULL));
@@ -1343,7 +1343,7 @@ namespace irr
             if (getWriteTextures())
             {
                 // write texture surfaces and samplers and buffer all used imagess
-                for (int t = 0; t<4; ++t)
+                for (int t = 0; t < 4; ++t)
                 {
                     const video::SMaterialLayer &layer = material.TextureLayer[t];
                     if (!layer.Texture)
@@ -1463,7 +1463,7 @@ namespace irr
 
         void CColladaMeshWriter::writeMeshEffects(scene::IMesh *mesh)
         {
-            for (u32 i = 0; i<mesh->getMeshBufferCount(); ++i)
+            for (u32 i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
                 video::SMaterial   &material = mesh->getMeshBuffer(i)->getMaterial();
                 irr::core::stringw materialfxname(nameForMaterial(material, i, mesh, NULL));
@@ -1493,7 +1493,7 @@ namespace irr
             bool needsTangents      = false; // TODO: tangents not supported here yet
             u32  i                  = 0;
 
-            for (i = 0; i<mesh->getMeshBufferCount(); ++i)
+            for (i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
                 totalVertexCount += mesh->getMeshBuffer(i)->getVertexCount();
 
@@ -1519,7 +1519,7 @@ namespace irr
                 L"count", vertexCountStr.c_str());
             Writer->writeLineBreak();
 
-            for (i = 0; i<mesh->getMeshBufferCount(); ++i)
+            for (i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
                 scene::IMeshBuffer   *buffer     = mesh->getMeshBuffer(i);
                 video::E_VERTEX_TYPE vtxType     = buffer->getVertexType();
@@ -1527,7 +1527,7 @@ namespace irr
 
                 globalIndices[i].PosStartIndex = 0;
 
-                if (i!=0)
+                if (i != 0)
                     globalIndices[i].PosStartIndex = globalIndices[i - 1].PosLastIndex + 1;
 
                 globalIndices[i].PosLastIndex = globalIndices[i].PosStartIndex + vertexCount - 1;
@@ -1538,7 +1538,7 @@ namespace irr
                     {
                         const video::S3DVertex *vtx = (const video::S3DVertex*)buffer->getVertices();
 
-                        for (u32 j = 0; j<vertexCount; ++j)
+                        for (u32 j = 0; j < vertexCount; ++j)
                         {
                             writeVector(vtx[j].Pos);
                             Writer->writeLineBreak();
@@ -1550,7 +1550,7 @@ namespace irr
                     {
                         const video::S3DVertex2TCoords *vtx = (const video::S3DVertex2TCoords*)buffer->getVertices();
 
-                        for (u32 j = 0; j<vertexCount; ++j)
+                        for (u32 j = 0; j < vertexCount; ++j)
                         {
                             writeVector(vtx[j].Pos);
                             Writer->writeLineBreak();
@@ -1562,7 +1562,7 @@ namespace irr
                     {
                         const video::S3DVertexTangents *vtx = (const video::S3DVertexTangents*)buffer->getVertices();
 
-                        for (u32 j = 0; j<vertexCount; ++j)
+                        for (u32 j = 0; j < vertexCount; ++j)
                         {
                             writeVector(vtx[j].Pos);
                             Writer->writeLineBreak();
@@ -1614,7 +1614,7 @@ namespace irr
                 L"count", vertexCountStr.c_str());
             Writer->writeLineBreak();
 
-            for (i = 0; i<mesh->getMeshBufferCount(); ++i)
+            for (i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
                 scene::IMeshBuffer   *buffer     = mesh->getMeshBuffer(i);
                 video::E_VERTEX_TYPE vtxType     = buffer->getVertexType();
@@ -1622,7 +1622,7 @@ namespace irr
 
                 globalIndices[i].TCoord0StartIndex = 0;
 
-                if (i!=0)
+                if (i != 0)
                     globalIndices[i].TCoord0StartIndex = globalIndices[i - 1].TCoord0LastIndex + 1;
 
                 globalIndices[i].TCoord0LastIndex = globalIndices[i].TCoord0StartIndex + vertexCount - 1;
@@ -1633,7 +1633,7 @@ namespace irr
                     {
                         const video::S3DVertex *vtx = (const video::S3DVertex*)buffer->getVertices();
 
-                        for (u32 j = 0; j<vertexCount; ++j)
+                        for (u32 j = 0; j < vertexCount; ++j)
                         {
                             writeUv(vtx[j].TCoords);
                             Writer->writeLineBreak();
@@ -1645,7 +1645,7 @@ namespace irr
                     {
                         const video::S3DVertex2TCoords *vtx = (const video::S3DVertex2TCoords*)buffer->getVertices();
 
-                        for (u32 j = 0; j<vertexCount; ++j)
+                        for (u32 j = 0; j < vertexCount; ++j)
                         {
                             writeUv(vtx[j].TCoords);
                             Writer->writeLineBreak();
@@ -1657,7 +1657,7 @@ namespace irr
                     {
                         const video::S3DVertexTangents *vtx = (const video::S3DVertexTangents*)buffer->getVertices();
 
-                        for (u32 j = 0; j<vertexCount; ++j)
+                        for (u32 j = 0; j < vertexCount; ++j)
                         {
                             writeUv(vtx[j].TCoords);
                             Writer->writeLineBreak();
@@ -1706,7 +1706,7 @@ namespace irr
                 L"count", vertexCountStr.c_str());
             Writer->writeLineBreak();
 
-            for (i = 0; i<mesh->getMeshBufferCount(); ++i)
+            for (i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
                 scene::IMeshBuffer   *buffer     = mesh->getMeshBuffer(i);
                 video::E_VERTEX_TYPE vtxType     = buffer->getVertexType();
@@ -1714,7 +1714,7 @@ namespace irr
 
                 globalIndices[i].NormalStartIndex = 0;
 
-                if (i!=0)
+                if (i != 0)
                     globalIndices[i].NormalStartIndex = globalIndices[i - 1].NormalLastIndex + 1;
 
                 globalIndices[i].NormalLastIndex = globalIndices[i].NormalStartIndex + vertexCount - 1;
@@ -1725,7 +1725,7 @@ namespace irr
                     {
                         const video::S3DVertex *vtx = (const video::S3DVertex*)buffer->getVertices();
 
-                        for (u32 j = 0; j<vertexCount; ++j)
+                        for (u32 j = 0; j < vertexCount; ++j)
                         {
                             writeVector(vtx[j].Normal);
                             Writer->writeLineBreak();
@@ -1737,7 +1737,7 @@ namespace irr
                     {
                         const video::S3DVertex2TCoords *vtx = (const video::S3DVertex2TCoords*)buffer->getVertices();
 
-                        for (u32 j = 0; j<vertexCount; ++j)
+                        for (u32 j = 0; j < vertexCount; ++j)
                         {
                             writeVector(vtx[j].Normal);
                             Writer->writeLineBreak();
@@ -1749,7 +1749,7 @@ namespace irr
                     {
                         const video::S3DVertexTangents *vtx = (const video::S3DVertexTangents*)buffer->getVertices();
 
-                        for (u32 j = 0; j<vertexCount; ++j)
+                        for (u32 j = 0; j < vertexCount; ++j)
                         {
                             writeVector(vtx[j].Normal);
                             Writer->writeLineBreak();
@@ -1805,7 +1805,7 @@ namespace irr
                     L"count", vertexCountStr.c_str());
                 Writer->writeLineBreak();
 
-                for (i = 0; i<mesh->getMeshBufferCount(); ++i)
+                for (i = 0; i < mesh->getMeshBufferCount(); ++i)
                 {
                     scene::IMeshBuffer   *buffer     = mesh->getMeshBuffer(i);
                     video::E_VERTEX_TYPE vtxType     = buffer->getVertexType();
@@ -1815,7 +1815,7 @@ namespace irr
                     {
                         globalIndices[i].TCoord1StartIndex = 0;
 
-                        if (i!=0 && globalIndices[i - 1].TCoord1LastIndex != -1)
+                        if (i != 0 && globalIndices[i - 1].TCoord1LastIndex != -1)
                             globalIndices[i].TCoord1StartIndex = globalIndices[i - 1].TCoord1LastIndex + 1;
 
                         globalIndices[i].TCoord1LastIndex = globalIndices[i].TCoord1StartIndex + vertexCount - 1;
@@ -1826,7 +1826,7 @@ namespace irr
                             {
                                 video::S3DVertex2TCoords *vtx = (video::S3DVertex2TCoords*)buffer->getVertices();
 
-                                for (u32 j = 0; j<vertexCount; ++j)
+                                for (u32 j = 0; j < vertexCount; ++j)
                                 {
                                     writeVector(vtx[j].TCoords2);
                                     Writer->writeLineBreak();
@@ -1885,7 +1885,7 @@ namespace irr
 
             // write polygons
 
-            for (i = 0; i<mesh->getMeshBufferCount(); ++i)
+            for (i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
                 scene::IMeshBuffer *buffer = mesh->getMeshBuffer(i);
 
@@ -1925,7 +1925,7 @@ namespace irr
                 core::stringw strP;
                 strP.reserve(100);
 
-                for (u32 p = 0; p<polyCount; ++p)
+                for (u32 p = 0; p < polyCount; ++p)
                 {
                     strP  = "";
                     strP += buffer->getIndices()[(p * 3) + 0] + posIdx;
@@ -1992,7 +1992,7 @@ namespace irr
                 Writer->writeElement(L"library_images", false);
                 Writer->writeLineBreak();
 
-                for (irr::u32 i = 0; i<LibraryImages.size(); ++i)
+                for (irr::u32 i = 0; i < LibraryImages.size(); ++i)
                 {
                     irr::io::path p(FileSystem->getRelativeFilename(LibraryImages[i]->getName().getPath(), Directory));
                     // <image name="rose01">
@@ -2317,11 +2317,11 @@ namespace irr
             Writer->writeElement(L"matrix", false);
             Writer->writeLineBreak();
 
-            for (int a = 0; a<4; ++a)
+            for (int a = 0; a < 4; ++a)
             {
                 irr::core::stringw txt;
 
-                for (int b = 0; b<4; ++b)
+                for (int b = 0; b < 4; ++b)
                 {
                     if (b > 0)
                         txt += " ";

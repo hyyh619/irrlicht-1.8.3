@@ -38,7 +38,7 @@ namespace irr
             }
 
             // Destroy the element list if it exists
-            for (u32 i = 0; i<ElementList.size(); ++i)
+            for (u32 i = 0; i < ElementList.size(); ++i)
                 delete ElementList[i];
 
             ElementList.clear();
@@ -235,7 +235,7 @@ namespace irr
                     bool hasNormals = true;
 
                     // loop through each of the elements
-                    for (u32 i = 0; i<ElementList.size(); ++i)
+                    for (u32 i = 0; i < ElementList.size(); ++i)
                     {
                         // do we want this element type?
                         if (ElementList[i]->Name == "vertex")
@@ -439,7 +439,7 @@ namespace irr
         bool CPLYMeshFileLoader::allocateBuffer()
         {
             // Destroy the element list if it exists
-            for (u32 i = 0; i<ElementList.size(); ++i)
+            for (u32 i = 0; i < ElementList.size(); ++i)
                 delete ElementList[i];
 
             ElementList.clear();

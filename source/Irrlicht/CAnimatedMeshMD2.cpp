@@ -327,7 +327,7 @@ namespace irr
             // interpolate both frames
             const u32 count = FrameList[firstFrame].size();
 
-            for (u32 i = 0; i<count; ++i)
+            for (u32 i = 0; i < count; ++i)
             {
                 const core::vector3df one = core::vector3df(f32(first->Pos.X) * FrameTransforms[firstFrame].scale.X + FrameTransforms[firstFrame].translate.X,
                         f32(first->Pos.Y) * FrameTransforms[firstFrame].scale.Y + FrameTransforms[firstFrame].translate.Y,

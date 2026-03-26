@@ -73,7 +73,7 @@ namespace irr
             numEdges = createEdgesAndCaps(light, svp, bb);
 
             // for all edges add the near->far quads
-            for (u32 i = 0; i<numEdges; ++i)
+            for (u32 i = 0; i < numEdges; ++i)
             {
                 const core::vector3df &v1 = Vertices[Edges[2 * i + 0]];
                 const core::vector3df &v2 = Vertices[Edges[2 * i + 1]];
@@ -111,7 +111,7 @@ namespace irr
                 bb->reset(0, 0, 0);
 
             // Check every face if it is front or back facing the light.
-            for (u32 i = 0; i<faceCount; ++i)
+            for (u32 i = 0; i < faceCount; ++i)
             {
                 const core::vector3df v0 = Vertices[Indices[3 * i + 0]];
                 const core::vector3df v1 = Vertices[Indices[3 * i + 1]];
@@ -150,7 +150,7 @@ namespace irr
             }
 
             // Create edges
-            for (u32 i = 0; i<faceCount; ++i)
+            for (u32 i = 0; i < faceCount; ++i)
             {
                 // check all front facing faces
                 if (FaceData[i] == true)
@@ -245,7 +245,7 @@ namespace irr
             u32       totalIndices  = 0;
             const u32 bufcnt        = mesh->getMeshBufferCount();
 
-            for (i = 0; i<bufcnt; ++i)
+            for (i = 0; i < bufcnt; ++i)
             {
                 const IMeshBuffer *buf = mesh->getMeshBuffer(i);
                 totalIndices  += buf->getIndexCount();
@@ -259,19 +259,19 @@ namespace irr
             FaceData.set_used(totalIndices / 3);
 
             // copy mesh
-            for (i = 0; i<bufcnt; ++i)
+            for (i = 0; i < bufcnt; ++i)
             {
                 const IMeshBuffer *buf = mesh->getMeshBuffer(i);
 
                 const u16 *idxp    = buf->getIndices();
                 const u16 *idxpend = idxp + buf->getIndexCount();
 
-                for (; idxp!=idxpend; ++idxp)
+                for (; idxp != idxpend; ++idxp)
                     Indices[IndexCount++] = *idxp + VertexCount;
 
                 const u32 vtxcnt = buf->getVertexCount();
 
-                for (u32 j = 0; j<vtxcnt; ++j)
+                for (u32 j = 0; j < vtxcnt; ++j)
                     Vertices[VertexCount++] = buf->getPosition(j);
             }
 
@@ -284,7 +284,7 @@ namespace irr
             const core::vector3df parentpos = Parent->getAbsolutePosition();
 
             // TODO: Only correct for point lights.
-            for (i = 0; i<lightCount; ++i)
+            for (i = 0; i < lightCount; ++i)
             {
                 const video::SLight &dl  = SceneManager->getVideoDriver()->getDynamicLight(i);
                 core::vector3df     lpos = dl.Position;
@@ -318,7 +318,7 @@ namespace irr
 
             driver->setTransform(video::ETS_WORLD, Parent->getAbsoluteTransformation());
 
-            for (u32 i = 0; i<ShadowVolumesUsed; ++i)
+            for (u32 i = 0; i < ShadowVolumesUsed; ++i)
             {
                 bool drawShadow = true;
 
@@ -377,9 +377,9 @@ namespace irr
             Adjacency.set_used(IndexCount);
 
             // go through all faces and fetch their three neighbours
-            for (u32 f = 0; f<IndexCount; f += 3)
+            for (u32 f = 0; f < IndexCount; f += 3)
             {
-                for (u32 edge = 0; edge<3; ++edge)
+                for (u32 edge = 0; edge < 3; ++edge)
                 {
                     const core::vector3df &v1 = Vertices[Indices[f + edge]];
                     const core::vector3df &v2 = Vertices[Indices[f + ((edge + 1) % 3)]];
@@ -388,7 +388,7 @@ namespace irr
                     // vertices, which is not the current face.
                     u32 of;
 
-                    for (of = 0; of<IndexCount; of += 3)
+                    for (of = 0; of < IndexCount; of += 3)
                     {
                         // only other faces
                         if (of != f)
@@ -396,7 +396,7 @@ namespace irr
                             bool cnt1 = false;
                             bool cnt2 = false;
 
-                            for (s32 e = 0; e<3; ++e)
+                            for (s32 e = 0; e < 3; ++e)
                             {
                                 if (v1.equals(Vertices[Indices[of + e]]))
                                     cnt1 = true;

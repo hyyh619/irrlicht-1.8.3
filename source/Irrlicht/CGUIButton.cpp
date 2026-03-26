@@ -30,7 +30,7 @@ namespace irr
             setNotClipped(noclip);
 
             // Initialize the sprites.
-            for (u32 i = 0; i<EGBS_COUNT; ++i)
+            for (u32 i = 0; i < EGBS_COUNT; ++i)
                 ButtonSprites[i].Index = -1;
 
             // This element can be tabbed.

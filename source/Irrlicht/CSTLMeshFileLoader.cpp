@@ -74,7 +74,7 @@ namespace irr
                 {
                     if (getNextToken(file, token) != "facet")
                     {
-                        if (token=="endsolid")
+                        if (token == "endsolid")
                             break;
 
                         mesh->drop();
@@ -104,7 +104,7 @@ namespace irr
                     }
                 }
 
-                for (u32 i = 0; i<3; ++i)
+                for (u32 i = 0; i < 3; ++i)
                 {
                     if (!binary)
                     {
@@ -146,7 +146,7 @@ namespace irr
                 if (attrib & 0x8000)
                     color = video::A1R5G5B5toA8R8G8B8(attrib);
 
-                if (normal==core::vector3df())
+                if (normal == core::vector3df())
                     normal = core::plane3df(vertex[2], vertex[1], vertex[0]).Normal;
 
                 mb->Vertices.push_back(video::S3DVertex(vertex[2], normal, color, core::vector2df()));
@@ -256,7 +256,7 @@ namespace irr
             {
                 file->read(&c, 1);
                 // found it, so leave
-                if (c=='\n' || c=='\r')
+                if (c == '\n' || c == '\r')
                     break;
             }
         }

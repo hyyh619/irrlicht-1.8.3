@@ -358,7 +358,7 @@ namespace irr
             IGUIFileOpenDialog::serializeAttributes(out, options);
 
             out->addString("StartDirectory", StartDirectory.c_str());
-            out->addBool("RestoreDirectory", (RestoreDirectory.size()!=0));
+            out->addBool("RestoreDirectory", (RestoreDirectory.size() != 0));
         }
 
 

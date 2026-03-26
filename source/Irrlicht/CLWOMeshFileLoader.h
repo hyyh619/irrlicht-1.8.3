@@ -65,19 +65,19 @@ private:
             io::IReadFile        *File;
             SMesh                *Mesh;
 
-            core::array<core::vector3df>               Points;
-            core::array<core::array<u32> >             Indices;
-            core::array<core::stringc>                 UvName;
-            core::array<core::array<u32> >             UvIndex;
-            core::array<core::stringc>                 DUvName;
-            core::array<core::array<u32> >             VmPolyPointsIndex;
-            core::array<core::array<core::vector2df> > VmCoordsIndex;
+            core::array<core::vector3df>              Points;
+            core::array<core::array<u32>>             Indices;
+            core::array<core::stringc>                UvName;
+            core::array<core::array<u32>>             UvIndex;
+            core::array<core::stringc>                DUvName;
+            core::array<core::array<u32>>             VmPolyPointsIndex;
+            core::array<core::array<core::vector2df>> VmCoordsIndex;
 
-            core::array<u16>                           MaterialMapping;
-            core::array<core::array<core::vector2df> > TCoords;
-            core::array<tLWOMaterial*>                 Materials;
-            core::array<core::stringc>                 Images;
-            u8                                         FormatVersion;
+            core::array<u16>                          MaterialMapping;
+            core::array<core::array<core::vector2df>> TCoords;
+            core::array<tLWOMaterial*>                Materials;
+            core::array<core::stringc>                Images;
+            u8                                        FormatVersion;
         };
     } // end namespace scene
 } // end namespace irr

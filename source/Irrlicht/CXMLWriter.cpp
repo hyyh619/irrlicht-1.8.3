@@ -40,7 +40,7 @@ namespace irr
             if (!File)
                 return;
 
-            if (sizeof(wchar_t)==2)
+            if (sizeof(wchar_t) == 2)
             {
                 const u16 h = 0xFEFF;
                 File->write(&h, 2);
@@ -73,7 +73,7 @@ namespace irr
 
             if (Tabs > 0)
             {
-                for (int i = 0; i<Tabs; ++i)
+                for (int i = 0; i < Tabs; ++i)
                     File->write(L"\t", sizeof(wchar_t));
             }
 
@@ -112,7 +112,7 @@ namespace irr
 
             if (Tabs > 0)
             {
-                for (int i = 0; i<Tabs; ++i)
+                for (int i = 0; i < Tabs; ++i)
                     File->write(L"\t", sizeof(wchar_t));
             }
 
@@ -175,7 +175,7 @@ namespace irr
 
             if (Tabs > 0 && !TextWrittenLast)
             {
-                for (int i = 0; i<Tabs; ++i)
+                for (int i = 0; i < Tabs; ++i)
                     File->write(L"\t", sizeof(wchar_t));
             }
 

@@ -207,7 +207,7 @@ namespace irr
             jpeg_read_header(&cinfo, TRUE);
 
             bool useCMYK = false;
-            if (cinfo.jpeg_color_space==JCS_CMYK)
+            if (cinfo.jpeg_color_space == JCS_CMYK)
             {
                 cinfo.out_color_space      = JCS_CMYK;
                 cinfo.out_color_components = 4;
@@ -265,7 +265,7 @@ namespace irr
                 u8        *data = (u8*)image->lock();
                 if (data)
                 {
-                    for (u32 i = 0, j = 0; i<size; i += 3, j += 4)
+                    for (u32 i = 0, j = 0; i < size; i += 3, j += 4)
                     {
                         // Also works without K, but has more contrast with K multiplied in
                         //                data[i+0] = output[j+2];

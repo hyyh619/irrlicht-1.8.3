@@ -154,8 +154,8 @@ public:
             // ! draws a set of 2d images, using a color and the alpha channel of the
             // ! texture if desired.
             void draw2DImageBatch(const video::ITexture *texture,
-                const core::array<core::position2d<s32> > &positions,
-                const core::array<core::rect<s32> > &sourceRects,
+                const core::array<core::position2d<s32>> &positions,
+                const core::array<core::rect<s32>> &sourceRects,
                 const core::rect<s32> *clipRect,
                 SColor color,
                 bool useAlphaChannelOfTexture);
@@ -183,7 +183,7 @@ public:
              * used to draw the image. */
             virtual void draw2DImage(const video::ITexture *texture,
                 const core::position2d<s32> &pos,
-                const core::array<core::rect<s32> > &sourceRects,
+                const core::array<core::rect<s32>> &sourceRects,
                 const core::array<s32> &indices,
                 const core::rect<s32> *clipRect = 0,
                 SColor color = SColor(255, 255, 255, 255),
@@ -490,7 +490,7 @@ private:
 public:
                 STextureStageCache()
                 {
-                    for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                    for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                     {
                         CurrentTexture[i] = 0;
                     }
@@ -503,7 +503,7 @@ public:
 
                 void set(u32 stage, const ITexture *tex)
                 {
-                    if (stage<MATERIAL_MAX_TEXTURES)
+                    if (stage < MATERIAL_MAX_TEXTURES)
                     {
                         const ITexture *oldTexture = CurrentTexture[stage];
                         if (tex)
@@ -517,7 +517,7 @@ public:
 
                 const ITexture* operator[](int stage) const
                 {
-                    if ((u32)stage<MATERIAL_MAX_TEXTURES)
+                    if ((u32)stage < MATERIAL_MAX_TEXTURES)
                         return CurrentTexture[stage];
                     else
                         return 0;
@@ -525,7 +525,7 @@ public:
 
                 void remove(const ITexture *tex)
                 {
-                    for (s32 i = MATERIAL_MAX_TEXTURES - 1; i>= 0; --i)
+                    for (s32 i = MATERIAL_MAX_TEXTURES - 1; i >= 0; --i)
                     {
                         if (CurrentTexture[i] == tex)
                         {
@@ -538,7 +538,7 @@ public:
                 void clear()
                 {
                     // Drop all the CurrentTexture handles
-                    for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                    for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                     {
                         if (CurrentTexture[i])
                         {

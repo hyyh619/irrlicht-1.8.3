@@ -116,7 +116,7 @@ namespace irr
                     // mesh with one buffer per texture
                     Mesh = new SMesh();
 
-                    for (u32 i = 0; i<Font->getSpriteBank()->getTextureCount(); ++i)
+                    for (u32 i = 0; i < Font->getSpriteBank()->getTextureCount(); ++i)
                     {
                         SMeshBuffer *mb = new SMeshBuffer();
                         mb->Material = Material;
@@ -169,8 +169,8 @@ namespace irr
             if (!Font)
                 return;
 
-            const core::array<core::rect<s32> > &sourceRects = Font->getSpriteBank()->getPositions();
-            const core::array<gui::SGUISprite>  &sprites     = Font->getSpriteBank()->getSprites();
+            const core::array<core::rect<s32>> &sourceRects = Font->getSpriteBank()->getPositions();
+            const core::array<gui::SGUISprite> &sprites     = Font->getSpriteBank()->getSprites();
 
             f32 dim[2];
             f32 tex[4];
@@ -220,7 +220,7 @@ namespace irr
                 buf->Indices[firstInd + 5] = (u16)firstVert + 2;
 
                 wchar_t *tp = 0;
-                if (i>0)
+                if (i > 0)
                     tp = &Text[i - 1];
 
                 info.Width     = (f32)s.getWidth();
@@ -250,13 +250,13 @@ namespace irr
             f32 textLength = 0.f;
             u32 i;
 
-            for (i = 0; i!=Symbol.size(); ++i)
+            for (i = 0; i != Symbol.size(); ++i)
             {
                 SSymbolInfo &info = Symbol[i];
                 textLength += info.Kerning + info.Width;
             }
 
-            if (textLength<0.0f)
+            if (textLength < 0.0f)
                 textLength = 1.0f;
 
             // const core::matrix4 &m = camera->getViewFrustum()->Matrices[ video::ETS_VIEW ];
@@ -290,7 +290,7 @@ namespace irr
             // center text
             pos += space * (Size.Width * -0.5f);
 
-            for (i = 0; i!= Symbol.size(); ++i)
+            for (i = 0; i != Symbol.size(); ++i)
             {
                 SSymbolInfo &info = Symbol[i];
                 f32         infw  = info.Width / textLength;
@@ -315,7 +315,7 @@ namespace irr
 
             // make bounding box
 
-            for (i = 0; i< Mesh->getMeshBufferCount(); ++i)
+            for (i = 0; i < Mesh->getMeshBufferCount(); ++i)
                 Mesh->getMeshBuffer(i)->recalculateBoundingBox();
 
             Mesh->recalculateBoundingBox();

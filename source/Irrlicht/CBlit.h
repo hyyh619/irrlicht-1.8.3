@@ -261,7 +261,7 @@ namespace irr
 
             run -= 1;
         }
-        while (run>=0);
+        while (run >= 0);
 
         t->unlock();
     }
@@ -331,7 +331,7 @@ namespace irr
 
             run -= 1;
         }
-        while (run>=0);
+        while (run >= 0);
 
         t->unlock();
     }
@@ -399,7 +399,7 @@ namespace irr
 
             run -= 1;
         }
-        while (run>=0);
+        while (run >= 0);
 
         t->unlock();
     }
@@ -469,7 +469,7 @@ namespace irr
 
             run -= 1;
         }
-        while (run>=0);
+        while (run >= 0);
 
         t->unlock();
     }

@@ -167,7 +167,7 @@ namespace irr
 #ifdef _IRR_DEBUG_OBJ_LOADER_
                         os::Printer::log("Loaded smoothing group start", smooth, ELL_DEBUG);
 #endif
-                        if (core::stringc("off")==smooth)
+                        if (core::stringc("off") == smooth)
                             smoothingGroup = 0;
                         else
                             smoothingGroup = core::strtoul10(smooth);
@@ -352,7 +352,7 @@ namespace irr
             bool clamp     = false;
 
             // handle options
-            while (textureNameBuf[0]=='-')
+            while (textureNameBuf[0] == '-')
             {
                 if (!strncmp(bufPtr, "-bm", 3))
                 {
@@ -419,7 +419,7 @@ namespace irr
                 bufPtr = goAndCopyNextWord(textureNameBuf, bufPtr, WORD_BUFFER_LENGTH, bufEnd);
             }
 
-            if ((type==1) && (core::isdigit(textureNameBuf[0])))
+            if ((type == 1) && (core::isdigit(textureNameBuf[0])))
             {
                 currMaterial->Meshbuffer->Material.MaterialTypeParam = core::fast_atof(textureNameBuf);
                 bufPtr                                               = goAndCopyNextWord(textureNameBuf, bufPtr, WORD_BUFFER_LENGTH, bufEnd);
@@ -459,9 +459,9 @@ namespace irr
 
             if (texture)
             {
-                if (type==0)
+                if (type == 0)
                     currMaterial->Meshbuffer->Material.setTexture(0, texture);
-                else if (type==1)
+                else if (type == 1)
                 {
                     if (newTexture)
                         SceneManager->getVideoDriver()->makeNormalMapTexture(texture, bumpiness);
@@ -470,12 +470,12 @@ namespace irr
                     currMaterial->Meshbuffer->Material.MaterialType      = video::EMT_PARALLAX_MAP_SOLID;
                     currMaterial->Meshbuffer->Material.MaterialTypeParam = 0.035f;
                 }
-                else if (type==2)
+                else if (type == 2)
                 {
                     currMaterial->Meshbuffer->Material.setTexture(0, texture);
                     currMaterial->Meshbuffer->Material.MaterialType = video::EMT_TRANSPARENT_ADD_COLOR;
                 }
-                else if (type==3)
+                else if (type == 3)
                 {
                     //                        currMaterial->Meshbuffer->Material.Textures[1] = texture;
                     //                        currMaterial->Meshbuffer->Material.MaterialType=video::EMT_REFLECTION_2_LAYER;
@@ -641,7 +641,7 @@ namespace irr
                             f32 dValue = core::fast_atof(dStr);
 
                             currMaterial->Meshbuffer->Material.DiffuseColor.setAlpha((s32)(dValue * 255));
-                            if (dValue<1.0f)
+                            if (dValue < 1.0f)
                                 currMaterial->Meshbuffer->Material.MaterialType = video::EMT_TRANSPARENT_VERTEX_ALPHA;
                         }
 
@@ -818,7 +818,7 @@ namespace irr
             while (buf != bufEnd)
             {
                 // found it, so leave
-                if (*buf=='\n' || *buf=='\r')
+                if (*buf == '\n' || *buf == '\r')
                     break;
 
                 ++buf;
@@ -851,7 +851,7 @@ namespace irr
 
             u32 length = core::min_(i, outBufLength - 1);
 
-            for (u32 j = 0; j<length; ++j)
+            for (u32 j = 0; j < length; ++j)
                 outBuf[j] = inBuf[j];
 
             outBuf[length] = 0;
@@ -866,9 +866,9 @@ namespace irr
 
             const c8 *ptr = inBuf;
 
-            while (ptr<bufEnd)
+            while (ptr < bufEnd)
             {
-                if (*ptr=='\n' || *ptr=='\r')
+                if (*ptr == '\n' || *ptr == '\r')
                     break;
 
                 ++ptr;
@@ -908,7 +908,7 @@ namespace irr
                     word[i] = '\0';
                     // if no number was found index will become 0 and later on -1 by decrement
                     idx[idxType] = core::strtol10(word);
-                    if (idx[idxType]<0)
+                    if (idx[idxType] < 0)
                     {
                         switch (idxType)
                         {

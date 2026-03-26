@@ -58,7 +58,7 @@ namespace irr
                 u32 solidCount       = 0;
 
                 // count transparent and solid materials in this scene node
-                for (u32 i = 0; i<Materials.size(); ++i)
+                for (u32 i = 0; i < Materials.size(); ++i)
                 {
                     const video::IMaterialRenderer* const rnd =
                         driver->getMaterialRenderer(Materials[i].MaterialType);
@@ -128,7 +128,7 @@ namespace irr
 
                     const Octree<video::S3DVertex>::SIndexData *d = StdOctree->getIndexData();
 
-                    for (u32 i = 0; i<Materials.size(); ++i)
+                    for (u32 i = 0; i < Materials.size(); ++i)
                     {
                         if (0 == d[i].CurrentSize)
                             continue;
@@ -148,7 +148,7 @@ namespace irr
                     }
 
                     // for debug purposes only
-                    if (DebugDataVisible && !Materials.empty() && PassCount==1)
+                    if (DebugDataVisible && !Materials.empty() && PassCount == 1)
                     {
                         const core::aabbox3df                   &box = frust.getBoundingBox();
                         core::array<const core::aabbox3d<f32>*> boxes;
@@ -159,7 +159,7 @@ namespace irr
                         {
                             StdOctree->getBoundingBoxes(box, boxes);
 
-                            for (u32 b = 0; b!=boxes.size(); ++b)
+                            for (u32 b = 0; b != boxes.size(); ++b)
                                 driver->draw3DBox(*boxes[b]);
                         }
 
@@ -178,7 +178,7 @@ namespace irr
 
                     const Octree<video::S3DVertex2TCoords>::SIndexData *d = LightMapOctree->getIndexData();
 
-                    for (u32 i = 0; i<Materials.size(); ++i)
+                    for (u32 i = 0; i < Materials.size(); ++i)
                     {
                         if (0 == d[i].CurrentSize)
                             continue;
@@ -216,7 +216,7 @@ namespace irr
                     }
 
                     // for debug purposes only
-                    if (DebugDataVisible && !Materials.empty() && PassCount==1)
+                    if (DebugDataVisible && !Materials.empty() && PassCount == 1)
                     {
                         const core::aabbox3d<float>             &box = frust.getBoundingBox();
                         core::array<const core::aabbox3d<f32>*> boxes;
@@ -227,7 +227,7 @@ namespace irr
                         {
                             LightMapOctree->getBoundingBoxes(box, boxes);
 
-                            for (u32 b = 0; b<boxes.size(); ++b)
+                            for (u32 b = 0; b < boxes.size(); ++b)
                                 driver->draw3DBox(*boxes[b]);
                         }
 
@@ -246,7 +246,7 @@ namespace irr
 
                     const Octree<video::S3DVertexTangents>::SIndexData *d = TangentsOctree->getIndexData();
 
-                    for (u32 i = 0; i<Materials.size(); ++i)
+                    for (u32 i = 0; i < Materials.size(); ++i)
                     {
                         if (0 == d[i].CurrentSize)
                             continue;
@@ -266,7 +266,7 @@ namespace irr
                     }
 
                     // for debug purposes only
-                    if (DebugDataVisible && !Materials.empty() && PassCount==1)
+                    if (DebugDataVisible && !Materials.empty() && PassCount == 1)
                     {
                         const core::aabbox3d<float>             &box = frust.getBoundingBox();
                         core::array<const core::aabbox3d<f32>*> boxes;
@@ -277,7 +277,7 @@ namespace irr
                         {
                             TangentsOctree->getBoundingBoxes(box, boxes);
 
-                            for (u32 b = 0; b<boxes.size(); ++b)
+                            for (u32 b = 0; b < boxes.size(); ++b)
                                 driver->draw3DBox(*boxes[b]);
                         }
 
@@ -360,7 +360,7 @@ namespace irr
                 VertexType = video::EVT_STANDARD;
                 u32 meshReserve = 0;
 
-                for (i = 0; i<mesh->getMeshBufferCount(); ++i)
+                for (i = 0; i < mesh->getMeshBufferCount(); ++i)
                 {
                     const IMeshBuffer *b = mesh->getMeshBuffer(i);
                     if (b->getVertexCount() && b->getIndexCount())
@@ -381,7 +381,7 @@ namespace irr
                     {
                         StdMeshes.reallocate(StdMeshes.size() + meshReserve);
 
-                        for (i = 0; i<mesh->getMeshBufferCount(); ++i)
+                        for (i = 0; i < mesh->getMeshBufferCount(); ++i)
                         {
                             IMeshBuffer *b = mesh->getMeshBuffer(i);
 
@@ -400,21 +400,21 @@ namespace irr
                                 {
                                     case video::EVT_STANDARD:
 
-                                        for (v = 0; v<b->getVertexCount(); ++v)
+                                        for (v = 0; v < b->getVertexCount(); ++v)
                                             nchunk.Vertices.push_back(((video::S3DVertex*)b->getVertices())[v]);
 
                                         break;
 
                                     case video::EVT_2TCOORDS:
 
-                                        for (v = 0; v<b->getVertexCount(); ++v)
+                                        for (v = 0; v < b->getVertexCount(); ++v)
                                             nchunk.Vertices.push_back(((video::S3DVertex2TCoords*)b->getVertices())[v]);
 
                                         break;
 
                                     case video::EVT_TANGENTS:
 
-                                        for (v = 0; v<b->getVertexCount(); ++v)
+                                        for (v = 0; v < b->getVertexCount(); ++v)
                                             nchunk.Vertices.push_back(((video::S3DVertexTangents*)b->getVertices())[v]);
 
                                         break;
@@ -424,7 +424,7 @@ namespace irr
 
                                 nchunk.Indices.reallocate(b->getIndexCount());
 
-                                for (v = 0; v<b->getIndexCount(); ++v)
+                                for (v = 0; v < b->getIndexCount(); ++v)
                                     nchunk.Indices.push_back(b->getIndices()[v]);
                             }
                         }
@@ -464,21 +464,21 @@ namespace irr
                                 {
                                     case video::EVT_STANDARD:
 
-                                        for (v = 0; v<b->getVertexCount(); ++v)
+                                        for (v = 0; v < b->getVertexCount(); ++v)
                                             nchunk.Vertices.push_back(((video::S3DVertex*)b->getVertices())[v]);
 
                                         break;
 
                                     case video::EVT_2TCOORDS:
 
-                                        for (v = 0; v<b->getVertexCount(); ++v)
+                                        for (v = 0; v < b->getVertexCount(); ++v)
                                             nchunk.Vertices.push_back(((video::S3DVertex2TCoords*)b->getVertices())[v]);
 
                                         break;
 
                                     case video::EVT_TANGENTS:
 
-                                        for (v = 0; v<b->getVertexCount(); ++v)
+                                        for (v = 0; v < b->getVertexCount(); ++v)
                                             nchunk.Vertices.push_back(((video::S3DVertexTangents*)b->getVertices())[v]);
 
                                         break;
@@ -487,7 +487,7 @@ namespace irr
                                 polyCount += b->getIndexCount();
                                 nchunk.Indices.reallocate(b->getIndexCount());
 
-                                for (v = 0; v<b->getIndexCount(); ++v)
+                                for (v = 0; v < b->getIndexCount(); ++v)
                                     nchunk.Indices.push_back(b->getIndices()[v]);
                             }
                         }
@@ -501,7 +501,7 @@ namespace irr
                     {
                         TangentsMeshes.reallocate(TangentsMeshes.size() + meshReserve);
 
-                        for (u32 i = 0; i<mesh->getMeshBufferCount(); ++i)
+                        for (u32 i = 0; i < mesh->getMeshBufferCount(); ++i)
                         {
                             IMeshBuffer *b = mesh->getMeshBuffer(i);
 
@@ -519,7 +519,7 @@ namespace irr
                                 {
                                     case video::EVT_STANDARD:
 
-                                        for (v = 0; v<b->getVertexCount(); ++v)
+                                        for (v = 0; v < b->getVertexCount(); ++v)
                                         {
                                             const video::S3DVertex &tmpV = ((video::S3DVertex*)b->getVertices())[v];
                                             nchunk.Vertices.push_back(video::S3DVertexTangents(tmpV.Pos, tmpV.Color, tmpV.TCoords));
@@ -529,7 +529,7 @@ namespace irr
 
                                     case video::EVT_2TCOORDS:
 
-                                        for (v = 0; v<b->getVertexCount(); ++v)
+                                        for (v = 0; v < b->getVertexCount(); ++v)
                                         {
                                             const video::S3DVertex2TCoords &tmpV = ((video::S3DVertex2TCoords*)b->getVertices())[v];
                                             nchunk.Vertices.push_back(video::S3DVertexTangents(tmpV.Pos, tmpV.Color, tmpV.TCoords));
@@ -539,7 +539,7 @@ namespace irr
 
                                     case video::EVT_TANGENTS:
 
-                                        for (v = 0; v<b->getVertexCount(); ++v)
+                                        for (v = 0; v < b->getVertexCount(); ++v)
                                             nchunk.Vertices.push_back(((video::S3DVertexTangents*)b->getVertices())[v]);
 
                                         break;
@@ -548,7 +548,7 @@ namespace irr
                                 polyCount += b->getIndexCount();
                                 nchunk.Indices.reallocate(b->getIndexCount());
 
-                                for (v = 0; v<b->getIndexCount(); ++v)
+                                for (v = 0; v < b->getIndexCount(); ++v)
                                     nchunk.Indices.push_back(b->getIndices()[v]);
                             }
                         }

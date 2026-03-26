@@ -35,7 +35,7 @@ namespace irr
         // ! Removes all attributes
         void CAttributes::clear()
         {
-            for (u32 i = 0; i<Attributes.size(); ++i)
+            for (u32 i = 0; i < Attributes.size(); ++i)
                 Attributes[i]->drop();
 
             Attributes.clear();
@@ -47,7 +47,7 @@ namespace irr
         // ! \param value: Value for the attribute. Set this to 0 to delete the attribute
         void CAttributes::setAttribute(const c8 *attributeName, const c8 *value)
         {
-            for (u32 i = 0; i<Attributes.size(); ++i)
+            for (u32 i = 0; i < Attributes.size(); ++i)
                 if (Attributes[i]->Name == attributeName)
                 {
                     if (!value)
@@ -117,7 +117,7 @@ namespace irr
         // ! \param value: Value for the attribute. Set this to 0 to delete the attribute
         void CAttributes::setAttribute(const c8 *attributeName, const wchar_t *value)
         {
-            for (u32 i = 0; i<Attributes.size(); ++i)
+            for (u32 i = 0; i < Attributes.size(); ++i)
             {
                 if (Attributes[i]->Name == attributeName)
                 {
@@ -236,7 +236,7 @@ namespace irr
         // ! Returns attribute index from name, -1 if not found
         s32 CAttributes::findAttribute(const c8 *attributeName) const
         {
-            for (u32 i = 0; i<Attributes.size(); ++i)
+            for (u32 i = 0; i < Attributes.size(); ++i)
                 if (Attributes[i]->Name == attributeName)
                     return i;
 
@@ -246,7 +246,7 @@ namespace irr
 
         IAttribute* CAttributes::getAttributeP(const c8 *attributeName) const
         {
-            for (u32 i = 0; i<Attributes.size(); ++i)
+            for (u32 i = 0; i < Attributes.size(); ++i)
                 if (Attributes[i]->Name == attributeName)
                     return Attributes[i];
 
@@ -1606,7 +1606,7 @@ namespace irr
                 s32                 n     = 0;
                 const core::stringw tmpName(L"value");
 
-                for (; n<count; ++n)
+                for (; n < count; ++n)
                 {
                     tmpArray.push_back(reader->getAttributeValue((tmpName + core::stringw(n)).c_str()));
                 }
@@ -1644,7 +1644,7 @@ namespace irr
 
             s32 i = 0;
 
-            for (; i<(s32)Attributes.size(); ++i)
+            for (; i < (s32)Attributes.size(); ++i)
             {
                 if (Attributes[i]->getType() == EAT_STRINGWARRAY)
                 {

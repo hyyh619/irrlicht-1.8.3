@@ -80,7 +80,7 @@ private:
                     blue(1.0f), alpha(1.0f), shininess(0.0f), blend(1),
                     fx(0)
                 {
-                    for (u32 i = 0; i<video::MATERIAL_MAX_TEXTURES; ++i)
+                    for (u32 i = 0; i < video::MATERIAL_MAX_TEXTURES; ++i)
                         Textures[i] = 0;
                 }
                 video::SMaterial Material;

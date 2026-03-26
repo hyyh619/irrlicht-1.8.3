@@ -133,7 +133,7 @@ namespace irr
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
         const u32 numJoysticks = Joysticks.size();
 
-        for (u32 i = 0; i<numJoysticks; ++i)
+        for (u32 i = 0; i < numJoysticks; ++i)
             SDL_JoystickClose(Joysticks[i]);
 #endif
         SDL_Quit();
@@ -147,7 +147,7 @@ namespace irr
 
         if (CreationParams.DriverType == video::EDT_OPENGL)
         {
-            if (CreationParams.Bits==16)
+            if (CreationParams.Bits == 16)
             {
                 SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 4);
                 SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 4);
@@ -169,7 +169,7 @@ namespace irr
             if (CreationParams.Stereobuffer)
                 SDL_GL_SetAttribute(SDL_GL_STEREO, 1);
 
-            if (CreationParams.AntiAlias>1)
+            if (CreationParams.AntiAlias > 1)
             {
                 SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
                 SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias);
@@ -178,9 +178,9 @@ namespace irr
             if (!Screen)
                 Screen = SDL_SetVideoMode(Width, Height, CreationParams.Bits, SDL_Flags);
 
-            if (!Screen && CreationParams.AntiAlias>1)
+            if (!Screen && CreationParams.AntiAlias > 1)
             {
-                while (--CreationParams.AntiAlias>1)
+                while (--CreationParams.AntiAlias > 1)
                 {
                     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, CreationParams.AntiAlias);
                     Screen = SDL_SetVideoMode(Width, Height, CreationParams.Bits, SDL_Flags);
@@ -437,9 +437,9 @@ namespace irr
                 case SDL_ACTIVEEVENT:
                     if ((SDL_event.active.state == SDL_APPMOUSEFOCUS) ||
                         (SDL_event.active.state == SDL_APPINPUTFOCUS))
-                        WindowHasFocus = (SDL_event.active.gain==1);
+                        WindowHasFocus = (SDL_event.active.gain == 1);
                     else if (SDL_event.active.state == SDL_APPACTIVE)
-                        WindowMinimized = (SDL_event.active.gain!=1);
+                        WindowMinimized = (SDL_event.active.gain != 1);
 
                     break;
 
@@ -478,7 +478,7 @@ namespace irr
         SEvent joyevent;
         joyevent.EventType = EET_JOYSTICK_INPUT_EVENT;
 
-        for (u32 i = 0; i<Joysticks.size(); ++i)
+        for (u32 i = 0; i < Joysticks.size(); ++i)
         {
             SDL_Joystick *joystick = Joysticks[i];
             if (joystick)
@@ -488,7 +488,7 @@ namespace irr
                 const int numButtons = core::min_(SDL_JoystickNumButtons(joystick), 32);
                 joyevent.JoystickEvent.ButtonStates = 0;
 
-                for (j = 0; j<numButtons; ++j)
+                for (j = 0; j < numButtons; ++j)
                     joyevent.JoystickEvent.ButtonStates |= (SDL_JoystickGetButton(joystick, j) << j);
 
                 // query all axes, already in correct range
@@ -500,11 +500,11 @@ namespace irr
                 joyevent.JoystickEvent.Axis[SEvent::SJoystickEvent::AXIS_U] = 0;
                 joyevent.JoystickEvent.Axis[SEvent::SJoystickEvent::AXIS_V] = 0;
 
-                for (j = 0; j<numAxes; ++j)
+                for (j = 0; j < numAxes; ++j)
                     joyevent.JoystickEvent.Axis[j] = SDL_JoystickGetAxis(joystick, j);
 
                 // we can only query one hat, SDL only supports 8 directions
-                if (SDL_JoystickNumHats(joystick)>0)
+                if (SDL_JoystickNumHats(joystick) > 0)
                 {
                     switch (SDL_JoystickGetHat(joystick, 0))
                     {
@@ -575,7 +575,7 @@ namespace irr
 
         int joystick = 0;
 
-        for (; joystick<numJoysticks; ++joystick)
+        for (; joystick < numJoysticks; ++joystick)
         {
             Joysticks.push_back(SDL_JoystickOpen(joystick));
             SJoystickInfo info;
@@ -653,8 +653,8 @@ namespace irr
         SDL_SetColorKey(sdlSurface, 0, 0);
         sdlSurface->format->BitsPerPixel  = surface->getBitsPerPixel();
         sdlSurface->format->BytesPerPixel = surface->getBytesPerPixel();
-        if ((surface->getColorFormat()==video::ECF_R8G8B8) ||
-            (surface->getColorFormat()==video::ECF_A8R8G8B8))
+        if ((surface->getColorFormat() == video::ECF_R8G8B8) ||
+            (surface->getColorFormat() == video::ECF_A8R8G8B8))
         {
             sdlSurface->format->Rloss  = 0;
             sdlSurface->format->Gloss  = 0;
@@ -662,7 +662,7 @@ namespace irr
             sdlSurface->format->Rshift = 16;
             sdlSurface->format->Gshift = 8;
             sdlSurface->format->Bshift = 0;
-            if (surface->getColorFormat()==video::ECF_R8G8B8)
+            if (surface->getColorFormat() == video::ECF_R8G8B8)
             {
                 sdlSurface->format->Aloss  = 8;
                 sdlSurface->format->Ashift = 32;
@@ -673,7 +673,7 @@ namespace irr
                 sdlSurface->format->Ashift = 24;
             }
         }
-        else if (surface->getColorFormat()==video::ECF_R5G6B5)
+        else if (surface->getColorFormat() == video::ECF_R5G6B5)
         {
             sdlSurface->format->Rloss  = 3;
             sdlSurface->format->Gloss  = 2;
@@ -684,7 +684,7 @@ namespace irr
             sdlSurface->format->Bshift = 0;
             sdlSurface->format->Ashift = 16;
         }
-        else if (surface->getColorFormat()==video::ECF_A1R5G5B5)
+        else if (surface->getColorFormat() == video::ECF_A1R5G5B5)
         {
             sdlSurface->format->Rloss  = 3;
             sdlSurface->format->Gloss  = 3;
@@ -836,7 +836,7 @@ namespace irr
     {
         if (Screen)
         {
-            if (Screen->format->BitsPerPixel==16)
+            if (Screen->format->BitsPerPixel == 16)
             {
                 if (Screen->format->Amask != 0)
                     return video::ECF_A1R5G5B5;

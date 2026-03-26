@@ -251,7 +251,7 @@ namespace irr
             core::stringc data = reader->getNodeData();
             const c8      *p   = &data[0];
 
-            for (int i = 0; i<indexCount && *p; ++i)
+            for (int i = 0; i < indexCount && *p; ++i)
             {
                 findNextNoneWhiteSpace(&p);
                 indices.push_back(readInt(&p));
@@ -268,7 +268,7 @@ namespace irr
 
             if (sbuffer)
             {
-                for (int i = 0; i<vertexCount && *p; ++i)
+                for (int i = 0; i < vertexCount && *p; ++i)
                 {
                     switch (vType)
                     {
@@ -480,7 +480,7 @@ namespace irr
         {
             const c8 *p = *start;
 
-            while (*p && !(*p==' ' || *p=='\n' || *p=='\r' || *p=='\t'))
+            while (*p && !(*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t'))
                 ++p;
 
             // TODO: skip comments <!-- -->
@@ -493,7 +493,7 @@ namespace irr
         {
             const c8 *p = *start;
 
-            while (*p && (*p==' ' || *p=='\n' || *p=='\r' || *p=='\t'))
+            while (*p && (*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t'))
                 ++p;
 
             // TODO: skip comments <!-- -->
@@ -519,7 +519,7 @@ namespace irr
                     core::stringc data = reader->getNodeData();
                     const c8      *p   = &data[0];
 
-                    for (u32 i = 0; i<count; ++i)
+                    for (u32 i = 0; i < count; ++i)
                     {
                         findNextNoneWhiteSpace(&p);
                         if (*p)

@@ -92,7 +92,7 @@ namespace irr
 
             // write mesh buffers
 
-            for (int i = 0; i<(int)mesh->getMeshBufferCount(); ++i)
+            for (int i = 0; i < (int)mesh->getMeshBufferCount(); ++i)
             {
                 scene::IMeshBuffer *buffer = mesh->getMeshBuffer(i);
                 if (buffer)
@@ -175,7 +175,7 @@ namespace irr
                 {
                     video::S3DVertex *vtx = (video::S3DVertex*)buffer->getVertices();
 
-                    for (u32 j = 0; j<vertexCount; ++j)
+                    for (u32 j = 0; j < vertexCount; ++j)
                     {
                         core::stringw str = getVectorAsStringLine(vtx[j].Pos);
                         str += L" ";
@@ -197,7 +197,7 @@ namespace irr
                 {
                     video::S3DVertex2TCoords *vtx = (video::S3DVertex2TCoords*)buffer->getVertices();
 
-                    for (u32 j = 0; j<vertexCount; ++j)
+                    for (u32 j = 0; j < vertexCount; ++j)
                     {
                         core::stringw str = getVectorAsStringLine(vtx[j].Pos);
                         str += L" ";
@@ -221,7 +221,7 @@ namespace irr
                 {
                     video::S3DVertexTangents *vtx = (video::S3DVertexTangents*)buffer->getVertices();
 
-                    for (u32 j = 0; j<vertexCount; ++j)
+                    for (u32 j = 0; j < vertexCount; ++j)
                     {
                         core::stringw str = getVectorAsStringLine(vtx[j].Pos);
                         str += L" ";
@@ -262,7 +262,7 @@ namespace irr
             const u32 *idx32            = (u32*) buffer->getIndices();
             const int maxIndicesPerLine = 25;
 
-            for (int i = 0; i<indexCount; ++i)
+            for (int i = 0; i < indexCount; ++i)
             {
                 if (iType == video::EIT_16BIT)
                 {

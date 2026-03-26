@@ -171,13 +171,13 @@ namespace irr
                 int l = str.size();
 
                 // process entire string
-                while (c<l)
+                while (c < l)
                 {
                     core::stringc resultstr;
                     resultstr = "";
 
                     // read characters until divider is encountered
-                    while ((str[c]!=divider[0]) && c<l)
+                    while ((str[c] != divider[0]) && c < l)
                     {
                         resultstr += str[c];
                         ++c;
@@ -259,14 +259,14 @@ namespace irr
 
                     fac = atoi(RawFile[offs].c_str());
 
-                    if (!(wat1[0]=="water" && wat[2]=="0"))
+                    if (!(wat1[0] == "water" && wat[2] == "0"))
                         header.numFaces = header.numFaces + fac;
                     else
                         header.numWatFaces = header.numWatFaces + fac;
 
                     offs++;
 
-                    for (int j = 0; j<fac; j++)
+                    for (int j = 0; j < fac; j++)
                     {
                         if (!(wat1[0] == "water" && wat[2] == "0"))
                             header.numVertices = header.numVertices + atoi(RawFile[offs + j].c_str());
@@ -283,16 +283,16 @@ namespace irr
                 temp1.clear();
                 s32 lit = atoi(RawFile[offs].c_str());
 
-                for (i = 0; i<lit; i++)
+                for (i = 0; i < lit; i++)
                 {
                     offs++;
                     temp = SubdivideString(RawFile[offs], ";");
 
-                    if (atoi(temp[0].c_str())==1)
+                    if (atoi(temp[0].c_str()) == 1)
                     {
                         temp1 = SubdivideString(temp[18], "_");
 
-                        if (temp1[0]=="dynamic")
+                        if (temp1[0] == "dynamic")
                             header.numLights++;
                     }
 
@@ -324,7 +324,7 @@ namespace irr
                 // The number of materials is predetermined
                 materials.reallocate(num_material);
 
-                for (int i = 0; i<num_material; ++i)
+                for (int i = 0; i < num_material; ++i)
                 {
                     materials.push_back(dmfMaterial());
                     // get all tokens
@@ -344,7 +344,7 @@ namespace irr
                     materials[i].textureName = temp1[1];
                     materials[i].textureName.replace('\\', '/');
                     materials[i].textureBlend = atoi(temp1[2].c_str());
-                    if (temp.size()>=9)
+                    if (temp.size() >= 9)
                     {
                         temp1                     = SubdivideString(temp[temp.size() - 1], ",");
                         materials[i].lightmapFlag = atoi(temp1[0].c_str());
@@ -393,7 +393,7 @@ namespace irr
                 temp.clear();
                 temp1.clear();
 
-                for (int i = 0; i<num_material; i++)
+                for (int i = 0; i < num_material; i++)
                 {
                     temp                    = SubdivideString(RawFile[offs + i], ";");
                     materials[i].materialID = i;
@@ -406,7 +406,7 @@ namespace irr
                     temp1.clear();
                     temp2.clear();
                     int a = temp.size();
-                    if (a==7)
+                    if (a == 7)
                     {
                         temp1                     = SubdivideString(temp[6], ",");
                         materials[i].lightmapFlag = atoi(temp1[0].c_str());
@@ -450,7 +450,7 @@ namespace irr
 
                 s32 vert_cnt = 0, face_cnt = 0;
 
-                for (int i = 0; i<objs; ++i)
+                for (int i = 0; i < objs; ++i)
                 {
                     StringList wat  = SubdivideString(RawFile[offs], ";");
                     StringList wat1 = SubdivideString(wat[0], "_");
@@ -465,7 +465,7 @@ namespace irr
                     ++offs;
                     pos.reallocate(posCount);
 
-                    for (u32 i = 0; i<posCount; ++i)
+                    for (u32 i = 0; i < posCount; ++i)
                     {
                         temp1 = SubdivideString(RawFile[offs].c_str(), ";");
                         pos.push_back(core::vector3df(core::fast_atof(temp1[0].c_str()),
@@ -476,9 +476,9 @@ namespace irr
 
                     const u32 numFaces = core::strtoul10(RawFile[offs].c_str());
                     offs++;
-                    if (!(wat1[0]=="water" && wat[2]=="0"))
+                    if (!(wat1[0] == "water" && wat[2] == "0"))
                     {
-                        for (u32 j = 0; j<numFaces; ++j)
+                        for (u32 j = 0; j < numFaces; ++j)
                         {
                             temp = SubdivideString(RawFile[offs + j], ";");
 
@@ -491,7 +491,7 @@ namespace irr
                             faces[face_cnt].firstVert = vert_cnt;
 
                             // now we'll create vertices structure
-                            for (u32 k = 0; k<vert; ++k)
+                            for (u32 k = 0; k < vert; ++k)
                             {
                                 // copy position
                                 vertices[vert_cnt].pos.set(pos[core::strtoul10(temp[2 + k].c_str())]);
@@ -554,7 +554,7 @@ namespace irr
                 // let's get position of lights in file
                 int i;
 
-                for (i = 0; i<objs; i++)
+                for (i = 0; i < objs; i++)
                 {
                     offs++;
 
@@ -568,14 +568,14 @@ namespace irr
                 // let's find dynamic lights
                 lit = atoi(RawFile[offs].c_str());
 
-                for (i = 0; i<lit; i++)
+                for (i = 0; i < lit; i++)
                 {
                     offs++;
                     temp = SubdivideString(RawFile[offs], ";");
-                    if (atoi(temp[0].c_str())==1)
+                    if (atoi(temp[0].c_str()) == 1)
                     {
                         temp1 = SubdivideString(temp[18], "_");
-                        if (temp1[0]=="dynamic")
+                        if (temp1[0] == "dynamic")
                         {
                             lights[d_lit].radius = (float)atof(temp[4].c_str());
                             lights[d_lit].pos.set((float)atof(temp[5].c_str()),
@@ -643,7 +643,7 @@ namespace irr
                 f32                    wavelength = 80.0f;
                 offs++;
 
-                for (int i = 0; i<objs; i++)
+                for (int i = 0; i < objs; i++)
                 {
                     StringList wat  = SubdivideString(RawFile[offs], ";");
                     StringList wat1 = SubdivideString(wat[0], "_");
@@ -655,13 +655,13 @@ namespace irr
                     fac = atoi(RawFile[offs].c_str());
                     offs++;
 
-                    if (wat1[0]=="water" && wat[2]=="0")
+                    if (wat1[0] == "water" && wat[2] == "0")
                     {
                         StringList userinfo = SubdivideString(wat[7], ",");
 
                         int j;
 
-                        for (j = 0; j<(int)userinfo.size(); j++)
+                        for (j = 0; j < (int)userinfo.size(); j++)
                         {
                             switch (j)
                             {
@@ -705,7 +705,7 @@ namespace irr
                         wat_planes[wat_id].waveSpeed  = wavespeed;
                         wat_planes[wat_id].waveLength = wavelength;
 
-                        for (j = 0; j<fac; j++)
+                        for (j = 0; j < fac; j++)
                         {
                             temp = SubdivideString(RawFile[offs + j], ";");
 
@@ -718,7 +718,7 @@ namespace irr
                             faces[face_cnt].firstVert = vert_cnt;
 
                             // now we'll create vertices structure
-                            for (int k = 0; k<vert; k++)
+                            for (int k = 0; k < vert; k++)
                             {
                                 // get vertex position
                                 temp1 = SubdivideString(RawFile[offs1 + atoi(temp[2 + k].c_str())], ";");

@@ -194,7 +194,7 @@ namespace irr
             data = tmpImage;
 
             // Fill array of pointers to rows in image data
-            for (u32 i = 0; i<image->getDimension().Height; ++i)
+            for (u32 i = 0; i < image->getDimension().Height; ++i)
             {
                 RowPointers[i] = data;
                 data          += lineWidth;
@@ -211,7 +211,7 @@ namespace irr
 
             png_set_rows(png_ptr, info_ptr, RowPointers);
 
-            if (image->getColorFormat()== ECOLOR_FORMAT::ECF_A8R8G8B8 || image->getColorFormat()== ECOLOR_FORMAT::ECF_A1R5G5B5)
+            if (image->getColorFormat() == ECOLOR_FORMAT::ECF_A8R8G8B8 || image->getColorFormat() == ECOLOR_FORMAT::ECF_A1R5G5B5)
                 png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_BGR, NULL);
             else
             {

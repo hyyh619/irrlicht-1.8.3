@@ -37,7 +37,7 @@ namespace irr
             IReferenceCounted::setDebugName("CQ3LevelMesh");
     #endif
 
-            for (s32 i = 0; i!= E_Q3_MESH_SIZE; ++i)
+            for (s32 i = 0; i != E_Q3_MESH_SIZE; ++i)
             {
                 Mesh[i] = 0;
             }
@@ -67,7 +67,7 @@ namespace irr
 
             s32 i;
 
-            for (i = 0; i!= E_Q3_MESH_SIZE; ++i)
+            for (i = 0; i != E_Q3_MESH_SIZE; ++i)
             {
                 if (Mesh[i])
                 {
@@ -129,7 +129,7 @@ namespace irr
             s32 i;
             if (LoadParam.swapHeader)
             {
-                for (i = 0; i< kMaxLumps; ++i)
+                for (i = 0; i < kMaxLumps; ++i)
                 {
                     Lumps[i].offset = os::Byteswap::byteswap(Lumps[i].offset);
                     Lumps[i].length = os::Byteswap::byteswap(Lumps[i].length);
@@ -214,7 +214,7 @@ namespace irr
 
             if (LoadParam.swapHeader)
             {
-                for (s32 i = 0; i<NumTextures; ++i)
+                for (s32 i = 0; i < NumTextures; ++i)
                 {
                     Textures[i].flags    = os::Byteswap::byteswap(Textures[i].flags);
                     Textures[i].contents = os::Byteswap::byteswap(Textures[i].contents);
@@ -250,7 +250,7 @@ namespace irr
             file->read(Vertices, l->length);
 
             if (LoadParam.swapHeader)
-                for (s32 i = 0; i<NumVertices; i++)
+                for (s32 i = 0; i < NumVertices; i++)
                 {
                     Vertices[i].vPosition[0]      = os::Byteswap::byteswap(Vertices[i].vPosition[0]);
                     Vertices[i].vPosition[1]      = os::Byteswap::byteswap(Vertices[i].vPosition[1]);
@@ -281,7 +281,7 @@ namespace irr
 
             if (LoadParam.swapHeader)
             {
-                for (s32 i = 0; i<NumFaces; i++)
+                for (s32 i = 0; i < NumFaces; i++)
                 {
                     Faces[i].textureID         = os::Byteswap::byteswap(Faces[i].textureID);
                     Faces[i].fogNum            = os::Byteswap::byteswap(Faces[i].fogNum);
@@ -382,7 +382,7 @@ namespace irr
             const IShader *shader;
             STexShader    t;
 
-            for (u32 i = 0; i!= files; ++i)
+            for (u32 i = 0; i != files; ++i)
             {
                 file->read(&fog, sizeof(fog));
 
@@ -442,7 +442,7 @@ namespace irr
 
             if (LoadParam.swapHeader)
             {
-                for (int i = 0; i<NumMeshVerts; i++)
+                for (int i = 0; i < NumMeshVerts; i++)
                     MeshVerts[i] = os::Byteswap::byteswap(MeshVerts[i]);
             }
         }
@@ -1314,7 +1314,7 @@ namespace irr
             m = meshBuffer->Vertices.size();
             meshBuffer->Vertices.reallocate(m + controlHeight * controlWidth);
 
-            for (j = 0; j!= controlHeight * controlWidth; ++j)
+            for (j = 0; j != controlHeight * controlWidth; ++j)
             {
                 copy(&v, &Vertices[face->vertexIndex + j], storevertexcolor);
                 meshBuffer->Vertices.push_back(v);
@@ -1322,9 +1322,9 @@ namespace irr
 
             meshBuffer->Indices.reallocate(meshBuffer->Indices.size() + 6 * (controlHeight - 1) * (controlWidth - 1));
 
-            for (j = 0; j!= controlHeight - 1; ++j)
+            for (j = 0; j != controlHeight - 1; ++j)
             {
-                for (k = 0; k!= controlWidth - 1; ++k)
+                for (k = 0; k != controlWidth - 1; ++k)
                 {
                     meshBuffer->Indices.push_back(m + k + 0);
                     meshBuffer->Indices.push_back(m + k + controlWidth + 0);
@@ -1426,7 +1426,7 @@ namespace irr
             // add Patch to meshbuffer
             meshBuffer->Vertices.reallocate(msize + bsize);
 
-            for (j = 0; j!= bsize; ++j)
+            for (j = 0; j != bsize; ++j)
             {
                 meshBuffer->Vertices.push_back(Bezier.Patch->Vertices[j]);
             }
@@ -1434,7 +1434,7 @@ namespace irr
             // add indices to meshbuffer
             meshBuffer->Indices.reallocate(meshBuffer->getIndexCount() + Bezier.Patch->getIndexCount());
 
-            for (j = 0; j!= Bezier.Patch->getIndexCount(); ++j)
+            for (j = 0; j != Bezier.Patch->getIndexCount(); ++j)
             {
                 meshBuffer->Indices.push_back(msize + Bezier.Patch->Indices[j]);
             }
@@ -1678,7 +1678,7 @@ namespace irr
                 core::stringc s;
                 io::IFileList *fileList = FileSystem->createFileList ();
 
-                for (u32 i = 0; i< fileList->getFileCount(); ++i)
+                for (u32 i = 0; i < fileList->getFileCount(); ++i)
                 {
                     s = fileList->getFullFileName(i);
                     if (s.find (".shader") >= 0)
@@ -1704,7 +1704,7 @@ namespace irr
         // ! i'm having troubles with the reference counting, during callback.. resorting..
         void CQ3LevelMesh::ReleaseShader()
         {
-            for (u32 i = 0; i!= Shader.size(); ++i)
+            for (u32 i = 0; i != Shader.size(); ++i)
             {
                 Shader[i].VarGroup->drop();
             }
@@ -1718,7 +1718,7 @@ namespace irr
          */
         void CQ3LevelMesh::ReleaseEntity()
         {
-            for (u32 i = 0; i!= Entity.size(); ++i)
+            for (u32 i = 0; i != Entity.size(); ++i)
             {
                 Entity[i].VarGroup->drop();
             }
@@ -1775,7 +1775,7 @@ namespace irr
         // !. script callback for shaders
         void CQ3LevelMesh::scriptcallback_shader(SVarGroupList* &grouplist, eToken token)
         {
-            if (token != Q3_TOKEN_END_LIST || grouplist->VariableGroup[0].Variable.size()==0)
+            if (token != Q3_TOKEN_END_LIST || grouplist->VariableGroup[0].Variable.size() == 0)
                 return;
 
 
@@ -1938,7 +1938,7 @@ namespace irr
 
                 Mesh[g]->recalculateBoundingBox();
                 // Mesh[0] is the main bbox
-                if (g!=0)
+                if (g != 0)
                     Mesh[0]->BoundingBox.addInternalBox(Mesh[g]->getBoundingBox());
             }
 
@@ -2028,12 +2028,12 @@ namespace irr
             tTexArray     textureArray;
 
             // pre-load shaders
-            for (t = 0; t< NumTextures; ++t)
+            for (t = 0; t < NumTextures; ++t)
             {
                 shader = getShader(Textures[t].strName, false);
             }
 
-            for (t = 0; t< NumTextures; ++t)
+            for (t = 0; t < NumTextures; ++t)
             {
                 Tex[t].ShaderID = -1;
                 Tex[t].Texture  = 0;

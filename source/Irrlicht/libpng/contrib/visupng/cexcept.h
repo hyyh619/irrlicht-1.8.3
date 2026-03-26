@@ -91,7 +91,7 @@
  *   The name could even be a macro, for example:
  *
  *       struct exception_context ec_array[numthreads];
- **#define the_exception_context (ec_array + thread_id)
+ ***#define the_exception_context (ec_array + thread_id)
  *
  *   Be aware that the_exception_context is used several times by the
  *   Try/Catch/Throw macros, so it shouldn't be expensive or have side

@@ -65,7 +65,7 @@ namespace irr
 
             rect = AbsoluteRect;
 
-            for (s32 i = 0; i<(s32)Items.size(); ++i)
+            for (s32 i = 0; i < (s32)Items.size(); ++i)
             {
                 if (!Items[i].IsSeparator)
                 {
@@ -168,7 +168,7 @@ namespace irr
                                 if (!AbsoluteClippingRect.isPointInside(p))
                                 {
                                     s32 t = sendClick(p);
-                                    if ((t==0 || t==1) && Environment->hasFocus(this))
+                                    if ((t == 0 || t == 1) && Environment->hasFocus(this))
                                         Environment->removeFocus(this);
                                 }
 
@@ -239,7 +239,7 @@ namespace irr
             s32 width = rect.UpperLeftCorner.X;
             s32 i;
 
-            for (i = 0; i<(s32)Items.size(); ++i)
+            for (i = 0; i < (s32)Items.size(); ++i)
             {
                 if (Items[i].IsSeparator)
                 {
@@ -264,7 +264,7 @@ namespace irr
             setRelativePosition(rect);
 
             // recalculate submenus
-            for (i = 0; i<(s32)Items.size(); ++i)
+            for (i = 0; i < (s32)Items.size(); ++i)
                 if (Items[i].SubMenu)
                 {
                     // move submenu

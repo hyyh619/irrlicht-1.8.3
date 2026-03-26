@@ -338,10 +338,10 @@ namespace irr
 
             u32 i;
 
-            for (i = 0; i<MeshLoaderList.size(); ++i)
+            for (i = 0; i < MeshLoaderList.size(); ++i)
                 MeshLoaderList[i]->drop();
 
-            for (i = 0; i<SceneLoaderList.size(); ++i)
+            for (i = 0; i < SceneLoaderList.size(); ++i)
                 SceneLoaderList[i]->drop();
 
             if (ActiveCamera)
@@ -352,10 +352,10 @@ namespace irr
             if (MeshCache)
                 MeshCache->drop();
 
-            for (i = 0; i<SceneNodeFactoryList.size(); ++i)
+            for (i = 0; i < SceneNodeFactoryList.size(); ++i)
                 SceneNodeFactoryList[i]->drop();
 
-            for (i = 0; i<SceneNodeAnimatorFactoryList.size(); ++i)
+            for (i = 0; i < SceneNodeAnimatorFactoryList.size(); ++i)
                 SceneNodeAnimatorFactoryList[i]->drop();
 
             if (LightManager)
@@ -390,7 +390,7 @@ namespace irr
             // iterate the list in reverse order so user-added loaders can override the built-in ones
             s32 count = MeshLoaderList.size();
 
-            for (s32 i = count - 1; i>=0; --i)
+            for (s32 i = count - 1; i >= 0; --i)
             {
                 if (MeshLoaderList[i]->isALoadableFileExtension(filename))
                 {
@@ -431,7 +431,7 @@ namespace irr
             // iterate the list in reverse order so user-added loaders can override the built-in ones
             s32 count = MeshLoaderList.size();
 
-            for (s32 i = count - 1; i>=0; --i)
+            for (s32 i = count - 1; i >= 0; --i)
             {
                 if (MeshLoaderList[i]->isALoadableFileExtension(name))
                 {
@@ -1176,7 +1176,7 @@ namespace irr
             // has occlusion query information
             if (node->getAutomaticCulling() & scene::EAC_OCC_QUERY)
             {
-                result = (Driver->getOcclusionQueryResult(const_cast<ISceneNode*>(node))==0);
+                result = (Driver->getOcclusionQueryResult(const_cast<ISceneNode*>(node)) == 0);
             }
 
             // can be seen by a bounding box ?
@@ -1205,11 +1205,11 @@ namespace irr
                 core::vector3df edges[8];
                 node->getBoundingBox().getEdges(edges);
 
-                for (s32 i = 0; i<scene::SViewFrustum::VF_PLANE_COUNT; ++i)
+                for (s32 i = 0; i < scene::SViewFrustum::VF_PLANE_COUNT; ++i)
                 {
                     bool boxInFrustum = false;
 
-                    for (u32 j = 0; j<8; ++j)
+                    for (u32 j = 0; j < 8; ++j)
                     {
                         if (frust.planes[i].classifyPointRelation(edges[j]) != core::ISREL3D_FRONT)
                         {
@@ -1308,7 +1308,7 @@ namespace irr
 
                         taken = 0;
 
-                        for (u32 i = 0; i<count; ++i)
+                        for (u32 i = 0; i < count; ++i)
                         {
                             video::IMaterialRenderer *rnd =
                                 Driver->getMaterialRenderer(node->getMaterial(i).MaterialType);
@@ -1384,7 +1384,7 @@ namespace irr
             Driver->setTransform (video::ETS_VIEW, core::IdentityMatrix);
             Driver->setTransform (video::ETS_WORLD, core::IdentityMatrix);
 
-            for (i = video::ETS_COUNT - 1; i>=video::ETS_TEXTURE_0; --i)
+            for (i = video::ETS_COUNT - 1; i >= video::ETS_TEXTURE_0; --i)
                 Driver->setTransform ((video::E_TRANSFORMATION_STATE)i, core::IdentityMatrix);
 
             // TODO: This should not use an attribute here but a real parameter when necessary (too slow!)
@@ -1418,7 +1418,7 @@ namespace irr
                 if (LightManager)
                     LightManager->OnRenderPassPreRender(CurrentRendertime);
 
-                for (i = 0; i<CameraList.size(); ++i)
+                for (i = 0; i < CameraList.size(); ++i)
                     CameraList[i]->render();
 
                 CameraList.set_used(0);
@@ -1465,7 +1465,7 @@ namespace irr
                 if (!LightManager)
                     maxLights = core::min_ (Driver->getMaximalDynamicLightAmount(), maxLights);
 
-                for (i = 0; i< maxLights; ++i)
+                for (i = 0; i < maxLights; ++i)
                     LightList[i]->render();
 
                 if (LightManager)
@@ -1481,7 +1481,7 @@ namespace irr
                 {
                     LightManager->OnRenderPassPreRender(CurrentRendertime);
 
-                    for (i = 0; i<SkyBoxList.size(); ++i)
+                    for (i = 0; i < SkyBoxList.size(); ++i)
                     {
                         ISceneNode *node = SkyBoxList[i];
                         LightManager->OnNodePreRender(node);
@@ -1491,7 +1491,7 @@ namespace irr
                 }
                 else
                 {
-                    for (i = 0; i<SkyBoxList.size(); ++i)
+                    for (i = 0; i < SkyBoxList.size(); ++i)
                         SkyBoxList[i]->render();
                 }
 
@@ -1513,7 +1513,7 @@ namespace irr
                 {
                     LightManager->OnRenderPassPreRender(CurrentRendertime);
 
-                    for (i = 0; i<SolidNodeList.size(); ++i)
+                    for (i = 0; i < SolidNodeList.size(); ++i)
                     {
                         ISceneNode *node = SolidNodeList[i].Node;
                         LightManager->OnNodePreRender(node);
@@ -1523,7 +1523,7 @@ namespace irr
                 }
                 else
                 {
-                    for (i = 0; i<SolidNodeList.size(); ++i)
+                    for (i = 0; i < SolidNodeList.size(); ++i)
                         SolidNodeList[i].Node->render();
                 }
 
@@ -1545,7 +1545,7 @@ namespace irr
                 {
                     LightManager->OnRenderPassPreRender(CurrentRendertime);
 
-                    for (i = 0; i<ShadowNodeList.size(); ++i)
+                    for (i = 0; i < ShadowNodeList.size(); ++i)
                     {
                         ISceneNode *node = ShadowNodeList[i];
                         LightManager->OnNodePreRender(node);
@@ -1555,7 +1555,7 @@ namespace irr
                 }
                 else
                 {
-                    for (i = 0; i<ShadowNodeList.size(); ++i)
+                    for (i = 0; i < ShadowNodeList.size(); ++i)
                         ShadowNodeList[i]->render();
                 }
 
@@ -1579,7 +1579,7 @@ namespace irr
                 {
                     LightManager->OnRenderPassPreRender(CurrentRendertime);
 
-                    for (i = 0; i<TransparentNodeList.size(); ++i)
+                    for (i = 0; i < TransparentNodeList.size(); ++i)
                     {
                         ISceneNode *node = TransparentNodeList[i].Node;
                         LightManager->OnNodePreRender(node);
@@ -1589,7 +1589,7 @@ namespace irr
                 }
                 else
                 {
-                    for (i = 0; i<TransparentNodeList.size(); ++i)
+                    for (i = 0; i < TransparentNodeList.size(); ++i)
                         TransparentNodeList[i].Node->render();
                 }
 
@@ -1613,7 +1613,7 @@ namespace irr
                 {
                     LightManager->OnRenderPassPreRender(CurrentRendertime);
 
-                    for (i = 0; i<TransparentEffectNodeList.size(); ++i)
+                    for (i = 0; i < TransparentEffectNodeList.size(); ++i)
                     {
                         ISceneNode *node = TransparentEffectNodeList[i].Node;
                         LightManager->OnNodePreRender(node);
@@ -1623,7 +1623,7 @@ namespace irr
                 }
                 else
                 {
-                    for (i = 0; i<TransparentEffectNodeList.size(); ++i)
+                    for (i = 0; i < TransparentEffectNodeList.size(); ++i)
                         TransparentEffectNodeList[i].Node->render();
                 }
 
@@ -1901,7 +1901,7 @@ namespace irr
             if (DeletionList.empty())
                 return;
 
-            for (u32 i = 0; i<DeletionList.size(); ++i)
+            for (u32 i = 0; i < DeletionList.size(); ++i)
             {
                 DeletionList[i]->remove();
                 DeletionList[i]->drop();
@@ -1925,7 +1925,7 @@ namespace irr
             const ISceneNodeList          &list = start->getChildren();
             ISceneNodeList::ConstIterator it    = list.begin();
 
-            for (; it!=list.end(); ++it)
+            for (; it != list.end(); ++it)
             {
                 node = getSceneNodeFromName(name, *it);
                 if (node)
@@ -1950,7 +1950,7 @@ namespace irr
             const ISceneNodeList          &list = start->getChildren();
             ISceneNodeList::ConstIterator it    = list.begin();
 
-            for (; it!=list.end(); ++it)
+            for (; it != list.end(); ++it)
             {
                 node = getSceneNodeFromId(id, *it);
                 if (node)
@@ -1975,7 +1975,7 @@ namespace irr
             const ISceneNodeList          &list = start->getChildren();
             ISceneNodeList::ConstIterator it    = list.begin();
 
-            for (; it!=list.end(); ++it)
+            for (; it != list.end(); ++it)
             {
                 node = getSceneNodeFromType(type, *it);
                 if (node)
@@ -1998,7 +1998,7 @@ namespace irr
             const ISceneNodeList          &list = start->getChildren();
             ISceneNodeList::ConstIterator it    = list.begin();
 
-            for (; it!=list.end(); ++it)
+            for (; it != list.end(); ++it)
             {
                 getSceneNodesFromType(type, outNodes, *it);
             }
@@ -2386,7 +2386,7 @@ namespace irr
         {
             const char *name = 0;
 
-            for (s32 i = (s32)SceneNodeFactoryList.size() - 1; !name && i>=0; --i)
+            for (s32 i = (s32)SceneNodeFactoryList.size() - 1; !name && i >= 0; --i)
                 name = SceneNodeFactoryList[i]->getCreateableSceneNodeTypeName(type);
 
             return name;
@@ -2397,7 +2397,7 @@ namespace irr
         {
             ISceneNode *node = 0;
 
-            for (s32 i = (s32)SceneNodeFactoryList.size() - 1; i>=0 && !node; --i)
+            for (s32 i = (s32)SceneNodeFactoryList.size() - 1; i >= 0 && !node; --i)
                 node = SceneNodeFactoryList[i]->addSceneNode(sceneNodeTypeName, parent);
 
             return node;
@@ -2407,7 +2407,7 @@ namespace irr
         {
             ISceneNodeAnimator *animator = 0;
 
-            for (s32 i = (s32)SceneNodeAnimatorFactoryList.size() - 1; i>=0 && !animator; --i)
+            for (s32 i = (s32)SceneNodeAnimatorFactoryList.size() - 1; i >= 0 && !animator; --i)
                 animator = SceneNodeAnimatorFactoryList[i]->createSceneNodeAnimator(typeName, target);
 
             return animator;

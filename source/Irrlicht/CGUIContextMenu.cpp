@@ -41,7 +41,7 @@ namespace irr
         // ! destructor
         CGUIContextMenu::~CGUIContextMenu()
         {
-            for (u32 i = 0; i<Items.size(); ++i)
+            for (u32 i = 0; i < Items.size(); ++i)
                 if (Items[i].SubMenu)
                     Items[i].SubMenu->drop();
 
@@ -112,7 +112,7 @@ namespace irr
 
         s32 CGUIContextMenu::findItemWithCommandId(s32 commandId, u32 idxStartSearch) const
         {
-            for (u32 i = idxStartSearch; i<Items.size(); ++i)
+            for (u32 i = idxStartSearch; i < Items.size(); ++i)
             {
                 if (Items[i].CommandId == commandId)
                 {
@@ -265,7 +265,7 @@ namespace irr
         // ! Removes all menu items
         void CGUIContextMenu::removeAllItems()
         {
-            for (u32 i = 0; i<Items.size(); ++i)
+            for (u32 i = 0; i < Items.size(); ++i)
                 if (Items[i].SubMenu)
                     Items[i].SubMenu->drop();
 
@@ -338,7 +338,7 @@ namespace irr
                                 // menu might be removed if it loses focus in sendClick, so grab a reference
                                 grab();
                                 const u32 t = sendClick(core::position2d<s32>(event.MouseInput.X, event.MouseInput.Y));
-                                if ((t==0 || t==1) && Environment->hasFocus(this))
+                                if ((t == 0 || t == 1) && Environment->hasFocus(this))
                                     Environment->removeFocus(this);
 
                                 drop();
@@ -375,7 +375,7 @@ namespace irr
             HighLighted = -1;
             ChangeTime  = os::Timer::getTime();
 
-            for (u32 j = 0; j<Items.size(); ++j)
+            for (u32 j = 0; j < Items.size(); ++j)
                 if (Items[j].SubMenu)
                     Items[j].SubMenu->setVisible(false);
 
@@ -395,7 +395,7 @@ namespace irr
             s32 openmenu = -1;
             s32 j;
 
-            for (j = 0; j<(s32)Items.size(); ++j)
+            for (j = 0; j < (s32)Items.size(); ++j)
                 if (Items[j].SubMenu && Items[j].SubMenu->isVisible())
                 {
                     openmenu = j;
@@ -453,7 +453,7 @@ namespace irr
             s32 openmenu = -1;
             s32 i;
 
-            for (i = 0; i<(s32)Items.size(); ++i)
+            for (i = 0; i < (s32)Items.size(); ++i)
                 if (Items[i].Enabled && Items[i].SubMenu && Items[i].SubMenu->isVisible())
                 {
                     openmenu = i;
@@ -472,7 +472,7 @@ namespace irr
             }
 
             // highlight myself
-            for (i = 0; i<(s32)Items.size(); ++i)
+            for (i = 0; i < (s32)Items.size(); ++i)
             {
                 if (Items[i].Enabled && getHRect(Items[i], AbsoluteRect).isPointInside(p))
                 {
@@ -480,7 +480,7 @@ namespace irr
                     ChangeTime  = os::Timer::getTime();
 
                     // make submenus visible/invisible
-                    for (s32 j = 0; j<(s32)Items.size(); ++j)
+                    for (s32 j = 0; j < (s32)Items.size(); ++j)
                         if (Items[j].SubMenu)
                         {
                             if (j == i && canOpenSubMenu && Items[j].Enabled)
@@ -557,7 +557,7 @@ namespace irr
 
             rect = AbsoluteRect;
 
-            for (s32 i = 0; i<(s32)Items.size(); ++i)
+            for (s32 i = 0; i < (s32)Items.size(); ++i)
             {
                 if (Items[i].IsSeparator)
                 {
@@ -649,7 +649,7 @@ namespace irr
 
             u32 i;
 
-            for (i = 0; i<Items.size(); ++i)
+            for (i = 0; i < Items.size(); ++i)
             {
                 if (Items[i].IsSeparator)
                 {
@@ -680,7 +680,7 @@ namespace irr
             setRelativePosition(rect);
 
             // recalculate submenus
-            for (i = 0; i<Items.size(); ++i)
+            for (i = 0; i < Items.size(); ++i)
             {
                 if (Items[i].SubMenu)
                 {
@@ -759,7 +759,7 @@ namespace irr
                 u32 i;
 
                 // VC6 needs the cast for this
-                for (i = 0; (i<ptr->getItemCount()) && (ptr->getSubMenu(i) != (const IGUIContextMenu*)this); ++i)
+                for (i = 0; (i < ptr->getItemCount()) && (ptr->getSubMenu(i) != (const IGUIContextMenu*)this); ++i)
                     ; // do nothing
 
                 out->addInt("ParentItem", i);
@@ -812,7 +812,7 @@ namespace irr
             // read the item list
             const s32 count = in->getAttributeAsInt("ItemCount");
 
-            for (s32 i = 0; i<count; ++i)
+            for (s32 i = 0; i < count; ++i)
             {
                 core::stringc tmp;
                 core::stringw txt;
@@ -859,7 +859,7 @@ namespace irr
         {
             EventParent = parent;
 
-            for (u32 i = 0; i<Items.size(); ++i)
+            for (u32 i = 0; i < Items.size(); ++i)
                 if (Items[i].SubMenu)
                     Items[i].SubMenu->setEventParent(parent);
         }
@@ -867,7 +867,7 @@ namespace irr
 
         bool CGUIContextMenu::hasOpenSubMenu() const
         {
-            for (u32 i = 0; i<Items.size(); ++i)
+            for (u32 i = 0; i < Items.size(); ++i)
                 if (Items[i].SubMenu && Items[i].SubMenu->isVisible())
                     return true;
 
@@ -877,7 +877,7 @@ namespace irr
 
         void CGUIContextMenu::closeAllSubMenus()
         {
-            for (u32 i = 0; i<Items.size(); ++i)
+            for (u32 i = 0; i < Items.size(); ++i)
                 if (Items[i].SubMenu)
                     Items[i].SubMenu->setVisible(false);
 

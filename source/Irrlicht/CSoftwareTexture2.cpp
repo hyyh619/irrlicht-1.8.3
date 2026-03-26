@@ -76,7 +76,7 @@ namespace irr
         // ! destructor
         CSoftwareTexture2::~CSoftwareTexture2()
         {
-            for (s32 i = 0; i!= SOFTWARE_DRIVER_2_MIPMAPPING_MAX; ++i)
+            for (s32 i = 0; i != SOFTWARE_DRIVER_2_MIPMAPPING_MAX; ++i)
             {
                 if (MipMap[i])
                     MipMap[i]->drop();
@@ -117,7 +117,7 @@ namespace irr
                     {
                         IImage *tmpImage = new CImage(OriginalFormat, origSize, mipmapData, true, false);
                         MipMap[i] = new CImage(BURNINGSHADER_COLOR_FORMAT, newSize);
-                        if (origSize==newSize)
+                        if (origSize == newSize)
                             tmpImage->copyTo(MipMap[i]);
                         else
                             tmpImage->copyToScalingBoxFilter(MipMap[i]);
@@ -126,7 +126,7 @@ namespace irr
                     }
                     else
                     {
-                        if (origSize==newSize)
+                        if (origSize == newSize)
                             MipMap[i] = new CImage(BURNINGSHADER_COLOR_FORMAT, newSize, mipmapData, false);
                         else
                         {

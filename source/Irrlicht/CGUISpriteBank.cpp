@@ -32,7 +32,7 @@ namespace irr
         CGUISpriteBank::~CGUISpriteBank()
         {
             // drop textures
-            for (u32 i = 0; i<Textures.size(); ++i)
+            for (u32 i = 0; i < Textures.size(); ++i)
                 if (Textures[i])
                     Textures[i]->drop();
 
@@ -42,7 +42,7 @@ namespace irr
         }
 
 
-        core::array<core::rect<s32> >&CGUISpriteBank::getPositions()
+        core::array<core::rect<s32>>&CGUISpriteBank::getPositions()
         {
             return Rectangles;
         }
@@ -97,7 +97,7 @@ namespace irr
         void CGUISpriteBank::clear()
         {
             // drop textures
-            for (u32 i = 0; i<Textures.size(); ++i)
+            for (u32 i = 0; i < Textures.size(); ++i)
                 if (Textures[i])
                     Textures[i]->drop();
 

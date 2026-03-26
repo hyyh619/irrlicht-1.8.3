@@ -153,12 +153,12 @@ namespace irr
         }
 
         // set up output buffer
-        for (u32 y = 0; y<CreationParams.WindowSize.Height; ++y)
+        for (u32 y = 0; y < CreationParams.WindowSize.Height; ++y)
         {
             core::stringc str;
             str.reserve(CreationParams.WindowSize.Width);
 
-            for (u32 x = 0; x<CreationParams.WindowSize.Width; ++x)
+            for (u32 x = 0; x < CreationParams.WindowSize.Width; ++x)
                 str += " ";
 
             OutputBuffer.push_back(str);
@@ -395,7 +395,7 @@ namespace irr
         {
             for (u32 y = 0; y < surface->getDimension().Height; ++y)
             {
-                for (u32 x = 0; x< surface->getDimension().Width; ++x)
+                for (u32 x = 0; x < surface->getDimension().Width; ++x)
                 {
                     // get average pixel
                     u32 avg = surface->getPixel(x, y).getAverage() * (ASCIIArtCharsCount - 1);
@@ -406,7 +406,7 @@ namespace irr
         }
 
 #ifdef _IRR_USE_CONSOLE_FONT_
-        for (u32 i = 0; i< Text.size(); ++i)
+        for (u32 i = 0; i < Text.size(); ++i)
         {
             s32 y = Text[i].Pos.Y;
 
@@ -419,7 +419,7 @@ namespace irr
 #endif
 
         // draw output
-        for (u32 y = 0; y<OutputBuffer.size(); ++y)
+        for (u32 y = 0; y < OutputBuffer.size(); ++y)
         {
             setTextCursorPos(0, y);
             fprintf(OutFile, "%s", OutputBuffer[y].c_str());

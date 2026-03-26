@@ -131,7 +131,7 @@ public:
             core::array<SMD2Vert> *FrameList;
 
             // ! bounding boxes for each keyframe
-            core::array<core::aabbox3d<f32> > BoxList;
+            core::array<core::aabbox3d<f32>> BoxList;
 
             // ! named animations
             core::array<SAnimationData> AnimationData;

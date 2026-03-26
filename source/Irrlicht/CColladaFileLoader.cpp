@@ -289,7 +289,7 @@ public:
                 os::Printer::log("COLLADA: Constructing scene instance", Id.c_str(), ELL_DEBUG);
             #endif
 
-                if (Children.size()==0)
+                if (Children.size() == 0)
                     return 0;
 
                 scene::IDummyTransformationSceneNode *s = mgr->addDummyTransformationSceneNode(parent);
@@ -300,7 +300,7 @@ public:
                     s->updateAbsolutePosition();
                     core::stringc t;
 
-                    for (u32 i = 0; i<16; ++i)
+                    for (u32 i = 0; i < 16; ++i)
                     {
                         t += core::stringc((double)Transformation[i]);
                         t += " ";
@@ -310,7 +310,7 @@ public:
                     os::Printer::log("COLLADA: Transformation", t.c_str(), ELL_DEBUG);
             #endif
 
-                    for (u32 i = 0; i<Children.size(); ++i)
+                    for (u32 i = 0; i < Children.size(); ++i)
                         Children[i]->addInstance(s, mgr);
                 }
 
@@ -400,7 +400,7 @@ public:
 
             // add the first loaded mesh into the mesh cache too, if more than one
             // meshes have been loaded from the file
-            if (LoadedMeshCount>1 && FirstLoadedMesh)
+            if (LoadedMeshCount > 1 && FirstLoadedMesh)
             {
                 os::Printer::log("Added COLLADA mesh", FirstLoadedMeshName.c_str());
                 SceneManager->getMeshCache()->addMesh(FirstLoadedMeshName.c_str(), FirstLoadedMesh);
@@ -864,21 +864,21 @@ public:
             q.fromAngleAxis(floats[0] * core::DEGTORAD, core::vector3df(floats[1], floats[2], floats[3]));
             mat = q.getMatrix();
 
-            if (floats[4]==1.f) // along x-axis
+            if (floats[4] == 1.f) // along x-axis
             {
                 mat[4] = 0.f;
                 mat[6] = 0.f;
                 mat[8] = 0.f;
                 mat[9] = 0.f;
             }
-            else if (floats[5]==1.f) // along y-axis
+            else if (floats[5] == 1.f) // along y-axis
             {
                 mat[1] = 0.f;
                 mat[2] = 0.f;
                 mat[8] = 0.f;
                 mat[9] = 0.f;
             }
-            else if (floats[6]==1.f) // along z-axis
+            else if (floats[6] == 1.f) // along z-axis
             {
                 mat[1] = 0.f;
                 mat[2] = 0.f;
@@ -1104,7 +1104,7 @@ public:
             os::Printer::log("COLLADA instantiate node", ELL_DEBUG);
     #endif
 
-            for (u32 i = 0; i<Prefabs.size(); ++i)
+            for (u32 i = 0; i < Prefabs.size(); ++i)
             {
                 if (url == "" || url == Prefabs[i]->getId())
                 {
@@ -1128,7 +1128,7 @@ public:
 
             if (p)
             {
-                if (instanceGeometryName==type)
+                if (instanceGeometryName == type)
                 {
                     Prefabs.push_back(new CGeometryPrefab(url));
                     p->Children.push_back(Prefabs.getLast());
@@ -1293,7 +1293,7 @@ public:
                         core::stringc textureName = input->Source;
                         uriToId(textureName);
 
-                        for (u32 i = 0; i<Textures.size(); ++i)
+                        for (u32 i = 0; i < Textures.size(); ++i)
                             if (textureName == Textures[i].Id)
                             {
                                 material.Mat.setTexture(0, Textures[i].Texture);
@@ -1513,7 +1513,7 @@ public:
             if (idx >= 0)
                 twv = (video::E_TEXTURE_CLAMP)(effect->Parameters->getAttributeAsInt(idx));
 
-            for (u32 i = 0; i<video::MATERIAL_MAX_TEXTURES; ++i)
+            for (u32 i = 0; i < video::MATERIAL_MAX_TEXTURES; ++i)
             {
                 effect->Mat.TextureLayer[i].TextureWrapU = twu;
                 effect->Mat.TextureLayer[i].TextureWrapV = twv;
@@ -1578,12 +1578,12 @@ public:
                     {
                         // the symbol to retarget, and the target material
                         core::stringc meshbufferReference = reader->getAttributeValue("symbol");
-                        if (meshbufferReference.size()==0)
+                        if (meshbufferReference.size() == 0)
                             continue;
 
                         core::stringc target = reader->getAttributeValue("target");
                         uriToId(target);
-                        if (target.size()==0)
+                        if (target.size() == 0)
                             continue;
 
                         const SColladaMaterial *material = findMaterial(target);
@@ -1610,7 +1610,7 @@ public:
                                 toBind[i]->getMaterial() = material->Mat;
                                 tmpmesh.addMeshBuffer(toBind[i]);
 
-                                if ((material->Transparency!=0.0f) && (material->Transparency!=1.0f))
+                                if ((material->Transparency != 0.0f) && (material->Transparency != 1.0f))
                                 {
                                     toBind[i]->getMaterial().MaterialType = video::EMT_TRANSPARENT_VERTEX_ALPHA;
                                     toBind[i]->getMaterial().ZWriteEnable = false;
@@ -1618,7 +1618,7 @@ public:
                             }
 
                             SceneManager->getMeshManipulator()->setVertexColors(&tmpmesh, material->Mat.DiffuseColor);
-                            if ((material->Transparency!=0.0f) && (material->Transparency!=1.0f))
+                            if ((material->Transparency != 0.0f) && (material->Transparency != 1.0f))
                             {
                         #ifdef COLLADA_READER_DEBUG
                                 os::Printer::log("COLLADA found transparency material", core::stringc(material->Transparency).c_str(), ELL_DEBUG);
@@ -1770,7 +1770,7 @@ public:
                             data.trim();
                             const c8 *p = &data[0];
 
-                            for (u32 i = 0; i<a.size(); ++i)
+                            for (u32 i = 0; i < a.size(); ++i)
                             {
                                 findNextNoneWhiteSpace(&p);
                                 if (*p)
@@ -1824,16 +1824,16 @@ public:
             // create geometry prefab
             u32 i;
 
-            for (i = 0; i<Prefabs.size(); ++i)
+            for (i = 0; i < Prefabs.size(); ++i)
             {
-                if (Prefabs[i]->getId()==id)
+                if (Prefabs[i]->getId() == id)
                 {
                     ((CGeometryPrefab*)Prefabs[i])->Mesh = mesh;
                     break;
                 }
             }
 
-            if (i==Prefabs.size())
+            if (i == Prefabs.size())
             {
                 CGeometryPrefab *prefab = new CGeometryPrefab(id);
                 prefab->Mesh = mesh;
@@ -1902,7 +1902,7 @@ public:
                             {
                                 inp.Source = Inputs[0].Source;
 
-                                for (u32 i = 1; i<Inputs.size(); ++i)
+                                for (u32 i = 1; i < Inputs.size(); ++i)
                                 {
                                     localInputs.push_back(Inputs[i]);
                                     uriToId(localInputs.getLast().Source);
@@ -2012,12 +2012,12 @@ public:
             // end while reader->read()
 
             // find source array (we'll ignore accessors for this implementation)
-            for (u32 i = 0; i<localInputs.size(); ++i)
+            for (u32 i = 0; i < localInputs.size(); ++i)
             {
                 SColladaInput &inp = localInputs[i];
                 u32           s;
 
-                for (s = 0; s<sources.size(); ++s)
+                for (s = 0; s < sources.size(); ++s)
                 {
                     if (sources[s].Id == inp.Source)
                     {
@@ -2058,13 +2058,13 @@ public:
             bool normalSlotCount        = false;
             u32  secondTexCoordSetIndex = 0xFFFFFFFF;
 
-            for (u = 0; u<Inputs.size(); ++u)
+            for (u = 0; u < Inputs.size(); ++u)
             {
                 if (Inputs[u].Semantic == ECIS_TEXCOORD || Inputs[u].Semantic == ECIS_UV)
                 {
                     ++textureCoordSetCount;
 
-                    if (textureCoordSetCount==2)
+                    if (textureCoordSetCount == 2)
                         secondTexCoordSetIndex = u;
                 }
                 else if (Inputs[u].Semantic == ECIS_NORMAL)
@@ -2086,20 +2086,20 @@ public:
 
                 core::map<video::S3DVertex, int> vertMap;
 
-                for (u32 i = 0; i<polygons.size(); ++i)
+                for (u32 i = 0; i < polygons.size(); ++i)
                 {
                     core::array<u16> indices;
                     const u32        vertexCount = polygons[i].Indices.size() / maxOffset;
                     mbuffer->Vertices.reallocate(mbuffer->Vertices.size() + vertexCount);
 
                     // for all index/semantic groups
-                    for (u32 v = 0; v<polygons[i].Indices.size(); v += maxOffset)
+                    for (u32 v = 0; v < polygons[i].Indices.size(); v += maxOffset)
                     {
                         video::S3DVertex vtx;
                         vtx.Color.set(255, 255, 255, 255);
 
                         // for all input semantics
-                        for (u32 k = 0; k<localInputs.size(); ++k)
+                        for (u32 k = 0; k < localInputs.size(); ++k)
                         {
                             if (!localInputs[k].Data)
                                 continue;
@@ -2177,7 +2177,7 @@ public:
                         // as full tesselation is problematic
                         if (FlipAxis)
                         {
-                            for (u32 ind = indices.size() - 3; ind>0; --ind)
+                            for (u32 ind = indices.size() - 3; ind > 0; --ind)
                             {
                                 mbuffer->Indices.push_back(indices[0]);
                                 mbuffer->Indices.push_back(indices[ind + 2]);
@@ -2222,19 +2222,19 @@ public:
                 scene::SMeshBufferLightMap *mbuffer = new SMeshBufferLightMap();
                 buffer = mbuffer;
 
-                for (u32 i = 0; i<polygons.size(); ++i)
+                for (u32 i = 0; i < polygons.size(); ++i)
                 {
                     const u32 vertexCount = polygons[i].Indices.size() / maxOffset;
                     mbuffer->Vertices.reallocate(mbuffer->Vertices.size() + vertexCount);
 
                     // for all vertices in array
-                    for (u32 v = 0; v<polygons[i].Indices.size(); v += maxOffset)
+                    for (u32 v = 0; v < polygons[i].Indices.size(); v += maxOffset)
                     {
                         video::S3DVertex2TCoords vtx;
                         vtx.Color.set(100, 255, 255, 255);
 
                         // for all input semantics
-                        for (u32 k = 0; k<Inputs.size(); ++k)
+                        for (u32 k = 0; k < Inputs.size(); ++k)
                         {
                             // build vertex from input semantics.
 
@@ -2275,7 +2275,7 @@ public:
 
                                 case ECIS_TEXCOORD:
                                 case ECIS_UV:
-                                    if (k==secondTexCoordSetIndex)
+                                    if (k == secondTexCoordSetIndex)
                                     {
                                         vtx.TCoords2.X = localInputs[k].Data[idx + 0];
                                         vtx.TCoords2.Y = 1 - localInputs[k].Data[idx + 1];
@@ -2302,7 +2302,7 @@ public:
                     // add vertex indices
                     const u32 oldVertexCount = mbuffer->Vertices.size() - vertexCount;
 
-                    for (u32 face = 0; face<vertexCount - 2; ++face)
+                    for (u32 face = 0; face < vertexCount - 2; ++face)
                     {
                         mbuffer->Indices.push_back(oldVertexCount + 0);
                         mbuffer->Indices.push_back(oldVertexCount + 1 + face);
@@ -2418,7 +2418,7 @@ public:
         // ! returns a collada parameter or none if not found
         SColladaParam* CColladaFileLoader::getColladaParameter(ECOLLADA_PARAM_NAME name)
         {
-            for (u32 i = 0; i<ColladaParameters.size(); ++i)
+            for (u32 i = 0; i < ColladaParameters.size(); ++i)
                 if (ColladaParameters[i].Name == name)
                     return &ColladaParameters[i];
 
@@ -2428,7 +2428,7 @@ public:
         // ! returns a collada input or none if not found
         SColladaInput* CColladaFileLoader::getColladaInput(ECOLLADA_INPUT_SEMANTIC input)
         {
-            for (u32 i = 0; i<Inputs.size(); ++i)
+            for (u32 i = 0; i < Inputs.size(); ++i)
                 if (Inputs[i].Semantic == input)
                     return &Inputs[i];
 
@@ -2579,7 +2579,7 @@ public:
         {
             const c8 *p = *start;
 
-            while (*p && (*p==' ' || *p=='\n' || *p=='\r' || *p=='\t'))
+            while (*p && (*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t'))
                 ++p;
 
             // TODO: skip comments <!-- -->
@@ -2606,7 +2606,7 @@ public:
                     data.trim();
                     const c8 *p = &data[0];
 
-                    for (u32 i = 0; i<count; ++i)
+                    for (u32 i = 0; i < count; ++i)
                     {
                         findNextNoneWhiteSpace(&p);
                         if (*p)
@@ -2639,7 +2639,7 @@ public:
                     data.trim();
                     const c8 *p = &data[0];
 
-                    for (u32 i = 0; i<count; ++i)
+                    for (u32 i = 0; i < count; ++i)
                     {
                         findNextNoneWhiteSpace(&p);
                         if (*p)
@@ -2690,7 +2690,7 @@ public:
         {
             // delete all prefabs
 
-            for (u32 i = 0; i<Prefabs.size(); ++i)
+            for (u32 i = 0; i < Prefabs.size(); ++i)
                 Prefabs[i]->drop();
 
             Prefabs.clear();
@@ -2711,7 +2711,7 @@ public:
             Inputs.clear();
 
             // clear all effects
-            for (u32 i = 0; i<Effects.size(); ++i)
+            for (u32 i = 0; i < Effects.size(); ++i)
                 Effects[i].Parameters->drop();
 
             Effects.clear();
@@ -2740,7 +2740,7 @@ public:
         {
             core::stringc id = reader->getAttributeValue("id");
 
-            if (id.size()==0)
+            if (id.size() == 0)
                 id = reader->getAttributeValue("name");
 
             return id;
@@ -2759,7 +2759,7 @@ public:
             {
                 uriToId(uri);
 
-                for (u32 i = 0; i<Images.size(); ++i)
+                for (u32 i = 0; i < Images.size(); ++i)
                 {
                     if (uri == Images[i].Id)
                     {
@@ -2778,7 +2778,7 @@ public:
                             u32       *ptrdest = data;
                             const c8  *ptrsrc  = Images[i].Source.c_str();
 
-                            for (u32 j = 0; j<size; ++j)
+                            for (u32 j = 0; j < size; ++j)
                             {
                                 sscanf(ptrsrc, "%x", ptrdest);
                                 ++ptrdest;
@@ -2795,7 +2795,7 @@ public:
                     }
                 }
 
-                if (effect && effect->Parameters->getAttributeType(uri.c_str())==io::EAT_STRING)
+                if (effect && effect->Parameters->getAttributeType(uri.c_str()) == io::EAT_STRING)
                 {
                     uri = effect->Parameters->getAttributeAsString(uri.c_str());
 #ifdef COLLADA_READER_DEBUG
@@ -2856,13 +2856,13 @@ public:
                             const core::stringc val = reader->getNodeData();
                             if (val == "WRAP")
                                 parameters->addInt(wrapsName.c_str(), (int)video::ETC_REPEAT);
-                            else if (val== "MIRROR")
+                            else if (val == "MIRROR")
                                 parameters->addInt(wrapsName.c_str(), (int)video::ETC_MIRROR);
-                            else if (val== "CLAMP")
+                            else if (val == "CLAMP")
                                 parameters->addInt(wrapsName.c_str(), (int)video::ETC_CLAMP_TO_EDGE);
-                            else if (val== "BORDER")
+                            else if (val == "BORDER")
                                 parameters->addInt(wrapsName.c_str(), (int)video::ETC_CLAMP_TO_BORDER);
-                            else if (val== "NONE")
+                            else if (val == "NONE")
                                 parameters->addInt(wrapsName.c_str(), (int)video::ETC_CLAMP_TO_BORDER);
                         }
                         else if (wraptName == reader->getNodeName())
@@ -2871,13 +2871,13 @@ public:
                             const core::stringc val = reader->getNodeData();
                             if (val == "WRAP")
                                 parameters->addInt(wraptName.c_str(), (int)video::ETC_REPEAT);
-                            else if (val== "MIRROR")
+                            else if (val == "MIRROR")
                                 parameters->addInt(wraptName.c_str(), (int)video::ETC_MIRROR);
-                            else if (val== "CLAMP")
+                            else if (val == "CLAMP")
                                 parameters->addInt(wraptName.c_str(), (int)video::ETC_CLAMP_TO_EDGE);
-                            else if (val== "BORDER")
+                            else if (val == "BORDER")
                                 parameters->addInt(wraptName.c_str(), (int)video::ETC_CLAMP_TO_BORDER);
-                            else if (val== "NONE")
+                            else if (val == "NONE")
                                 parameters->addInt(wraptName.c_str(), (int)video::ETC_CLAMP_TO_BORDER);
                         }
                         else if (minfilterName == reader->getNodeName())

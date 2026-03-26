@@ -95,7 +95,7 @@ namespace irr
                 // avoid bugs in some drivers, which return larger numbers
                 count = core::min_(count, 8);
 
-                for (GLint i = 0; i<count; ++i)
+                for (GLint i = 0; i < count; ++i)
                     Driver->extGlDeleteObject(shaders[i]);
 
                 Driver->extGlDeleteObject(Program);
@@ -110,7 +110,7 @@ namespace irr
                 // avoid bugs in some drivers, which return larger numbers
                 count = core::min_(count, 8);
 
-                for (GLint i = 0; i<count; ++i)
+                for (GLint i = 0; i < count; ++i)
                     Driver->extGlDeleteShader(shaders[i]);
 
                 Driver->extGlDeleteProgram(Program2);
@@ -157,14 +157,14 @@ namespace irr
                 {
                     Driver->extGlProgramParameteri(Program2, GL_GEOMETRY_INPUT_TYPE_EXT, Driver->primitiveTypeToGL(inType));
                     Driver->extGlProgramParameteri(Program2, GL_GEOMETRY_OUTPUT_TYPE_EXT, Driver->primitiveTypeToGL(outType));
-                    if (verticesOut==0)
+                    if (verticesOut == 0)
                         Driver->extGlProgramParameteri(Program2, GL_GEOMETRY_VERTICES_OUT_EXT, Driver->MaxGeometryVerticesOut);
                     else
                         Driver->extGlProgramParameteri(Program2, GL_GEOMETRY_VERTICES_OUT_EXT, core::min_(verticesOut, Driver->MaxGeometryVerticesOut));
                 }
 
 #elif defined(GL_NV_geometry_program4)
-                if (verticesOut==0)
+                if (verticesOut == 0)
                     Driver->extGlProgramVertexLimit(GL_GEOMETRY_PROGRAM_NV, Driver->MaxGeometryVerticesOut);
                 else
                     Driver->extGlProgramVertexLimit(GL_GEOMETRY_PROGRAM_NV, core::min_(verticesOut, Driver->MaxGeometryVerticesOut));
@@ -211,7 +211,7 @@ namespace irr
             if (CallBack)
                 CallBack->OnSetMaterial(material);
 
-            for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+            for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 Driver->setActiveTexture(i, material.getTexture(i));
 
             Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
@@ -240,7 +240,7 @@ namespace irr
 
         bool COpenGLSLMaterialRenderer::createProgram()
         {
-            if (Driver->Version>=200)
+            if (Driver->Version >= 200)
                 Program2 = Driver->extGlCreateProgram();
             else
                 Program = Driver->extGlCreateProgramObject();

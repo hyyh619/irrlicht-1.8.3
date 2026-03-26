@@ -43,7 +43,7 @@ namespace irr
 
             TrianglePatches.TrianglePatchArray.reallocate(TrianglePatches.NumPatches);
 
-            for (s32 o = 0; o<TrianglePatches.NumPatches; ++o)
+            for (s32 o = 0; o < TrianglePatches.NumPatches; ++o)
                 TrianglePatches.TrianglePatchArray.push_back(SGeoMipMapTrianglePatch());
 
             core::triangle3df tri;
@@ -93,10 +93,10 @@ namespace irr
 
             s32 tIndex = 0;
 
-            for (s32 i = 0; i<TrianglePatches.NumPatches; ++i)
+            for (s32 i = 0; i < TrianglePatches.NumPatches; ++i)
             {
                 if (tIndex + TrianglePatches.TrianglePatchArray[i].NumTriangles <= count)
-                    for (s32 j = 0; j<TrianglePatches.TrianglePatchArray[i].NumTriangles; ++j)
+                    for (s32 j = 0; j < TrianglePatches.TrianglePatchArray[i].NumTriangles; ++j)
                     {
                         triangles[tIndex] = TrianglePatches.TrianglePatchArray[i].Triangles[j];
 
@@ -129,11 +129,11 @@ namespace irr
 
             s32 tIndex = 0;
 
-            for (s32 i = 0; i<TrianglePatches.NumPatches; ++i)
+            for (s32 i = 0; i < TrianglePatches.NumPatches; ++i)
             {
                 if (tIndex + TrianglePatches.TrianglePatchArray[i].NumTriangles <= count &&
                     TrianglePatches.TrianglePatchArray[i].Box.intersectsWithBox(box))
-                    for (s32 j = 0; j<TrianglePatches.TrianglePatchArray[i].NumTriangles; ++j)
+                    for (s32 j = 0; j < TrianglePatches.TrianglePatchArray[i].NumTriangles; ++j)
                     {
                         triangles[tIndex] = TrianglePatches.TrianglePatchArray[i].Triangles[j];
 
@@ -163,12 +163,12 @@ namespace irr
 
             s32 tIndex = 0;
 
-            for (s32 i = 0; i<TrianglePatches.NumPatches; ++i)
+            for (s32 i = 0; i < TrianglePatches.NumPatches; ++i)
             {
                 if (tIndex + TrianglePatches.TrianglePatchArray[i].NumTriangles <= count
                     && TrianglePatches.TrianglePatchArray[i].Box.intersectsWithLine(line))
                 {
-                    for (s32 j = 0; j<TrianglePatches.TrianglePatchArray[i].NumTriangles; ++j)
+                    for (s32 j = 0; j < TrianglePatches.TrianglePatchArray[i].NumTriangles; ++j)
                     {
                         triangles[tIndex] = TrianglePatches.TrianglePatchArray[i].Triangles[j];
 

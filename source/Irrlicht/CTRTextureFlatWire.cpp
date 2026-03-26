@@ -50,7 +50,7 @@ public:
                 lockedZBuffer = ZBuffer->lock();
                 lockedTexture = (u16*)Texture->lock();
 
-                for (s32 i = 0; i<triangleCount; ++i)
+                for (s32 i = 0; i < triangleCount; ++i)
                 {
                     v1 = &vertices[*indexList];
                     ++indexList;
@@ -72,7 +72,7 @@ public:
 
                     // near plane clipping
 
-                    if (v1->ZValue<0 && v2->ZValue<0 && v3->ZValue<0)
+                    if (v1->ZValue < 0 && v2->ZValue < 0 && v3->ZValue < 0)
                         continue;
 
                     // sort for width for inscreen clipping
@@ -165,7 +165,7 @@ public:
                     // do it twice, once for the first half of the triangle,
                     // end then for the second half.
 
-                    for (s32 triangleHalf = 0; triangleHalf<2; ++triangleHalf)
+                    for (s32 triangleHalf = 0; triangleHalf < 2; ++triangleHalf)
                     {
                         if (spanEnd > ViewPortRect.LowerRightCorner.Y)
                             spanEnd = ViewPortRect.LowerRightCorner.Y;
@@ -209,8 +209,8 @@ public:
 
                             // perform some clipping
 
-                            if (leftx>=ViewPortRect.UpperLeftCorner.X &&
-                                leftx<=ViewPortRect.LowerRightCorner.X)
+                            if (leftx >= ViewPortRect.UpperLeftCorner.X &&
+                                leftx <= ViewPortRect.LowerRightCorner.X)
                             {
                                 if (leftZValue > *(zTarget + leftx))
                                 {
@@ -220,8 +220,8 @@ public:
                             }
 
 
-                            if (rightx>=ViewPortRect.UpperLeftCorner.X &&
-                                rightx<=ViewPortRect.LowerRightCorner.X)
+                            if (rightx >= ViewPortRect.UpperLeftCorner.X &&
+                                rightx <= ViewPortRect.LowerRightCorner.X)
                             {
                                 if (rightZValue > *(zTarget + rightx))
                                 {
@@ -245,7 +245,7 @@ public:
                             rightTy += rightTyStep;
                         }
 
-                        if (triangleHalf>0) // break, we've gout only two halves
+                        if (triangleHalf > 0) // break, we've gout only two halves
                             break;
 
 

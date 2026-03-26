@@ -252,7 +252,7 @@ namespace irr
 
         void CSceneNodeAnimatorCameraMaya::allKeysUp()
         {
-            for (s32 i = 0; i<3; ++i)
+            for (s32 i = 0; i < 3; ++i)
                 MouseKeys[i] = false;
         }
 

@@ -29,7 +29,7 @@ namespace irr
 
             f32 d;
 
-            for (u32 i = 0; i<count; ++i)
+            for (u32 i = 0; i < count; ++i)
             {
                 d = (now - particlearray[i].startTime) / TimeForceLost;
                 if (d > 1.0f)

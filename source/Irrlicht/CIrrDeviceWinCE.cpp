@@ -57,7 +57,7 @@ SEnvMapper* getEnvMapperFromHWnd(HWND hWnd)
 {
     irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
 
-    for (; it!= EnvMap.end(); ++it)
+    for (; it != EnvMap.end(); ++it)
         if ((*it).hWnd == hWnd)
             return &(*it);
 
@@ -68,7 +68,7 @@ irr::CIrrDeviceWinCE* getDeviceFromHWnd(HWND hWnd)
 {
     irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
 
-    for (; it!= EnvMap.end(); ++it)
+    for (; it != EnvMap.end(); ++it)
         if ((*it).hWnd == hWnd)
             return (*it).irrDev;
 
@@ -165,7 +165,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_LBUTTONUP:
             ClickCount--;
-            if (ClickCount<1)
+            if (ClickCount < 1)
             {
                 ClickCount = 0;
                 ReleaseCapture();
@@ -212,7 +212,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_RBUTTONUP:
             ClickCount--;
-            if (ClickCount<1)
+            if (ClickCount < 1)
             {
                 ClickCount = 0;
                 ReleaseCapture();
@@ -259,7 +259,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_MBUTTONUP:
             ClickCount--;
-            if (ClickCount<1)
+            if (ClickCount < 1)
             {
                 ClickCount = 0;
                 ReleaseCapture();
@@ -309,7 +309,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             event.EventType            = irr::EET_KEY_INPUT_EVENT;
             event.KeyInput.Key         = (irr::EKEY_CODE)wParam;
-            event.KeyInput.PressedDown = (message==WM_KEYDOWN || message == WM_SYSKEYDOWN);
+            event.KeyInput.PressedDown = (message == WM_KEYDOWN || message == WM_SYSKEYDOWN);
             dev                        = getDeviceFromHWnd(hWnd);
             /*
              *          WORD KeyAsc=0;
@@ -464,7 +464,7 @@ namespace irr
 
         irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
 
-        for (; it!= EnvMap.end(); ++it)
+        for (; it != EnvMap.end(); ++it)
             if ((*it).hWnd == HWnd)
             {
                 EnvMap.erase(it);

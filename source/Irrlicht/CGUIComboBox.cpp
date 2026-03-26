@@ -255,7 +255,7 @@ namespace irr
                                     absorb = false;
                             }
 
-                            if (Selected <0)
+                            if (Selected < 0)
                                 setSelected(0);
 
                             if (Selected >= (s32)Items.size())
@@ -303,7 +303,7 @@ namespace irr
                                 if (event.GUIEvent.Caller == ListBox)
                                 {
                                     setSelected(ListBox->getSelected());
-                                    if (Selected <0 || Selected >= (s32)Items.size())
+                                    if (Selected < 0 || Selected >= (s32)Items.size())
                                         setSelected(-1);
 
                                     openCloseMenu();
@@ -354,7 +354,7 @@ namespace irr
                                 s32 oldSelected = Selected;
                                 setSelected(Selected + ((event.MouseInput.Wheel < 0) ? 1 : -1));
 
-                                if (Selected <0)
+                                if (Selected < 0)
                                     setSelected(0);
 
                                 if (Selected >= (s32)Items.size())
@@ -480,7 +480,7 @@ namespace irr
                 if (ListBox->getAbsolutePosition().LowerRightCorner.Y > Environment->getRootGUIElement()->getAbsolutePosition().getHeight())
                     ListBox->setRelativePosition(core::rect<s32>(0, -ListBox->getAbsolutePosition().getHeight(), AbsoluteRect.getWidth(), 0));
 
-                for (s32 i = 0; i<(s32)Items.size(); ++i)
+                for (s32 i = 0; i < (s32)Items.size(); ++i)
                     ListBox->addItem(Items[i].Name.c_str());
 
                 ListBox->setSelected(Selected);

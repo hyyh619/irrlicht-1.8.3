@@ -44,7 +44,7 @@ namespace irr
 
             const u32 bcount = mesh->getMeshBufferCount();
 
-            for (u32 b = 0; b<bcount; ++b)
+            for (u32 b = 0; b < bcount; ++b)
             {
                 IMeshBuffer *buffer = mesh->getMeshBuffer(b);
                 const u32   idxcnt  = buffer->getIndexCount();
@@ -52,7 +52,7 @@ namespace irr
                 {
                     u16 *idx = buffer->getIndices();
 
-                    for (u32 i = 0; i<idxcnt; i += 3)
+                    for (u32 i = 0; i < idxcnt; i += 3)
                     {
                         const u16 tmp = idx[i + 1];
                         idx[i + 1] = idx[i + 2];
@@ -63,7 +63,7 @@ namespace irr
                 {
                     u32 *idx = reinterpret_cast<u32*>(buffer->getIndices());
 
-                    for (u32 i = 0; i<idxcnt; i += 3)
+                    for (u32 i = 0; i < idxcnt; i += 3)
                     {
                         const u32 tmp = idx[i + 1];
                         idx[i + 1] = idx[i + 2];
@@ -85,7 +85,7 @@ namespace irr
 
                 if (!smooth)
                 {
-                    for (u32 i = 0; i<idxcnt; i += 3)
+                    for (u32 i = 0; i < idxcnt; i += 3)
                     {
                         const core::vector3df &v1    = buffer->getPosition(idx[i + 0]);
                         const core::vector3df &v2    = buffer->getPosition(idx[i + 1]);
@@ -100,10 +100,10 @@ namespace irr
                 {
                     u32 i;
 
-                    for (i = 0; i!= vtxcnt; ++i)
+                    for (i = 0; i != vtxcnt; ++i)
                         buffer->getNormal(i).set(0.f, 0.f, 0.f);
 
-                    for (i = 0; i<idxcnt; i += 3)
+                    for (i = 0; i < idxcnt; i += 3)
                     {
                         const core::vector3df &v1    = buffer->getPosition(idx[i + 0]);
                         const core::vector3df &v2    = buffer->getPosition(idx[i + 1]);
@@ -119,7 +119,7 @@ namespace irr
                         buffer->getNormal(idx[i + 2]) += weight.Z * normal;
                     }
 
-                    for (i = 0; i!= vtxcnt; ++i)
+                    for (i = 0; i != vtxcnt; ++i)
                         buffer->getNormal(i).normalize();
                 }
             }
@@ -133,7 +133,7 @@ namespace irr
             if (!buffer)
                 return;
 
-            if (buffer->getIndexType()==video::EIT_16BIT)
+            if (buffer->getIndexType() == video::EIT_16BIT)
                 recalculateNormalsT<u16>(buffer, smooth, angleWeighted);
             else
                 recalculateNormalsT<u32>(buffer, smooth, angleWeighted);
@@ -149,7 +149,7 @@ namespace irr
 
             const u32 bcount = mesh->getMeshBufferCount();
 
-            for (u32 b = 0; b<bcount; ++b)
+            for (u32 b = 0; b < bcount; ++b)
                 recalculateNormals(mesh->getMeshBuffer(b), smooth, angleWeighted);
         }
 
@@ -252,7 +252,7 @@ namespace irr
             template<typename T>
             void recalculateTangentsT(IMeshBuffer *buffer, bool recalculateNormals, bool smooth, bool angleWeighted)
             {
-                if (!buffer || (buffer->getVertexType()!= video::EVT_TANGENTS))
+                if (!buffer || (buffer->getVertexType() != video::EVT_TANGENTS))
                     return;
 
                 const u32 vtxCnt = buffer->getVertexCount();
@@ -266,7 +266,7 @@ namespace irr
                 {
                     u32 i;
 
-                    for (i = 0; i!= vtxCnt; ++i)
+                    for (i = 0; i != vtxCnt; ++i)
                     {
                         if (recalculateNormals)
                             v[i].Normal.set(0.f, 0.f, 0.f);
@@ -276,7 +276,7 @@ namespace irr
                     }
 
                     // Each vertex gets the sum of the tangents and binormals from the faces around it
-                    for (i = 0; i<idxCnt; i += 3)
+                    for (i = 0; i < idxCnt; i += 3)
                     {
                         // if this triangle is degenerate, skip it!
                         if (v[idx[i + 0]].Pos == v[idx[i + 1]].Pos ||
@@ -353,11 +353,11 @@ namespace irr
                     // Normalize the tangents and binormals
                     if (recalculateNormals)
                     {
-                        for (i = 0; i!= vtxCnt; ++i)
+                        for (i = 0; i != vtxCnt; ++i)
                             v[i].Normal.normalize();
                     }
 
-                    for (i = 0; i!= vtxCnt; ++i)
+                    for (i = 0; i != vtxCnt; ++i)
                     {
                         v[i].Tangent.normalize();
                         v[i].Binormal.normalize();
@@ -367,7 +367,7 @@ namespace irr
                 {
                     core::vector3df localNormal;
 
-                    for (u32 i = 0; i<idxCnt; i += 3)
+                    for (u32 i = 0; i < idxCnt; i += 3)
                     {
                         calculateTangents(
                             localNormal,
@@ -434,7 +434,7 @@ namespace irr
 
             const u32 meshBufferCount = mesh->getMeshBufferCount();
 
-            for (u32 b = 0; b<meshBufferCount; ++b)
+            for (u32 b = 0; b < meshBufferCount; ++b)
             {
                 recalculateTangents(mesh->getMeshBuffer(b), recalculateNormals, smooth, angleWeighted);
             }
@@ -450,7 +450,7 @@ namespace irr
                 u32 idxcnt = buffer->getIndexCount();
                 T   *idx   = reinterpret_cast<T*>(buffer->getIndices());
 
-                for (u32 i = 0; i<idxcnt; i += 3)
+                for (u32 i = 0; i < idxcnt; i += 3)
                 {
                     core::plane3df p(buffer->getPosition(idx[i + 0]), buffer->getPosition(idx[i + 1]), buffer->getPosition(idx[i + 2]));
                     p.Normal.X = fabsf(p.Normal.X);
@@ -460,7 +460,7 @@ namespace irr
 
                     if (p.Normal.X > p.Normal.Y && p.Normal.X > p.Normal.Z)
                     {
-                        for (u32 o = 0; o!=3; ++o)
+                        for (u32 o = 0; o != 3; ++o)
                         {
                             buffer->getTCoords(idx[i + o]).X = buffer->getPosition(idx[i + o]).Y * resolution;
                             buffer->getTCoords(idx[i + o]).Y = buffer->getPosition(idx[i + o]).Z * resolution;
@@ -468,7 +468,7 @@ namespace irr
                     }
                     else if (p.Normal.Y > p.Normal.X && p.Normal.Y > p.Normal.Z)
                     {
-                        for (u32 o = 0; o!=3; ++o)
+                        for (u32 o = 0; o != 3; ++o)
                         {
                             buffer->getTCoords(idx[i + o]).X = buffer->getPosition(idx[i + o]).X * resolution;
                             buffer->getTCoords(idx[i + o]).Y = buffer->getPosition(idx[i + o]).Z * resolution;
@@ -476,7 +476,7 @@ namespace irr
                     }
                     else
                     {
-                        for (u32 o = 0; o!=3; ++o)
+                        for (u32 o = 0; o != 3; ++o)
                         {
                             buffer->getTCoords(idx[i + o]).X = buffer->getPosition(idx[i + o]).X * resolution;
                             buffer->getTCoords(idx[i + o]).Y = buffer->getPosition(idx[i + o]).Y * resolution;
@@ -493,7 +493,7 @@ namespace irr
             if (!buffer)
                 return;
 
-            if (buffer->getIndexType()==video::EIT_16BIT)
+            if (buffer->getIndexType() == video::EIT_16BIT)
                 makePlanarTextureMappingT<u16>(buffer, resolution);
             else
                 makePlanarTextureMappingT<u32>(buffer, resolution);
@@ -508,7 +508,7 @@ namespace irr
 
             const u32 bcount = mesh->getMeshBufferCount();
 
-            for (u32 b = 0; b<bcount; ++b)
+            for (u32 b = 0; b < bcount; ++b)
             {
                 makePlanarTextureMapping(mesh->getMeshBuffer(b), resolution);
             }
@@ -524,28 +524,28 @@ namespace irr
                 u32 idxcnt = buffer->getIndexCount();
                 T   *idx   = reinterpret_cast<T*>(buffer->getIndices());
 
-                for (u32 i = 0; i<idxcnt; i += 3)
+                for (u32 i = 0; i < idxcnt; i += 3)
                 {
                     // calculate planar mapping worldspace coordinates
-                    if (axis==0)
+                    if (axis == 0)
                     {
-                        for (u32 o = 0; o!=3; ++o)
+                        for (u32 o = 0; o != 3; ++o)
                         {
                             buffer->getTCoords(idx[i + o]).X = 0.5f + (buffer->getPosition(idx[i + o]).Z + offset.Z) * resolutionS;
                             buffer->getTCoords(idx[i + o]).Y = 0.5f - (buffer->getPosition(idx[i + o]).Y + offset.Y) * resolutionT;
                         }
                     }
-                    else if (axis==1)
+                    else if (axis == 1)
                     {
-                        for (u32 o = 0; o!=3; ++o)
+                        for (u32 o = 0; o != 3; ++o)
                         {
                             buffer->getTCoords(idx[i + o]).X = 0.5f + (buffer->getPosition(idx[i + o]).X + offset.X) * resolutionS;
                             buffer->getTCoords(idx[i + o]).Y = 1.f - (buffer->getPosition(idx[i + o]).Z + offset.Z) * resolutionT;
                         }
                     }
-                    else if (axis==2)
+                    else if (axis == 2)
                     {
-                        for (u32 o = 0; o!=3; ++o)
+                        for (u32 o = 0; o != 3; ++o)
                         {
                             buffer->getTCoords(idx[i + o]).X = 0.5f + (buffer->getPosition(idx[i + o]).X + offset.X) * resolutionS;
                             buffer->getTCoords(idx[i + o]).Y = 0.5f - (buffer->getPosition(idx[i + o]).Y + offset.Y) * resolutionT;
@@ -562,7 +562,7 @@ namespace irr
             if (!buffer)
                 return;
 
-            if (buffer->getIndexType()==video::EIT_16BIT)
+            if (buffer->getIndexType() == video::EIT_16BIT)
                 makePlanarTextureMappingT<u16>(buffer, resolutionS, resolutionT, axis, offset);
             else
                 makePlanarTextureMappingT<u32>(buffer, resolutionS, resolutionT, axis, offset);
@@ -577,7 +577,7 @@ namespace irr
 
             const u32 bcount = mesh->getMeshBufferCount();
 
-            for (u32 b = 0; b<bcount; ++b)
+            for (u32 b = 0; b < bcount; ++b)
             {
                 makePlanarTextureMapping(mesh->getMeshBuffer(b), resolutionS, resolutionT, axis, offset);
             }
@@ -595,7 +595,7 @@ namespace irr
 
             const u32 meshBufferCount = mesh->getMeshBufferCount();
 
-            for (u32 b = 0; b<meshBufferCount; ++b)
+            for (u32 b = 0; b < meshBufferCount; ++b)
             {
                 const IMeshBuffer* const mb = mesh->getMeshBuffer(b);
 
@@ -688,7 +688,7 @@ namespace irr
 
             const u32 meshBufferCount = mesh->getMeshBufferCount();
 
-            for (u32 b = 0; b<meshBufferCount; ++b)
+            for (u32 b = 0; b < meshBufferCount; ++b)
             {
                 const IMeshBuffer* const mb     = mesh->getMeshBuffer(b);
                 const s32                idxCnt = mb->getIndexCount();
@@ -707,7 +707,7 @@ namespace irr
                         buffer->Vertices.reallocate(idxCnt);
                         buffer->Indices.reallocate(idxCnt);
 
-                        for (s32 i = 0; i<idxCnt; i += 3)
+                        for (s32 i = 0; i < idxCnt; i += 3)
                         {
                             buffer->Vertices.push_back(v[idx[i + 0]]);
                             buffer->Vertices.push_back(v[idx[i + 1]]);
@@ -735,7 +735,7 @@ namespace irr
                         buffer->Vertices.reallocate(idxCnt);
                         buffer->Indices.reallocate(idxCnt);
 
-                        for (s32 i = 0; i<idxCnt; i += 3)
+                        for (s32 i = 0; i < idxCnt; i += 3)
                         {
                             buffer->Vertices.push_back(v[idx[i + 0]]);
                             buffer->Vertices.push_back(v[idx[i + 1]]);
@@ -763,7 +763,7 @@ namespace irr
                         buffer->Vertices.reallocate(idxCnt);
                         buffer->Indices.reallocate(idxCnt);
 
-                        for (s32 i = 0; i<idxCnt; i += 3)
+                        for (s32 i = 0; i < idxCnt; i += 3)
                         {
                             buffer->Vertices.push_back(v[idx[i + 0]]);
                             buffer->Vertices.push_back(v[idx[i + 1]]);
@@ -797,7 +797,7 @@ namespace irr
 
             core::array<u16> redirects;
 
-            for (u32 b = 0; b<mesh->getMeshBufferCount(); ++b)
+            for (u32 b = 0; b < mesh->getMeshBufferCount(); ++b)
             {
                 const IMeshBuffer* const mb = mesh->getMeshBuffer(b);
                 // reset redirect list
@@ -960,7 +960,7 @@ namespace irr
 
                 Indices.set_used(indexCount);
 
-                for (u32 i = 0; i<indexCount; ++i)
+                for (u32 i = 0; i < indexCount; ++i)
                 {
                     Indices[i] = redirects[indices[i]];
                 }
@@ -982,7 +982,7 @@ namespace irr
             SMesh     *clone          = new SMesh();
             const u32 meshBufferCount = mesh->getMeshBufferCount();
 
-            for (u32 b = 0; b<meshBufferCount; ++b)
+            for (u32 b = 0; b < meshBufferCount; ++b)
             {
                 const IMeshBuffer* const original = mesh->getMeshBuffer(b);
                 const u32                idxCnt   = original->getIndexCount();
@@ -1002,7 +1002,7 @@ namespace irr
                 const video::E_VERTEX_TYPE vType = original->getVertexType();
                 video::S3DVertexTangents   vNew;
 
-                for (u32 i = 0; i<idxCnt; ++i)
+                for (u32 i = 0; i < idxCnt; ++i)
                 {
                     switch (vType)
                     {
@@ -1076,7 +1076,7 @@ namespace irr
             SMesh     *clone          = new SMesh();
             const u32 meshBufferCount = mesh->getMeshBufferCount();
 
-            for (u32 b = 0; b<meshBufferCount; ++b)
+            for (u32 b = 0; b < meshBufferCount; ++b)
             {
                 const IMeshBuffer* const original = mesh->getMeshBuffer(b);
                 const u32                idxCnt   = original->getIndexCount();
@@ -1095,7 +1095,7 @@ namespace irr
                 const video::E_VERTEX_TYPE vType = original->getVertexType();
                 video::S3DVertex2TCoords   vNew;
 
-                for (u32 i = 0; i<idxCnt; ++i)
+                for (u32 i = 0; i < idxCnt; ++i)
                 {
                     switch (vType)
                     {
@@ -1165,7 +1165,7 @@ namespace irr
             SMesh     *clone          = new SMesh();
             const u32 meshBufferCount = mesh->getMeshBufferCount();
 
-            for (u32 b = 0; b<meshBufferCount; ++b)
+            for (u32 b = 0; b < meshBufferCount; ++b)
             {
                 IMeshBuffer *original = mesh->getMeshBuffer(b);
                 const u32   idxCnt    = original->getIndexCount();
@@ -1183,7 +1183,7 @@ namespace irr
                 const video::E_VERTEX_TYPE vType = original->getVertexType();
                 video::S3DVertex           vNew;
 
-                for (u32 i = 0; i<idxCnt; ++i)
+                for (u32 i = 0; i < idxCnt; ++i)
                 {
                     switch (vType)
                     {
@@ -1249,7 +1249,7 @@ namespace irr
 
             s32 trianglecount = 0;
 
-            for (u32 g = 0; g<mesh->getMeshBufferCount(); ++g)
+            for (u32 g = 0; g < mesh->getMeshBufferCount(); ++g)
                 trianglecount += mesh->getMeshBuffer(g)->getIndexCount() / 3;
 
             return trianglecount;

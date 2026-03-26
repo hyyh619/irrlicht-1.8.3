@@ -120,7 +120,7 @@ namespace irr
         // ! to directly modify the material of a scene node.
         video::SMaterial&CSphereSceneNode::getMaterial(u32 i)
         {
-            if (i>0 || !Mesh)
+            if (i > 0 || !Mesh)
                 return ISceneNode::getMaterial(i);
             else
                 return Mesh->getMeshBuffer(i)->getMaterial();
@@ -157,7 +157,7 @@ namespace irr
             PolyCountY = in->getAttributeAsInt("PolyCountY");
             // legacy values read for compatibility with older versions
             u32 polyCount = in->getAttributeAsInt("PolyCount");
-            if (PolyCountX ==0 && PolyCountY == 0)
+            if (PolyCountX == 0 && PolyCountY == 0)
                 PolyCountX = PolyCountY = polyCount;
 
             Radius = core::max_(Radius, 0.0001f);

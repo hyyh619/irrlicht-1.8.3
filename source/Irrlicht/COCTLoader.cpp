@@ -125,7 +125,7 @@ namespace irr
 
             SMesh *Mesh = new SMesh();
 
-            for (i = 0; i<(header.numTextures + 1) * (header.numLightmaps + 1); ++i)
+            for (i = 0; i < (header.numTextures + 1) * (header.numLightmaps + 1); ++i)
             {
                 scene::SMeshBufferLightMap *buffer = new scene::SMeshBufferLightMap();
 
@@ -241,9 +241,9 @@ namespace irr
 
                 const octLightmap *lm = &lightmaps[i - 1];
 
-                for (u32 x = 0; x<lightmapWidth; ++x)
+                for (u32 x = 0; x < lightmapWidth; ++x)
                 {
-                    for (u32 y = 0; y<lightmapHeight; ++y)
+                    for (u32 y = 0; y < lightmapHeight; ++y)
                     {
                         tmpImage->setPixel(x, y,
                             video::SColor(255,

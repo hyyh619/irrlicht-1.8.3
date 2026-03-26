@@ -128,7 +128,7 @@ namespace irr
         // ! returns type of a createable scene node animator type
         ESCENE_NODE_ANIMATOR_TYPE CDefaultSceneNodeAnimatorFactory::getCreateableSceneNodeAnimatorType(u32 idx) const
         {
-            if (idx<ESNAT_COUNT)
+            if (idx < ESNAT_COUNT)
                 return (ESCENE_NODE_ANIMATOR_TYPE)idx;
             else
                 return ESNAT_UNKNOWN;
@@ -138,7 +138,7 @@ namespace irr
         // ! returns type name of a createable scene node animator type
         const c8* CDefaultSceneNodeAnimatorFactory::getCreateableSceneNodeAnimatorTypeName(u32 idx) const
         {
-            if (idx<ESNAT_COUNT)
+            if (idx < ESNAT_COUNT)
                 return SceneNodeAnimatorTypeNames[idx];
             else
                 return 0;
@@ -149,7 +149,7 @@ namespace irr
         {
             // for this factory: index == type
 
-            if (type<ESNAT_COUNT)
+            if (type < ESNAT_COUNT)
                 return SceneNodeAnimatorTypeNames[type];
             else
                 return 0;

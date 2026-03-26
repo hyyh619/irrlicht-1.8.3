@@ -69,7 +69,7 @@ protected:
             lockedZBuffer = ZBuffer->lock();
             lockedTexture = (u16*)Texture->lock();
 
-            for (s32 i = 0; i<triangleCount; ++i)
+            for (s32 i = 0; i < triangleCount; ++i)
             {
                 v1 = &vertices[*indexList];
                 ++indexList;
@@ -91,7 +91,7 @@ protected:
 
                 // near plane clipping
 
-                if (v1->ZValue<0 && v2->ZValue<0 && v3->ZValue<0)
+                if (v1->ZValue < 0 && v2->ZValue < 0 && v3->ZValue < 0)
                     continue;
 
                 // sort for width for inscreen clipping
@@ -199,7 +199,7 @@ protected:
                 // do it twice, once for the first half of the triangle,
                 // end then for the second half.
 
-                for (s32 triangleHalf = 0; triangleHalf<2; ++triangleHalf)
+                for (s32 triangleHalf = 0; triangleHalf < 2; ++triangleHalf)
                 {
                     if (spanEnd > ViewPortRect.LowerRightCorner.Y)
                         spanEnd = ViewPortRect.LowerRightCorner.Y;
@@ -252,14 +252,14 @@ protected:
                         // thanks to a correction by hybrid
                         // calculations delayed to correctly propagate to textures etc.
                         s32 tDiffLeft = 0, tDiffRight = 0;
-                        if (leftx<ViewPortRect.UpperLeftCorner.X)
+                        if (leftx < ViewPortRect.UpperLeftCorner.X)
                             tDiffLeft = ViewPortRect.UpperLeftCorner.X - leftx;
-                        else if (leftx>ViewPortRect.LowerRightCorner.X)
+                        else if (leftx > ViewPortRect.LowerRightCorner.X)
                             tDiffLeft = ViewPortRect.LowerRightCorner.X - leftx;
 
-                        if (rightx<ViewPortRect.UpperLeftCorner.X)
+                        if (rightx < ViewPortRect.UpperLeftCorner.X)
                             tDiffRight = ViewPortRect.UpperLeftCorner.X - rightx;
-                        else if (rightx>ViewPortRect.LowerRightCorner.X)
+                        else if (rightx > ViewPortRect.LowerRightCorner.X)
                             tDiffRight = ViewPortRect.LowerRightCorner.X - rightx;
 
                         // draw the span
@@ -342,7 +342,7 @@ protected:
                         rightTy += rightTyStep;
                     }
 
-                    if (triangleHalf>0) // break, we've gout only two halves
+                    if (triangleHalf > 0) // break, we've gout only two halves
                         break;
 
 

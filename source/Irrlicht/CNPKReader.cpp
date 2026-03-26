@@ -204,7 +204,7 @@ namespace irr
                         entry.Length = 0;
                         entry.Offset = 0;
                         const s32 pos = dirName.findLast('/', dirName.size() - 2);
-                        if (pos==-1)
+                        if (pos == -1)
                             dirName = "";
                         else
                             dirName = dirName.subString(0, pos);
@@ -222,7 +222,7 @@ namespace irr
                 // skip root dir
                 if (isDir)
                 {
-                    if (!entry.Name.size() || (entry.Name==".") || (entry.Name=="<noname>"))
+                    if (!entry.Name.size() || (entry.Name == ".") || (entry.Name == "<noname>"))
                         continue;
 
                     dirName += entry.Name;

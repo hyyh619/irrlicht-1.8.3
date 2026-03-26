@@ -133,16 +133,16 @@ namespace irr
             u32 i;
 
             // delete all sprite banks
-            for (i = 0; i<Banks.size(); ++i)
+            for (i = 0; i < Banks.size(); ++i)
                 if (Banks[i].Bank)
                     Banks[i].Bank->drop();
 
             // delete all fonts
-            for (i = 0; i<Fonts.size(); ++i)
+            for (i = 0; i < Fonts.size(); ++i)
                 Fonts[i].Font->drop();
 
             // remove all factories
-            for (i = 0; i<GUIElementFactoryList.size(); ++i)
+            for (i = 0; i < GUIElementFactoryList.size(); ++i)
                 GUIElementFactoryList[i]->drop();
 
             if (Operator)
@@ -310,7 +310,7 @@ namespace irr
         // ! removes the focus from an element
         bool CGUIEnvironment::removeFocus(IGUIElement *element)
         {
-            if (Focus && Focus==element)
+            if (Focus && Focus == element)
             {
                 SEvent e;
                 e.EventType          = EET_GUI_EVENT;
@@ -631,7 +631,7 @@ namespace irr
         // ! Sets a new GUI Skin
         void CGUIEnvironment::setSkin(IGUISkin *skin)
         {
-            if (CurrentSkin==skin)
+            if (CurrentSkin == skin)
                 return;
 
             if (CurrentSkin)
@@ -715,7 +715,7 @@ namespace irr
             if (!parent)
                 parent = this;
 
-            for (s32 i = GUIElementFactoryList.size() - 1; i>=0 && !node; --i)
+            for (s32 i = GUIElementFactoryList.size() - 1; i >= 0 && !node; --i)
                 node = GUIElementFactoryList[i]->addGUIElement(elementName, parent);
 
 
@@ -1461,7 +1461,7 @@ namespace irr
                     }
                 }
 
-                if (t==EGFT_BITMAP)
+                if (t == EGFT_BITMAP)
                 {
                     CGUIFont *font = new CGUIFont(this, filename);
                     ifont = (IGUIFont*)font;
@@ -1480,7 +1480,7 @@ namespace irr
                     // change working dir back again
                     FileSystem->changeWorkingDirectoryTo(workingDir);
                 }
-                else if (t==EGFT_VECTOR)
+                else if (t == EGFT_VECTOR)
                 {
                     // todo: vector fonts
                     os::Printer::log("Unable to load font, XML vector fonts are not supported yet", f.NamedPath, ELL_ERROR);
@@ -1539,7 +1539,7 @@ namespace irr
             if (!font)
                 return;
 
-            for (u32 i = 0; i<Fonts.size(); ++i)
+            for (u32 i = 0; i < Fonts.size(); ++i)
             {
                 if (Fonts[i].Font == font)
                 {

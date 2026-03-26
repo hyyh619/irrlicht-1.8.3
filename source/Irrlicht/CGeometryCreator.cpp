@@ -24,7 +24,7 @@ namespace irr
 
             buffer->Indices.set_used(36);
 
-            for (u32 i = 0; i<36; ++i)
+            for (u32 i = 0; i < 36; ++i)
                 buffer->Indices[i] = u[i];
 
 
@@ -49,7 +49,7 @@ namespace irr
             // Recalculate bounding box
             buffer->BoundingBox.reset(0, 0, 0);
 
-            for (u32 i = 0; i<12; ++i)
+            for (u32 i = 0; i < 12; ++i)
             {
                 buffer->Vertices[i].Pos -= core::vector3df(0.5f, 0.5f, 0.5f);
                 buffer->Vertices[i].Pos *= size;
@@ -102,11 +102,11 @@ namespace irr
 
             f32 sx = 0.f, tsx = 0.f;
 
-            for (x = 0; x<tileCount.Width; ++x)
+            for (x = 0; x < tileCount.Width; ++x)
             {
                 f32 sy = 0.f, tsy = 0.f;
 
-                for (u32 y = 0; y<tileCount.Height; ++y)
+                for (u32 y = 0; y < tileCount.Height; ++y)
                 {
                     vtx.Pos.set(sx - center.X, 0, sy - center.Y);
                     vtx.TCoords.set(tsx, 1.0f - tsy);
@@ -127,9 +127,9 @@ namespace irr
 
             // create indices
 
-            for (x = 0; x<tileCount.Width - 1; ++x)
+            for (x = 0; x < tileCount.Width - 1; ++x)
             {
-                for (u32 y = 0; y<tileCount.Height - 1; ++y)
+                for (u32 y = 0; y < tileCount.Height - 1; ++y)
                 {
                     const s32 current = x * tileCount.Height + y;
 
@@ -144,7 +144,7 @@ namespace irr
             }
 
             // recalculate normals
-            for (u32 i = 0; i<buffer->Indices.size(); i += 3)
+            for (u32 i = 0; i < buffer->Indices.size(); i += 3)
             {
                 const core::vector3df normal = core::plane3d<f32>(
                     buffer->Vertices[buffer->Indices[i + 0]].Pos,
@@ -195,9 +195,9 @@ namespace irr
 
             core::position2d<u32> processed(0, 0);
 
-            while (processed.Y<hMapSize.Height)
+            while (processed.Y < hMapSize.Height)
             {
-                while (processed.X<hMapSize.Width)
+                while (processed.X < hMapSize.Width)
                 {
                     core::dimension2d<u32> blockSize = maxVtxBlockSize;
                     if (processed.X + blockSize.Width > hMapSize.Width)
@@ -215,12 +215,12 @@ namespace irr
                     const core::vector2df bs(1.f / blockSize.Width, 1.f / blockSize.Height);
                     core::vector2df       tc(0.f, 0.5f * bs.Y);
 
-                    for (y = 0; y<blockSize.Height; ++y)
+                    for (y = 0; y < blockSize.Height; ++y)
                     {
                         pos.X = processed.X * stretchSize.Width;
                         tc.X  = 0.5f * bs.X;
 
-                        for (u32 x = 0; x<blockSize.Width; ++x)
+                        for (u32 x = 0; x < blockSize.Width; ++x)
                         {
                             const f32 height = heightmap->getPixel(x + processed.X, y + processed.Y).getAverage() * maxHeight;
 
@@ -239,9 +239,9 @@ namespace irr
                     // add indices of vertex block
                     s32 c1 = 0;
 
-                    for (y = 0; y<blockSize.Height - 1; ++y)
+                    for (y = 0; y < blockSize.Height - 1; ++y)
                     {
-                        for (u32 x = 0; x<blockSize.Width - 1; ++x)
+                        for (u32 x = 0; x < blockSize.Width - 1; ++x)
                         {
                             const s32 c = c1 + x;
 
@@ -258,7 +258,7 @@ namespace irr
                     }
 
                     // recalculate normals
-                    for (u32 i = 0; i<buffer->Indices.size(); i += 3)
+                    for (u32 i = 0; i < buffer->Indices.size(); i += 3)
                     {
                         const core::vector3df normal = core::plane3d<f32>(
                             buffer->Vertices[buffer->Indices[i + 0]].Pos,
@@ -333,11 +333,11 @@ namespace irr
 
             IMesh *mesh2 = createConeMesh(width1, height - cylinderHeight, tesselationCone, vtxColor1, vtxColor0);
 
-            for (u32 i = 0; i<mesh2->getMeshBufferCount(); ++i)
+            for (u32 i = 0; i < mesh2->getMeshBufferCount(); ++i)
             {
                 scene::IMeshBuffer *buffer = mesh2->getMeshBuffer(i);
 
-                for (u32 j = 0; j<buffer->getVertexCount(); ++j)
+                for (u32 j = 0; j < buffer->getVertexCount(); ++j)
                     buffer->getPosition(j).Y += cylinderHeight;
 
                 buffer->setDirty(EBT_VERTEX);
@@ -473,7 +473,7 @@ namespace irr
                     // calculate texture coordinates via sphere mapping
                     // tu is the same on each level, so only calculate once
                     f32 tu = 0.5f;
-                    if (y==0)
+                    if (y == 0)
                     {
                         if (normal.Y != -1.0f && normal.Y != 1.0f)
                             tu = static_cast<f32>(acos(core::clamp(normal.X / sinay, -1.0, 1.0)) * 0.5 * core::RECIPROCAL_PI64);

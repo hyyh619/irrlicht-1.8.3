@@ -31,7 +31,7 @@ namespace irr
 
             f32 d;
 
-            for (u32 i = 0; i<count; ++i)
+            for (u32 i = 0; i < count; ++i)
             {
                 if (particlearray[i].endTime - now < FadeOutTime)
                 {

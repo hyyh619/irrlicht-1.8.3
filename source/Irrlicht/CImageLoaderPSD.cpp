@@ -42,7 +42,7 @@ namespace irr
 
             u8 type[3];
             file->read(&type, sizeof(u8) * 3);
-            return (type[2]==2); // we currently only handle tgas of type 2.
+            return (type[2] == 2); // we currently only handle tgas of type 2.
         }
 
 
@@ -167,7 +167,7 @@ namespace irr
         {
             u8 *tmpData = new u8[header.width * header.height];
 
-            for (s32 channel = 0; channel<header.channels && channel < 3; ++channel)
+            for (s32 channel = 0; channel < header.channels && channel < 3; ++channel)
             {
                 if (!file->read(tmpData, sizeof(c8) * header.width * header.height))
                 {
@@ -180,9 +180,9 @@ namespace irr
                 {
                     u32 mask = 0xff << shift;
 
-                    for (u32 x = 0; x<header.width; ++x)
+                    for (u32 x = 0; x < header.width; ++x)
                     {
-                        for (u32 y = 0; y<header.height; ++y)
+                        for (u32 y = 0; y < header.height; ++y)
                         {
                             s32 index = x + y * header.width;
                             imageData[index]  = ~(~imageData[index] | mask);
@@ -240,7 +240,7 @@ namespace irr
 
             s32 size = 0;
 
-            for (u32 y = 0; y<header.height * header.channels; ++y)
+            for (u32 y = 0; y < header.height * header.channels; ++y)
             {
                 if (!file->read(&rleCount[y], sizeof(u16)))
                 {
@@ -275,9 +275,9 @@ namespace irr
 
             // decompress packbit rle
 
-            for (s32 channel = 0; channel<header.channels; channel++)
+            for (s32 channel = 0; channel < header.channels; channel++)
             {
-                for (u32 y = 0; y<header.height; ++y, ++rcount)
+                for (u32 y = 0; y < header.height; ++y, ++rcount)
                 {
                     bytesRead = 0;
                     dest      = &tmpData[y * header.width];
@@ -320,8 +320,8 @@ namespace irr
                 {
                     u32 mask = 0xff << shift;
 
-                    for (u32 x = 0; x<header.width; ++x)
-                        for (u32 y = 0; y<header.height; ++y)
+                    for (u32 x = 0; x < header.width; ++x)
+                        for (u32 y = 0; y < header.height; ++y)
                         {
                             s32 index = x + y * header.width;
                             imageData[index]  = ~(~imageData[index] | mask);

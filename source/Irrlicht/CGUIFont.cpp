@@ -220,12 +220,12 @@ namespace irr
             MaxHeight = 0;
             s32 t;
 
-            core::array<core::rect<s32> > &p = SpriteBank->getPositions();
+            core::array<core::rect<s32>> &p = SpriteBank->getPositions();
 
-            for (u32 i = 0; i<p.size(); ++i)
+            for (u32 i = 0; i < p.size(); ++i)
             {
                 t = p[i].getHeight();
-                if (t>MaxHeight)
+                if (t > MaxHeight)
                     MaxHeight = t;
             }
         }
@@ -345,9 +345,9 @@ namespace irr
 
             core::position2d<s32> pos(0, 0);
 
-            for (pos.Y = 0; pos.Y<(s32)size.Height; ++pos.Y)
+            for (pos.Y = 0; pos.Y < (s32)size.Height; ++pos.Y)
             {
-                for (pos.X = 0; pos.X<(s32)size.Width; ++pos.X)
+                for (pos.X = 0; pos.X < (s32)size.Width; ++pos.X)
                 {
                     const video::SColor c = image->getPixel(pos.X, pos.Y);
                     if (c == colorTopLeft)
@@ -358,7 +358,7 @@ namespace irr
                     else if (c == colorLowerRight)
                     {
                         // too many lower right points
-                        if (SpriteBank->getPositions().size()<=(u32)lowerRightPositions)
+                        if (SpriteBank->getPositions().size() <= (u32)lowerRightPositions)
                         {
                             lowerRightPositions = 0;
                             return;

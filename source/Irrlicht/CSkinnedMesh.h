@@ -189,7 +189,7 @@ private:
             core::array<SJoint*> AllJoints;
             core::array<SJoint*> RootJoints;
 
-            core::array<core::array<bool> > Vertices_Moved;
+            core::array<core::array<bool>> Vertices_Moved;
 
             core::aabbox3d<f32> BoundingBox;
 

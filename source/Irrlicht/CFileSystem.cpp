@@ -106,7 +106,7 @@ namespace irr
             IReadFile *file = 0;
             u32       i;
 
-            for (i = 0; i< FileArchives.size(); ++i)
+            for (i = 0; i < FileArchives.size(); ++i)
             {
                 file = FileArchives[i]->createAndOpenFile(filename);
                 if (file)
@@ -227,7 +227,7 @@ namespace irr
             if (archiveType == EFAT_UNKNOWN || archiveType == EFAT_FOLDER)
             {
                 // try to load archive based on file name
-                for (i = ArchiveLoader.size() - 1; i >=0; --i)
+                for (i = ArchiveLoader.size() - 1; i >= 0; --i)
                 {
                     if (ArchiveLoader[i]->isALoadableFileFormat(filename))
                     {
@@ -363,7 +363,7 @@ namespace irr
                 if (archiveType == EFAT_UNKNOWN)
                 {
                     // try to load archive based on file name
-                    for (i = ArchiveLoader.size() - 1; i >=0; --i)
+                    for (i = ArchiveLoader.size() - 1; i >= 0; --i)
                     {
                         if (ArchiveLoader[i]->isALoadableFileFormat(file->getFileName()))
                         {
@@ -655,7 +655,7 @@ namespace irr
                     return io::path(fpath);
             }
 
-            if (filename[filename.size() - 1]=='/')
+            if (filename[filename.size() - 1] == '/')
                 return io::path(p) + _IRR_TEXT("/");
             else
                 return io::path(p);
@@ -739,7 +739,7 @@ namespace irr
                     if (lastWasRealDir)
                     {
                         deletePathFromPath(dir, 2);
-                        lastWasRealDir = (dir.size()!=0);
+                        lastWasRealDir = (dir.size() != 0);
                     }
                     else
                     {
@@ -805,11 +805,11 @@ namespace irr
     #endif
 
 
-            for (; i<list1.size() && i<list2.size()
+            for (; i < list1.size() && i < list2.size()
 #if defined (_IRR_WINDOWS_API_)
-                && (io::path(*it1).make_lower()==io::path(*it2).make_lower())
+                && (io::path(*it1).make_lower() == io::path(*it2).make_lower())
 #else
-                && (*it1==*it2)
+                && (*it1 == *it2)
 #endif
                 ; ++i)
             {
@@ -819,7 +819,7 @@ namespace irr
 
             path1 = _IRR_TEXT("");
 
-            for (; i<list2.size(); ++i)
+            for (; i < list2.size(); ++i)
                 path1 += _IRR_TEXT("../");
 
             while (it1 != list1.end())
@@ -912,14 +912,14 @@ namespace irr
                         u32  size        = 0;
                         bool isDirectory = false;
 
-                        if ((strcmp(dirEntry->d_name, ".")==0) ||
-                            (strcmp(dirEntry->d_name, "..")==0))
+                        if ((strcmp(dirEntry->d_name, ".") == 0) ||
+                            (strcmp(dirEntry->d_name, "..") == 0))
                         {
                             continue;
                         }
 
                         struct stat buf;
-                        if (stat(dirEntry->d_name, &buf)==0)
+                        if (stat(dirEntry->d_name, &buf) == 0)
                         {
                             size        = buf.st_size;
                             isDirectory = S_ISDIR(buf.st_mode);
@@ -987,7 +987,7 @@ namespace irr
         bool CFileSystem::existFile(const io::path &filename) const
         {
             for (u32 i = 0; i < FileArchives.size(); ++i)
-                if (FileArchives[i]->getFileList()->findFile(filename)!=-1)
+                if (FileArchives[i]->getFileList()->findFile(filename) != -1)
                     return true;
 
 #if defined(_IRR_WINDOWS_CE_PLATFORM_)

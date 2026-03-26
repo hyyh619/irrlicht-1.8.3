@@ -192,7 +192,7 @@ namespace irr
             }
 
             // build current vertex
-            for (u32 i = 0; i!= Mesh->Buffer.size(); ++i)
+            for (u32 i = 0; i != Mesh->Buffer.size(); ++i)
             {
                 buildVertexArray(frameA, frameB, iPol,
                     Mesh->Buffer[i],
@@ -229,7 +229,7 @@ namespace irr
             }
 
             // fill in static vertex info
-            for (i = 0; i!= (u32)source->MeshHeader.numVertices; ++i)
+            for (i = 0; i != (u32)source->MeshHeader.numVertices; ++i)
             {
                 video::S3DVertex2TCoords &v = dest->Vertices[i];
                 v.Color      = 0xFFFFFFFF;

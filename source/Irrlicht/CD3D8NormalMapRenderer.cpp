@@ -156,7 +156,7 @@ namespace irr
             }
 
             // something failed, use base material
-            if (-1==outMaterialTypeNr)
+            if (-1 == outMaterialTypeNr)
                 driver->addMaterialRenderer(this);
         }
 
@@ -217,11 +217,11 @@ namespace irr
 
             u32 cnt = driver->getDynamicLightCount();
 
-            for (u32 i = 0; i<2; ++i)
+            for (u32 i = 0; i < 2; ++i)
             {
                 SLight light;
 
-                if (i<cnt)
+                if (i < cnt)
                     light = driver->getDynamicLight(i);
                 else
                 {

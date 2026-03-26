@@ -219,7 +219,7 @@ private:
 
             bool operator<(const SKeyMap &o) const
             {
-                return SDLKey<o.SDLKey;
+                return SDLKey < o.SDLKey;
             }
         };
 

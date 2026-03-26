@@ -52,7 +52,7 @@ namespace irr
     // ! copies text to the clipboard
     void COSOperator::copyToClipboard(const c8 *text) const
     {
-        if (strlen(text)==0)
+        if (strlen(text) == 0)
             return;
 
         // Windows version
@@ -188,7 +188,7 @@ namespace irr
         long pp = sysconf(_SC_PHYS_PAGES);
         long ap = sysconf(_SC_AVPHYS_PAGES);
 
-        if ((ps==-1) || (pp==-1) || (ap==-1))
+        if ((ps == -1) || (pp == -1) || (ap == -1))
             return false;
 
         if (Total)

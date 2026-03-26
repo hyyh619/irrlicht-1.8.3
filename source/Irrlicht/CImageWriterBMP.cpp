@@ -119,7 +119,7 @@ namespace irr
 
             for (y = imageHeader.Height - 1; 0 <= y; --y)
             {
-                if (image->getColorFormat()== ECOLOR_FORMAT::ECF_R8G8B8)
+                if (image->getColorFormat() == ECOLOR_FORMAT::ECF_R8G8B8)
                     CColorConverter::convert24BitTo24Bit(&scan_lines[y * row_stride], row_pointer, imageHeader.Width, 1, 0, false, true);
                 else
                     // source, length [pixels], destination

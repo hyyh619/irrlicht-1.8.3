@@ -94,7 +94,7 @@ namespace irr
             delete[] Buffer;
             Buffer = 0;
 
-            for (u32 i = 0; i<Meshes.size(); ++i)
+            for (u32 i = 0; i < Meshes.size(); ++i)
                 delete Meshes[i];
 
             Meshes.clear();
@@ -111,7 +111,7 @@ namespace irr
             if (!parseFile())
                 return false;
 
-            for (u32 n = 0; n<Meshes.size(); ++n)
+            for (u32 n = 0; n < Meshes.size(); ++n)
             {
                 SXMesh *mesh = Meshes[n];
 
@@ -132,7 +132,7 @@ namespace irr
                 const u32 bufferOffset = AnimatedMesh->getMeshBufferCount();
 #endif
 
-                for (i = 0; i<mesh->Materials.size(); ++i)
+                for (i = 0; i < mesh->Materials.size(); ++i)
                 {
                     mesh->Buffers.push_back(AnimatedMesh->addMeshBuffer());
                     mesh->Buffers.getLast()->Material = mesh->Materials[i];
@@ -140,7 +140,7 @@ namespace irr
                     if (!mesh->HasSkinning)
                     {
                         // Set up rigid animation
-                        if (mesh->AttachedJointID!=-1)
+                        if (mesh->AttachedJointID != -1)
                         {
                             AnimatedMesh->getAllJoints()[mesh->AttachedJointID]->AttachedMeshes.push_back(AnimatedMesh->getMeshBuffers().size() - 1);
                         }
@@ -151,15 +151,15 @@ namespace irr
                 {
                     mesh->FaceMaterialIndices.set_used(mesh->Indices.size() / 3);
 
-                    for (i = 0; i<mesh->FaceMaterialIndices.size(); ++i)
+                    for (i = 0; i < mesh->FaceMaterialIndices.size(); ++i)
                         mesh->FaceMaterialIndices[i] = 0;
                 }
 
                 if (!mesh->HasVertexColors)
                 {
-                    for (u32 j = 0; j<mesh->FaceMaterialIndices.size(); ++j)
+                    for (u32 j = 0; j < mesh->FaceMaterialIndices.size(); ++j)
                     {
-                        for (u32 id = j * 3 + 0; id<=j * 3 + 2; ++id)
+                        for (u32 id = j * 3 + 0; id <= j * 3 + 2; ++id)
                         {
                             mesh->Vertices[mesh->Indices[id]].Color = mesh->Buffers[mesh->FaceMaterialIndices[j]]->Material.DiffuseColor;
                         }
@@ -170,27 +170,27 @@ namespace irr
                 {
                     // the same vertex can be used in many different meshbuffers, but it's slow to work out
 
-                    core::array<core::array<u32> > verticesLinkIndex;
+                    core::array<core::array<u32>> verticesLinkIndex;
                     verticesLinkIndex.reallocate(mesh->Vertices.size());
-                    core::array<core::array<u16> > verticesLinkBuffer;
+                    core::array<core::array<u16>> verticesLinkBuffer;
                     verticesLinkBuffer.reallocate(mesh->Vertices.size());
 
-                    for (i = 0; i<mesh->Vertices.size(); ++i)
+                    for (i = 0; i < mesh->Vertices.size(); ++i)
                     {
                         verticesLinkIndex.push_back(core::array<u32>());
                         verticesLinkBuffer.push_back(core::array<u16>());
                     }
 
-                    for (i = 0; i<mesh->FaceMaterialIndices.size(); ++i)
+                    for (i = 0; i < mesh->FaceMaterialIndices.size(); ++i)
                     {
-                        for (u32 id = i * 3 + 0; id<=i * 3 + 2; ++id)
+                        for (u32 id = i * 3 + 0; id <= i * 3 + 2; ++id)
                         {
                             core::array<u16> &Array = verticesLinkBuffer[mesh->Indices[id]];
                             bool             found  = false;
 
                             for (u32 j = 0; j < Array.size(); ++j)
                             {
-                                if (Array[j]==mesh->FaceMaterialIndices[i])
+                                if (Array[j] == mesh->FaceMaterialIndices[i])
                                 {
                                     found = true;
                                     break;
@@ -202,13 +202,13 @@ namespace irr
                         }
                     }
 
-                    for (i = 0; i<verticesLinkBuffer.size(); ++i)
+                    for (i = 0; i < verticesLinkBuffer.size(); ++i)
                     {
                         if (!verticesLinkBuffer[i].size())
                             verticesLinkBuffer[i].push_back(0);
                     }
 
-                    for (i = 0; i<mesh->Vertices.size(); ++i)
+                    for (i = 0; i < mesh->Vertices.size(); ++i)
                     {
                         core::array<u16> &Array = verticesLinkBuffer[i];
                         verticesLinkIndex[i].reallocate(Array.size());
@@ -221,37 +221,37 @@ namespace irr
                         }
                     }
 
-                    for (i = 0; i<mesh->FaceMaterialIndices.size(); ++i)
+                    for (i = 0; i < mesh->FaceMaterialIndices.size(); ++i)
                     {
                         scene::SSkinMeshBuffer *buffer = mesh->Buffers[mesh->FaceMaterialIndices[i]];
 
-                        for (u32 id = i * 3 + 0; id<=i * 3 + 2; ++id)
+                        for (u32 id = i * 3 + 0; id <= i * 3 + 2; ++id)
                         {
                             core::array<u16> &Array = verticesLinkBuffer[mesh->Indices[id]];
 
-                            for (u32 j = 0; j< Array.size(); ++j)
+                            for (u32 j = 0; j < Array.size(); ++j)
                             {
-                                if (Array[j]== mesh->FaceMaterialIndices[i])
+                                if (Array[j] == mesh->FaceMaterialIndices[i])
                                     buffer->Indices.push_back(verticesLinkIndex[mesh->Indices[id]][j]);
                             }
                         }
                     }
 
-                    for (u32 j = 0; j<mesh->WeightJoint.size(); ++j)
+                    for (u32 j = 0; j < mesh->WeightJoint.size(); ++j)
                     {
                         ISkinnedMesh::SJoint  *joint  = AnimatedMesh->getAllJoints()[mesh->WeightJoint[j]];
                         ISkinnedMesh::SWeight &weight = joint->Weights[mesh->WeightNum[j]];
 
                         u32 id = weight.vertex_id;
 
-                        if (id>=verticesLinkIndex.size())
+                        if (id >= verticesLinkIndex.size())
                         {
                             os::Printer::log("X loader: Weight id out of range", ELL_WARNING);
                             id              = 0;
                             weight.strength = 0.f;
                         }
 
-                        if (verticesLinkBuffer[id].size()==1)
+                        if (verticesLinkBuffer[id].size() == 1)
                         {
                             weight.vertex_id = verticesLinkIndex[id][0];
                             weight.buffer_id = verticesLinkBuffer[id][0];
@@ -275,7 +275,7 @@ namespace irr
                     verticesLinkBuffer.set_used(mesh->Vertices.size());
 
                     // init with 0
-                    for (i = 0; i<mesh->Vertices.size(); ++i)
+                    for (i = 0; i < mesh->Vertices.size(); ++i)
                     {
                         // watch out for vertices which are not part of the mesh
                         // they will keep the -1 and can lead to out-of-bounds access
@@ -285,9 +285,9 @@ namespace irr
                     bool warned = false;
 
                     // store meshbuffer number per vertex
-                    for (i = 0; i<mesh->FaceMaterialIndices.size(); ++i)
+                    for (i = 0; i < mesh->FaceMaterialIndices.size(); ++i)
                     {
-                        for (u32 id = i * 3 + 0; id<=i * 3 + 2; ++id)
+                        for (u32 id = i * 3 + 0; id <= i * 3 + 2; ++id)
                         {
                             if ((verticesLinkBuffer[mesh->Indices[id]] != -1) && (verticesLinkBuffer[mesh->Indices[id]] != (s16)mesh->FaceMaterialIndices[i]))
                             {
@@ -314,7 +314,7 @@ namespace irr
                         memset(vCountArray, 0, mesh->Buffers.size() * sizeof(u32));
 
                         // count vertices in each buffer and reallocate
-                        for (i = 0; i<mesh->Vertices.size(); ++i)
+                        for (i = 0; i < mesh->Vertices.size(); ++i)
                         {
                             if (verticesLinkBuffer[i] != -1)
                                 ++vCountArray[verticesLinkBuffer[i]];
@@ -322,7 +322,7 @@ namespace irr
 
                         if (mesh->TCoords2.size())
                         {
-                            for (i = 0; i!=mesh->Buffers.size(); ++i)
+                            for (i = 0; i != mesh->Buffers.size(); ++i)
                             {
                                 mesh->Buffers[i]->Vertices_2TCoords.reallocate(vCountArray[i]);
                                 mesh->Buffers[i]->VertexType = video::EVT_2TCOORDS;
@@ -330,17 +330,17 @@ namespace irr
                         }
                         else
                         {
-                            for (i = 0; i!=mesh->Buffers.size(); ++i)
+                            for (i = 0; i != mesh->Buffers.size(); ++i)
                                 mesh->Buffers[i]->Vertices_Standard.reallocate(vCountArray[i]);
                         }
 
                         verticesLinkIndex.set_used(mesh->Vertices.size());
 
                         // actually store vertices
-                        for (i = 0; i<mesh->Vertices.size(); ++i)
+                        for (i = 0; i < mesh->Vertices.size(); ++i)
                         {
                             // if a vertex is missing for some reason, just skip it
-                            if (verticesLinkBuffer[i]==-1)
+                            if (verticesLinkBuffer[i] == -1)
                                 continue;
 
                             scene::SSkinMeshBuffer *buffer = mesh->Buffers[verticesLinkBuffer[i]];
@@ -351,7 +351,7 @@ namespace irr
                                 buffer->Vertices_2TCoords.push_back(mesh->Vertices[i]);
                                 // We have a problem with correct tcoord2 handling here
                                 // crash fixed for now by checking the values
-                                buffer->Vertices_2TCoords.getLast().TCoords2 = (i<mesh->TCoords2.size()) ? mesh->TCoords2[i] : mesh->Vertices[i].TCoords;
+                                buffer->Vertices_2TCoords.getLast().TCoords2 = (i < mesh->TCoords2.size()) ? mesh->TCoords2[i] : mesh->Vertices[i].TCoords;
                             }
                             else
                             {
@@ -363,33 +363,33 @@ namespace irr
                         // count indices per buffer and reallocate
                         memset(vCountArray, 0, mesh->Buffers.size() * sizeof(u32));
 
-                        for (i = 0; i<mesh->FaceMaterialIndices.size(); ++i)
+                        for (i = 0; i < mesh->FaceMaterialIndices.size(); ++i)
                             ++vCountArray[mesh->FaceMaterialIndices[i]];
 
-                        for (i = 0; i!=mesh->Buffers.size(); ++i)
+                        for (i = 0; i != mesh->Buffers.size(); ++i)
                             mesh->Buffers[i]->Indices.reallocate(vCountArray[i]);
 
                         delete[] vCountArray;
 
                         // create indices per buffer
-                        for (i = 0; i<mesh->FaceMaterialIndices.size(); ++i)
+                        for (i = 0; i < mesh->FaceMaterialIndices.size(); ++i)
                         {
                             scene::SSkinMeshBuffer *buffer = mesh->Buffers[mesh->FaceMaterialIndices[i]];
 
-                            for (u32 id = i * 3 + 0; id!=i * 3 + 3; ++id)
+                            for (u32 id = i * 3 + 0; id != i * 3 + 3; ++id)
                             {
                                 buffer->Indices.push_back(verticesLinkIndex[mesh->Indices[id]]);
                             }
                         }
                     }
 
-                    for (u32 j = 0; j<mesh->WeightJoint.size(); ++j)
+                    for (u32 j = 0; j < mesh->WeightJoint.size(); ++j)
                     {
                         ISkinnedMesh::SWeight &weight = (AnimatedMesh->getAllJoints()[mesh->WeightJoint[j]]->Weights[mesh->WeightNum[j]]);
 
                         u32 id = weight.vertex_id;
 
-                        if (id>=verticesLinkIndex.size())
+                        if (id >= verticesLinkIndex.size())
                         {
                             os::Printer::log("X loader: Weight id out of range", ELL_WARNING);
                             id              = 0;
@@ -431,7 +431,7 @@ namespace irr
             End  = Buffer + size;
 
             // ! check header "xof "
-            if (strncmp(Buffer, "xof ", 4)!=0)
+            if (strncmp(Buffer, "xof ", 4) != 0)
             {
                 os::Printer::log("Not an x file, wrong header.", ELL_WARNING);
                 return false;
@@ -449,9 +449,9 @@ namespace irr
             MinorVersion = core::strtoul10(tmp);
 
             // ! read format
-            if (strncmp(&Buffer[8], "txt ", 4) ==0)
+            if (strncmp(&Buffer[8], "txt ", 4) == 0)
                 BinaryFormat = false;
-            else if (strncmp(&Buffer[8], "bin ", 4) ==0)
+            else if (strncmp(&Buffer[8], "bin ", 4) == 0)
                 BinaryFormat = true;
             else
             {
@@ -462,9 +462,9 @@ namespace irr
             BinaryNumCount = 0;
 
             // ! read float size
-            if (strncmp(&Buffer[12], "0032", 4) ==0)
+            if (strncmp(&Buffer[12], "0032", 4) == 0)
                 FloatSize = 4;
-            else if (strncmp(&Buffer[12], "0064", 4) ==0)
+            else if (strncmp(&Buffer[12], "0064", 4) == 0)
                 FloatSize = 8;
             else
             {
@@ -612,7 +612,7 @@ namespace irr
             {
                 for (u32 n = 0; n < AnimatedMesh->getAllJoints().size(); ++n)
                 {
-                    if (AnimatedMesh->getAllJoints()[n]->Name==name)
+                    if (AnimatedMesh->getAllJoints()[n]->Name == name)
                     {
                         joint   = AnimatedMesh->getAllJoints()[n];
                         JointID = n;
@@ -758,7 +758,7 @@ namespace irr
             // read vertices
             mesh.Vertices.set_used(nVertices);
 
-            for (u32 n = 0; n<nVertices; ++n)
+            for (u32 n = 0; n < nVertices; ++n)
             {
                 readVector3(mesh.Vertices[n].Pos);
                 mesh.Vertices[n].Color = 0xFFFFFFFF;
@@ -779,7 +779,7 @@ namespace irr
             core::array<u32> polygonfaces;
             u32              currentIndex = 0;
 
-            for (u32 k = 0; k<nFaces; ++k)
+            for (u32 k = 0; k < nFaces; ++k)
             {
                 const u32 fcnt = readInt();
 
@@ -798,10 +798,10 @@ namespace irr
                     mesh.Indices.set_used(mesh.Indices.size() + ((triangles - 1) * 3));
                     mesh.IndexCountPerFace[k] = (u16)(triangles * 3);
 
-                    for (u32 f = 0; f<fcnt; ++f)
+                    for (u32 f = 0; f < fcnt; ++f)
                         polygonfaces[f] = readInt();
 
-                    for (u32 jk = 0; jk<triangles; ++jk)
+                    for (u32 jk = 0; jk < triangles; ++jk)
                     {
                         mesh.Indices[currentIndex++] = polygonfaces[0];
                         mesh.Indices[currentIndex++] = polygonfaces[jk + 1];
@@ -899,7 +899,7 @@ namespace irr
                     s16       tangenttype  = -1;
                     s16       binormaltype = -1;
 
-                    for (j = 0; j<dcnt; ++j)
+                    for (j = 0; j < dcnt; ++j)
                     {
                         const u32 type = readInt();
                         // const u32 tesselator = readInt();
@@ -915,12 +915,12 @@ namespace irr
                                 break;
 
                             case 5:
-                                if (index==0)
+                                if (index == 0)
                                 {
                                     uvpos  = size;
                                     uvtype = type;
                                 }
-                                else if (index==1)
+                                else if (index == 1)
                                 {
                                     uv2pos  = size;
                                     uv2type = type;
@@ -1008,7 +1008,7 @@ namespace irr
                     const u32 datasize = readInt();
                     u32       *data    = new u32[datasize];
 
-                    for (j = 0; j<datasize; ++j)
+                    for (j = 0; j < datasize; ++j)
                         data[j] = readInt();
 
                     if (!checkForOneFollowingSemicolons())
@@ -1029,7 +1029,7 @@ namespace irr
                     if ((uv2pos != -1) && (uv2type == 1))
                         mesh.TCoords2.reallocate(mesh.Vertices.size());
 
-                    for (j = 0; j<mesh.Vertices.size(); ++j)
+                    for (j = 0; j < mesh.Vertices.size(); ++j)
                     {
                         if ((normalpos != -1) && (normaltype == 2))
                             mesh.Vertices[j].Normal.set(*((core::vector3df*)(dataptr + normalpos)));
@@ -1058,7 +1058,7 @@ namespace irr
                     const u32 datasize   = readInt();
                     u32       *data      = new u32[datasize];
 
-                    for (u32 j = 0; j<datasize; ++j)
+                    for (u32 j = 0; j < datasize; ++j)
                         data[j] = readInt();
 
                     if (dataformat & 0x102) // 2nd uv set
@@ -1067,7 +1067,7 @@ namespace irr
                         u8        *dataptr = (u8*) data;
                         const u32 size     = ((dataformat >> 8) & 0xf) * sizeof(core::vector2df);
 
-                        for (u32 j = 0; j<mesh.Vertices.size(); ++j)
+                        for (u32 j = 0; j < mesh.Vertices.size(); ++j)
                         {
                             mesh.TCoords2.push_back(*((core::vector2df*)(dataptr)));
                             dataptr += size;
@@ -1142,7 +1142,7 @@ namespace irr
 
             for (n = 0; n < AnimatedMesh->getAllJoints().size(); ++n)
             {
-                if (AnimatedMesh->getAllJoints()[n]->Name==TransformNodeName)
+                if (AnimatedMesh->getAllJoints()[n]->Name == TransformNodeName)
                 {
                     joint = AnimatedMesh->getAllJoints()[n];
                     break;
@@ -1171,7 +1171,7 @@ namespace irr
             mesh.WeightJoint.reallocate(mesh.WeightJoint.size() + nWeights);
             mesh.WeightNum.reallocate(mesh.WeightNum.size() + nWeights);
 
-            for (i = 0; i<nWeights; ++i)
+            for (i = 0; i < nWeights; ++i)
             {
                 mesh.WeightJoint.push_back(n);
                 mesh.WeightNum.push_back(joint->Weights.size());
@@ -1184,7 +1184,7 @@ namespace irr
 
             // read vertex weights
 
-            for (i = jointStart; i<jointStart + nWeights; ++i)
+            for (i = jointStart; i < jointStart + nWeights; ++i)
                 joint->Weights[i].strength = readFloat();
 
             // read matrix offset
@@ -1263,7 +1263,7 @@ namespace irr
             normals.set_used(nNormals);
 
             // read normals
-            for (u32 i = 0; i<nNormals; ++i)
+            for (u32 i = 0; i < nNormals; ++i)
                 readVector3(normals[i]);
 
             if (!checkForTwoFollowingSemicolons())
@@ -1281,7 +1281,7 @@ namespace irr
             u32              normalidx = 0;
             core::array<u32> polygonfaces;
 
-            for (u32 k = 0; k<nFNormals; ++k)
+            for (u32 k = 0; k < nFNormals; ++k)
             {
                 const u32 fcnt       = readInt();
                 u32       triangles  = fcnt - 2;
@@ -1297,7 +1297,7 @@ namespace irr
                 if (indexcount == 3)
                 {
                     // default, only one triangle in this face
-                    for (u32 h = 0; h<3; ++h)
+                    for (u32 h = 0; h < 3; ++h)
                     {
                         const u32 normalnum = readInt();
                         mesh.Vertices[mesh.Indices[normalidx++]].Normal.set(normals[normalnum]);
@@ -1308,10 +1308,10 @@ namespace irr
                     polygonfaces.set_used(fcnt);
 
                     // multiple triangles in this face
-                    for (u32 h = 0; h<fcnt; ++h)
+                    for (u32 h = 0; h < fcnt; ++h)
                         polygonfaces[h] = readInt();
 
-                    for (u32 jk = 0; jk<triangles; ++jk)
+                    for (u32 jk = 0; jk < triangles; ++jk)
                     {
                         mesh.Vertices[mesh.Indices[normalidx++]].Normal.set(normals[polygonfaces[0]]);
                         mesh.Vertices[mesh.Indices[normalidx++]].Normal.set(normals[polygonfaces[jk + 1]]);
@@ -1352,7 +1352,7 @@ namespace irr
 
             const u32 nCoords = readInt();
 
-            for (u32 i = 0; i<nCoords; ++i)
+            for (u32 i = 0; i < nCoords; ++i)
                 readVector2(mesh.Vertices[i].TCoords);
 
             if (!checkForTwoFollowingSemicolons())
@@ -1388,10 +1388,10 @@ namespace irr
             mesh.HasVertexColors = true;
             const u32 nColors = readInt();
 
-            for (u32 i = 0; i<nColors; ++i)
+            for (u32 i = 0; i < nColors; ++i)
             {
                 const u32 Index = readInt();
-                if (Index>=mesh.Vertices.size())
+                if (Index >= mesh.Vertices.size())
                 {
                     os::Printer::log("index value in parseDataObjectMeshVertexColors out of bounds", ELL_WARNING);
                     os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
@@ -1449,14 +1449,14 @@ namespace irr
             u32 triangulatedindex = 0;
             u32 ind               = 0;
 
-            for (u32 tfi = 0; tfi<mesh.IndexCountPerFace.size(); ++tfi)
+            for (u32 tfi = 0; tfi < mesh.IndexCountPerFace.size(); ++tfi)
             {
-                if (tfi<nFaceIndices)
+                if (tfi < nFaceIndices)
                     ind = readInt();
 
                 const u32 fc = mesh.IndexCountPerFace[tfi] / 3;
 
-                for (u32 k = 0; k<fc; ++k)
+                for (u32 k = 0; k < fc; ++k)
                     mesh.FaceMaterialIndices[triangulatedindex++] = ind;
             }
 
@@ -1489,7 +1489,7 @@ namespace irr
                     // template materials now available thanks to joeWright
                     objectName = getNextToken();
 
-                    for (u32 i = 0; i<TemplateMaterials.size(); ++i)
+                    for (u32 i = 0; i < TemplateMaterials.size(); ++i)
                         if (TemplateMaterials[i].Name == objectName)
                             mesh.Materials.push_back(TemplateMaterials[i].Material);
 
@@ -1581,7 +1581,7 @@ namespace irr
                     }
 
                     ++textureLayer;
-                    if (textureLayer==2)
+                    if (textureLayer == 2)
                         material.MaterialType = video::EMT_LIGHTMAP;
                 }
                 else if (objectName.equals_ignore_case("NormalmapFilename"))
@@ -1605,7 +1605,7 @@ namespace irr
                             material.setTexture(1, SceneManager->getVideoDriver()->getTexture(FileSystem->getFileBasename(TextureFileName)));
                     }
 
-                    if (textureLayer==1)
+                    if (textureLayer == 1)
                         ++textureLayer;
                 }
                 else
@@ -1743,7 +1743,7 @@ namespace irr
 
                 for (n = 0; n < AnimatedMesh->getAllJoints().size(); ++n)
                 {
-                    if (AnimatedMesh->getAllJoints()[n]->Name==FrameName)
+                    if (AnimatedMesh->getAllJoints()[n]->Name == FrameName)
                     {
                         joint = AnimatedMesh->getAllJoints()[n];
                         break;
@@ -1761,21 +1761,21 @@ namespace irr
 
                 joint->PositionKeys.reallocate(joint->PositionKeys.size() + animationDump.PositionKeys.size());
 
-                for (n = 0; n<animationDump.PositionKeys.size(); ++n)
+                for (n = 0; n < animationDump.PositionKeys.size(); ++n)
                 {
                     joint->PositionKeys.push_back(animationDump.PositionKeys[n]);
                 }
 
                 joint->ScaleKeys.reallocate(joint->ScaleKeys.size() + animationDump.ScaleKeys.size());
 
-                for (n = 0; n<animationDump.ScaleKeys.size(); ++n)
+                for (n = 0; n < animationDump.ScaleKeys.size(); ++n)
                 {
                     joint->ScaleKeys.push_back(animationDump.ScaleKeys[n]);
                 }
 
                 joint->RotationKeys.reallocate(joint->RotationKeys.size() + animationDump.RotationKeys.size());
 
-                for (n = 0; n<animationDump.RotationKeys.size(); ++n)
+                for (n = 0; n < animationDump.RotationKeys.size(); ++n)
                 {
                     joint->RotationKeys.push_back(animationDump.RotationKeys[n]);
                 }
@@ -1819,7 +1819,7 @@ namespace irr
             if (numberOfKeys == 0)
                 checkForOneFollowingSemicolons();
 
-            for (u32 i = 0; i<numberOfKeys; ++i)
+            for (u32 i = 0; i < numberOfKeys; ++i)
             {
                 // read time
                 const f32 time = (f32)readInt();
@@ -1879,7 +1879,7 @@ namespace irr
                             os::Printer::log("Line", core::stringc(Line).c_str(), ELL_WARNING);
                         }
 
-                        if (keyType==2)
+                        if (keyType == 2)
                         {
                             ISkinnedMesh::SPositionKey *key = AnimatedMesh->addPositionKey(joint);
                             key->frame    = time;
@@ -2059,7 +2059,7 @@ namespace irr
             if (BinaryFormat)
                 return true;
 
-            for (u32 k = 0; k<2; ++k)
+            for (u32 k = 0; k < 2; ++k)
             {
                 if (getNextToken() != ";")
                 {
@@ -2230,7 +2230,7 @@ namespace irr
                 while ((P < End) && !core::isspace(P[0]))
                 {
                     // either keep token delimiters when already holding a token, or return if first valid char
-                    if (P[0]==';' || P[0]=='}' || P[0]=='{' || P[0]==',')
+                    if (P[0] == ';' || P[0] == '}' || P[0] == '{' || P[0] == ',')
                     {
                         if (!s.size())
                         {
@@ -2279,7 +2279,7 @@ namespace irr
             {
                 while ((P < End) && core::isspace(P[0]))
                 {
-                    if (*P=='\n')
+                    if (*P == '\n')
                         ++Line;
 
                     ++P;
@@ -2317,7 +2317,7 @@ namespace irr
 
             ++P;
 
-            while (P < End && P[0]!='"')
+            while (P < End && P[0] != '"')
             {
                 out.append(P[0]);
                 ++P;
@@ -2353,7 +2353,7 @@ namespace irr
 
         u16 CXMeshFileLoader::readBinWord()
         {
-            if (P>=End)
+            if (P >= End)
                 return 0;
 
 #ifdef __BIG_ENDIAN__
@@ -2368,7 +2368,7 @@ namespace irr
 
         u32 CXMeshFileLoader::readBinDWord()
         {
-            if (P>=End)
+            if (P >= End)
                 return 0;
 
 #ifdef __BIG_ENDIAN__
@@ -2501,7 +2501,7 @@ namespace irr
         // read matrix from list of floats
         bool CXMeshFileLoader::readMatrix(core::matrix4 &mat)
         {
-            for (u32 i = 0; i<16; ++i)
+            for (u32 i = 0; i < 16; ++i)
                 mat[i] = readFloat();
 
             return checkForOneFollowingSemicolons();

@@ -98,7 +98,7 @@ public:
 
                     if (textureBlendFunc_hasAlpha(srcFact) || textureBlendFunc_hasAlpha(dstFact))
                     {
-                        if (alphaSource==EAS_VERTEX_COLOR)
+                        if (alphaSource == EAS_VERTEX_COLOR)
                         {
 #ifdef GL_ARB_texture_env_combine
                             glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, GL_REPLACE);
@@ -108,7 +108,7 @@ public:
                             glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA_EXT, GL_PRIMARY_COLOR_EXT);
 #endif
                         }
-                        else if (alphaSource==EAS_TEXTURE)
+                        else if (alphaSource == EAS_TEXTURE)
                         {
 #ifdef GL_ARB_texture_env_combine
                             glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_ALPHA_ARB, GL_REPLACE);

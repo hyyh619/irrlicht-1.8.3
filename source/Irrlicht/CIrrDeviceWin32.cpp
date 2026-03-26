@@ -166,22 +166,22 @@ namespace irr
             }
 
             ZeroMemory(activeJoystick.axisValid, sizeof(activeJoystick.axisValid));
-            activeJoystick.axisValid[0] = (info.lX!=0) ? 1 : 0;
-            activeJoystick.axisValid[1] = (info.lY!=0) ? 1 : 0;
-            activeJoystick.axisValid[2] = (info.lZ!=0) ? 1 : 0;
-            activeJoystick.axisValid[3] = (info.lRx!=0) ? 1 : 0;
-            activeJoystick.axisValid[4] = (info.lRy!=0) ? 1 : 0;
-            activeJoystick.axisValid[5] = (info.lRz!=0) ? 1 : 0;
+            activeJoystick.axisValid[0] = (info.lX != 0) ? 1 : 0;
+            activeJoystick.axisValid[1] = (info.lY != 0) ? 1 : 0;
+            activeJoystick.axisValid[2] = (info.lZ != 0) ? 1 : 0;
+            activeJoystick.axisValid[3] = (info.lRx != 0) ? 1 : 0;
+            activeJoystick.axisValid[4] = (info.lRy != 0) ? 1 : 0;
+            activeJoystick.axisValid[5] = (info.lRz != 0) ? 1 : 0;
 
             int caxis = 0;
 
-            for (u8 i = 0; i<6; i++)
+            for (u8 i = 0; i < 6; i++)
             {
                 if (activeJoystick.axisValid[i])
                     caxis++;
             }
 
-            for (u8 i = 0; i<(activeJoystick.devcaps.dwAxes) - caxis; i++)
+            for (u8 i = 0; i < (activeJoystick.devcaps.dwAxes) - caxis; i++)
             {
                 if (i + caxis < 8)
                     activeJoystick.axisValid[i + caxis] = 1;
@@ -219,7 +219,7 @@ namespace irr
                     event.JoystickEvent.POV = (u16)info.rgdwPOV[0];
                     // set to undefined if no POV value was returned or the value
                     // is out of range
-                    if ((caps.dwPOVs==0) || (event.JoystickEvent.POV > 35900))
+                    if ((caps.dwPOVs == 0) || (event.JoystickEvent.POV > 35900))
                         event.JoystickEvent.POV = 65535;
 
                     for (int axis = 0; axis < SEvent::SJoystickEvent::NUMBER_OF_AXES; ++axis)
@@ -228,7 +228,7 @@ namespace irr
                     u16 dxAxis  = 0;
                     u16 irrAxis = 0;
 
-                    while (dxAxis < 6 && irrAxis <caps.dwAxes)
+                    while (dxAxis < 6 && irrAxis < caps.dwAxes)
                     {
                         bool axisFound = 0;
                         s32  axisValue = 0;
@@ -271,14 +271,14 @@ namespace irr
                                 break;
                         }
 
-                        if (ActiveJoysticks[joystick].axisValid[dxAxis]>0)
+                        if (ActiveJoysticks[joystick].axisValid[dxAxis] > 0)
                             axisFound = 1;
 
                         if (axisFound)
                         {
                             s32 val = axisValue - 32768;
 
-                            if (val <-32767)
+                            if (val < -32767)
                                 val = -32767;
 
                             if (val > 32767)
@@ -294,9 +294,9 @@ namespace irr
                     u32  buttons      = 0;
                     BYTE *bytebuttons = info.rgbButtons;
 
-                    for (u16 i = 0; i<32; i++)
+                    for (u16 i = 0; i < 32; i++)
                     {
-                        if (bytebuttons[i] >0)
+                        if (bytebuttons[i] > 0)
                         {
                             buttons |= (1 << i);
                         }
@@ -653,7 +653,7 @@ SEnvMapper* getEnvMapperFromHWnd(const HWND hWnd)
 {
     irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
 
-    for (; it!= EnvMap.end(); ++it)
+    for (; it != EnvMap.end(); ++it)
         if ((*it).hWnd == hWnd)
             return &(*it);
 
@@ -665,7 +665,7 @@ irr::CIrrDeviceWin32* getDeviceFromHWnd(const HWND hWnd)
 {
     irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
 
-    for (; it!= EnvMap.end(); ++it)
+    for (; it != EnvMap.end(); ++it)
         if ((*it).hWnd == hWnd)
             return (*it).irrDev;
 
@@ -713,7 +713,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     // handle grouped events
     messageMap *m = mouseMap;
 
-    while (m->group >=0 && m->winMessage != message)
+    while (m->group >= 0 && m->winMessage != message)
         m += 1;
 
     if (m->group >= 0)
@@ -726,7 +726,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         else if (m->group == 1)    // up
         {
             ClickCount--;
-            if (ClickCount<1)
+            if (ClickCount < 1)
             {
                 ClickCount = 0;
                 ReleaseCapture();
@@ -813,7 +813,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             event.EventType            = irr::EET_KEY_INPUT_EVENT;
             event.KeyInput.Key         = (irr::EKEY_CODE)wParam;
-            event.KeyInput.PressedDown = (message==WM_KEYDOWN || message == WM_SYSKEYDOWN);
+            event.KeyInput.PressedDown = (message == WM_KEYDOWN || message == WM_SYSKEYDOWN);
 
             constexpr UINT MY_MAPVK_VSC_TO_VK_EX = 3;  // MAPVK_VSC_TO_VK_EX should be in SDK according to MSDN, but isn't in mine.
             if (event.KeyInput.Key == irr::KEY_SHIFT)
@@ -839,8 +839,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             BOOL bRes = GetKeyboardState(allKeys);
 
-            event.KeyInput.Shift   = ((allKeys[VK_SHIFT] & 0x80)!=0);
-            event.KeyInput.Control = ((allKeys[VK_CONTROL] & 0x80)!=0);
+            event.KeyInput.Shift   = ((allKeys[VK_SHIFT] & 0x80) != 0);
+            event.KeyInput.Control = ((allKeys[VK_CONTROL] & 0x80) != 0);
 
             // Handle unicode and deadkeys in a way that works since Windows 95 and nt4.0
             // Using ToUnicode instead would be shorter, but would to my knowledge not run on 95 and 98.
@@ -904,7 +904,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             dev = getDeviceFromHWnd(hWnd);
             if (dev && dev->isFullscreen())
             {
-                if ((wParam & 0xFF)==WA_INACTIVE)
+                if ((wParam & 0xFF) == WA_INACTIVE)
                 {
                     // If losing focus we minimize the app to show other one
                     ShowWindow(hWnd, SW_MINIMIZE);
@@ -1120,7 +1120,7 @@ namespace irr
 
         irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
 
-        for (; it!= EnvMap.end(); ++it)
+        for (; it != EnvMap.end(); ++it)
         {
             if ((*it).hWnd == HWnd)
             {
@@ -1398,7 +1398,7 @@ namespace irr
         plc.length = sizeof(WINDOWPLACEMENT);
         bool ret = false;
         if (GetWindowPlacement(HWnd, &plc))
-            ret = (plc.showCmd & SW_SHOWMINIMIZED)!=0;
+            ret = (plc.showCmd & SW_SHOWMINIMIZED) != 0;
 
         _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
         return ret;
@@ -1415,7 +1415,7 @@ namespace irr
         {
             if (ChangedToFullScreen)
             {
-                return (ChangeDisplaySettings(&DesktopMode, 0)==DISP_CHANGE_SUCCESSFUL);
+                return (ChangeDisplaySettings(&DesktopMode, 0) == DISP_CHANGE_SUCCESSFUL);
             }
             else
                 return true;
@@ -2026,10 +2026,10 @@ namespace irr
         UseReferenceRect(false), IsVisible(true)
         , ActiveIcon(gui::ECI_NORMAL), ActiveIconStartTime(0)
     {
-        if (WindowSize.Width!=0)
+        if (WindowSize.Width != 0)
             InvWindowSize.Width = 1.0f / WindowSize.Width;
 
-        if (WindowSize.Height!=0)
+        if (WindowSize.Height != 0)
             InvWindowSize.Height = 1.0f / WindowSize.Height;
 
         updateBorderSize(fullscreen, false);

@@ -270,7 +270,7 @@ namespace irr
                 TerrainData.Size = core::floor32(sqrtf((f32)(filesize / bytesPerPixel)));
             else
             {
-                if ((filesize - file->getPos()) / bytesPerPixel>width * width)
+                if ((filesize - file->getPos()) / bytesPerPixel > width * width)
                 {
                     os::Printer::log("Error reading heightmap RAW file", "File is too small.");
                     return false;
@@ -685,7 +685,7 @@ namespace irr
 
                     TerrainData.Patches[j].CurrentLOD = 0;
 
-                    for (s32 i = TerrainData.MaxLOD - 1; i>0; --i)
+                    for (s32 i = TerrainData.MaxLOD - 1; i > 0; --i)
                     {
                         if (distance >= TerrainData.LODDistanceThreshold[i])
                         {
@@ -860,7 +860,7 @@ namespace irr
             mb.getVertexBuffer().reallocate(numVertices);
             video::S3DVertex2TCoords *vertices = (video::S3DVertex2TCoords*)Mesh->getMeshBuffer(0)->getVertices();
 
-            for (u32 n = 0; n<numVertices; ++n)
+            for (u32 n = 0; n < numVertices; ++n)
                 mb.getVertexBuffer().push_back(vertices[n]);
 
             mb.getIndexBuffer().setType(RenderBuffer->getIndexBuffer().getType());
@@ -871,9 +871,9 @@ namespace irr
             // Generate the indices for all patches at the specified LOD
             s32 index = 0;
 
-            for (s32 i = 0; i<TerrainData.PatchCount; ++i)
+            for (s32 i = 0; i < TerrainData.PatchCount; ++i)
             {
-                for (s32 j = 0; j<TerrainData.PatchCount; ++j)
+                for (s32 j = 0; j < TerrainData.PatchCount; ++j)
                 {
                     s32 x = 0;
                     s32 z = 0;
@@ -958,7 +958,7 @@ namespace irr
             // Loop through patch and generate indices
             s32 rv = 0;
 
-            while (z<TerrainData.CalcPatchSize)
+            while (z < TerrainData.CalcPatchSize)
             {
                 const s32 index11 = getIndex(patchZ, patchX, index, x, z);
                 const s32 index21 = getIndex(patchZ, patchX, index, x + step, z);
@@ -1046,17 +1046,17 @@ namespace irr
             f32       xval       = 0.f;
             f32       x2val      = 0.f;
 
-            for (s32 x = 0; x<TerrainData.Size; ++x)
+            for (s32 x = 0; x < TerrainData.Size; ++x)
             {
                 f32 zval  = 0.f;
                 f32 z2val = 0.f;
 
-                for (s32 z = 0; z<TerrainData.Size; ++z)
+                for (s32 z = 0; z < TerrainData.Size; ++z)
                 {
                     RenderBuffer->getVertexBuffer()[index].TCoords.X = 1.f - xval;
                     RenderBuffer->getVertexBuffer()[index].TCoords.Y = zval;
 
-                    if (RenderBuffer->getVertexType()==video::EVT_2TCOORDS)
+                    if (RenderBuffer->getVertexType() == video::EVT_2TCOORDS)
                     {
                         if (resolution2 == 0)
                         {
@@ -1167,15 +1167,15 @@ namespace irr
             s32             count;
             core::vector3df a, b, c, t;
 
-            for (s32 x = 0; x<TerrainData.Size; ++x)
+            for (s32 x = 0; x < TerrainData.Size; ++x)
             {
-                for (s32 z = 0; z<TerrainData.Size; ++z)
+                for (s32 z = 0; z < TerrainData.Size; ++z)
                 {
                     count = 0;
                     core::vector3df normal;
 
                     // top left
-                    if (x>0 && z>0)
+                    if (x > 0 && z > 0)
                     {
                         a  = mb->getVertexBuffer()[(x - 1) * TerrainData.Size + z - 1].Pos;
                         b  = mb->getVertexBuffer()[(x - 1) * TerrainData.Size + z].Pos;
@@ -1199,7 +1199,7 @@ namespace irr
                     }
 
                     // top right
-                    if (x>0 && z<TerrainData.Size - 1)
+                    if (x > 0 && z < TerrainData.Size - 1)
                     {
                         a  = mb->getVertexBuffer()[(x - 1) * TerrainData.Size + z].Pos;
                         b  = mb->getVertexBuffer()[(x - 1) * TerrainData.Size + z + 1].Pos;
@@ -1223,7 +1223,7 @@ namespace irr
                     }
 
                     // bottom right
-                    if (x<TerrainData.Size - 1 && z<TerrainData.Size - 1)
+                    if (x < TerrainData.Size - 1 && z < TerrainData.Size - 1)
                     {
                         a  = mb->getVertexBuffer()[x * TerrainData.Size + z + 1].Pos;
                         b  = mb->getVertexBuffer()[x * TerrainData.Size + z].Pos;
@@ -1247,7 +1247,7 @@ namespace irr
                     }
 
                     // bottom left
-                    if (x<TerrainData.Size - 1 && z>0)
+                    if (x < TerrainData.Size - 1 && z > 0)
                     {
                         a  = mb->getVertexBuffer()[x * TerrainData.Size + z - 1].Pos;
                         b  = mb->getVertexBuffer()[x * TerrainData.Size + z].Pos;
@@ -1379,7 +1379,7 @@ namespace irr
                 const f64 size = TerrainData.PatchSize * TerrainData.PatchSize *
                     TerrainData.Scale.X * TerrainData.Scale.Z;
 
-                for (s32 i = 0; i<TerrainData.MaxLOD; ++i)
+                for (s32 i = 0; i < TerrainData.MaxLOD; ++i)
                 {
                     TerrainData.LODDistanceThreshold.push_back(size * ((i + 1 + i / 2) * (i + 1 + i / 2)));
                 }
@@ -1391,7 +1391,7 @@ namespace irr
         {
             const s32 count = TerrainData.PatchCount * TerrainData.PatchCount;
 
-            for (s32 i = 0; i< count; ++i)
+            for (s32 i = 0; i < count; ++i)
                 TerrainData.Patches[i].CurrentLOD = lod;
         }
 
@@ -1400,7 +1400,7 @@ namespace irr
         {
             const s32 count = TerrainData.PatchCount * TerrainData.PatchCount;
 
-            for (s32 i = 0; i<count; ++i)
+            for (s32 i = 0; i < count; ++i)
                 TerrainData.Patches[i].CurrentLOD = lodarray[i];
         }
 
@@ -1535,9 +1535,9 @@ namespace irr
 
             // copy materials
 
-            for (unsigned int m = 0; m<Mesh->getMeshBufferCount(); ++m)
+            for (unsigned int m = 0; m < Mesh->getMeshBufferCount(); ++m)
             {
-                if (nb->Mesh->getMeshBufferCount()>m &&
+                if (nb->Mesh->getMeshBufferCount() > m &&
                     nb->Mesh->getMeshBuffer(m) &&
                     Mesh->getMeshBuffer(m))
                 {

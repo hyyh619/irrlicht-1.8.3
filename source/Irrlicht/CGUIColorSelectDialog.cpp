@@ -302,11 +302,11 @@ namespace irr
                         {
                             case EGET_SPINBOX_CHANGED:
                             {
-                                for (u32 i = 0; i!= Battery.size (); ++i)
+                                for (u32 i = 0; i != Battery.size (); ++i)
                                 {
                                     if (event.GUIEvent.Caller == Battery[i])
                                     {
-                                        if (i<4)
+                                        if (i < 4)
                                         {
                                             video::SColor rgb((u32)Battery[0]->getValue(), (u32)Battery[1]->getValue(),
                                                 (u32)Battery[2]->getValue(), (u32)Battery[3]->getValue());
@@ -441,8 +441,8 @@ namespace irr
             const f32 h      = Battery[4]->getValue();
             const f32 s      = Battery[5]->getValue();
             const f32 l      = Battery[6]->getValue();
-            const f32 factor = 58.f * (((s==0) && (l<50)) ? (l * 0.33f / 50) : (
-                    (s<100) ? ((.33f + (s * 0.33f / 100))) : ((0.66f + (l - 50) * 0.33f / 50))));
+            const f32 factor = 58.f * (((s == 0) && (l < 50)) ? (l * 0.33f / 50) : (
+                    (s < 100) ? ((.33f + (s * 0.33f / 100))) : ((0.66f + (l - 50) * 0.33f / 50))));
 
 #else
             const f32 factor = 44;

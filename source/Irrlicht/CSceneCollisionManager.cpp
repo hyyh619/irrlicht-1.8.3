@@ -61,7 +61,7 @@ namespace irr
 
             core::line3d<f32> truncatableRay(ray);
 
-            getPickedNodeBB((root==0) ? SceneManager->getRootSceneNode() : root, truncatableRay,
+            getPickedNodeBB((root == 0) ? SceneManager->getRootSceneNode() : root, truncatableRay,
                 idBitMask, noDebugObjects, dist, best);
 
             return best;
@@ -85,7 +85,7 @@ namespace irr
                 if (current->isVisible())
                 {
                     if ((noDebugObjects ? !current->isDebugObject() : true) &&
-                        (bits==0 || (bits != 0 && (current->getID() & bits))))
+                        (bits == 0 || (bits != 0 && (current->getID() & bits))))
                     {
                         // get world to object space transform
                         core::matrix4 worldToObject;
@@ -115,7 +115,7 @@ namespace irr
                             // nearest distance to intersection
                             const f32 maxmin = core::max_(realMin.X, realMin.Y, realMin.Z);
 
-                            const f32 toIntersectionSq = (maxmin>0 ? maxmin * maxmin : minmax * minmax);
+                            const f32 toIntersectionSq = (maxmin > 0 ? maxmin * maxmin : minmax * minmax);
                             if (toIntersectionSq < outbestdistance)
                             {
                                 outbestdistance = toIntersectionSq;
@@ -142,7 +142,7 @@ namespace irr
                              *  1---------5  |
                              |   2- - -| -6
                              |  /      |  /
-                             ||||/        | /
+                             ||||||/        | /
                              |  0---------4/
                              |
                              |  Note that we define them as opposite pairs of faces.
@@ -285,7 +285,7 @@ namespace irr
 
                 if (selector && current->isVisible() &&
                     (noDebugObjects ? !current->isDebugObject() : true) &&
-                    (bits==0 || (bits != 0 && (current->getID() & bits))))
+                    (bits == 0 || (bits != 0 && (current->getID() & bits))))
                 {
                     // get world to object space transform
                     core::matrix4 mat;
@@ -379,7 +379,7 @@ namespace irr
             const f32 minZ = core::min_(ray.start.Z, ray.end.Z);
             const f32 maxZ = core::max_(ray.start.Z, ray.end.Z);
 
-            for (s32 i = 0; i<cnt; ++i)
+            for (s32 i = 0; i < cnt; ++i)
             {
                 const core::triangle3df &triangle = Triangles[i];
 
@@ -600,7 +600,7 @@ namespace irr
                 if (getLowestRoot(a, b, c, t, &newT))
                 {
                     f32 f = (edgeDotVelocity * newT - edgeDotBaseToVertex) / edgeSqaredLength;
-                    if (f >=0.0f && f <= 1.0f)
+                    if (f >= 0.0f && f <= 1.0f)
                     {
                         // intersection took place within segment
                         t              = newT;
@@ -629,7 +629,7 @@ namespace irr
                 {
                     f32 f = (edgeDotVelocity * newT - edgeDotBaseToVertex) /
                         edgeSqaredLength;
-                    if (f >=0.0f && f <= 1.0f)
+                    if (f >= 0.0f && f <= 1.0f)
                     {
                         // intersection took place within segment
                         t              = newT;
@@ -659,7 +659,7 @@ namespace irr
                 {
                     f32 f = (edgeDotVelocity * newT - edgeDotBaseToVertex) /
                         edgeSqaredLength;
-                    if (f >=0.0f && f <= 1.0f)
+                    if (f >= 0.0f && f <= 1.0f)
                     {
                         // intersection took place within segment
                         t              = newT;
@@ -796,7 +796,7 @@ namespace irr
             s32 triangleCnt = 0;
             colData.selector->getTriangles(Triangles.pointer(), totalTriangleCnt, triangleCnt, box, &scaleMatrix);
 
-            for (s32 i = 0; i<triangleCnt; ++i)
+            for (s32 i = 0; i < triangleCnt; ++i)
                 if (testTriangleIntersection(&colData, Triangles[i]))
                     colData.triangleIndex = i;
 

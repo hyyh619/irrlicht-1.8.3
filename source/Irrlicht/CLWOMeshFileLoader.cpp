@@ -163,15 +163,15 @@ namespace irr
 #endif
             u32 i;
 
-            for (i = 0; i<Materials.size(); ++i)
+            for (i = 0; i < Materials.size(); ++i)
             {
                 u16 uvTag;
 
-                for (u32 j = 0; j<2; ++j) // max 2 texture coords
+                for (u32 j = 0; j < 2; ++j) // max 2 texture coords
                 {
                     if (Materials[i]->Texture[j].UVname.size())
                     {
-                        for (uvTag = 0; uvTag<UvName.size(); ++uvTag)
+                        for (uvTag = 0; uvTag < UvName.size(); ++uvTag)
                         {
                             if (Materials[i]->Texture[j].UVname == UvName[uvTag])
                             {
@@ -180,7 +180,7 @@ namespace irr
                             }
                         }
 
-                        for (uvTag = 0; uvTag<DUvName.size(); ++uvTag)
+                        for (uvTag = 0; uvTag < DUvName.size(); ++uvTag)
                         {
                             if (Materials[i]->Texture[j].UVname == DUvName[uvTag])
                             {
@@ -196,18 +196,18 @@ namespace irr
             os::Printer::log("LWO loader: Creating polys.");
 #endif
             // create actual geometry for lwo2
-            if (FormatVersion==2)
+            if (FormatVersion == 2)
             {
                 core::array<u32> vertexCount;
                 vertexCount.reallocate(Materials.size());
 
-                for (i = 0; i<Materials.size(); ++i)
+                for (i = 0; i < Materials.size(); ++i)
                     vertexCount.push_back(0);
 
-                for (u32 polyIndex = 0; polyIndex<Indices.size(); ++polyIndex)
+                for (u32 polyIndex = 0; polyIndex < Indices.size(); ++polyIndex)
                     vertexCount[MaterialMapping[polyIndex]] += Indices[polyIndex].size();
 
-                for (i = 0; i<Materials.size(); ++i)
+                for (i = 0; i < Materials.size(); ++i)
                 {
                     Materials[i]->Meshbuffer->Vertices.reallocate(vertexCount[i]);
                     Materials[i]->Meshbuffer->Indices.reallocate(vertexCount[i]);
@@ -215,7 +215,7 @@ namespace irr
             }
 
             // create actual geometry for lwo2
-            for (u32 polyIndex = 0; polyIndex<Indices.size(); ++polyIndex)
+            for (u32 polyIndex = 0; polyIndex < Indices.size(); ++polyIndex)
             {
                 const u16              tag      = MaterialMapping[polyIndex];
                 scene::SMeshBuffer     *mb      = Materials[tag]->Meshbuffer;
@@ -227,26 +227,26 @@ namespace irr
                 vertex.Color = 0xffffffff;
                 const u32 vertCount = mb->Vertices.size();
 
-                for (u32 i = 0; i<polySize; ++i)
+                for (u32 i = 0; i < polySize; ++i)
                 {
                     const u32 j = poly[i];
                     vertex.Pos = Points[j];
-                    if (uvTag<UvIndex.size())
+                    if (uvTag < UvIndex.size())
                     {
                         for (u32 uvsearch = 0; uvsearch < UvIndex[uvTag].size(); ++uvsearch)
                         {
-                            if (j==UvIndex[uvTag][uvsearch])
+                            if (j == UvIndex[uvTag][uvsearch])
                             {
                                 vertex.TCoords = TCoords[uvTag][uvsearch];
                                 break;
                             }
                         }
 
-                        if (duvTag<DUvName.size())
+                        if (duvTag < DUvName.size())
                         {
                             for (u32 polysearch = 0; polysearch < VmPolyPointsIndex[duvTag].size(); polysearch += 2)
                             {
-                                if (polyIndex==VmPolyPointsIndex[duvTag][polysearch] && j==VmPolyPointsIndex[duvTag][polysearch + 1])
+                                if (polyIndex == VmPolyPointsIndex[duvTag][polysearch] && j == VmPolyPointsIndex[duvTag][polysearch + 1])
                                 {
                                     vertex.TCoords = VmCoordsIndex[duvTag][polysearch / 2];
                                     break;
@@ -259,9 +259,9 @@ namespace irr
                 }
 
                 // triangulate as trifan
-                if (polySize>2)
+                if (polySize > 2)
                 {
-                    for (u32 i = 1; i<polySize - 1; ++i)
+                    for (u32 i = 1; i < polySize - 1; ++i)
                     {
                         mb->Indices.push_back(vertCount);
                         mb->Indices.push_back(vertCount + i);
@@ -274,7 +274,7 @@ namespace irr
             os::Printer::log("LWO loader: Fixing meshbuffers.");
 #endif
 
-            for (u32 i = 0; i<Materials.size(); ++i)
+            for (u32 i = 0; i < Materials.size(); ++i)
             {
 #ifdef LWO_READER_DEBUG
                 os::Printer::log("LWO loader: Material name", Materials[i]->Name);
@@ -287,7 +287,7 @@ namespace irr
                     continue;
                 }
 
-                for (u32 j = 0; j<Materials[i]->Meshbuffer->Vertices.size(); ++j)
+                for (u32 j = 0; j < Materials[i]->Meshbuffer->Vertices.size(); ++j)
                     Materials[i]->Meshbuffer->Vertices[j].Color = Materials[i]->Meshbuffer->Material.DiffuseColor;
 
                 Materials[i]->Meshbuffer->recalculateBoundingBox();
@@ -340,7 +340,7 @@ namespace irr
                 // cope with planar mapping texture coords
                 if (Materials[i]->Texture[0].Projection != 5)
                 {
-                    if (FormatVersion!=2)
+                    if (FormatVersion != 2)
                     {
                         if (Materials[i]->Texture[0].Flags & 1)
                             Materials[i]->Texture[0].Axis = 0;
@@ -350,18 +350,18 @@ namespace irr
                             Materials[i]->Texture[0].Axis = 2;
                     }
                     // if no axis given choose the dominant one
-                    else if (Materials[i]->Texture[0].Axis>2)
+                    else if (Materials[i]->Texture[0].Axis > 2)
                     {
-                        if (Materials[i]->Meshbuffer->getBoundingBox().getExtent().Y<Materials[i]->Meshbuffer->getBoundingBox().getExtent().X)
+                        if (Materials[i]->Meshbuffer->getBoundingBox().getExtent().Y < Materials[i]->Meshbuffer->getBoundingBox().getExtent().X)
                         {
-                            if (Materials[i]->Meshbuffer->getBoundingBox().getExtent().Y<Materials[i]->Meshbuffer->getBoundingBox().getExtent().Z)
+                            if (Materials[i]->Meshbuffer->getBoundingBox().getExtent().Y < Materials[i]->Meshbuffer->getBoundingBox().getExtent().Z)
                                 Materials[i]->Texture[0].Axis = 1;
                             else
                                 Materials[i]->Texture[0].Axis = 2;
                         }
                         else
                         {
-                            if (Materials[i]->Meshbuffer->getBoundingBox().getExtent().X<Materials[i]->Meshbuffer->getBoundingBox().getExtent().Z)
+                            if (Materials[i]->Meshbuffer->getBoundingBox().getExtent().X < Materials[i]->Meshbuffer->getBoundingBox().getExtent().Z)
                                 Materials[i]->Texture[0].Axis = 0;
                             else
                                 Materials[i]->Texture[0].Axis = 2;
@@ -371,12 +371,12 @@ namespace irr
                     // get the resolution for this axis
                     f32 resolutionS = core::reciprocal(Materials[i]->Texture[0].Size.Z);
                     f32 resolutionT = core::reciprocal(Materials[i]->Texture[0].Size.Y);
-                    if (Materials[i]->Texture[0].Axis==1)
+                    if (Materials[i]->Texture[0].Axis == 1)
                     {
                         resolutionS = core::reciprocal(Materials[i]->Texture[0].Size.X);
                         resolutionT = core::reciprocal(Materials[i]->Texture[0].Size.Z);
                     }
-                    else if (Materials[i]->Texture[0].Axis==2)
+                    else if (Materials[i]->Texture[0].Axis == 2)
                     {
                         resolutionS = core::reciprocal(Materials[i]->Texture[0].Size.X);
                         resolutionT = core::reciprocal(Materials[i]->Texture[0].Size.Y);
@@ -387,7 +387,7 @@ namespace irr
                 }
 
                 // add bump maps
-                if (Materials[i]->Meshbuffer->Material.MaterialType==video::EMT_NORMAL_MAP_SOLID)
+                if (Materials[i]->Meshbuffer->Material.MaterialType == video::EMT_NORMAL_MAP_SOLID)
                 {
                     SMesh *tmpmesh = new SMesh();
                     tmpmesh->addMeshBuffer(Materials[i]->Meshbuffer);
@@ -441,7 +441,7 @@ namespace irr
             type[4] = 0;
             tLWOLayerInfo layer;
 
-            while (File->getPos()<File->getSize())
+            while (File->getPos() < File->getSize())
             {
                 File->read(&type, 4);
                 // Convert 4-char string to 4-byte integer
@@ -467,13 +467,13 @@ namespace irr
 #ifndef __BIG_ENDIAN__
                         tmp16 = os::Byteswap::byteswap(tmp16);
 #endif
-                        if (((FormatVersion==1) && (tmp16!=1)) ||
-                            ((FormatVersion==2) && (tmp16 & 1)))
+                        if (((FormatVersion == 1) && (tmp16 != 1)) ||
+                            ((FormatVersion == 2) && (tmp16 & 1)))
                             layer.Active = false;
                         else
                             layer.Active = true;
 
-                        if (FormatVersion==2)
+                        if (FormatVersion == 2)
                             size -= readVec(layer.Pivot);
 
                         size -= readString(layer.Name);
@@ -498,7 +498,7 @@ namespace irr
                         const u32 tmpsize = size / 12;
                         Points.reallocate(tmpsize);
 
-                        for (u32 i = 0; i<tmpsize; ++i)
+                        for (u32 i = 0; i < tmpsize; ++i)
                         {
                             readVec(vec);
                             Points.push_back(vec);
@@ -518,7 +518,7 @@ namespace irr
 #ifdef LWO_READER_DEBUG
                         os::Printer::log("LWO loader: loading polygons.");
 #endif
-                        if (FormatVersion!=2)
+                        if (FormatVersion != 2)
                             readObj1(size);
                         else
                             readObj2(size);
@@ -535,13 +535,13 @@ namespace irr
                         os::Printer::log("LWO loader: loading surface names.");
 #endif
 
-                        while (size!=0)
+                        while (size != 0)
                         {
                             tLWOMaterial *mat = new tLWOMaterial();
                             mat->Name       = "";
                             mat->Meshbuffer = new scene::SMeshBuffer();
                             size           -= readString(mat->Name);
-                            if (FormatVersion!=2)
+                            if (FormatVersion != 2)
                                 mat->TagType = 1; // format 2 has more types
 
                             Materials.push_back(mat);
@@ -618,7 +618,7 @@ namespace irr
                         // not stored
                         core::vector3df vec;
 
-                        for (u32 i = 0; i<2; ++i)
+                        for (u32 i = 0; i < 2; ++i)
                             readVec(vec);
 
                         size -= 24;
@@ -664,7 +664,7 @@ namespace irr
 
             vertex.Color = 0xffffffff;
 
-            while (size!=0)
+            while (size != 0)
             {
                 File->read(&numVerts, 2);
 #ifndef __BIG_ENDIAN__
@@ -680,7 +680,7 @@ namespace irr
                 size -= 2 * numVerts + 4;
                 // detail meshes ?
                 scene::SMeshBuffer *mb;
-                if (material<0)
+                if (material < 0)
                     mb = Materials[-material - 1]->Meshbuffer;
                 else
                     mb = Materials[material - 1]->Meshbuffer;
@@ -690,7 +690,7 @@ namespace irr
 
                 const u16 vertCount = mb->Vertices.size();
 
-                for (u16 i = 0; i<numVerts; ++i)
+                for (u16 i = 0; i < numVerts; ++i)
                 {
                     File->read(&vertIndex, 2);
 #ifndef __BIG_ENDIAN__
@@ -700,7 +700,7 @@ namespace irr
                     mb->Vertices.push_back(vertex);
                 }
 
-                for (u16 i = 1; i<numVerts - 1; ++i)
+                for (u16 i = 1; i < numVerts - 1; ++i)
                 {
                     mb->Indices.push_back(vertCount);
                     mb->Indices.push_back(vertCount + i);
@@ -709,7 +709,7 @@ namespace irr
 
                 // skip material number and detail surface count
                 // detail surface can be read just as a normal one now
-                if (material<0)
+                if (material < 0)
                     File->read(&material, 2);
 
                 File->read(&material, 2);
@@ -842,13 +842,13 @@ namespace irr
             type[4] = 0;
             File->read(&type, 4);
             size -= 4;
-            if ((strncmp(type, "SURF", 4)) || (Indices.size()==0))
+            if ((strncmp(type, "SURF", 4)) || (Indices.size() == 0))
             {
                 File->seek(size, true);
                 return;
             }
 
-            while (size!=0)
+            while (size != 0)
             {
                 u16 tag;
                 u32 polyIndex;
@@ -880,7 +880,7 @@ namespace irr
 
             u16 numVerts = 0;
 
-            while (size!=0)
+            while (size != 0)
             {
                 File->read(&numVerts, 2);
 #ifndef __BIG_ENDIAN__
@@ -895,7 +895,7 @@ namespace irr
                 core::array<u32> &polyArray = Indices.getLast();
                 polyArray.reallocate(numVerts);
 
-                for (u16 i = 0; i<numVerts; ++i)
+                for (u16 i = 0; i < numVerts; ++i)
                 {
                     size -= readVX(vertIndex);
                     polyArray.push_back(vertIndex);
@@ -904,7 +904,7 @@ namespace irr
 
             MaterialMapping.reallocate(Indices.size());
 
-            for (u32 j = 0; j<Indices.size(); ++j)
+            for (u32 j = 0; j < Indices.size(); ++j)
                 MaterialMapping.push_back(0);
         }
 
@@ -920,9 +920,9 @@ namespace irr
             os::Printer::log("LWO loader: material name", name.c_str());
 #endif
 
-            for (u32 i = 0; i<Materials.size(); ++i)
+            for (u32 i = 0; i < Materials.size(); ++i)
             {
-                if ((Materials[i]->TagType==1) && (Materials[i]->Name==name))
+                if ((Materials[i]->TagType == 1) && (Materials[i]->Name == name))
                 {
                     mat = Materials[i];
                     break;
@@ -935,14 +935,14 @@ namespace irr
                 return;
             }
 
-            if (FormatVersion==2)
+            if (FormatVersion == 2)
                 size -= readString(name);
 
             video::SMaterial &irrMat = mat->Meshbuffer->Material;
 
             u8 currTexture = 0;
 
-            while (size!=0)
+            while (size != 0)
             {
                 char type[5];
                 type[4] = 0;
@@ -971,7 +971,7 @@ namespace irr
                             irrMat.AmbientColor = irrMat.DiffuseColor;
                             size               -= colSize;
                             subsize            -= colSize;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[0]);
                         }
                         break;
@@ -981,7 +981,7 @@ namespace irr
                         os::Printer::log("LWO loader: loading Diffuse color.");
 #endif
                         {
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                             {
                                 File->read(&mat->Diffuse, 4);
 #ifndef __BIG_ENDIAN__
@@ -1022,7 +1022,7 @@ namespace irr
                         os::Printer::log("LWO loader: loading luminance.");
 #endif
                         {
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                             {
                                 File->read(&mat->Luminance, 4);
 #ifndef __BIG_ENDIAN__
@@ -1063,7 +1063,7 @@ namespace irr
                         os::Printer::log("LWO loader: loading specular.");
 #endif
                         {
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                             {
                                 File->read(&mat->Specular, 4);
 #ifndef __BIG_ENDIAN__
@@ -1104,7 +1104,7 @@ namespace irr
                         os::Printer::log("LWO loader: loading reflection.");
 #endif
                         {
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                             {
                                 File->read(&mat->Reflection, 4);
 #ifndef __BIG_ENDIAN__
@@ -1142,7 +1142,7 @@ namespace irr
 
                     case charsToUIntD('T', 'R', 'A', 'N'):
                     {
-                        if (FormatVersion==2)
+                        if (FormatVersion == 2)
                         {
                             File->read(&mat->Transparency, 4);
 #ifndef __BIG_ENDIAN__
@@ -1193,7 +1193,7 @@ namespace irr
 #endif
                             size    -= 4;
                             subsize -= 4;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[6]);
                         }
                         break;
@@ -1237,7 +1237,7 @@ namespace irr
 #endif
                             size    -= 4;
                             subsize -= 4;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[8]);
                         }
                         break;
@@ -1252,12 +1252,12 @@ namespace irr
 #ifndef __BIG_ENDIAN__
                             tmpf32 = os::Byteswap::byteswap(tmpf32);
 #endif
-                            if (currTexture==6)
+                            if (currTexture == 6)
                                 irrMat.MaterialTypeParam = tmpf32;
 
                             size    -= 4;
                             subsize -= 4;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[9]);
                         }
                         break;
@@ -1271,9 +1271,9 @@ namespace irr
 #ifndef __BIG_ENDIAN__
                             tmp16 = os::Byteswap::byteswap(tmp16);
 #endif
-                            if (tmp16==1)
+                            if (tmp16 == 1)
                                 irrMat.BackfaceCulling = true;
-                            else if (tmp16==3)
+                            else if (tmp16 == 3)
                                 irrMat.BackfaceCulling = false;
 
                             size -= 2;
@@ -1312,7 +1312,7 @@ namespace irr
                         os::Printer::log("LWO loader: loading reflection map.");
 #endif
                         {
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                             {
                                 size -= readVX(tmp32);
                                 if (tmp32)
@@ -1333,7 +1333,7 @@ namespace irr
                             mat->ReflSeamAngle = os::Byteswap::byteswap(mat->ReflSeamAngle);
 #endif
                             size -= 4;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[10]);
                         }
                         break;
@@ -1348,7 +1348,7 @@ namespace irr
                             mat->ReflBlur = os::Byteswap::byteswap(mat->ReflBlur);
 #endif
                             size -= 4;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[11]);
                         }
                         break;
@@ -1364,7 +1364,7 @@ namespace irr
 #endif
                             size    -= 4;
                             subsize -= 4;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[12]);
                         }
                         break;
@@ -1384,7 +1384,7 @@ namespace irr
 
                     case charsToUIntD('T', 'I', 'M', 'G'):
                     {
-                        if (FormatVersion==2)
+                        if (FormatVersion == 2)
                         {
 #ifdef LWO_READER_DEBUG
                             os::Printer::log("LWO loader: loading refraction map.");
@@ -1416,7 +1416,7 @@ namespace irr
                             mat->TranspBlur = os::Byteswap::byteswap(mat->TranspBlur);
 #endif
                             size -= 4;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[13]);
                         }
                         break;
@@ -1431,7 +1431,7 @@ namespace irr
                             mat->HighlightColor = os::Byteswap::byteswap(mat->HighlightColor);
 #endif
                             size -= 4;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[14]);
                         }
                         break;
@@ -1446,7 +1446,7 @@ namespace irr
                             mat->ColorFilter = os::Byteswap::byteswap(mat->ColorFilter);
 #endif
                             size -= 4;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[15]);
                         }
                         break;
@@ -1461,7 +1461,7 @@ namespace irr
                             mat->AdditiveTransparency = os::Byteswap::byteswap(mat->AdditiveTransparency);
 #endif
                             size -= 4;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[16]);
                         }
                         break;
@@ -1471,7 +1471,7 @@ namespace irr
                         os::Printer::log("LWO loader: loading glow.");
 #endif
                         {
-                            if (FormatVersion==0)
+                            if (FormatVersion == 0)
                             {
                                 File->read(&mat->GlowIntensity, 4);
 #ifndef __BIG_ENDIAN__
@@ -1491,7 +1491,7 @@ namespace irr
                                 mat->GlowIntensity = os::Byteswap::byteswap(mat->GlowIntensity);
 #endif
                                 size -= 4;
-                                if (FormatVersion==2)
+                                if (FormatVersion == 2)
                                     size -= readVX(mat->Envelope[17]);
 
                                 File->read(&mat->GlowSize, 4);
@@ -1499,7 +1499,7 @@ namespace irr
                                 mat->GlowSize = os::Byteswap::byteswap(mat->GlowSize);
 #endif
                                 size -= 4;
-                                if (FormatVersion==2)
+                                if (FormatVersion == 2)
                                     size -= readVX(mat->Envelope[18]);
                             }
                         }
@@ -1515,7 +1515,7 @@ namespace irr
                             mat->GlowIntensity = os::Byteswap::byteswap(mat->GlowIntensity);
 #endif
                             size -= 4;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[17]);
                         }
                         break;
@@ -1533,22 +1533,22 @@ namespace irr
                                 irrMat.Wireframe = true;
 
                             size -= 2;
-                            if (size!=0)
+                            if (size != 0)
                             {
                                 File->read(&irrMat.Thickness, 4);
 #ifndef __BIG_ENDIAN__
                                 irrMat.Thickness = os::Byteswap::byteswap(irrMat.Thickness);
 #endif
                                 size -= 4;
-                                if (FormatVersion==2)
+                                if (FormatVersion == 2)
                                     size -= readVX(mat->Envelope[19]);
                             }
 
-                            if (size!=0)
+                            if (size != 0)
                             {
                                 video::SColor lineColor;
                                 size -= readColor(lineColor);
-                                if (FormatVersion==2)
+                                if (FormatVersion == 2)
                                     size -= readVX(mat->Envelope[20]);
                             }
                         }
@@ -1582,7 +1582,7 @@ namespace irr
                             mat->VertexColorIntensity = os::Byteswap::byteswap(mat->VertexColorIntensity);
 #endif
                             size -= 4;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                                 size -= readVX(mat->Envelope[21]);
 
                             File->read(&tmp32, 4); // skip type
@@ -1710,7 +1710,7 @@ namespace irr
 #ifndef __BIG_ENDIAN__
                             tmp16 = os::Byteswap::byteswap(tmp16);
 #endif
-                            mat->Texture[currTexture].Active = (tmp16!=0);
+                            mat->Texture[currTexture].Active = (tmp16 != 0);
                             size                            -= 2;
                         }
                         break;
@@ -1754,7 +1754,7 @@ namespace irr
 #endif
                         {
                             tmp16 = 0;
-                            if (FormatVersion==2)
+                            if (FormatVersion == 2)
                             {
                                 File->read(&tmp16, 2);
 #ifndef __BIG_ENDIAN__
@@ -1802,7 +1802,7 @@ namespace irr
 #endif
                         size    -= 6;
                         subsize -= 6;
-                        if (FormatVersion==2)
+                        if (FormatVersion == 2)
                             size -= readVX(mat->Envelope[22]);
                     }
                     break;
@@ -1829,7 +1829,7 @@ namespace irr
                     {
                         core::vector3df &center = mat->Texture[currTexture].Center;
                         size -= readVec(center);
-                        if (FormatVersion==2)
+                        if (FormatVersion == 2)
                             size -= readVX(mat->Envelope[22]);
 
 #ifdef LWO_READER_DEBUG
@@ -1843,7 +1843,7 @@ namespace irr
                     {
                         core::vector3df &tsize = mat->Texture[currTexture].Size;
                         size -= readVec(tsize);
-                        if (FormatVersion==2)
+                        if (FormatVersion == 2)
                             size -= readVX(mat->Envelope[22]);
 
 #ifdef LWO_READER_DEBUG
@@ -1856,7 +1856,7 @@ namespace irr
                     {
                         core::vector3df rotation;
                         size -= readVec(rotation);
-                        if (FormatVersion==2)
+                        if (FormatVersion == 2)
                             size -= readVX(mat->Envelope[22]);
 
 #ifdef LWO_READER_DEBUG
@@ -1878,7 +1878,7 @@ namespace irr
                     case charsToUIntD('T', 'F', 'A', 'L'):
                     case charsToUIntD('F', 'A', 'L', 'L'):
                     {
-                        if (FormatVersion==2)
+                        if (FormatVersion == 2)
                         {
                             u16 tmp16;
                             File->read(&tmp16, 2);
@@ -1890,7 +1890,7 @@ namespace irr
 
                         core::vector3df &falloff = mat->Texture[currTexture].Falloff;
                         size -= readVec(falloff);
-                        if (FormatVersion==2)
+                        if (FormatVersion == 2)
                             size -= readVX(mat->Envelope[22]);
 
 #ifdef LWO_READER_DEBUG
@@ -1908,7 +1908,7 @@ namespace irr
                         tmp16 = os::Byteswap::byteswap(tmp16);
 #endif
 #ifdef LWO_READER_DEBUG
-                        os::Printer::log("LWO loader: texture coordinate system", tmp16==0 ? "object coords" : "world coords");
+                        os::Printer::log("LWO loader: texture coordinate system", tmp16 == 0 ? "object coords" : "world coords");
 #endif
                     }
                     break;
@@ -2115,7 +2115,7 @@ namespace irr
 
         u32 CLWOMeshFileLoader::readColor(video::SColor &color)
         {
-            if (FormatVersion!=2)
+            if (FormatVersion != 2)
             {
                 u8 colorComponent;
                 File->read(&colorComponent, 1);

@@ -85,7 +85,7 @@ namespace irr
             StringList dmfRawFile;
             LoadFromFile(file, dmfRawFile);
 
-            if (dmfRawFile.size()==0)
+            if (dmfRawFile.size() == 0)
                 return 0;
 
             SMesh *mesh = new SMesh();
@@ -122,7 +122,7 @@ namespace irr
                 os::Printer::log("Creating meshbuffers.");
 #endif
 
-                for (i = 0; i<header.numMaterials; i++)
+                for (i = 0; i < header.numMaterials; i++)
                 {
                     // create a new SMeshBufferLightMap for each material
                     SSkinMeshBuffer *buffer = new SSkinMeshBuffer();
@@ -172,7 +172,7 @@ namespace irr
                             const dmfVert            &vv = verts[faces[i].firstVert + v];
                             video::S3DVertex2TCoords vert(vv.pos,
                                 normal, video::SColor(255, 255, 255, 255), vv.tc, vv.lc);
-                            if (materiali[faces[i].materialID].textureBlend==4 &&
+                            if (materiali[faces[i].materialID].textureBlend == 4 &&
                                 SceneMgr->getParameters()->getAttributeAsBool(DMF_FLIP_ALPHA_TEXTURES))
                             {
                                 vert.TCoords.set(vv.tc.X, -vv.tc.Y);
@@ -188,7 +188,7 @@ namespace irr
                             const dmfVert    &vv = verts[faces[i].firstVert + v];
                             video::S3DVertex vert(vv.pos,
                                 normal, video::SColor(255, 255, 255, 255), vv.tc);
-                            if (materiali[faces[i].materialID].textureBlend==4 &&
+                            if (materiali[faces[i].materialID].textureBlend == 4 &&
                                 SceneMgr->getParameters()->getAttributeAsBool(DMF_FLIP_ALPHA_TEXTURES))
                             {
                                 vert.TCoords.set(vv.tc.X, -vv.tc.Y);
@@ -266,7 +266,7 @@ namespace irr
 
                 path += ('/');
 
-                for (i = 0; i<mesh->getMeshBufferCount(); i++)
+                for (i = 0; i < mesh->getMeshBufferCount(); i++)
                 {
                     // texture and lightmap
                     video::ITexture *tex = 0;
@@ -276,22 +276,22 @@ namespace irr
                     video::SMaterial &mat = mesh->getMeshBuffer(i)->getMaterial();
 
                     // Primary texture is normal
-                    if (materiali[i].textureFlag==0)
+                    if (materiali[i].textureFlag == 0)
                     {
-                        if (materiali[i].textureBlend==4)
+                        if (materiali[i].textureBlend == 4)
                             driver->setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, true);
 
                         findFile(use_mat_dirs, path, materiali[i].pathName, materiali[i].textureName);
                         tex = driver->getTexture(materiali[i].textureName);
                     }
                     // Primary texture is just a color
-                    else if (materiali[i].textureFlag==1)
+                    else if (materiali[i].textureFlag == 1)
                     {
                         video::SColor color(axtoi(materiali[i].textureName.c_str()));
 
                         // just for compatibility with older Irrlicht versions
                         // to support transparent materials
-                        if (color.getAlpha()!=255 && materiali[i].textureBlend==4)
+                        if (color.getAlpha() != 255 && materiali[i].textureBlend == 4)
                             driver->setTextureCreationFlag(video::ETCF_ALWAYS_32_BIT, true);
 
                         video::IImage *immagine = driver->createImage(video::ECOLOR_FORMAT::ECF_A8R8G8B8,
@@ -301,7 +301,7 @@ namespace irr
                         immagine->drop();
 
                         // to support transparent materials
-                        if (color.getAlpha()!=255 && materiali[i].textureBlend==4)
+                        if (color.getAlpha() != 255 && materiali[i].textureBlend == 4)
                         {
                             mat.MaterialType      = video::EMT_TRANSPARENT_ALPHA_CHANNEL;
                             mat.MaterialTypeParam = (((f32) (color.getAlpha() - 1)) / 255.0f);
@@ -321,7 +321,7 @@ namespace irr
                         mat.AmbientColor = header.dmfAmbient.getInterpolated(video::SColor(255, 0, 0, 0), mult / 100.f);
                     }
 
-                    if (materiali[i].textureBlend==4)
+                    if (materiali[i].textureBlend == 4)
                     {
                         mat.MaterialType      = video::EMT_TRANSPARENT_ALPHA_CHANNEL;
                         mat.MaterialTypeParam =
@@ -329,7 +329,7 @@ namespace irr
                     }
 
                     // if texture is present mirror vertically owing to DeleD representation
-                    if (tex && header.dmfVersion<1.1)
+                    if (tex && header.dmfVersion < 1.1)
                     {
                         const core::dimension2d<u32> texsize = tex->getSize();
                         void                         *pp     = tex->lock();
@@ -341,8 +341,8 @@ namespace irr
                                 s16 *p  = (s16*)pp;
                                 s16 tmp = 0;
 
-                                for (u32 x = 0; x<texsize.Width; x++)
-                                    for (u32 y = 0; y<texsize.Height / 2; y++)
+                                for (u32 x = 0; x < texsize.Width; x++)
+                                    for (u32 y = 0; y < texsize.Height / 2; y++)
                                     {
                                         tmp                                             = p[y * texsize.Width + x];
                                         p[y * texsize.Width + x]                        = p[(texsize.Height - y - 1) * texsize.Width + x];
@@ -354,8 +354,8 @@ namespace irr
                                 s32 *p  = (s32*)pp;
                                 s32 tmp = 0;
 
-                                for (u32 x = 0; x<texsize.Width; x++)
-                                    for (u32 y = 0; y<texsize.Height / 2; y++)
+                                for (u32 x = 0; x < texsize.Width; x++)
+                                    for (u32 y = 0; y < texsize.Height / 2; y++)
                                     {
                                         tmp                                             = p[y * texsize.Width + x];
                                         p[y * texsize.Width + x]                        = p[(texsize.Height - y - 1) * texsize.Width + x];
@@ -369,7 +369,7 @@ namespace irr
                     }
 
                     // if lightmap is present mirror vertically owing to DeleD rapresentation
-                    if (lig && header.dmfVersion<1.1)
+                    if (lig && header.dmfVersion < 1.1)
                     {
                         const core::dimension2d<u32> ligsize = lig->getSize();
                         void                         *pp     = lig->lock();
@@ -381,9 +381,9 @@ namespace irr
                                 s16 *p  = (s16*)pp;
                                 s16 tmp = 0;
 
-                                for (u32 x = 0; x<ligsize.Width; x++)
+                                for (u32 x = 0; x < ligsize.Width; x++)
                                 {
-                                    for (u32 y = 0; y<ligsize.Height / 2; y++)
+                                    for (u32 y = 0; y < ligsize.Height / 2; y++)
                                     {
                                         tmp                                             = p[y * ligsize.Width + x];
                                         p[y * ligsize.Width + x]                        = p[(ligsize.Height - y - 1) * ligsize.Width + x];
@@ -396,9 +396,9 @@ namespace irr
                                 s32 *p  = (s32*)pp;
                                 s32 tmp = 0;
 
-                                for (u32 x = 0; x<ligsize.Width; x++)
+                                for (u32 x = 0; x < ligsize.Width; x++)
                                 {
-                                    for (u32 y = 0; y<ligsize.Height / 2; y++)
+                                    for (u32 y = 0; y < ligsize.Height / 2; y++)
                                     {
                                         tmp                                             = p[y * ligsize.Width + x];
                                         p[y * ligsize.Width + x]                        = p[(ligsize.Height - y - 1) * ligsize.Width + x];

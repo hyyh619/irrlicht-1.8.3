@@ -23,7 +23,7 @@ namespace irr
 
         inline s32 CSceneNodeAnimatorFollowSpline::clamp(s32 idx, s32 size)
         {
-            return (idx<0 ? size + idx : (idx>=size ? idx - size : idx));
+            return (idx < 0 ? size + idx : (idx >= size ? idx - size : idx));
         }
 
 
@@ -34,7 +34,7 @@ namespace irr
                 return;
 
             const u32 pSize = Points.size();
-            if (pSize==0)
+            if (pSize == 0)
             {
                 if (!Loop)
                     HasFinished = true;
@@ -42,7 +42,7 @@ namespace irr
                 return;
             }
 
-            if (pSize==1)
+            if (pSize == 1)
             {
                 if (timeMs > StartTime)
                 {
@@ -107,12 +107,12 @@ namespace irr
                 count += 1;
             }
 
-            for (u32 i = 0; i<count; ++i)
+            for (u32 i = 0; i < count; ++i)
             {
                 core::stringc tname = "Point";
                 tname += (int)(i + 1);
 
-                out->addVector3d(tname.c_str(), i<Points.size() ? Points[i] : core::vector3df(0, 0, 0));
+                out->addVector3d(tname.c_str(), i < Points.size() ? Points[i] : core::vector3df(0, 0, 0));
             }
         }
 

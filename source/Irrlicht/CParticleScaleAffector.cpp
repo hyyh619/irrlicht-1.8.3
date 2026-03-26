@@ -20,7 +20,7 @@ namespace irr
 
         void CParticleScaleAffector::affect(u32 now, SParticle *particlearray, u32 count)
         {
-            for (u32 i = 0; i<count; i++)
+            for (u32 i = 0; i < count; i++)
             {
                 const u32 maxdiff  = particlearray[i].endTime - particlearray[i].startTime;
                 const u32 curdiff  = now - particlearray[i].startTime;

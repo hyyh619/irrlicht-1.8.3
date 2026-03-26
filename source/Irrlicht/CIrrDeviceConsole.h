@@ -101,10 +101,10 @@ public:
             CCursorControl(const core::dimension2d<u32> &wsize)
                 : WindowSize(wsize), InvWindowSize(0.0f, 0.0f), IsVisible(true), UseReferenceRect(false)
             {
-                if (WindowSize.Width!=0)
+                if (WindowSize.Width != 0)
                     InvWindowSize.Width = 1.0f / WindowSize.Width;
 
-                if (WindowSize.Height!=0)
+                if (WindowSize.Height != 0)
                     InvWindowSize.Height = 1.0f / WindowSize.Height;
             }
 

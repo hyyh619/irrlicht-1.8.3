@@ -54,11 +54,11 @@ namespace irr
                 const u32 meshBufferCount = Mesh->getMeshBufferCount();
                 const f32 time            = timeMs / WaveSpeed;
 
-                for (u32 b = 0; b<meshBufferCount; ++b)
+                for (u32 b = 0; b < meshBufferCount; ++b)
                 {
                     const u32 vtxCnt = Mesh->getMeshBuffer(b)->getVertexCount();
 
-                    for (u32 i = 0; i<vtxCnt; ++i)
+                    for (u32 i = 0; i < vtxCnt; ++i)
                         Mesh->getMeshBuffer(b)->getPosition(i).Y = addWave(
                             OriginalMesh->getMeshBuffer(b)->getPosition(i),
                             time);

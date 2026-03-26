@@ -35,7 +35,7 @@ namespace irr
 
             glGenTextures(1, &TextureName);
 
-            if (ImageSize==TextureSize)
+            if (ImageSize == TextureSize)
             {
                 Image = Driver->createImage(ColorFormat, ImageSize);
                 origImage->copyTo(Image);
@@ -278,9 +278,9 @@ namespace irr
 #if defined(GL_ARB_framebuffer_sRGB) || defined(GL_EXT_framebuffer_sRGB)
             if (Driver->Params.HandleSRGB)
             {
-                if (internalformat==GL_RGBA)
+                if (internalformat == GL_RGBA)
                     internalformat = GL_SRGB_ALPHA_EXT;
-                else if (internalformat==GL_RGB)
+                else if (internalformat == GL_RGB)
                     internalformat = GL_SRGB_EXT;
             }
 #endif
@@ -306,12 +306,12 @@ namespace irr
             }
 
             const f32 ratio = (f32)ImageSize.Width / (f32)ImageSize.Height;
-            if ((ImageSize.Width>Driver->MaxTextureSize) && (ratio >= 1.0f))
+            if ((ImageSize.Width > Driver->MaxTextureSize) && (ratio >= 1.0f))
             {
                 ImageSize.Width  = Driver->MaxTextureSize;
                 ImageSize.Height = (u32)(Driver->MaxTextureSize / ratio);
             }
-            else if (ImageSize.Height>Driver->MaxTextureSize)
+            else if (ImageSize.Height > Driver->MaxTextureSize)
             {
                 ImageSize.Height = Driver->MaxTextureSize;
                 ImageSize.Width  = (u32)(Driver->MaxTextureSize * ratio);
@@ -425,9 +425,9 @@ namespace irr
         void* COpenGLTexture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel)
         {
             // store info about which image is locked
-            IImage *image = (mipmapLevel==0) ? Image : MipImage;
+            IImage *image = (mipmapLevel == 0) ? Image : MipImage;
 
-            ReadOnlyLock  |= (mode==ETLM_READ_ONLY);
+            ReadOnlyLock  |= (mode == ETLM_READ_ONLY);
             MipLevelStored = mipmapLevel;
             if (!ReadOnlyLock && mipmapLevel)
             {
@@ -455,10 +455,10 @@ namespace irr
 
                         do
                         {
-                            if (width>1)
+                            if (width > 1)
                                 width >>= 1;
 
-                            if (height>1)
+                            if (height > 1)
                                 height >>= 1;
 
                             ++i;
@@ -632,7 +632,7 @@ namespace irr
             if (AutomaticMipmapUpdate || !HasMipMaps || !Image)
                 return;
 
-            if ((Image->getDimension().Width==1) && (Image->getDimension().Height==1))
+            if ((Image->getDimension().Width == 1) && (Image->getDimension().Height == 1))
                 return;
 
             // Manually create mipmaps or use prepared version
@@ -643,10 +643,10 @@ namespace irr
 
             do
             {
-                if (width>1)
+                if (width > 1)
                     width >>= 1;
 
-                if (height>1)
+                if (height > 1)
                     height >>= 1;
 
                 ++i;
@@ -666,7 +666,7 @@ namespace irr
                     target     = static_cast<u8*>(mipmapData);
                 }
             }
-            while (width!=1 || height!=1);
+            while (width != 1 || height != 1);
 
             // cleanup
             if (!mipmapData)

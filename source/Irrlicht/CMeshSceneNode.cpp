@@ -64,7 +64,7 @@ namespace irr
                 {
                     // count mesh materials
 
-                    for (u32 i = 0; i<Mesh->getMeshBufferCount(); ++i)
+                    for (u32 i = 0; i < Mesh->getMeshBufferCount(); ++i)
                     {
                         scene::IMeshBuffer       *mb  = Mesh->getMeshBuffer(i);
                         video::IMaterialRenderer *rnd = mb ? driver->getMaterialRenderer(mb->getMaterial().MaterialType) : 0;
@@ -82,7 +82,7 @@ namespace irr
                 {
                     // count copied materials
 
-                    for (u32 i = 0; i<Materials.size(); ++i)
+                    for (u32 i = 0; i < Materials.size(); ++i)
                     {
                         video::IMaterialRenderer *rnd =
                             driver->getMaterialRenderer(Materials[i].MaterialType);
@@ -126,19 +126,19 @@ namespace irr
             driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
             Box = Mesh->getBoundingBox();
 
-            if (Shadow && PassCount==1)
+            if (Shadow && PassCount == 1)
                 Shadow->updateShadowVolumes();
 
             // for debug purposes only:
 
             bool             renderMeshes = true;
             video::SMaterial mat;
-            if (DebugDataVisible && PassCount==1)
+            if (DebugDataVisible && PassCount == 1)
             {
                 // overwrite half transparency
                 if (DebugDataVisible & scene::EDS_HALF_TRANSPARENCY)
                 {
-                    for (u32 g = 0; g<Mesh->getMeshBufferCount(); ++g)
+                    for (u32 g = 0; g < Mesh->getMeshBufferCount(); ++g)
                     {
                         mat              = Materials[g];
                         mat.MaterialType = video::EMT_TRANSPARENT_ADD_COLOR;
@@ -153,7 +153,7 @@ namespace irr
             // render original meshes
             if (renderMeshes)
             {
-                for (u32 i = 0; i<Mesh->getMeshBufferCount(); ++i)
+                for (u32 i = 0; i < Mesh->getMeshBufferCount(); ++i)
                 {
                     scene::IMeshBuffer *mb = Mesh->getMeshBuffer(i);
                     if (mb)
@@ -177,7 +177,7 @@ namespace irr
             driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);
 
             // for debug purposes only:
-            if (DebugDataVisible && PassCount==1)
+            if (DebugDataVisible && PassCount == 1)
             {
                 video::SMaterial m;
                 m.Lighting     = false;
@@ -191,7 +191,7 @@ namespace irr
 
                 if (DebugDataVisible & scene::EDS_BBOX_BUFFERS)
                 {
-                    for (u32 g = 0; g<Mesh->getMeshBufferCount(); ++g)
+                    for (u32 g = 0; g < Mesh->getMeshBufferCount(); ++g)
                     {
                         driver->draw3DBox(
                             Mesh->getMeshBuffer(g)->getBoundingBox(),
@@ -218,7 +218,7 @@ namespace irr
                     m.Wireframe = true;
                     driver->setMaterial(m);
 
-                    for (u32 g = 0; g<Mesh->getMeshBufferCount(); ++g)
+                    for (u32 g = 0; g < Mesh->getMeshBufferCount(); ++g)
                     {
                         driver->drawMeshBuffer(Mesh->getMeshBuffer(g));
                     }
@@ -256,7 +256,7 @@ namespace irr
         // ! to directly modify the material of a scene node.
         video::SMaterial&CMeshSceneNode::getMaterial(u32 i)
         {
-            if (Mesh && ReadOnlyMaterials && i<Mesh->getMeshBufferCount())
+            if (Mesh && ReadOnlyMaterials && i < Mesh->getMeshBufferCount())
             {
                 ReadOnlyMaterial = Mesh->getMeshBuffer(i)->getMaterial();
                 return ReadOnlyMaterial;
@@ -321,7 +321,7 @@ namespace irr
             {
                 video::SMaterial mat;
 
-                for (u32 i = 0; i<Mesh->getMeshBufferCount(); ++i)
+                for (u32 i = 0; i < Mesh->getMeshBufferCount(); ++i)
                 {
                     IMeshBuffer *mb = Mesh->getMeshBuffer(i);
                     if (mb)

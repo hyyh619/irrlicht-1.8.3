@@ -224,7 +224,7 @@ namespace irr
         {
             // (a*seed)%m with Schrage's method
             seed = a * (seed % q) - r * (seed / q);
-            if (seed<0)
+            if (seed < 0)
                 seed += m;
 
             return seed;

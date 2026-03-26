@@ -38,13 +38,13 @@ private:
             {
                 SOctreeNode()
                 {
-                    for (u32 i = 0; i!=8; ++i)
+                    for (u32 i = 0; i != 8; ++i)
                         Child[i] = 0;
                 }
 
                 ~SOctreeNode()
                 {
-                    for (u32 i = 0; i!=8; ++i)
+                    for (u32 i = 0; i != 8; ++i)
                         delete Child[i];
                 }
 

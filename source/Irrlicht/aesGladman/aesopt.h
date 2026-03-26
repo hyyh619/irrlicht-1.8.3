@@ -154,7 +154,7 @@
  *  various environemnts define byte order. It may well fail, in which case
  *  the definitions will need to be set by editing at the points marked
  **** EDIT HERE IF NECESSARY **** below.  My thanks to Peter Gutmann for
- ********some of these defines (from cryptlib).
+ ****************some of these defines (from cryptlib).
  */
 
 #define BRG_LITTLE_ENDIAN 1234   /* byte 0 is least significant (i386) */

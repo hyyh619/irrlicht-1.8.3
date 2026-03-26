@@ -2498,15 +2498,15 @@ PNG_EXPORT(216, png_uint_32, png_get_io_chunk_type,
  * follows.  Note that ROW_OFFSET is the offset from one row to the next whereas
  * COL_OFFSET is from one column to the next, within a row.
  */
-#define PNG_PASS_ROW_OFFSET(pass) ((pass)>2 ? (8 >> (((pass) - 1) >> 1)) : 8)
+#define PNG_PASS_ROW_OFFSET(pass) ((pass) > 2 ? (8 >> (((pass) - 1) >> 1)) : 8)
 #define PNG_PASS_COL_OFFSET(pass) (1 << ((7 - (pass)) >> 1))
 
 /* Two macros to help evaluate the number of rows or columns in each
  * pass.  This is expressed as a shift - effectively log2 of the number or
  * rows or columns in each 8x8 tile of the original image.
  */
-#define PNG_PASS_ROW_SHIFT(pass) ((pass)>2 ? (8 - (pass)) >> 1 : 3)
-#define PNG_PASS_COL_SHIFT(pass) ((pass)>1 ? (7 - (pass)) >> 1 : 3)
+#define PNG_PASS_ROW_SHIFT(pass) ((pass) > 2 ? (8 - (pass)) >> 1 : 3)
+#define PNG_PASS_COL_SHIFT(pass) ((pass) > 1 ? (7 - (pass)) >> 1 : 3)
 
 /* Hence two macros to determine the number of rows or columns in a given
  * pass of an image given its height or width.  In fact these macros may

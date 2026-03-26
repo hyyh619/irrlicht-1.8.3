@@ -127,7 +127,7 @@ namespace irr
 
         void CGUISpinBox::setRange(f32 min, f32 max)
         {
-            if (max<min)
+            if (max < min)
                 core::swap(min, max);
 
             RangeMin = min;

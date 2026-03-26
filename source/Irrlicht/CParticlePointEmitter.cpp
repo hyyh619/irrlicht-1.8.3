@@ -61,7 +61,7 @@ namespace irr
                 if (MaxLifeTime != MinLifeTime)
                     Particle.endTime += os::Randomizer::rand() % (MaxLifeTime - MinLifeTime);
 
-                if (MinStartColor==MaxStartColor)
+                if (MinStartColor == MaxStartColor)
                     Particle.color = MinStartColor;
                 else
                     Particle.color = MinStartColor.getInterpolated(MaxStartColor, os::Randomizer::frand());
@@ -69,7 +69,7 @@ namespace irr
                 Particle.startColor  = Particle.color;
                 Particle.startVector = Particle.vector;
 
-                if (MinStartSize==MaxStartSize)
+                if (MinStartSize == MaxStartSize)
                     Particle.startSize = MinStartSize;
                 else
                     Particle.startSize = MinStartSize.getInterpolated(MaxStartSize, os::Randomizer::frand());

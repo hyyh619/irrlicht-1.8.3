@@ -266,8 +266,8 @@ public:
             {
                 Name = name;
 
-                for (s32 r = 0; r<4; ++r)
-                    for (s32 c = 0; c<4; ++c)
+                for (s32 r = 0; r < 4; ++r)
+                    for (s32 c = 0; c < 4; ++c)
                         ValueF.push_back(value(r, c));
             }
 
@@ -388,7 +388,7 @@ public:
             // getting values
             virtual s32 getInt()
             {
-                if (Count==0)
+                if (Count == 0)
                     return 0;
 
                 if (IsFloat)
@@ -399,7 +399,7 @@ public:
 
             virtual f32 getFloat()
             {
-                if (Count==0)
+                if (Count == 0)
                     return 0.0f;
 
                 if (IsFloat)
@@ -428,7 +428,7 @@ public:
             {
                 core::stringc outstr;
 
-                for (u32 i = 0; i <Count; ++i)
+                for (u32 i = 0; i < Count; ++i)
                 {
                     if (IsFloat)
                         outstr += ValueF[i];
@@ -445,7 +445,7 @@ public:
             {
                 core::stringw outstr;
 
-                for (u32 i = 0; i <Count; ++i)
+                for (u32 i = 0; i < Count; ++i)
                 {
                     if (IsFloat)
                         outstr += ValueF[i];
@@ -589,15 +589,15 @@ public:
 
                 if (IsFloat)
                 {
-                    for (u32 r = 0; r<4; ++r)
-                        for (u32 c = 0; c<4; ++c)
+                    for (u32 r = 0; r < 4; ++r)
+                        for (u32 c = 0; c < 4; ++c)
                             if (Count > c + r * 4)
                                 ret(r, c) = ValueF[c + r * 4];
                 }
                 else
                 {
-                    for (u32 r = 0; r<4; ++r)
-                        for (u32 c = 0; c<4; ++c)
+                    for (u32 r = 0; r < 4; ++r)
+                        for (u32 c = 0; c < 4; ++c)
                             if (Count > c + r * 4)
                                 ret(r, c) = (f32)ValueI[c + r * 4];
                 }
@@ -762,7 +762,7 @@ public:
                 {
                     ValueF.clear();
 
-                    for (u32 i = 0; i<Count; ++i)
+                    for (u32 i = 0; i < Count; ++i)
                         ValueF.push_back((f32) ValueI[i]);
                 }
 
@@ -776,7 +776,7 @@ public:
                 {
                     ValueI.clear();
 
-                    for (u32 i = 0; i<Count; ++i)
+                    for (u32 i = 0; i < Count; ++i)
                         ValueI.push_back((s32) ValueF[i]);
                 }
 
@@ -820,9 +820,9 @@ public:
 
                 u32 i = 0;
 
-                for (i = 0; i<Count && *P; ++i)
+                for (i = 0; i < Count && *P; ++i)
                 {
-                    while (*P && P[0]!='-' && (P[0]==' ' || (P[0] < '0' || P[0] > '9')))
+                    while (*P && P[0] != '-' && (P[0] == ' ' || (P[0] < '0' || P[0] > '9')))
                         ++P;
 
                     // set value
@@ -1003,15 +1003,15 @@ public:
                 reset();
                 if (IsFloat)
                 {
-                    for (u32 r = 0; r<4; ++r)
-                        for (u32 c = 0; c<4; ++c)
+                    for (u32 r = 0; r < 4; ++r)
+                        for (u32 c = 0; c < 4; ++c)
                             if (Count > c + r * 4)
                                 ValueF[c + r * 4] = value(r, c);
                 }
                 else
                 {
-                    for (u32 r = 0; r<4; ++r)
-                        for (u32 c = 0; c<4; ++c)
+                    for (u32 r = 0; r < 4; ++r)
+                        for (u32 c = 0; c < 4; ++c)
                             if (Count > c + r * 4)
                                 ValueI[c + r * 4] = (s32)value(r, c);
                 }
@@ -1325,7 +1325,7 @@ public:
             {
                 reset();
 
-                for (u32 i = 0; i<vals.size() && i<Count; ++i)
+                for (u32 i = 0; i < vals.size() && i < Count; ++i)
                 {
                     if (IsFloat)
                         ValueF[i] = vals[i];
@@ -1339,7 +1339,7 @@ public:
             {
                 reset();
 
-                for (u32 i = 0; i<vals.size() && i<Count; ++i)
+                for (u32 i = 0; i < vals.size() && i < Count; ++i)
                 {
                     if (IsFloat)
                         ValueF[i] = (f32)vals[i];
@@ -1490,7 +1490,7 @@ public:
             {
                 u32 c;
 
-                if (sscanf(text, "%08x", &c)!=1)
+                if (sscanf(text, "%08x", &c) != 1)
                 {
                     CNumbersAttribute::setString(text);
                 }
@@ -1828,7 +1828,7 @@ public:
 
             virtual void setInt(s32 intValue)
             {
-                if (intValue>=0 && intValue<(s32)EnumLiterals.size())
+                if (intValue >= 0 && intValue < (s32)EnumLiterals.size())
                     Value = EnumLiterals[intValue];
                 else
                     Value = "";
@@ -1987,10 +1987,10 @@ public:
                 s32       p           = 0;
                 const c8  *dataString = Value.c_str();
 
-                for (s32 i = 0; i<dataSize; ++i)
+                for (s32 i = 0; i < dataSize; ++i)
                     datac8[i] = 0;
 
-                while (dataString[p] && p<dataSize)
+                while (dataString[p] && p < dataSize)
                 {
                     s32 v = getByteFromHex((c8)dataString[p * 2]) * 16;
 
@@ -2011,7 +2011,7 @@ public:
                 tmp[2] = 0;
                 Value  = "";
 
-                for (s32 b = 0; b<dataSize; ++b)
+                for (s32 b = 0; b < dataSize; ++b)
                 {
                     getHexStrFromByte(datac8[b], tmp);
                     Value.append(tmp);
@@ -2026,10 +2026,10 @@ protected:
 
             static inline s32 getByteFromHex(c8 h)
             {
-                if (h >= '0' && h <='9')
+                if (h >= '0' && h <= '9')
                     return h - '0';
 
-                if (h >= 'a' && h <='f')
+                if (h >= 'a' && h <= 'f')
                     return h - 'a' + 10;
 
                 return 0;
@@ -2039,12 +2039,12 @@ protected:
             {
                 s32 b = (byte & 0xf0) >> 4;
 
-                for (s32 i = 0; i<2; ++i)
+                for (s32 i = 0; i < 2; ++i)
                 {
-                    if (b >=0 && b <= 9)
+                    if (b >= 0 && b <= 9)
                         out[i] = b + '0';
 
-                    if (b >=10 && b <= 15)
+                    if (b >= 10 && b <= 15)
                         out[i] = (b - 10) + 'a';
 
                     b = byte & 0x0f;

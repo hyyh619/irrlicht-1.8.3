@@ -304,12 +304,12 @@ namespace irr
                 return;
 
             const u32 bpp = getBitsPerPixelFromFormat(format) / 8;
-            if (0==pitch)
+            if (0 == pitch)
                 pitch = width * bpp;
 
-            if (Format==format && Size.Width==width && Size.Height==height)
+            if (Format == format && Size.Width == width && Size.Height == height)
             {
-                if (pitch==Pitch)
+                if (pitch == Pitch)
                 {
                     memcpy(target, Data, height * pitch);
                     return;
@@ -321,7 +321,7 @@ namespace irr
                     const u32 bwidth  = width * bpp;
                     const u32 rest    = pitch - bwidth;
 
-                    for (u32 y = 0; y<height; ++y)
+                    for (u32 y = 0; y < height; ++y)
                     {
                         // copy scanline
                         memcpy(tgtpos, srcpos, bwidth);
@@ -340,11 +340,11 @@ namespace irr
             s32       yval        = 0, syval = 0;
             f32       sy          = 0.0f;
 
-            for (u32 y = 0; y<height; ++y)
+            for (u32 y = 0; y < height; ++y)
             {
                 f32 sx = 0.0f;
 
-                for (u32 x = 0; x<width; ++x)
+                for (u32 x = 0; x < width; ++x)
                 {
                     CColorConverter::convert_viaFormat(Data + syval + ((s32)sx) * BytesPerPixel, Format, 1, ((u8*)target) + yval + (x * bpp), format);
                     sx += sourceXStep;
@@ -366,7 +366,7 @@ namespace irr
 
             const core::dimension2d<u32> &targetSize = target->getDimension();
 
-            if (targetSize==Size)
+            if (targetSize == Size)
             {
                 copyTo(target);
                 return;
@@ -439,7 +439,7 @@ namespace irr
                     CColorConverter::convert_A8R8G8B8toR8G8B8(&color, 1, rgb);
                     const u32 size = getImageDataSizeInBytes();
 
-                    for (u32 i = 0; i<size; i += 3)
+                    for (u32 i = 0; i < size; i += 3)
                     {
                         memcpy(Data + i, rgb, 3);
                     }

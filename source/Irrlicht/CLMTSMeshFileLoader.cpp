@@ -158,7 +158,7 @@ namespace irr
             // Skip any User Data (arbitrary app specific data)
 
             const s32 userSize = Header.HeaderSize - sizeof(SLMTSHeader);
-            if (userSize>0)
+            if (userSize > 0)
                 file->seek(userSize, true);
 
             // TEXTURES
@@ -178,7 +178,7 @@ namespace irr
             file->read(Textures, sizeof(SLMTSTextureInfoEntry) * Header.TextureCount);
             if (FlipEndianess)
             {
-                for (i = 0; i<Header.TextureCount; ++i)
+                for (i = 0; i < Header.TextureCount; ++i)
                     Textures[i].Flags = os::Byteswap::byteswap(Textures[i].Flags);
             }
 
@@ -198,7 +198,7 @@ namespace irr
             Subsets = new SLMTSSubsetInfoEntry[Header.SubsetCount];
             const s32 subsetUserSize = Header.SubsetSize - sizeof(SLMTSSubsetInfoEntry);
 
-            for (i = 0; i<Header.SubsetCount; ++i)
+            for (i = 0; i < Header.SubsetCount; ++i)
             {
                 file->read(&Subsets[i], sizeof(SLMTSSubsetInfoEntry));
                 if (FlipEndianess)
@@ -209,7 +209,7 @@ namespace irr
                     Subsets[i].TextID2 = os::Byteswap::byteswap(Subsets[i].TextID2);
                 }
 
-                if (subsetUserSize>0)
+                if (subsetUserSize > 0)
                     file->seek(subsetUserSize, true);
             }
 
@@ -229,7 +229,7 @@ namespace irr
             Triangles = new SLMTSTriangleDataEntry[(Header.TriangleCount * 3)];
             const s32 triUserSize = Header.VertexSize - sizeof(SLMTSTriangleDataEntry);
 
-            for (i = 0; i<(Header.TriangleCount * 3); ++i)
+            for (i = 0; i < (Header.TriangleCount * 3); ++i)
             {
                 file->read(&Triangles[i], sizeof(SLMTSTriangleDataEntry));
                 if (FlipEndianess)
@@ -243,7 +243,7 @@ namespace irr
                     Triangles[i].V2 = os::Byteswap::byteswap(Triangles[i].V2);
                 }
 
-                if (triUserSize>0)
+                if (triUserSize > 0)
                     file->seek(triUserSize, true);
             }
 
@@ -269,7 +269,7 @@ namespace irr
 
         void CLMTSMeshFileLoader::constructMesh(SMesh *mesh)
         {
-            for (s32 i = 0; i<Header.SubsetCount; ++i)
+            for (s32 i = 0; i < Header.SubsetCount; ++i)
             {
                 scene::SMeshBufferLightMap *meshBuffer = new scene::SMeshBufferLightMap();
 
@@ -282,11 +282,11 @@ namespace irr
 
                 const u32 offs = Subsets[i].Offset * 3;
 
-                for (u32 sc = 0; sc<Subsets[i].Count; sc++)
+                for (u32 sc = 0; sc < Subsets[i].Count; sc++)
                 {
                     const u32 idx = meshBuffer->getVertexCount();
 
-                    for (u32 vu = 0; vu<3; ++vu)
+                    for (u32 vu = 0; vu < 3; ++vu)
                     {
                         const SLMTSTriangleDataEntry &v = Triangles[offs + (3 * sc) + vu];
                         meshBuffer->Vertices.push_back(
@@ -313,7 +313,7 @@ namespace irr
                 meshBuffer->drop();
             }
 
-            for (u32 j = 0; j<mesh->MeshBuffers.size(); ++j)
+            for (u32 j = 0; j < mesh->MeshBuffers.size(); ++j)
                 mesh->MeshBuffers[j]->recalculateBoundingBox();
 
             mesh->recalculateBoundingBox();
@@ -339,7 +339,7 @@ namespace irr
 
             core::stringc s;
 
-            for (u32 t = 0; t<Header.TextureCount; ++t)
+            for (u32 t = 0; t < Header.TextureCount; ++t)
             {
                 video::ITexture *tmptex = 0;
                 s = Path;
@@ -364,7 +364,7 @@ namespace irr
 
             // attach textures to materials.
 
-            for (u32 i = 0; i<Header.SubsetCount; ++i)
+            for (u32 i = 0; i < Header.SubsetCount; ++i)
             {
                 if (Subsets[i].TextID1 < Header.TextureCount && id2id[Subsets[i].TextID1] < tex.size())
                     mesh->getMeshBuffer(i)->getMaterial().setTexture(0, tex[id2id[Subsets[i].TextID1]]);

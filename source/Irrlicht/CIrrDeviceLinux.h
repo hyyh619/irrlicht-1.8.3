@@ -162,7 +162,7 @@ public:
             // ! Changes the visible state of the mouse cursor.
             virtual void setVisible(bool visible)
             {
-                if (visible==IsVisible)
+                if (visible == IsVisible)
                     return;
 
                 IsVisible = visible;
@@ -431,7 +431,7 @@ private:
 
             bool operator<(const SKeyMap &o) const
             {
-                return X11Key<o.X11Key;
+                return X11Key < o.X11Key;
             }
         };
 

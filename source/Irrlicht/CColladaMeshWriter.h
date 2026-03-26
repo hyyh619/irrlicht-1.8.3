@@ -186,7 +186,7 @@ protected:
                     if (names.size() != MaterialNames.size())
                         return false;
 
-                    for (irr::u32 i = 0; i<MaterialNames.size(); ++i)
+                    for (irr::u32 i = 0; i < MaterialNames.size(); ++i)
                         if (names[i] != MaterialNames[i])
                             return false;
 
@@ -206,7 +206,7 @@ protected:
 
                 SGeometryMeshMaterials* findGeometryMeshMaterials(const irr::core::array<irr::core::stringw> materialNames)
                 {
-                    for (irr::u32 i = 0; i<GeometryMeshMaterials.size(); ++i)
+                    for (irr::u32 i = 0; i < GeometryMeshMaterials.size(); ++i)
                     {
                         if (GeometryMeshMaterials[i].equals(materialNames))
                             return &(GeometryMeshMaterials[i]);
@@ -220,7 +220,7 @@ protected:
                     if (GeometryMeshMaterials.size() < 2)
                         return Name;
 
-                    for (irr::u32 i = 0; i<GeometryMeshMaterials.size(); ++i)
+                    for (irr::u32 i = 0; i < GeometryMeshMaterials.size(); ++i)
                     {
                         if (GeometryMeshMaterials[i].MaterialOwners.linear_search(node)  >= 0)
                             return GeometryMeshMaterials[i].GeometryName;

@@ -636,7 +636,7 @@ private:
             scene::SMesh        *pMesh  = new scene::SMesh();
             video::IVideoDriver *driver = SceneManager->getVideoDriver();
 
-            for (u32 l = 0; l<csmFile->getLightMapCount(); l++)
+            for (u32 l = 0; l < csmFile->getLightMapCount(); l++)
             {
                 const LightMap *lmap = csmFile->getLightMapAt(l);
 
@@ -654,7 +654,7 @@ private:
                 lmapImg->drop();
             }
 
-            for (u32 m = 0; m<csmFile->getMeshCount(); m++)
+            for (u32 m = 0; m < csmFile->getMeshCount(); m++)
             {
                 const Mesh *mshPtr = csmFile->getMeshAt(m);
 

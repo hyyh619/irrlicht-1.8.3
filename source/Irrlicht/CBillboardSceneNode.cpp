@@ -91,7 +91,7 @@ namespace irr
 
             view *= -1.0f;
 
-            for (s32 i = 0; i<4; ++i)
+            for (s32 i = 0; i < 4; ++i)
                 vertices[i].Normal = view;
 
             /* Vertices are:

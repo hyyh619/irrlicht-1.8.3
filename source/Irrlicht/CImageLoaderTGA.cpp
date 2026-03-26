@@ -170,7 +170,7 @@ namespace irr
             {
                 case 8:
                 {
-                    if (header.ImageType==3) // grey image
+                    if (header.ImageType == 3) // grey image
                     {
                         image = new CImage(ECOLOR_FORMAT::ECF_R8G8B8,
                                 core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
@@ -178,7 +178,7 @@ namespace irr
                             CColorConverter::convert8BitTo24Bit((u8*)data,
                                 (u8*)image->lock(),
                                 header.ImageWidth, header.ImageHeight,
-                                0, 0, (header.ImageDescriptor & 0x20)==0);
+                                0, 0, (header.ImageDescriptor & 0x20) == 0);
                     }
                     else
                     {
@@ -189,7 +189,7 @@ namespace irr
                                 (s16*)image->lock(),
                                 header.ImageWidth, header.ImageHeight,
                                 (s32*) palette, 0,
-                                (header.ImageDescriptor & 0x20)==0);
+                                (header.ImageDescriptor & 0x20) == 0);
                     }
                 }
                 break;
@@ -199,7 +199,7 @@ namespace irr
                             core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
                     if (image)
                         CColorConverter::convert16BitTo16Bit((s16*)data,
-                            (s16*)image->lock(), header.ImageWidth,    header.ImageHeight, 0, (header.ImageDescriptor & 0x20)==0);
+                            (s16*)image->lock(), header.ImageWidth,    header.ImageHeight, 0, (header.ImageDescriptor & 0x20) == 0);
 
                     break;
 
@@ -208,7 +208,7 @@ namespace irr
                             core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
                     if (image)
                         CColorConverter::convert24BitTo24Bit(
-                            (u8*)data, (u8*)image->lock(), header.ImageWidth, header.ImageHeight, 0, (header.ImageDescriptor & 0x20)==0, true);
+                            (u8*)data, (u8*)image->lock(), header.ImageWidth, header.ImageHeight, 0, (header.ImageDescriptor & 0x20) == 0, true);
 
                     break;
 
@@ -217,7 +217,7 @@ namespace irr
                             core::dimension2d<u32>(header.ImageWidth, header.ImageHeight));
                     if (image)
                         CColorConverter::convert32BitTo32Bit((s32*)data,
-                            (s32*)image->lock(), header.ImageWidth, header.ImageHeight, 0, (header.ImageDescriptor & 0x20)==0);
+                            (s32*)image->lock(), header.ImageWidth, header.ImageHeight, 0, (header.ImageDescriptor & 0x20) == 0);
 
                     break;
 

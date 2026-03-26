@@ -360,7 +360,7 @@ namespace irr
                                     s.append(widep);
                                     s.append(Text.subString(CursorPos, Text.size() - CursorPos));
 
-                                    if (!Max || s.size()<=Max) // thx to Fish FH for fix
+                                    if (!Max || s.size() <= Max) // thx to Fish FH for fix
                                     {
                                         Text       = s;
                                         s          = widep;
@@ -375,7 +375,7 @@ namespace irr
                                     s.append(widep);
                                     s.append(Text.subString(realmend, Text.size() - realmend));
 
-                                    if (!Max || s.size()<=Max) // thx to Fish FH for fix
+                                    if (!Max || s.size() <= Max) // thx to Fish FH for fix
                                     {
                                         Text      = s;
                                         s         = widep;
@@ -636,7 +636,7 @@ namespace irr
                             else
                             {
                                 // delete text behind cursor
-                                if (CursorPos>0)
+                                if (CursorPos > 0)
                                     s = Text.subString(0, CursorPos - 1);
                                 else
                                     s = L"";
@@ -1162,7 +1162,7 @@ namespace irr
             s32           elWidth       = RelativeRect.getWidth() - 6;
             wchar_t       c;
 
-            for (s32 i = 0; i<size; ++i)
+            for (s32 i = 0; i < size; ++i)
             {
                 c = Text[i];
                 bool lineBreak = false;

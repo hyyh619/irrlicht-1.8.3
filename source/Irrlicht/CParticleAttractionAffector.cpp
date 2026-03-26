@@ -37,7 +37,7 @@ namespace irr
             if (!Enabled)
                 return;
 
-            for (u32 i = 0; i<count; ++i)
+            for (u32 i = 0; i < count; ++i)
             {
                 core::vector3df direction = (Point - particlearray[i].pos).normalize();
                 direction *= Speed * timeDelta;

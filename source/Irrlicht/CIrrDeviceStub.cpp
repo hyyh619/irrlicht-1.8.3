@@ -276,7 +276,7 @@ namespace irr
     // ! Sets a new randomizer.
     void CIrrDeviceStub::setRandomizer(IRandomizer *r)
     {
-        if (r!=Randomizer)
+        if (r != Randomizer)
         {
             if (Randomizer)
                 Randomizer->drop();

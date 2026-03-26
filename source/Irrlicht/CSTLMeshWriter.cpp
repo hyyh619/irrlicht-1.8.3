@@ -67,7 +67,7 @@ namespace irr
             file->write("binary ", 7);
             const core::stringc name(SceneManager->getMeshCache()->getMeshName(mesh));
             const s32           sizeleft = 73 - name.size(); // 80 byte header
-            if (sizeleft<0)
+            if (sizeleft < 0)
                 file->write(name.c_str(), 73);
             else
             {
@@ -80,14 +80,14 @@ namespace irr
 
             u32 facenum = 0;
 
-            for (u32 j = 0; j<mesh->getMeshBufferCount(); ++j)
+            for (u32 j = 0; j < mesh->getMeshBufferCount(); ++j)
                 facenum += mesh->getMeshBuffer(j)->getIndexCount() / 3;
 
             file->write(&facenum, 4);
 
             // write mesh buffers
 
-            for (u32 i = 0; i<mesh->getMeshBufferCount(); ++i)
+            for (u32 i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
                 IMeshBuffer *buffer = mesh->getMeshBuffer(i);
                 if (buffer)
@@ -95,7 +95,7 @@ namespace irr
                     const u32 indexCount = buffer->getIndexCount();
                     const u16 attributes = 0;
 
-                    for (u32 j = 0; j<indexCount; j += 3)
+                    for (u32 j = 0; j < indexCount; j += 3)
                     {
                         const core::vector3df &v1 = buffer->getPosition(buffer->getIndices()[j]);
                         const core::vector3df &v2 = buffer->getPosition(buffer->getIndices()[j + 1]);
@@ -125,14 +125,14 @@ namespace irr
 
             // write mesh buffers
 
-            for (u32 i = 0; i<mesh->getMeshBufferCount(); ++i)
+            for (u32 i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
                 IMeshBuffer *buffer = mesh->getMeshBuffer(i);
                 if (buffer)
                 {
                     const u32 indexCount = buffer->getIndexCount();
 
-                    for (u32 j = 0; j<indexCount; j += 3)
+                    for (u32 j = 0; j < indexCount; j += 3)
                     {
                         writeFace(file,
                             buffer->getPosition(buffer->getIndices()[j]),
