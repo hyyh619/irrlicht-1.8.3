@@ -123,7 +123,7 @@ int main()
      */
     IrrlichtDevice *device =
         createDevice(video::EDT_OPENGL, dimension2d<u32>(640, 480), 16,
-                     false, false, false, 0);
+            false, false, false, 0);
 
     if (!device)
         return 1;
@@ -151,7 +151,7 @@ int main()
        (260,22) as lower right corner.
      */
     guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!",
-                          rect<s32>(10, 10, 260, 22), true);
+        rect<s32>(10, 10, 260, 22), true);
 
     /*
        To show something interesting, we load a Quake 2 model and display it.
