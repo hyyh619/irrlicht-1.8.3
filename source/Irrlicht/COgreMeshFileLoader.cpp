@@ -61,7 +61,7 @@ namespace irr
             };
         }
 
-        // ! Constructor
+        //! Constructor
         COgreMeshFileLoader::COgreMeshFileLoader(io::IFileSystem *fs, video::IVideoDriver *driver)
             : FileSystem(fs), Driver(driver), SwapEndian(false), Mesh(0), NumUV(0)
         {
@@ -77,7 +77,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         COgreMeshFileLoader::~COgreMeshFileLoader()
         {
             clearMeshes();
@@ -93,18 +93,18 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool COgreMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "mesh");
         }
 
 
-        // ! creates/loads an animated mesh from the file.
-        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-        // ! See IReferenceCounted::drop() for more information.
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* COgreMeshFileLoader::createMesh(io::IReadFile *file)
         {
             s16 id;

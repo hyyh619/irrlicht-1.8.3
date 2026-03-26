@@ -68,7 +68,7 @@ namespace irr
 {
     const char *wmDeleteWindow = "WM_DELETE_WINDOW";
 
-    // ! constructor
+    //! constructor
     CIrrDeviceLinux::CIrrDeviceLinux(const SIrrlichtCreationParameters &param)
         : CIrrDeviceStub(param),
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -128,7 +128,7 @@ namespace irr
     }
 
 
-    // ! destructor
+    //! destructor
     CIrrDeviceLinux::~CIrrDeviceLinux()
     {
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -821,7 +821,7 @@ namespace irr
     }
 
 
-    // ! create the driver
+    //! create the driver
     void CIrrDeviceLinux::createDriver()
     {
         switch (CreationParams.DriverType)
@@ -880,7 +880,7 @@ namespace irr
     }
 
 
-    // ! runs the device. Returns false if device wants to be deleted
+    //! runs the device. Returns false if device wants to be deleted
     bool CIrrDeviceLinux::run()
     {
         os::Timer::tick();
@@ -1192,7 +1192,7 @@ namespace irr
     }
 
 
-    // ! Pause the current process for the minimum time allowed only to allow other processes to execute
+    //! Pause the current process for the minimum time allowed only to allow other processes to execute
     void CIrrDeviceLinux::yield()
     {
         struct timespec ts = {0, 1};
@@ -1201,7 +1201,7 @@ namespace irr
     }
 
 
-    // ! Pause execution and let other processes to run for a specified amount of time.
+    //! Pause execution and let other processes to run for a specified amount of time.
     void CIrrDeviceLinux::sleep(u32 timeMs, bool pauseTimer = false)
     {
         const bool wasStopped = Timer ? Timer->isStopped() : true;
@@ -1221,7 +1221,7 @@ namespace irr
     }
 
 
-    // ! sets the caption of the window
+    //! sets the caption of the window
     void CIrrDeviceLinux::setWindowCaption(const wchar_t *text)
     {
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -1240,7 +1240,7 @@ namespace irr
     }
 
 
-    // ! presents a surface in the client area
+    //! presents a surface in the client area
     bool CIrrDeviceLinux::present(video::IImage *image, void *windowId, core::rect<s32> *srcRect)
     {
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -1302,35 +1302,35 @@ namespace irr
     }
 
 
-    // ! notifies the device that it should close itself
+    //! notifies the device that it should close itself
     void CIrrDeviceLinux::closeDevice()
     {
         Close = true;
     }
 
 
-    // ! returns if window is active. if not, nothing need to be drawn
+    //! returns if window is active. if not, nothing need to be drawn
     bool CIrrDeviceLinux::isWindowActive() const
     {
         return (WindowHasFocus && !WindowMinimized);
     }
 
 
-    // ! returns if window has focus.
+    //! returns if window has focus.
     bool CIrrDeviceLinux::isWindowFocused() const
     {
         return WindowHasFocus;
     }
 
 
-    // ! returns if window is minimized.
+    //! returns if window is minimized.
     bool CIrrDeviceLinux::isWindowMinimized() const
     {
         return WindowMinimized;
     }
 
 
-    // ! returns color format of the window.
+    //! returns color format of the window.
     video::ECOLOR_FORMAT CIrrDeviceLinux::getColorFormat() const
     {
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -1342,7 +1342,7 @@ namespace irr
     }
 
 
-    // ! Sets if the window should be resizable in windowed mode.
+    //! Sets if the window should be resizable in windowed mode.
     void CIrrDeviceLinux::setResizable(bool resize)
     {
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -1371,7 +1371,7 @@ namespace irr
     }
 
 
-    // ! Return pointer to a list with all video modes supported by the gfx adapter.
+    //! Return pointer to a list with all video modes supported by the gfx adapter.
     video::IVideoModeList* CIrrDeviceLinux::getVideoModeList()
     {
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -1456,7 +1456,7 @@ namespace irr
     }
 
 
-    // ! Minimize window
+    //! Minimize window
     void CIrrDeviceLinux::minimizeWindow()
     {
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -1465,7 +1465,7 @@ namespace irr
     }
 
 
-    // ! Maximize window
+    //! Maximize window
     void CIrrDeviceLinux::maximizeWindow()
     {
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -1474,7 +1474,7 @@ namespace irr
     }
 
 
-    // ! Restore original window size
+    //! Restore original window size
     void CIrrDeviceLinux::restoreWindow()
     {
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -1822,7 +1822,7 @@ namespace irr
     }
 
 
-    // ! Set the current Gamma Value for the Display
+    //! Set the current Gamma Value for the Display
     bool CIrrDeviceLinux::setGammaRamp(f32 red, f32 green, f32 blue, f32 brightness, f32 contrast)
     {
     #if defined(_IRR_LINUX_X11_VIDMODE_) || defined(_IRR_LINUX_X11_RANDR_)
@@ -1867,7 +1867,7 @@ namespace irr
     }
 
 
-    // ! Get the current Gamma Value for the Display
+    //! Get the current Gamma Value for the Display
     bool CIrrDeviceLinux::getGammaRamp(f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast)
     {
         brightness = 0.f;
@@ -1913,8 +1913,8 @@ namespace irr
     }
 
 
-    // ! gets text from the clipboard
-    // ! \return Returns 0 if no string is in there.
+    //! gets text from the clipboard
+    //! \return Returns 0 if no string is in there.
     const c8* CIrrDeviceLinux::getTextFromClipboard() const
     {
 #if defined(_IRR_COMPILE_WITH_X11_)
@@ -1966,7 +1966,7 @@ namespace irr
 #endif
     }
 
-    // ! copies text to the clipboard
+    //! copies text to the clipboard
     void CIrrDeviceLinux::copyToClipboard(const c8 *text) const
     {
 #if defined(_IRR_COMPILE_WITH_X11_)
@@ -1992,7 +1992,7 @@ namespace irr
     }
 #endif // _IRR_COMPILE_WITH_X11_
 
-    // ! Remove all messages pending in the system message loop
+    //! Remove all messages pending in the system message loop
     void CIrrDeviceLinux::clearSystemMessages()
     {
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -2280,7 +2280,7 @@ namespace irr
     }
 #endif
 
-    // ! Sets the active cursor icon
+    //! Sets the active cursor icon
     void CIrrDeviceLinux::CCursorControl::setActiveIcon(gui::ECURSOR_ICON iconId)
     {
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -2296,7 +2296,7 @@ namespace irr
     }
 
 
-    // ! Add a custom sprite as cursor icon.
+    //! Add a custom sprite as cursor icon.
     gui::ECURSOR_ICON CIrrDeviceLinux::CCursorControl::addIcon(const gui::SCursorSprite &icon)
     {
 #ifdef _IRR_COMPILE_WITH_X11_
@@ -2322,7 +2322,7 @@ namespace irr
         return gui::ECI_NORMAL;
     }
 
-    // ! replace the given cursor icon.
+    //! replace the given cursor icon.
     void CIrrDeviceLinux::CCursorControl::changeIcon(gui::ECURSOR_ICON iconId, const gui::SCursorSprite &icon)
     {
 #ifdef _IRR_COMPILE_WITH_X11_

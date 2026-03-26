@@ -15,7 +15,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIButton::CGUIButton(IGUIEnvironment *environment, IGUIElement *parent,
             s32 id, core::rect<s32> rectangle, bool noclip)
             : IGUIButton(environment, parent, id, rectangle),
@@ -39,7 +39,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIButton::~CGUIButton()
         {
             if (OverrideFont)
@@ -56,14 +56,14 @@ namespace irr
         }
 
 
-        // ! Sets if the images should be scaled to fit the button
+        //! Sets if the images should be scaled to fit the button
         void CGUIButton::setScaleImage(bool scaleImage)
         {
             ScaleImage = scaleImage;
         }
 
 
-        // ! Returns whether the button scale the used images
+        //! Returns whether the button scale the used images
         bool CGUIButton::isScalingImage() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -71,7 +71,7 @@ namespace irr
         }
 
 
-        // ! Sets if the button should use the skin to draw its border
+        //! Sets if the button should use the skin to draw its border
         void CGUIButton::setDrawBorder(bool border)
         {
             DrawBorder = border;
@@ -105,7 +105,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIButton::OnEvent(const SEvent &event)
         {
             if (!isEnabled())
@@ -232,7 +232,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIButton::draw()
         {
             if (!IsVisible)
@@ -341,7 +341,7 @@ namespace irr
         }
 
 
-        // ! sets another skin independent font. if this is set to zero, the button uses the font of the skin.
+        //! sets another skin independent font. if this is set to zero, the button uses the font of the skin.
         void CGUIButton::setOverrideFont(IGUIFont *font)
         {
             if (OverrideFont == font)
@@ -356,13 +356,13 @@ namespace irr
                 OverrideFont->grab();
         }
 
-        // ! Gets the override font (if any)
+        //! Gets the override font (if any)
         IGUIFont* CGUIButton::getOverrideFont() const
         {
             return OverrideFont;
         }
 
-        // ! Get the font which is used right now for drawing
+        //! Get the font which is used right now for drawing
         IGUIFont* CGUIButton::getActiveFont() const
         {
             if (OverrideFont)
@@ -375,7 +375,7 @@ namespace irr
             return 0;
         }
 
-        // ! Sets an image which should be displayed on the button when it is in normal state.
+        //! Sets an image which should be displayed on the button when it is in normal state.
         void CGUIButton::setImage(video::ITexture *image)
         {
             if (image)
@@ -393,7 +393,7 @@ namespace irr
         }
 
 
-        // ! Sets the image which should be displayed on the button when it is in its normal state.
+        //! Sets the image which should be displayed on the button when it is in its normal state.
         void CGUIButton::setImage(video::ITexture *image, const core::rect<s32> &pos)
         {
             setImage(image);
@@ -401,7 +401,7 @@ namespace irr
         }
 
 
-        // ! Sets an image which should be displayed on the button when it is in pressed state.
+        //! Sets an image which should be displayed on the button when it is in pressed state.
         void CGUIButton::setPressedImage(video::ITexture *image)
         {
             if (image)
@@ -416,7 +416,7 @@ namespace irr
         }
 
 
-        // ! Sets the image which should be displayed on the button when it is in its pressed state.
+        //! Sets the image which should be displayed on the button when it is in its pressed state.
         void CGUIButton::setPressedImage(video::ITexture *image, const core::rect<s32> &pos)
         {
             setPressedImage(image);
@@ -424,16 +424,16 @@ namespace irr
         }
 
 
-        // ! Sets if the button should behave like a push button. Which means it
-        // ! can be in two states: Normal or Pressed. With a click on the button,
-        // ! the user can change the state of the button.
+        //! Sets if the button should behave like a push button. Which means it
+        //! can be in two states: Normal or Pressed. With a click on the button,
+        //! the user can change the state of the button.
         void CGUIButton::setIsPushButton(bool isPushButton)
         {
             IsPushButton = isPushButton;
         }
 
 
-        // ! Returns if the button is currently pressed
+        //! Returns if the button is currently pressed
         bool CGUIButton::isPressed() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -441,7 +441,7 @@ namespace irr
         }
 
 
-        // ! Sets the pressed state of the button if this is a pushbutton
+        //! Sets the pressed state of the button if this is a pushbutton
         void CGUIButton::setPressed(bool pressed)
         {
             if (Pressed != pressed)
@@ -452,7 +452,7 @@ namespace irr
         }
 
 
-        // ! Returns whether the button is a push button
+        //! Returns whether the button is a push button
         bool CGUIButton::isPushButton() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -460,14 +460,14 @@ namespace irr
         }
 
 
-        // ! Sets if the alpha channel should be used for drawing images on the button (default is false)
+        //! Sets if the alpha channel should be used for drawing images on the button (default is false)
         void CGUIButton::setUseAlphaChannel(bool useAlphaChannel)
         {
             UseAlphaChannel = useAlphaChannel;
         }
 
 
-        // ! Returns if the alpha channel should be used for drawing images on the button
+        //! Returns if the alpha channel should be used for drawing images on the button
         bool CGUIButton::isAlphaChannelUsed() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -482,7 +482,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUIButton::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUIButton::serializeAttributes(out, options);
@@ -504,7 +504,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUIButton::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             IGUIButton::deserializeAttributes(in, options);

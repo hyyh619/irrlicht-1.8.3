@@ -577,7 +577,7 @@ namespace irr
         struct sScanConvertData
         {
             u8 left;    // major edge left/right
-            u8 right;    // !left
+            u8 right;    //!left
 
             f32 invDeltaY[3]; // inverse edge delta y
 

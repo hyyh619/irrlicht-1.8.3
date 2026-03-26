@@ -67,7 +67,7 @@ namespace irr
     // const c8 ASCIIArtChars[] = " \xb0\xb1\xf9\xb2\xdb";
     // const u16 ASCIIArtCharsCount = 5;
 
-    // ! constructor
+    //! constructor
     CIrrDeviceConsole::CIrrDeviceConsole(const SIrrlichtCreationParameters &params)
         : CIrrDeviceStub(params), IsWindowFocused(true), ConsoleFont(0), OutFile(stdout)
     {
@@ -187,7 +187,7 @@ namespace irr
         }
     }
 
-    // ! destructor
+    //! destructor
     CIrrDeviceConsole::~CIrrDeviceConsole()
     {
         // GUI and scene are dropped in the stub
@@ -209,7 +209,7 @@ namespace irr
 #endif
     }
 
-    // ! runs the device. Returns false if device wants to be deleted
+    //! runs the device. Returns false if device wants to be deleted
     bool CIrrDeviceConsole::run()
     {
         // increment timer
@@ -327,7 +327,7 @@ namespace irr
         return !Close;
     }
 
-    // ! Cause the device to temporarily pause execution and let other processes to run
+    //! Cause the device to temporarily pause execution and let other processes to run
     // This should bring down processor usage without major performance loss for Irrlicht
     void CIrrDeviceConsole::yield()
     {
@@ -339,7 +339,7 @@ namespace irr
 #endif
     }
 
-    // ! Pause execution and let other processes to run for a specified amount of time.
+    //! Pause execution and let other processes to run for a specified amount of time.
     void CIrrDeviceConsole::sleep(u32 timeMs, bool pauseTimer)
     {
         const bool wasStopped = Timer ? Timer->isStopped() : true;
@@ -361,7 +361,7 @@ namespace irr
             Timer->start();
     }
 
-    // ! sets the caption of the window
+    //! sets the caption of the window
     void CIrrDeviceConsole::setWindowCaption(const wchar_t *text)
     {
 #ifdef _IRR_WINDOWS_NT_CONSOLE_
@@ -369,26 +369,26 @@ namespace irr
 #endif
     }
 
-    // ! returns if window is active. if not, nothing need to be drawn
+    //! returns if window is active. if not, nothing need to be drawn
     bool CIrrDeviceConsole::isWindowActive() const
     {
         // there is no window, but we always assume it is active
         return true;
     }
 
-    // ! returns if window has focus
+    //! returns if window has focus
     bool CIrrDeviceConsole::isWindowFocused() const
     {
         return IsWindowFocused;
     }
 
-    // ! returns if window is minimized
+    //! returns if window is minimized
     bool CIrrDeviceConsole::isWindowMinimized() const
     {
         return false;
     }
 
-    // ! presents a surface in the client area
+    //! presents a surface in the client area
     bool CIrrDeviceConsole::present(video::IImage *surface, void *windowId, core::rect<s32> *src)
     {
         if (surface)
@@ -428,7 +428,7 @@ namespace irr
         return surface != 0;
     }
 
-    // ! notifies the device that it should close itself
+    //! notifies the device that it should close itself
     void CIrrDeviceConsole::closeDevice()
     {
         // return false next time we run()
@@ -436,28 +436,28 @@ namespace irr
     }
 
 
-    // ! Sets if the window should be resizable in windowed mode.
+    //! Sets if the window should be resizable in windowed mode.
     void CIrrDeviceConsole::setResizable(bool resize)
     {
         // do nothing
     }
 
 
-    // ! Minimize the window.
+    //! Minimize the window.
     void CIrrDeviceConsole::minimizeWindow()
     {
         // do nothing
     }
 
 
-    // ! Maximize window
+    //! Maximize window
     void CIrrDeviceConsole::maximizeWindow()
     {
         // do nothing
     }
 
 
-    // ! Restore original window size
+    //! Restore original window size
     void CIrrDeviceConsole::restoreWindow()
     {
         // do nothing

@@ -44,7 +44,7 @@
 
 namespace irr
 {
-    // ! stub for calling createDeviceEx
+    //! stub for calling createDeviceEx
     IRRLICHT_API IrrlichtDevice* IRRCALLCONV createDevice(video::E_DRIVER_TYPE driverType,
         const core::dimension2d<u32> &windowSize,
         u32 bits, bool fullscreen,

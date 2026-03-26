@@ -24,13 +24,13 @@ namespace irr
         }
 
 
-        // ! Returns the type of the mesh writer
+        //! Returns the type of the mesh writer
         EMESH_WRITER_TYPE CPLYMeshWriter::getType() const
         {
             return EMWT_PLY;
         }
 
-        // ! writes a mesh
+        //! writes a mesh
         bool CPLYMeshWriter::writeMesh(io::IWriteFile *file, scene::IMesh *mesh, s32 flags)
         {
             if (!file || !mesh)

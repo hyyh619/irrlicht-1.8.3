@@ -14,7 +14,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSkinnedMesh::CSkinnedMesh()
             : SkinningBuffers(0), AnimationFrames(0.f), FramesPerSecond(25.f),
             LastAnimatedFrame(-1), SkinnedLastFrame(false),
@@ -30,7 +30,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CSkinnedMesh::~CSkinnedMesh()
         {
             for (u32 i = 0; i < AllJoints.size(); ++i)
@@ -44,15 +44,15 @@ namespace irr
         }
 
 
-        // ! returns the amount of frames in milliseconds.
-        // ! If the amount is 1, it is a static (=non animated) mesh.
+        //! returns the amount of frames in milliseconds.
+        //! If the amount is 1, it is a static (=non animated) mesh.
         u32 CSkinnedMesh::getFrameCount() const
         {
             return core::floor32(AnimationFrames);
         }
 
 
-        // ! Gets the default animation speed of the animated mesh.
+        //! Gets the default animation speed of the animated mesh.
         /** \return Amount of frames per second. If the amount is 0, it is a static, non animated mesh. */
         f32 CSkinnedMesh::getAnimationSpeed() const
         {
@@ -60,7 +60,7 @@ namespace irr
         }
 
 
-        // ! Gets the frame count of the animated mesh.
+        //! Gets the frame count of the animated mesh.
         /** \param fps Frames per second to play the animation with. If the amount is 0, it is not animated.
          * The actual speed is set in the scene node the mesh is instantiated in.*/
         void CSkinnedMesh::setAnimationSpeed(f32 fps)
@@ -69,7 +69,7 @@ namespace irr
         }
 
 
-        // ! returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail. Note, that some Meshes will ignore the detail level.
+        //! returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail. Note, that some Meshes will ignore the detail level.
         IMesh* CSkinnedMesh::getMesh(s32 frame, s32 detailLevel, s32 startFrameLoop, s32 endFrameLoop)
         {
             // animate(frame,startFrameLoop, endFrameLoop);
@@ -87,8 +87,8 @@ namespace irr
         // --------------------------------------------------------------------------
 
 
-        // ! Animates this mesh's joints based on frame input
-        // ! blend: {0-old position, 1-New position}
+        //! Animates this mesh's joints based on frame input
+        //! blend: {0-old position, 1-New position}
         void CSkinnedMesh::animateMesh(f32 frame, f32 blend)
         {
             if (!HasAnimation || LastAnimatedFrame == frame)
@@ -444,7 +444,7 @@ namespace irr
         //                Software Skinning
         // --------------------------------------------------------------------------
 
-        // ! Preforms a software skin on this mesh based of joint positions
+        //! Preforms a software skin on this mesh based of joint positions
         void CSkinnedMesh::skinMesh()
         {
             if (!HasAnimation || SkinnedLastFrame)
@@ -548,14 +548,14 @@ namespace irr
         }
 
 
-        // ! Gets joint count.
+        //! Gets joint count.
         u32 CSkinnedMesh::getJointCount() const
         {
             return AllJoints.size();
         }
 
 
-        // ! Gets the name of a joint.
+        //! Gets the name of a joint.
         const c8* CSkinnedMesh::getJointName(u32 number) const
         {
             if (number >= AllJoints.size())
@@ -565,7 +565,7 @@ namespace irr
         }
 
 
-        // ! Gets a joint number from its name
+        //! Gets a joint number from its name
         s32 CSkinnedMesh::getJointNumber(const c8 *name) const
         {
             for (u32 i = 0; i < AllJoints.size(); ++i)
@@ -578,14 +578,14 @@ namespace irr
         }
 
 
-        // ! returns amount of mesh buffers.
+        //! returns amount of mesh buffers.
         u32 CSkinnedMesh::getMeshBufferCount() const
         {
             return LocalBuffers.size();
         }
 
 
-        // ! returns pointer to a mesh buffer
+        //! returns pointer to a mesh buffer
         IMeshBuffer* CSkinnedMesh::getMeshBuffer(u32 nr) const
         {
             if (nr < LocalBuffers.size())
@@ -595,7 +595,7 @@ namespace irr
         }
 
 
-        // ! Returns pointer to a mesh buffer which fits a material
+        //! Returns pointer to a mesh buffer which fits a material
         IMeshBuffer* CSkinnedMesh::getMeshBuffer(const video::SMaterial &material) const
         {
             for (u32 i = 0; i < LocalBuffers.size(); ++i)
@@ -608,21 +608,21 @@ namespace irr
         }
 
 
-        // ! returns an axis aligned bounding box
+        //! returns an axis aligned bounding box
         const core::aabbox3d<f32>&CSkinnedMesh::getBoundingBox() const
         {
             return BoundingBox;
         }
 
 
-        // ! set user axis aligned bounding box
+        //! set user axis aligned bounding box
         void CSkinnedMesh::setBoundingBox(const core::aabbox3df &box)
         {
             BoundingBox = box;
         }
 
 
-        // ! sets a flag of all contained materials to a new value
+        //! sets a flag of all contained materials to a new value
         void CSkinnedMesh::setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue)
         {
             for (u32 i = 0; i < LocalBuffers.size(); ++i)
@@ -630,7 +630,7 @@ namespace irr
         }
 
 
-        // ! set the hardware mapping hint, for driver
+        //! set the hardware mapping hint, for driver
         void CSkinnedMesh::setHardwareMappingHint(E_HARDWARE_MAPPING newMappingHint,
             E_BUFFER_TYPE buffer)
         {
@@ -639,7 +639,7 @@ namespace irr
         }
 
 
-        // ! flags the meshbuffer as changed, reloads hardware buffers
+        //! flags the meshbuffer as changed, reloads hardware buffers
         void CSkinnedMesh::setDirty(E_BUFFER_TYPE buffer)
         {
             for (u32 i = 0; i < LocalBuffers.size(); ++i)
@@ -647,7 +647,7 @@ namespace irr
         }
 
 
-        // ! uses animation from another mesh
+        //! uses animation from another mesh
         bool CSkinnedMesh::useAnimationFrom(const ISkinnedMesh *mesh)
         {
             bool unmatched = false;
@@ -681,16 +681,16 @@ namespace irr
         }
 
 
-        // !Update Normals when Animating
-        // !False= Don't animate them, faster
-        // !True= Update normals (default)
+        //!Update Normals when Animating
+        //!False= Don't animate them, faster
+        //!True= Update normals (default)
         void CSkinnedMesh::updateNormalsWhenAnimating(bool on)
         {
             AnimateNormals = on;
         }
 
 
-        // !Sets Interpolation Mode
+        //!Sets Interpolation Mode
         void CSkinnedMesh::setInterpolationMode(E_INTERPOLATION_MODE mode)
         {
             InterpolationMode = mode;
@@ -715,7 +715,7 @@ namespace irr
         }
 
 
-        // ! (This feature is not implementated in irrlicht yet)
+        //! (This feature is not implementated in irrlicht yet)
         bool CSkinnedMesh::setHardwareSkinning(bool on)
         {
             if (HardwareSkinning != on)
@@ -895,7 +895,7 @@ namespace irr
         }
 
 
-        // ! called by loader after populating with mesh and bone data
+        //! called by loader after populating with mesh and bone data
         void CSkinnedMesh::finalize()
         {
             u32 i;

@@ -32,7 +32,7 @@
 
 namespace irr
 {
-    // ! constructor
+    //! constructor
     CIrrDeviceFB::CIrrDeviceFB(const SIrrlichtCreationParameters &params)
         : CIrrDeviceStub(params), Framebuffer(-1), EventDevice(-1), SoftwareImage(0),
         Pitch(0), FBColorFormat(video::ECF_A8R8G8B8), Close(false)
@@ -80,7 +80,7 @@ namespace irr
 
 
 
-    // ! destructor
+    //! destructor
     CIrrDeviceFB::~CIrrDeviceFB()
     {
         if (SoftwareImage)
@@ -194,7 +194,7 @@ namespace irr
     }
 
 
-    // ! create the driver
+    //! create the driver
     void CIrrDeviceFB::createDriver()
     {
         switch (CreationParams.DriverType)
@@ -229,7 +229,7 @@ namespace irr
     }
 
 
-    // ! runs the device. Returns false if device wants to be deleted
+    //! runs the device. Returns false if device wants to be deleted
     bool CIrrDeviceFB::run()
     {
         os::Timer::tick();
@@ -297,7 +297,7 @@ namespace irr
     }
 
 
-    // ! Pause the current process for the minimum time allowed only to allow other processes to execute
+    //! Pause the current process for the minimum time allowed only to allow other processes to execute
     void CIrrDeviceFB::yield()
     {
         struct timespec ts = {0, 0};
@@ -306,7 +306,7 @@ namespace irr
     }
 
 
-    // ! Pause execution and let other processes to run for a specified amount of time.
+    //! Pause execution and let other processes to run for a specified amount of time.
     void CIrrDeviceFB::sleep(u32 timeMs, bool pauseTimer = false)
     {
         bool wasStopped = Timer ? Timer->isStopped() : true;
@@ -326,7 +326,7 @@ namespace irr
     }
 
 
-    // ! presents a surface in the client area
+    //! presents a surface in the client area
     bool CIrrDeviceFB::present(video::IImage *image, void *windowId, core::rect<s32> *src)
     {
         // this is only necessary for software drivers.
@@ -358,60 +358,60 @@ namespace irr
     }
 
 
-    // ! notifies the device that it should close itself
+    //! notifies the device that it should close itself
     void CIrrDeviceFB::closeDevice()
     {
         Close = true;
     }
 
 
-    // ! returns if window is active. if not, nothing need to be drawn
+    //! returns if window is active. if not, nothing need to be drawn
     bool CIrrDeviceFB::isWindowActive() const
     {
         return true;
     }
 
 
-    // ! returns if window has focus
+    //! returns if window has focus
     bool CIrrDeviceFB::isWindowFocused() const
     {
         return true;
     }
 
 
-    // ! returns if window is minimized
+    //! returns if window is minimized
     bool CIrrDeviceFB::isWindowMinimized() const
     {
         return false;
     }
 
 
-    // ! sets the caption of the window
+    //! sets the caption of the window
     void CIrrDeviceFB::setWindowCaption(const wchar_t *text)
     {}
 
 
-    // ! Sets if the window should be resizeable in windowed mode.
+    //! Sets if the window should be resizeable in windowed mode.
     void CIrrDeviceFB::setResizable(bool resize)
     {}
 
 
-    // ! Minimizes window
+    //! Minimizes window
     void CIrrDeviceFB::minimizeWindow()
     {}
 
 
-    // ! Maximizes window
+    //! Maximizes window
     void CIrrDeviceFB::maximizeWindow()
     {}
 
 
-    // ! Restores original window size
+    //! Restores original window size
     void CIrrDeviceFB::restoreWindow()
     {}
 
 
-    // ! Returns the type of this device
+    //! Returns the type of this device
     E_DEVICE_TYPE CIrrDeviceFB::getType() const
     {
         return EIDT_FRAMEBUFFER;

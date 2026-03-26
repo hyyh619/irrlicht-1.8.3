@@ -15,7 +15,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CShadowVolumeSceneNode::CShadowVolumeSceneNode(const IMesh *shadowMesh, ISceneNode *parent,
             ISceneManager *mgr, s32 id, bool zfailmethod, f32 infinity)
             : IShadowVolumeSceneNode(parent, mgr, id),
@@ -30,7 +30,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CShadowVolumeSceneNode::~CShadowVolumeSceneNode()
         {
             if (ShadowMesh)
@@ -298,7 +298,7 @@ namespace irr
         }
 
 
-        // ! pre render method
+        //! pre render method
         void CShadowVolumeSceneNode::OnRegisterSceneNode()
         {
             if (IsVisible)
@@ -308,7 +308,7 @@ namespace irr
             }
         }
 
-        // ! renders the node.
+        //! renders the node.
         void CShadowVolumeSceneNode::render()
         {
             video::IVideoDriver *driver = SceneManager->getVideoDriver();
@@ -364,14 +364,14 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CShadowVolumeSceneNode::getBoundingBox() const
         {
             return Box;
         }
 
 
-        // ! Generates adjacency information based on mesh indices.
+        //! Generates adjacency information based on mesh indices.
         void CShadowVolumeSceneNode::calculateAdjacency()
         {
             Adjacency.set_used(IndexCount);

@@ -11,7 +11,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CBoneSceneNode::CBoneSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
             u32 boneIndex, const c8 *boneName)
             : IBoneSceneNode(parent, mgr, id), BoneIndex(boneIndex),
@@ -24,14 +24,14 @@ namespace irr
         }
 
 
-        // ! Returns the index of the bone
+        //! Returns the index of the bone
         u32 CBoneSceneNode::getBoneIndex() const
         {
             return BoneIndex;
         }
 
 
-        // ! Sets the animation mode of the bone. Returns true if successful.
+        //! Sets the animation mode of the bone. Returns true if successful.
         bool CBoneSceneNode::setAnimationMode(E_BONE_ANIMATION_MODE mode)
         {
             AnimationMode = mode;
@@ -39,14 +39,14 @@ namespace irr
         }
 
 
-        // ! Gets the current animation mode of the bone
+        //! Gets the current animation mode of the bone
         E_BONE_ANIMATION_MODE CBoneSceneNode::getAnimationMode() const
         {
             return AnimationMode;
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CBoneSceneNode::getBoundingBox() const
         {
             return Box;

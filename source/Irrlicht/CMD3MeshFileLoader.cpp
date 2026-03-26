@@ -13,19 +13,19 @@ namespace irr
 {
     namespace scene
     {
-        // ! Constructor
+        //! Constructor
         CMD3MeshFileLoader::CMD3MeshFileLoader(scene::ISceneManager *smgr)
             : SceneManager(smgr)
         {}
 
 
-        // ! destructor
+        //! destructor
         CMD3MeshFileLoader::~CMD3MeshFileLoader()
         {}
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool CMD3MeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "md3");

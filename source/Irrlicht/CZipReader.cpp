@@ -50,7 +50,7 @@ namespace irr
         // zip loader
         // -----------------------------------------------------------------------------
 
-        // ! Constructor
+        //! Constructor
         CArchiveLoaderZIP::CArchiveLoaderZIP(io::IFileSystem *fs)
             : FileSystem(fs)
         {
@@ -59,21 +59,21 @@ namespace irr
     #endif
         }
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CArchiveLoaderZIP::isALoadableFileFormat(const io::path &filename) const
         {
             return core::hasFileExtension(filename, "zip", "pk3") ||
                    core::hasFileExtension(filename, "gz", "tgz");
         }
 
-        // ! Check to see if the loader can create archives of this type.
+        //! Check to see if the loader can create archives of this type.
         bool CArchiveLoaderZIP::isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) const
         {
             return (fileType == EFAT_ZIP || fileType == EFAT_GZIP);
         }
 
 
-        // ! Creates an archive from the filename
+        //! Creates an archive from the filename
         /** \param file File handle to check.
          * \return Pointer to newly created archive, or 0 upon error. */
         IFileArchive* CArchiveLoaderZIP::createArchive(const io::path &filename, bool ignoreCase, bool ignorePaths) const
@@ -90,8 +90,8 @@ namespace irr
             return archive;
         }
 
-        // ! creates/loads an archive from the file.
-        // ! \return Pointer to the created archive. Returns 0 if loading failed.
+        //! creates/loads an archive from the file.
+        //! \return Pointer to the created archive. Returns 0 if loading failed.
         IFileArchive* CArchiveLoaderZIP::createArchive(io::IReadFile *file, bool ignoreCase, bool ignorePaths) const
         {
             IFileArchive *archive = 0;
@@ -117,7 +117,7 @@ namespace irr
             return archive;
         }
 
-        // ! Check if the file might be loaded by this class
+        //! Check if the file might be loaded by this class
         /** Check might look into the file.
          * \param file File handle to check.
          * \return True if file seems to be loadable. */
@@ -169,7 +169,7 @@ namespace irr
         }
 
 
-        // ! get the archive type
+        //! get the archive type
         E_FILE_ARCHIVE_TYPE CZipReader::getType() const
         {
             return IsGZip ? EFAT_GZIP : EFAT_ZIP;
@@ -181,9 +181,9 @@ namespace irr
         }
 
 
-        // ! scans for a local header, returns false if there is no more local file header.
-        // ! The gzip file format seems to think that there can be multiple files in a gzip file
-        // ! but none
+        //! scans for a local header, returns false if there is no more local file header.
+        //! The gzip file format seems to think that there can be multiple files in a gzip file
+        //! but none
         bool CZipReader::scanGZipHeader()
         {
             SZipFileEntry entry;
@@ -293,7 +293,7 @@ namespace irr
             return false;
         }
 
-        // ! scans for a local header, returns false if there is no more local file header.
+        //! scans for a local header, returns false if there is no more local file header.
         bool CZipReader::scanZipHeader(bool ignoreGPBits)
         {
             io::path      ZipFileName = "";
@@ -454,7 +454,7 @@ namespace irr
         }
 
 
-        // ! scans for a local header, returns false if there is no more local file header.
+        //! scans for a local header, returns false if there is no more local file header.
         bool CZipReader::scanCentralDirectoryHeader()
         {
             io::path                     ZipFileName = "";
@@ -497,7 +497,7 @@ namespace irr
         }
 
 
-        // ! opens a file by file name
+        //! opens a file by file name
         IReadFile* CZipReader::createAndOpenFile(const io::path &filename)
         {
             s32 index = findFile(filename, false);
@@ -509,7 +509,7 @@ namespace irr
         }
 
 #ifdef _IRR_COMPILE_WITH_LZMA_
-        // ! Used for LZMA decompression. The lib has no default memory management
+        //! Used for LZMA decompression. The lib has no default memory management
         namespace
         {
             void* SzAlloc(void *p, size_t size)
@@ -524,7 +524,7 @@ namespace irr
         }
 #endif
 
-        // ! opens a file by index
+        //! opens a file by index
         IReadFile* CZipReader::createAndOpenFile(u32 index)
         {
             // Irrlicht supports 0, 8, 12, 14, 99

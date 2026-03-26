@@ -16,7 +16,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIFont::CGUIFont(IGUIEnvironment *env, const io::path &filename)
             : Driver(0), SpriteBank(0), Environment(env), WrongCharacter(0),
             MaxHeight(0), GlobalKerningWidth(0), GlobalKerningHeight(0)
@@ -45,7 +45,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIFont::~CGUIFont()
         {
             if (Driver)
@@ -62,7 +62,7 @@ namespace irr
         }
 
 
-        // ! loads a font file from xml
+        //! loads a font file from xml
         bool CGUIFont::load(io::IXMLReader *xml)
         {
             if (!SpriteBank)
@@ -231,7 +231,7 @@ namespace irr
         }
 
 
-        // ! loads a font file, native file needed, for texture parsing
+        //! loads a font file, native file needed, for texture parsing
         bool CGUIFont::load(io::IReadFile *file)
         {
             if (!Driver)
@@ -242,7 +242,7 @@ namespace irr
         }
 
 
-        // ! loads a font file, native file needed, for texture parsing
+        //! loads a font file, native file needed, for texture parsing
         bool CGUIFont::load(const io::path &filename)
         {
             if (!Driver)
@@ -253,7 +253,7 @@ namespace irr
         }
 
 
-        // ! load & prepare font from ITexture
+        //! load & prepare font from ITexture
         bool CGUIFont::loadTexture(video::IImage *image, const io::path &name)
         {
             if (!image || !SpriteBank)
@@ -394,14 +394,14 @@ namespace irr
         }
 
 
-        // ! set an Pixel Offset on Drawing ( scale position on width )
+        //! set an Pixel Offset on Drawing ( scale position on width )
         void CGUIFont::setKerningWidth(s32 kerning)
         {
             GlobalKerningWidth = kerning;
         }
 
 
-        // ! set an Pixel Offset on Drawing ( scale position on width )
+        //! set an Pixel Offset on Drawing ( scale position on width )
         s32 CGUIFont::getKerningWidth(const wchar_t *thisLetter, const wchar_t *previousLetter) const
         {
             s32 ret = GlobalKerningWidth;
@@ -420,21 +420,21 @@ namespace irr
         }
 
 
-        // ! set an Pixel Offset on Drawing ( scale position on height )
+        //! set an Pixel Offset on Drawing ( scale position on height )
         void CGUIFont::setKerningHeight(s32 kerning)
         {
             GlobalKerningHeight = kerning;
         }
 
 
-        // ! set an Pixel Offset on Drawing ( scale position on height )
+        //! set an Pixel Offset on Drawing ( scale position on height )
         s32 CGUIFont::getKerningHeight() const
         {
             return GlobalKerningHeight;
         }
 
 
-        // ! returns the sprite number from a given character
+        //! returns the sprite number from a given character
         u32 CGUIFont::getSpriteNoFromChar(const wchar_t *c) const
         {
             return Areas[getAreaFromCharacter(*c)].spriteno;
@@ -457,7 +457,7 @@ namespace irr
         }
 
 
-        // ! returns the dimension of text
+        //! returns the dimension of text
         core::dimension2d<u32> CGUIFont::getDimension(const wchar_t *text) const
         {
             core::dimension2d<u32> dim(0, 0);
@@ -500,7 +500,7 @@ namespace irr
             return dim;
         }
 
-        // ! draws some text and clips it to the specified rectangle if wanted
+        //! draws some text and clips it to the specified rectangle if wanted
         void CGUIFont::draw(const core::stringw &text, const core::rect<s32> &position,
             video::SColor color,
             bool hcenter, bool vcenter, const core::rect<s32> *clip
@@ -577,7 +577,7 @@ namespace irr
         }
 
 
-        // ! Calculates the index of the character in the text which is on a specific position.
+        //! Calculates the index of the character in the text which is on a specific position.
         s32 CGUIFont::getCharacterFromPos(const wchar_t *text, s32 pixel_x) const
         {
             s32 x   = 0;

@@ -21,7 +21,7 @@ namespace irr
 {
     namespace video
     {
-        // ! Public constructor
+        //! Public constructor
         CD3D9ShaderMaterialRenderer::CD3D9ShaderMaterialRenderer(IDirect3DDevice9 *d3ddev, video::IVideoDriver *driver,
             s32 &outMaterialTypeNr, const c8 *vertexShaderProgram, const c8 *pixelShaderProgram,
             IShaderConstantSetCallBack *callback, IMaterialRenderer *baseMaterial, s32 userData)
@@ -42,8 +42,8 @@ namespace irr
         }
 
 
-        // ! constructor only for use by derived classes who want to
-        // ! create a fall back material for example.
+        //! constructor only for use by derived classes who want to
+        //! create a fall back material for example.
         CD3D9ShaderMaterialRenderer::CD3D9ShaderMaterialRenderer(IDirect3DDevice9 *d3ddev,
             video::IVideoDriver *driver,
             IShaderConstantSetCallBack *callback,
@@ -81,7 +81,7 @@ namespace irr
         }
 
 
-        // ! Destructor
+        //! Destructor
         CD3D9ShaderMaterialRenderer::~CD3D9ShaderMaterialRenderer()
         {
             if (CallBack)
@@ -155,8 +155,8 @@ namespace irr
         }
 
 
-        // ! Returns if the material is transparent. The scene managment needs to know this
-        // ! for being able to sort the materials by opaque and transparent.
+        //! Returns if the material is transparent. The scene managment needs to know this
+        //! for being able to sort the materials by opaque and transparent.
         bool CD3D9ShaderMaterialRenderer::isTransparent() const
         {
             return BaseMaterial ? BaseMaterial->isTransparent() : false;

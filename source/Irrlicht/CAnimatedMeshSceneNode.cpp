@@ -23,7 +23,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CAnimatedMeshSceneNode::CAnimatedMeshSceneNode(IAnimatedMesh *mesh,
             ISceneNode *parent, ISceneManager *mgr, s32 id,
             const core::vector3df &position,
@@ -45,7 +45,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CAnimatedMeshSceneNode::~CAnimatedMeshSceneNode()
         {
             if (MD3Special)
@@ -62,7 +62,7 @@ namespace irr
         }
 
 
-        // ! Sets the current frame. From now on the animation is played from this frame.
+        //! Sets the current frame. From now on the animation is played from this frame.
         void CAnimatedMeshSceneNode::setCurrentFrame(f32 frame)
         {
             // if you pass an out of range value, we just clamp it
@@ -72,14 +72,14 @@ namespace irr
         }
 
 
-        // ! Returns the currently displayed frame number.
+        //! Returns the currently displayed frame number.
         f32 CAnimatedMeshSceneNode::getFrameNr() const
         {
             return CurrentFrameNr;
         }
 
 
-        // ! Get CurrentFrameNr and update transiting settings
+        //! Get CurrentFrameNr and update transiting settings
         void CAnimatedMeshSceneNode::buildFrameNr(u32 timeMs)
         {
             if (Transiting != 0.f)
@@ -233,7 +233,7 @@ namespace irr
         }
 
 
-        // ! OnAnimate() is called just before rendering the whole scene.
+        //! OnAnimate() is called just before rendering the whole scene.
         void CAnimatedMeshSceneNode::OnAnimate(u32 timeMs)
         {
             if (LastTimeMs == 0) // first frame
@@ -259,7 +259,7 @@ namespace irr
         }
 
 
-        // ! renders the node.
+        //! renders the node.
         void CAnimatedMeshSceneNode::render()
         {
             video::IVideoDriver *driver = SceneManager->getVideoDriver();
@@ -466,22 +466,22 @@ namespace irr
         }
 
 
-        // ! Returns the current start frame number.
+        //! Returns the current start frame number.
         s32 CAnimatedMeshSceneNode::getStartFrame() const
         {
             return StartFrame;
         }
 
 
-        // ! Returns the current start frame number.
+        //! Returns the current start frame number.
         s32 CAnimatedMeshSceneNode::getEndFrame() const
         {
             return EndFrame;
         }
 
 
-        // ! sets the frames between the animation is looped.
-        // ! the default is 0 - MaximalFrameCount of the mesh.
+        //! sets the frames between the animation is looped.
+        //! the default is 0 - MaximalFrameCount of the mesh.
         bool CAnimatedMeshSceneNode::setFrameLoop(s32 begin, s32 end)
         {
             const s32 maxFrameCount = Mesh->getFrameCount() - 1;
@@ -506,7 +506,7 @@ namespace irr
         }
 
 
-        // ! sets the speed with witch the animation is played
+        //! sets the speed with witch the animation is played
         void CAnimatedMeshSceneNode::setAnimationSpeed(f32 framesPerSecond)
         {
             FramesPerSecond = framesPerSecond * 0.001f;
@@ -519,18 +519,18 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CAnimatedMeshSceneNode::getBoundingBox() const
         {
             return Box;
         }
 
 
-        // ! returns the material based on the zero based index i. To get the amount
-        // ! of materials used by this scene node, use getMaterialCount().
-        // ! This function is needed for inserting the node into the scene hirachy on a
-        // ! optimal position for minimizing renderstate changes, but can also be used
-        // ! to directly modify the material of a scene node.
+        //! returns the material based on the zero based index i. To get the amount
+        //! of materials used by this scene node, use getMaterialCount().
+        //! This function is needed for inserting the node into the scene hirachy on a
+        //! optimal position for minimizing renderstate changes, but can also be used
+        //! to directly modify the material of a scene node.
         video::SMaterial&CAnimatedMeshSceneNode::getMaterial(u32 i)
         {
             if (i >= Materials.size())
@@ -541,15 +541,15 @@ namespace irr
 
 
 
-        // ! returns amount of materials used by this scene node.
+        //! returns amount of materials used by this scene node.
         u32 CAnimatedMeshSceneNode::getMaterialCount() const
         {
             return Materials.size();
         }
 
 
-        // ! Creates shadow volume scene node as child of this node
-        // ! and returns a pointer to it.
+        //! Creates shadow volume scene node as child of this node
+        //! and returns a pointer to it.
         IShadowVolumeSceneNode* CAnimatedMeshSceneNode::addShadowVolumeSceneNode(
             const IMesh *shadowMesh, s32 id, bool zfailmethod, f32 infinity)
         {
@@ -566,8 +566,8 @@ namespace irr
             return Shadow;
         }
 
-        // ! Returns a pointer to a child node, which has the same transformation as
-        // ! the corresponding joint, if the mesh in this scene node is a skinned mesh.
+        //! Returns a pointer to a child node, which has the same transformation as
+        //! the corresponding joint, if the mesh in this scene node is a skinned mesh.
         IBoneSceneNode* CAnimatedMeshSceneNode::getJointNode(const c8 *jointName)
         {
 #ifndef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
@@ -604,8 +604,8 @@ namespace irr
 
 
 
-        // ! Returns a pointer to a child node, which has the same transformation as
-        // ! the corresponding joint, if the mesh in this scene node is a skinned mesh.
+        //! Returns a pointer to a child node, which has the same transformation as
+        //! the corresponding joint, if the mesh in this scene node is a skinned mesh.
         IBoneSceneNode* CAnimatedMeshSceneNode::getJointNode(u32 jointID)
         {
 #ifndef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
@@ -630,7 +630,7 @@ namespace irr
 #endif
         }
 
-        // ! Gets joint count.
+        //! Gets joint count.
         u32 CAnimatedMeshSceneNode::getJointCount() const
         {
 #ifndef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
@@ -646,24 +646,24 @@ namespace irr
         }
 
 
-        // ! Returns a pointer to a child node, which has the same transformation as
-        // ! the corresponding joint, if the mesh in this scene node is a ms3d mesh.
+        //! Returns a pointer to a child node, which has the same transformation as
+        //! the corresponding joint, if the mesh in this scene node is a ms3d mesh.
         ISceneNode* CAnimatedMeshSceneNode::getMS3DJointNode(const c8 *jointName)
         {
             return getJointNode(jointName);
         }
 
 
-        // ! Returns a pointer to a child node, which has the same transformation as
-        // ! the corresponding joint, if the mesh in this scene node is a .x mesh.
+        //! Returns a pointer to a child node, which has the same transformation as
+        //! the corresponding joint, if the mesh in this scene node is a .x mesh.
         ISceneNode* CAnimatedMeshSceneNode::getXJointNode(const c8 *jointName)
         {
             return getJointNode(jointName);
         }
 
-        // ! Removes a child from this scene node.
-        // ! Implemented here, to be able to remove the shadow properly, if there is one,
-        // ! or to remove attached childs.
+        //! Removes a child from this scene node.
+        //! Implemented here, to be able to remove the shadow properly, if there is one,
+        //! or to remove attached childs.
         bool CAnimatedMeshSceneNode::removeChild(ISceneNode *child)
         {
             if (child && Shadow == child)
@@ -693,7 +693,7 @@ namespace irr
         }
 
 
-        // ! Starts a MD2 animation.
+        //! Starts a MD2 animation.
         bool CAnimatedMeshSceneNode::setMD2Animation(EMD2_ANIMATION_TYPE anim)
         {
             if (!Mesh || Mesh->getMeshType() != EAMT_MD2)
@@ -710,7 +710,7 @@ namespace irr
         }
 
 
-        // ! Starts a special MD2 animation.
+        //! Starts a special MD2 animation.
         bool CAnimatedMeshSceneNode::setMD2Animation(const c8 *animationName)
         {
             if (!Mesh || Mesh->getMeshType() != EAMT_MD2)
@@ -728,22 +728,22 @@ namespace irr
         }
 
 
-        // ! Sets looping mode which is on by default. If set to false,
-        // ! animations will not be looped.
+        //! Sets looping mode which is on by default. If set to false,
+        //! animations will not be looped.
         void CAnimatedMeshSceneNode::setLoopMode(bool playAnimationLooped)
         {
             Looping = playAnimationLooped;
         }
 
-        // ! returns the current loop mode
+        //! returns the current loop mode
         bool CAnimatedMeshSceneNode::getLoopMode() const
         {
             return Looping;
         }
 
 
-        // ! Sets a callback interface which will be called if an animation
-        // ! playback has ended. Set this to 0 to disable the callback again.
+        //! Sets a callback interface which will be called if an animation
+        //! playback has ended. Set this to 0 to disable the callback again.
         void CAnimatedMeshSceneNode::setAnimationEndCallback(IAnimationEndCallBack *callback)
         {
             if (callback == LoopCallBack)
@@ -759,21 +759,21 @@ namespace irr
         }
 
 
-        // ! Sets if the scene node should not copy the materials of the mesh but use them in a read only style.
+        //! Sets if the scene node should not copy the materials of the mesh but use them in a read only style.
         void CAnimatedMeshSceneNode::setReadOnlyMaterials(bool readonly)
         {
             ReadOnlyMaterials = readonly;
         }
 
 
-        // ! Returns if the scene node should not copy the materials of the mesh but use them in a read only style
+        //! Returns if the scene node should not copy the materials of the mesh but use them in a read only style
         bool CAnimatedMeshSceneNode::isReadOnlyMaterials() const
         {
             return ReadOnlyMaterials;
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void CAnimatedMeshSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             IAnimatedMeshSceneNode::serializeAttributes(out, options);
@@ -796,7 +796,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void CAnimatedMeshSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             IAnimatedMeshSceneNode::deserializeAttributes(in, options);
@@ -822,7 +822,7 @@ namespace irr
         }
 
 
-        // ! Sets a new mesh
+        //! Sets a new mesh
         void CAnimatedMeshSceneNode::setMesh(IAnimatedMesh *mesh)
         {
             if (!mesh)
@@ -879,7 +879,7 @@ namespace irr
         }
 
 
-        // ! updates the absolute position based on the relative and the parents position
+        //! updates the absolute position based on the relative and the parents position
         void CAnimatedMeshSceneNode::updateAbsolutePosition()
         {
             IAnimatedMeshSceneNode::updateAbsolutePosition();
@@ -918,15 +918,15 @@ namespace irr
             }
         }
 
-        // ! Set the joint update mode (0-unused, 1-get joints only, 2-set joints only, 3-move and set)
+        //! Set the joint update mode (0-unused, 1-get joints only, 2-set joints only, 3-move and set)
         void CAnimatedMeshSceneNode::setJointMode(E_JOINT_UPDATE_ON_RENDER mode)
         {
             checkJoints();
             JointMode = mode;
         }
 
-        // ! Sets the transition time in seconds (note: This needs to enable joints, and setJointmode maybe set to 2)
-        // ! you must call animateJoints(), or the mesh will not animate
+        //! Sets the transition time in seconds (note: This needs to enable joints, and setJointmode maybe set to 2)
+        //! you must call animateJoints(), or the mesh will not animate
         void CAnimatedMeshSceneNode::setTransitionTime(f32 time)
         {
             const u32 ttime = (u32)core::floor32(time * 1000.0f);
@@ -942,14 +942,14 @@ namespace irr
         }
 
 
-        // ! render mesh ignoring its transformation. Used with ragdolls. (culling is unaffected)
+        //! render mesh ignoring its transformation. Used with ragdolls. (culling is unaffected)
         void CAnimatedMeshSceneNode::setRenderFromIdentity(bool enable)
         {
             RenderFromIdentity = enable;
         }
 
 
-        // ! updates the joint positions of this mesh
+        //! updates the joint positions of this mesh
         void CAnimatedMeshSceneNode::animateJoints(bool CalculateAbsolutePositions)
         {
 #ifndef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_

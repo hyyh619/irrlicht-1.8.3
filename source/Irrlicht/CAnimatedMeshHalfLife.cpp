@@ -172,7 +172,7 @@ namespace irr
         }
 
 
-        // ! Constructor
+        //! Constructor
         CHalflifeMDLMeshFileLoader::CHalflifeMDLMeshFileLoader(
             scene::ISceneManager *smgr) : SceneManager(smgr)
         {
@@ -182,18 +182,18 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool CHalflifeMDLMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension(filename, "mdl");
         }
 
 
-        // ! creates/loads an animated mesh from the file.
-        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-        // ! See IReferenceCounted::drop() for more information.
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* CHalflifeMDLMeshFileLoader::createMesh(io::IReadFile *file)
         {
             CAnimatedMeshHalfLife *msh = new CAnimatedMeshHalfLife();
@@ -210,7 +210,7 @@ namespace irr
         }
 
 
-        // ! Constructor
+        //! Constructor
         CAnimatedMeshHalfLife::CAnimatedMeshHalfLife()
             : FrameCount(0), MeshIPol(0), SceneManager(0), Header(0), TextureHeader(0),
             OwnTexModel(false), SequenceIndex(0), CurrentFrame(0), FramesPerSecond(25.f),
@@ -250,7 +250,7 @@ namespace irr
         }
 
 
-        // ! Destructor
+        //! Destructor
         CAnimatedMeshHalfLife::~CAnimatedMeshHalfLife()
         {
             delete[] (u8*) Header;
@@ -265,19 +265,19 @@ namespace irr
         }
 
 
-        // ! Returns the amount of frames in milliseconds. If the amount is 1, it is a static (=non animated) mesh.
+        //! Returns the amount of frames in milliseconds. If the amount is 1, it is a static (=non animated) mesh.
         u32 CAnimatedMeshHalfLife::getFrameCount() const
         {
             return FrameCount;
         }
 
 
-        // ! set the hardware mapping hint, for driver
+        //! set the hardware mapping hint, for driver
         void CAnimatedMeshHalfLife::setHardwareMappingHint(E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer)
         {}
 
 
-        // ! flags the meshbuffer as changed, reloads hardware buffers
+        //! flags the meshbuffer as changed, reloads hardware buffers
         void CAnimatedMeshHalfLife::setDirty(E_BUFFER_TYPE buffer)
         {}
 
@@ -734,7 +734,7 @@ namespace irr
         }
 
 
-        // ! Returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail.
+        //! Returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail.
         IMesh* CAnimatedMeshHalfLife::getMesh(s32 frameInt, s32 detailLevel, s32 startFrameLoop, s32 endFrameLoop)
         {
             f32 frame  = frameInt + (detailLevel * 0.001f);
@@ -1708,35 +1708,35 @@ namespace irr
         }
 
 
-        // ! Returns an axis aligned bounding box
+        //! Returns an axis aligned bounding box
         const core::aabbox3d<f32>&CAnimatedMeshHalfLife::getBoundingBox() const
         {
             return MeshIPol->BoundingBox;
         }
 
 
-        // ! Returns the type of the animated mesh.
+        //! Returns the type of the animated mesh.
         E_ANIMATED_MESH_TYPE CAnimatedMeshHalfLife::getMeshType() const
         {
             return EAMT_MDL_HALFLIFE;
         }
 
 
-        // ! returns amount of mesh buffers.
+        //! returns amount of mesh buffers.
         u32 CAnimatedMeshHalfLife::getMeshBufferCount() const
         {
             return MeshIPol->getMeshBufferCount();
         }
 
 
-        // ! returns pointer to a mesh buffer
+        //! returns pointer to a mesh buffer
         IMeshBuffer* CAnimatedMeshHalfLife::getMeshBuffer(u32 nr) const
         {
             return MeshIPol->getMeshBuffer(nr);
         }
 
 
-        // ! Returns pointer to a mesh buffer which fits a material
+        //! Returns pointer to a mesh buffer which fits a material
         /** \param material: material to search for
          * \return Returns the pointer to the mesh buffer or
          * NULL if there is no such mesh buffer. */
@@ -1752,7 +1752,7 @@ namespace irr
         }
 
 
-        // ! set user axis aligned bounding box
+        //! set user axis aligned bounding box
         void CAnimatedMeshHalfLife::setBoundingBox(const core::aabbox3df &box)
         {
             MeshIPol->setBoundingBox(box);

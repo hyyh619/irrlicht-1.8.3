@@ -345,7 +345,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 namespace irr
 {
-    // ! constructor
+    //! constructor
     CIrrDeviceWinCE::CIrrDeviceWinCE(const SIrrlichtCreationParameters &params)
         : CIrrDeviceStub(params), HWnd(0),
         Win32CursorControl(0), ChangedToFullScreen(false), Resized(false),
@@ -454,7 +454,7 @@ namespace irr
     }
 
 
-    // ! destructor
+    //! destructor
     CIrrDeviceWinCE::~CIrrDeviceWinCE()
     {
         // unregister environment
@@ -473,7 +473,7 @@ namespace irr
     }
 
 
-    // ! create the driver
+    //! create the driver
     void CIrrDeviceWinCE::createDriver()
     {
         switch (CreationParams.DriverType)
@@ -559,7 +559,7 @@ namespace irr
     }
 
 
-    // ! runs the device. Returns false if device wants to be deleted
+    //! runs the device. Returns false if device wants to be deleted
     bool CIrrDeviceWinCE::run()
     {
         os::Timer::tick();
@@ -587,14 +587,14 @@ namespace irr
     }
 
 
-    // ! Pause the current process for the minimum time allowed only to allow other processes to execute
+    //! Pause the current process for the minimum time allowed only to allow other processes to execute
     void CIrrDeviceWinCE::yield()
     {
         Sleep(1);
     }
 
 
-    // ! Pause execution and let other processes to run for a specified amount of time.
+    //! Pause execution and let other processes to run for a specified amount of time.
     void CIrrDeviceWinCE::sleep(u32 timeMs, bool pauseTimer)
     {
         const bool wasStopped = Timer ? Timer->isStopped() : true;
@@ -637,7 +637,7 @@ namespace irr
     }
 
 
-    // ! sets the caption of the window
+    //! sets the caption of the window
     void CIrrDeviceWinCE::setWindowCaption(const wchar_t *text)
     {
         SetWindowTextW(HWnd, text);
@@ -668,7 +668,7 @@ namespace irr
 #endif
 
 
-    // ! presents a surface in the client area
+    //! presents a surface in the client area
     bool CIrrDeviceWinCE::present(video::IImage *image, void *windowId, core::rect<s32> *src)
     {
         HWND hwnd = HWnd;
@@ -721,7 +721,7 @@ namespace irr
     }
 
 
-    // ! notifies the device that it should close itself
+    //! notifies the device that it should close itself
     void CIrrDeviceWinCE::closeDevice()
     {
         MSG msg;
@@ -741,7 +741,7 @@ namespace irr
     }
 
 
-    // ! returns if window is active. if not, nothing need to be drawn
+    //! returns if window is active. if not, nothing need to be drawn
     bool CIrrDeviceWinCE::isWindowActive() const
     {
         bool ret = (GetActiveWindow() == HWnd);
@@ -751,7 +751,7 @@ namespace irr
     }
 
 
-    // ! returns if window has focus
+    //! returns if window has focus
     bool CIrrDeviceWinCE::isWindowFocused() const
     {
         bool ret = (GetFocus() == HWnd);
@@ -761,7 +761,7 @@ namespace irr
     }
 
 
-    // ! returns if window is minimized
+    //! returns if window is minimized
     bool CIrrDeviceWinCE::isWindowMinimized() const
     {
 #if 0
@@ -778,7 +778,7 @@ namespace irr
     }
 
 
-    // ! switches to fullscreen
+    //! switches to fullscreen
     bool CIrrDeviceWinCE::switchToFullScreen()
     {
         ChangedToFullScreen = SHFullScreen(HWnd, SHFS_HIDESIPBUTTON | SHFS_HIDETASKBAR) != 0;
@@ -786,14 +786,14 @@ namespace irr
     }
 
 
-    // ! returns the win32 cursor control
+    //! returns the win32 cursor control
     CIrrDeviceWinCE::CCursorControl* CIrrDeviceWinCE::getWin32CursorControl()
     {
         return Win32CursorControl;
     }
 
 
-    // ! Return pointer to a list with all video modes supported by the gfx adapter.
+    //! Return pointer to a list with all video modes supported by the gfx adapter.
     /** \return Pointer to video modes list */
     video::IVideoModeList* CIrrDeviceWinCE::getVideoModeList()
     {
@@ -827,14 +827,14 @@ namespace irr
     }
 
 
-    // ! Notifies the device, that it has been resized
+    //! Notifies the device, that it has been resized
     void CIrrDeviceWinCE::OnResized()
     {
         Resized = true;
     }
 
 
-    // ! Sets if the window should be resizable in windowed mode.
+    //! Sets if the window should be resizable in windowed mode.
     void CIrrDeviceWinCE::setResizable(bool resize)
     {
         if (ExternalWindow || !getVideoDriver() || CreationParams.Fullscreen)
@@ -869,20 +869,20 @@ namespace irr
     }
 
 
-    // ! Minimizes the window.
+    //! Minimizes the window.
     void CIrrDeviceWinCE::minimizeWindow()
     {
         // do nothing
     }
 
-    // ! Maximize window
+    //! Maximize window
     void CIrrDeviceWinCE::maximizeWindow()
     {
         // do nothing
     }
 
 
-    // ! Restore original window size
+    //! Restore original window size
     void CIrrDeviceWinCE::restoreWindow()
     {
         // do nothing

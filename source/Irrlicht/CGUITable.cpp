@@ -21,7 +21,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUITable::CGUITable(IGUIEnvironment *environment, IGUIElement *parent,
             s32 id, const core::rect<s32> &rectangle, bool clip,
             bool drawBack, bool moveOverSelect)
@@ -57,7 +57,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUITable::~CGUITable()
         {
             if (VerticalScrollBar)
@@ -107,7 +107,7 @@ namespace irr
         }
 
 
-        // ! remove a column from the table
+        //! remove a column from the table
         void CGUITable::removeColumn(u32 columnIndex)
         {
             if (columnIndex < Columns.size())
@@ -236,7 +236,7 @@ namespace irr
             recalculateWidths();
         }
 
-        // ! Get the width of a column
+        //! Get the width of a column
         u32 CGUITable::getColumnWidth(u32 columnIndex) const
         {
             if (columnIndex >= Columns.size())
@@ -297,7 +297,7 @@ namespace irr
         }
 
 
-        // ! adds an list item, returns id of item
+        //! adds an list item, returns id of item
         void CGUITable::setCellText(u32 rowIndex, u32 columnIndex, const core::stringw &text)
         {
             if (rowIndex < Rows.size() && columnIndex < Columns.size())
@@ -364,7 +364,7 @@ namespace irr
         }
 
 
-        // ! clears the list
+        //! clears the list
         void CGUITable::clear()
         {
             Selected = -1;
@@ -401,7 +401,7 @@ namespace irr
             return Selected;
         }
 
-        // ! set wich row is currently selected
+        //! set wich row is currently selected
         void CGUITable::setSelected(s32 index)
         {
             Selected = -1;
@@ -553,7 +553,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUITable::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -890,7 +890,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUITable::draw()
         {
             if (!IsVisible)
@@ -1103,21 +1103,21 @@ namespace irr
         }
 
 
-        // ! Set some flags influencing the layout of the table
+        //! Set some flags influencing the layout of the table
         void CGUITable::setDrawFlags(s32 flags)
         {
             DrawFlags = flags;
         }
 
 
-        // ! Get the flags which influence the layout of the table
+        //! Get the flags which influence the layout of the table
         s32 CGUITable::getDrawFlags() const
         {
             return DrawFlags;
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUITable::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             IGUITable::serializeAttributes(out, options);
@@ -1188,7 +1188,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUITable::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             IGUITable::deserializeAttributes(in, options);

@@ -13,7 +13,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIImage::CGUIImage(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
             : IGUIImage(environment, parent, id, rectangle), Texture(0), Color(255, 255, 255, 255),
             UseAlphaChannel(false), ScaleImage(false)
@@ -24,7 +24,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIImage::~CGUIImage()
         {
             if (Texture)
@@ -32,7 +32,7 @@ namespace irr
         }
 
 
-        // ! sets an image
+        //! sets an image
         void CGUIImage::setImage(video::ITexture *image)
         {
             if (image == Texture)
@@ -47,25 +47,25 @@ namespace irr
                 Texture->grab();
         }
 
-        // ! Gets the image texture
+        //! Gets the image texture
         video::ITexture* CGUIImage::getImage() const
         {
             return Texture;
         }
 
-        // ! sets the color of the image
+        //! sets the color of the image
         void CGUIImage::setColor(video::SColor color)
         {
             Color = color;
         }
 
-        // ! Gets the color of the image
+        //! Gets the color of the image
         video::SColor CGUIImage::getColor() const
         {
             return Color;
         }
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIImage::draw()
         {
             if (!IsVisible)
@@ -100,28 +100,28 @@ namespace irr
         }
 
 
-        // ! sets if the image should use its alpha channel to draw itself
+        //! sets if the image should use its alpha channel to draw itself
         void CGUIImage::setUseAlphaChannel(bool use)
         {
             UseAlphaChannel = use;
         }
 
 
-        // ! sets if the image should use its alpha channel to draw itself
+        //! sets if the image should use its alpha channel to draw itself
         void CGUIImage::setScaleImage(bool scale)
         {
             ScaleImage = scale;
         }
 
 
-        // ! Returns true if the image is scaled to fit, false if not
+        //! Returns true if the image is scaled to fit, false if not
         bool CGUIImage::isImageScaled() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
             return ScaleImage;
         }
 
-        // ! Returns true if the image is using the alpha channel, false if not
+        //! Returns true if the image is using the alpha channel, false if not
         bool CGUIImage::isAlphaChannelUsed() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -129,7 +129,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUIImage::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUIImage::serializeAttributes(out, options);
@@ -141,7 +141,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUIImage::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             IGUIImage::deserializeAttributes(in, options);

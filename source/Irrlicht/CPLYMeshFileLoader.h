@@ -24,22 +24,22 @@ namespace irr
             EPLYPT_UNKNOWN
         };
 
-        // ! Meshloader capable of loading obj meshes.
+        //! Meshloader capable of loading obj meshes.
         class CPLYMeshFileLoader : public IMeshLoader
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             CPLYMeshFileLoader(scene::ISceneManager *smgr);
 
-            // ! Destructor
+            //! Destructor
             virtual ~CPLYMeshFileLoader();
 
-            // ! returns true if the file maybe is able to be loaded by this class
-            // ! based on the file extension (e.g. ".ply")
+            //! returns true if the file maybe is able to be loaded by this class
+            //! based on the file extension (e.g. ".ply")
             virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-            // ! creates/loads an animated mesh from the file.
+            //! creates/loads an animated mesh from the file.
             virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
 private:

@@ -14,7 +14,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSceneNodeAnimatorCameraFPS::CSceneNodeAnimatorCameraFPS(gui::ICursorControl *cursorControl,
             f32 rotateSpeed, f32 moveSpeed, f32 jumpSpeed,
             SKeyMap *keyMapArray, u32 keyMapSize, bool noVerticalMovement, bool invertY)
@@ -50,7 +50,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CSceneNodeAnimatorCameraFPS::~CSceneNodeAnimatorCameraFPS()
         {
             if (CursorControl)
@@ -58,11 +58,11 @@ namespace irr
         }
 
 
-        // ! It is possible to send mouse and key events to the camera. Most cameras
-        // ! may ignore this input, but camera scene nodes which are created for
-        // ! example with scene::ISceneManager::addMayaCameraSceneNode or
-        // ! scene::ISceneManager::addFPSCameraSceneNode, may want to get this input
-        // ! for changing their position, look at target or whatever.
+        //! It is possible to send mouse and key events to the camera. Most cameras
+        //! may ignore this input, but camera scene nodes which are created for
+        //! example with scene::ISceneManager::addMayaCameraSceneNode or
+        //! scene::ISceneManager::addFPSCameraSceneNode, may want to get this input
+        //! for changing their position, look at target or whatever.
         bool CSceneNodeAnimatorCameraFPS::OnEvent(const SEvent &evt)
         {
             switch (evt.EventType)
@@ -273,21 +273,21 @@ namespace irr
         }
 
 
-        // ! Sets the rotation speed
+        //! Sets the rotation speed
         void CSceneNodeAnimatorCameraFPS::setRotateSpeed(f32 speed)
         {
             RotateSpeed = speed;
         }
 
 
-        // ! Sets the movement speed
+        //! Sets the movement speed
         void CSceneNodeAnimatorCameraFPS::setMoveSpeed(f32 speed)
         {
             MoveSpeed = speed;
         }
 
 
-        // ! Gets the rotation speed
+        //! Gets the rotation speed
         f32 CSceneNodeAnimatorCameraFPS::getRotateSpeed() const
         {
             return RotateSpeed;
@@ -301,7 +301,7 @@ namespace irr
         }
 
 
-        // ! Sets the keyboard mapping for this animator
+        //! Sets the keyboard mapping for this animator
         void CSceneNodeAnimatorCameraFPS::setKeyMap(SKeyMap *map, u32 count)
         {
             // clear the keymap
@@ -325,14 +325,14 @@ namespace irr
         }
 
 
-        // ! Sets whether vertical movement should be allowed.
+        //! Sets whether vertical movement should be allowed.
         void CSceneNodeAnimatorCameraFPS::setVerticalMovement(bool allow)
         {
             NoVerticalMovement = !allow;
         }
 
 
-        // ! Sets whether the Y axis of the mouse should be inverted.
+        //! Sets whether the Y axis of the mouse should be inverted.
         void CSceneNodeAnimatorCameraFPS::setInvertMouse(bool invert)
         {
             if (invert)

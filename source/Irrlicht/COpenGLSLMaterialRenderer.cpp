@@ -25,7 +25,7 @@ namespace irr
 {
     namespace video
     {
-        // ! Constructor
+        //! Constructor
         COpenGLSLMaterialRenderer::COpenGLSLMaterialRenderer(video::COpenGLDriver *driver,
             s32 &outMaterialTypeNr, const c8 *vertexShaderProgram,
             const c8 *vertexShaderEntryPointName,
@@ -65,8 +65,8 @@ namespace irr
         }
 
 
-        // ! constructor only for use by derived classes who want to
-        // ! create a fall back material for example.
+        //! constructor only for use by derived classes who want to
+        //! create a fall back material for example.
         COpenGLSLMaterialRenderer::COpenGLSLMaterialRenderer(COpenGLDriver *driver,
             IShaderConstantSetCallBack *callback,
             IMaterialRenderer *baseMaterial, s32 userData)
@@ -81,7 +81,7 @@ namespace irr
         }
 
 
-        // ! Destructor
+        //! Destructor
         COpenGLSLMaterialRenderer::~COpenGLSLMaterialRenderer()
         {
             if (CallBack)
@@ -231,7 +231,7 @@ namespace irr
         }
 
 
-        // ! Returns if the material is transparent.
+        //! Returns if the material is transparent.
         bool COpenGLSLMaterialRenderer::isTransparent() const
         {
             return BaseMaterial ? BaseMaterial->isTransparent() : false;

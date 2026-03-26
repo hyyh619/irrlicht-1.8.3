@@ -12,7 +12,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CDepthBuffer::CDepthBuffer(const core::dimension2d<u32> &size)
             : Buffer(0), Size(0, 0)
         {
@@ -25,7 +25,7 @@ namespace irr
 
 
 
-        // ! destructor
+        //! destructor
         CDepthBuffer::~CDepthBuffer()
         {
             if (Buffer)
@@ -34,7 +34,7 @@ namespace irr
 
 
 
-        // ! clears the zbuffer
+        //! clears the zbuffer
         void CDepthBuffer::clear()
         {
 #ifdef SOFTWARE_DRIVER_2_USE_WBUFFER
@@ -51,7 +51,7 @@ namespace irr
 
 
 
-        // ! sets the new size of the zbuffer
+        //! sets the new size of the zbuffer
         void CDepthBuffer::setSize(const core::dimension2d<u32> &size)
         {
             if (size == Size)
@@ -70,7 +70,7 @@ namespace irr
 
 
 
-        // ! returns the size of the zbuffer
+        //! returns the size of the zbuffer
         const core::dimension2d<u32>&CDepthBuffer::getSize() const
         {
             return Size;
@@ -78,7 +78,7 @@ namespace irr
 
         // -----------------------------------------------------------------
 
-        // ! constructor
+        //! constructor
         CStencilBuffer::CStencilBuffer(const core::dimension2d<u32> &size)
             : Buffer(0), Size(0, 0)
         {
@@ -91,7 +91,7 @@ namespace irr
 
 
 
-        // ! destructor
+        //! destructor
         CStencilBuffer::~CStencilBuffer()
         {
             if (Buffer)
@@ -100,7 +100,7 @@ namespace irr
 
 
 
-        // ! clears the zbuffer
+        //! clears the zbuffer
         void CStencilBuffer::clear()
         {
             memset32 (Buffer, 0, TotalSize);
@@ -108,7 +108,7 @@ namespace irr
 
 
 
-        // ! sets the new size of the zbuffer
+        //! sets the new size of the zbuffer
         void CStencilBuffer::setSize(const core::dimension2d<u32> &size)
         {
             if (size == Size)
@@ -127,7 +127,7 @@ namespace irr
 
 
 
-        // ! returns the size of the zbuffer
+        //! returns the size of the zbuffer
         const core::dimension2d<u32>&CStencilBuffer::getSize() const
         {
             return Size;
@@ -140,7 +140,7 @@ namespace irr
 {
     namespace video
     {
-        // ! creates a ZBuffer
+        //! creates a ZBuffer
         IDepthBuffer* createDepthBuffer(const core::dimension2d<u32> &size)
         {
     #ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
@@ -151,7 +151,7 @@ namespace irr
         }
 
 
-        // ! creates a ZBuffer
+        //! creates a ZBuffer
         IStencilBuffer* createStencilBuffer(const core::dimension2d<u32> &size)
         {
     #ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_

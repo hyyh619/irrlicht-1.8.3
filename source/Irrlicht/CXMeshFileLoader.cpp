@@ -25,7 +25,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! Constructor
+        //! Constructor
         CXMeshFileLoader::CXMeshFileLoader(scene::ISceneManager *smgr, io::IFileSystem *fs)
             : SceneManager(smgr), FileSystem(fs), AllJoints(0), AnimatedMesh(0),
             Buffer(0), P(0), End(0), BinaryNumCount(0), Line(0),
@@ -37,18 +37,18 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool CXMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "x");
         }
 
 
-        // ! creates/loads an animated mesh from the file.
-        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-        // ! See IReferenceCounted::drop() for more information.
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* CXMeshFileLoader::createMesh(io::IReadFile *f)
         {
             if (!f)
@@ -407,7 +407,7 @@ namespace irr
         }
 
 
-        // ! Reads file into memory
+        //! Reads file into memory
         bool CXMeshFileLoader::readFileIntoMemory(io::IReadFile *file)
         {
             const long size = file->getSize();
@@ -420,7 +420,7 @@ namespace irr
 
             Buffer = new c8[size];
 
-            // ! read all into memory
+            //! read all into memory
             if (file->read(Buffer, size) != size)
             {
                 os::Printer::log("Could not read from x file.", ELL_WARNING);
@@ -430,14 +430,14 @@ namespace irr
             Line = 1;
             End  = Buffer + size;
 
-            // ! check header "xof "
+            //! check header "xof "
             if (strncmp(Buffer, "xof ", 4) != 0)
             {
                 os::Printer::log("Not an x file, wrong header.", ELL_WARNING);
                 return false;
             }
 
-            // ! read minor and major version, e.g. 0302 or 0303
+            //! read minor and major version, e.g. 0302 or 0303
             c8 tmp[3];
             tmp[0]       = Buffer[4];
             tmp[1]       = Buffer[5];
@@ -448,7 +448,7 @@ namespace irr
             tmp[1]       = Buffer[7];
             MinorVersion = core::strtoul10(tmp);
 
-            // ! read format
+            //! read format
             if (strncmp(&Buffer[8], "txt ", 4) == 0)
                 BinaryFormat = false;
             else if (strncmp(&Buffer[8], "bin ", 4) == 0)
@@ -461,7 +461,7 @@ namespace irr
 
             BinaryNumCount = 0;
 
-            // ! read float size
+            //! read float size
             if (strncmp(&Buffer[12], "0032", 4) == 0)
                 FloatSize = 4;
             else if (strncmp(&Buffer[12], "0064", 4) == 0)
@@ -481,7 +481,7 @@ namespace irr
         }
 
 
-        // ! Parses the file
+        //! Parses the file
         bool CXMeshFileLoader::parseFile()
         {
             while (parseDataObject())
@@ -493,7 +493,7 @@ namespace irr
         }
 
 
-        // ! Parses the next Data object in the file
+        //! Parses the next Data object in the file
         bool CXMeshFileLoader::parseDataObject()
         {
             core::stringc objectName = getNextToken();
@@ -2030,14 +2030,14 @@ namespace irr
         }
 
 
-        // ! checks for closing curly brace, returns false if not there
+        //! checks for closing curly brace, returns false if not there
         bool CXMeshFileLoader::checkForClosingBrace()
         {
             return (getNextToken() == "}");
         }
 
 
-        // ! checks for one following semicolon, returns false if not there
+        //! checks for one following semicolon, returns false if not there
         bool CXMeshFileLoader::checkForOneFollowingSemicolons()
         {
             if (BinaryFormat)
@@ -2053,7 +2053,7 @@ namespace irr
         }
 
 
-        // ! checks for two following semicolons, returns false if they are not there
+        //! checks for two following semicolons, returns false if they are not there
         bool CXMeshFileLoader::checkForTwoFollowingSemicolons()
         {
             if (BinaryFormat)
@@ -2072,9 +2072,9 @@ namespace irr
         }
 
 
-        // ! reads header of dataobject including the opening brace.
-        // ! returns false if error happened, and writes name of object
-        // ! if there is one
+        //! reads header of dataobject including the opening brace.
+        //! returns false if error happened, and writes name of object
+        //! if there is one
         bool CXMeshFileLoader::readHeadOfDataObject(core::stringc *outname)
         {
             core::stringc nameOrBrace = getNextToken();
@@ -2092,7 +2092,7 @@ namespace irr
         }
 
 
-        // ! returns next parseable token. Returns empty string if no token there
+        //! returns next parseable token. Returns empty string if no token there
         core::stringc CXMeshFileLoader::getNextToken()
         {
             core::stringc s;
@@ -2250,7 +2250,7 @@ namespace irr
         }
 
 
-        // ! places pointer to next begin of a token, which must be a number,
+        //! places pointer to next begin of a token, which must be a number,
         // and ignores comments
         void CXMeshFileLoader::findNextNoneWhiteSpaceNumber()
         {
@@ -2298,7 +2298,7 @@ namespace irr
         }
 
 
-        // ! reads a x file style string
+        //! reads a x file style string
         bool CXMeshFileLoader::getNextTokenAsString(core::stringc &out)
         {
             if (BinaryFormat)

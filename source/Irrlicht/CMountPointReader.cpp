@@ -13,7 +13,7 @@ namespace irr
 {
     namespace io
     {
-        // ! Constructor
+        //! Constructor
         CArchiveLoaderMount::CArchiveLoaderMount(io::IFileSystem *fs)
             : FileSystem(fs)
         {
@@ -23,7 +23,7 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CArchiveLoaderMount::isALoadableFileFormat(const io::path &filename) const
         {
             io::path fname(filename);
@@ -47,19 +47,19 @@ namespace irr
             return ret;
         }
 
-        // ! Check to see if the loader can create archives of this type.
+        //! Check to see if the loader can create archives of this type.
         bool CArchiveLoaderMount::isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) const
         {
             return fileType == EFAT_FOLDER;
         }
 
-        // ! Check if the file might be loaded by this class
+        //! Check if the file might be loaded by this class
         bool CArchiveLoaderMount::isALoadableFileFormat(io::IReadFile *file) const
         {
             return false;
         }
 
-        // ! Creates an archive from the filename
+        //! Creates an archive from the filename
         IFileArchive* CArchiveLoaderMount::createArchive(const io::path &filename, bool ignoreCase, bool ignorePaths) const
         {
             IFileArchive *archive = 0;
@@ -82,18 +82,18 @@ namespace irr
             return archive;
         }
 
-        // ! creates/loads an archive from the file.
-        // ! \return Pointer to the created archive. Returns 0 if loading failed.
+        //! creates/loads an archive from the file.
+        //! \return Pointer to the created archive. Returns 0 if loading failed.
         IFileArchive* CArchiveLoaderMount::createArchive(io::IReadFile *file, bool ignoreCase, bool ignorePaths) const
         {
             return 0;
         }
 
-        // ! compatible Folder Architecture
+        //! compatible Folder Architecture
         CMountPointReader::CMountPointReader(IFileSystem *parent, const io::path &basename, bool ignoreCase, bool ignorePaths)
             : CFileList(basename, ignoreCase, ignorePaths), Parent(parent)
         {
-            // ! ensure CFileList path ends in a slash
+            //! ensure CFileList path ends in a slash
             if (Path.lastChar() != '/')
                 Path.append('/');
 
@@ -107,7 +107,7 @@ namespace irr
         }
 
 
-        // ! returns the list of files
+        //! returns the list of files
         const IFileList* CMountPointReader::getFileList() const
         {
             return this;
@@ -156,7 +156,7 @@ namespace irr
             list->drop();
         }
 
-        // ! opens a file by index
+        //! opens a file by index
         IReadFile* CMountPointReader::createAndOpenFile(u32 index)
         {
             if (index >= Files.size())
@@ -165,7 +165,7 @@ namespace irr
             return createReadFile(RealFileNames[Files[index].ID]);
         }
 
-        // ! opens a file by file name
+        //! opens a file by file name
         IReadFile* CMountPointReader::createAndOpenFile(const io::path &filename)
         {
             s32 index = findFile(filename, false);

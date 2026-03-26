@@ -24,48 +24,48 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CGUITab(s32 number, IGUIEnvironment *environment,
                 IGUIElement *parent, const core::rect<s32> &rectangle,
                 s32 id);
 
-            // ! destructor
+            //! destructor
             // virtual ~CGUITab();
 
-            // ! Returns number of this tab in tabcontrol. Can be accessed
-            // ! later IGUITabControl::getTab() by this number.
+            //! Returns number of this tab in tabcontrol. Can be accessed
+            //! later IGUITabControl::getTab() by this number.
             virtual s32 getNumber() const;
 
-            // ! Sets the number
+            //! Sets the number
             virtual void setNumber(s32 n);
 
-            // ! draws the element and its children
+            //! draws the element and its children
             virtual void draw();
 
-            // ! sets if the tab should draw its background
+            //! sets if the tab should draw its background
             virtual void setDrawBackground(bool draw = true);
 
-            // ! sets the color of the background, if it should be drawn.
+            //! sets the color of the background, if it should be drawn.
             virtual void setBackgroundColor(video::SColor c);
 
-            // ! sets the color of the text
+            //! sets the color of the text
             virtual void setTextColor(video::SColor c);
 
-            // ! returns true if the tab is drawing its background, false if not
+            //! returns true if the tab is drawing its background, false if not
             virtual bool isDrawingBackground() const;
 
-            // ! returns the color of the background
+            //! returns the color of the background
             virtual video::SColor getBackgroundColor() const;
 
             virtual video::SColor getTextColor() const;
 
-            // ! Writes attributes of the element.
+            //! Writes attributes of the element.
             virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const;
 
-            // ! Reads attributes of the element
+            //! Reads attributes of the element
             virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options);
 
-            // ! only for internal use by CGUITabControl
+            //! only for internal use by CGUITabControl
             void refreshSkinColors();
 
 private:
@@ -78,92 +78,92 @@ private:
         };
 
 
-        // ! A standard tab control
+        //! A standard tab control
         class CGUITabControl : public IGUITabControl
         {
 public:
 
-            // ! destructor
+            //! destructor
             CGUITabControl(IGUIEnvironment *environment,
                 IGUIElement *parent, const core::rect<s32> &rectangle,
                 bool fillbackground = true, bool border = true, s32 id = -1);
 
-            // ! destructor
+            //! destructor
             virtual ~CGUITabControl();
 
-            // ! Adds a tab
+            //! Adds a tab
             virtual IGUITab* addTab(const wchar_t *caption, s32 id = -1);
 
-            // ! Adds a tab that has already been created
+            //! Adds a tab that has already been created
             virtual void addTab(CGUITab *tab);
 
-            // ! Insert the tab at the given index
+            //! Insert the tab at the given index
             virtual IGUITab* insertTab(s32 idx, const wchar_t *caption, s32 id = -1);
 
-            // ! Removes a tab from the tabcontrol
+            //! Removes a tab from the tabcontrol
             virtual void removeTab(s32 idx);
 
-            // ! Clears the tabcontrol removing all tabs
+            //! Clears the tabcontrol removing all tabs
             virtual void clear();
 
-            // ! Returns amount of tabs in the tabcontrol
+            //! Returns amount of tabs in the tabcontrol
             virtual s32 getTabCount() const;
 
-            // ! Returns a tab based on zero based index
+            //! Returns a tab based on zero based index
             virtual IGUITab* getTab(s32 idx) const;
 
-            // ! Brings a tab to front.
+            //! Brings a tab to front.
             virtual bool setActiveTab(s32 idx);
 
-            // ! Brings a tab to front.
+            //! Brings a tab to front.
             virtual bool setActiveTab(IGUITab *tab);
 
-            // ! Returns which tab is currently active
+            //! Returns which tab is currently active
             virtual s32 getActiveTab() const;
 
-            // ! get the the id of the tab at the given absolute coordinates
+            //! get the the id of the tab at the given absolute coordinates
             virtual s32 getTabAt(s32 xpos, s32 ypos) const;
 
-            // ! called if an event happened.
+            //! called if an event happened.
             virtual bool OnEvent(const SEvent &event);
 
-            // ! draws the element and its children
+            //! draws the element and its children
             virtual void draw();
 
-            // ! Removes a child.
+            //! Removes a child.
             virtual void removeChild(IGUIElement *child);
 
-            // ! Writes attributes of the element.
+            //! Writes attributes of the element.
             virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const;
-            // ! Set the height of the tabs
+            //! Set the height of the tabs
             virtual void setTabHeight(s32 height);
 
-            // ! Reads attributes of the element
+            //! Reads attributes of the element
             virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options);
 
-            // ! Get the height of the tabs
+            //! Get the height of the tabs
             virtual s32 getTabHeight() const;
 
-            // ! set the maximal width of a tab. Per default width is 0 which means "no width restriction".
+            //! set the maximal width of a tab. Per default width is 0 which means "no width restriction".
             virtual void setTabMaxWidth(s32 width);
 
-            // ! get the maximal width of a tab
+            //! get the maximal width of a tab
             virtual s32 getTabMaxWidth() const;
 
-            // ! Set the alignment of the tabs
-            // ! note: EGUIA_CENTER is not an option
+            //! Set the alignment of the tabs
+            //! note: EGUIA_CENTER is not an option
             virtual void setTabVerticalAlignment(gui::EGUI_ALIGNMENT alignment);
 
-            // ! Get the alignment of the tabs
+            //! Get the alignment of the tabs
             virtual gui::EGUI_ALIGNMENT getTabVerticalAlignment() const;
 
-            // ! Set the extra width added to tabs on each side of the text
+            //! Set the extra width added to tabs on each side of the text
             virtual void setTabExtraWidth(s32 extraWidth);
 
-            // ! Get the extra width added to tabs on each side of the text
+            //! Get the extra width added to tabs on each side of the text
             virtual s32 getTabExtraWidth() const;
 
-            // ! Update the position of the element, decides scroll button status
+            //! Update the position of the element, decides scroll button status
             virtual void updateAbsolutePosition();
 
 private:

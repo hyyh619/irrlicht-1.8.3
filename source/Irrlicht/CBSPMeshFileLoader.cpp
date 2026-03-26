@@ -12,7 +12,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! Constructor
+        //! Constructor
         CBSPMeshFileLoader::CBSPMeshFileLoader(scene::ISceneManager *smgr,
             io::IFileSystem *fs)
             : FileSystem(fs), SceneManager(smgr)
@@ -26,7 +26,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CBSPMeshFileLoader::~CBSPMeshFileLoader()
         {
             if (FileSystem)
@@ -34,18 +34,18 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool CBSPMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "bsp", "shader", "cfg");
         }
 
 
-        // ! creates/loads an animated mesh from the file.
-        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-        // ! See IReferenceCounted::drop() for more information.
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* CBSPMeshFileLoader::createMesh(io::IReadFile *file)
         {
             s32          type = core::isFileExtension (file->getFileName(), "bsp", "shader", "cfg");

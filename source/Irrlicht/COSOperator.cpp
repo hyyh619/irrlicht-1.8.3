@@ -42,14 +42,14 @@ namespace irr
     }
 
 
-    // ! returns the current operating system version as string.
+    //! returns the current operating system version as string.
     const core::stringc&COSOperator::getOperatingSystemVersion() const
     {
         return OperatingSystem;
     }
 
 
-    // ! copies text to the clipboard
+    //! copies text to the clipboard
     void COSOperator::copyToClipboard(const c8 *text) const
     {
         if (strlen(text) == 0)
@@ -87,8 +87,8 @@ namespace irr
     }
 
 
-    // ! gets text from the clipboard
-    // ! \return Returns 0 if no string is in there.
+    //! gets text from the clipboard
+    //! \return Returns 0 if no string is in there.
     const c8* COSOperator::getTextFromClipboard() const
     {
 #if defined(_IRR_XBOX_PLATFORM_)

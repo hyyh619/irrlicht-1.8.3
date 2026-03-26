@@ -25,7 +25,7 @@ namespace irr
         const s32 FOD_HEIGHT = 250;
 
 
-        // ! constructor
+        //! constructor
         CGUIFileOpenDialog::CGUIFileOpenDialog(const wchar_t *title,
             IGUIEnvironment *environment, IGUIElement *parent, s32 id,
             bool restoreCWD, io::path::char_type *startDir)
@@ -116,7 +116,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIFileOpenDialog::~CGUIFileOpenDialog()
         {
             if (CloseButton)
@@ -148,13 +148,13 @@ namespace irr
         }
 
 
-        // ! returns the filename of the selected file. Returns NULL, if no file was selected.
+        //! returns the filename of the selected file. Returns NULL, if no file was selected.
         const wchar_t* CGUIFileOpenDialog::getFileName() const
         {
             return FileName.c_str();
         }
 
-        // ! Returns the directory of the selected file. Returns NULL, if no directory was selected.
+        //! Returns the directory of the selected file. Returns NULL, if no directory was selected.
         const io::path&CGUIFileOpenDialog::getDirectoryName()
         {
             FileSystem->flattenFilename (FileDirectory);
@@ -162,7 +162,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIFileOpenDialog::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -321,7 +321,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIFileOpenDialog::draw()
         {
             if (!IsVisible)
@@ -350,7 +350,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         /* Not sure if this will really work out properly. Saving paths can be
          * rather problematic. */
         void CGUIFileOpenDialog::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
@@ -362,7 +362,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         /* Note that thiese paths changes will happen at arbitrary places upon
          * load of the gui description. This may be undesired. */
         void CGUIFileOpenDialog::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
@@ -381,7 +381,7 @@ namespace irr
         }
 
 
-        // ! fills the listbox with files.
+        //! fills the listbox with files.
         void CGUIFileOpenDialog::fillListBox()
         {
             IGUISkin *skin = Environment->getSkin();
@@ -438,7 +438,7 @@ namespace irr
         }
 
 
-        // ! sends the event that the file has been selected.
+        //! sends the event that the file has been selected.
         void CGUIFileOpenDialog::sendSelectedEvent(EGUI_EVENT_TYPE type)
         {
             SEvent event;
@@ -451,7 +451,7 @@ namespace irr
         }
 
 
-        // ! sends the event that the file choose process has been canceld
+        //! sends the event that the file choose process has been canceld
         void CGUIFileOpenDialog::sendCancelEvent()
         {
             SEvent event;

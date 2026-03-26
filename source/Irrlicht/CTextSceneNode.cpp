@@ -15,7 +15,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CTextSceneNode::CTextSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
             gui::IGUIFont *font, scene::ISceneCollisionManager *coll,
             const core::vector3df &position, const wchar_t *text,
@@ -34,7 +34,7 @@ namespace irr
             setAutomaticCulling(scene::EAC_OFF);
         }
 
-        // ! destructor
+        //! destructor
         CTextSceneNode::~CTextSceneNode()
         {
             if (Font)
@@ -49,7 +49,7 @@ namespace irr
             ISceneNode::OnRegisterSceneNode();
         }
 
-        // ! renders the node.
+        //! renders the node.
         void CTextSceneNode::render()
         {
             if (!Font || !Coll)
@@ -63,30 +63,30 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CTextSceneNode::getBoundingBox() const
         {
             return Box;
         }
 
-        // ! sets the text string
+        //! sets the text string
         void CTextSceneNode::setText(const wchar_t *text)
         {
             Text = text;
         }
 
 
-        // ! sets the color of the text
+        //! sets the color of the text
         void CTextSceneNode::setTextColor(video::SColor color)
         {
             Color = color;
         }
 
 
-        // !--------------------------------- CBillboardTextSceneNode ----------------------------------------------
+        //!--------------------------------- CBillboardTextSceneNode ----------------------------------------------
 
 
-        // ! constructor
+        //! constructor
         CBillboardTextSceneNode::CBillboardTextSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
             gui::IGUIFont *font, const wchar_t *text,
             const core::vector3df &position, const core::dimension2d<f32> &size,
@@ -149,7 +149,7 @@ namespace irr
         }
 
 
-        // ! sets the text string
+        //! sets the text string
         void CBillboardTextSceneNode::setText(const wchar_t *text)
         {
             if (!Mesh)
@@ -234,7 +234,7 @@ namespace irr
         }
 
 
-        // ! pre render event
+        //! pre render event
         void CBillboardTextSceneNode::OnAnimate(u32 timeMs)
         {
             ISceneNode::OnAnimate(timeMs);
@@ -332,7 +332,7 @@ namespace irr
         }
 
 
-        // ! render
+        //! render
         void CBillboardTextSceneNode::render()
         {
             if (!Mesh)
@@ -361,14 +361,14 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CBillboardTextSceneNode::getBoundingBox() const
         {
             return BBox;
         }
 
 
-        // ! sets the size of the billboard
+        //! sets the size of the billboard
         void CBillboardTextSceneNode::setSize(const core::dimension2d<f32> &size)
         {
             Size = size;
@@ -394,7 +394,7 @@ namespace irr
         }
 
 
-        // ! returns amount of materials used by this scene node.
+        //! returns amount of materials used by this scene node.
         u32 CBillboardTextSceneNode::getMaterialCount() const
         {
             if (Mesh)
@@ -404,21 +404,21 @@ namespace irr
         }
 
 
-        // ! gets the size of the billboard
+        //! gets the size of the billboard
         const core::dimension2d<f32>&CBillboardTextSceneNode::getSize() const
         {
             return Size;
         }
 
 
-        // ! sets the color of the text
+        //! sets the color of the text
         void CBillboardTextSceneNode::setTextColor(video::SColor color)
         {
             Color = color;
         }
 
-        // ! Set the color of all vertices of the billboard
-        // ! \param overallColor: the color to set
+        //! Set the color of all vertices of the billboard
+        //! \param overallColor: the color to set
         void CBillboardTextSceneNode::setColor(const video::SColor &overallColor)
         {
             if (!Mesh)
@@ -436,9 +436,9 @@ namespace irr
         }
 
 
-        // ! Set the color of the top and bottom vertices of the billboard
-        // ! \param topColor: the color to set the top vertices
-        // ! \param bottomColor: the color to set the bottom vertices
+        //! Set the color of the top and bottom vertices of the billboard
+        //! \param topColor: the color to set the top vertices
+        //! \param bottomColor: the color to set the bottom vertices
         void CBillboardTextSceneNode::setColor(const video::SColor &topColor, const video::SColor &bottomColor)
         {
             if (!Mesh)
@@ -459,9 +459,9 @@ namespace irr
         }
 
 
-        // ! Gets the color of the top and bottom vertices of the billboard
-        // ! \param topColor: stores the color of the top vertices
-        // ! \param bottomColor: stores the color of the bottom vertices
+        //! Gets the color of the top and bottom vertices of the billboard
+        //! \param topColor: stores the color of the top vertices
+        //! \param bottomColor: stores the color of the bottom vertices
         void CBillboardTextSceneNode::getColor(video::SColor &topColor, video::SColor &bottomColor) const
         {
             topColor    = ColorTop;

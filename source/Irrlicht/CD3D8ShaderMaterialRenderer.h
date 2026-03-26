@@ -23,17 +23,17 @@ namespace irr
         class IShaderConstantSetCallBack;
         class IMaterialRenderer;
 
-        // ! Class for using vertex and pixel shaders with D3D8
+        //! Class for using vertex and pixel shaders with D3D8
         class CD3D8ShaderMaterialRenderer : public IMaterialRenderer
         {
 public:
 
-            // ! Public constructor
+            //! Public constructor
             CD3D8ShaderMaterialRenderer(IDirect3DDevice8 *d3ddev, video::IVideoDriver *driver,
                 s32 &outMaterialTypeNr, const c8 *vertexShaderProgram, const c8 *pixelShaderProgram,
                 IShaderConstantSetCallBack *callback, IMaterialRenderer *baseMaterial, s32 userData);
 
-            // ! Destructor
+            //! Destructor
             ~CD3D8ShaderMaterialRenderer();
 
             virtual void OnSetMaterial(const video::SMaterial &material, const video::SMaterial &lastMaterial,
@@ -43,13 +43,13 @@ public:
 
             virtual bool OnRender(IMaterialRendererServices *service, E_VERTEX_TYPE vtxtype);
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             virtual bool isTransparent() const;
 
 protected:
 
-            // ! constructor only for use by derived classes who want to
-            // ! create a fall back material for example.
+            //! constructor only for use by derived classes who want to
+            //! create a fall back material for example.
             CD3D8ShaderMaterialRenderer(IDirect3DDevice8 *d3ddev,
                 video::IVideoDriver *driver,
                 IShaderConstantSetCallBack *callback,

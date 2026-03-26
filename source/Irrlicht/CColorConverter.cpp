@@ -11,7 +11,7 @@ namespace irr
 {
     namespace video
     {
-        // ! converts a monochrome bitmap to A1R5G5B5 data
+        //! converts a monochrome bitmap to A1R5G5B5 data
         void CColorConverter::convert1BitTo16Bit(const u8 *in, s16 *out, s32 width, s32 height, s32 linepad, bool flip)
         {
             if (!in || !out)
@@ -49,7 +49,7 @@ namespace irr
 
 
 
-        // ! converts a 4 bit palettized image to A1R5G5B5
+        //! converts a 4 bit palettized image to A1R5G5B5
         void CColorConverter::convert4BitTo16Bit(const u8 *in, s16 *out, s32 width, s32 height, const s32 *palette, s32 linepad, bool flip)
         {
             if (!in || !out || !palette)
@@ -89,7 +89,7 @@ namespace irr
 
 
 
-        // ! converts a 8 bit palettized image into A1R5G5B5
+        //! converts a 8 bit palettized image into A1R5G5B5
         void CColorConverter::convert8BitTo16Bit(const u8 *in, s16 *out, s32 width, s32 height, const s32 *palette, s32 linepad, bool flip)
         {
             if (!in || !out || !palette)
@@ -116,7 +116,7 @@ namespace irr
             }
         }
 
-        // ! converts a 8 bit palettized or non palettized image (A8) into R8G8B8
+        //! converts a 8 bit palettized or non palettized image (A8) into R8G8B8
         void CColorConverter::convert8BitTo24Bit(const u8 *in, u8 *out, s32 width, s32 height, const u8 *palette, s32 linepad, bool flip)
         {
             if (!in || !out)
@@ -162,7 +162,7 @@ namespace irr
             }
         }
 
-        // ! converts a 8 bit palettized or non palettized image (A8) into R8G8B8
+        //! converts a 8 bit palettized or non palettized image (A8) into R8G8B8
         void CColorConverter::convert8BitTo32Bit(const u8 *in, u8 *out, s32 width, s32 height, const u8 *palette, s32 linepad, bool flip)
         {
             if (!in || !out)
@@ -210,7 +210,7 @@ namespace irr
 
 
 
-        // ! converts 16bit data to 16bit data
+        //! converts 16bit data to 16bit data
         void CColorConverter::convert16BitTo16Bit(const s16 *in, s16 *out, s32 width, s32 height, s32 linepad, bool flip)
         {
             if (!in || !out)
@@ -241,7 +241,7 @@ namespace irr
 
 
 
-        // ! copies R8G8B8 24bit data to 24bit data
+        //! copies R8G8B8 24bit data to 24bit data
         void CColorConverter::convert24BitTo24Bit(const u8 *in, u8 *out, s32 width, s32 height, s32 linepad, bool flip, bool bgr)
         {
             if (!in || !out)
@@ -280,8 +280,8 @@ namespace irr
 
 
 
-        // ! Resizes the surface to a new size and converts it at the same time
-        // ! to an A8R8G8B8 format, returning the pointer to the new buffer.
+        //! Resizes the surface to a new size and converts it at the same time
+        //! to an A8R8G8B8 format, returning the pointer to the new buffer.
         void CColorConverter::convert16bitToA8R8G8B8andResize(const s16 *in, s32 *out, s32 newWidth, s32 newHeight, s32 currentWidth, s32 currentHeight)
         {
             if (!newWidth || !newHeight)
@@ -313,7 +313,7 @@ namespace irr
 
 
 
-        // ! copies X8R8G8B8 32 bit data
+        //! copies X8R8G8B8 32 bit data
         void CColorConverter::convert32BitTo32Bit(const s32 *in, s32 *out, s32 width, s32 height, s32 linepad, bool flip)
         {
             if (!in || !out)

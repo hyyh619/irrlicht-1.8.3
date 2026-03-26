@@ -26,7 +26,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIEditBox::CGUIEditBox(const wchar_t *text, bool border,
             IGUIEnvironment *environment, IGUIElement *parent, s32 id,
             const core::rect<s32> &rectangle)
@@ -61,7 +61,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIEditBox::~CGUIEditBox()
         {
             if (OverrideFont)
@@ -72,7 +72,7 @@ namespace irr
         }
 
 
-        // ! Sets another skin independent font.
+        //! Sets another skin independent font.
         void CGUIEditBox::setOverrideFont(IGUIFont *font)
         {
             if (OverrideFont == font)
@@ -89,13 +89,13 @@ namespace irr
             breakText();
         }
 
-        // ! Gets the override font (if any)
+        //! Gets the override font (if any)
         IGUIFont* CGUIEditBox::getOverrideFont() const
         {
             return OverrideFont;
         }
 
-        // ! Get the font which is used right now for drawing
+        //! Get the font which is used right now for drawing
         IGUIFont* CGUIEditBox::getActiveFont() const
         {
             if (OverrideFont)
@@ -108,7 +108,7 @@ namespace irr
             return 0;
         }
 
-        // ! Sets another color for the text.
+        //! Sets another color for the text.
         void CGUIEditBox::setOverrideColor(video::SColor color)
         {
             OverrideColor        = color;
@@ -122,19 +122,19 @@ namespace irr
         }
 
 
-        // ! Turns the border on or off
+        //! Turns the border on or off
         void CGUIEditBox::setDrawBorder(bool border)
         {
             Border = border;
         }
 
-        // ! Sets whether to draw the background
+        //! Sets whether to draw the background
         void CGUIEditBox::setDrawBackground(bool draw)
         {
             Background = draw;
         }
 
-        // ! Sets if the text should use the overide color or the color in the gui skin.
+        //! Sets if the text should use the overide color or the color in the gui skin.
         void CGUIEditBox::enableOverrideColor(bool enable)
         {
             OverrideColorEnabled = enable;
@@ -146,7 +146,7 @@ namespace irr
             return OverrideColorEnabled;
         }
 
-        // ! Enables or disables word wrap
+        //! Enables or disables word wrap
         void CGUIEditBox::setWordWrap(bool enable)
         {
             WordWrap = enable;
@@ -168,7 +168,7 @@ namespace irr
         }
 
 
-        // ! Checks if word wrap is enabled
+        //! Checks if word wrap is enabled
         bool CGUIEditBox::isWordWrapEnabled() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -176,7 +176,7 @@ namespace irr
         }
 
 
-        // ! Enables or disables newlines.
+        //! Enables or disables newlines.
         void CGUIEditBox::setMultiLine(bool enable)
         {
             MultiLine = enable;
@@ -184,7 +184,7 @@ namespace irr
         }
 
 
-        // ! Checks if multi line editing is enabled
+        //! Checks if multi line editing is enabled
         bool CGUIEditBox::isMultiLineEnabled() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -212,7 +212,7 @@ namespace irr
         }
 
 
-        // ! Sets text justification
+        //! Sets text justification
         void CGUIEditBox::setTextAlignment(EGUI_ALIGNMENT horizontal, EGUI_ALIGNMENT vertical)
         {
             HAlign = horizontal;
@@ -220,7 +220,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIEditBox::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -750,7 +750,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIEditBox::draw()
         {
             if (!IsVisible)
@@ -950,7 +950,7 @@ namespace irr
         }
 
 
-        // ! Sets the new caption of this element.
+        //! Sets the new caption of this element.
         void CGUIEditBox::setText(const wchar_t *text)
         {
             Text = text;
@@ -962,16 +962,16 @@ namespace irr
         }
 
 
-        // ! Enables or disables automatic scrolling with cursor position
-        // ! \param enable: If set to true, the text will move around with the cursor position
+        //! Enables or disables automatic scrolling with cursor position
+        //! \param enable: If set to true, the text will move around with the cursor position
         void CGUIEditBox::setAutoScroll(bool enable)
         {
             AutoScroll = enable;
         }
 
 
-        // ! Checks to see if automatic scrolling is enabled
-        // ! \return true if automatic scrolling is enabled, false if not
+        //! Checks to see if automatic scrolling is enabled
+        //! \return true if automatic scrolling is enabled, false if not
         bool CGUIEditBox::isAutoScrollEnabled() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -979,8 +979,8 @@ namespace irr
         }
 
 
-        // ! Gets the area of the text in the edit box
-        // ! \return Returns the size in pixels of the text
+        //! Gets the area of the text in the edit box
+        //! \return Returns the size in pixels of the text
         core::dimension2du CGUIEditBox::getTextDimension()
         {
             core::rect<s32> ret;
@@ -999,9 +999,9 @@ namespace irr
         }
 
 
-        // ! Sets the maximum amount of characters which may be entered in the box.
-        // ! \param max: Maximum amount of characters. If 0, the character amount is
-        // ! infinity.
+        //! Sets the maximum amount of characters which may be entered in the box.
+        //! \param max: Maximum amount of characters. If 0, the character amount is
+        //! infinity.
         void CGUIEditBox::setMax(u32 max)
         {
             Max = max;
@@ -1011,7 +1011,7 @@ namespace irr
         }
 
 
-        // ! Returns maximum amount of characters, previously set by setMax();
+        //! Returns maximum amount of characters, previously set by setMax();
         u32 CGUIEditBox::getMax() const
         {
             return Max;
@@ -1138,7 +1138,7 @@ namespace irr
         }
 
 
-        // ! Breaks the single text line.
+        //! Breaks the single text line.
         void CGUIEditBox::breakText()
         {
             if ((!WordWrap && !MultiLine))
@@ -1539,7 +1539,7 @@ namespace irr
             }
         }
 
-        // ! set text markers
+        //! set text markers
         void CGUIEditBox::setTextMarkers(s32 begin, s32 end)
         {
             if (begin != MarkBegin || end != MarkEnd)
@@ -1550,7 +1550,7 @@ namespace irr
             }
         }
 
-        // ! send some gui event to parent
+        //! send some gui event to parent
         void CGUIEditBox::sendGuiEvent(EGUI_EVENT_TYPE type)
         {
             if (Parent)
@@ -1565,7 +1565,7 @@ namespace irr
             }
         }
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUIEditBox::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             // IGUIEditBox::serializeAttributes(out,options);
@@ -1590,7 +1590,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUIEditBox::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             IGUIEditBox::deserializeAttributes(in, options);

@@ -15,7 +15,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIStaticText::CGUIStaticText(const wchar_t *text, bool border,
             IGUIEnvironment *environment, IGUIElement *parent,
             s32 id, const core::rect<s32> &rectangle,
@@ -39,7 +39,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIStaticText::~CGUIStaticText()
         {
             if (OverrideFont)
@@ -47,7 +47,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIStaticText::draw()
         {
             if (!IsVisible)
@@ -144,7 +144,7 @@ namespace irr
         }
 
 
-        // ! Sets another skin independent font.
+        //! Sets another skin independent font.
         void CGUIStaticText::setOverrideFont(IGUIFont *font)
         {
             if (OverrideFont == font)
@@ -161,13 +161,13 @@ namespace irr
             breakText();
         }
 
-        // ! Gets the override font (if any)
+        //! Gets the override font (if any)
         IGUIFont* CGUIStaticText::getOverrideFont() const
         {
             return OverrideFont;
         }
 
-        // ! Get the font which is used right now for drawing
+        //! Get the font which is used right now for drawing
         IGUIFont* CGUIStaticText::getActiveFont() const
         {
             if (OverrideFont)
@@ -180,7 +180,7 @@ namespace irr
             return 0;
         }
 
-        // ! Sets another color for the text.
+        //! Sets another color for the text.
         void CGUIStaticText::setOverrideColor(video::SColor color)
         {
             OverrideColor        = color;
@@ -188,7 +188,7 @@ namespace irr
         }
 
 
-        // ! Sets another color for the text.
+        //! Sets another color for the text.
         void CGUIStaticText::setBackgroundColor(video::SColor color)
         {
             BGColor                = color;
@@ -197,21 +197,21 @@ namespace irr
         }
 
 
-        // ! Sets whether to draw the background
+        //! Sets whether to draw the background
         void CGUIStaticText::setDrawBackground(bool draw)
         {
             Background = draw;
         }
 
 
-        // ! Gets the background color
+        //! Gets the background color
         video::SColor CGUIStaticText::getBackgroundColor() const
         {
             return BGColor;
         }
 
 
-        // ! Checks if background drawing is enabled
+        //! Checks if background drawing is enabled
         bool CGUIStaticText::isDrawBackgroundEnabled() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -219,14 +219,14 @@ namespace irr
         }
 
 
-        // ! Sets whether to draw the border
+        //! Sets whether to draw the border
         void CGUIStaticText::setDrawBorder(bool draw)
         {
             Border = draw;
         }
 
 
-        // ! Checks if border drawing is enabled
+        //! Checks if border drawing is enabled
         bool CGUIStaticText::isDrawBorderEnabled() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -259,8 +259,8 @@ namespace irr
         }
 
 
-        // ! Sets if the static text should use the overide color or the
-        // ! color in the gui skin.
+        //! Sets if the static text should use the overide color or the
+        //! color in the gui skin.
         void CGUIStaticText::enableOverrideColor(bool enable)
         {
             OverrideColorEnabled = enable;
@@ -274,8 +274,8 @@ namespace irr
         }
 
 
-        // ! Enables or disables word wrap for using the static text as
-        // ! multiline text control.
+        //! Enables or disables word wrap for using the static text as
+        //! multiline text control.
         void CGUIStaticText::setWordWrap(bool enable)
         {
             WordWrap = enable;
@@ -306,7 +306,7 @@ namespace irr
         }
 
 
-        // ! Breaks the single text line.
+        //! Breaks the single text line.
         void CGUIStaticText::breakText()
         {
             if (!WordWrap)
@@ -527,7 +527,7 @@ namespace irr
         }
 
 
-        // ! Sets the new caption of this element.
+        //! Sets the new caption of this element.
         void CGUIStaticText::setText(const wchar_t *text)
         {
             IGUIElement::setText(text);
@@ -544,7 +544,7 @@ namespace irr
         }
 
 
-        // ! Returns the height of the text in pixels when it is drawn.
+        //! Returns the height of the text in pixels when it is drawn.
         s32 CGUIStaticText::getTextHeight() const
         {
             IGUIFont *font = getActiveFont();
@@ -595,9 +595,9 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
-        // ! Implement this to expose the attributes of your element for
-        // ! scripting languages, editors, debuggers or xml serialization purposes.
+        //! Writes attributes of the element.
+        //! Implement this to expose the attributes of your element for
+        //! scripting languages, editors, debuggers or xml serialization purposes.
         void CGUIStaticText::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUIStaticText::serializeAttributes(out, options);
@@ -618,7 +618,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUIStaticText::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             IGUIStaticText::deserializeAttributes(in, options);

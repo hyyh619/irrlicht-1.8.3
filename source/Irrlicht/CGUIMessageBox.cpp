@@ -15,7 +15,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIMessageBox::CGUIMessageBox(IGUIEnvironment *environment, const wchar_t *caption,
             const wchar_t *text, s32 flags,
             IGUIElement *parent, s32 id, core::rect<s32> rectangle, video::ITexture *image)
@@ -51,7 +51,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIMessageBox::~CGUIMessageBox()
         {
             if (StaticText)
@@ -263,7 +263,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIMessageBox::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -435,7 +435,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUIMessageBox::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             CGUIWindow::serializeAttributes(out, options);
@@ -450,7 +450,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUIMessageBox::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             Flags = 0;

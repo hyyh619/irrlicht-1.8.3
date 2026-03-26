@@ -23,7 +23,7 @@ namespace irr
     {
         using namespace quake3;
 
-        // ! constructor
+        //! constructor
         CQ3LevelMesh::CQ3LevelMesh(io::IFileSystem *fs, scene::ISceneManager *smgr,
             const Q3LevelLoadParameter &loadParam)
             : LoadParam(loadParam), Textures(0), NumTextures(0), LightMaps(0), NumLightMaps(0),
@@ -54,7 +54,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CQ3LevelMesh::~CQ3LevelMesh()
         {
             cleanLoader ();
@@ -88,7 +88,7 @@ namespace irr
         }
 
 
-        // ! loads a level from a .bsp-File. Also tries to load all needed textures. Returns true if successful.
+        //! loads a level from a .bsp-File. Also tries to load all needed textures. Returns true if successful.
         bool CQ3LevelMesh::loadFile(io::IReadFile *file)
         {
             if (!file)
@@ -187,14 +187,14 @@ namespace irr
             Tex.clear();
         }
 
-        // ! returns the amount of frames in milliseconds. If the amount is 1, it is a static (=non animated) mesh.
+        //! returns the amount of frames in milliseconds. If the amount is 1, it is a static (=non animated) mesh.
         u32 CQ3LevelMesh::getFrameCount() const
         {
             return 1;
         }
 
 
-        // ! returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail. Note, that some Meshes will ignore the detail level.
+        //! returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail. Note, that some Meshes will ignore the detail level.
         IMesh* CQ3LevelMesh::getMesh(s32 frameInMs, s32 detailLevel, s32 startFrameLoop, s32 endFrameLoop)
         {
             return Mesh[frameInMs];
@@ -1481,14 +1481,14 @@ namespace irr
         }
 
 
-        // ! get's an interface to the entities
+        //! get's an interface to the entities
         tQ3EntityList&CQ3LevelMesh::getEntityList()
         {
             //    Entity.sort();
             return Entity;
         }
 
-        // ! returns the requested brush entity
+        //! returns the requested brush entity
         IMesh* CQ3LevelMesh::getBrushEntityMesh(s32 num) const
         {
             if (num < 1 || num >= NumModels)
@@ -1497,7 +1497,7 @@ namespace irr
             return BrushEntities[num];
         }
 
-        // ! returns the requested brush entity
+        //! returns the requested brush entity
         IMesh* CQ3LevelMesh::getBrushEntityMesh(quake3::IEntity &ent) const
         {
             // This is a helper function to parse the entity,
@@ -1550,7 +1550,7 @@ namespace irr
             core::stringc message;
             s32           index;
 
-            // ! is Shader already in cache?
+            //! is Shader already in cache?
             index = Shader.linear_search(search);
             if (index >= 0)
             {
@@ -1645,7 +1645,7 @@ namespace irr
         }
 
 
-        // ! adding default shaders
+        //! adding default shaders
         void CQ3LevelMesh::InitShader()
         {
             ReleaseShader();
@@ -1700,8 +1700,8 @@ namespace irr
         }
 
 
-        // ! script callback for shaders
-        // ! i'm having troubles with the reference counting, during callback.. resorting..
+        //! script callback for shaders
+        //! i'm having troubles with the reference counting, during callback.. resorting..
         void CQ3LevelMesh::ReleaseShader()
         {
             for (u32 i = 0; i != Shader.size(); ++i)
@@ -1772,7 +1772,7 @@ namespace irr
         }
 
 
-        // !. script callback for shaders
+        //!. script callback for shaders
         void CQ3LevelMesh::scriptcallback_shader(SVarGroupList* &grouplist, eToken token)
         {
             if (token != Q3_TOKEN_END_LIST || grouplist->VariableGroup[0].Variable.size() == 0)
@@ -1968,7 +1968,7 @@ namespace irr
         }
 
 
-        // ! loads the textures
+        //! loads the textures
         void CQ3LevelMesh::loadTextures()
         {
             if (!Driver)
@@ -2092,7 +2092,7 @@ namespace irr
         }
 
 
-        // ! Returns an axis aligned bounding box of the mesh.
+        //! Returns an axis aligned bounding box of the mesh.
         const core::aabbox3d<f32>&CQ3LevelMesh::getBoundingBox() const
         {
             return Mesh[0]->getBoundingBox();
@@ -2105,7 +2105,7 @@ namespace irr
         }
 
 
-        // ! Returns the type of the animated mesh.
+        //! Returns the type of the animated mesh.
         E_ANIMATED_MESH_TYPE CQ3LevelMesh::getMeshType() const
         {
             return scene::EAMT_BSP;

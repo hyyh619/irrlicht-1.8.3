@@ -11,7 +11,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CTriangleSelector::CTriangleSelector(ISceneNode *node)
             : SceneNode(node), AnimatedNode(0), LastMeshFrame(0)
         {
@@ -23,7 +23,7 @@ namespace irr
         }
 
 
-        // ! constructor
+        //! constructor
         CTriangleSelector::CTriangleSelector(const core::aabbox3d<f32> &box, ISceneNode *node)
             : SceneNode(node), AnimatedNode(0), LastMeshFrame(0)
         {
@@ -36,7 +36,7 @@ namespace irr
         }
 
 
-        // ! constructor
+        //! constructor
         CTriangleSelector::CTriangleSelector(const IMesh *mesh, ISceneNode *node)
             : SceneNode(node), AnimatedNode(0), LastMeshFrame(0)
         {
@@ -156,7 +156,7 @@ namespace irr
         }
 
 
-        // ! Gets all triangles.
+        //! Gets all triangles.
         void CTriangleSelector::getTriangles(core::triangle3df *triangles,
             s32 arraySize, s32 &outTriangleCount,
             const core::matrix4 *transform) const
@@ -186,7 +186,7 @@ namespace irr
         }
 
 
-        // ! Gets all triangles which lie within a specific bounding box.
+        //! Gets all triangles which lie within a specific bounding box.
         void CTriangleSelector::getTriangles(core::triangle3df *triangles,
             s32 arraySize, s32 &outTriangleCount,
             const core::aabbox3d<f32> &box,
@@ -242,7 +242,7 @@ namespace irr
         }
 
 
-        // ! Gets all triangles which have or may have contact with a 3d line.
+        //! Gets all triangles which have or may have contact with a 3d line.
         void CTriangleSelector::getTriangles(core::triangle3df *triangles,
             s32 arraySize, s32 &outTriangleCount,
             const core::line3d<f32> &line,
@@ -260,7 +260,7 @@ namespace irr
         }
 
 
-        // ! Returns amount of all available triangles in this selector
+        //! Returns amount of all available triangles in this selector
         s32 CTriangleSelector::getTriangleCount() const
         {
             return Triangles.size();

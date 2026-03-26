@@ -22,25 +22,25 @@ namespace irr
 {
     namespace scene
     {
-        // ! Meshloader capable of loading ogre meshes.
+        //! Meshloader capable of loading ogre meshes.
         class COgreMeshFileLoader : public IMeshLoader
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             COgreMeshFileLoader(io::IFileSystem *fs, video::IVideoDriver *driver);
 
-            // ! destructor
+            //! destructor
             virtual ~COgreMeshFileLoader();
 
-            // ! returns true if the file maybe is able to be loaded by this class
-            // ! based on the file extension (e.g. ".cob")
+            //! returns true if the file maybe is able to be loaded by this class
+            //! based on the file extension (e.g. ".cob")
             virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-            // ! creates/loads an animated mesh from the file.
-            // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-            // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-            // ! See IReferenceCounted::drop() for more information.
+            //! creates/loads an animated mesh from the file.
+            //! \return Pointer to the created mesh. Returns 0 if loading failed.
+            //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+            //! See IReferenceCounted::drop() for more information.
             virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
 private:

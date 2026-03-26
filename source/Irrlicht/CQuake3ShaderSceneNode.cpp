@@ -345,7 +345,7 @@ namespace irr
             if (Shadow)
                 Shadow->updateShadowVolumes();
 
-            // ! render all stages
+            //! render all stages
             u32           drawCount = (pass == ESNRP_TRANSPARENT_EFFECT) ? 1 : 0;
             core::matrix4 textureMatrix (core::matrix4::EM4CONST_NOTHING);
 
@@ -505,9 +505,9 @@ namespace irr
         }
 
 
-        // ! Removes a child from this scene node.
-        // ! Implemented here, to be able to remove the shadow properly, if there is one,
-        // ! or to remove attached childs.
+        //! Removes a child from this scene node.
+        //! Implemented here, to be able to remove the shadow properly, if there is one,
+        //! or to remove attached childs.
         bool CQuake3ShaderSceneNode::removeChild(ISceneNode *child)
         {
             if (child && Shadow == child)
@@ -520,8 +520,8 @@ namespace irr
         }
 
 
-        // ! Creates shadow volume scene node as child of this node
-        // ! and returns a pointer to it.
+        //! Creates shadow volume scene node as child of this node
+        //! and returns a pointer to it.
         IShadowVolumeSceneNode* CQuake3ShaderSceneNode::addShadowVolumeSceneNode(
             const IMesh *shadowMesh, s32 id, bool zfailmethod, f32 infinity)
         {

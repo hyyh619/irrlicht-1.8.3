@@ -22,13 +22,13 @@ namespace irr
             : Driver(driver)
         {}
 
-        // ! Returns true if the file might be loaded by this class.
+        //! Returns true if the file might be loaded by this class.
         bool CSMFMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension(filename, "smf");
         }
 
-        // ! Creates/loads an animated mesh from the file.
+        //! Creates/loads an animated mesh from the file.
         IAnimatedMesh* CSMFMeshFileLoader::createMesh(io::IReadFile *file)
         {
             // create empty mesh
@@ -196,7 +196,7 @@ namespace irr
                 out = os::Byteswap::byteswap(out);
         }
 
-        // ! reads a 3d vector from the file, moving the file pointer along
+        //! reads a 3d vector from the file, moving the file pointer along
         void BinaryFile::read(io::IReadFile *file, core::vector3df &outVector2d, bool bigEndian)
         {
             BinaryFile::read(file, outVector2d.X, bigEndian);
@@ -204,14 +204,14 @@ namespace irr
             BinaryFile::read(file, outVector2d.Z, bigEndian);
         }
 
-        // ! reads a 2d vector from the file, moving the file pointer along
+        //! reads a 2d vector from the file, moving the file pointer along
         void BinaryFile::read(io::IReadFile *file, core::vector2df &outVector2d, bool bigEndian)
         {
             BinaryFile::read(file, outVector2d.X, bigEndian);
             BinaryFile::read(file, outVector2d.Y, bigEndian);
         }
 
-        // ! reads a null terminated string from the file, moving the file pointer along
+        //! reads a null terminated string from the file, moving the file pointer along
         void BinaryFile::read(io::IReadFile *file, core::stringc &outString, bool bigEndian)
         {
             c8 c;

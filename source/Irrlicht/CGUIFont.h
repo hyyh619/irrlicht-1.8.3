@@ -31,50 +31,50 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CGUIFont(IGUIEnvironment *env, const io::path &filename);
 
-            // ! destructor
+            //! destructor
             virtual ~CGUIFont();
 
-            // ! loads a font from a texture file
+            //! loads a font from a texture file
             bool load(const io::path &filename);
 
-            // ! loads a font from a texture file
+            //! loads a font from a texture file
             bool load(io::IReadFile *file);
 
-            // ! loads a font from an XML file
+            //! loads a font from an XML file
             bool load(io::IXMLReader *xml);
 
-            // ! draws an text and clips it to the specified rectangle if wanted
+            //! draws an text and clips it to the specified rectangle if wanted
             virtual void draw(const core::stringw &text, const core::rect<s32> &position,
                 video::SColor color, bool hcenter = false,
                 bool vcenter = false, const core::rect<s32> *clip = 0);
 
-            // ! returns the dimension of a text
+            //! returns the dimension of a text
             virtual core::dimension2d<u32> getDimension(const wchar_t *text) const;
 
-            // ! Calculates the index of the character in the text which is on a specific position.
+            //! Calculates the index of the character in the text which is on a specific position.
             virtual s32 getCharacterFromPos(const wchar_t *text, s32 pixel_x) const;
 
-            // ! Returns the type of this font
+            //! Returns the type of this font
             virtual EGUI_FONT_TYPE getType() const
             {
                 return EGFT_BITMAP;
             }
 
-            // ! set an Pixel Offset on Drawing ( scale position on width )
+            //! set an Pixel Offset on Drawing ( scale position on width )
             virtual void setKerningWidth(s32 kerning);
             virtual void setKerningHeight(s32 kerning);
 
-            // ! set an Pixel Offset on Drawing ( scale position on width )
+            //! set an Pixel Offset on Drawing ( scale position on width )
             virtual s32 getKerningWidth(const wchar_t *thisLetter = 0, const wchar_t *previousLetter = 0) const;
             virtual s32 getKerningHeight() const;
 
-            // ! gets the sprite bank
+            //! gets the sprite bank
             virtual IGUISpriteBank* getSpriteBank() const;
 
-            // ! returns the sprite number from a given character
+            //! returns the sprite number from a given character
             virtual u32 getSpriteNoFromChar(const wchar_t *c) const;
 
             virtual void setInvisibleCharacters(const wchar_t *s);
@@ -90,7 +90,7 @@ private:
                 u32 spriteno;
             };
 
-            // ! load & prepare font from ITexture
+            //! load & prepare font from ITexture
             bool loadTexture(video::IImage *image, const io::path &name);
 
             void readPositions(video::IImage *texture, s32 &lowerRightPositions);

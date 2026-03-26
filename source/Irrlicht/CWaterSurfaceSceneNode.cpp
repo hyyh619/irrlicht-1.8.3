@@ -14,7 +14,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CWaterSurfaceSceneNode::CWaterSurfaceSceneNode(f32 waveHeight, f32 waveSpeed, f32 waveLength,
             IMesh *mesh, ISceneNode *parent, ISceneManager *mgr, s32 id,
             const core::vector3df &position, const core::vector3df &rotation,
@@ -31,7 +31,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CWaterSurfaceSceneNode::~CWaterSurfaceSceneNode()
         {
             // Mesh is dropped in CMeshSceneNode destructor
@@ -40,7 +40,7 @@ namespace irr
         }
 
 
-        // ! frame
+        //! frame
         void CWaterSurfaceSceneNode::OnRegisterSceneNode()
         {
             CMeshSceneNode::OnRegisterSceneNode();
@@ -91,7 +91,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void CWaterSurfaceSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             out->addFloat("WaveLength", WaveLength);
@@ -104,7 +104,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void CWaterSurfaceSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             WaveLength = in->getAttributeAsFloat("WaveLength");

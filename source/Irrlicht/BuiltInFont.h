@@ -1057,7 +1057,7 @@ namespace irr
 
         u32 BuiltInFontDataSize = sizeof(BuiltInFontData);
 
-#else   // !defined(_IRR_COMPILE_WITH_BMP_LOADER_)
+#else   //!defined(_IRR_COMPILE_WITH_BMP_LOADER_)
         // built-in font cannot be loaded if there is no BMP loader
 
         u8 *BuiltInFontData = 0;

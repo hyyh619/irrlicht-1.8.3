@@ -18,37 +18,37 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CGUIModalScreen(IGUIEnvironment *environment, IGUIElement *parent, s32 id);
 
-            // ! called if an event happened.
+            //! called if an event happened.
             virtual bool OnEvent(const SEvent &event);
 
-            // ! Removes a child.
+            //! Removes a child.
             virtual void removeChild(IGUIElement *child);
 
-            // ! Adds a child
+            //! Adds a child
             virtual void addChild(IGUIElement *child);
 
 
-            // ! draws the element and its children
+            //! draws the element and its children
             virtual void draw();
 
-            // ! Updates the absolute position.
+            //! Updates the absolute position.
             virtual void updateAbsolutePosition();
 
-            // ! Modalscreen is not a typical element, but rather acts like a state for it's children.
-            // ! isVisible is overriden to give this a useful behavior, so that a modal will no longer
-            // ! be active when its parent is invisible or all its children are invisible.
+            //! Modalscreen is not a typical element, but rather acts like a state for it's children.
+            //! isVisible is overriden to give this a useful behavior, so that a modal will no longer
+            //! be active when its parent is invisible or all its children are invisible.
             virtual bool isVisible() const;
 
-            // ! Modals are infinite so every point is inside
+            //! Modals are infinite so every point is inside
             virtual bool isPointInside(const core::position2d<s32> &point) const;
 
-            // ! Writes attributes of the element.
+            //! Writes attributes of the element.
             virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const;
 
-            // ! Reads attributes of the element
+            //! Reads attributes of the element
             virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options);
 
 protected:

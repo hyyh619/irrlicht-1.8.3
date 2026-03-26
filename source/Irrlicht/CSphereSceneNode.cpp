@@ -13,7 +13,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSphereSceneNode::CSphereSceneNode(f32 radius, u32 polyCountX, u32 polyCountY, ISceneNode *parent, ISceneManager *mgr, s32 id,
             const core::vector3df &position, const core::vector3df &rotation, const core::vector3df &scale)
             : IMeshSceneNode(parent, mgr, id, position, rotation, scale), Mesh(0), Shadow(0),
@@ -28,7 +28,7 @@ namespace irr
 
 
 
-        // ! destructor
+        //! destructor
         CSphereSceneNode::~CSphereSceneNode()
         {
             if (Shadow)
@@ -39,7 +39,7 @@ namespace irr
         }
 
 
-        // ! renders the node.
+        //! renders the node.
         void CSphereSceneNode::render()
         {
             video::IVideoDriver *driver = SceneManager->getVideoDriver();
@@ -63,9 +63,9 @@ namespace irr
         }
 
 
-        // ! Removes a child from this scene node.
-        // ! Implemented here, to be able to remove the shadow properly, if there is one,
-        // ! or to remove attached childs.
+        //! Removes a child from this scene node.
+        //! Implemented here, to be able to remove the shadow properly, if there is one,
+        //! or to remove attached childs.
         bool CSphereSceneNode::removeChild(ISceneNode *child)
         {
             if (child && Shadow == child)
@@ -78,8 +78,8 @@ namespace irr
         }
 
 
-        // ! Creates shadow volume scene node as child of this node
-        // ! and returns a pointer to it.
+        //! Creates shadow volume scene node as child of this node
+        //! and returns a pointer to it.
         IShadowVolumeSceneNode* CSphereSceneNode::addShadowVolumeSceneNode(
             const IMesh *shadowMesh, s32 id, bool zfailmethod, f32 infinity)
         {
@@ -97,7 +97,7 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CSphereSceneNode::getBoundingBox() const
         {
             return Mesh ? Mesh->getBoundingBox() : Box;
@@ -113,11 +113,11 @@ namespace irr
         }
 
 
-        // ! returns the material based on the zero based index i. To get the amount
-        // ! of materials used by this scene node, use getMaterialCount().
-        // ! This function is needed for inserting the node into the scene hirachy on a
-        // ! optimal position for minimizing renderstate changes, but can also be used
-        // ! to directly modify the material of a scene node.
+        //! returns the material based on the zero based index i. To get the amount
+        //! of materials used by this scene node, use getMaterialCount().
+        //! This function is needed for inserting the node into the scene hirachy on a
+        //! optimal position for minimizing renderstate changes, but can also be used
+        //! to directly modify the material of a scene node.
         video::SMaterial&CSphereSceneNode::getMaterial(u32 i)
         {
             if (i > 0 || !Mesh)
@@ -127,14 +127,14 @@ namespace irr
         }
 
 
-        // ! returns amount of materials used by this scene node.
+        //! returns amount of materials used by this scene node.
         u32 CSphereSceneNode::getMaterialCount() const
         {
             return 1;
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void CSphereSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             ISceneNode::serializeAttributes(out, options);
@@ -145,7 +145,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void CSphereSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             f32 oldRadius     = Radius;
@@ -173,7 +173,7 @@ namespace irr
             ISceneNode::deserializeAttributes(in, options);
         }
 
-        // ! Creates a clone of this scene node and its children.
+        //! Creates a clone of this scene node and its children.
         ISceneNode* CSphereSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
         {
             if (!newParent)

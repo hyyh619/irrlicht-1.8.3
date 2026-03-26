@@ -14,12 +14,12 @@ namespace irr
 {
     namespace scene
     {
-        // ! A default box emitter
+        //! A default box emitter
         class CParticleMeshEmitter : public IParticleMeshEmitter
         {
 public:
 
-            // ! constructor
+            //! constructor
             CParticleMeshEmitter(
                 IMesh *mesh, bool useNormalDirection = true,
                 const core::vector3df &direction = core::vector3df(0.0f, 0.0f, 0.0f),
@@ -37,172 +37,172 @@ public:
                 const core::dimension2df &maxStartSize = core::dimension2df(5.0f, 5.0f)
                 );
 
-            // ! Prepares an array with new particles to emitt into the system
-            // ! and returns how much new particles there are.
+            //! Prepares an array with new particles to emitt into the system
+            //! and returns how much new particles there are.
             virtual s32 emitt(u32 now, u32 timeSinceLastCall, SParticle* &outArray);
 
-            // ! Set Mesh to emit particles from
+            //! Set Mesh to emit particles from
             virtual void setMesh(IMesh *mesh);
 
-            // ! Set whether to use vertex normal for direction, or direction specified
+            //! Set whether to use vertex normal for direction, or direction specified
             virtual void setUseNormalDirection(bool useNormalDirection)
             {
                 UseNormalDirection = useNormalDirection;
             }
 
-            // ! Set direction the emitter emits particles
+            //! Set direction the emitter emits particles
             virtual void setDirection(const core::vector3df &newDirection)
             {
                 Direction = newDirection;
             }
 
-            // ! Set the amount that the normal is divided by for getting a particles direction
+            //! Set the amount that the normal is divided by for getting a particles direction
             virtual void setNormalDirectionModifier(f32 normalDirectionModifier)
             {
                 NormalDirectionModifier = normalDirectionModifier;
             }
 
-            // ! Sets whether to emit min<->max particles for every vertex per second, or to pick
-            // ! min<->max vertices every second
+            //! Sets whether to emit min<->max particles for every vertex per second, or to pick
+            //! min<->max vertices every second
             virtual void setEveryMeshVertex(bool everyMeshVertex)
             {
                 EveryMeshVertex = everyMeshVertex;
             }
 
-            // ! Set minimum number of particles the emitter emits per second
+            //! Set minimum number of particles the emitter emits per second
             virtual void setMinParticlesPerSecond(u32 minPPS)
             {
                 MinParticlesPerSecond = minPPS;
             }
 
-            // ! Set maximum number of particles the emitter emits per second
+            //! Set maximum number of particles the emitter emits per second
             virtual void setMaxParticlesPerSecond(u32 maxPPS)
             {
                 MaxParticlesPerSecond = maxPPS;
             }
 
-            // ! Set minimum starting color for particles
+            //! Set minimum starting color for particles
             virtual void setMinStartColor(const video::SColor &color)
             {
                 MinStartColor = color;
             }
 
-            // ! Set maximum starting color for particles
+            //! Set maximum starting color for particles
             virtual void setMaxStartColor(const video::SColor &color)
             {
                 MaxStartColor = color;
             }
 
-            // ! Set the maximum starting size for particles
+            //! Set the maximum starting size for particles
             virtual void setMaxStartSize(const core::dimension2df &size)
             {
                 MaxStartSize = size;
             }
 
-            // ! Set the minimum starting size for particles
+            //! Set the minimum starting size for particles
             virtual void setMinStartSize(const core::dimension2df &size)
             {
                 MinStartSize = size;
             }
 
-            // ! Set the minimum particle life-time in milliseconds
+            //! Set the minimum particle life-time in milliseconds
             virtual void setMinLifeTime(u32 lifeTimeMin)
             {
                 MinLifeTime = lifeTimeMin;
             }
 
-            // ! Set the maximum particle life-time in milliseconds
+            //! Set the maximum particle life-time in milliseconds
             virtual void setMaxLifeTime(u32 lifeTimeMax)
             {
                 MaxLifeTime = lifeTimeMax;
             }
 
-            // !    Set maximal random derivation from the direction
+            //!    Set maximal random derivation from the direction
             virtual void setMaxAngleDegrees(s32 maxAngleDegrees)
             {
                 MaxAngleDegrees = maxAngleDegrees;
             }
 
-            // ! Get Mesh we're emitting particles from
+            //! Get Mesh we're emitting particles from
             virtual const IMesh* getMesh() const
             {
                 return Mesh;
             }
 
-            // ! Get whether to use vertex normal for direciton, or direction specified
+            //! Get whether to use vertex normal for direciton, or direction specified
             virtual bool isUsingNormalDirection() const
             {
                 return UseNormalDirection;
             }
 
-            // ! Get direction the emitter emits particles
+            //! Get direction the emitter emits particles
             virtual const core::vector3df&getDirection() const
             {
                 return Direction;
             }
 
-            // ! Get the amount that the normal is divided by for getting a particles direction
+            //! Get the amount that the normal is divided by for getting a particles direction
             virtual f32 getNormalDirectionModifier() const
             {
                 return NormalDirectionModifier;
             }
 
-            // ! Gets whether to emit min<->max particles for every vertex per second, or to pick
-            // ! min<->max vertices every second
+            //! Gets whether to emit min<->max particles for every vertex per second, or to pick
+            //! min<->max vertices every second
             virtual bool getEveryMeshVertex() const
             {
                 return EveryMeshVertex;
             }
 
-            // ! Get the minimum number of particles the emitter emits per second
+            //! Get the minimum number of particles the emitter emits per second
             virtual u32 getMinParticlesPerSecond() const
             {
                 return MinParticlesPerSecond;
             }
 
-            // ! Get the maximum number of particles the emitter emits per second
+            //! Get the maximum number of particles the emitter emits per second
             virtual u32 getMaxParticlesPerSecond() const
             {
                 return MaxParticlesPerSecond;
             }
 
-            // ! Get the minimum starting color for particles
+            //! Get the minimum starting color for particles
             virtual const video::SColor&getMinStartColor() const
             {
                 return MinStartColor;
             }
 
-            // ! Get the maximum starting color for particles
+            //! Get the maximum starting color for particles
             virtual const video::SColor&getMaxStartColor() const
             {
                 return MaxStartColor;
             }
 
-            // ! Gets the maximum starting size for particles
+            //! Gets the maximum starting size for particles
             virtual const core::dimension2df&getMaxStartSize() const
             {
                 return MaxStartSize;
             }
 
-            // ! Gets the minimum starting size for particles
+            //! Gets the minimum starting size for particles
             virtual const core::dimension2df&getMinStartSize() const
             {
                 return MinStartSize;
             }
 
-            // ! Get the minimum particle life-time in milliseconds
+            //! Get the minimum particle life-time in milliseconds
             virtual u32 getMinLifeTime() const
             {
                 return MinLifeTime;
             }
 
-            // ! Get the maximum particle life-time in milliseconds
+            //! Get the maximum particle life-time in milliseconds
             virtual u32 getMaxLifeTime() const
             {
                 return MaxLifeTime;
             }
 
-            // !    Get maximal random derivation from the direction
+            //!    Get maximal random derivation from the direction
             virtual s32 getMaxAngleDegrees() const
             {
                 return MaxAngleDegrees;

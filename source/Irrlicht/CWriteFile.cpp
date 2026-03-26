@@ -30,7 +30,7 @@ namespace irr
 
 
 
-        // ! returns if file is open
+        //! returns if file is open
         inline bool CWriteFile::isOpen() const
         {
             return File != 0;
@@ -38,7 +38,7 @@ namespace irr
 
 
 
-        // ! returns how much was read
+        //! returns how much was read
         s32 CWriteFile::write(const void *buffer, u32 sizeToWrite)
         {
             if (!isOpen())
@@ -49,9 +49,9 @@ namespace irr
 
 
 
-        // ! changes position in file, returns true if successful
-        // ! if relativeMovement==true, the pos is changed relative to current pos,
-        // ! otherwise from begin of file
+        //! changes position in file, returns true if successful
+        //! if relativeMovement==true, the pos is changed relative to current pos,
+        //! otherwise from begin of file
         bool CWriteFile::seek(long finalPos, bool relativeMovement)
         {
             if (!isOpen())
@@ -62,7 +62,7 @@ namespace irr
 
 
 
-        // ! returns where in the file we are.
+        //! returns where in the file we are.
         long CWriteFile::getPos() const
         {
             return ftell(File);
@@ -70,7 +70,7 @@ namespace irr
 
 
 
-        // ! opens the file
+        //! opens the file
         void CWriteFile::openFile(bool append)
         {
             if (Filename.size() == 0)
@@ -97,7 +97,7 @@ namespace irr
 
 
 
-        // ! returns name of file
+        //! returns name of file
         const io::path&CWriteFile::getFileName() const
         {
             return Filename;

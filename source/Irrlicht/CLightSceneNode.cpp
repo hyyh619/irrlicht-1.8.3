@@ -13,7 +13,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CLightSceneNode::CLightSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
             const core::vector3df &position, video::SColorf color, f32 radius)
             : ILightSceneNode(parent, mgr, id, position), DriverLightIndex(-1), LightIsOn(true)
@@ -30,7 +30,7 @@ namespace irr
         }
 
 
-        // ! pre render event
+        //! pre render event
         void CLightSceneNode::OnRegisterSceneNode()
         {
             doLightRecalc();
@@ -42,7 +42,7 @@ namespace irr
         }
 
 
-        // ! render
+        //! render
         void CLightSceneNode::render()
         {
             video::IVideoDriver *driver = SceneManager->getVideoDriver();
@@ -80,21 +80,21 @@ namespace irr
         }
 
 
-        // ! sets the light data
+        //! sets the light data
         void CLightSceneNode::setLightData(const video::SLight &light)
         {
             LightData = light;
         }
 
 
-        // ! \return Returns the light data.
+        //! \return Returns the light data.
         const video::SLight&CLightSceneNode::getLightData() const
         {
             return LightData;
         }
 
 
-        // ! \return Returns the light data.
+        //! \return Returns the light data.
         video::SLight&CLightSceneNode::getLightData()
         {
             return LightData;
@@ -115,14 +115,14 @@ namespace irr
             driver->turnLightOn((u32)DriverLightIndex, LightIsOn);
         }
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CLightSceneNode::getBoundingBox() const
         {
             return BBox;
         }
 
 
-        // ! Sets the light's radius of influence.
+        //! Sets the light's radius of influence.
         /** Outside this radius the light won't lighten geometry and cast no
          * shadows. Setting the radius will also influence the attenuation, setting
          * it to (0,1/radius,0). If you want to override this behavior, set the
@@ -136,7 +136,7 @@ namespace irr
         }
 
 
-        // ! Gets the light's radius of influence.
+        //! Gets the light's radius of influence.
         /** \return The current radius. */
         f32 CLightSceneNode::getRadius() const
         {
@@ -144,7 +144,7 @@ namespace irr
         }
 
 
-        // ! Sets the light type.
+        //! Sets the light type.
         /** \param type The new type. */
         void CLightSceneNode::setLightType(video::E_LIGHT_TYPE type)
         {
@@ -152,7 +152,7 @@ namespace irr
         }
 
 
-        // ! Gets the light type.
+        //! Gets the light type.
         /** \return The current light type. */
         video::E_LIGHT_TYPE CLightSceneNode::getLightType() const
         {
@@ -160,7 +160,7 @@ namespace irr
         }
 
 
-        // ! Sets whether this light casts shadows.
+        //! Sets whether this light casts shadows.
         /** Enabling this flag won't automatically cast shadows, the meshes
          * will still need shadow scene nodes attached. But one can enable or
          * disable distinct lights for shadow casting for performance reasons.
@@ -171,7 +171,7 @@ namespace irr
         }
 
 
-        // ! Check whether this light casts shadows.
+        //! Check whether this light casts shadows.
         /** \return True if light would cast shadows, else false. */
         bool CLightSceneNode::getCastShadow() const
         {
@@ -206,7 +206,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void CLightSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             ILightSceneNode::serializeAttributes(out, options);
@@ -223,7 +223,7 @@ namespace irr
             out->addEnum    ("LightType", LightData.Type, video::LightTypeNames);
         }
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void CLightSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             LightData.AmbientColor  = in->getAttributeAsColorf("AmbientColor");
@@ -257,7 +257,7 @@ namespace irr
             ILightSceneNode::deserializeAttributes(in, options);
         }
 
-        // ! Creates a clone of this scene node and its children.
+        //! Creates a clone of this scene node and its children.
         ISceneNode* CLightSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
         {
             if (!newParent)

@@ -8,7 +8,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSceneNodeAnimatorFlyStraight::CSceneNodeAnimatorFlyStraight(const core::vector3df &startPoint,
             const core::vector3df &endPoint, u32 timeForWay,
             bool loop, u32 now, bool pingpong)
@@ -32,7 +32,7 @@ namespace irr
         }
 
 
-        // ! animates a scene node
+        //! animates a scene node
         void CSceneNodeAnimatorFlyStraight::animateNode(ISceneNode *node, u32 timeMs)
         {
             if (!node)
@@ -72,7 +72,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node animator.
+        //! Writes attributes of the scene node animator.
         void CSceneNodeAnimatorFlyStraight::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             out->addVector3d("Start", Start);
@@ -83,7 +83,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node animator.
+        //! Reads attributes of the scene node animator.
         void CSceneNodeAnimatorFlyStraight::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             Start      = in->getAttributeAsVector3d("Start");

@@ -13,7 +13,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSkyBoxSceneNode::CSkyBoxSceneNode(video::ITexture *top, video::ITexture *bottom, video::ITexture *left,
             video::ITexture *right, video::ITexture *front, video::ITexture *back, ISceneNode *parent, ISceneManager *mgr, s32 id)
             : ISceneNode(parent, mgr, id)
@@ -135,7 +135,7 @@ namespace irr
         }
 
 
-        // ! renders the node.
+        //! renders the node.
         void CSkyBoxSceneNode::render()
         {
             video::IVideoDriver     *driver = SceneManager->getVideoDriver();
@@ -210,7 +210,7 @@ namespace irr
 
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CSkyBoxSceneNode::getBoundingBox() const
         {
             return Box;
@@ -226,25 +226,25 @@ namespace irr
         }
 
 
-        // ! returns the material based on the zero based index i. To get the amount
-        // ! of materials used by this scene node, use getMaterialCount().
-        // ! This function is needed for inserting the node into the scene hirachy on a
-        // ! optimal position for minimizing renderstate changes, but can also be used
-        // ! to directly modify the material of a scene node.
+        //! returns the material based on the zero based index i. To get the amount
+        //! of materials used by this scene node, use getMaterialCount().
+        //! This function is needed for inserting the node into the scene hirachy on a
+        //! optimal position for minimizing renderstate changes, but can also be used
+        //! to directly modify the material of a scene node.
         video::SMaterial&CSkyBoxSceneNode::getMaterial(u32 i)
         {
             return Material[i];
         }
 
 
-        // ! returns amount of materials used by this scene node.
+        //! returns amount of materials used by this scene node.
         u32 CSkyBoxSceneNode::getMaterialCount() const
         {
             return 6;
         }
 
 
-        // ! Creates a clone of this scene node and its children.
+        //! Creates a clone of this scene node and its children.
         ISceneNode* CSkyBoxSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
         {
             if (!newParent)

@@ -14,7 +14,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CSoftwareTexture2::CSoftwareTexture2(IImage *image, const io::path &name,
             u32 flags, void *mipmapData)
             : ITexture(name), MipMapLOD(0), Flags (flags), OriginalFormat(video::ECOLOR_FORMAT::ECF_UNKNOWN)
@@ -73,7 +73,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CSoftwareTexture2::~CSoftwareTexture2()
         {
             for (s32 i = 0; i != SOFTWARE_DRIVER_2_MIPMAPPING_MAX; ++i)
@@ -84,8 +84,8 @@ namespace irr
         }
 
 
-        // ! Regenerates the mip map levels of the texture. Useful after locking and
-        // ! modifying the texture
+        //! Regenerates the mip map levels of the texture. Useful after locking and
+        //! modifying the texture
         void CSoftwareTexture2::regenerateMipMapLevels(void *mipmapData)
         {
             if (!hasMipMaps ())

@@ -86,7 +86,7 @@ namespace irr
 {
     namespace os
     {
-        // ! prints a debuginfo string
+        //! prints a debuginfo string
         void Printer::print(const c8 *message)
         {
 #if defined (_WIN32_WCE)
@@ -163,7 +163,7 @@ namespace irr
 {
     namespace os
     {
-        // ! prints a debuginfo string
+        //! prints a debuginfo string
         void Printer::print(const c8 *message)
         {
             printf("%s\n", message);
@@ -219,7 +219,7 @@ namespace irr
 
         s32 Randomizer::seed = 0x0f0f0f0f;
 
-        // ! generates a pseudo random number
+        //! generates a pseudo random number
         s32 Randomizer::rand()
         {
             // (a*seed)%m with Schrage's method
@@ -230,7 +230,7 @@ namespace irr
             return seed;
         }
 
-        // ! generates a pseudo random number
+        //! generates a pseudo random number
         f32 Randomizer::frand()
         {
             return rand() * (1.f / rMax);
@@ -241,7 +241,7 @@ namespace irr
             return rMax;
         }
 
-        // ! resets the randomizer
+        //! resets the randomizer
         void Randomizer::reset(s32 value)
         {
             seed = value;
@@ -257,7 +257,7 @@ namespace irr
         u32 Timer::StartRealTime           = 0;
         u32 Timer::StaticTime              = 0;
 
-        // ! Get real time and date in calendar form
+        //! Get real time and date in calendar form
         ITimer::RealTimeDate Timer::getRealTimeAndDate()
         {
             time_t rawtime;
@@ -287,7 +287,7 @@ namespace irr
             return date;
         }
 
-        // ! returns current virtual time
+        //! returns current virtual time
         u32 Timer::getTime()
         {
             if (isStopped())
@@ -296,13 +296,13 @@ namespace irr
             return LastVirtualTime + (u32)((StaticTime - StartRealTime) * VirtualTimerSpeed);
         }
 
-        // ! ticks, advances the virtual timer
+        //! ticks, advances the virtual timer
         void Timer::tick()
         {
             StaticTime = getRealTime();
         }
 
-        // ! sets the current virtual time
+        //! sets the current virtual time
         void Timer::setTime(u32 time)
         {
             StaticTime      = getRealTime();
@@ -310,7 +310,7 @@ namespace irr
             StartRealTime   = StaticTime;
         }
 
-        // ! stops the virtual timer
+        //! stops the virtual timer
         void Timer::stopTimer()
         {
             if (!isStopped())
@@ -322,7 +322,7 @@ namespace irr
             --VirtualTimerStopCounter;
         }
 
-        // ! starts the virtual timer
+        //! starts the virtual timer
         void Timer::startTimer()
         {
             ++VirtualTimerStopCounter;
@@ -334,7 +334,7 @@ namespace irr
             }
         }
 
-        // ! sets the speed of the virtual timer
+        //! sets the speed of the virtual timer
         void Timer::setSpeed(f32 speed)
         {
             setTime(getTime());
@@ -344,13 +344,13 @@ namespace irr
                 VirtualTimerSpeed = 0.0f;
         }
 
-        // ! gets the speed of the virtual timer
+        //! gets the speed of the virtual timer
         f32 Timer::getSpeed()
         {
             return VirtualTimerSpeed;
         }
 
-        // ! returns if the timer currently is stopped
+        //! returns if the timer currently is stopped
         bool Timer::isStopped()
         {
             return VirtualTimerStopCounter < 0;

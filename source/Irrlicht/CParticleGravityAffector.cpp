@@ -10,7 +10,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CParticleGravityAffector::CParticleGravityAffector(
             const core::vector3df &gravity, u32 timeForceLost)
             : IParticleGravityAffector(), TimeForceLost(static_cast<f32>(timeForceLost)), Gravity(gravity)
@@ -21,7 +21,7 @@ namespace irr
         }
 
 
-        // ! Affects an array of particles.
+        //! Affects an array of particles.
         void CParticleGravityAffector::affect(u32 now, SParticle *particlearray, u32 count)
         {
             if (!Enabled)
@@ -44,7 +44,7 @@ namespace irr
             }
         }
 
-        // ! Writes attributes of the object.
+        //! Writes attributes of the object.
         void CParticleGravityAffector::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             out->addVector3d("Gravity", Gravity);
@@ -52,7 +52,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the object.
+        //! Reads attributes of the object.
         void CParticleGravityAffector::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             Gravity       = in->getAttributeAsVector3d("Gravity");

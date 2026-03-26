@@ -12,7 +12,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSceneNodeAnimatorCameraMaya::CSceneNodeAnimatorCameraMaya(gui::ICursorControl *cursor,
             f32 rotateSpeed, f32 zoomSpeed, f32 translateSpeed, f32 distance)
             : CursorControl(cursor), OldCamera(0), MousePos(0.5f, 0.5f),
@@ -34,7 +34,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CSceneNodeAnimatorCameraMaya::~CSceneNodeAnimatorCameraMaya()
         {
             if (CursorControl)
@@ -42,11 +42,11 @@ namespace irr
         }
 
 
-        // ! It is possible to send mouse and key events to the camera. Most cameras
-        // ! may ignore this input, but camera scene nodes which are created for
-        // ! example with scene::ISceneManager::addMayaCameraSceneNode or
-        // ! scene::ISceneManager::addMeshViewerCameraSceneNode, may want to get this input
-        // ! for changing their position, look at target or whatever.
+        //! It is possible to send mouse and key events to the camera. Most cameras
+        //! may ignore this input, but camera scene nodes which are created for
+        //! example with scene::ISceneManager::addMayaCameraSceneNode or
+        //! scene::ISceneManager::addMeshViewerCameraSceneNode, may want to get this input
+        //! for changing their position, look at target or whatever.
         bool CSceneNodeAnimatorCameraMaya::OnEvent(const SEvent &event)
         {
             if (event.EventType != EET_MOUSE_INPUT_EVENT)
@@ -97,7 +97,7 @@ namespace irr
         }
 
 
-        // ! OnAnimate() is called just before rendering the whole scene.
+        //! OnAnimate() is called just before rendering the whole scene.
         void CSceneNodeAnimatorCameraMaya::animateNode(ISceneNode *node, u32 timeMs)
         {
             // Alt + LM = Rotate around camera pivot
@@ -257,35 +257,35 @@ namespace irr
         }
 
 
-        // ! Sets the rotation speed
+        //! Sets the rotation speed
         void CSceneNodeAnimatorCameraMaya::setRotateSpeed(f32 speed)
         {
             RotateSpeed = speed;
         }
 
 
-        // ! Sets the movement speed
+        //! Sets the movement speed
         void CSceneNodeAnimatorCameraMaya::setMoveSpeed(f32 speed)
         {
             TranslateSpeed = speed;
         }
 
 
-        // ! Sets the zoom speed
+        //! Sets the zoom speed
         void CSceneNodeAnimatorCameraMaya::setZoomSpeed(f32 speed)
         {
             ZoomSpeed = speed;
         }
 
 
-        // ! Set the distance
+        //! Set the distance
         void CSceneNodeAnimatorCameraMaya::setDistance(f32 distance)
         {
             CurrentZoom = distance;
         }
 
 
-        // ! Gets the rotation speed
+        //! Gets the rotation speed
         f32 CSceneNodeAnimatorCameraMaya::getRotateSpeed() const
         {
             return RotateSpeed;
@@ -299,14 +299,14 @@ namespace irr
         }
 
 
-        // ! Gets the zoom speed
+        //! Gets the zoom speed
         f32 CSceneNodeAnimatorCameraMaya::getZoomSpeed() const
         {
             return ZoomSpeed;
         }
 
 
-        // ! Returns the current distance, i.e. orbit radius
+        //! Returns the current distance, i.e. orbit radius
         f32 CSceneNodeAnimatorCameraMaya::getDistance() const
         {
             return CurrentZoom;

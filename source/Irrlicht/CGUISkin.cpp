@@ -164,7 +164,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUISkin::~CGUISkin()
         {
             for (u32 i = 0; i < EGDF_COUNT; ++i)
@@ -178,7 +178,7 @@ namespace irr
         }
 
 
-        // ! returns default color
+        //! returns default color
         video::SColor CGUISkin::getColor(EGUI_DEFAULT_COLOR color) const
         {
             if ((u32)color < EGDC_COUNT)
@@ -188,7 +188,7 @@ namespace irr
         }
 
 
-        // ! sets a default color
+        //! sets a default color
         void CGUISkin::setColor(EGUI_DEFAULT_COLOR which, video::SColor newColor)
         {
             if ((u32)which < EGDC_COUNT)
@@ -196,7 +196,7 @@ namespace irr
         }
 
 
-        // ! returns size for the given size type
+        //! returns size for the given size type
         s32 CGUISkin::getSize(EGUI_DEFAULT_SIZE size) const
         {
             if ((u32)size < EGDS_COUNT)
@@ -206,7 +206,7 @@ namespace irr
         }
 
 
-        // ! sets a default size
+        //! sets a default size
         void CGUISkin::setSize(EGUI_DEFAULT_SIZE which, s32 size)
         {
             if ((u32)which < EGDS_COUNT)
@@ -214,7 +214,7 @@ namespace irr
         }
 
 
-        // ! returns the default font
+        //! returns the default font
         IGUIFont* CGUISkin::getFont(EGUI_DEFAULT_FONT which) const
         {
             if (((u32)which < EGDF_COUNT) && Fonts[which])
@@ -224,7 +224,7 @@ namespace irr
         }
 
 
-        // ! sets a default font
+        //! sets a default font
         void CGUISkin::setFont(IGUIFont *font, EGUI_DEFAULT_FONT which)
         {
             if ((u32)which >= EGDF_COUNT)
@@ -241,14 +241,14 @@ namespace irr
         }
 
 
-        // ! gets the sprite bank stored
+        //! gets the sprite bank stored
         IGUISpriteBank* CGUISkin::getSpriteBank() const
         {
             return SpriteBank;
         }
 
 
-        // ! set a new sprite bank or remove one by passing 0
+        //! set a new sprite bank or remove one by passing 0
         void CGUISkin::setSpriteBank(IGUISpriteBank *bank)
         {
             if (bank)
@@ -261,7 +261,7 @@ namespace irr
         }
 
 
-        // ! Returns a default icon
+        //! Returns a default icon
         u32 CGUISkin::getIcon(EGUI_DEFAULT_ICON icon) const
         {
             if ((u32)icon < EGDI_COUNT)
@@ -271,7 +271,7 @@ namespace irr
         }
 
 
-        // ! Sets a default icon
+        //! Sets a default icon
         void CGUISkin::setIcon(EGUI_DEFAULT_ICON icon, u32 index)
         {
             if ((u32)icon < EGDI_COUNT)
@@ -279,8 +279,8 @@ namespace irr
         }
 
 
-        // ! Returns a default text. For example for Message box button captions:
-        // ! "OK", "Cancel", "Yes", "No" and so on.
+        //! Returns a default text. For example for Message box button captions:
+        //! "OK", "Cancel", "Yes", "No" and so on.
         const wchar_t* CGUISkin::getDefaultText(EGUI_DEFAULT_TEXT text) const
         {
             if ((u32)text < EGDT_COUNT)
@@ -290,8 +290,8 @@ namespace irr
         }
 
 
-        // ! Sets a default text. For example for Message box button captions:
-        // ! "OK", "Cancel", "Yes", "No" and so on.
+        //! Sets a default text. For example for Message box button captions:
+        //! "OK", "Cancel", "Yes", "No" and so on.
         void CGUISkin::setDefaultText(EGUI_DEFAULT_TEXT which, const wchar_t *newText)
         {
             if ((u32)which < EGDT_COUNT)
@@ -299,7 +299,7 @@ namespace irr
         }
 
 
-        // ! draws a standard 3d button pane
+        //! draws a standard 3d button pane
         /**    Used for drawing for example buttons in normal state.
          *  It uses the colors EGDC_3D_DARK_SHADOW, EGDC_3D_HIGH_LIGHT, EGDC_3D_SHADOW and
          *  EGDC_3D_FACE for this. See EGUI_DEFAULT_COLOR for details.
@@ -355,7 +355,7 @@ namespace irr
         }
 
 
-        // ! draws a pressed 3d button pane
+        //! draws a pressed 3d button pane
         /**    Used for drawing for example buttons in pressed state.
          * It uses the colors EGDC_3D_DARK_SHADOW, EGDC_3D_HIGH_LIGHT, EGDC_3D_SHADOW and
          * EGDC_3D_FACE for this. See EGUI_DEFAULT_COLOR for details.
@@ -398,7 +398,7 @@ namespace irr
         }
 
 
-        // ! draws a sunken 3d pane
+        //! draws a sunken 3d pane
         /** Used for drawing the background of edit, combo or check boxes.
          * \param element: Pointer to the element which wishes to draw this. This parameter
          * is usually not used by ISkin, but can be used for example by more complex
@@ -490,7 +490,7 @@ namespace irr
         }
 
 
-        // ! draws a window background
+        //! draws a window background
         // return where to draw title bar text.
         core::rect<s32> CGUISkin::draw3DWindowBackground(IGUIElement *element,
             bool drawTitleBar, video::SColor titleBarColor,
@@ -633,7 +633,7 @@ namespace irr
         }
 
 
-        // ! draws a standard 3d menu pane
+        //! draws a standard 3d menu pane
         /**    Used for drawing for menus and context menus.
          * It uses the colors EGDC_3D_DARK_SHADOW, EGDC_3D_HIGH_LIGHT, EGDC_3D_SHADOW and
          * EGDC_3D_FACE for this. See EGUI_DEFAULT_COLOR for details.
@@ -713,7 +713,7 @@ namespace irr
         }
 
 
-        // ! draws a standard 3d tool bar
+        //! draws a standard 3d tool bar
         /**    Used for drawing for toolbars and menus.
          * \param element: Pointer to the element which wishes to draw this. This parameter
          * is usually not used by ISkin, but can be used for example by more complex
@@ -759,7 +759,7 @@ namespace irr
         }
 
 
-        // ! draws a tab button
+        //! draws a tab button
         /**    Used for drawing for tab buttons on top of tabs.
          * \param element: Pointer to the element which wishes to draw this. This parameter
          * is usually not used by ISkin, but can be used for example by more complex
@@ -840,7 +840,7 @@ namespace irr
         }
 
 
-        // ! draws a tab control body
+        //! draws a tab control body
         /**    \param element: Pointer to the element which wishes to draw this. This parameter
          * is usually not used by ISkin, but can be used for example by more complex
          * implementations to find out how to draw the part exactly.
@@ -930,7 +930,7 @@ namespace irr
         }
 
 
-        // ! draws an icon, usually from the skin's sprite bank
+        //! draws an icon, usually from the skin's sprite bank
         /**    \param parent: Pointer to the element which wishes to draw this icon.
          * This parameter is usually not used by IGUISkin, but can be used for example
          * by more complex implementations to find out how to draw the part exactly.
@@ -960,7 +960,7 @@ namespace irr
         }
 
 
-        // ! draws a 2d rectangle.
+        //! draws a 2d rectangle.
         void CGUISkin::draw2DRectangle(IGUIElement *element,
             const video::SColor &color, const core::rect<s32> &pos,
             const core::rect<s32> *clip)
@@ -969,9 +969,9 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the object.
-        // ! Implement this to expose the attributes of your scene node animator for
-        // ! scripting languages, editors, debuggers or xml serialization purposes.
+        //! Writes attributes of the object.
+        //! Implement this to expose the attributes of your scene node animator for
+        //! scripting languages, editors, debuggers or xml serialization purposes.
         void CGUISkin::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             u32 i;
@@ -990,9 +990,9 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the object.
-        // ! Implement this to set the attributes of your scene node animator for
-        // ! scripting languages, editors, debuggers or xml deserialization purposes.
+        //! Reads attributes of the object.
+        //! Implement this to set the attributes of your scene node animator for
+        //! scripting languages, editors, debuggers or xml deserialization purposes.
         void CGUISkin::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             // TODO: This is not nice code for downward compatibility, whenever new values are added and users

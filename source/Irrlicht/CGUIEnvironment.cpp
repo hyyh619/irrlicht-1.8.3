@@ -53,7 +53,7 @@ namespace irr
 
         const io::path CGUIEnvironment::DefaultFontName = "#DefaultFont";
 
-        // ! constructor
+        //! constructor
         CGUIEnvironment::CGUIEnvironment(io::IFileSystem *fs, video::IVideoDriver *driver, IOSOperator *op)
             : IGUIElement(EGUIET_ROOT, 0, 0, 0, core::rect<s32>(core::position2d<s32>(0, 0), driver ? core::dimension2d<s32>(driver->getScreenSize()) : core::dimension2d<s32>(0, 0))),
             Driver(driver), Hovered(0), HoveredNoSubelement(0), Focus(0), LastHoveredMousePos(0, 0), CurrentSkin(0),
@@ -96,7 +96,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIEnvironment::~CGUIEnvironment()
         {
             if (HoveredNoSubelement && HoveredNoSubelement != this)
@@ -188,7 +188,7 @@ namespace irr
         }
 
 
-        // ! draws all gui elements
+        //! draws all gui elements
         void CGUIEnvironment::drawAll()
         {
             if (Driver)
@@ -214,7 +214,7 @@ namespace irr
         }
 
 
-        // ! sets the focus to an element
+        //! sets the focus to an element
         bool CGUIEnvironment::setFocus(IGUIElement *element)
         {
             if (Focus == element)
@@ -294,20 +294,20 @@ namespace irr
         }
 
 
-        // ! returns the element with the focus
+        //! returns the element with the focus
         IGUIElement* CGUIEnvironment::getFocus() const
         {
             return Focus;
         }
 
-        // ! returns the element last known to be under the mouse cursor
+        //! returns the element last known to be under the mouse cursor
         IGUIElement* CGUIEnvironment::getHovered() const
         {
             return Hovered;
         }
 
 
-        // ! removes the focus from an element
+        //! removes the focus from an element
         bool CGUIEnvironment::removeFocus(IGUIElement *element)
         {
             if (Focus && Focus == element)
@@ -334,7 +334,7 @@ namespace irr
         }
 
 
-        // ! Returns if the element has focus
+        //! Returns if the element has focus
         bool CGUIEnvironment::hasFocus(IGUIElement *element) const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -342,28 +342,28 @@ namespace irr
         }
 
 
-        // ! returns the current video driver
+        //! returns the current video driver
         video::IVideoDriver* CGUIEnvironment::getVideoDriver() const
         {
             return Driver;
         }
 
 
-        // ! returns the current file system
+        //! returns the current file system
         io::IFileSystem* CGUIEnvironment::getFileSystem() const
         {
             return FileSystem;
         }
 
 
-        // ! returns a pointer to the OS operator
+        //! returns a pointer to the OS operator
         IOSOperator* CGUIEnvironment::getOSOperator() const
         {
             return Operator;
         }
 
 
-        // ! clear all GUI elements
+        //! clear all GUI elements
         void CGUIEnvironment::clear()
         {
             // Remove the focus
@@ -393,7 +393,7 @@ namespace irr
         }
 
 
-        // ! called by ui if an event happened.
+        //! called by ui if an event happened.
         bool CGUIEnvironment::OnEvent(const SEvent &event)
         {
             bool ret = false;
@@ -551,15 +551,15 @@ namespace irr
         }
 
 
-        // ! This sets a new event receiver for gui events. Usually you do not have to
-        // ! use this method, it is used by the internal engine.
+        //! This sets a new event receiver for gui events. Usually you do not have to
+        //! use this method, it is used by the internal engine.
         void CGUIEnvironment::setUserEventReceiver(IEventReceiver *evr)
         {
             UserReceiver = evr;
         }
 
 
-        // ! posts an input event to the environment
+        //! posts an input event to the environment
         bool CGUIEnvironment::postEventFromUser(const SEvent &event)
         {
             switch (event.EventType)
@@ -621,14 +621,14 @@ namespace irr
         }
 
 
-        // ! returns the current gui skin
+        //! returns the current gui skin
         IGUISkin* CGUIEnvironment::getSkin() const
         {
             return CurrentSkin;
         }
 
 
-        // ! Sets a new GUI Skin
+        //! Sets a new GUI Skin
         void CGUIEnvironment::setSkin(IGUISkin *skin)
         {
             if (CurrentSkin == skin)
@@ -644,7 +644,7 @@ namespace irr
         }
 
 
-        // ! Creates a new GUI Skin based on a template.
+        //! Creates a new GUI Skin based on a template.
         /** \return Returns a pointer to the created skin.
          * If you no longer need the skin, you should call IGUISkin::drop().
          * See IReferenceCounted::drop() for more information. */
@@ -670,14 +670,14 @@ namespace irr
         }
 
 
-        // ! Returns the default element factory which can create all built in elements
+        //! Returns the default element factory which can create all built in elements
         IGUIElementFactory* CGUIEnvironment::getDefaultGUIElementFactory() const
         {
             return getGUIElementFactory(0);
         }
 
 
-        // ! Adds an element factory to the gui environment.
+        //! Adds an element factory to the gui environment.
         /** Use this to extend the gui environment with new element types which it should be
          * able to create automaticly, for example when loading data from xml files. */
         void CGUIEnvironment::registerGUIElementFactory(IGUIElementFactory *factoryToAdd)
@@ -690,14 +690,14 @@ namespace irr
         }
 
 
-        // ! Returns amount of registered scene node factories.
+        //! Returns amount of registered scene node factories.
         u32 CGUIEnvironment::getRegisteredGUIElementFactoryCount() const
         {
             return GUIElementFactoryList.size();
         }
 
 
-        // ! Returns a scene node factory by index
+        //! Returns a scene node factory by index
         IGUIElementFactory* CGUIEnvironment::getGUIElementFactory(u32 index) const
         {
             if (index < GUIElementFactoryList.size())
@@ -707,7 +707,7 @@ namespace irr
         }
 
 
-        // ! adds a GUI Element using its name
+        //! adds a GUI Element using its name
         IGUIElement* CGUIEnvironment::addGUIElement(const c8 *elementName, IGUIElement *parent)
         {
             IGUIElement *node = 0;
@@ -723,8 +723,8 @@ namespace irr
         }
 
 
-        // ! Saves the current gui into a file.
-        // ! \param filename: Name of the file .
+        //! Saves the current gui into a file.
+        //! \param filename: Name of the file .
         bool CGUIEnvironment::saveGUI(const io::path &filename, IGUIElement *start)
         {
             io::IWriteFile *file = FileSystem->createAndWriteFile(filename);
@@ -742,7 +742,7 @@ namespace irr
         }
 
 
-        // ! Saves the current gui into a file.
+        //! Saves the current gui into a file.
         bool CGUIEnvironment::saveGUI(io::IWriteFile *file, IGUIElement *start)
         {
             if (!file)
@@ -766,8 +766,8 @@ namespace irr
         }
 
 
-        // ! Loads the gui. Note that the current gui is not cleared before.
-        // ! \param filename: Name of the file.
+        //! Loads the gui. Note that the current gui is not cleared before.
+        //! \param filename: Name of the file.
         bool CGUIEnvironment::loadGUI(const io::path &filename, IGUIElement *parent)
         {
             io::IReadFile *read = FileSystem->createAndOpenFile(filename);
@@ -787,7 +787,7 @@ namespace irr
         }
 
 
-        // ! Loads the gui. Note that the current gui is not cleared before.
+        //! Loads the gui. Note that the current gui is not cleared before.
         bool CGUIEnvironment::loadGUI(io::IReadFile *file, IGUIElement *parent)
         {
             if (!file)
@@ -818,7 +818,7 @@ namespace irr
         }
 
 
-        // ! reads an element
+        //! reads an element
         void CGUIEnvironment::readGUIElement(io::IXMLReader *reader, IGUIElement *node)
         {
             if (!reader)
@@ -905,7 +905,7 @@ namespace irr
         }
 
 
-        // ! writes an element
+        //! writes an element
         void CGUIEnvironment::writeGUIElement(io::IXMLWriter *writer, IGUIElement *node)
         {
             if (!writer || !node)
@@ -963,7 +963,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the environment
+        //! Writes attributes of the environment
         void CGUIEnvironment::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             IGUISkin *skin = getSkin();
@@ -976,7 +976,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the environment
+        //! Reads attributes of the environment
         void CGUIEnvironment::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             if (in->existsAttribute("Skin"))
@@ -1005,7 +1005,7 @@ namespace irr
         }
 
 
-        // ! adds a button. The returned pointer must not be dropped.
+        //! adds a button. The returned pointer must not be dropped.
         IGUIButton* CGUIEnvironment::addButton(const core::rect<s32> &rectangle, IGUIElement *parent, s32 id, const wchar_t *text, const wchar_t *tooltiptext)
         {
             IGUIButton *button = new CGUIButton(this, parent ? parent : this, id, rectangle);
@@ -1021,7 +1021,7 @@ namespace irr
         }
 
 
-        // ! adds a window. The returned pointer must not be dropped.
+        //! adds a window. The returned pointer must not be dropped.
         IGUIWindow* CGUIEnvironment::addWindow(const core::rect<s32> &rectangle, bool modal,
             const wchar_t *text, IGUIElement *parent, s32 id)
         {
@@ -1046,7 +1046,7 @@ namespace irr
         }
 
 
-        // ! adds a modal screen. The returned pointer must not be dropped.
+        //! adds a modal screen. The returned pointer must not be dropped.
         IGUIElement* CGUIEnvironment::addModalScreen(IGUIElement *parent)
         {
             parent = parent ? parent : this;
@@ -1058,7 +1058,7 @@ namespace irr
         }
 
 
-        // ! Adds a message box.
+        //! Adds a message box.
         IGUIWindow* CGUIEnvironment::addMessageBox(const wchar_t *caption, const wchar_t *text,
             bool modal, s32 flag, IGUIElement *parent, s32 id, video::ITexture *image)
         {
@@ -1098,7 +1098,7 @@ namespace irr
         }
 
 
-        // ! adds a scrollbar. The returned pointer must not be dropped.
+        //! adds a scrollbar. The returned pointer must not be dropped.
         IGUIScrollBar* CGUIEnvironment::addScrollBar(bool horizontal, const core::rect<s32> &rectangle, IGUIElement *parent, s32 id)
         {
             IGUIScrollBar *bar = new CGUIScrollBar(horizontal, this, parent ? parent : this, id, rectangle);
@@ -1107,7 +1107,7 @@ namespace irr
             return bar;
         }
 
-        // ! Adds a table to the environment
+        //! Adds a table to the environment
         IGUITable* CGUIEnvironment::addTable(const core::rect<s32> &rectangle, IGUIElement *parent, s32 id, bool drawBackground)
         {
             CGUITable *b = new CGUITable(this, parent ? parent : this, id, rectangle, true, drawBackground, false);
@@ -1117,7 +1117,7 @@ namespace irr
         }
 
 
-        // ! Adds an image element.
+        //! Adds an image element.
         IGUIImage* CGUIEnvironment::addImage(video::ITexture *image, core::position2d<s32> pos,
             bool useAlphaChannel, IGUIElement *parent, s32 id, const wchar_t *text)
         {
@@ -1143,7 +1143,7 @@ namespace irr
         }
 
 
-        // ! adds an image. The returned pointer must not be dropped.
+        //! adds an image. The returned pointer must not be dropped.
         IGUIImage* CGUIEnvironment::addImage(const core::rect<s32> &rectangle, IGUIElement *parent, s32 id, const wchar_t *text, bool useAlphaChannel)
         {
             IGUIImage *img = new CGUIImage(this, parent ? parent : this,
@@ -1160,7 +1160,7 @@ namespace irr
         }
 
 
-        // ! adds an mesh viewer. The returned pointer must not be dropped.
+        //! adds an mesh viewer. The returned pointer must not be dropped.
         IGUIMeshViewer* CGUIEnvironment::addMeshViewer(const core::rect<s32> &rectangle, IGUIElement *parent, s32 id, const wchar_t *text)
         {
             IGUIMeshViewer *v = new CGUIMeshViewer(this, parent ? parent : this,
@@ -1174,7 +1174,7 @@ namespace irr
         }
 
 
-        // ! adds a checkbox
+        //! adds a checkbox
         IGUICheckBox* CGUIEnvironment::addCheckBox(bool checked, const core::rect<s32> &rectangle, IGUIElement *parent, s32 id, const wchar_t *text)
         {
             IGUICheckBox *b = new CGUICheckBox(checked, this,
@@ -1188,7 +1188,7 @@ namespace irr
         }
 
 
-        // ! adds a list box
+        //! adds a list box
         IGUIListBox* CGUIEnvironment::addListBox(const core::rect<s32> &rectangle,
             IGUIElement *parent, s32 id, bool drawBackground)
         {
@@ -1208,7 +1208,7 @@ namespace irr
             return b;
         }
 
-        // ! adds a tree view
+        //! adds a tree view
         IGUITreeView* CGUIEnvironment::addTreeView(const core::rect<s32> &rectangle,
             IGUIElement *parent, s32 id,
             bool drawBackground,
@@ -1222,7 +1222,7 @@ namespace irr
             return b;
         }
 
-        // ! adds a file open dialog. The returned pointer must not be dropped.
+        //! adds a file open dialog. The returned pointer must not be dropped.
         IGUIFileOpenDialog* CGUIEnvironment::addFileOpenDialog(const wchar_t *title,
             bool modal, IGUIElement *parent, s32 id,
             bool restoreCWD, io::path::char_type *startDir)
@@ -1246,7 +1246,7 @@ namespace irr
         }
 
 
-        // ! adds a color select dialog. The returned pointer must not be dropped.
+        //! adds a color select dialog. The returned pointer must not be dropped.
         IGUIColorSelectDialog* CGUIEnvironment::addColorSelectDialog(const wchar_t *title,
             bool modal, IGUIElement *parent, s32 id)
         {
@@ -1269,7 +1269,7 @@ namespace irr
         }
 
 
-        // ! adds a static text. The returned pointer must not be dropped.
+        //! adds a static text. The returned pointer must not be dropped.
         IGUIStaticText* CGUIEnvironment::addStaticText(const wchar_t *text,
             const core::rect<s32> &rectangle,
             bool border, bool wordWrap,
@@ -1285,7 +1285,7 @@ namespace irr
         }
 
 
-        // ! Adds an edit box. The returned pointer must not be dropped.
+        //! Adds an edit box. The returned pointer must not be dropped.
         IGUIEditBox* CGUIEnvironment::addEditBox(const wchar_t *text,
             const core::rect<s32> &rectangle, bool border,
             IGUIElement *parent, s32 id)
@@ -1298,7 +1298,7 @@ namespace irr
         }
 
 
-        // ! Adds a spin box to the environment
+        //! Adds a spin box to the environment
         IGUISpinBox* CGUIEnvironment::addSpinBox(const wchar_t *text,
             const core::rect<s32> &rectangle,
             bool border, IGUIElement *parent, s32 id)
@@ -1311,7 +1311,7 @@ namespace irr
         }
 
 
-        // ! Adds a tab control to the environment.
+        //! Adds a tab control to the environment.
         IGUITabControl* CGUIEnvironment::addTabControl(const core::rect<s32> &rectangle,
             IGUIElement *parent, bool fillbackground, bool border, s32 id)
         {
@@ -1323,7 +1323,7 @@ namespace irr
         }
 
 
-        // ! Adds tab to the environment.
+        //! Adds tab to the environment.
         IGUITab* CGUIEnvironment::addTab(const core::rect<s32> &rectangle,
             IGUIElement *parent, s32 id)
         {
@@ -1335,7 +1335,7 @@ namespace irr
         }
 
 
-        // ! Adds a context menu to the environment.
+        //! Adds a context menu to the environment.
         IGUIContextMenu* CGUIEnvironment::addContextMenu(const core::rect<s32> &rectangle,
             IGUIElement *parent, s32 id)
         {
@@ -1347,7 +1347,7 @@ namespace irr
         }
 
 
-        // ! Adds a menu to the environment.
+        //! Adds a menu to the environment.
         IGUIContextMenu* CGUIEnvironment::addMenu(IGUIElement *parent, s32 id)
         {
             if (!parent)
@@ -1363,8 +1363,8 @@ namespace irr
         }
 
 
-        // ! Adds a toolbar to the environment. It is like a menu is always placed on top
-        // ! in its parent, and contains buttons.
+        //! Adds a toolbar to the environment. It is like a menu is always placed on top
+        //! in its parent, and contains buttons.
         IGUIToolBar* CGUIEnvironment::addToolBar(IGUIElement *parent, s32 id)
         {
             if (!parent)
@@ -1376,7 +1376,7 @@ namespace irr
         }
 
 
-        // ! Adds an element for fading in or out.
+        //! Adds an element for fading in or out.
         IGUIInOutFader* CGUIEnvironment::addInOutFader(const core::rect<s32> *rectangle, IGUIElement *parent, s32 id)
         {
             core::rect<s32> rect;
@@ -1395,7 +1395,7 @@ namespace irr
         }
 
 
-        // ! Adds a combo box to the environment.
+        //! Adds a combo box to the environment.
         IGUIComboBox* CGUIEnvironment::addComboBox(const core::rect<s32> &rectangle,
             IGUIElement *parent, s32 id)
         {
@@ -1407,7 +1407,7 @@ namespace irr
         }
 
 
-        // ! returns the font
+        //! returns the font
         IGUIFont* CGUIEnvironment::getFont(const io::path &filename)
         {
             // search existing font
@@ -1514,7 +1514,7 @@ namespace irr
         }
 
 
-        // ! add an externally loaded font
+        //! add an externally loaded font
         IGUIFont* CGUIEnvironment::addFont(const io::path &name, IGUIFont *font)
         {
             if (font)
@@ -1533,7 +1533,7 @@ namespace irr
             return font;
         }
 
-        // ! remove loaded font
+        //! remove loaded font
         void CGUIEnvironment::removeFont(IGUIFont *font)
         {
             if (!font)
@@ -1550,7 +1550,7 @@ namespace irr
             }
         }
 
-        // ! returns default font
+        //! returns default font
         IGUIFont* CGUIEnvironment::getBuiltInFont() const
         {
             if (Fonts.empty())
@@ -1610,7 +1610,7 @@ namespace irr
         }
 
 
-        // ! Creates the image list from the given texture.
+        //! Creates the image list from the given texture.
         IGUIImageList* CGUIEnvironment::createImageList(video::ITexture *texture,
             core::dimension2d<s32>    imageSize, bool useAlphaChannel)
         {
@@ -1625,14 +1625,14 @@ namespace irr
             return imageList;
         }
 
-        // ! Returns the root gui element.
+        //! Returns the root gui element.
         IGUIElement* CGUIEnvironment::getRootGUIElement()
         {
             return this;
         }
 
 
-        // ! Returns the next element in the tab group starting at the focused element
+        //! Returns the next element in the tab group starting at the focused element
         IGUIElement* CGUIEnvironment::getNextElement(bool reverse, bool group)
         {
             // start the search at the root of the current tab group
@@ -1680,7 +1680,7 @@ namespace irr
         }
 
 
-        // ! creates an GUI Environment
+        //! creates an GUI Environment
         IGUIEnvironment* createGUIEnvironment(io::IFileSystem *fs,
             video::IVideoDriver *Driver,
             IOSOperator *op)

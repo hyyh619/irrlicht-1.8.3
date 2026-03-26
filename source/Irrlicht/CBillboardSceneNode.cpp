@@ -12,7 +12,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CBillboardSceneNode::CBillboardSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
             const core::vector3df &position, const core::dimension2d<f32> &size,
             video::SColor colorTop, video::SColor colorBottom)
@@ -45,7 +45,7 @@ namespace irr
         }
 
 
-        // ! pre render event
+        //! pre render event
         void CBillboardSceneNode::OnRegisterSceneNode()
         {
             if (IsVisible)
@@ -55,7 +55,7 @@ namespace irr
         }
 
 
-        // ! render
+        //! render
         void CBillboardSceneNode::render()
         {
             video::IVideoDriver *driver = SceneManager->getVideoDriver();
@@ -124,14 +124,14 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CBillboardSceneNode::getBoundingBox() const
         {
             return BBox;
         }
 
 
-        // ! sets the size of the billboard
+        //! sets the size of the billboard
         void CBillboardSceneNode::setSize(const core::dimension2d<f32> &size)
         {
             Size = size;
@@ -176,21 +176,21 @@ namespace irr
         }
 
 
-        // ! returns amount of materials used by this scene node.
+        //! returns amount of materials used by this scene node.
         u32 CBillboardSceneNode::getMaterialCount() const
         {
             return 1;
         }
 
 
-        // ! gets the size of the billboard
+        //! gets the size of the billboard
         const core::dimension2d<f32>&CBillboardSceneNode::getSize() const
         {
             return Size;
         }
 
 
-        // ! Gets the widths of the top and bottom edges of the billboard.
+        //! Gets the widths of the top and bottom edges of the billboard.
         void CBillboardSceneNode::getSize(f32 &height, f32 &bottomEdgeWidth,
             f32 &topEdgeWidth) const
         {
@@ -200,7 +200,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void CBillboardSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             IBillboardSceneNode::serializeAttributes(out, options);
@@ -213,7 +213,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void CBillboardSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             IBillboardSceneNode::deserializeAttributes(in, options);
@@ -237,8 +237,8 @@ namespace irr
         }
 
 
-        // ! Set the color of all vertices of the billboard
-        // ! \param overallColor: the color to set
+        //! Set the color of all vertices of the billboard
+        //! \param overallColor: the color to set
         void CBillboardSceneNode::setColor(const video::SColor &overallColor)
         {
             for (u32 vertex = 0; vertex < 4; ++vertex)
@@ -246,9 +246,9 @@ namespace irr
         }
 
 
-        // ! Set the color of the top and bottom vertices of the billboard
-        // ! \param topColor: the color to set the top vertices
-        // ! \param bottomColor: the color to set the bottom vertices
+        //! Set the color of the top and bottom vertices of the billboard
+        //! \param topColor: the color to set the top vertices
+        //! \param bottomColor: the color to set the bottom vertices
         void CBillboardSceneNode::setColor(const video::SColor &topColor,
             const video::SColor &bottomColor)
         {
@@ -259,9 +259,9 @@ namespace irr
         }
 
 
-        // ! Gets the color of the top and bottom vertices of the billboard
-        // ! \param[out] topColor: stores the color of the top vertices
-        // ! \param[out] bottomColor: stores the color of the bottom vertices
+        //! Gets the color of the top and bottom vertices of the billboard
+        //! \param[out] topColor: stores the color of the top vertices
+        //! \param[out] bottomColor: stores the color of the bottom vertices
         void CBillboardSceneNode::getColor(video::SColor &topColor,
             video::SColor &bottomColor) const
         {
@@ -270,7 +270,7 @@ namespace irr
         }
 
 
-        // ! Creates a clone of this scene node and its children.
+        //! Creates a clone of this scene node and its children.
         ISceneNode* CBillboardSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
         {
             if (!newParent)

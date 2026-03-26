@@ -18,7 +18,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIComboBox::CGUIComboBox(IGUIEnvironment *environment, IGUIElement *parent,
             s32 id, core::rect<s32> rectangle)
             : IGUIComboBox(environment, parent, id, rectangle),
@@ -82,7 +82,7 @@ namespace irr
         }
 
 
-        // ! Set the maximal number of rows for the selection listbox
+        //! Set the maximal number of rows for the selection listbox
         void CGUIComboBox::setMaxSelectionRows(u32 max)
         {
             MaxSelectionRows = max;
@@ -95,21 +95,21 @@ namespace irr
             }
         }
 
-        // ! Get the maximimal number of rows for the selection listbox
+        //! Get the maximimal number of rows for the selection listbox
         u32 CGUIComboBox::getMaxSelectionRows() const
         {
             return MaxSelectionRows;
         }
 
 
-        // ! Returns amount of items in box
+        //! Returns amount of items in box
         u32 CGUIComboBox::getItemCount() const
         {
             return Items.size();
         }
 
 
-        // ! returns string of an item. the idx may be a value from 0 to itemCount-1
+        //! returns string of an item. the idx may be a value from 0 to itemCount-1
         const wchar_t* CGUIComboBox::getItem(u32 idx) const
         {
             if (idx >= Items.size())
@@ -118,7 +118,7 @@ namespace irr
             return Items[idx].Name.c_str();
         }
 
-        // ! returns string of an item. the idx may be a value from 0 to itemCount-1
+        //! returns string of an item. the idx may be a value from 0 to itemCount-1
         u32 CGUIComboBox::getItemData(u32 idx) const
         {
             if (idx >= Items.size())
@@ -127,7 +127,7 @@ namespace irr
             return Items[idx].Data;
         }
 
-        // ! Returns index based on item data
+        //! Returns index based on item data
         s32 CGUIComboBox::getIndexForItemData(u32 data) const
         {
             for (u32 i = 0; i < Items.size (); ++i)
@@ -140,7 +140,7 @@ namespace irr
         }
 
 
-        // ! Removes an item from the combo box.
+        //! Removes an item from the combo box.
         void CGUIComboBox::removeItem(u32 idx)
         {
             if (idx >= Items.size())
@@ -153,14 +153,14 @@ namespace irr
         }
 
 
-        // ! Returns caption of this element.
+        //! Returns caption of this element.
         const wchar_t* CGUIComboBox::getText() const
         {
             return getItem(Selected);
         }
 
 
-        // ! adds an item and returns the index of it
+        //! adds an item and returns the index of it
         u32 CGUIComboBox::addItem(const wchar_t *text, u32 data)
         {
             Items.push_back(SComboData (text, data));
@@ -172,7 +172,7 @@ namespace irr
         }
 
 
-        // ! deletes all items in the combo box
+        //! deletes all items in the combo box
         void CGUIComboBox::clear()
         {
             Items.clear();
@@ -180,14 +180,14 @@ namespace irr
         }
 
 
-        // ! returns id of selected item. returns -1 if no item is selected.
+        //! returns id of selected item. returns -1 if no item is selected.
         s32 CGUIComboBox::getSelected() const
         {
             return Selected;
         }
 
 
-        // ! sets the selected item. Set this to -1 if no item should be selected
+        //! sets the selected item. Set this to -1 if no item should be selected
         void CGUIComboBox::setSelected(s32 idx)
         {
             if (idx < -1 || idx >= (s32)Items.size())
@@ -201,7 +201,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIComboBox::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -397,7 +397,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIComboBox::draw()
         {
             if (!IsVisible)
@@ -491,7 +491,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUIComboBox::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUIComboBox::serializeAttributes(out, options);
@@ -513,7 +513,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUIComboBox::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             IGUIComboBox::deserializeAttributes(in, options);

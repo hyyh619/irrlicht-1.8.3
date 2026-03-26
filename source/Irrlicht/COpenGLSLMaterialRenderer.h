@@ -43,13 +43,13 @@ namespace irr
         class COpenGLDriver;
         class IShaderConstantSetCallBack;
 
-        // ! Class for using GLSL shaders with OpenGL
-        // ! Please note: This renderer implements its own IMaterialRendererServices
+        //! Class for using GLSL shaders with OpenGL
+        //! Please note: This renderer implements its own IMaterialRendererServices
         class COpenGLSLMaterialRenderer : public IMaterialRenderer, public IMaterialRendererServices
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             COpenGLSLMaterialRenderer(
                 COpenGLDriver *driver,
                 s32 &outMaterialTypeNr,
@@ -69,7 +69,7 @@ public:
                 IMaterialRenderer *baseMaterial = 0,
                 s32 userData = 0);
 
-            // ! Destructor
+            //! Destructor
             virtual ~COpenGLSLMaterialRenderer();
 
             virtual void OnSetMaterial(const SMaterial &material, const SMaterial &lastMaterial,
@@ -79,7 +79,7 @@ public:
 
             virtual void OnUnsetMaterial();
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             virtual bool isTransparent() const;
 
             // implementations for the render services
@@ -96,8 +96,8 @@ public:
 
 protected:
 
-            // ! constructor only for use by derived classes who want to
-            // ! create a fall back material for example.
+            //! constructor only for use by derived classes who want to
+            //! create a fall back material for example.
             COpenGLSLMaterialRenderer(COpenGLDriver *driver,
                 IShaderConstantSetCallBack *callback,
                 IMaterialRenderer *baseMaterial,

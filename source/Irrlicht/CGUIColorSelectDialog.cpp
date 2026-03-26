@@ -47,7 +47,7 @@ namespace irr
             };
         }
 
-        // ! constructor
+        //! constructor
         CGUIColorSelectDialog::CGUIColorSelectDialog(const wchar_t *title, IGUIEnvironment *environment, IGUIElement *parent, s32 id)
             : IGUIColorSelectDialog(environment, parent, id,
                 core::rect<s32>((parent->getAbsolutePosition().getWidth() - CSD_WIDTH) / 2,
@@ -150,7 +150,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIColorSelectDialog::~CGUIColorSelectDialog()
         {
             if (CloseButton)
@@ -170,7 +170,7 @@ namespace irr
         }
 
 
-        // ! renders a antialiased, colored ring
+        //! renders a antialiased, colored ring
         void CGUIColorSelectDialog::buildColorRing(const core::dimension2d<u32> &dim, s32 supersample, const video::SColor &borderColor)
         {
             const core::dimension2d<u32> d(dim.Width * supersample, dim.Height * supersample);
@@ -289,7 +289,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIColorSelectDialog::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -410,7 +410,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIColorSelectDialog::draw()
         {
             if (!IsVisible)
@@ -465,7 +465,7 @@ namespace irr
                        Battery[6]->getValue());
         }
 
-        // ! sends the event that the file has been selected.
+        //! sends the event that the file has been selected.
         void CGUIColorSelectDialog::sendSelectedEvent()
         {
             SEvent event;
@@ -478,7 +478,7 @@ namespace irr
         }
 
 
-        // ! sends the event that the file choose process has been canceld
+        //! sends the event that the file choose process has been canceld
         void CGUIColorSelectDialog::sendCancelEvent()
         {
             SEvent event;

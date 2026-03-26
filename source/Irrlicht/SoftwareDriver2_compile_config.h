@@ -25,7 +25,7 @@
     #define SOFTWARE_DRIVER_2_TEXTURE_MAXSIZE 0
 #endif
 
-// ! Set Flags for Windows Mobile
+//! Set Flags for Windows Mobile
 #ifdef BURNINGVIDEO_RENDERER_CE
     #define SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
     #define SOFTWARE_DRIVER_2_SUBTEXEL

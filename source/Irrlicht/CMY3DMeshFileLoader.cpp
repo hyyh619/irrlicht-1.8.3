@@ -817,7 +817,7 @@ namespace irr
                 }
             }
 
-            // ! Creates a software image from a byte array.
+            //! Creates a software image from a byte array.
             video::IImage *light_img = 0;
 
             if (texDataHeader.PixelFormat == MY3D_PIXEL_FORMAT_24)

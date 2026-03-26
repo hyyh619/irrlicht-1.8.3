@@ -8,7 +8,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSceneNodeAnimatorRotation::CSceneNodeAnimatorRotation(u32 time, const core::vector3df &rotation)
             : Rotation(rotation), StartTime(time)
         {
@@ -18,7 +18,7 @@ namespace irr
         }
 
 
-        // ! animates a scene node
+        //! animates a scene node
         void CSceneNodeAnimatorRotation::animateNode(ISceneNode *node, u32 timeMs)
         {
             if (node) // thanks to warui for this fix
@@ -46,14 +46,14 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node animator.
+        //! Writes attributes of the scene node animator.
         void CSceneNodeAnimatorRotation::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             out->addVector3d("Rotation", Rotation);
         }
 
 
-        // ! Reads attributes of the scene node animator.
+        //! Reads attributes of the scene node animator.
         void CSceneNodeAnimatorRotation::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             Rotation = in->getAttributeAsVector3d("Rotation");

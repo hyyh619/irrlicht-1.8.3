@@ -390,7 +390,7 @@ namespace irr
             };
         }
 
-        // ! constructor
+        //! constructor
         CBurningVideoDriver::CBurningVideoDriver(const irr::SIrrlichtCreationParameters &params, io::IFileSystem *io, video::IImagePresenter *presenter)
             : CNullDriver(io, params.WindowSize), BackBuffer(0), Presenter(presenter),
             WindowId(0), SceneSourceRect(0),
@@ -464,7 +464,7 @@ namespace irr
             CSoftware2MaterialRenderer_TRANSPARENT_ADD_COLOR *tmr = new CSoftware2MaterialRenderer_TRANSPARENT_ADD_COLOR(this);
             CSoftware2MaterialRenderer_UNSUPPORTED           *umr = new CSoftware2MaterialRenderer_UNSUPPORTED (this);
 
-            // !TODO: addMaterialRenderer depends on pushing order....
+            //!TODO: addMaterialRenderer depends on pushing order....
             addMaterialRenderer (smr); // EMT_SOLID
             addMaterialRenderer (smr); // EMT_SOLID_2_LAYER,
             addMaterialRenderer (smr); // EMT_LIGHTMAP,
@@ -505,7 +505,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CBurningVideoDriver::~CBurningVideoDriver()
         {
             // delete Backbuffer
@@ -672,7 +672,7 @@ namespace irr
 
 
 
-        // ! queries the features of the driver, returns true if feature is available
+        //! queries the features of the driver, returns true if feature is available
         bool CBurningVideoDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
         {
             if (!FeatureEnabled[feature])
@@ -702,7 +702,7 @@ namespace irr
 
 
 
-        // ! sets transformation
+        //! sets transformation
         void CBurningVideoDriver::setTransform(E_TRANSFORMATION_STATE state, const core::matrix4 &mat)
         {
             Transformation[state] = mat;
@@ -751,7 +751,7 @@ namespace irr
         }
 
 
-        // ! clears the zbuffer
+        //! clears the zbuffer
         bool CBurningVideoDriver::beginScene(bool backBuffer, bool zBuffer,
             SColor color, const SExposedVideoData &videoData,
             core::rect<s32> *sourceRect)
@@ -772,7 +772,7 @@ namespace irr
         }
 
 
-        // ! presents the rendered scene on the screen, returns false if failed
+        //! presents the rendered scene on the screen, returns false if failed
         bool CBurningVideoDriver::endScene()
         {
             CNullDriver::endScene();
@@ -781,7 +781,7 @@ namespace irr
         }
 
 
-        // ! sets a render target
+        //! sets a render target
         bool CBurningVideoDriver::setRenderTarget(video::ITexture *texture, bool clearBackBuffer,
             bool clearZBuffer, SColor color)
         {
@@ -819,7 +819,7 @@ namespace irr
         }
 
 
-        // ! sets a render target
+        //! sets a render target
         void CBurningVideoDriver::setRenderTarget(video::CImage *image)
         {
             if (RenderTargetSurface)
@@ -846,7 +846,7 @@ namespace irr
 
 
 
-        // ! sets a viewport
+        //! sets a viewport
         void CBurningVideoDriver::setViewPort(const core::rect<s32> &area)
         {
             ViewPort = area;
@@ -2008,16 +2008,16 @@ clipandproject:
         }
 
 
-        // ! Sets the dynamic ambient light color. The default color is
-        // ! (0,0,0,0) which means it is dark.
-        // ! \param color: New color of the ambient light.
+        //! Sets the dynamic ambient light color. The default color is
+        //! (0,0,0,0) which means it is dark.
+        //! \param color: New color of the ambient light.
         void CBurningVideoDriver::setAmbientLight(const SColorf &color)
         {
             LightSpace.Global_AmbientLight.setColorf (color);
         }
 
 
-        // ! adds a dynamic light
+        //! adds a dynamic light
         s32 CBurningVideoDriver::addDynamicLight(const SLight &dl)
         {
             (void) CNullDriver::addDynamicLight(dl);
@@ -2068,7 +2068,7 @@ clipandproject:
             return LightSpace.Light.size() - 1;
         }
 
-        // ! Turns a dynamic light on or off
+        //! Turns a dynamic light on or off
         void CBurningVideoDriver::turnLightOn(s32 lightIndex, bool turnOn)
         {
             if (lightIndex > -1 && lightIndex < (s32)LightSpace.Light.size())
@@ -2077,21 +2077,21 @@ clipandproject:
             }
         }
 
-        // ! deletes all dynamic lights there are
+        //! deletes all dynamic lights there are
         void CBurningVideoDriver::deleteAllDynamicLights()
         {
             LightSpace.reset ();
             CNullDriver::deleteAllDynamicLights();
         }
 
-        // ! returns the maximal amount of dynamic lights the device can handle
+        //! returns the maximal amount of dynamic lights the device can handle
         u32 CBurningVideoDriver::getMaximalDynamicLightAmount() const
         {
             return 8;
         }
 
 
-        // ! sets a material
+        //! sets a material
         void CBurningVideoDriver::setMaterial(const SMaterial &material)
         {
             Material.org = material;
@@ -2165,7 +2165,7 @@ clipandproject:
 
 
 #ifdef SOFTWARE_DRIVER_2_LIGHTING
-        // ! Sets the fog mode.
+        //! Sets the fog mode.
         void CBurningVideoDriver::setFog(SColor color, E_FOG_TYPE fogType, f32 start,
             f32 end, f32 density, bool pixelFog, bool rangeFog)
         {
@@ -2296,7 +2296,7 @@ clipandproject:
 #endif
 
 
-        // ! draws an 2d image, using a color (if color is other then Color(255,255,255,255)) and the alpha channel of the texture if wanted.
+        //! draws an 2d image, using a color (if color is other then Color(255,255,255,255)) and the alpha channel of the texture if wanted.
         void CBurningVideoDriver::draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos,
             const core::rect<s32> &sourceRect,
             const core::rect<s32> *clipRect, SColor color,
@@ -2336,7 +2336,7 @@ clipandproject:
         }
 
 
-        // ! Draws a part of the texture into the rectangle.
+        //! Draws a part of the texture into the rectangle.
         void CBurningVideoDriver::draw2DImage(const video::ITexture *texture, const core::rect<s32> &destRect,
             const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect,
             const video::SColor* const colors, bool useAlphaChannelOfTexture)
@@ -2358,7 +2358,7 @@ clipandproject:
             }
         }
 
-        // ! Draws a 2d line.
+        //! Draws a 2d line.
         void CBurningVideoDriver::draw2DLine(const core::position2d<s32> &start,
             const core::position2d<s32> &end,
             SColor color)
@@ -2367,14 +2367,14 @@ clipandproject:
         }
 
 
-        // ! Draws a pixel
+        //! Draws a pixel
         void CBurningVideoDriver::drawPixel(u32 x, u32 y, const SColor &color)
         {
             BackBuffer->setPixel(x, y, color, true);
         }
 
 
-        // ! draw an 2d rectangle
+        //! draw an 2d rectangle
         void CBurningVideoDriver::draw2DRectangle(SColor color, const core::rect<s32> &pos,
             const core::rect<s32> *clip)
         {
@@ -2399,8 +2399,8 @@ clipandproject:
         }
 
 
-        // ! Only used by the internal engine. Used to notify the driver that
-        // ! the window was resized.
+        //! Only used by the internal engine. Used to notify the driver that
+        //! the window was resized.
         void CBurningVideoDriver::OnResize(const core::dimension2d<u32> &size)
         {
             // make sure width and height are multiples of 2
@@ -2438,14 +2438,14 @@ clipandproject:
         }
 
 
-        // ! returns the current render target size
+        //! returns the current render target size
         const core::dimension2d<u32>&CBurningVideoDriver::getCurrentRenderTargetSize() const
         {
             return RenderTargetSize;
         }
 
 
-        // !Draws an 2d rectangle with a gradient.
+        //!Draws an 2d rectangle with a gradient.
         void CBurningVideoDriver::draw2DRectangle(const core::rect<s32> &position,
             SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown,
             const core::rect<s32> *clip)
@@ -2558,7 +2558,7 @@ clipandproject:
         }
 
 
-        // ! Draws a 3d line.
+        //! Draws a 3d line.
         void CBurningVideoDriver::draw3DLine(const core::vector3df &start,
             const core::vector3df &end, SColor color)
         {
@@ -2606,8 +2606,8 @@ clipandproject:
         }
 
 
-        // ! \return Returns the name of the video driver. Example: In case of the DirectX8
-        // ! driver, it would return "Direct3D8.1".
+        //! \return Returns the name of the video driver. Example: In case of the DirectX8
+        //! driver, it would return "Direct3D8.1".
         const wchar_t* CBurningVideoDriver::getName() const
         {
 #ifdef BURNINGVIDEO_RENDERER_BEAUTIFUL
@@ -2621,35 +2621,35 @@ clipandproject:
 #endif
         }
 
-        // ! Returns the graphics card vendor name.
+        //! Returns the graphics card vendor name.
         core::stringc CBurningVideoDriver::getVendorInfo()
         {
             return "Burning's Video: Ing. Thomas Alten (c) 2006-2012";
         }
 
 
-        // ! Returns type of video driver
+        //! Returns type of video driver
         E_DRIVER_TYPE CBurningVideoDriver::getDriverType() const
         {
             return EDT_BURNINGSVIDEO;
         }
 
 
-        // ! returns color format
+        //! returns color format
         ECOLOR_FORMAT CBurningVideoDriver::getColorFormat() const
         {
             return BURNINGSHADER_COLOR_FORMAT;
         }
 
 
-        // ! Returns the transformation set by setTransform
+        //! Returns the transformation set by setTransform
         const core::matrix4&CBurningVideoDriver::getTransform(E_TRANSFORMATION_STATE state) const
         {
             return Transformation[state];
         }
 
 
-        // ! Creates a render target texture.
+        //! Creates a render target texture.
         ITexture* CBurningVideoDriver::addRenderTargetTexture(const core::dimension2d<u32> &size,
             const io::path &name, const ECOLOR_FORMAT format)
         {
@@ -2663,7 +2663,7 @@ clipandproject:
         }
 
 
-        // ! Clears the DepthBuffer.
+        //! Clears the DepthBuffer.
         void CBurningVideoDriver::clearZBuffer()
         {
             if (DepthBuffer)
@@ -2671,7 +2671,7 @@ clipandproject:
         }
 
 
-        // ! Returns an image created from the last rendered frame.
+        //! Returns an image created from the last rendered frame.
         IImage* CBurningVideoDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RENDER_TARGET target)
         {
             if (target != video::ERT_FRAME_BUFFER)
@@ -2688,8 +2688,8 @@ clipandproject:
         }
 
 
-        // ! returns a device dependent texture from a software surface (IImage)
-        // ! THIS METHOD HAS TO BE OVERRIDDEN BY DERIVED DRIVERS WITH OWN TEXTURES
+        //! returns a device dependent texture from a software surface (IImage)
+        //! THIS METHOD HAS TO BE OVERRIDDEN BY DERIVED DRIVERS WITH OWN TEXTURES
         ITexture* CBurningVideoDriver::createDeviceDependentTexture(IImage *surface, const io::path &name, void *mipmapData)
         {
             return new CSoftwareTexture2(
@@ -2699,18 +2699,18 @@ clipandproject:
         }
 
 
-        // ! Returns the maximum amount of primitives (mostly vertices) which
-        // ! the device is able to render with one drawIndexedTriangleList
-        // ! call.
+        //! Returns the maximum amount of primitives (mostly vertices) which
+        //! the device is able to render with one drawIndexedTriangleList
+        //! call.
         u32 CBurningVideoDriver::getMaximalPrimitiveCount() const
         {
             return 0xFFFFFFFF;
         }
 
 
-        // ! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
-        // ! this: First, draw all geometry. Then use this method, to draw the shadow
-        // ! volume. Next use IVideoDriver::drawStencilShadow() to visualize the shadow.
+        //! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
+        //! this: First, draw all geometry. Then use this method, to draw the shadow
+        //! volume. Next use IVideoDriver::drawStencilShadow() to visualize the shadow.
         void CBurningVideoDriver::drawStencilShadowVolume(const core::array<core::vector3df> &triangles, bool zfail, u32 debugDataVisible)
         {
             const u32      count   = triangles.size();
@@ -2768,9 +2768,9 @@ clipandproject:
             }
         }
 
-        // ! Fills the stencil shadow with color. After the shadow volume has been drawn
-        // ! into the stencil buffer using IVideoDriver::drawStencilShadowVolume(), use this
-        // ! to draw the color of the shadow.
+        //! Fills the stencil shadow with color. After the shadow volume has been drawn
+        //! into the stencil buffer using IVideoDriver::drawStencilShadowVolume(), use this
+        //! to draw the color of the shadow.
         void CBurningVideoDriver::drawStencilShadow(bool clearStencilBuffer, video::SColor leftUpEdge,
             video::SColor rightUpEdge, video::SColor leftDownEdge, video::SColor rightDownEdge)
         {
@@ -2814,7 +2814,7 @@ namespace irr
 {
     namespace video
     {
-        // ! creates a video driver
+        //! creates a video driver
         IVideoDriver* createBurningVideoDriver(const irr::SIrrlichtCreationParameters &params, io::IFileSystem *io, video::IImagePresenter *presenter)
         {
     #ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_

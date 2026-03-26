@@ -25,7 +25,7 @@ namespace irr
         }
 
 
-        // ! returns how much was read
+        //! returns how much was read
         s32 CMemoryFile::read(void *buffer, u32 sizeToRead)
         {
             s32 amount = static_cast<s32>(sizeToRead);
@@ -44,7 +44,7 @@ namespace irr
             return amount;
         }
 
-        // ! returns how much was written
+        //! returns how much was written
         s32 CMemoryFile::write(const void *buffer, u32 sizeToWrite)
         {
             s32 amount = static_cast<s32>(sizeToWrite);
@@ -65,9 +65,9 @@ namespace irr
 
 
 
-        // ! changes position in file, returns true if successful
-        // ! if relativeMovement==true, the pos is changed relative to current pos,
-        // ! otherwise from begin of file
+        //! changes position in file, returns true if successful
+        //! if relativeMovement==true, the pos is changed relative to current pos,
+        //! otherwise from begin of file
         bool CMemoryFile::seek(long finalPos, bool relativeMovement)
         {
             if (relativeMovement)
@@ -89,21 +89,21 @@ namespace irr
         }
 
 
-        // ! returns size of file
+        //! returns size of file
         long CMemoryFile::getSize() const
         {
             return Len;
         }
 
 
-        // ! returns where in the file we are.
+        //! returns where in the file we are.
         long CMemoryFile::getPos() const
         {
             return Pos;
         }
 
 
-        // ! returns name of file
+        //! returns name of file
         const io::path&CMemoryFile::getFileName() const
         {
             return Filename;

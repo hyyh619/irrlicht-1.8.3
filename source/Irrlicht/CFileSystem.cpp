@@ -46,7 +46,7 @@ namespace irr
 {
     namespace io
     {
-        // ! constructor
+        //! constructor
         CFileSystem::CFileSystem()
         {
     #ifdef _DEBUG
@@ -54,7 +54,7 @@ namespace irr
     #endif
 
             setFileListSystem(FILESYSTEM_NATIVE);
-            // ! reset current working directory
+            //! reset current working directory
             getWorkingDirectory();
 
 #ifdef __IRR_COMPILE_WITH_PAK_ARCHIVE_LOADER_
@@ -83,7 +83,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CFileSystem::~CFileSystem()
         {
             u32 i;
@@ -100,7 +100,7 @@ namespace irr
         }
 
 
-        // ! opens a file for read access
+        //! opens a file for read access
         IReadFile* CFileSystem::createAndOpenFile(const io::path &filename)
         {
             IReadFile *file = 0;
@@ -119,7 +119,7 @@ namespace irr
         }
 
 
-        // ! Creates an IReadFile interface for treating memory like a file.
+        //! Creates an IReadFile interface for treating memory like a file.
         IReadFile* CFileSystem::createMemoryReadFile(void *memory, s32 len,
             const io::path &fileName, bool deleteMemoryWhenDropped)
         {
@@ -130,7 +130,7 @@ namespace irr
         }
 
 
-        // ! Creates an IReadFile interface for reading files inside files
+        //! Creates an IReadFile interface for reading files inside files
         IReadFile* CFileSystem::createLimitReadFile(const io::path &fileName,
             IReadFile *alreadyOpenedFile, long pos, long areaSize)
         {
@@ -141,7 +141,7 @@ namespace irr
         }
 
 
-        // ! Creates an IReadFile interface for treating memory like a file.
+        //! Creates an IReadFile interface for treating memory like a file.
         IWriteFile* CFileSystem::createMemoryWriteFile(void *memory, s32 len,
             const io::path &fileName, bool deleteMemoryWhenDropped)
         {
@@ -152,14 +152,14 @@ namespace irr
         }
 
 
-        // ! Opens a file for write access.
+        //! Opens a file for write access.
         IWriteFile* CFileSystem::createAndWriteFile(const io::path &filename, bool append)
         {
             return createWriteFile(filename, append);
         }
 
 
-        // ! Adds an external archive loader to the engine.
+        //! Adds an external archive loader to the engine.
         void CFileSystem::addArchiveLoader(IArchiveLoader *loader)
         {
             if (!loader)
@@ -169,13 +169,13 @@ namespace irr
             ArchiveLoader.push_back(loader);
         }
 
-        // ! Returns the total number of archive loaders added.
+        //! Returns the total number of archive loaders added.
         u32 CFileSystem::getArchiveLoaderCount() const
         {
             return ArchiveLoader.size();
         }
 
-        // ! Gets the archive loader by index.
+        //! Gets the archive loader by index.
         IArchiveLoader* CFileSystem::getArchiveLoader(u32 index) const
         {
             if (index < ArchiveLoader.size())
@@ -184,7 +184,7 @@ namespace irr
                 return 0;
         }
 
-        // ! move the hirarchy of the filesystem. moves sourceIndex relative up or down
+        //! move the hirarchy of the filesystem. moves sourceIndex relative up or down
         bool CFileSystem::moveFileArchive(u32 sourceIndex, s32 relative)
         {
             bool         r         = false;
@@ -208,7 +208,7 @@ namespace irr
         }
 
 
-        // ! Adds an archive to the file system.
+        //! Adds an archive to the file system.
         bool CFileSystem::addFileArchive(const io::path &filename, bool ignoreCase,
             bool ignorePaths, E_FILE_ARCHIVE_TYPE archiveType,
             const core::stringc &password,
@@ -430,7 +430,7 @@ namespace irr
         }
 
 
-        // ! Adds an archive to the file system.
+        //! Adds an archive to the file system.
         bool CFileSystem::addFileArchive(IFileArchive *archive)
         {
             for (u32 i = 0; i < FileArchives.size(); ++i)
@@ -447,7 +447,7 @@ namespace irr
         }
 
 
-        // ! removes an archive from the file system.
+        //! removes an archive from the file system.
         bool CFileSystem::removeFileArchive(u32 index)
         {
             bool ret = false;
@@ -464,7 +464,7 @@ namespace irr
         }
 
 
-        // ! removes an archive from the file system.
+        //! removes an archive from the file system.
         bool CFileSystem::removeFileArchive(const io::path &filename)
         {
             const path absPath = getAbsolutePath(filename);
@@ -480,7 +480,7 @@ namespace irr
         }
 
 
-        // ! Removes an archive from the file system.
+        //! Removes an archive from the file system.
         bool CFileSystem::removeFileArchive(const IFileArchive *archive)
         {
             for (u32 i = 0; i < FileArchives.size(); ++i)
@@ -497,7 +497,7 @@ namespace irr
         }
 
 
-        // ! gets an archive
+        //! gets an archive
         u32 CFileSystem::getFileArchiveCount() const
         {
             return FileArchives.size();
@@ -510,7 +510,7 @@ namespace irr
         }
 
 
-        // ! Returns the string of the current working directory
+        //! Returns the string of the current working directory
         const io::path&CFileSystem::getWorkingDirectory()
         {
             EFileSystemType type = FileSystemType;
@@ -584,7 +584,7 @@ namespace irr
         }
 
 
-        // ! Changes the current Working Directory to the given string.
+        //! Changes the current Working Directory to the given string.
         bool CFileSystem::changeWorkingDirectoryTo(const io::path &newDirectory)
         {
             bool success = false;
@@ -666,9 +666,9 @@ namespace irr
         }
 
 
-        // ! returns the directory part of a filename, i.e. all until the first
-        // ! slash or backslash, excluding it. If no directory path is prefixed, a '.'
-        // ! is returned.
+        //! returns the directory part of a filename, i.e. all until the first
+        //! slash or backslash, excluding it. If no directory path is prefixed, a '.'
+        //! is returned.
         io::path CFileSystem::getFileDir(const io::path &filename) const
         {
             // find last forward or backslash
@@ -684,8 +684,8 @@ namespace irr
         }
 
 
-        // ! returns the base part of a filename, i.e. all except for the directory
-        // ! part. If no directory path is prefixed, the full name is returned.
+        //! returns the base part of a filename, i.e. all except for the directory
+        //! part. If no directory path is prefixed, the full name is returned.
         io::path CFileSystem::getFileBasename(const io::path &filename, bool keepExtension) const
         {
             // find last forward or backslash
@@ -716,7 +716,7 @@ namespace irr
         }
 
 
-        // ! flatten a path and file name for example: "/you/me/../." becomes "/you"
+        //! flatten a path and file name for example: "/you/me/../." becomes "/you"
         io::path&CFileSystem::flattenFilename(io::path &directory, const io::path &root) const
         {
             directory.replace('\\', '/');
@@ -765,7 +765,7 @@ namespace irr
         }
 
 
-        // ! Get the relative filename, relative to the given directory
+        //! Get the relative filename, relative to the given directory
         path CFileSystem::getRelativeFilename(const path &filename, const path &directory) const
         {
             if (filename.empty() || directory.empty())
@@ -839,7 +839,7 @@ namespace irr
         }
 
 
-        // ! Sets the current file systen type
+        //! Sets the current file systen type
         EFileSystemType CFileSystem::setFileListSystem(EFileSystemType listType)
         {
             EFileSystemType current = FileSystemType;
@@ -849,7 +849,7 @@ namespace irr
         }
 
 
-        // ! Creates a list of files and directories in the current working directory
+        //! Creates a list of files and directories in the current working directory
         IFileList* CFileSystem::createFileList()
         {
             CFileList *r   = 0;
@@ -859,11 +859,11 @@ namespace irr
             if (Path.lastChar() != '/')
                 Path.append('/');
 
-            // ! Construct from native filesystem
+            //! Construct from native filesystem
             if (FileSystemType == FILESYSTEM_NATIVE)
             {
                 // --------------------------------------------
-                // ! Windows version
+                //! Windows version
         #ifdef _IRR_WINDOWS_API_
         #if !defined (_WIN32_WCE)
                 r = new CFileList(Path, true, false);
@@ -895,13 +895,13 @@ namespace irr
         #endif
 
                 // --------------------------------------------
-                // ! Linux version
+                //! Linux version
         #if (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_))
                 r = new CFileList(Path, false, false);
 
                 r->addItem(Path + _IRR_TEXT(".."), 0, 0, true, 0);
 
-                // ! We use the POSIX compliant methods instead of scandir
+                //! We use the POSIX compliant methods instead of scandir
                 DIR *dirHandle = opendir(Path.c_str());
                 if (dirHandle)
                 {
@@ -942,20 +942,20 @@ namespace irr
             }
             else
             {
-                // ! create file list for the virtual filesystem
+                //! create file list for the virtual filesystem
                 r = new CFileList(Path, false, false);
 
-                // ! add relative navigation
+                //! add relative navigation
                 SFileListEntry e2;
                 SFileListEntry e3;
 
-                // ! PWD
+                //! PWD
                 r->addItem(Path + _IRR_TEXT("."), 0, 0, true, 0);
 
-                // ! parent
+                //! parent
                 r->addItem(Path + _IRR_TEXT(".."), 0, 0, true, 0);
 
-                // ! merge archives
+                //! merge archives
                 for (u32 i = 0; i < FileArchives.size(); ++i)
                 {
                     const IFileList *merge = FileArchives[i]->getFileList();
@@ -976,14 +976,14 @@ namespace irr
             return r;
         }
 
-        // ! Creates an empty filelist
+        //! Creates an empty filelist
         IFileList* CFileSystem::createEmptyFileList(const io::path &path, bool ignoreCase, bool ignorePaths)
         {
             return new CFileList(path, ignoreCase, ignorePaths);
         }
 
 
-        // ! determines if a file exists and would be able to be opened.
+        //! determines if a file exists and would be able to be opened.
         bool CFileSystem::existFile(const io::path &filename) const
         {
             for (u32 i = 0; i < FileArchives.size(); ++i)
@@ -1025,7 +1025,7 @@ namespace irr
         }
 
 
-        // ! Creates a XML Reader from a file.
+        //! Creates a XML Reader from a file.
         IXMLReader* CFileSystem::createXMLReader(const io::path &filename)
         {
             IReadFile *file = createAndOpenFile(filename);
@@ -1039,7 +1039,7 @@ namespace irr
         }
 
 
-        // ! Creates a XML Reader from a file.
+        //! Creates a XML Reader from a file.
         IXMLReader* CFileSystem::createXMLReader(IReadFile *file)
         {
             if (!file)
@@ -1049,7 +1049,7 @@ namespace irr
         }
 
 
-        // ! Creates a XML Reader from a file.
+        //! Creates a XML Reader from a file.
         IXMLReaderUTF8* CFileSystem::createXMLReaderUTF8(const io::path &filename)
         {
             IReadFile *file = createAndOpenFile(filename);
@@ -1063,7 +1063,7 @@ namespace irr
         }
 
 
-        // ! Creates a XML Reader from a file.
+        //! Creates a XML Reader from a file.
         IXMLReaderUTF8* CFileSystem::createXMLReaderUTF8(IReadFile *file)
         {
             if (!file)
@@ -1073,7 +1073,7 @@ namespace irr
         }
 
 
-        // ! Creates a XML Writer from a file.
+        //! Creates a XML Writer from a file.
         IXMLWriter* CFileSystem::createXMLWriter(const io::path &filename)
         {
             IWriteFile *file   = createAndWriteFile(filename);
@@ -1089,22 +1089,22 @@ namespace irr
         }
 
 
-        // ! Creates a XML Writer from a file.
+        //! Creates a XML Writer from a file.
         IXMLWriter* CFileSystem::createXMLWriter(IWriteFile *file)
         {
             return new CXMLWriter(file);
         }
 
 
-        // ! creates a filesystem which is able to open files from the ordinary file system,
-        // ! and out of zipfiles, which are able to be added to the filesystem.
+        //! creates a filesystem which is able to open files from the ordinary file system,
+        //! and out of zipfiles, which are able to be added to the filesystem.
         IFileSystem* createFileSystem()
         {
             return new CFileSystem();
         }
 
 
-        // ! Creates a new empty collection of attributes, usable for serialization and more.
+        //! Creates a new empty collection of attributes, usable for serialization and more.
         IAttributes* CFileSystem::createEmptyAttributes(video::IVideoDriver *driver)
         {
             return new CAttributes(driver);

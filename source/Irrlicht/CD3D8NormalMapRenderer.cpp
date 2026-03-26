@@ -186,7 +186,7 @@ namespace irr
             return CD3D8ShaderMaterialRenderer::OnRender(service, vtxtype);
         }
 
-        // ! Returns the render capability of the material.
+        //! Returns the render capability of the material.
         s32 CD3D8NormalMapRenderer::getRenderCapability() const
         {
             if (Driver->queryFeature(video::EVDF_PIXEL_SHADER_1_1) &&
@@ -197,8 +197,8 @@ namespace irr
         }
 
 
-        // ! Called by the engine when the vertex and/or pixel shader constants for an
-        // ! material renderer should be set.
+        //! Called by the engine when the vertex and/or pixel shader constants for an
+        //! material renderer should be set.
         void CD3D8NormalMapRenderer::OnSetConstants(IMaterialRendererServices *services, s32 userData)
         {
             video::IVideoDriver *driver = services->getVideoDriver();

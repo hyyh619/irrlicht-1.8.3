@@ -19,7 +19,7 @@ namespace irr
         }
 
 
-        // ! adds a mesh to the list
+        //! adds a mesh to the list
         void CMeshCache::addMesh(const io::path &filename, IAnimatedMesh *mesh)
         {
             mesh->grab();
@@ -31,7 +31,7 @@ namespace irr
         }
 
 
-        // ! Removes a mesh from the cache.
+        //! Removes a mesh from the cache.
         void CMeshCache::removeMesh(const IMesh* const mesh)
         {
             if (!mesh)
@@ -49,14 +49,14 @@ namespace irr
         }
 
 
-        // ! Returns amount of loaded meshes
+        //! Returns amount of loaded meshes
         u32 CMeshCache::getMeshCount() const
         {
             return Meshes.size();
         }
 
 
-        // ! Returns current number of the mesh
+        //! Returns current number of the mesh
         s32 CMeshCache::getMeshIndex(const IMesh* const mesh) const
         {
             for (u32 i = 0; i < Meshes.size(); ++i)
@@ -69,7 +69,7 @@ namespace irr
         }
 
 
-        // ! Returns a mesh based on its index number
+        //! Returns a mesh based on its index number
         IAnimatedMesh* CMeshCache::getMeshByIndex(u32 number)
         {
             if (number >= Meshes.size())
@@ -79,7 +79,7 @@ namespace irr
         }
 
 
-        // ! Returns a mesh based on its name.
+        //! Returns a mesh based on its name.
         IAnimatedMesh* CMeshCache::getMeshByName(const io::path &name)
         {
             MeshEntry e (name);
@@ -89,7 +89,7 @@ namespace irr
         }
 
 
-        // ! Get the name of a loaded mesh, based on its index.
+        //! Get the name of a loaded mesh, based on its index.
         const io::SNamedPath&CMeshCache::getMeshName(u32 index) const
         {
             if (index >= Meshes.size())
@@ -99,7 +99,7 @@ namespace irr
         }
 
 
-        // ! Get the name of a loaded mesh, if there is any.
+        //! Get the name of a loaded mesh, if there is any.
         const io::SNamedPath&CMeshCache::getMeshName(const IMesh* const mesh) const
         {
             if (!mesh)
@@ -114,7 +114,7 @@ namespace irr
             return emptyNamedPath;
         }
 
-        // ! Renames a loaded mesh.
+        //! Renames a loaded mesh.
         bool CMeshCache::renameMesh(u32 index, const io::path &name)
         {
             if (index >= Meshes.size())
@@ -126,7 +126,7 @@ namespace irr
         }
 
 
-        // ! Renames a loaded mesh.
+        //! Renames a loaded mesh.
         bool CMeshCache::renameMesh(const IMesh* const mesh, const io::path &name)
         {
             for (u32 i = 0; i < Meshes.size(); ++i)
@@ -143,14 +143,14 @@ namespace irr
         }
 
 
-        // ! returns if a mesh already was loaded
+        //! returns if a mesh already was loaded
         bool CMeshCache::isMeshLoaded(const io::path &name)
         {
             return getMeshByName(name) != 0;
         }
 
 
-        // ! Clears the whole mesh cache, removing all meshes.
+        //! Clears the whole mesh cache, removing all meshes.
         void CMeshCache::clear()
         {
             for (u32 i = 0; i < Meshes.size(); ++i)
@@ -159,7 +159,7 @@ namespace irr
             Meshes.clear();
         }
 
-        // ! Clears all meshes that are held in the mesh cache but not used anywhere else.
+        //! Clears all meshes that are held in the mesh cache but not used anywhere else.
         void CMeshCache::clearUnusedMeshes()
         {
             for (u32 i = 0; i < Meshes.size(); ++i)

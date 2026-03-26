@@ -125,13 +125,13 @@ namespace irr
 public:
             IBurningShader(CBurningVideoDriver *driver);
 
-            // ! destructor
+            //! destructor
             virtual ~IBurningShader();
 
-            // ! sets a render target
+            //! sets a render target
             virtual void setRenderTarget(video::IImage *surface, const core::rect<s32> &viewPort);
 
-            // ! sets the Texture
+            //! sets the Texture
             virtual void setTextureParam(u32 stage, video::CSoftwareTexture2 *texture, s32 lodLevel);
             virtual void drawTriangle(const s4DVertex *a, const s4DVertex *b, const s4DVertex *c) = 0;
             virtual void drawLine(const s4DVertex *a, const s4DVertex *b) {};

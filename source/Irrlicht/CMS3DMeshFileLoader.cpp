@@ -103,7 +103,7 @@ namespace irr
             u16              MaterialIdx;
         };
 
-        // ! Constructor
+        //! Constructor
         CMS3DMeshFileLoader::CMS3DMeshFileLoader(video::IVideoDriver *driver)
             : Driver(driver), AnimatedMesh(0)
         {
@@ -113,18 +113,18 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool CMS3DMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "ms3d");
         }
 
 
-        // ! creates/loads an animated mesh from the file.
-        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-        // ! See IReferenceCounted::drop() for more information.
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* CMS3DMeshFileLoader::createMesh(io::IReadFile *file)
         {
             if (!file)
@@ -146,7 +146,7 @@ namespace irr
         }
 
 
-        // ! loads a milkshape file
+        //! loads a milkshape file
         bool CMS3DMeshFileLoader::load(io::IReadFile *file)
         {
             if (!file)

@@ -9,7 +9,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CParticleAttractionAffector::CParticleAttractionAffector(
             const core::vector3df &point, f32 speed, bool attract,
             bool affectX, bool affectY, bool affectZ)
@@ -22,7 +22,7 @@ namespace irr
         }
 
 
-        // ! Affects an array of particles.
+        //! Affects an array of particles.
         void CParticleAttractionAffector::affect(u32 now, SParticle *particlearray, u32 count)
         {
             if (LastTime == 0)
@@ -56,7 +56,7 @@ namespace irr
             }
         }
 
-        // ! Writes attributes of the object.
+        //! Writes attributes of the object.
         void CParticleAttractionAffector::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             out->addVector3d("Point", Point);
@@ -67,7 +67,7 @@ namespace irr
             out->addBool("Attract", Attract);
         }
 
-        // ! Reads attributes of the object.
+        //! Reads attributes of the object.
         void CParticleAttractionAffector::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             Point   = in->getAttributeAsVector3d("Point");

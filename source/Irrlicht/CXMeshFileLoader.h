@@ -21,22 +21,22 @@ namespace irr
     {
         class IMeshManipulator;
 
-        // ! Meshloader capable of loading x meshes.
+        //! Meshloader capable of loading x meshes.
         class CXMeshFileLoader : public IMeshLoader
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             CXMeshFileLoader(scene::ISceneManager *smgr, io::IFileSystem *fs);
 
-            // ! returns true if the file maybe is able to be loaded by this class
-            // ! based on the file extension (e.g. ".cob")
+            //! returns true if the file maybe is able to be loaded by this class
+            //! based on the file extension (e.g. ".cob")
             virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-            // ! creates/loads an animated mesh from the file.
-            // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-            // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-            // ! See IReferenceCounted::drop() for more information.
+            //! creates/loads an animated mesh from the file.
+            //! \return Pointer to the created mesh. Returns 0 if loading failed.
+            //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+            //! See IReferenceCounted::drop() for more information.
             virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
             struct SXTemplateMaterial
@@ -126,31 +126,31 @@ private:
 
             bool parseUnknownDataObject();
 
-            // ! places pointer to next begin of a token, and ignores comments
+            //! places pointer to next begin of a token, and ignores comments
             void findNextNoneWhiteSpace();
 
-            // ! places pointer to next begin of a token, which must be a number,
+            //! places pointer to next begin of a token, which must be a number,
             // and ignores comments
             void findNextNoneWhiteSpaceNumber();
 
-            // ! returns next parseable token. Returns empty string if no token there
+            //! returns next parseable token. Returns empty string if no token there
             core::stringc getNextToken();
 
-            // ! reads header of dataobject including the opening brace.
-            // ! returns false if error happened, and writes name of object
-            // ! if there is one
+            //! reads header of dataobject including the opening brace.
+            //! returns false if error happened, and writes name of object
+            //! if there is one
             bool readHeadOfDataObject(core::stringc *outname = 0);
 
-            // ! checks for closing curly brace, returns false if not there
+            //! checks for closing curly brace, returns false if not there
             bool checkForClosingBrace();
 
-            // ! checks for one following semicolons, returns false if not there
+            //! checks for one following semicolons, returns false if not there
             bool checkForOneFollowingSemicolons();
 
-            // ! checks for two following semicolons, returns false if they are not there
+            //! checks for two following semicolons, returns false if they are not there
             bool checkForTwoFollowingSemicolons();
 
-            // ! reads a x file style string
+            //! reads a x file style string
             bool getNextTokenAsString(core::stringc &out);
 
             void readUntilEndOfLine();

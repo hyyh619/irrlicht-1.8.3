@@ -24,23 +24,23 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CImageLoaderPPM();
 
-            // ! returns true if the file maybe is able to be loaded by this class
-            // ! based on the file extension (e.g. ".tga")
+            //! returns true if the file maybe is able to be loaded by this class
+            //! based on the file extension (e.g. ".tga")
             virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-            // ! returns true if the file maybe is able to be loaded by this class
+            //! returns true if the file maybe is able to be loaded by this class
             virtual bool isALoadableFileFormat(io::IReadFile *file) const;
 
-            // ! creates a surface from the file
+            //! creates a surface from the file
             virtual IImage* loadImage(io::IReadFile *file) const;
 
 private:
-            // ! read the next token from file
+            //! read the next token from file
             void getNextToken(io::IReadFile *file, core::stringc &token) const;
-            // ! skip to next token (skip whitespace)
+            //! skip to next token (skip whitespace)
             void skipToNextToken(io::IReadFile *file) const;
         };
     } // end namespace video

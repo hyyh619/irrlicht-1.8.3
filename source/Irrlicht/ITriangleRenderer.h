@@ -35,16 +35,16 @@ namespace irr
         {
 public:
 
-            // ! sets a render target
+            //! sets a render target
             virtual void setRenderTarget(video::IImage *surface, const core::rect<s32> &viewPort) = 0;
 
-            // ! en or disables the backface culling
+            //! en or disables the backface culling
             virtual void setBackfaceCulling(bool enabled = true) = 0;
 
-            // ! sets the Texture
+            //! sets the Texture
             virtual void setTexture(video::IImage *texture) = 0;
 
-            // ! draws an indexed triangle list
+            //! draws an indexed triangle list
             virtual void drawIndexedTriangleList(S2DVertex *vertices, s32 vertexCount, const u16 *indexList, s32 triangleCount) = 0;
         };
 

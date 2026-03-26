@@ -23,7 +23,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! Constructor
+        //! Constructor
         CB3DMeshFileLoader::CB3DMeshFileLoader(scene::ISceneManager *smgr)
             : SceneManager(smgr), AnimatedMesh(0), B3DFile(0), NormalsInFile(false),
             HasVertexColors(false), ShowWarning(true)
@@ -34,18 +34,18 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool CB3DMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "b3d");
         }
 
 
-        // ! creates/loads an animated mesh from the file.
-        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-        // ! See IReferenceCounted::drop() for more information.
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* CB3DMeshFileLoader::createMesh(io::IReadFile *f)
         {
             if (!f)

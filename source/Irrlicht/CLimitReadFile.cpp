@@ -34,7 +34,7 @@ namespace irr
         }
 
 
-        // ! returns how much was read
+        //! returns how much was read
         s32 CLimitReadFile::read(void *buffer, u32 sizeToRead)
         {
 #if 1
@@ -64,7 +64,7 @@ namespace irr
         }
 
 
-        // ! changes position in file, returns true if successful
+        //! changes position in file, returns true if successful
         bool CLimitReadFile::seek(long finalPos, bool relativeMovement)
         {
 #if 1
@@ -90,14 +90,14 @@ namespace irr
         }
 
 
-        // ! returns size of file
+        //! returns size of file
         long CLimitReadFile::getSize() const
         {
             return AreaEnd - AreaStart;
         }
 
 
-        // ! returns where in the file we are.
+        //! returns where in the file we are.
         long CLimitReadFile::getPos() const
         {
 #if 1
@@ -108,7 +108,7 @@ namespace irr
         }
 
 
-        // ! returns name of file
+        //! returns name of file
         const io::path&CLimitReadFile::getFileName() const
         {
             return Filename;

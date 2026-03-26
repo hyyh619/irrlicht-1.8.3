@@ -19,28 +19,28 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CGUIMeshViewer(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle);
 
-            // ! destructor
+            //! destructor
             virtual ~CGUIMeshViewer();
 
-            // ! sets the mesh to be shown
+            //! sets the mesh to be shown
             virtual void setMesh(scene::IAnimatedMesh *mesh);
 
-            // ! Gets the displayed mesh
+            //! Gets the displayed mesh
             virtual scene::IAnimatedMesh* getMesh() const;
 
-            // ! sets the material
+            //! sets the material
             virtual void setMaterial(const video::SMaterial &material);
 
-            // ! gets the material
+            //! gets the material
             virtual const video::SMaterial&getMaterial() const;
 
-            // ! called if an event happened.
+            //! called if an event happened.
             virtual bool OnEvent(const SEvent &event);
 
-            // ! draws the element and its children
+            //! draws the element and its children
             virtual void draw();
 
 private:

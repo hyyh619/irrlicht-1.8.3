@@ -26,63 +26,63 @@ namespace irr
     {
 public:
 
-        // ! constructor
+        //! constructor
         CIrrDeviceFB(const SIrrlichtCreationParameters &params);
 
-        // ! destructor
+        //! destructor
         virtual ~CIrrDeviceFB();
 
-        // ! runs the device. Returns false if device wants to be deleted
+        //! runs the device. Returns false if device wants to be deleted
         virtual bool run();
 
-        // ! Cause the device to temporarily pause execution and let other processes to run
+        //! Cause the device to temporarily pause execution and let other processes to run
         // This should bring down processor usage without major performance loss for Irrlicht
         virtual void yield();
 
-        // ! Pause execution and let other processes to run for a specified amount of time.
+        //! Pause execution and let other processes to run for a specified amount of time.
         virtual void sleep(u32 timeMs, bool pauseTimer);
 
-        // ! sets the caption of the window
+        //! sets the caption of the window
         virtual void setWindowCaption(const wchar_t *text);
 
-        // ! returns if window is active. if not, nothing need to be drawn
+        //! returns if window is active. if not, nothing need to be drawn
         virtual bool isWindowActive() const;
 
-        // ! returns if window has focus
+        //! returns if window has focus
         virtual bool isWindowFocused() const;
 
-        // ! returns if window is minimized
+        //! returns if window is minimized
         virtual bool isWindowMinimized() const;
 
-        // ! Minimizes window
+        //! Minimizes window
         virtual void minimizeWindow();
 
-        // ! Maximizes window
+        //! Maximizes window
         virtual void maximizeWindow();
 
-        // ! Restores original window size
+        //! Restores original window size
         virtual void restoreWindow();
 
-        // ! presents a surface in the client area
+        //! presents a surface in the client area
         virtual bool present(video::IImage *surface, void *windowId = 0, core::rect<s32> *src = 0);
 
-        // ! notifies the device that it should close itself
+        //! notifies the device that it should close itself
         virtual void closeDevice();
 
-        // ! Sets if the window should be resizeable in windowed mode.
+        //! Sets if the window should be resizeable in windowed mode.
         virtual void setResizable(bool resize = false);
 
-        // ! Returns the type of this device
+        //! Returns the type of this device
         virtual E_DEVICE_TYPE getType() const;
 
 private:
 
-        // ! create the driver
+        //! create the driver
         void createDriver();
 
         bool createWindow(const core::dimension2d<u32> &windowSize, u32 bits);
 
-        // ! Implementation of the cursor control
+        //! Implementation of the cursor control
         class CCursorControl : public gui::ICursorControl
         {
 public:
@@ -98,48 +98,48 @@ public:
                 Device->drop();
             }
 
-            // ! Changes the visible state of the mouse cursor.
+            //! Changes the visible state of the mouse cursor.
             virtual void setVisible(bool visible)
             {
                 IsVisible = visible;
             }
 
-            // ! Returns if the cursor is currently visible.
+            //! Returns if the cursor is currently visible.
             virtual bool isVisible() const
             {
                 return IsVisible;
             }
 
-            // ! Sets the new position of the cursor.
+            //! Sets the new position of the cursor.
             virtual void setPosition(const core::position2d<f32> &pos)
             {
                 setPosition(pos.X, pos.Y);
             }
 
-            // ! Sets the new position of the cursor.
+            //! Sets the new position of the cursor.
             virtual void setPosition(f32 x, f32 y)
             {
                 setPosition((s32)(x * Device->CreationParams.WindowSize.Width), (s32)(y * Device->CreationParams.WindowSize.Height));
             }
 
-            // ! Sets the new position of the cursor.
+            //! Sets the new position of the cursor.
             virtual void setPosition(const core::position2d<s32> &pos)
             {
                 setPosition(pos.X, pos.Y);
             }
 
-            // ! Sets the new position of the cursor.
+            //! Sets the new position of the cursor.
             virtual void setPosition(s32 x, s32 y)
             {}
 
-            // ! Returns the current position of the mouse cursor.
+            //! Returns the current position of the mouse cursor.
             virtual const core::position2d<s32>&getPosition()
             {
                 updateCursorPos();
                 return CursorPos;
             }
 
-            // ! Returns the current position of the mouse cursor.
+            //! Returns the current position of the mouse cursor.
             virtual core::position2d<f32> getRelativePosition()
             {
                 updateCursorPos();

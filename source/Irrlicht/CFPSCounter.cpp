@@ -15,35 +15,35 @@ namespace irr
         {}
 
 
-        // ! returns current fps
+        //! returns current fps
         s32 CFPSCounter::getFPS() const
         {
             return FPS;
         }
 
 
-        // ! returns current primitive count
+        //! returns current primitive count
         u32 CFPSCounter::getPrimitive() const
         {
             return Primitive;
         }
 
 
-        // ! returns average primitive count of last period
+        //! returns average primitive count of last period
         u32 CFPSCounter::getPrimitiveAverage() const
         {
             return PrimitiveAverage;
         }
 
 
-        // ! returns accumulated primitive count since start
+        //! returns accumulated primitive count since start
         u32 CFPSCounter::getPrimitiveTotal() const
         {
             return PrimitiveTotal;
         }
 
 
-        // ! to be called every frame
+        //! to be called every frame
         void CFPSCounter::registerFrame(u32 now, u32 primitivesDrawn)
         {
             ++FramesCounted;

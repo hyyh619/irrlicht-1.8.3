@@ -20,28 +20,28 @@ namespace irr
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             CMemoryFile(void *memory, long len, const io::path &fileName, bool deleteMemoryWhenDropped);
 
-            // ! Destructor
+            //! Destructor
             virtual ~CMemoryFile();
 
-            // ! returns how much was read
+            //! returns how much was read
             virtual s32 read(void *buffer, u32 sizeToRead);
 
-            // ! returns how much was written
+            //! returns how much was written
             virtual s32 write(const void *buffer, u32 sizeToWrite);
 
-            // ! changes position in file, returns true if successful
+            //! changes position in file, returns true if successful
             virtual bool seek(long finalPos, bool relativeMovement = false);
 
-            // ! returns size of file
+            //! returns size of file
             virtual long getSize() const;
 
-            // ! returns where in the file we are.
+            //! returns where in the file we are.
             virtual long getPos() const;
 
-            // ! returns name of file
+            //! returns name of file
             virtual const io::path&getFileName() const;
 
 private:

@@ -20,7 +20,7 @@ namespace irr
         io::path CImageLoaderJPG::Filename;
 #endif
 
-        // ! constructor
+        //! constructor
         CImageLoaderJPG::CImageLoaderJPG()
         {
     #ifdef _DEBUG
@@ -30,14 +30,14 @@ namespace irr
 
 
 
-        // ! destructor
+        //! destructor
         CImageLoaderJPG::~CImageLoaderJPG()
         {}
 
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".tga")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".tga")
         bool CImageLoaderJPG::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "jpg", "jpeg");
@@ -117,7 +117,7 @@ namespace irr
         }
 #endif  // _IRR_COMPILE_WITH_LIBJPEG_
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CImageLoaderJPG::isALoadableFileFormat(io::IReadFile *file) const
         {
     #ifndef _IRR_COMPILE_WITH_LIBJPEG_
@@ -133,7 +133,7 @@ namespace irr
     #endif
         }
 
-        // ! creates a surface from the file
+        //! creates a surface from the file
         IImage* CImageLoaderJPG::loadImage(io::IReadFile *file) const
         {
     #ifndef _IRR_COMPILE_WITH_LIBJPEG_
@@ -292,7 +292,7 @@ namespace irr
 
 
 
-        // ! creates a loader which is able to load jpeg images
+        //! creates a loader which is able to load jpeg images
         IImageLoader* createImageLoaderJPG()
         {
             return new CImageLoaderJPG();

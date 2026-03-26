@@ -17,7 +17,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CMeshSceneNode::CMeshSceneNode(IMesh *mesh, ISceneNode *parent, ISceneManager *mgr, s32 id,
             const core::vector3df &position, const core::vector3df &rotation,
             const core::vector3df &scale)
@@ -32,7 +32,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CMeshSceneNode::~CMeshSceneNode()
         {
             if (Shadow)
@@ -43,7 +43,7 @@ namespace irr
         }
 
 
-        // ! frame
+        //! frame
         void CMeshSceneNode::OnRegisterSceneNode()
         {
             if (IsVisible)
@@ -110,7 +110,7 @@ namespace irr
         }
 
 
-        // ! renders the node.
+        //! renders the node.
         void CMeshSceneNode::render()
         {
             video::IVideoDriver *driver = SceneManager->getVideoDriver();
@@ -227,9 +227,9 @@ namespace irr
         }
 
 
-        // ! Removes a child from this scene node.
-        // ! Implemented here, to be able to remove the shadow properly, if there is one,
-        // ! or to remove attached childs.
+        //! Removes a child from this scene node.
+        //! Implemented here, to be able to remove the shadow properly, if there is one,
+        //! or to remove attached childs.
         bool CMeshSceneNode::removeChild(ISceneNode *child)
         {
             if (child && Shadow == child)
@@ -242,18 +242,18 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CMeshSceneNode::getBoundingBox() const
         {
             return Mesh ? Mesh->getBoundingBox() : Box;
         }
 
 
-        // ! returns the material based on the zero based index i. To get the amount
-        // ! of materials used by this scene node, use getMaterialCount().
-        // ! This function is needed for inserting the node into the scene hierarchy on a
-        // ! optimal position for minimizing renderstate changes, but can also be used
-        // ! to directly modify the material of a scene node.
+        //! returns the material based on the zero based index i. To get the amount
+        //! of materials used by this scene node, use getMaterialCount().
+        //! This function is needed for inserting the node into the scene hierarchy on a
+        //! optimal position for minimizing renderstate changes, but can also be used
+        //! to directly modify the material of a scene node.
         video::SMaterial&CMeshSceneNode::getMaterial(u32 i)
         {
             if (Mesh && ReadOnlyMaterials && i < Mesh->getMeshBufferCount())
@@ -269,7 +269,7 @@ namespace irr
         }
 
 
-        // ! returns amount of materials used by this scene node.
+        //! returns amount of materials used by this scene node.
         u32 CMeshSceneNode::getMaterialCount() const
         {
             if (Mesh && ReadOnlyMaterials)
@@ -279,7 +279,7 @@ namespace irr
         }
 
 
-        // ! Sets a new mesh
+        //! Sets a new mesh
         void CMeshSceneNode::setMesh(IMesh *mesh)
         {
             if (mesh)
@@ -294,8 +294,8 @@ namespace irr
         }
 
 
-        // ! Creates shadow volume scene node as child of this node
-        // ! and returns a pointer to it.
+        //! Creates shadow volume scene node as child of this node
+        //! and returns a pointer to it.
         IShadowVolumeSceneNode* CMeshSceneNode::addShadowVolumeSceneNode(
             const IMesh *shadowMesh, s32 id, bool zfailmethod, f32 infinity)
         {
@@ -333,7 +333,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void CMeshSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             IMeshSceneNode::serializeAttributes(out, options);
@@ -352,7 +352,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void CMeshSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             io::path oldMeshStr = SceneManager->getMeshCache()->getMeshName(Mesh);
@@ -404,7 +404,7 @@ namespace irr
         }
 
 
-        // ! Sets if the scene node should not copy the materials of the mesh but use them in a read only style.
+        //! Sets if the scene node should not copy the materials of the mesh but use them in a read only style.
         /* In this way it is possible to change the materials a mesh causing all mesh scene nodes
          * referencing this mesh to change too. */
         void CMeshSceneNode::setReadOnlyMaterials(bool readonly)
@@ -413,14 +413,14 @@ namespace irr
         }
 
 
-        // ! Returns if the scene node should not copy the materials of the mesh but use them in a read only style
+        //! Returns if the scene node should not copy the materials of the mesh but use them in a read only style
         bool CMeshSceneNode::isReadOnlyMaterials() const
         {
             return ReadOnlyMaterials;
         }
 
 
-        // ! Creates a clone of this scene node and its children.
+        //! Creates a clone of this scene node and its children.
         ISceneNode* CMeshSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
         {
             if (!newParent)

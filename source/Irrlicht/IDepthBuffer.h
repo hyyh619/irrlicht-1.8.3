@@ -17,60 +17,60 @@ namespace irr
         {
 public:
 
-            // ! destructor
+            //! destructor
             virtual ~IDepthBuffer() {};
 
-            // ! clears the zbuffer
+            //! clears the zbuffer
             virtual void clear() = 0;
 
-            // ! sets the new size of the zbuffer
+            //! sets the new size of the zbuffer
             virtual void setSize(const core::dimension2d<u32> &size) = 0;
 
-            // ! returns the size of the zbuffer
+            //! returns the size of the zbuffer
             virtual const core::dimension2d<u32>&getSize() const = 0;
 
-            // ! locks the zbuffer
+            //! locks the zbuffer
             virtual void* lock() = 0;
 
-            // ! unlocks the zbuffer
+            //! unlocks the zbuffer
             virtual void unlock() = 0;
 
-            // ! returns pitch of depthbuffer (in bytes)
+            //! returns pitch of depthbuffer (in bytes)
             virtual u32 getPitch() const = 0;
         };
 
 
-        // ! creates a ZBuffer
+        //! creates a ZBuffer
         IDepthBuffer* createDepthBuffer(const core::dimension2d<u32> &size);
 
         class IStencilBuffer : public virtual IReferenceCounted
         {
 public:
 
-            // ! destructor
+            //! destructor
             virtual ~IStencilBuffer() {};
 
-            // ! clears the zbuffer
+            //! clears the zbuffer
             virtual void clear() = 0;
 
-            // ! sets the new size of the zbuffer
+            //! sets the new size of the zbuffer
             virtual void setSize(const core::dimension2d<u32> &size) = 0;
 
-            // ! returns the size of the zbuffer
+            //! returns the size of the zbuffer
             virtual const core::dimension2d<u32>&getSize() const = 0;
 
-            // ! locks the zbuffer
+            //! locks the zbuffer
             virtual void* lock() = 0;
 
-            // ! unlocks the zbuffer
+            //! unlocks the zbuffer
             virtual void unlock() = 0;
 
-            // ! returns pitch of depthbuffer (in bytes)
+            //! returns pitch of depthbuffer (in bytes)
             virtual u32 getPitch() const = 0;
         };
 
 
-        // ! creates a Stencil Buffer
+        //! creates a Stencil Buffer
         IStencilBuffer* createStencilBuffer(const core::dimension2d<u32> &size);
     } // end namespace video
 } // end namespace irr

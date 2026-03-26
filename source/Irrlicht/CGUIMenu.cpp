@@ -17,7 +17,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIMenu::CGUIMenu(IGUIEnvironment *environment, IGUIElement *parent,
             s32 id, core::rect<s32> rectangle)
             : CGUIContextMenu(environment, parent, id, rectangle, false, true)
@@ -34,7 +34,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIMenu::draw()
         {
             if (!IsVisible)
@@ -98,7 +98,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIMenu::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -278,7 +278,7 @@ namespace irr
         }
 
 
-        // ! returns the item highlight-area
+        //! returns the item highlight-area
         core::rect<s32> CGUIMenu::getHRect(const SItem &i, const core::rect<s32> &absolute) const
         {
             core::rect<s32> r = absolute;
@@ -289,7 +289,7 @@ namespace irr
         }
 
 
-        // ! Gets drawing rect of Item
+        //! Gets drawing rect of Item
         core::rect<s32> CGUIMenu::getRect(const SItem &i, const core::rect<s32> &absolute) const
         {
             return getHRect(i, absolute);

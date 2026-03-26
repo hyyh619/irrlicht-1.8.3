@@ -17,7 +17,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CImageLoaderBMP::CImageLoaderBMP()
         {
     #ifdef _DEBUG
@@ -26,15 +26,15 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".tga")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".tga")
         bool CImageLoaderBMP::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "bmp");
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CImageLoaderBMP::isALoadableFileFormat(io::IReadFile *file) const
         {
             u16 headerID;
@@ -220,7 +220,7 @@ namespace irr
 
 
 
-        // ! creates a surface from the file
+        //! creates a surface from the file
         IImage* CImageLoaderBMP::loadImage(io::IReadFile *file) const
         {
             SBMPHeader header;
@@ -246,7 +246,7 @@ namespace irr
 
             s32 pitch = 0;
 
-            // ! return if the header is false
+            //! return if the header is false
 
             if (header.Id != 0x4d42)
                 return 0;
@@ -384,7 +384,7 @@ namespace irr
         }
 
 
-        // ! creates a loader which is able to load windows bitmaps
+        //! creates a loader which is able to load windows bitmaps
         IImageLoader* createImageLoaderBMP()
         {
             return new CImageLoaderBMP;

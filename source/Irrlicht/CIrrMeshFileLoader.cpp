@@ -20,7 +20,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! Constructor
+        //! Constructor
         CIrrMeshFileLoader::CIrrMeshFileLoader(scene::ISceneManager *smgr,
             io::IFileSystem *fs)
             : SceneManager(smgr), FileSystem(fs)
@@ -31,7 +31,7 @@ namespace irr
         }
 
 
-        // ! Returns true if the file maybe is able to be loaded by this class.
+        //! Returns true if the file maybe is able to be loaded by this class.
         /** This decision should be based only on the file extension (e.g. ".cob") */
         bool CIrrMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
@@ -39,10 +39,10 @@ namespace irr
         }
 
 
-        // ! creates/loads an animated mesh from the file.
-        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-        // ! See IReferenceCounted::drop() for more information.
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* CIrrMeshFileLoader::createMesh(io::IReadFile *file)
         {
             io::IXMLReader *reader = FileSystem->createXMLReader(file);
@@ -75,7 +75,7 @@ namespace irr
         }
 
 
-        // ! reads a mesh sections and creates a mesh from it
+        //! reads a mesh sections and creates a mesh from it
         IAnimatedMesh* CIrrMeshFileLoader::readMesh(io::IXMLReader *reader)
         {
             SAnimatedMesh *animatedmesh = new SAnimatedMesh();
@@ -132,7 +132,7 @@ namespace irr
         }
 
 
-        // ! reads a mesh sections and creates a mesh buffer from it
+        //! reads a mesh sections and creates a mesh buffer from it
         IMeshBuffer* CIrrMeshFileLoader::readMeshBuffer(io::IXMLReader *reader)
         {
             CDynamicMeshBuffer *buffer = 0;
@@ -243,7 +243,7 @@ namespace irr
         }
 
 
-        // ! read indices
+        //! read indices
         void CIrrMeshFileLoader::readIndices(io::IXMLReader *reader, int indexCount, IIndexBuffer &indices)
         {
             indices.reallocate(indexCount);
@@ -424,7 +424,7 @@ namespace irr
         }
 
 
-        // ! skips an (unknown) section in the irrmesh document
+        //! skips an (unknown) section in the irrmesh document
         void CIrrMeshFileLoader::skipSection(io::IXMLReader *reader, bool reportSkipping)
         {
 #ifdef _DEBUG
@@ -456,8 +456,8 @@ namespace irr
         }
 
 
-        // ! parses a float from a char pointer and moves the pointer
-        // ! to the end of the parsed float
+        //! parses a float from a char pointer and moves the pointer
+        //! to the end of the parsed float
         inline f32 CIrrMeshFileLoader::readFloat(const c8 **p)
         {
             f32 ftmp;
@@ -467,15 +467,15 @@ namespace irr
         }
 
 
-        // ! parses an int from a char pointer and moves the pointer to
-        // ! the end of the parsed float
+        //! parses an int from a char pointer and moves the pointer to
+        //! the end of the parsed float
         inline s32 CIrrMeshFileLoader::readInt(const c8 **p)
         {
             return (s32)readFloat(p);
         }
 
 
-        // ! places pointer to next begin of a token
+        //! places pointer to next begin of a token
         void CIrrMeshFileLoader::skipCurrentNoneWhiteSpace(const c8 **start)
         {
             const c8 *p = *start;
@@ -488,7 +488,7 @@ namespace irr
             *start = p;
         }
 
-        // ! places pointer to next begin of a token
+        //! places pointer to next begin of a token
         void CIrrMeshFileLoader::findNextNoneWhiteSpace(const c8 **start)
         {
             const c8 *p = *start;
@@ -502,7 +502,7 @@ namespace irr
         }
 
 
-        // ! reads floats from inside of xml element until end of xml element
+        //! reads floats from inside of xml element until end of xml element
         void CIrrMeshFileLoader::readFloatsInsideElement(io::IXMLReader *reader, f32 *floats, u32 count)
         {
             if (reader->isEmptyElement())

@@ -17,7 +17,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIContextMenu::CGUIContextMenu(IGUIEnvironment *environment,
             IGUIElement *parent, s32 id,
             core::rect<s32> rectangle, bool getFocus, bool allowFocus)
@@ -38,7 +38,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIContextMenu::~CGUIContextMenu()
         {
             for (u32 i = 0; i < Items.size(); ++i)
@@ -49,32 +49,32 @@ namespace irr
                 LastFont->drop();
         }
 
-        // ! set behavior when menus are closed
+        //! set behavior when menus are closed
         void CGUIContextMenu::setCloseHandling(ECONTEXT_MENU_CLOSE onClose)
         {
             CloseHandling = onClose;
         }
 
-        // ! get current behavior when the menue will be closed
+        //! get current behavior when the menue will be closed
         ECONTEXT_MENU_CLOSE CGUIContextMenu::getCloseHandling() const
         {
             return CloseHandling;
         }
 
-        // ! Returns amount of menu items
+        //! Returns amount of menu items
         u32 CGUIContextMenu::getItemCount() const
         {
             return Items.size();
         }
 
 
-        // ! Adds a menu item.
+        //! Adds a menu item.
         u32 CGUIContextMenu::addItem(const wchar_t *text, s32 commandId, bool enabled, bool hasSubMenu, bool checked, bool autoChecking)
         {
             return insertItem(Items.size(), text, commandId, enabled, hasSubMenu, checked, autoChecking);
         }
 
-        // ! Insert a menu item at specified position.
+        //! Insert a menu item at specified position.
         u32 CGUIContextMenu::insertItem(u32 idx, const wchar_t *text, s32 commandId, bool enabled,
             bool hasSubMenu, bool checked, bool autoChecking)
         {
@@ -123,7 +123,7 @@ namespace irr
             return -1;
         }
 
-        // ! Adds a sub menu from an element that already exists.
+        //! Adds a sub menu from an element that already exists.
         void CGUIContextMenu::setSubMenu(u32 index, CGUIContextMenu *menu)
         {
             if (index >= Items.size())
@@ -151,14 +151,14 @@ namespace irr
         }
 
 
-        // ! Adds a separator item to the menu
+        //! Adds a separator item to the menu
         void CGUIContextMenu::addSeparator()
         {
             addItem(0, -1, true, false, false, false);
         }
 
 
-        // ! Returns text of the menu item.
+        //! Returns text of the menu item.
         const wchar_t* CGUIContextMenu::getItemText(u32 idx) const
         {
             if (idx >= Items.size())
@@ -168,7 +168,7 @@ namespace irr
         }
 
 
-        // ! Sets text of the menu item.
+        //! Sets text of the menu item.
         void CGUIContextMenu::setItemText(u32 idx, const wchar_t *text)
         {
             if (idx >= Items.size())
@@ -178,7 +178,7 @@ namespace irr
             recalculateSize();
         }
 
-        // ! should the element change the checked status on clicking
+        //! should the element change the checked status on clicking
         void CGUIContextMenu::setItemAutoChecking(u32 idx, bool autoChecking)
         {
             if (idx >= Items.size())
@@ -187,7 +187,7 @@ namespace irr
             Items[idx].AutoChecking = autoChecking;
         }
 
-        // ! does the element change the checked status on clicking
+        //! does the element change the checked status on clicking
         bool CGUIContextMenu::getItemAutoChecking(u32 idx) const
         {
             if (idx >= Items.size())
@@ -197,7 +197,7 @@ namespace irr
         }
 
 
-        // ! Returns if a menu item is enabled
+        //! Returns if a menu item is enabled
         bool CGUIContextMenu::isItemEnabled(u32 idx) const
         {
             if (idx >= Items.size())
@@ -211,7 +211,7 @@ namespace irr
         }
 
 
-        // ! Returns if a menu item is checked
+        //! Returns if a menu item is checked
         bool CGUIContextMenu::isItemChecked(u32 idx) const
         {
             if (idx >= Items.size())
@@ -225,7 +225,7 @@ namespace irr
         }
 
 
-        // ! Sets if the menu item should be enabled.
+        //! Sets if the menu item should be enabled.
         void CGUIContextMenu::setItemEnabled(u32 idx, bool enabled)
         {
             if (idx >= Items.size())
@@ -235,7 +235,7 @@ namespace irr
         }
 
 
-        // ! Sets if the menu item should be checked.
+        //! Sets if the menu item should be checked.
         void CGUIContextMenu::setItemChecked(u32 idx, bool checked)
         {
             if (idx >= Items.size())
@@ -245,7 +245,7 @@ namespace irr
         }
 
 
-        // ! Removes a menu item
+        //! Removes a menu item
         void CGUIContextMenu::removeItem(u32 idx)
         {
             if (idx >= Items.size())
@@ -262,7 +262,7 @@ namespace irr
         }
 
 
-        // ! Removes all menu items
+        //! Removes all menu items
         void CGUIContextMenu::removeAllItems()
         {
             for (u32 i = 0; i < Items.size(); ++i)
@@ -274,7 +274,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIContextMenu::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -369,7 +369,7 @@ namespace irr
         }
 
 
-        // ! Sets the visible state of this element.
+        //! Sets the visible state of this element.
         void CGUIContextMenu::setVisible(bool visible)
         {
             HighLighted = -1;
@@ -383,10 +383,10 @@ namespace irr
         }
 
 
-        // ! sends a click Returns:
-        // ! 0 if click went outside of the element,
-        // ! 1 if a valid button was clicked,
-        // ! 2 if a nonclickable element was clicked
+        //! sends a click Returns:
+        //! 0 if click went outside of the element,
+        //! 1 if a valid button was clicked,
+        //! 2 if a nonclickable element was clicked
         u32 CGUIContextMenu::sendClick(const core::position2d<s32> &p)
         {
             u32 t = 0;
@@ -441,7 +441,7 @@ namespace irr
         }
 
 
-        // ! returns true, if an element was highligted
+        //! returns true, if an element was highligted
         bool CGUIContextMenu::highlight(const core::position2d<s32> &p, bool canOpenSubMenu)
         {
             if (!isEnabled())
@@ -498,7 +498,7 @@ namespace irr
         }
 
 
-        // ! returns the item highlight-area
+        //! returns the item highlight-area
         core::rect<s32> CGUIContextMenu::getHRect(const SItem &i, const core::rect<s32> &absolute) const
         {
             core::rect<s32> r = absolute;
@@ -509,7 +509,7 @@ namespace irr
         }
 
 
-        // ! Gets drawing rect of Item
+        //! Gets drawing rect of Item
         core::rect<s32> CGUIContextMenu::getRect(const SItem &i, const core::rect<s32> &absolute) const
         {
             core::rect<s32> r = absolute;
@@ -521,7 +521,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIContextMenu::draw()
         {
             if (!IsVisible)
@@ -708,14 +708,14 @@ namespace irr
         }
 
 
-        // ! Returns the selected item in the menu
+        //! Returns the selected item in the menu
         s32 CGUIContextMenu::getSelectedItem() const
         {
             return HighLighted;
         }
 
 
-        // ! \return Returns a pointer to the submenu of an item.
+        //! \return Returns a pointer to the submenu of an item.
         IGUIContextMenu* CGUIContextMenu::getSubMenu(u32 idx) const
         {
             if (idx >= Items.size())
@@ -725,7 +725,7 @@ namespace irr
         }
 
 
-        // ! Returns command id of a menu item
+        //! Returns command id of a menu item
         s32 CGUIContextMenu::getItemCommandId(u32 idx) const
         {
             if (idx >= Items.size())
@@ -735,7 +735,7 @@ namespace irr
         }
 
 
-        // ! Sets the command id of a menu item
+        //! Sets the command id of a menu item
         void CGUIContextMenu::setItemCommandId(u32 idx, s32 id)
         {
             if (idx >= Items.size())
@@ -745,7 +745,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUIContextMenu::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUIElement::serializeAttributes(out, options);
@@ -794,7 +794,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUIContextMenu::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             IGUIElement::deserializeAttributes(in, options);

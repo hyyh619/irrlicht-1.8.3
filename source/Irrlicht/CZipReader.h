@@ -124,47 +124,47 @@ namespace irr
         // Default alignment
 #include "irrunpack.h"
 
-        // ! Contains extended info about zip files in the archive
+        //! Contains extended info about zip files in the archive
         struct SZipFileEntry
         {
-            // ! Position of data in the archive file
+            //! Position of data in the archive file
             s32 Offset;
 
-            // ! The header for this file containing compression info etc
+            //! The header for this file containing compression info etc
             SZIPFileHeader header;
         };
 
-        // ! Archiveloader capable of loading ZIP Archives
+        //! Archiveloader capable of loading ZIP Archives
         class CArchiveLoaderZIP : public IArchiveLoader
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             CArchiveLoaderZIP(io::IFileSystem *fs);
 
-            // ! returns true if the file maybe is able to be loaded by this class
-            // ! based on the file extension (e.g. ".zip")
+            //! returns true if the file maybe is able to be loaded by this class
+            //! based on the file extension (e.g. ".zip")
             virtual bool isALoadableFileFormat(const io::path &filename) const;
 
-            // ! Check if the file might be loaded by this class
+            //! Check if the file might be loaded by this class
             /** Check might look into the file.
              * \param file File handle to check.
              * \return True if file seems to be loadable. */
             virtual bool isALoadableFileFormat(io::IReadFile *file) const;
 
-            // ! Check to see if the loader can create archives of this type.
+            //! Check to see if the loader can create archives of this type.
             /** Check based on the archive type.
              * \param fileType The archive type to check.
              * \return True if the archile loader supports this type, false if not */
             virtual bool isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) const;
 
-            // ! Creates an archive from the filename
+            //! Creates an archive from the filename
             /** \param file File handle to check.
              * \return Pointer to newly created archive, or 0 upon error. */
             virtual IFileArchive* createArchive(const io::path &filename, bool ignoreCase, bool ignorePaths) const;
 
-            // ! creates/loads an archive from the file.
-            // ! \return Pointer to the created archive. Returns 0 if loading failed.
+            //! creates/loads an archive from the file.
+            //! \return Pointer to the created archive. Returns 0 if loading failed.
             virtual io::IFileArchive* createArchive(io::IReadFile *file, bool ignoreCase, bool ignorePaths) const;
 
 private:
@@ -178,33 +178,33 @@ private:
         {
 public:
 
-            // ! constructor
+            //! constructor
             CZipReader(IReadFile *file, bool ignoreCase, bool ignorePaths, bool isGZip = false);
 
-            // ! destructor
+            //! destructor
             virtual ~CZipReader();
 
-            // ! opens a file by file name
+            //! opens a file by file name
             virtual IReadFile* createAndOpenFile(const io::path &filename);
 
-            // ! opens a file by index
+            //! opens a file by index
             virtual IReadFile* createAndOpenFile(u32 index);
 
-            // ! returns the list of files
+            //! returns the list of files
             virtual const IFileList* getFileList() const;
 
-            // ! get the archive type
+            //! get the archive type
             virtual E_FILE_ARCHIVE_TYPE getType() const;
 
 protected:
 
-            // ! reads the next file header from a ZIP file, returns false if there are no more headers.
+            //! reads the next file header from a ZIP file, returns false if there are no more headers.
             /* if ignoreGPBits is set, the item will be read despite missing
              * file information. This is used when reading items from the central
              * directory. */
             bool scanZipHeader(bool ignoreGPBits = false);
 
-            // ! the same but for gzip files
+            //! the same but for gzip files
             bool scanGZipHeader();
 
             bool scanCentralDirectoryHeader();

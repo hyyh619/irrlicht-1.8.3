@@ -9,7 +9,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CParticleRotationAffector::CParticleRotationAffector(const core::vector3df &speed, const core::vector3df &pivotPoint)
             : PivotPoint(pivotPoint), Speed(speed), LastTime(0)
         {
@@ -19,7 +19,7 @@ namespace irr
         }
 
 
-        // ! Affects an array of particles.
+        //! Affects an array of particles.
         void CParticleRotationAffector::affect(u32 now, SParticle *particlearray, u32 count)
         {
             if (LastTime == 0)
@@ -47,14 +47,14 @@ namespace irr
             }
         }
 
-        // ! Writes attributes of the object.
+        //! Writes attributes of the object.
         void CParticleRotationAffector::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             out->addVector3d("PivotPoint", PivotPoint);
             out->addVector3d("Speed", Speed);
         }
 
-        // ! Reads attributes of the object.
+        //! Reads attributes of the object.
         void CParticleRotationAffector::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             PivotPoint = in->getAttributeAsVector3d("PivotPoint");

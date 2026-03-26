@@ -16,7 +16,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CImageLoaderPSD::CImageLoaderPSD()
         {
     #ifdef _DEBUG
@@ -25,8 +25,8 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".tga")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".tga")
         bool CImageLoaderPSD::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "psd");
@@ -34,7 +34,7 @@ namespace irr
 
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CImageLoaderPSD::isALoadableFileFormat(io::IReadFile *file) const
         {
             if (!file)
@@ -47,7 +47,7 @@ namespace irr
 
 
 
-        // ! creates a surface from the file
+        //! creates a surface from the file
         IImage* CImageLoaderPSD::loadImage(io::IReadFile *file) const
         {
             u32 *imageData = 0;
@@ -364,7 +364,7 @@ namespace irr
 
 
 
-        // ! creates a loader which is able to load tgas
+        //! creates a loader which is able to load tgas
         IImageLoader* createImageLoaderPSD()
         {
             return new CImageLoaderPSD();

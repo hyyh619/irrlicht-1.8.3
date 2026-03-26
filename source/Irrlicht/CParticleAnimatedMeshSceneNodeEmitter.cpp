@@ -11,7 +11,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CParticleAnimatedMeshSceneNodeEmitter::CParticleAnimatedMeshSceneNodeEmitter(
             IAnimatedMeshSceneNode *node, bool useNormalDirection,
             const core::vector3df &direction, f32 normalDirectionModifier,
@@ -36,8 +36,8 @@ namespace irr
         }
 
 
-        // ! Prepares an array with new particles to emitt into the system
-        // ! and returns how much new particles there are.
+        //! Prepares an array with new particles to emitt into the system
+        //! and returns how much new particles there are.
         s32 CParticleAnimatedMeshSceneNodeEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle* &outArray)
         {
             Time += timeSinceLastCall;
@@ -173,7 +173,7 @@ namespace irr
         }
 
 
-        // ! Set Mesh to emit particles from
+        //! Set Mesh to emit particles from
         void CParticleAnimatedMeshSceneNodeEmitter::setAnimatedMeshSceneNode(IAnimatedMeshSceneNode *node)
         {
             Node          = node;

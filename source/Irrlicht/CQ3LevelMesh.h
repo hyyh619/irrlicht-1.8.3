@@ -23,29 +23,29 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CQ3LevelMesh(io::IFileSystem *fs, scene::ISceneManager *smgr,
                 const quake3::Q3LevelLoadParameter &loadParam);
 
-            // ! destructor
+            //! destructor
             virtual ~CQ3LevelMesh();
 
-            // ! loads a level from a .bsp-File. Also tries to load all
-            // ! needed textures. Returns true if successful.
+            //! loads a level from a .bsp-File. Also tries to load all
+            //! needed textures. Returns true if successful.
             bool loadFile(io::IReadFile *file);
 
-            // ! returns the amount of frames in milliseconds. If the amount
-            // ! is 1, it is a static (=non animated) mesh.
+            //! returns the amount of frames in milliseconds. If the amount
+            //! is 1, it is a static (=non animated) mesh.
             virtual u32 getFrameCount() const;
 
-            // ! Gets the default animation speed of the animated mesh.
+            //! Gets the default animation speed of the animated mesh.
             /** \return Amount of frames per second. If the amount is 0, it is a static, non animated mesh. */
             virtual f32 getAnimationSpeed() const
             {
                 return FramesPerSecond;
             }
 
-            // ! Gets the frame count of the animated mesh.
+            //! Gets the frame count of the animated mesh.
             /** \param fps Frames per second to play the animation with. If the amount is 0, it is not animated.
              * The actual speed is set in the scene node the mesh is instantiated in.*/
             virtual void setAnimationSpeed(f32 fps)
@@ -53,58 +53,58 @@ public:
                 FramesPerSecond = fps;
             }
 
-            // ! returns the animated mesh based on a detail level. 0 is the
-            // ! lowest, 255 the highest detail. Note, that some Meshes will
-            // ! ignore the detail level.
+            //! returns the animated mesh based on a detail level. 0 is the
+            //! lowest, 255 the highest detail. Note, that some Meshes will
+            //! ignore the detail level.
             virtual IMesh* getMesh(s32 frameInMs, s32 detailLevel = 255,
                 s32 startFrameLoop = -1, s32 endFrameLoop = -1);
 
-            // ! Returns an axis aligned bounding box of the mesh.
-            // ! \return A bounding box of this mesh is returned.
+            //! Returns an axis aligned bounding box of the mesh.
+            //! \return A bounding box of this mesh is returned.
             virtual const core::aabbox3d<f32>&getBoundingBox() const;
 
             virtual void setBoundingBox(const core::aabbox3df &box);
 
-            // ! Returns the type of the animated mesh.
+            //! Returns the type of the animated mesh.
             virtual E_ANIMATED_MESH_TYPE getMeshType() const;
 
-            // ! loads the shader definition
+            //! loads the shader definition
             virtual void getShader(io::IReadFile *file);
 
-            // ! loads the shader definition
+            //! loads the shader definition
             virtual const quake3::IShader* getShader(const c8 *filename, bool fileNameIsValid = true);
 
-            // ! returns a already loaded Shader
+            //! returns a already loaded Shader
             virtual const quake3::IShader* getShader(u32 index) const;
 
 
-            // ! loads a configuration file
+            //! loads a configuration file
             virtual void getConfiguration(io::IReadFile *file);
-            // ! get's an interface to the entities
+            //! get's an interface to the entities
             virtual quake3::tQ3EntityList&getEntityList();
 
-            // ! returns the requested brush entity
+            //! returns the requested brush entity
             virtual IMesh* getBrushEntityMesh(s32 num) const;
 
-            // ! returns the requested brush entity
+            //! returns the requested brush entity
             virtual IMesh* getBrushEntityMesh(quake3::IEntity &ent) const;
 
             // Link to held meshes? ...
 
 
-            // ! returns amount of mesh buffers.
+            //! returns amount of mesh buffers.
             virtual u32 getMeshBufferCount() const
             {
                 return 0;
             }
 
-            // ! returns pointer to a mesh buffer
+            //! returns pointer to a mesh buffer
             virtual IMeshBuffer* getMeshBuffer(u32 nr) const
             {
                 return 0;
             }
 
-            // ! Returns pointer to a mesh buffer which fits a material
+            //! Returns pointer to a mesh buffer which fits a material
             /** \param material: material to search for
              * \return Pointer to the mesh buffer or 0 if there is no such mesh buffer. */
             virtual IMeshBuffer* getMeshBuffer(const video::SMaterial &material) const
@@ -117,13 +117,13 @@ public:
                 return;
             }
 
-            // ! set the hardware mapping hint, for driver
+            //! set the hardware mapping hint, for driver
             virtual void setHardwareMappingHint(E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer = EBT_VERTEX_AND_INDEX)
             {
                 return;
             }
 
-            // ! flags the meshbuffer as changed, reloads hardware buffers
+            //! flags the meshbuffer as changed, reloads hardware buffers
             virtual void setDirty(E_BUFFER_TYPE buffer = EBT_VERTEX_AND_INDEX)
             {
                 return;

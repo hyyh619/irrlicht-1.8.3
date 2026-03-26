@@ -15,31 +15,31 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CDepthBuffer(const core::dimension2d<u32> &size);
 
-            // ! destructor
+            //! destructor
             virtual ~CDepthBuffer();
 
-            // ! clears the zbuffer
+            //! clears the zbuffer
             virtual void clear();
 
-            // ! sets the new size of the zbuffer
+            //! sets the new size of the zbuffer
             virtual void setSize(const core::dimension2d<u32> &size);
 
-            // ! returns the size of the zbuffer
+            //! returns the size of the zbuffer
             virtual const core::dimension2d<u32>&getSize() const;
 
-            // ! locks the zbuffer
+            //! locks the zbuffer
             virtual void* lock()
             {
                 return (void*) Buffer;
             }
 
-            // ! unlocks the zbuffer
+            //! unlocks the zbuffer
             virtual void unlock() {}
 
-            // ! returns pitch of depthbuffer (in bytes)
+            //! returns pitch of depthbuffer (in bytes)
             virtual u32 getPitch() const
             {
                 return Pitch;
@@ -59,31 +59,31 @@ private:
         {
 public:
 
-            // ! constructor
+            //! constructor
             CStencilBuffer(const core::dimension2d<u32> &size);
 
-            // ! destructor
+            //! destructor
             virtual ~CStencilBuffer();
 
-            // ! clears the zbuffer
+            //! clears the zbuffer
             virtual void clear();
 
-            // ! sets the new size of the zbuffer
+            //! sets the new size of the zbuffer
             virtual void setSize(const core::dimension2d<u32> &size);
 
-            // ! returns the size of the zbuffer
+            //! returns the size of the zbuffer
             virtual const core::dimension2d<u32>&getSize() const;
 
-            // ! locks the zbuffer
+            //! locks the zbuffer
             virtual void* lock()
             {
                 return (void*) Buffer;
             }
 
-            // ! unlocks the zbuffer
+            //! unlocks the zbuffer
             virtual void unlock() {}
 
-            // ! returns pitch of depthbuffer (in bytes)
+            //! returns pitch of depthbuffer (in bytes)
             virtual u32 getPitch() const
             {
                 return Pitch;

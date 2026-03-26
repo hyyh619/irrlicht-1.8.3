@@ -122,7 +122,7 @@ namespace irr
         }
 
 
-        // ! Constructor
+        //! Constructor
         C3DSMeshFileLoader::C3DSMeshFileLoader(ISceneManager *smgr, io::IFileSystem *fs)
             : SceneManager(smgr), FileSystem(fs), Vertices(0), Indices(0), SmoothingGroups(0), TCoords(0),
             CountVertices(0), CountFaces(0), CountTCoords(0), Mesh(0)
@@ -136,7 +136,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         C3DSMeshFileLoader::~C3DSMeshFileLoader()
         {
             cleanUp();
@@ -149,18 +149,18 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool C3DSMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "3ds");
         }
 
 
-        // ! creates/loads an animated mesh from the file.
-        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-        // ! See IReferenceCounted::drop() for more information.
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* C3DSMeshFileLoader::createMesh(io::IReadFile *file)
         {
             ChunkData data;

@@ -16,7 +16,7 @@
 
 namespace irr
 {
-    // ! constructor
+    //! constructor
     CIrrDeviceStub::CIrrDeviceStub(const SIrrlichtCreationParameters &params)
         : IrrlichtDevice(), VideoDriver(0), GUIEnvironment(0), SceneManager(0),
         Timer(0), CursorControl(0), UserReceiver(params.EventReceiver),
@@ -103,7 +103,7 @@ namespace irr
     }
 
 
-    // ! returns the video driver
+    //! returns the video driver
     video::IVideoDriver* CIrrDeviceStub::getVideoDriver()
     {
         return VideoDriver;
@@ -111,7 +111,7 @@ namespace irr
 
 
 
-    // ! return file system
+    //! return file system
     io::IFileSystem* CIrrDeviceStub::getFileSystem()
     {
         return FileSystem;
@@ -119,7 +119,7 @@ namespace irr
 
 
 
-    // ! returns the gui environment
+    //! returns the gui environment
     gui::IGUIEnvironment* CIrrDeviceStub::getGUIEnvironment()
     {
         return GUIEnvironment;
@@ -127,43 +127,43 @@ namespace irr
 
 
 
-    // ! returns the scene manager
+    //! returns the scene manager
     scene::ISceneManager* CIrrDeviceStub::getSceneManager()
     {
         return SceneManager;
     }
 
 
-    // ! \return Returns a pointer to the ITimer object. With it the
-    // ! current Time can be received.
+    //! \return Returns a pointer to the ITimer object. With it the
+    //! current Time can be received.
     ITimer* CIrrDeviceStub::getTimer()
     {
         return Timer;
     }
 
 
-    // ! Returns the version of the engine.
+    //! Returns the version of the engine.
     const char* CIrrDeviceStub::getVersion() const
     {
         return IRRLICHT_SDK_VERSION;
     }
 
-    // ! \return Returns a pointer to the mouse cursor control interface.
+    //! \return Returns a pointer to the mouse cursor control interface.
     gui::ICursorControl* CIrrDeviceStub::getCursorControl()
     {
         return CursorControl;
     }
 
 
-    // ! \return Returns a pointer to a list with all video modes supported
-    // ! by the gfx adapter.
+    //! \return Returns a pointer to a list with all video modes supported
+    //! by the gfx adapter.
     video::IVideoModeList* CIrrDeviceStub::getVideoModeList()
     {
         return VideoModeList;
     }
 
 
-    // ! checks version of sdk and prints warning if there might be a problem
+    //! checks version of sdk and prints warning if there might be a problem
     bool CIrrDeviceStub::checkVersion(const char *version)
     {
         if (strcmp(getVersion(), version))
@@ -183,7 +183,7 @@ namespace irr
     }
 
 
-    // ! Compares to the last call of this function to return double and triple clicks.
+    //! Compares to the last call of this function to return double and triple clicks.
     u32 CIrrDeviceStub::checkSuccessiveClicks(s32 mouseX, s32 mouseY, EMOUSE_INPUT_EVENT inputEvent)
     {
         const s32 MAX_MOUSEMOVE = 3;
@@ -213,7 +213,7 @@ namespace irr
     }
 
 
-    // ! send the event to the right receiver
+    //! send the event to the right receiver
     bool CIrrDeviceStub::postEventFromUser(const SEvent &event)
     {
         bool absorbed = false;
@@ -236,7 +236,7 @@ namespace irr
     }
 
 
-    // ! Sets a new event receiver to receive events
+    //! Sets a new event receiver to receive events
     void CIrrDeviceStub::setEventReceiver(IEventReceiver *receiver)
     {
         UserReceiver = receiver;
@@ -246,34 +246,34 @@ namespace irr
     }
 
 
-    // ! Returns poinhter to the current event receiver. Returns 0 if there is none.
+    //! Returns poinhter to the current event receiver. Returns 0 if there is none.
     IEventReceiver* CIrrDeviceStub::getEventReceiver()
     {
         return UserReceiver;
     }
 
 
-    // ! \return Returns a pointer to the logger.
+    //! \return Returns a pointer to the logger.
     ILogger* CIrrDeviceStub::getLogger()
     {
         return Logger;
     }
 
 
-    // ! Returns the operation system opertator object.
+    //! Returns the operation system opertator object.
     IOSOperator* CIrrDeviceStub::getOSOperator()
     {
         return Operator;
     }
 
 
-    // ! Provides access to the engine's currently set randomizer.
+    //! Provides access to the engine's currently set randomizer.
     IRandomizer* CIrrDeviceStub::getRandomizer() const
     {
         return Randomizer;
     }
 
-    // ! Sets a new randomizer.
+    //! Sets a new randomizer.
     void CIrrDeviceStub::setRandomizer(IRandomizer *r)
     {
         if (r != Randomizer)
@@ -313,7 +313,7 @@ namespace irr
         };
     }
 
-    // ! Creates a new default randomizer.
+    //! Creates a new default randomizer.
     IRandomizer* CIrrDeviceStub::createDefaultRandomizer() const
     {
         IRandomizer *r = new SDefaultRandomizer();
@@ -325,7 +325,7 @@ namespace irr
     }
 
 
-    // ! Sets the input receiving scene manager.
+    //! Sets the input receiving scene manager.
     void CIrrDeviceStub::setInputReceivingSceneManager(scene::ISceneManager *sceneManager)
     {
         if (sceneManager)
@@ -338,20 +338,20 @@ namespace irr
     }
 
 
-    // ! Checks if the window is running in fullscreen mode
+    //! Checks if the window is running in fullscreen mode
     bool CIrrDeviceStub::isFullscreen() const
     {
         return CreationParams.Fullscreen;
     }
 
 
-    // ! returns color format
+    //! returns color format
     video::ECOLOR_FORMAT CIrrDeviceStub::getColorFormat() const
     {
         return video::ECOLOR_FORMAT::ECF_R5G6B5;
     }
 
-    // ! No-op in this implementation
+    //! No-op in this implementation
     bool CIrrDeviceStub::activateJoysticks(core::array<SJoystickInfo> &joystickInfo)
     {
         return false;
@@ -402,31 +402,31 @@ namespace irr
         }
     }
 
-    // ! Set the current Gamma Value for the Display
+    //! Set the current Gamma Value for the Display
     bool CIrrDeviceStub::setGammaRamp(f32 red, f32 green, f32 blue, f32 brightness, f32 contrast)
     {
         return false;
     }
 
-    // ! Get the current Gamma Value for the Display
+    //! Get the current Gamma Value for the Display
     bool CIrrDeviceStub::getGammaRamp(f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast)
     {
         return false;
     }
 
-    // ! Set the maximal elapsed time between 2 clicks to generate doubleclicks for the mouse. It also affects tripleclick behavior.
+    //! Set the maximal elapsed time between 2 clicks to generate doubleclicks for the mouse. It also affects tripleclick behavior.
     void CIrrDeviceStub::setDoubleClickTime(u32 timeMs)
     {
         MouseMultiClicks.DoubleClickTime = timeMs;
     }
 
-    // ! Get the maximal elapsed time between 2 clicks to generate double- and tripleclicks for the mouse.
+    //! Get the maximal elapsed time between 2 clicks to generate double- and tripleclicks for the mouse.
     u32 CIrrDeviceStub::getDoubleClickTime() const
     {
         return MouseMultiClicks.DoubleClickTime;
     }
 
-    // ! Remove all messages pending in the system message loop
+    //! Remove all messages pending in the system message loop
     void CIrrDeviceStub::clearSystemMessages()
     {}
 } // end namespace irr

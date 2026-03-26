@@ -11,7 +11,7 @@ namespace irr
 {
     namespace video
     {
-        // ! Constructor of empty image
+        //! Constructor of empty image
         CImage::CImage(ECOLOR_FORMAT format, const core::dimension2d<u32> &size)
             : Data(0), Size(size), Format(format), DeleteMemory(true)
         {
@@ -19,7 +19,7 @@ namespace irr
         }
 
 
-        // ! Constructor from raw data
+        //! Constructor from raw data
         CImage::CImage(ECOLOR_FORMAT format, const core::dimension2d<u32> &size, void *data,
             bool ownForeignMemory, bool deleteForeignMemory)
             : Data(0), Size(size), Format(format), DeleteMemory(deleteForeignMemory)
@@ -39,7 +39,7 @@ namespace irr
         }
 
 
-        // ! assumes format and size has been set and creates the rest
+        //! assumes format and size has been set and creates the rest
         void CImage::initData()
         {
 #ifdef _DEBUG
@@ -58,7 +58,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CImage::~CImage()
         {
             if (DeleteMemory)
@@ -66,42 +66,42 @@ namespace irr
         }
 
 
-        // ! Returns width and height of image data.
+        //! Returns width and height of image data.
         const core::dimension2d<u32>&CImage::getDimension() const
         {
             return Size;
         }
 
 
-        // ! Returns bits per pixel.
+        //! Returns bits per pixel.
         u32 CImage::getBitsPerPixel() const
         {
             return getBitsPerPixelFromFormat(Format);
         }
 
 
-        // ! Returns bytes per pixel
+        //! Returns bytes per pixel
         u32 CImage::getBytesPerPixel() const
         {
             return BytesPerPixel;
         }
 
 
-        // ! Returns image data size in bytes
+        //! Returns image data size in bytes
         u32 CImage::getImageDataSizeInBytes() const
         {
             return Pitch * Size.Height;
         }
 
 
-        // ! Returns image data size in pixels
+        //! Returns image data size in pixels
         u32 CImage::getImageDataSizeInPixels() const
         {
             return Size.Width * Size.Height;
         }
 
 
-        // ! returns mask for red value of a pixel
+        //! returns mask for red value of a pixel
         u32 CImage::getRedMask() const
         {
             switch (Format)
@@ -124,7 +124,7 @@ namespace irr
         }
 
 
-        // ! returns mask for green value of a pixel
+        //! returns mask for green value of a pixel
         u32 CImage::getGreenMask() const
         {
             switch (Format)
@@ -147,7 +147,7 @@ namespace irr
         }
 
 
-        // ! returns mask for blue value of a pixel
+        //! returns mask for blue value of a pixel
         u32 CImage::getBlueMask() const
         {
             switch (Format)
@@ -170,7 +170,7 @@ namespace irr
         }
 
 
-        // ! returns mask for alpha value of a pixel
+        //! returns mask for alpha value of a pixel
         u32 CImage::getAlphaMask() const
         {
             switch (Format)
@@ -193,7 +193,7 @@ namespace irr
         }
 
 
-        // ! sets a pixel
+        //! sets a pixel
         void CImage::setPixel(u32 x, u32 y, const SColor &color, bool blend)
         {
             if (x >= Size.Width || y >= Size.Height)
@@ -235,7 +235,7 @@ namespace irr
         }
 
 
-        // ! returns a pixel
+        //! returns a pixel
         SColor CImage::getPixel(u32 x, u32 y) const
         {
             if (x >= Size.Width || y >= Size.Height)
@@ -266,28 +266,28 @@ namespace irr
         }
 
 
-        // ! returns the color format
+        //! returns the color format
         ECOLOR_FORMAT CImage::getColorFormat() const
         {
             return Format;
         }
 
 
-        // ! copies this surface into another at given position
+        //! copies this surface into another at given position
         void CImage::copyTo(IImage *target, const core::position2d<s32> &pos)
         {
             Blit(BLITTER_TEXTURE, target, 0, &pos, this, 0, 0);
         }
 
 
-        // ! copies this surface partially into another at given position
+        //! copies this surface partially into another at given position
         void CImage::copyTo(IImage *target, const core::position2d<s32> &pos, const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect)
         {
             Blit(BLITTER_TEXTURE, target, clipRect, &pos, this, &sourceRect, 0);
         }
 
 
-        // ! copies this surface into another, using the alpha mask, a cliprect and a color to add with
+        //! copies this surface into another, using the alpha mask, a cliprect and a color to add with
         void CImage::copyToWithAlpha(IImage *target, const core::position2d<s32> &pos, const core::rect<s32> &sourceRect, const SColor &color, const core::rect<s32> *clipRect)
         {
             // color blend only necessary on not full spectrum aka. color.color != 0xFFFFFFFF
@@ -296,7 +296,7 @@ namespace irr
         }
 
 
-        // ! copies this surface into another, scaling it to the target image size
+        //! copies this surface into another, scaling it to the target image size
         // note: this is very very slow.
         void CImage::copyToScaling(void *target, u32 width, u32 height, ECOLOR_FORMAT format, u32 pitch)
         {
@@ -357,7 +357,7 @@ namespace irr
         }
 
 
-        // ! copies this surface into another, scaling it to the target image size
+        //! copies this surface into another, scaling it to the target image size
         // note: this is very very slow.
         void CImage::copyToScaling(IImage *target)
         {
@@ -377,7 +377,7 @@ namespace irr
         }
 
 
-        // ! copies this surface into another, scaling it to fit it.
+        //! copies this surface into another, scaling it to fit it.
         void CImage::copyToScalingBoxFilter(IImage *target, s32 bias, bool blend)
         {
             const core::dimension2d<u32> destSize = target->getDimension();
@@ -412,7 +412,7 @@ namespace irr
         }
 
 
-        // ! fills the surface with given color
+        //! fills the surface with given color
         void CImage::fill(const SColor &color)
         {
             u32 c;
@@ -457,7 +457,7 @@ namespace irr
         }
 
 
-        // ! get a filtered pixel
+        //! get a filtered pixel
         inline SColor CImage::getPixelBox(s32 x, s32 y, s32 fx, s32 fy, s32 bias) const
         {
             SColor c;

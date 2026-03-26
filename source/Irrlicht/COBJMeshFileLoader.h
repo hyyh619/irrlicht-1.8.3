@@ -16,25 +16,25 @@ namespace irr
 {
     namespace scene
     {
-        // ! Meshloader capable of loading obj meshes.
+        //! Meshloader capable of loading obj meshes.
         class COBJMeshFileLoader : public IMeshLoader
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             COBJMeshFileLoader(scene::ISceneManager *smgr, io::IFileSystem *fs);
 
-            // ! destructor
+            //! destructor
             virtual ~COBJMeshFileLoader();
 
-            // ! returns true if the file maybe is able to be loaded by this class
-            // ! based on the file extension (e.g. ".obj")
+            //! returns true if the file maybe is able to be loaded by this class
+            //! based on the file extension (e.g. ".obj")
             virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-            // ! creates/loads an animated mesh from the file.
-            // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-            // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-            // ! See IReferenceCounted::drop() for more information.
+            //! creates/loads an animated mesh from the file.
+            //! \return Pointer to the created mesh. Returns 0 if loading failed.
+            //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+            //! See IReferenceCounted::drop() for more information.
             virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
 private:
@@ -86,19 +86,19 @@ private:
             // combination of goNextWord followed by copyWord
             const c8* goAndCopyNextWord(c8 *outBuf, const c8 *inBuf, u32 outBufLength, const c8* const pBufEnd);
 
-            // ! Read the material from the given file
+            //! Read the material from the given file
             void readMTL(const c8 *fileName, const io::path &relPath);
 
-            // ! Find and return the material with the given name
+            //! Find and return the material with the given name
             SObjMtl* findMtl(const core::stringc &mtlName, const core::stringc &grpName);
 
-            // ! Read RGB color
+            //! Read RGB color
             const c8* readColor(const c8 *bufPtr, video::SColor &color, const c8* const pBufEnd);
-            // ! Read 3d vector of floats
+            //! Read 3d vector of floats
             const c8* readVec3(const c8 *bufPtr, core::vector3df &vec, const c8* const pBufEnd);
-            // ! Read 2d vector of floats
+            //! Read 2d vector of floats
             const c8* readUV(const c8 *bufPtr, core::vector2df &vec, const c8* const pBufEnd);
-            // ! Read boolean value represented as 'on' or 'off'
+            //! Read boolean value represented as 'on' or 'off'
             const c8* readBool(const c8 *bufPtr, bool &tf, const c8* const bufEnd);
 
             // reads and convert to integer the vertex indices in a line of obj file's face statement

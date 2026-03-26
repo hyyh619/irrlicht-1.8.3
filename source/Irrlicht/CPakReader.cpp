@@ -27,7 +27,7 @@ namespace irr
             }
         } // end namespace
 
-        // ! Constructor
+        //! Constructor
         CArchiveLoaderPAK::CArchiveLoaderPAK(io::IFileSystem *fs)
             : FileSystem(fs)
         {
@@ -37,19 +37,19 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CArchiveLoaderPAK::isALoadableFileFormat(const io::path &filename) const
         {
             return core::hasFileExtension(filename, "pak");
         }
 
-        // ! Check to see if the loader can create archives of this type.
+        //! Check to see if the loader can create archives of this type.
         bool CArchiveLoaderPAK::isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) const
         {
             return fileType == EFAT_PAK;
         }
 
-        // ! Creates an archive from the filename
+        //! Creates an archive from the filename
         /** \param file File handle to check.
          * \return Pointer to newly created archive, or 0 upon error. */
         IFileArchive* CArchiveLoaderPAK::createArchive(const io::path &filename, bool ignoreCase, bool ignorePaths) const
@@ -66,8 +66,8 @@ namespace irr
             return archive;
         }
 
-        // ! creates/loads an archive from the file.
-        // ! \return Pointer to the created archive. Returns 0 if loading failed.
+        //! creates/loads an archive from the file.
+        //! \return Pointer to the created archive. Returns 0 if loading failed.
         IFileArchive* CArchiveLoaderPAK::createArchive(io::IReadFile *file, bool ignoreCase, bool ignorePaths) const
         {
             IFileArchive *archive = 0;
@@ -82,7 +82,7 @@ namespace irr
         }
 
 
-        // ! Check if the file might be loaded by this class
+        //! Check if the file might be loaded by this class
         /** Check might look into the file.
          * \param file File handle to check.
          * \return True if file seems to be loadable. */
@@ -168,7 +168,7 @@ namespace irr
         }
 
 
-        // ! opens a file by file name
+        //! opens a file by file name
         IReadFile* CPakReader::createAndOpenFile(const io::path &filename)
         {
             s32 index = findFile(filename, false);
@@ -180,7 +180,7 @@ namespace irr
         }
 
 
-        // ! opens a file by index
+        //! opens a file by index
         IReadFile* CPakReader::createAndOpenFile(u32 index)
         {
             if (index >= Files.size())

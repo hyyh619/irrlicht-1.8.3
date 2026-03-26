@@ -8,7 +8,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSceneNodeAnimatorFollowSpline::CSceneNodeAnimatorFollowSpline(u32 time,
             const core::array<core::vector3df> &points, f32 speed,
             f32 tightness, bool loop, bool pingpong)
@@ -27,7 +27,7 @@ namespace irr
         }
 
 
-        // ! animates a scene node
+        //! animates a scene node
         void CSceneNodeAnimatorFollowSpline::animateNode(ISceneNode *node, u32 timeMs)
         {
             if (!node)
@@ -90,7 +90,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node animator.
+        //! Writes attributes of the scene node animator.
         void CSceneNodeAnimatorFollowSpline::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             out->addFloat("Speed", Speed);
@@ -117,7 +117,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node animator.
+        //! Reads attributes of the scene node animator.
         void CSceneNodeAnimatorFollowSpline::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             Speed     = in->getAttributeAsFloat("Speed");

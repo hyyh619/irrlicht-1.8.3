@@ -22,7 +22,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CD3D8Driver::CD3D8Driver(const SIrrlichtCreationParameters &params, io::IFileSystem *io)
             : CNullDriver(io, params.WindowSize), CurrentRenderMode(ERM_NONE),
             ResetRenderStates(true), Transformation3DChanged(false),
@@ -60,7 +60,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CD3D8Driver::~CD3D8Driver()
         {
             deleteMaterialRenders();
@@ -138,7 +138,7 @@ namespace irr
         }
 
 
-        // ! initialises the Direct3D API
+        //! initialises the Direct3D API
         bool CD3D8Driver::initDriver(HWND hwnd, bool pureSoftware)
         {
             HRESULT hr;
@@ -416,7 +416,7 @@ namespace irr
         }
 
 
-        // ! applications must call this method before performing any rendering. returns false if failed.
+        //! applications must call this method before performing any rendering. returns false if failed.
         bool CD3D8Driver::beginScene(bool backBuffer, bool zBuffer, SColor color,
             const SExposedVideoData &videoData, core::rect<s32> *sourceRect)
         {
@@ -477,7 +477,7 @@ namespace irr
         }
 
 
-        // ! applications must call this method after performing any rendering. returns false if failed.
+        //! applications must call this method after performing any rendering. returns false if failed.
         bool CD3D8Driver::endScene()
         {
             CNullDriver::endScene();
@@ -519,7 +519,7 @@ namespace irr
         }
 
 
-        // ! resets the device
+        //! resets the device
         bool CD3D8Driver::reset()
         {
             u32 i;
@@ -574,7 +574,7 @@ namespace irr
         }
 
 
-        // ! queries the features of the driver, returns true if feature is available
+        //! queries the features of the driver, returns true if feature is available
         bool CD3D8Driver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
         {
             if (!FeatureEnabled[feature])
@@ -644,7 +644,7 @@ namespace irr
         }
 
 
-        // ! sets transformation
+        //! sets transformation
         void CD3D8Driver::setTransform(E_TRANSFORMATION_STATE state,
             const core::matrix4 &mat)
         {
@@ -683,7 +683,7 @@ namespace irr
         }
 
 
-        // ! sets the current Texture
+        //! sets the current Texture
         bool CD3D8Driver::setActiveTexture(u32 stage, const video::ITexture *texture)
         {
             if (CurrentTexture[stage] == texture)
@@ -711,7 +711,7 @@ namespace irr
         }
 
 
-        // ! sets a material
+        //! sets a material
         void CD3D8Driver::setMaterial(const SMaterial &material)
         {
             Material = material;
@@ -726,14 +726,14 @@ namespace irr
         }
 
 
-        // ! returns a device dependent texture from a software surface (IImage)
+        //! returns a device dependent texture from a software surface (IImage)
         video::ITexture* CD3D8Driver::createDeviceDependentTexture(IImage *surface, const io::path &name, void *mipmapData)
         {
             return new CD3D8Texture(surface, this, TextureCreationFlags, name, mipmapData);
         }
 
 
-        // ! Enables or disables a texture creation flag.
+        //! Enables or disables a texture creation flag.
         void CD3D8Driver::setTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag,
             bool enabled)
         {
@@ -744,7 +744,7 @@ namespace irr
         }
 
 
-        // ! sets a render target
+        //! sets a render target
         bool CD3D8Driver::setRenderTarget(video::ITexture *texture,
             bool clearBackBuffer, bool clearZBuffer, SColor color)
         {
@@ -846,7 +846,7 @@ namespace irr
         }
 
 
-        // ! Creates a render target texture.
+        //! Creates a render target texture.
         ITexture* CD3D8Driver::addRenderTargetTexture(
             const core::dimension2d<u32> &size, const io::path &name,
             const ECOLOR_FORMAT format)
@@ -869,7 +869,7 @@ namespace irr
         }
 
 
-        // ! sets a viewport
+        //! sets a viewport
         void CD3D8Driver::setViewPort(const core::rect<s32> &area)
         {
             core::rect<s32> vp(area);
@@ -896,14 +896,14 @@ namespace irr
         }
 
 
-        // ! gets the area of the current viewport
+        //! gets the area of the current viewport
         const core::rect<s32>&CD3D8Driver::getViewPort() const
         {
             return ViewPort;
         }
 
 
-        // ! draws a vertex primitive list
+        //! draws a vertex primitive list
         void CD3D8Driver::drawVertexPrimitiveList(const void *vertices,
             u32 vertexCount, const void *indexList, u32 primitiveCount,
             E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
@@ -922,7 +922,7 @@ namespace irr
         }
 
 
-        // ! draws a vertex primitive list in 2d
+        //! draws a vertex primitive list in 2d
         void CD3D8Driver::draw2DVertexPrimitiveList(const void *vertices,
             u32 vertexCount, const void *indexList, u32 primitiveCount,
             E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
@@ -1050,7 +1050,7 @@ namespace irr
         }
 
 
-        // ! draws an 2d image, using a color (if color is other then Color(255,255,255,255)) and the alpha channel of the texture if wanted.
+        //! draws an 2d image, using a color (if color is other then Color(255,255,255,255)) and the alpha channel of the texture if wanted.
         void CD3D8Driver::draw2DImage(const video::ITexture *texture,
             const core::position2d<s32> &pos,
             const core::rect<s32> &sourceRect,
@@ -1263,7 +1263,7 @@ namespace irr
         }
 
 
-        // !Draws an 2d rectangle with a gradient.
+        //!Draws an 2d rectangle with a gradient.
         void CD3D8Driver::draw2DRectangle(const core::rect<s32> &position,
             SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown,
             SColor colorRightDown, const core::rect<s32> *clip)
@@ -1303,7 +1303,7 @@ namespace irr
         }
 
 
-        // ! Draws a 2d line.
+        //! Draws a 2d line.
         void CD3D8Driver::draw2DLine(const core::position2d<s32> &start,
             const core::position2d<s32> &end,
             SColor color)
@@ -1332,7 +1332,7 @@ namespace irr
         }
 
 
-        // ! Draws a pixel
+        //! Draws a pixel
         void CD3D8Driver::drawPixel(u32 x, u32 y, const SColor &color)
         {
             const core::dimension2d<u32> &renderTargetSize = getCurrentRenderTargetSize();
@@ -1351,7 +1351,7 @@ namespace irr
         }
 
 
-        // ! sets right vertex shader
+        //! sets right vertex shader
         void CD3D8Driver::setVertexShader(E_VERTEX_TYPE newType)
         {
             // Because we don't know if a vertex shader was set in a material instead of a
@@ -1389,7 +1389,7 @@ namespace irr
         }
 
 
-        // ! sets the needed renderstates
+        //! sets the needed renderstates
         bool CD3D8Driver::setRenderStates3DMode()
         {
             if (!pID3DDevice)
@@ -1438,7 +1438,7 @@ namespace irr
         }
 
 
-        // ! Map Irrlicht texture wrap mode to native values
+        //! Map Irrlicht texture wrap mode to native values
         D3DTEXTUREADDRESS CD3D8Driver::getTextureWrapMode(const u8 clamp)
         {
             switch (clamp)
@@ -1476,7 +1476,7 @@ namespace irr
         }
 
 
-        // ! Can be called by an IMaterialRenderer to make its work easier.
+        //! Can be called by an IMaterialRenderer to make its work easier.
         void CD3D8Driver::setBasicRenderStates(const SMaterial &material, const SMaterial &lastmaterial,
             bool resetAllRenderstates)
         {
@@ -1745,7 +1745,7 @@ namespace irr
         }
 
 
-        // ! sets the needed renderstates
+        //! sets the needed renderstates
         void CD3D8Driver::setRenderStatesStencilShadowMode(bool zfail, u32 debugDataVisible)
         {
             if ((CurrentRenderMode != ERM_SHADOW_VOLUME_ZFAIL &&
@@ -1813,7 +1813,7 @@ namespace irr
         }
 
 
-        // ! sets the needed renderstates
+        //! sets the needed renderstates
         void CD3D8Driver::setRenderStatesStencilFillMode(bool alpha)
         {
             if (CurrentRenderMode != ERM_STENCIL_FILL || Transformation3DChanged)
@@ -1870,7 +1870,7 @@ namespace irr
         }
 
 
-        // ! sets the needed renderstates
+        //! sets the needed renderstates
         void CD3D8Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel)
         {
             if (!pID3DDevice)
@@ -1976,7 +1976,7 @@ namespace irr
         }
 
 
-        // ! deletes all dynamic lights there are
+        //! deletes all dynamic lights there are
         void CD3D8Driver::deleteAllDynamicLights()
         {
             for (s32 i = 0; i < LastSetLight + 1; ++i)
@@ -1988,7 +1988,7 @@ namespace irr
         }
 
 
-        // ! adds a dynamic light
+        //! adds a dynamic light
         s32 CD3D8Driver::addDynamicLight(const SLight &dl)
         {
             CNullDriver::addDynamicLight(dl);
@@ -2049,16 +2049,16 @@ namespace irr
         }
 
 
-        // ! returns the maximal amount of dynamic lights the device can handle
+        //! returns the maximal amount of dynamic lights the device can handle
         u32 CD3D8Driver::getMaximalDynamicLightAmount() const
         {
             return Caps.MaxActiveLights;
         }
 
 
-        // ! Sets the dynamic ambient light color. The default color is
-        // ! (0,0,0,0) which means it is dark.
-        // ! \param color: New color of the ambient light.
+        //! Sets the dynamic ambient light color. The default color is
+        //! (0,0,0,0) which means it is dark.
+        //! \param color: New color of the ambient light.
         void CD3D8Driver::setAmbientLight(const SColorf &color)
         {
             if (!pID3DDevice)
@@ -2070,17 +2070,17 @@ namespace irr
         }
 
 
-        // ! \return Returns the name of the video driver. Example: In case of the DIRECT3D8
-        // ! driver, it would return "Direct3D8.1".
+        //! \return Returns the name of the video driver. Example: In case of the DIRECT3D8
+        //! driver, it would return "Direct3D8.1".
         const wchar_t* CD3D8Driver::getName() const
         {
             return L"Direct3D 8.1";
         }
 
 
-        // ! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
-        // ! this: First, draw all geometry. Then use this method, to draw the shadow
-        // ! volume. Then, use IVideoDriver::drawStencilShadow() to visualize the shadow.
+        //! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
+        //! this: First, draw all geometry. Then use this method, to draw the shadow
+        //! volume. Then, use IVideoDriver::drawStencilShadow() to visualize the shadow.
         void CD3D8Driver::drawStencilShadowVolume(const core::array<core::vector3df> &triangles, bool zfail, u32 debugDataVisible)
         {
             const u32 count = triangles.size();
@@ -2121,9 +2121,9 @@ namespace irr
         }
 
 
-        // ! Fills the stencil shadow with color. After the shadow volume has been drawn
-        // ! into the stencil buffer using IVideoDriver::drawStencilShadowVolume(), use this
-        // ! to draw the color of the shadow.
+        //! Fills the stencil shadow with color. After the shadow volume has been drawn
+        //! into the stencil buffer using IVideoDriver::drawStencilShadowVolume(), use this
+        //! to draw the color of the shadow.
         void CD3D8Driver::drawStencilShadow(bool clearStencilBuffer, video::SColor leftUpEdge,
             video::SColor rightUpEdge, video::SColor leftDownEdge, video::SColor rightDownEdge)
         {
@@ -2156,16 +2156,16 @@ namespace irr
         }
 
 
-        // ! Returns the maximum amount of primitives (mostly vertices) which
-        // ! the device is able to render with one drawIndexedTriangleList
-        // ! call.
+        //! Returns the maximum amount of primitives (mostly vertices) which
+        //! the device is able to render with one drawIndexedTriangleList
+        //! call.
         u32 CD3D8Driver::getMaximalPrimitiveCount() const
         {
             return Caps.MaxPrimitiveCount;
         }
 
 
-        // ! Sets the fog mode.
+        //! Sets the fog mode.
         void CD3D8Driver::setFog(SColor color, E_FOG_TYPE fogType, f32 start,
             f32 end, f32 density, bool pixelFog, bool rangeFog)
         {
@@ -2197,7 +2197,7 @@ namespace irr
         }
 
 
-        // ! Draws a 3d line.
+        //! Draws a 3d line.
         void CD3D8Driver::draw3DLine(const core::vector3df &start,
             const core::vector3df &end, SColor color)
         {
@@ -2223,21 +2223,21 @@ namespace irr
         }
 
 
-        // ! Returns type of video driver
+        //! Returns type of video driver
         E_DRIVER_TYPE CD3D8Driver::getDriverType() const
         {
             return EDT_DIRECT3D8;
         }
 
 
-        // ! Returns the transformation set by setTransform
+        //! Returns the transformation set by setTransform
         const core::matrix4&CD3D8Driver::getTransform(E_TRANSFORMATION_STATE state) const
         {
             return Matrices[state];
         }
 
 
-        // ! Sets a vertex shader constant.
+        //! Sets a vertex shader constant.
         void CD3D8Driver::setVertexShaderConstant(const f32 *data, s32 startRegister, s32 constantAmount)
         {
             if (data)
@@ -2245,7 +2245,7 @@ namespace irr
         }
 
 
-        // ! Sets a pixel shader constant.
+        //! Sets a pixel shader constant.
         void CD3D8Driver::setPixelShaderConstant(const f32 *data, s32 startRegister, s32 constantAmount)
         {
             if (data)
@@ -2253,7 +2253,7 @@ namespace irr
         }
 
 
-        // ! Sets a constant for the vertex shader based on a name.
+        //! Sets a constant for the vertex shader based on a name.
         bool CD3D8Driver::setVertexShaderConstant(const c8 *name, const f32 *floats, int count)
         {
             os::Printer::log("Cannot set constant, no HLSL supported in D3D8");
@@ -2262,7 +2262,7 @@ namespace irr
         }
 
 
-        // ! Bool interface for the above.
+        //! Bool interface for the above.
         bool CD3D8Driver::setVertexShaderConstant(const c8 *name, const bool *bools, int count)
         {
             os::Printer::log("Cannot set constant, no HLSL supported in D3D8");
@@ -2271,7 +2271,7 @@ namespace irr
         }
 
 
-        // ! Int interface for the above.
+        //! Int interface for the above.
         bool CD3D8Driver::setVertexShaderConstant(const c8 *name, const s32 *ints, int count)
         {
             os::Printer::log("Cannot set constant, no HLSL supported in D3D8");
@@ -2280,7 +2280,7 @@ namespace irr
         }
 
 
-        // ! Sets a constant for the pixel shader based on a name.
+        //! Sets a constant for the pixel shader based on a name.
         bool CD3D8Driver::setPixelShaderConstant(const c8 *name, const f32 *floats, int count)
         {
             os::Printer::log("Cannot set constant, no HLSL supported in D3D8");
@@ -2289,7 +2289,7 @@ namespace irr
         }
 
 
-        // ! Bool interface for the above.
+        //! Bool interface for the above.
         bool CD3D8Driver::setPixelShaderConstant(const c8 *name, const bool *bools, int count)
         {
             os::Printer::log("Cannot set constant, no HLSL supported in D3D8");
@@ -2298,7 +2298,7 @@ namespace irr
         }
 
 
-        // ! Int interface for the above.
+        //! Int interface for the above.
         bool CD3D8Driver::setPixelShaderConstant(const c8 *name, const s32 *ints, int count)
         {
             os::Printer::log("Cannot set constant, no HLSL supported in D3D8");
@@ -2307,8 +2307,8 @@ namespace irr
         }
 
 
-        // ! Adds a new material renderer to the VideoDriver, using pixel and/or
-        // ! vertex shaders to render geometry.
+        //! Adds a new material renderer to the VideoDriver, using pixel and/or
+        //! vertex shaders to render geometry.
         s32 CD3D8Driver::addShaderMaterial(const c8 *vertexShaderProgram,
             const c8 *pixelShaderProgram,
             IShaderConstantSetCallBack *callback,
@@ -2324,15 +2324,15 @@ namespace irr
         }
 
 
-        // ! Returns a pointer to the IVideoDriver interface. (Implementation for
-        // ! IMaterialRendererServices)
+        //! Returns a pointer to the IVideoDriver interface. (Implementation for
+        //! IMaterialRendererServices)
         IVideoDriver* CD3D8Driver::getVideoDriver()
         {
             return this;
         }
 
 
-        // ! Clears the ZBuffer.
+        //! Clears the ZBuffer.
         void CD3D8Driver::clearZBuffer()
         {
             const HRESULT hr = pID3DDevice->Clear(0, NULL, D3DCLEAR_ZBUFFER, 0, 1.0, 0);
@@ -2342,7 +2342,7 @@ namespace irr
         }
 
 
-        // ! Returns an image created from the last rendered frame.
+        //! Returns an image created from the last rendered frame.
         IImage* CD3D8Driver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RENDER_TARGET target)
         {
 #if defined(_IRR_XBOX_PLATFORM_)
@@ -2513,7 +2513,7 @@ namespace irr
     namespace video
     {
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
-        // ! creates a video driver
+        //! creates a video driver
         IVideoDriver* createDirectX8Driver(const SIrrlichtCreationParameters &params,
             io::IFileSystem *io, HWND window)
         {

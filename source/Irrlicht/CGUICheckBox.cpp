@@ -16,7 +16,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUICheckBox::CGUICheckBox(bool checked, IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
             : IGUICheckBox(environment, parent, id, rectangle), checkTime(0), Pressed(false), Checked(checked)
         {
@@ -30,7 +30,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUICheckBox::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -123,7 +123,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUICheckBox::draw()
         {
             if (!IsVisible)
@@ -172,14 +172,14 @@ namespace irr
         }
 
 
-        // ! set if box is checked
+        //! set if box is checked
         void CGUICheckBox::setChecked(bool checked)
         {
             Checked = checked;
         }
 
 
-        // ! returns if box is checked
+        //! returns if box is checked
         bool CGUICheckBox::isChecked() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -187,7 +187,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUICheckBox::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUICheckBox::serializeAttributes(out, options);
@@ -196,7 +196,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUICheckBox::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             Checked = in->getAttributeAsBool ("Checked");

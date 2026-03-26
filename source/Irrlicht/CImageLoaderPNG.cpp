@@ -54,8 +54,8 @@ namespace irr
 #endif  // _IRR_COMPILE_WITH_LIBPNG_
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".tga")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".tga")
         bool CImageLoaderPng::isALoadableFileExtension(const io::path &filename) const
         {
 #ifdef _IRR_COMPILE_WITH_LIBPNG_
@@ -66,7 +66,7 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CImageLoaderPng::isALoadableFileFormat(io::IReadFile *file) const
         {
 #ifdef _IRR_COMPILE_WITH_LIBPNG_

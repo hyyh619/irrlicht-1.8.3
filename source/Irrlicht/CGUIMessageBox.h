@@ -21,21 +21,21 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CGUIMessageBox(IGUIEnvironment *environment, const wchar_t *caption,
                 const wchar_t *text, s32 flag,
                 IGUIElement *parent, s32 id, core::rect<s32> rectangle, video::ITexture *image = 0);
 
-            // ! destructor
+            //! destructor
             virtual ~CGUIMessageBox();
 
-            // ! called if an event happened.
+            //! called if an event happened.
             virtual bool OnEvent(const SEvent &event);
 
-            // ! Writes attributes of the element.
+            //! Writes attributes of the element.
             virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const;
 
-            // ! Reads attributes of the element
+            //! Reads attributes of the element
             virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options);
 
 private:

@@ -56,7 +56,7 @@ namespace irr
         }
 
 
-        // ! adds a scene node to the scene graph based on its type id
+        //! adds a scene node to the scene graph based on its type id
         ISceneNode* CDefaultSceneNodeFactory::addSceneNode(ESCENE_NODE_TYPE type, ISceneNode *parent)
         {
             switch (type)
@@ -136,21 +136,21 @@ namespace irr
         }
 
 
-        // ! adds a scene node to the scene graph based on its type name
+        //! adds a scene node to the scene graph based on its type name
         ISceneNode* CDefaultSceneNodeFactory::addSceneNode(const c8 *typeName, ISceneNode *parent)
         {
             return addSceneNode(getTypeFromName(typeName), parent);
         }
 
 
-        // ! returns amount of scene node types this factory is able to create
+        //! returns amount of scene node types this factory is able to create
         u32 CDefaultSceneNodeFactory::getCreatableSceneNodeTypeCount() const
         {
             return SupportedSceneNodeTypes.size();
         }
 
 
-        // ! returns type of a createable scene node type
+        //! returns type of a createable scene node type
         ESCENE_NODE_TYPE CDefaultSceneNodeFactory::getCreateableSceneNodeType(u32 idx) const
         {
             if (idx < SupportedSceneNodeTypes.size())
@@ -160,7 +160,7 @@ namespace irr
         }
 
 
-        // ! returns type name of a createable scene node type
+        //! returns type name of a createable scene node type
         const c8* CDefaultSceneNodeFactory::getCreateableSceneNodeTypeName(u32 idx) const
         {
             if (idx < SupportedSceneNodeTypes.size())
@@ -170,7 +170,7 @@ namespace irr
         }
 
 
-        // ! returns type name of a createable scene node type
+        //! returns type name of a createable scene node type
         const c8* CDefaultSceneNodeFactory::getCreateableSceneNodeTypeName(ESCENE_NODE_TYPE type) const
         {
             for (u32 i = 0; i < SupportedSceneNodeTypes.size(); ++i)

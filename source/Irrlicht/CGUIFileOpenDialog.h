@@ -22,24 +22,24 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CGUIFileOpenDialog(const wchar_t *title, IGUIEnvironment *environment,
                 IGUIElement *parent, s32 id, bool restoreCWD = false,
                 io::path::char_type *startDir = 0);
 
-            // ! destructor
+            //! destructor
             virtual ~CGUIFileOpenDialog();
 
-            // ! returns the filename of the selected file. Returns NULL, if no file was selected.
+            //! returns the filename of the selected file. Returns NULL, if no file was selected.
             virtual const wchar_t* getFileName() const;
 
-            // ! Returns the directory of the selected file. Returns NULL, if no directory was selected.
+            //! Returns the directory of the selected file. Returns NULL, if no directory was selected.
             virtual const io::path&getDirectoryName();
 
-            // ! called if an event happened.
+            //! called if an event happened.
             virtual bool OnEvent(const SEvent &event);
 
-            // ! draws the element and its children
+            //! draws the element and its children
             virtual void draw();
 
             virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const;
@@ -47,13 +47,13 @@ public:
 
 protected:
 
-            // ! fills the listbox with files.
+            //! fills the listbox with files.
             void fillListBox();
 
-            // ! sends the event that the file has been selected.
+            //! sends the event that the file has been selected.
             void sendSelectedEvent(EGUI_EVENT_TYPE type);
 
-            // ! sends the event that the file choose process has been canceld
+            //! sends the event that the file choose process has been canceld
             void sendCancelEvent();
 
             core::position2d<s32> DragStart;

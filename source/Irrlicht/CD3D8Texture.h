@@ -26,51 +26,51 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CD3D8Texture(IImage *image, CD3D8Driver *driver,
                 u32 flags, const io::path &name, void *mipmapData = 0);
 
-            // ! rendertarget constructor
+            //! rendertarget constructor
             CD3D8Texture(CD3D8Driver *driver, const core::dimension2d<u32> &size, const io::path &name);
 
-            // ! destructor
+            //! destructor
             virtual ~CD3D8Texture();
 
-            // ! lock function
+            //! lock function
             virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel = 0);
 
-            // ! unlock function
+            //! unlock function
             virtual void unlock();
 
-            // ! Returns original size of the texture.
+            //! Returns original size of the texture.
             virtual const core::dimension2d<u32>&getOriginalSize() const;
 
-            // ! Returns (=size) of the texture.
+            //! Returns (=size) of the texture.
             virtual const core::dimension2d<u32>&getSize() const;
 
-            // ! returns driver type of texture (=the driver, who created the texture)
+            //! returns driver type of texture (=the driver, who created the texture)
             virtual E_DRIVER_TYPE getDriverType() const;
 
-            // ! returns color format of texture
+            //! returns color format of texture
             virtual ECOLOR_FORMAT getColorFormat() const;
 
-            // ! returns pitch of texture (in bytes)
+            //! returns pitch of texture (in bytes)
             virtual u32 getPitch() const;
 
-            // ! returns the DIRECT3D8 Texture
+            //! returns the DIRECT3D8 Texture
             IDirect3DTexture8* getDX8Texture() const;
 
-            // ! returns if texture has mipmap levels
+            //! returns if texture has mipmap levels
             bool hasMipMaps() const;
 
-            // ! Regenerates the mip map levels of the texture. Useful after locking and
-            // ! modifying the texture
+            //! Regenerates the mip map levels of the texture. Useful after locking and
+            //! modifying the texture
             virtual void regenerateMipMapLevels(void *mipmapData = 0);
 
-            // ! returns if it is a render target
+            //! returns if it is a render target
             virtual bool isRenderTarget() const;
 
-            // ! Returns pointer to the render target surface
+            //! Returns pointer to the render target surface
             IDirect3DSurface8* getRenderTargetSurface();
 
 private:
@@ -78,13 +78,13 @@ private:
 
             void createRenderTarget();
 
-            // ! creates the hardware texture
+            //! creates the hardware texture
             bool createTexture(u32 flags, IImage *Image);
 
-            // ! copies the image to the texture
+            //! copies the image to the texture
             bool copyTexture(IImage *Image);
 
-            // ! convert color formats
+            //! convert color formats
             ECOLOR_FORMAT getColorFormatFromD3DFormat(D3DFORMAT format);
 
             bool createMipMaps(u32 level = 1);

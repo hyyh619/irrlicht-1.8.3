@@ -923,16 +923,16 @@ public:
             // deferred initialization
             void initExtensions(bool stencilBuffer);
 
-            // ! queries the features of the driver, returns true if feature is available
+            //! queries the features of the driver, returns true if feature is available
             bool queryFeature(E_VIDEO_DRIVER_FEATURE feature) const;
 
-            // ! queries the features of the driver, returns true if feature is available
+            //! queries the features of the driver, returns true if feature is available
             bool queryOpenGLFeature(EOpenGLFeatures feature) const
             {
                 return FeatureAvailable[feature];
             }
 
-            // ! show all features with availablity
+            //! show all features with availablity
             void dump() const;
 
             void dumpFramebufferFormats() const;
@@ -943,40 +943,40 @@ public:
             bool TextureCompressionExtension;
 
             // Some non-boolean properties
-            // ! Maxmimum texture layers supported by the fixed pipeline
+            //! Maxmimum texture layers supported by the fixed pipeline
             u8 MaxSupportedTextures;
-            // ! Maxmimum texture layers supported by the engine
+            //! Maxmimum texture layers supported by the engine
             u8 MaxTextureUnits;
-            // ! Maximum hardware lights supported
+            //! Maximum hardware lights supported
             u8 MaxLights;
-            // ! Maximal Anisotropy
+            //! Maximal Anisotropy
             u8 MaxAnisotropy;
-            // ! Number of user clipplanes
+            //! Number of user clipplanes
             u8 MaxUserClipPlanes;
-            // ! Number of auxiliary buffers
+            //! Number of auxiliary buffers
             u8 MaxAuxBuffers;
-            // ! Number of rendertargets available as MRTs
+            //! Number of rendertargets available as MRTs
             u8 MaxMultipleRenderTargets;
-            // ! Optimal number of indices per meshbuffer
+            //! Optimal number of indices per meshbuffer
             u32 MaxIndices;
-            // ! Maximal texture dimension
+            //! Maximal texture dimension
             u32 MaxTextureSize;
-            // ! Maximal vertices handled by geometry shaders
+            //! Maximal vertices handled by geometry shaders
             u32 MaxGeometryVerticesOut;
-            // ! Maximal LOD Bias
+            //! Maximal LOD Bias
             f32 MaxTextureLODBias;
-            // ! Minimal and maximal supported thickness for lines without smoothing
+            //! Minimal and maximal supported thickness for lines without smoothing
             GLfloat DimAliasedLine[2];
-            // ! Minimal and maximal supported thickness for points without smoothing
+            //! Minimal and maximal supported thickness for points without smoothing
             GLfloat DimAliasedPoint[2];
-            // ! Minimal and maximal supported thickness for lines with smoothing
+            //! Minimal and maximal supported thickness for lines with smoothing
             GLfloat DimSmoothedLine[2];
-            // ! Minimal and maximal supported thickness for points with smoothing
+            //! Minimal and maximal supported thickness for points with smoothing
             GLfloat DimSmoothedPoint[2];
 
-            // ! OpenGL version as Integer: 100*Major+Minor, i.e. 2.1 becomes 201
+            //! OpenGL version as Integer: 100*Major+Minor, i.e. 2.1 becomes 201
             u16 Version;
-            // ! GLSL version as Integer: 100*Major+Minor
+            //! GLSL version as Integer: 100*Major+Minor
             u16 ShaderLanguageVersion;
 
             bool OcclusionQuerySupport;

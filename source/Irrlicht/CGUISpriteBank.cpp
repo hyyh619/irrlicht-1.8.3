@@ -93,7 +93,7 @@ namespace irr
         }
 
 
-        // ! clear everything
+        //! clear everything
         void CGUISpriteBank::clear()
         {
             // drop textures
@@ -106,7 +106,7 @@ namespace irr
             Rectangles.clear();
         }
 
-        // ! Add the texture and use it for a single non-animated sprite.
+        //! Add the texture and use it for a single non-animated sprite.
         s32 CGUISpriteBank::addTextureAsSprite(video::ITexture *texture)
         {
             if (!texture)
@@ -131,7 +131,7 @@ namespace irr
             return Sprites.size() - 1;
         }
 
-        // ! draws a sprite in 2d with scale and color
+        //! draws a sprite in 2d with scale and color
         void CGUISpriteBank::draw2DSprite(u32 index, const core::position2di &pos,
             const core::rect<s32> *clip, const video::SColor &color,
             u32 starttime, u32 currenttime, bool loop, bool center)

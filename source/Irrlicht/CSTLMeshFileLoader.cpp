@@ -19,8 +19,8 @@ namespace irr
 {
     namespace scene
     {
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool CSTLMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "stl");
@@ -28,10 +28,10 @@ namespace irr
 
 
 
-        // ! creates/loads an animated mesh from the file.
-        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-        // ! See IReferenceCounted::drop() for more information.
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* CSTLMeshFileLoader::createMesh(io::IReadFile *file)
         {
             const long filesize = file->getSize();
@@ -176,7 +176,7 @@ namespace irr
         }
 
 
-        // ! Read 3d vector of floats
+        //! Read 3d vector of floats
         void CSTLMeshFileLoader::getNextVector(io::IReadFile *file, core::vector3df &vec, bool binary) const
         {
             if (binary)
@@ -207,7 +207,7 @@ namespace irr
         }
 
 
-        // ! Read next word
+        //! Read next word
         const core::stringc&CSTLMeshFileLoader::getNextToken(io::IReadFile *file, core::stringc &token) const
         {
             goNextWord(file);
@@ -228,7 +228,7 @@ namespace irr
         }
 
 
-        // ! skip to next word
+        //! skip to next word
         void CSTLMeshFileLoader::goNextWord(io::IReadFile *file) const
         {
             u8 c;
@@ -246,7 +246,7 @@ namespace irr
         }
 
 
-        // ! Read until line break is reached and stop at the next non-space character
+        //! Read until line break is reached and stop at the next non-space character
         void CSTLMeshFileLoader::goNextLine(io::IReadFile *file) const
         {
             u8 c;

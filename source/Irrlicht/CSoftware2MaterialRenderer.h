@@ -14,12 +14,12 @@ namespace irr
 {
     namespace video
     {
-        // ! Base class for all internal Software2 material renderers
+        //! Base class for all internal Software2 material renderers
         class CSoftware2MaterialRenderer : public IMaterialRenderer
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             CSoftware2MaterialRenderer(video::CBurningVideoDriver *driver)
                 : Driver(driver)
             {}
@@ -29,14 +29,14 @@ protected:
             video::CBurningVideoDriver *Driver;
         };
 
-        // ! solid material renderer
+        //! solid material renderer
         class CSoftware2MaterialRenderer_SOLID : public CSoftware2MaterialRenderer
         {
 public:
             CSoftware2MaterialRenderer_SOLID (video::CBurningVideoDriver *driver)
                 : CSoftware2MaterialRenderer (driver) {}
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             virtual bool isTransparent() const
             {
                 return false;
@@ -45,7 +45,7 @@ public:
 
 
 
-        // ! Transparent material renderer
+        //! Transparent material renderer
         class CSoftware2MaterialRenderer_TRANSPARENT_ADD_COLOR : public CSoftware2MaterialRenderer
         {
 public:
@@ -53,14 +53,14 @@ public:
                 : CSoftware2MaterialRenderer (driver) {}
 
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             virtual bool isTransparent() const
             {
                 return true;
             }
         };
 
-        // ! unsupported material renderer
+        //! unsupported material renderer
         class CSoftware2MaterialRenderer_UNSUPPORTED : public CSoftware2MaterialRenderer
         {
 public:
@@ -73,7 +73,7 @@ public:
             }
         };
 
-        // ! unsupported material renderer
+        //! unsupported material renderer
         class CBurningShader_REFERENCE : public CSoftware2MaterialRenderer
         {
 public:

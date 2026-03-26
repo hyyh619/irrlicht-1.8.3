@@ -1245,7 +1245,7 @@ namespace irr
 
 
     // Methods for Software drivers
-    // ! draws a rectangle
+    //! draws a rectangle
     static void drawRectangle(video::IImage *img, const core::rect<s32> &rect, const video::SColor &color)
     {
         Blit(color.getAlpha() == 0xFF ? BLITTER_COLOR : BLITTER_COLOR_ALPHA,
@@ -1253,7 +1253,7 @@ namespace irr
     }
 
 
-    // ! draws a line from to with color
+    //! draws a line from to with color
     static void drawLine(video::IImage *img, const core::position2d<s32> &from,
         const core::position2d<s32> &to, const video::SColor &color)
     {

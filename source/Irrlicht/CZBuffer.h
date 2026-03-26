@@ -15,25 +15,25 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CZBuffer(const core::dimension2d<u32> &size);
 
-            // ! destructor
+            //! destructor
             virtual ~CZBuffer();
 
-            // ! clears the zbuffer
+            //! clears the zbuffer
             virtual void clear();
 
-            // ! sets the new size of the zbuffer
+            //! sets the new size of the zbuffer
             virtual void setSize(const core::dimension2d<u32> &size);
 
-            // ! returns the size of the zbuffer
+            //! returns the size of the zbuffer
             virtual const core::dimension2d<u32>&getSize() const;
 
-            // ! locks the zbuffer
+            //! locks the zbuffer
             virtual TZBufferType* lock();
 
-            // ! unlocks the zbuffer
+            //! unlocks the zbuffer
             virtual void unlock();
 
 private:

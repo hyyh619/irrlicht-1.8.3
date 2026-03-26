@@ -27,7 +27,7 @@ namespace irr
 
         static const u32 WORD_BUFFER_LENGTH = 512;
 
-        // ! Constructor
+        //! Constructor
         COBJMeshFileLoader::COBJMeshFileLoader(scene::ISceneManager *smgr, io::IFileSystem *fs)
             : SceneManager(smgr), FileSystem(fs)
         {
@@ -40,7 +40,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         COBJMeshFileLoader::~COBJMeshFileLoader()
         {
             if (FileSystem)
@@ -48,18 +48,18 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool COBJMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "obj");
         }
 
 
-        // ! creates/loads an animated mesh from the file.
-        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-        // ! See IReferenceCounted::drop() for more information.
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* COBJMeshFileLoader::createMesh(io::IReadFile *file)
         {
             const long filesize = file->getSize();
@@ -689,7 +689,7 @@ namespace irr
         }
 
 
-        // ! Read RGB color
+        //! Read RGB color
         const c8* COBJMeshFileLoader::readColor(const c8 *bufPtr, video::SColor &color, const c8* const bufEnd)
         {
             const u32 COLOR_BUFFER_LENGTH = 16;
@@ -706,7 +706,7 @@ namespace irr
         }
 
 
-        // ! Read 3d vector of floats
+        //! Read 3d vector of floats
         const c8* COBJMeshFileLoader::readVec3(const c8 *bufPtr, core::vector3df &vec, const c8* const bufEnd)
         {
             const u32 WORD_BUFFER_LENGTH = 256;
@@ -722,7 +722,7 @@ namespace irr
         }
 
 
-        // ! Read 2d vector of floats
+        //! Read 2d vector of floats
         const c8* COBJMeshFileLoader::readUV(const c8 *bufPtr, core::vector2df &vec, const c8* const bufEnd)
         {
             const u32 WORD_BUFFER_LENGTH = 256;
@@ -736,7 +736,7 @@ namespace irr
         }
 
 
-        // ! Read boolean value represented as 'on' or 'off'
+        //! Read boolean value represented as 'on' or 'off'
         const c8* COBJMeshFileLoader::readBool(const c8 *bufPtr, bool &tf, const c8* const bufEnd)
         {
             const u32 BUFFER_LENGTH = 8;
@@ -784,7 +784,7 @@ namespace irr
         }
 
 
-        // ! skip space characters and stop on first non-space
+        //! skip space characters and stop on first non-space
         const c8* COBJMeshFileLoader::goFirstWord(const c8 *buf, const c8* const bufEnd, bool acrossNewlines)
         {
             // skip space characters
@@ -800,7 +800,7 @@ namespace irr
         }
 
 
-        // ! skip current word and stop at beginning of next one
+        //! skip current word and stop at beginning of next one
         const c8* COBJMeshFileLoader::goNextWord(const c8 *buf, const c8* const bufEnd, bool acrossNewlines)
         {
             // skip current word
@@ -811,7 +811,7 @@ namespace irr
         }
 
 
-        // ! Read until line break is reached and stop at the next non-space character
+        //! Read until line break is reached and stop at the next non-space character
         const c8* COBJMeshFileLoader::goNextLine(const c8 *buf, const c8* const bufEnd)
         {
             // look for newline characters

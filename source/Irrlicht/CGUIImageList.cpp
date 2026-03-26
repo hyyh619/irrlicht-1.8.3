@@ -9,7 +9,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIImageList::CGUIImageList(video::IVideoDriver *driver)
             :    Driver(driver),
             Texture(0),
@@ -30,7 +30,7 @@ namespace irr
 
 
 
-        // ! destructor
+        //! destructor
         CGUIImageList::~CGUIImageList()
         {
             if (Driver)
@@ -45,7 +45,7 @@ namespace irr
         }
 
 
-        // ! Creates the image list from texture.
+        //! Creates the image list from texture.
         bool CGUIImageList::createImageList(video::ITexture *texture,
             core::dimension2d<s32> imageSize,
             bool useAlphaChannel)
@@ -68,7 +68,7 @@ namespace irr
             return true;
         }
 
-        // ! Draws an image and clips it to the specified rectangle if wanted
+        //! Draws an image and clips it to the specified rectangle if wanted
         void CGUIImageList::draw(s32 index, const core::position2d<s32> &destPos,
             const core::rect<s32> *clip /*= 0*/)
         {

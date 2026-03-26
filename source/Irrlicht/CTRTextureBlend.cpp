@@ -77,10 +77,10 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CTRTextureBlend(CBurningVideoDriver *driver);
 
-            // ! draws an indexed triangle list
+            //! draws an indexed triangle list
             virtual void drawTriangle(const s4DVertex *a, const s4DVertex *b, const s4DVertex *c);
 
             virtual void setZCompareFunc(u32 func);
@@ -107,7 +107,7 @@ private:
             u32 ZCompare;
         };
 
-        // ! constructor
+        //! constructor
         CTRTextureBlend::CTRTextureBlend(CBurningVideoDriver *driver)
             : IBurningShader(driver)
         {
@@ -2338,7 +2338,7 @@ namespace irr
 {
     namespace video
     {
-        // ! creates a flat triangle renderer
+        //! creates a flat triangle renderer
         IBurningShader* createTRTextureBlend(CBurningVideoDriver *driver)
         {
     #ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_

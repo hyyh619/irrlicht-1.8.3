@@ -17,27 +17,27 @@ namespace irr
         {
 public:
 
-            // ! destructor
+            //! destructor
             virtual ~IZBuffer() {};
 
-            // ! clears the zbuffer
+            //! clears the zbuffer
             virtual void clear() = 0;
 
-            // ! sets the new size of the zbuffer
+            //! sets the new size of the zbuffer
             virtual void setSize(const core::dimension2d<u32> &size) = 0;
 
-            // ! returns the size of the zbuffer
+            //! returns the size of the zbuffer
             virtual const core::dimension2d<u32>&getSize() const = 0;
 
-            // ! locks the zbuffer
+            //! locks the zbuffer
             virtual TZBufferType* lock() = 0;
 
-            // ! unlocks the zbuffer
+            //! unlocks the zbuffer
             virtual void unlock() = 0;
         };
 
 
-        // ! creates a ZBuffer
+        //! creates a ZBuffer
         IZBuffer* createZBuffer(const core::dimension2d<u32> &size);
     } // end namespace video
 } // end namespace irr

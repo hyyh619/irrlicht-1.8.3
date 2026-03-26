@@ -45,7 +45,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         IBurningShader::~IBurningShader()
         {
             if (RenderTarget)
@@ -64,7 +64,7 @@ namespace irr
             }
         }
 
-        // ! sets a render target
+        //! sets a render target
         void IBurningShader::setRenderTarget(video::IImage *surface, const core::rect<s32> &viewPort)
         {
             if (RenderTarget)
@@ -82,7 +82,7 @@ namespace irr
         }
 
 
-        // ! sets the Texture
+        //! sets the Texture
         void IBurningShader::setTextureParam(u32 stage, video::CSoftwareTexture2 *texture, s32 lodLevel)
         {
             sInternalTexture *it = &IT[stage];

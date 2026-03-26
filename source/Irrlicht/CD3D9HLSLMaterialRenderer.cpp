@@ -20,7 +20,7 @@ namespace irr
 {
     namespace video
     {
-        // ! Public constructor
+        //! Public constructor
         CD3D9HLSLMaterialRenderer::CD3D9HLSLMaterialRenderer(IDirect3DDevice9 *d3ddev,
             video::IVideoDriver *driver, s32 &outMaterialTypeNr,
             const c8 *vertexShaderProgram,
@@ -62,7 +62,7 @@ namespace irr
         }
 
 
-        // ! Destructor
+        //! Destructor
         CD3D9HLSLMaterialRenderer::~CD3D9HLSLMaterialRenderer()
         {
             if (VSConstantsTable)

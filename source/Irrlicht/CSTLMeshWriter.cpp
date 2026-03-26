@@ -38,14 +38,14 @@ namespace irr
         }
 
 
-        // ! Returns the type of the mesh writer
+        //! Returns the type of the mesh writer
         EMESH_WRITER_TYPE CSTLMeshWriter::getType() const
         {
             return EMWT_STL;
         }
 
 
-        // ! writes a mesh
+        //! writes a mesh
         bool CSTLMeshWriter::writeMesh(io::IWriteFile *file, scene::IMesh *mesh, s32 flags)
         {
             if (!file)

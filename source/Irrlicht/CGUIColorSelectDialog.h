@@ -23,16 +23,16 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CGUIColorSelectDialog(const wchar_t *title, IGUIEnvironment *environment, IGUIElement *parent, s32 id);
 
-            // ! destructor
+            //! destructor
             virtual ~CGUIColorSelectDialog();
 
-            // ! called if an event happened.
+            //! called if an event happened.
             virtual bool OnEvent(const SEvent &event);
 
-            // ! draws the element and its children
+            //! draws the element and its children
             virtual void draw();
 
             virtual video::SColor getColor();
@@ -40,10 +40,10 @@ public:
 
 private:
 
-            // ! sends the event that the file has been selected.
+            //! sends the event that the file has been selected.
             void sendSelectedEvent();
 
-            // ! sends the event that the file choose process has been canceld
+            //! sends the event that the file choose process has been canceld
             void sendCancelEvent();
 
             core::position2d<s32> DragStart;

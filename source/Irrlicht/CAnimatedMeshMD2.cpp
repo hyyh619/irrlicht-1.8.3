@@ -217,7 +217,7 @@ namespace irr
         };
 
 
-        // ! constructor
+        //! constructor
         CAnimatedMeshMD2::CAnimatedMeshMD2()
             : InterpolationBuffer(0), FrameList(0), FrameCount(0), FramesPerSecond((f32)(MD2AnimationTypeList[0].fps << MD2_FRAME_SHIFT))
         {
@@ -229,7 +229,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CAnimatedMeshMD2::~CAnimatedMeshMD2()
         {
             delete[] FrameList;
@@ -238,14 +238,14 @@ namespace irr
         }
 
 
-        // ! returns the amount of frames in milliseconds. If the amount is 1, it is a static (=non animated) mesh.
+        //! returns the amount of frames in milliseconds. If the amount is 1, it is a static (=non animated) mesh.
         u32 CAnimatedMeshMD2::getFrameCount() const
         {
             return FrameCount << MD2_FRAME_SHIFT;
         }
 
 
-        // ! returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail. Note, that some Meshes will ignore the detail level.
+        //! returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail. Note, that some Meshes will ignore the detail level.
         IMesh* CAnimatedMeshMD2::getMesh(s32 frame, s32 detailLevel, s32 startFrameLoop, s32 endFrameLoop)
         {
             if ((u32)frame > getFrameCount())
@@ -262,14 +262,14 @@ namespace irr
         }
 
 
-        // ! returns amount of mesh buffers. MD2 meshes only have one buffer
+        //! returns amount of mesh buffers. MD2 meshes only have one buffer
         u32 CAnimatedMeshMD2::getMeshBufferCount() const
         {
             return 1;
         }
 
 
-        // ! returns pointer to a mesh buffer
+        //! returns pointer to a mesh buffer
         IMeshBuffer* CAnimatedMeshMD2::getMeshBuffer(u32 nr) const
         {
             if (nr == 0)
@@ -279,7 +279,7 @@ namespace irr
         }
 
 
-        // ! Returns pointer to a mesh buffer which fits a material
+        //! Returns pointer to a mesh buffer which fits a material
         IMeshBuffer* CAnimatedMeshMD2::getMeshBuffer(const video::SMaterial &material) const
         {
             if (InterpolationBuffer->Material == material)
@@ -356,14 +356,14 @@ namespace irr
         }
 
 
-        // ! sets a flag of all contained materials to a new value
+        //! sets a flag of all contained materials to a new value
         void CAnimatedMeshMD2::setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue)
         {
             InterpolationBuffer->Material.setFlag(flag, newvalue);
         }
 
 
-        // ! set the hardware mapping hint, for driver
+        //! set the hardware mapping hint, for driver
         void CAnimatedMeshMD2::setHardwareMappingHint(E_HARDWARE_MAPPING newMappingHint,
             E_BUFFER_TYPE buffer)
         {
@@ -371,35 +371,35 @@ namespace irr
         }
 
 
-        // ! flags the meshbuffer as changed, reloads hardware buffers
+        //! flags the meshbuffer as changed, reloads hardware buffers
         void CAnimatedMeshMD2::setDirty(E_BUFFER_TYPE buffer)
         {
             InterpolationBuffer->setDirty(buffer);
         }
 
 
-        // ! returns an axis aligned bounding box
+        //! returns an axis aligned bounding box
         const core::aabbox3d<f32>&CAnimatedMeshMD2::getBoundingBox() const
         {
             return InterpolationBuffer->BoundingBox;
         }
 
 
-        // ! set user axis aligned bounding box
+        //! set user axis aligned bounding box
         void CAnimatedMeshMD2::setBoundingBox(const core::aabbox3df &box)
         {
             InterpolationBuffer->BoundingBox = box;
         }
 
 
-        // ! Returns the type of the animated mesh.
+        //! Returns the type of the animated mesh.
         E_ANIMATED_MESH_TYPE CAnimatedMeshMD2::getMeshType() const
         {
             return EAMT_MD2;
         }
 
 
-        // ! Returns frame loop data for a special MD2 animation type.
+        //! Returns frame loop data for a special MD2 animation type.
         void CAnimatedMeshMD2::getFrameLoop(EMD2_ANIMATION_TYPE l,
             s32 &outBegin, s32 &outEnd, s32 &outFPS) const
         {
@@ -415,7 +415,7 @@ namespace irr
         }
 
 
-        // ! Returns frame loop data for a special MD2 animation type.
+        //! Returns frame loop data for a special MD2 animation type.
         bool CAnimatedMeshMD2::getFrameLoop(const c8 *name,
             s32 &outBegin, s32 &outEnd, s32 &outFPS) const
         {
@@ -435,14 +435,14 @@ namespace irr
         }
 
 
-        // ! Returns amount of md2 animations in this file.
+        //! Returns amount of md2 animations in this file.
         s32 CAnimatedMeshMD2::getAnimationCount() const
         {
             return AnimationData.size();
         }
 
 
-        // ! Returns name of md2 animation.
+        //! Returns name of md2 animation.
         const c8* CAnimatedMeshMD2::getAnimationName(s32 nr) const
         {
             if ((u32)nr >= AnimationData.size())

@@ -16,7 +16,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CSoftwareDriver::CSoftwareDriver(const core::dimension2d<u32> &windowSize, bool fullscreen, io::IFileSystem *io, video::IImagePresenter *presenter)
             : CNullDriver(io, windowSize), BackBuffer(0), Presenter(presenter), WindowId(0),
             SceneSourceRect(0), RenderTargetTexture(0), RenderTargetSurface(0),
@@ -66,7 +66,7 @@ namespace irr
 
 
 
-        // ! destructor
+        //! destructor
         CSoftwareDriver::~CSoftwareDriver()
         {
             // delete Backbuffer
@@ -98,7 +98,7 @@ namespace irr
 
 
 
-        // ! switches to a triangle renderer
+        //! switches to a triangle renderer
         void CSoftwareDriver::switchToTriangleRenderer(ETriangleRenderer renderer)
         {
             video::IImage *s = 0;
@@ -113,7 +113,7 @@ namespace irr
         }
 
 
-        // ! void selects the right triangle renderer based on the render states.
+        //! void selects the right triangle renderer based on the render states.
         void CSoftwareDriver::selectRightTriangleRenderer()
         {
             ETriangleRenderer renderer = ETR_FLAT;
@@ -157,7 +157,7 @@ namespace irr
         }
 
 
-        // ! queries the features of the driver, returns true if feature is available
+        //! queries the features of the driver, returns true if feature is available
         bool CSoftwareDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
         {
             switch (feature)
@@ -174,14 +174,14 @@ namespace irr
         }
 
 
-        // ! sets transformation
+        //! sets transformation
         void CSoftwareDriver::setTransform(E_TRANSFORMATION_STATE state, const core::matrix4 &mat)
         {
             TransformationMatrix[state] = mat;
         }
 
 
-        // ! sets the current Texture
+        //! sets the current Texture
         bool CSoftwareDriver::setActiveTexture(u32 stage, video::ITexture *texture)
         {
             if (texture && texture->getDriverType() != EDT_SOFTWARE)
@@ -203,7 +203,7 @@ namespace irr
         }
 
 
-        // ! sets a material
+        //! sets a material
         void CSoftwareDriver::setMaterial(const SMaterial &material)
         {
             Material = material;
@@ -218,7 +218,7 @@ namespace irr
         }
 
 
-        // ! clears the zbuffer
+        //! clears the zbuffer
         bool CSoftwareDriver::beginScene(bool backBuffer, bool zBuffer, SColor color,
             const SExposedVideoData &videoData, core::rect<s32> *sourceRect)
         {
@@ -237,7 +237,7 @@ namespace irr
         }
 
 
-        // ! presents the rendered scene on the screen, returns false if failed
+        //! presents the rendered scene on the screen, returns false if failed
         bool CSoftwareDriver::endScene()
         {
             CNullDriver::endScene();
@@ -246,15 +246,15 @@ namespace irr
         }
 
 
-        // ! returns a device dependent texture from a software surface (IImage)
-        // ! THIS METHOD HAS TO BE OVERRIDDEN BY DERIVED DRIVERS WITH OWN TEXTURES
+        //! returns a device dependent texture from a software surface (IImage)
+        //! THIS METHOD HAS TO BE OVERRIDDEN BY DERIVED DRIVERS WITH OWN TEXTURES
         ITexture* CSoftwareDriver::createDeviceDependentTexture(IImage *surface, const io::path &name, void *mipmapData)
         {
             return new CSoftwareTexture(surface, name, false, mipmapData);
         }
 
 
-        // ! sets a render target
+        //! sets a render target
         bool CSoftwareDriver::setRenderTarget(video::ITexture *texture, bool clearBackBuffer,
             bool clearZBuffer, SColor color)
         {
@@ -292,7 +292,7 @@ namespace irr
         }
 
 
-        // ! sets a render target
+        //! sets a render target
         void CSoftwareDriver::setRenderTarget(video::CImage *image)
         {
             if (RenderTargetSurface)
@@ -317,7 +317,7 @@ namespace irr
         }
 
 
-        // ! sets a viewport
+        //! sets a viewport
         void CSoftwareDriver::setViewPort(const core::rect<s32> &area)
         {
             ViewPort = area;
@@ -358,7 +358,7 @@ namespace irr
         }
 
 
-        // ! draws a vertex primitive list
+        //! draws a vertex primitive list
         void CSoftwareDriver::drawVertexPrimitiveList16(const void *vertices, u32 vertexCount, const u16 *indexList, u32 primitiveCount, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType)
         {
             const u16        *indexPointer = 0;
@@ -736,7 +736,7 @@ namespace irr
         }
 
 
-        // ! Draws a 3d line.
+        //! Draws a 3d line.
         void CSoftwareDriver::draw3DLine(const core::vector3df &start,
             const core::vector3df &end, SColor color)
         {
@@ -764,13 +764,13 @@ namespace irr
         }
 
 
-        // ! clips a triangle against the viewing frustum
+        //! clips a triangle against the viewing frustum
         void CSoftwareDriver::clipTriangle(f32 *transformedPos)
         {}
 
 
-        // ! Only used by the internal engine. Used to notify the driver that
-        // ! the window was resized.
+        //! Only used by the internal engine. Used to notify the driver that
+        //! the window was resized.
         void CSoftwareDriver::OnResize(const core::dimension2d<u32> &size)
         {
             // make sure width and height are multiples of 2
@@ -805,14 +805,14 @@ namespace irr
             }
         }
 
-        // ! returns the current render target size
+        //! returns the current render target size
         const core::dimension2d<u32>&CSoftwareDriver::getCurrentRenderTargetSize() const
         {
             return RenderTargetSize;
         }
 
 
-        // ! draws an 2d image, using a color (if color is other then Color(255,255,255,255)) and the alpha channel of the texture if wanted.
+        //! draws an 2d image, using a color (if color is other then Color(255,255,255,255)) and the alpha channel of the texture if wanted.
         void CSoftwareDriver::draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos,
             const core::rect<s32> &sourceRect,
             const core::rect<s32> *clipRect, SColor color,
@@ -837,7 +837,7 @@ namespace irr
 
 
 
-        // ! Draws a 2d line.
+        //! Draws a 2d line.
         void CSoftwareDriver::draw2DLine(const core::position2d<s32> &start,
             const core::position2d<s32> &end,
             SColor color)
@@ -846,14 +846,14 @@ namespace irr
         }
 
 
-        // ! Draws a pixel
+        //! Draws a pixel
         void CSoftwareDriver::drawPixel(u32 x, u32 y, const SColor &color)
         {
             BackBuffer->setPixel(x, y, color, true);
         }
 
 
-        // ! draw a 2d rectangle
+        //! draw a 2d rectangle
         void CSoftwareDriver::draw2DRectangle(SColor color, const core::rect<s32> &pos,
             const core::rect<s32> *clip)
         {
@@ -878,7 +878,7 @@ namespace irr
         }
 
 
-        // !Draws an 2d rectangle with a gradient.
+        //!Draws an 2d rectangle with a gradient.
         void CSoftwareDriver::draw2DRectangle(const core::rect<s32> &pos,
             SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown,
             const core::rect<s32> *clip)
@@ -888,22 +888,22 @@ namespace irr
         }
 
 
-        // ! \return Returns the name of the video driver. Example: In case of the Direct3D8
-        // ! driver, it would return "Direct3D8.1".
+        //! \return Returns the name of the video driver. Example: In case of the Direct3D8
+        //! driver, it would return "Direct3D8.1".
         const wchar_t* CSoftwareDriver::getName() const
         {
             return L"Irrlicht Software Driver 1.0";
         }
 
 
-        // ! Returns type of video driver
+        //! Returns type of video driver
         E_DRIVER_TYPE CSoftwareDriver::getDriverType() const
         {
             return EDT_SOFTWARE;
         }
 
 
-        // ! returns color format
+        //! returns color format
         ECOLOR_FORMAT CSoftwareDriver::getColorFormat() const
         {
             if (BackBuffer)
@@ -913,14 +913,14 @@ namespace irr
         }
 
 
-        // ! Returns the transformation set by setTransform
+        //! Returns the transformation set by setTransform
         const core::matrix4&CSoftwareDriver::getTransform(E_TRANSFORMATION_STATE state) const
         {
             return TransformationMatrix[state];
         }
 
 
-        // ! Creates a render target texture.
+        //! Creates a render target texture.
         ITexture* CSoftwareDriver::addRenderTargetTexture(const core::dimension2d<u32> &size,
             const io::path &name,
             const ECOLOR_FORMAT format)
@@ -935,7 +935,7 @@ namespace irr
         }
 
 
-        // ! Clears the ZBuffer.
+        //! Clears the ZBuffer.
         void CSoftwareDriver::clearZBuffer()
         {
             if (ZBuffer)
@@ -943,7 +943,7 @@ namespace irr
         }
 
 
-        // ! Returns an image created from the last rendered frame.
+        //! Returns an image created from the last rendered frame.
         IImage* CSoftwareDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RENDER_TARGET target)
         {
             if (target != video::ERT_FRAME_BUFFER)
@@ -960,9 +960,9 @@ namespace irr
         }
 
 
-        // ! Returns the maximum amount of primitives (mostly vertices) which
-        // ! the device is able to render with one drawIndexedTriangleList
-        // ! call.
+        //! Returns the maximum amount of primitives (mostly vertices) which
+        //! the device is able to render with one drawIndexedTriangleList
+        //! call.
         u32 CSoftwareDriver::getMaximalPrimitiveCount() const
         {
             return 0x00800000;
@@ -975,7 +975,7 @@ namespace irr
 {
     namespace video
     {
-        // ! creates a video driver
+        //! creates a video driver
         IVideoDriver* createSoftwareDriver(const core::dimension2d<u32> &windowSize, bool fullscreen, io::IFileSystem *io, video::IImagePresenter *presenter)
         {
     #ifdef _IRR_COMPILE_WITH_SOFTWARE_

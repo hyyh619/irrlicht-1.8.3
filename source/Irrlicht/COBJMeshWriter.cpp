@@ -46,14 +46,14 @@ namespace irr
         }
 
 
-        // ! Returns the type of the mesh writer
+        //! Returns the type of the mesh writer
         EMESH_WRITER_TYPE COBJMeshWriter::getType() const
         {
             return EMWT_OBJ;
         }
 
 
-        // ! writes a mesh
+        //! writes a mesh
         bool COBJMeshWriter::writeMesh(io::IWriteFile *file, scene::IMesh *mesh, s32 flags)
         {
             if (!file)

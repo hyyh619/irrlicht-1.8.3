@@ -17,7 +17,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         COctreeSceneNode::COctreeSceneNode(ISceneNode *parent, ISceneManager *mgr,
             s32 id, s32 minimalPolysPerNode)
             : IMeshSceneNode(parent, mgr, id), StdOctree(0), LightMapOctree(0),
@@ -32,7 +32,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         COctreeSceneNode::~COctreeSceneNode()
         {
             if (Shadow)
@@ -85,7 +85,7 @@ namespace irr
         }
 
 
-        // ! renders the node.
+        //! renders the node.
         void COctreeSceneNode::render()
         {
             video::IVideoDriver *driver = SceneManager->getVideoDriver();
@@ -290,9 +290,9 @@ namespace irr
         }
 
 
-        // ! Removes a child from this scene node.
-        // ! Implemented here, to be able to remove the shadow properly, if there is one,
-        // ! or to remove attached childs.
+        //! Removes a child from this scene node.
+        //! Implemented here, to be able to remove the shadow properly, if there is one,
+        //! or to remove attached childs.
         bool COctreeSceneNode::removeChild(ISceneNode *child)
         {
             if (child && Shadow == child)
@@ -305,8 +305,8 @@ namespace irr
         }
 
 
-        // ! Creates shadow volume scene node as child of this node
-        // ! and returns a pointer to it.
+        //! Creates shadow volume scene node as child of this node
+        //! and returns a pointer to it.
         IShadowVolumeSceneNode* COctreeSceneNode::addShadowVolumeSceneNode(
             const IMesh *shadowMesh, s32 id, bool zfailmethod, f32 infinity)
         {
@@ -324,14 +324,14 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&COctreeSceneNode::getBoundingBox() const
         {
             return Box;
         }
 
 
-        // ! creates the tree
+        //! creates the tree
         /* This method has a lot of duplication and overhead. Moreover, the tangents mesh conversion does not really work. I think we need a a proper mesh implementation for octrees, which handle all vertex types internally. Converting all structures to just one vertex type is always problematic.
          * Thanks to Auria for fixing major parts of this method. */
         bool COctreeSceneNode::createTree(IMesh *mesh)
@@ -570,11 +570,11 @@ namespace irr
         }
 
 
-        // ! returns the material based on the zero based index i. To get the amount
-        // ! of materials used by this scene node, use getMaterialCount().
-        // ! This function is needed for inserting the node into the scene hirachy on a
-        // ! optimal position for minimizing renderstate changes, but can also be used
-        // ! to directly modify the material of a scene node.
+        //! returns the material based on the zero based index i. To get the amount
+        //! of materials used by this scene node, use getMaterialCount().
+        //! This function is needed for inserting the node into the scene hirachy on a
+        //! optimal position for minimizing renderstate changes, but can also be used
+        //! to directly modify the material of a scene node.
         video::SMaterial&COctreeSceneNode::getMaterial(u32 i)
         {
             if (i >= Materials.size())
@@ -584,14 +584,14 @@ namespace irr
         }
 
 
-        // ! returns amount of materials used by this scene node.
+        //! returns amount of materials used by this scene node.
         u32 COctreeSceneNode::getMaterialCount() const
         {
             return Materials.size();
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void COctreeSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             ISceneNode::serializeAttributes(out, options);
@@ -601,7 +601,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void COctreeSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             const s32 oldMinimal = MinimalPolysPerNode;

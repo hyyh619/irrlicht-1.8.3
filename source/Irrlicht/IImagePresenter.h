@@ -24,7 +24,7 @@ namespace irr
 public:
 
             virtual ~IImagePresenter() {};
-            // ! presents a surface in the client area
+            //! presents a surface in the client area
             virtual bool present(video::IImage *surface, void *windowId = 0, core::rect<s32> *src = 0) = 0;
         };
     } // end namespace video

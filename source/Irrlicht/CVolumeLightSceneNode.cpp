@@ -12,7 +12,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CVolumeLightSceneNode::CVolumeLightSceneNode(ISceneNode *parent, ISceneManager *mgr,
             s32 id, const u32 subdivU, const u32 subdivV,
             const video::SColor foot,
@@ -49,7 +49,7 @@ namespace irr
         }
 
 
-        // ! renders the node.
+        //! renders the node.
         void CVolumeLightSceneNode::render()
         {
             if (!Mesh)
@@ -63,7 +63,7 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CVolumeLightSceneNode::getBoundingBox() const
         {
             return Mesh->getBoundingBox();
@@ -81,18 +81,18 @@ namespace irr
         }
 
 
-        // ! returns the material based on the zero based index i. To get the amount
-        // ! of materials used by this scene node, use getMaterialCount().
-        // ! This function is needed for inserting the node into the scene hirachy on a
-        // ! optimal position for minimizing renderstate changes, but can also be used
-        // ! to directly modify the material of a scene node.
+        //! returns the material based on the zero based index i. To get the amount
+        //! of materials used by this scene node, use getMaterialCount().
+        //! This function is needed for inserting the node into the scene hirachy on a
+        //! optimal position for minimizing renderstate changes, but can also be used
+        //! to directly modify the material of a scene node.
         video::SMaterial&CVolumeLightSceneNode::getMaterial(u32 i)
         {
             return Mesh->getMeshBuffer(i)->getMaterial();
         }
 
 
-        // ! returns amount of materials used by this scene node.
+        //! returns amount of materials used by this scene node.
         u32 CVolumeLightSceneNode::getMaterialCount() const
         {
             return 1;
@@ -139,7 +139,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void CVolumeLightSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             ISceneNode::serializeAttributes(out, options);
@@ -155,7 +155,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void CVolumeLightSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             LPDistance = in->getAttributeAsFloat("lpDistance");
@@ -178,7 +178,7 @@ namespace irr
         }
 
 
-        // ! Creates a clone of this scene node and its children.
+        //! Creates a clone of this scene node and its children.
         ISceneNode* CVolumeLightSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
         {
             if (!newParent)

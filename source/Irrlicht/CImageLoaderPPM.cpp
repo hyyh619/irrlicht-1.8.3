@@ -17,7 +17,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CImageLoaderPPM::CImageLoaderPPM()
         {
     #ifdef _DEBUG
@@ -26,15 +26,15 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".tga")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".tga")
         bool CImageLoaderPPM::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "ppm", "pgm", "pbm");
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CImageLoaderPPM::isALoadableFileFormat(io::IReadFile *file) const
         {
             c8 id[2] = {0};
@@ -44,7 +44,7 @@ namespace irr
         }
 
 
-        // ! creates a surface from the file
+        //! creates a surface from the file
         IImage* CImageLoaderPPM::loadImage(io::IReadFile *file) const
         {
             IImage *image;
@@ -219,7 +219,7 @@ namespace irr
         }
 
 
-        // ! read the next token from file
+        //! read the next token from file
         void CImageLoaderPPM::getNextToken(io::IReadFile *file, core::stringc &token) const
         {
             token = "";
@@ -256,7 +256,7 @@ namespace irr
         }
 
 
-        // ! skip to next token (skip whitespace)
+        //! skip to next token (skip whitespace)
         void CImageLoaderPPM::skipToNextToken(io::IReadFile *file) const
         {
             c8 c;
@@ -278,7 +278,7 @@ namespace irr
         }
 
 
-        // ! creates a loader which is able to load windows bitmaps
+        //! creates a loader which is able to load windows bitmaps
         IImageLoader* createImageLoaderPPM()
         {
             return new CImageLoaderPPM;

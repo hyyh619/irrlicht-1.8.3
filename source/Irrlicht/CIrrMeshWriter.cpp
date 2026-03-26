@@ -43,14 +43,14 @@ namespace irr
         }
 
 
-        // ! Returns the type of the mesh writer
+        //! Returns the type of the mesh writer
         EMESH_WRITER_TYPE CIrrMeshWriter::getType() const
         {
             return EMWT_IRR_MESH;
         }
 
 
-        // ! writes a mesh
+        //! writes a mesh
         bool CIrrMeshWriter::writeMesh(io::IWriteFile *file, scene::IMesh *mesh, s32 flags)
         {
             if (!file)

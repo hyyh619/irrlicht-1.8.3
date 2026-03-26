@@ -128,8 +128,8 @@ namespace irr
             const video::E_LIGHT_TYPE ELT_AMBIENT = (video::E_LIGHT_TYPE)(video::ELT_COUNT + 1);
         }
 
-        // ! following class is for holding and creating instances of library
-        // ! objects, named prefabs in this loader.
+        //! following class is for holding and creating instances of library
+        //! objects, named prefabs in this loader.
         class CPrefab : public IColladaPrefab
         {
 public:
@@ -137,7 +137,7 @@ public:
             CPrefab(const core::stringc &id) : Id(id)
             {}
 
-            // ! creates an instance of this prefab
+            //! creates an instance of this prefab
             virtual scene::ISceneNode* addInstance(scene::ISceneNode *parent,
                 scene::ISceneManager *mgr)
             {
@@ -145,7 +145,7 @@ public:
                 return 0;
             }
 
-            // ! returns id of this prefab
+            //! returns id of this prefab
             virtual const core::stringc&getId()
             {
                 return Id;
@@ -157,7 +157,7 @@ protected:
         };
 
 
-        // ! prefab for a light scene node
+        //! prefab for a light scene node
         class CLightPrefab : public CPrefab
         {
 public:
@@ -171,7 +171,7 @@ public:
 
             video::SLight LightData; // publically accessible
 
-            // ! creates an instance of this prefab
+            //! creates an instance of this prefab
             virtual scene::ISceneNode* addInstance(scene::ISceneNode *parent,
                 scene::ISceneManager *mgr)
             {
@@ -197,7 +197,7 @@ public:
         };
 
 
-        // ! prefab for a mesh scene node
+        //! prefab for a mesh scene node
         class CGeometryPrefab : public CPrefab
         {
 public:
@@ -207,7 +207,7 @@ public:
 
             scene::IMesh *Mesh;
 
-            // ! creates an instance of this prefab
+            //! creates an instance of this prefab
             virtual scene::ISceneNode* addInstance(scene::ISceneNode *parent,
                 scene::ISceneManager *mgr)
             {
@@ -228,7 +228,7 @@ public:
         };
 
 
-        // ! prefab for a camera scene node
+        //! prefab for a camera scene node
         class CCameraPrefab : public CPrefab
         {
 public:
@@ -246,7 +246,7 @@ public:
             f32 ZNear;
             f32 ZFar;
 
-            // ! creates an instance of this prefab
+            //! creates an instance of this prefab
             virtual scene::ISceneNode* addInstance(scene::ISceneNode *parent,
                 scene::ISceneManager *mgr)
             {
@@ -268,9 +268,9 @@ public:
         };
 
 
-        // ! prefab for a container scene node
-        // ! Collects other prefabs and instantiates them upon instantiation
-        // ! Uses a dummy scene node to return the children as one scene node
+        //! prefab for a container scene node
+        //! Collects other prefabs and instantiates them upon instantiation
+        //! Uses a dummy scene node to return the children as one scene node
         class CScenePrefab : public CPrefab
         {
 public:
@@ -281,7 +281,7 @@ public:
             #endif
             }
 
-            // ! creates an instance of this prefab
+            //! creates an instance of this prefab
             virtual scene::ISceneNode* addInstance(scene::ISceneNode *parent,
                 scene::ISceneManager *mgr)
             {
@@ -322,7 +322,7 @@ public:
         };
 
 
-        // ! Constructor
+        //! Constructor
         CColladaFileLoader::CColladaFileLoader(scene::ISceneManager *smgr,
             io::IFileSystem *fs)
             : SceneManager(smgr), FileSystem(fs), DummyMesh(0),
@@ -334,7 +334,7 @@ public:
         }
 
 
-        // ! destructor
+        //! destructor
         CColladaFileLoader::~CColladaFileLoader()
         {
             if (DummyMesh)
@@ -345,7 +345,7 @@ public:
         }
 
 
-        // ! Returns true if the file maybe is able to be loaded by this class.
+        //! Returns true if the file maybe is able to be loaded by this class.
         /** This decision should be based only on the file extension (e.g. ".cob") */
         bool CColladaFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
@@ -353,10 +353,10 @@ public:
         }
 
 
-        // ! creates/loads an animated mesh from the file.
-        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-        // ! See IReferenceCounted::drop() for more information.
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* CColladaFileLoader::createMesh(io::IReadFile *file)
         {
             io::IXMLReaderUTF8 *reader = FileSystem->createXMLReaderUTF8(file);
@@ -424,7 +424,7 @@ public:
         }
 
 
-        // ! skips an (unknown) section in the collada document
+        //! skips an (unknown) section in the collada document
         void CColladaFileLoader::skipSection(io::IXMLReaderUTF8 *reader, bool reportSkipping)
         {
     #ifndef COLLADA_READER_DEBUG
@@ -457,7 +457,7 @@ public:
         }
 
 
-        // ! reads the <COLLADA> section and its content
+        //! reads the <COLLADA> section and its content
         void CColladaFileLoader::readColladaSection(io::IXMLReaderUTF8 *reader)
         {
             if (reader->isEmptyElement())
@@ -504,7 +504,7 @@ public:
         }
 
 
-        // ! reads a <library> section and its content
+        //! reads a <library> section and its content
         void CColladaFileLoader::readLibrarySection(io::IXMLReaderUTF8 *reader)
         {
     #ifdef COLLADA_READER_DEBUG
@@ -577,7 +577,7 @@ public:
         }
 
 
-        // ! reads a <visual_scene> element and stores it as a prefab
+        //! reads a <visual_scene> element and stores it as a prefab
         void CColladaFileLoader::readVisualScene(io::IXMLReaderUTF8 *reader)
         {
             CScenePrefab *p = 0;
@@ -614,7 +614,7 @@ public:
         }
 
 
-        // ! reads a <scene> section and its content
+        //! reads a <scene> section and its content
         void CColladaFileLoader::readSceneSection(io::IXMLReaderUTF8 *reader)
         {
     #ifdef COLLADA_READER_DEBUG
@@ -678,7 +678,7 @@ public:
         }
 
 
-        // ! reads a <asset> section and its content
+        //! reads a <asset> section and its content
         void CColladaFileLoader::readAssetSection(io::IXMLReaderUTF8 *reader)
         {
     #ifdef COLLADA_READER_DEBUG
@@ -705,7 +705,7 @@ public:
         }
 
 
-        // ! reads a <node> section and its content
+        //! reads a <node> section and its content
         void CColladaFileLoader::readNodeSection(io::IXMLReaderUTF8 *reader, scene::ISceneNode *parent, CScenePrefab *p)
         {
             if (reader->isEmptyElement())
@@ -821,7 +821,7 @@ public:
         }
 
 
-        // ! reads a <lookat> element and its content and creates a matrix from it
+        //! reads a <lookat> element and its content and creates a matrix from it
         core::matrix4 CColladaFileLoader::readLookAtNode(io::IXMLReaderUTF8 *reader)
         {
             core::matrix4 mat;
@@ -845,7 +845,7 @@ public:
         }
 
 
-        // ! reads a <skew> element and its content and creates a matrix from it
+        //! reads a <skew> element and its content and creates a matrix from it
         core::matrix4 CColladaFileLoader::readSkewNode(io::IXMLReaderUTF8 *reader)
         {
     #ifdef COLLADA_READER_DEBUG
@@ -890,7 +890,7 @@ public:
         }
 
 
-        // ! reads a <boundingbox> element and its content and stores it in bbox
+        //! reads a <boundingbox> element and its content and stores it in bbox
         void CColladaFileLoader::readBboxNode(io::IXMLReaderUTF8 *reader,
             core::aabbox3df &bbox)
         {
@@ -931,7 +931,7 @@ public:
         }
 
 
-        // ! reads a <matrix> element and its content and creates a matrix from it
+        //! reads a <matrix> element and its content and creates a matrix from it
         core::matrix4 CColladaFileLoader::readMatrixNode(io::IXMLReaderUTF8 *reader)
         {
     #ifdef COLLADA_READER_DEBUG
@@ -965,7 +965,7 @@ public:
         }
 
 
-        // ! reads a <perspective> element and its content and creates a matrix from it
+        //! reads a <perspective> element and its content and creates a matrix from it
         core::matrix4 CColladaFileLoader::readPerspectiveNode(io::IXMLReaderUTF8 *reader)
         {
     #ifdef COLLADA_READER_DEBUG
@@ -987,7 +987,7 @@ public:
         }
 
 
-        // ! reads a <rotate> element and its content and creates a matrix from it
+        //! reads a <rotate> element and its content and creates a matrix from it
         core::matrix4 CColladaFileLoader::readRotateNode(io::IXMLReaderUTF8 *reader)
         {
     #ifdef COLLADA_READER_DEBUG
@@ -1016,7 +1016,7 @@ public:
         }
 
 
-        // ! reads a <scale> element and its content and creates a matrix from it
+        //! reads a <scale> element and its content and creates a matrix from it
         core::matrix4 CColladaFileLoader::readScaleNode(io::IXMLReaderUTF8 *reader)
         {
     #ifdef COLLADA_READER_DEBUG
@@ -1039,7 +1039,7 @@ public:
         }
 
 
-        // ! reads a <translate> element and its content and creates a matrix from it
+        //! reads a <translate> element and its content and creates a matrix from it
         core::matrix4 CColladaFileLoader::readTranslateNode(io::IXMLReaderUTF8 *reader)
         {
     #ifdef COLLADA_READER_DEBUG
@@ -1062,7 +1062,7 @@ public:
         }
 
 
-        // ! reads any kind of <instance*> node
+        //! reads any kind of <instance*> node
         void CColladaFileLoader::readInstanceNode(io::IXMLReaderUTF8 *reader,
             scene::ISceneNode *parent, scene::ISceneNode **outNode,
             CScenePrefab *p, const core::stringc &type)
@@ -1137,7 +1137,7 @@ public:
         }
 
 
-        // ! reads a <camera> element and stores it as prefab
+        //! reads a <camera> element and stores it as prefab
         void CColladaFileLoader::readCameraPrefab(io::IXMLReaderUTF8 *reader)
         {
     #ifdef COLLADA_READER_DEBUG
@@ -1173,7 +1173,7 @@ public:
         }
 
 
-        // ! reads a <image> element and stores it in the image section
+        //! reads a <image> element and stores it in the image section
         void CColladaFileLoader::readImage(io::IXMLReaderUTF8 *reader)
         {
             // add image to list of loaded images.
@@ -1228,7 +1228,7 @@ public:
         }
 
 
-        // ! reads a <texture> element and stores it in the texture section
+        //! reads a <texture> element and stores it in the texture section
         void CColladaFileLoader::readTexture(io::IXMLReaderUTF8 *reader)
         {
             // add texture to list of loaded textures.
@@ -1253,7 +1253,7 @@ public:
         }
 
 
-        // ! reads a <material> element and stores it in the material section
+        //! reads a <material> element and stores it in the material section
         void CColladaFileLoader::readMaterial(io::IXMLReaderUTF8 *reader)
         {
             // add material to list of loaded materials.
@@ -1635,7 +1635,7 @@ public:
         }
 
 
-        // ! reads a <geometry> element and stores it as mesh if possible
+        //! reads a <geometry> element and stores it as mesh if possible
         void CColladaFileLoader::readGeometry(io::IXMLReaderUTF8 *reader)
         {
             core::stringc id = readId(reader);
@@ -1854,7 +1854,7 @@ public:
             core::array<s32> Indices;
         };
 
-        // ! reads a polygons section and creates a mesh from it
+        //! reads a polygons section and creates a mesh from it
         void CColladaFileLoader::readPolygonSection(io::IXMLReaderUTF8 *reader,
             core::array<SSource> &sources, scene::SMesh *mesh,
             const core::stringc &geometryId)
@@ -2350,7 +2350,7 @@ public:
         }
 
 
-        // ! reads a <light> element and stores it as prefab
+        //! reads a <light> element and stores it as prefab
         void CColladaFileLoader::readLightPrefab(io::IXMLReaderUTF8 *reader)
         {
     #ifdef COLLADA_READER_DEBUG
@@ -2415,7 +2415,7 @@ public:
         }
 
 
-        // ! returns a collada parameter or none if not found
+        //! returns a collada parameter or none if not found
         SColladaParam* CColladaFileLoader::getColladaParameter(ECOLLADA_PARAM_NAME name)
         {
             for (u32 i = 0; i < ColladaParameters.size(); ++i)
@@ -2425,7 +2425,7 @@ public:
             return 0;
         }
 
-        // ! returns a collada input or none if not found
+        //! returns a collada input or none if not found
         SColladaInput* CColladaFileLoader::getColladaInput(ECOLLADA_INPUT_SEMANTIC input)
         {
             for (u32 i = 0; i < Inputs.size(); ++i)
@@ -2436,7 +2436,7 @@ public:
         }
 
 
-        // ! reads a collada input tag and adds it to the input parameter
+        //! reads a collada input tag and adds it to the input parameter
         void CColladaFileLoader::readColladaInput(io::IXMLReaderUTF8 *reader, core::array<SColladaInput> &inputs)
         {
             // parse param
@@ -2467,7 +2467,7 @@ public:
             inputs.push_back(p);
         }
 
-        // ! parses all collada inputs inside an element and stores them in Inputs
+        //! parses all collada inputs inside an element and stores them in Inputs
         void CColladaFileLoader::readColladaInputs(io::IXMLReaderUTF8 *reader, const core::stringc &parentName)
         {
             Inputs.clear();
@@ -2487,7 +2487,7 @@ public:
             } // end while reader->read();
         }
 
-        // ! parses all collada parameters inside an element and stores them in ColladaParameters
+        //! parses all collada parameters inside an element and stores them in ColladaParameters
         void CColladaFileLoader::readColladaParameters(io::IXMLReaderUTF8 *reader,
             const core::stringc &parentName)
         {
@@ -2555,8 +2555,8 @@ public:
         }
 
 
-        // ! parses a float from a char pointer and moves the pointer
-        // ! to the end of the parsed float
+        //! parses a float from a char pointer and moves the pointer
+        //! to the end of the parsed float
         inline f32 CColladaFileLoader::readFloat(const c8 **p)
         {
             f32 ftmp;
@@ -2566,15 +2566,15 @@ public:
         }
 
 
-        // ! parses an int from a char pointer and moves the pointer to
-        // ! the end of the parsed float
+        //! parses an int from a char pointer and moves the pointer to
+        //! the end of the parsed float
         inline s32 CColladaFileLoader::readInt(const c8 **p)
         {
             return (s32)readFloat(p);
         }
 
 
-        // ! places pointer to next begin of a token
+        //! places pointer to next begin of a token
         void CColladaFileLoader::findNextNoneWhiteSpace(const c8 **start)
         {
             const c8 *p = *start;
@@ -2588,7 +2588,7 @@ public:
         }
 
 
-        // ! reads floats from inside of xml element until end of xml element
+        //! reads floats from inside of xml element until end of xml element
         void CColladaFileLoader::readFloatsInsideElement(io::IXMLReaderUTF8 *reader, f32 *floats, u32 count)
         {
             if (reader->isEmptyElement())
@@ -2621,7 +2621,7 @@ public:
         }
 
 
-        // ! reads ints from inside of xml element until end of xml element
+        //! reads ints from inside of xml element until end of xml element
         void CColladaFileLoader::readIntsInsideElement(io::IXMLReaderUTF8 *reader, s32 *ints, u32 count)
         {
             if (reader->isEmptyElement())
@@ -2685,7 +2685,7 @@ public:
         }
 
 
-        // ! clears all loaded data
+        //! clears all loaded data
         void CColladaFileLoader::clearData()
         {
             // delete all prefabs
@@ -2722,7 +2722,7 @@ public:
         }
 
 
-        // ! changes the XML URI into an internal id
+        //! changes the XML URI into an internal id
         void CColladaFileLoader::uriToId(core::stringc &str)
         {
             // currently, we only remove the # from the begin if there
@@ -2735,7 +2735,7 @@ public:
         }
 
 
-        // ! read Collada Id, uses id or name if id is missing
+        //! read Collada Id, uses id or name if id is missing
         core::stringc CColladaFileLoader::readId(io::IXMLReaderUTF8 *reader)
         {
             core::stringc id = reader->getAttributeValue("id");
@@ -2747,7 +2747,7 @@ public:
         }
 
 
-        // ! create an Irrlicht texture from the reference
+        //! create an Irrlicht texture from the reference
         video::ITexture* CColladaFileLoader::getTextureFromImage(core::stringc uri, SColladaEffect *effect)
         {
     #ifdef COLLADA_READER_DEBUG
@@ -2810,7 +2810,7 @@ public:
         }
 
 
-        // ! read a parameter and value
+        //! read a parameter and value
         void CColladaFileLoader::readParameter(io::IXMLReaderUTF8 *reader, io::IAttributes *parameters)
         {
     #ifdef COLLADA_READER_DEBUG

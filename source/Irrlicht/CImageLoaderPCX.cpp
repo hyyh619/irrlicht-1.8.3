@@ -18,7 +18,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CImageLoaderPCX::CImageLoaderPCX()
         {
     #ifdef _DEBUG
@@ -27,8 +27,8 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".tga")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".tga")
         bool CImageLoaderPCX::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "pcx");
@@ -36,7 +36,7 @@ namespace irr
 
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CImageLoaderPCX::isALoadableFileFormat(io::IReadFile *file) const
         {
             u8 headerID;
@@ -46,7 +46,7 @@ namespace irr
         }
 
 
-        // ! creates a image from the file
+        //! creates a image from the file
         IImage* CImageLoaderPCX::loadImage(io::IReadFile *file) const
         {
             SPCXHeader header;
@@ -66,7 +66,7 @@ namespace irr
             header.VScrSize     = os::Byteswap::byteswap(header.VScrSize);
     #endif
 
-            // ! return if the header is wrong
+            //! return if the header is wrong
             if (header.Manufacturer != 0x0a && header.Encoding != 0x01)
                 return 0;
 
@@ -223,7 +223,7 @@ namespace irr
         }
 
 
-        // ! creates a loader which is able to load pcx images
+        //! creates a loader which is able to load pcx images
         IImageLoader* createImageLoaderPCX()
         {
             return new CImageLoaderPCX();

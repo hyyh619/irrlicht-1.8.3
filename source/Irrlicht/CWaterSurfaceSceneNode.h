@@ -15,35 +15,35 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CWaterSurfaceSceneNode(f32 waveHeight, f32 waveSpeed, f32 waveLength,
                 IMesh *mesh, ISceneNode *parent, ISceneManager *mgr,    s32 id,
                 const core::vector3df &position = core::vector3df(0, 0, 0),
                 const core::vector3df &rotation = core::vector3df(0, 0, 0),
                 const core::vector3df &scale = core::vector3df(1.0f, 1.0f, 1.0f));
 
-            // ! destructor
+            //! destructor
             virtual ~CWaterSurfaceSceneNode();
 
-            // ! frame registration
+            //! frame registration
             virtual void OnRegisterSceneNode();
 
-            // ! animated update
+            //! animated update
             virtual void OnAnimate(u32 timeMs);
 
-            // ! Update mesh
+            //! Update mesh
             virtual void setMesh(IMesh *mesh);
 
-            // ! Returns type of the scene node
+            //! Returns type of the scene node
             virtual ESCENE_NODE_TYPE getType() const
             {
                 return ESNT_WATER_SURFACE;
             }
 
-            // ! Writes attributes of the scene node.
+            //! Writes attributes of the scene node.
             virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const;
 
-            // ! Reads attributes of the scene node.
+            //! Reads attributes of the scene node.
             virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options);
 
 private:

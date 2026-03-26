@@ -43,7 +43,7 @@ namespace irr
         }
 
 
-        // ! adds an element to the env based on its type id
+        //! adds an element to the env based on its type id
         IGUIElement* CDefaultGUIElementFactory::addGUIElement(EGUI_ELEMENT_TYPE type, IGUIElement *parent)
         {
             switch (type)
@@ -123,21 +123,21 @@ namespace irr
         }
 
 
-        // ! adds an element to the environment based on its type name
+        //! adds an element to the environment based on its type name
         IGUIElement* CDefaultGUIElementFactory::addGUIElement(const c8 *typeName, IGUIElement *parent)
         {
             return addGUIElement(getTypeFromName(typeName), parent);
         }
 
 
-        // ! Returns the amount of element types this factory is able to create.
+        //! Returns the amount of element types this factory is able to create.
         s32 CDefaultGUIElementFactory::getCreatableGUIElementTypeCount() const
         {
             return EGUIET_COUNT;
         }
 
 
-        // ! Returns the type of a createable element type.
+        //! Returns the type of a createable element type.
         EGUI_ELEMENT_TYPE CDefaultGUIElementFactory::getCreateableGUIElementType(s32 idx) const
         {
             if (idx >= 0 && idx < EGUIET_COUNT)
@@ -147,7 +147,7 @@ namespace irr
         }
 
 
-        // ! Returns the type name of a createable element type.
+        //! Returns the type name of a createable element type.
         const c8* CDefaultGUIElementFactory::getCreateableGUIElementTypeName(s32 idx) const
         {
             if (idx >= 0 && idx < EGUIET_COUNT)
@@ -157,7 +157,7 @@ namespace irr
         }
 
 
-        // ! Returns the type name of a createable element type.
+        //! Returns the type name of a createable element type.
         const c8* CDefaultGUIElementFactory::getCreateableGUIElementTypeName(EGUI_ELEMENT_TYPE type) const
         {
             // for this factory, type == index

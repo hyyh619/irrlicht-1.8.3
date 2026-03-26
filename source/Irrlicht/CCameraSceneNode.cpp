@@ -11,7 +11,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CCameraSceneNode::CCameraSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
             const core::vector3df &position, const core::vector3df &lookat)
             : ICameraSceneNode(parent, mgr, id, position),
@@ -37,14 +37,14 @@ namespace irr
         }
 
 
-        // ! Disables or enables the camera to get key or mouse inputs.
+        //! Disables or enables the camera to get key or mouse inputs.
         void CCameraSceneNode::setInputReceiverEnabled(bool enabled)
         {
             InputReceiverEnabled = enabled;
         }
 
 
-        // ! Returns if the input receiver of the camera is currently enabled.
+        //! Returns if the input receiver of the camera is currently enabled.
         bool CCameraSceneNode::isInputReceiverEnabled() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -52,7 +52,7 @@ namespace irr
         }
 
 
-        // ! Sets the projection matrix of the camera.
+        //! Sets the projection matrix of the camera.
         /** The core::matrix4 class has some methods
          * to build a projection matrix. e.g: core::matrix4::buildProjectionMatrixPerspectiveFovLH
          * \param projection: The new projection matrix of the camera. */
@@ -63,25 +63,25 @@ namespace irr
         }
 
 
-        // ! Gets the current projection matrix of the camera
-        // ! \return Returns the current projection matrix of the camera.
+        //! Gets the current projection matrix of the camera
+        //! \return Returns the current projection matrix of the camera.
         const core::matrix4&CCameraSceneNode::getProjectionMatrix() const
         {
             return ViewArea.getTransform (video::ETS_PROJECTION);
         }
 
 
-        // ! Gets the current view matrix of the camera
-        // ! \return Returns the current view matrix of the camera.
+        //! Gets the current view matrix of the camera
+        //! \return Returns the current view matrix of the camera.
         const core::matrix4&CCameraSceneNode::getViewMatrix() const
         {
             return ViewArea.getTransform (video::ETS_VIEW);
         }
 
 
-        // ! Sets a custom view matrix affector. The matrix passed here, will be
-        // ! multiplied with the view matrix when it gets updated.
-        // ! This allows for custom camera setups like, for example, a reflection camera.
+        //! Sets a custom view matrix affector. The matrix passed here, will be
+        //! multiplied with the view matrix when it gets updated.
+        //! This allows for custom camera setups like, for example, a reflection camera.
         /** \param affector: The affector matrix. */
         void CCameraSceneNode::setViewMatrixAffector(const core::matrix4 &affector)
         {
@@ -89,18 +89,18 @@ namespace irr
         }
 
 
-        // ! Gets the custom view matrix affector.
+        //! Gets the custom view matrix affector.
         const core::matrix4&CCameraSceneNode::getViewMatrixAffector() const
         {
             return Affector;
         }
 
 
-        // ! It is possible to send mouse and key events to the camera. Most cameras
-        // ! may ignore this input, but camera scene nodes which are created for
-        // ! example with scene::ISceneManager::addMayaCameraSceneNode or
-        // ! scene::ISceneManager::addFPSCameraSceneNode, may want to get this input
-        // ! for changing their position, look at target or whatever.
+        //! It is possible to send mouse and key events to the camera. Most cameras
+        //! may ignore this input, but camera scene nodes which are created for
+        //! example with scene::ISceneManager::addMayaCameraSceneNode or
+        //! scene::ISceneManager::addFPSCameraSceneNode, may want to get this input
+        //! for changing their position, look at target or whatever.
         bool CCameraSceneNode::OnEvent(const SEvent &event)
         {
             if (!InputReceiverEnabled)
@@ -119,8 +119,8 @@ namespace irr
         }
 
 
-        // ! sets the look at target of the camera
-        // ! \param pos: Look at target of the camera.
+        //! sets the look at target of the camera
+        //! \param pos: Look at target of the camera.
         void CCameraSceneNode::setTarget(const core::vector3df &pos)
         {
             Target = pos;
@@ -133,7 +133,7 @@ namespace irr
         }
 
 
-        // ! Sets the rotation of the node.
+        //! Sets the rotation of the node.
         /** This only modifies the relative rotation of the node.
         * If the camera's target and rotation are bound ( @see bindTargetAndRotation() )
         * then calling this will also change the camera's target to match the rotation.
@@ -147,24 +147,24 @@ namespace irr
         }
 
 
-        // ! Gets the current look at target of the camera
-        // ! \return Returns the current look at target of the camera
+        //! Gets the current look at target of the camera
+        //! \return Returns the current look at target of the camera
         const core::vector3df&CCameraSceneNode::getTarget() const
         {
             return Target;
         }
 
 
-        // ! sets the up vector of the camera
-        // ! \param pos: New upvector of the camera.
+        //! sets the up vector of the camera
+        //! \param pos: New upvector of the camera.
         void CCameraSceneNode::setUpVector(const core::vector3df &pos)
         {
             UpVector = pos;
         }
 
 
-        // ! Gets the up vector of the camera.
-        // ! \return Returns the up vector of the camera.
+        //! Gets the up vector of the camera.
+        //! \return Returns the up vector of the camera.
         const core::vector3df&CCameraSceneNode::getUpVector() const
         {
             return UpVector;
@@ -229,7 +229,7 @@ namespace irr
         }
 
 
-        // ! prerender
+        //! prerender
         void CCameraSceneNode::OnRegisterSceneNode()
         {
             if (SceneManager->getActiveCamera () == this)
@@ -239,7 +239,7 @@ namespace irr
         }
 
 
-        // ! render
+        //! render
         void CCameraSceneNode::render()
         {
             core::vector3df pos  = getAbsolutePosition();
@@ -272,14 +272,14 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CCameraSceneNode::getBoundingBox() const
         {
             return ViewArea.getBoundingBox();
         }
 
 
-        // ! returns the view frustum. needed sometimes by bsp or lod render nodes.
+        //! returns the view frustum. needed sometimes by bsp or lod render nodes.
         const SViewFrustum* CCameraSceneNode::getViewFrustum() const
         {
             return &ViewArea;
@@ -297,7 +297,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void CCameraSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             ICameraSceneNode::serializeAttributes(out, options);
@@ -312,7 +312,7 @@ namespace irr
             out->addBool("ReceiveInput", InputReceiverEnabled);
         }
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void CCameraSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             ICameraSceneNode::deserializeAttributes(in, options);
@@ -332,21 +332,21 @@ namespace irr
         }
 
 
-        // ! Set the binding between the camera's rotation adn target.
+        //! Set the binding between the camera's rotation adn target.
         void CCameraSceneNode::bindTargetAndRotation(bool bound)
         {
             TargetAndRotationAreBound = bound;
         }
 
 
-        // ! Gets the binding between the camera's rotation and target.
+        //! Gets the binding between the camera's rotation and target.
         bool CCameraSceneNode::getTargetAndRotationBinding(void) const
         {
             return TargetAndRotationAreBound;
         }
 
 
-        // ! Creates a clone of this scene node and its children.
+        //! Creates a clone of this scene node and its children.
         ISceneNode* CCameraSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
         {
             ICameraSceneNode::clone(newParent, newManager);

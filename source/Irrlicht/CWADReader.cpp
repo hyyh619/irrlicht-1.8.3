@@ -15,7 +15,7 @@ namespace irr
 {
     namespace io
     {
-        // ! Constructor
+        //! Constructor
         CArchiveLoaderWAD::CArchiveLoaderWAD(io::IFileSystem *fs)
             : FileSystem(fs)
         {
@@ -25,14 +25,14 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CArchiveLoaderWAD::isALoadableFileFormat(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "wad");
         }
 
 
-        // ! Creates an archive from the filename
+        //! Creates an archive from the filename
         /** \param file File handle to check.
          * \return Pointer to newly created archive, or 0 upon error. */
         IFileArchive* CArchiveLoaderWAD::createArchive(const io::path &filename, bool ignoreCase, bool ignorePaths) const
@@ -49,8 +49,8 @@ namespace irr
             return archive;
         }
 
-        // ! creates/loads an archive from the file.
-        // ! \return Pointer to the created archive. Returns 0 if loading failed.
+        //! creates/loads an archive from the file.
+        //! \return Pointer to the created archive. Returns 0 if loading failed.
         IFileArchive* CArchiveLoaderWAD::createArchive(io::IReadFile *file, bool ignoreCase, bool ignorePaths) const
         {
             IFileArchive *archive = 0;
@@ -65,7 +65,7 @@ namespace irr
         }
 
 
-        // ! Check if the file might be loaded by this class
+        //! Check if the file might be loaded by this class
         /** Check might look into the file.
          * \param file File handle to check.
          * \return True if file seems to be loadable. */
@@ -80,7 +80,7 @@ namespace irr
             return !strncmp (header.tag, "WAD2", 4) || !strncmp (header.tag, "WAD3", 4);
         }
 
-        // ! Check to see if the loader can create archives of this type.
+        //! Check to see if the loader can create archives of this type.
         bool CArchiveLoaderWAD::isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) const
         {
             return fileType == EFAT_WAD;
@@ -142,7 +142,7 @@ namespace irr
         }
 
 
-        // ! return the id of the file Archive
+        //! return the id of the file Archive
         const io::path&CWADReader::getArchiveName() const
         {
             return Base;
@@ -154,7 +154,7 @@ namespace irr
         }
 
 
-        // ! scans for a local header, returns false if there is no more local file header.
+        //! scans for a local header, returns false if there is no more local file header.
         bool CWADReader::scanLocalHeader()
         {
             SWADFileEntryOriginal entry;
@@ -239,7 +239,7 @@ namespace irr
         }
 
 
-        // ! opens a file by file name
+        //! opens a file by file name
         IReadFile* CWADReader::createAndOpenFile(const io::path &filename)
         {
             s32 index = findFile(filename, false);
@@ -251,7 +251,7 @@ namespace irr
         }
 
 
-        // ! opens a file by index
+        //! opens a file by index
         IReadFile* CWADReader::createAndOpenFile(u32 index)
         {
             if (index >= Files.size())

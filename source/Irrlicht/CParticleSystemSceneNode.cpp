@@ -26,7 +26,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CParticleSystemSceneNode::CParticleSystemSceneNode(bool createDefaultEmitter,
             ISceneNode *parent, ISceneManager *mgr, s32 id,
             const core::vector3df &position, const core::vector3df &rotation,
@@ -49,7 +49,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CParticleSystemSceneNode::~CParticleSystemSceneNode()
         {
             if (Emitter)
@@ -62,14 +62,14 @@ namespace irr
         }
 
 
-        // ! Gets the particle emitter, which creates the particles.
+        //! Gets the particle emitter, which creates the particles.
         IParticleEmitter* CParticleSystemSceneNode::getEmitter()
         {
             return Emitter;
         }
 
 
-        // ! Sets the particle emitter, which creates the particles.
+        //! Sets the particle emitter, which creates the particles.
         void CParticleSystemSceneNode::setEmitter(IParticleEmitter *emitter)
         {
             if (emitter == Emitter)
@@ -85,20 +85,20 @@ namespace irr
         }
 
 
-        // ! Adds new particle effector to the particle system.
+        //! Adds new particle effector to the particle system.
         void CParticleSystemSceneNode::addAffector(IParticleAffector *affector)
         {
             affector->grab();
             AffectorList.push_back(affector);
         }
 
-        // ! Get a list of all particle affectors.
+        //! Get a list of all particle affectors.
         const core::list<IParticleAffector*>&CParticleSystemSceneNode::getAffectors() const
         {
             return AffectorList;
         }
 
-        // ! Removes all particle affectors in the particle system.
+        //! Removes all particle affectors in the particle system.
         void CParticleSystemSceneNode::removeAllAffectors()
         {
             core::list<IParticleAffector*>::Iterator it = AffectorList.begin();
@@ -111,21 +111,21 @@ namespace irr
         }
 
 
-        // ! Returns the material based on the zero based index i.
+        //! Returns the material based on the zero based index i.
         video::SMaterial&CParticleSystemSceneNode::getMaterial(u32 i)
         {
             return Buffer->Material;
         }
 
 
-        // ! Returns amount of materials used by this scene node.
+        //! Returns amount of materials used by this scene node.
         u32 CParticleSystemSceneNode::getMaterialCount() const
         {
             return 1;
         }
 
 
-        // ! Creates a particle emitter for an animated mesh scene node
+        //! Creates a particle emitter for an animated mesh scene node
         IParticleAnimatedMeshSceneNodeEmitter*
         CParticleSystemSceneNode::createAnimatedMeshSceneNodeEmitter(
             scene::IAnimatedMeshSceneNode *node, bool useNormalDirection,
@@ -147,7 +147,7 @@ namespace irr
         }
 
 
-        // ! Creates a box particle emitter.
+        //! Creates a box particle emitter.
         IParticleBoxEmitter* CParticleSystemSceneNode::createBoxEmitter(
             const core::aabbox3df &box, const core::vector3df &direction,
             u32 minParticlesPerSecond, u32 maxParticlesPerSecond,
@@ -163,7 +163,7 @@ namespace irr
         }
 
 
-        // ! Creates a particle emitter for emitting from a cylinder
+        //! Creates a particle emitter for emitting from a cylinder
         IParticleCylinderEmitter* CParticleSystemSceneNode::createCylinderEmitter(
             const core::vector3df &center, f32 radius,
             const core::vector3df &normal, f32 length,
@@ -183,7 +183,7 @@ namespace irr
         }
 
 
-        // ! Creates a mesh particle emitter.
+        //! Creates a mesh particle emitter.
         IParticleMeshEmitter* CParticleSystemSceneNode::createMeshEmitter(
             scene::IMesh *mesh, bool useNormalDirection,
             const core::vector3df &direction, f32 normalDirectionModifier,
@@ -203,7 +203,7 @@ namespace irr
         }
 
 
-        // ! Creates a point particle emitter.
+        //! Creates a point particle emitter.
         IParticlePointEmitter* CParticleSystemSceneNode::createPointEmitter(
             const core::vector3df &direction, u32 minParticlesPerSecond,
             u32 maxParticlesPerSecond, const video::SColor &minStartColor,
@@ -218,7 +218,7 @@ namespace irr
         }
 
 
-        // ! Creates a ring particle emitter.
+        //! Creates a ring particle emitter.
         IParticleRingEmitter* CParticleSystemSceneNode::createRingEmitter(
             const core::vector3df &center, f32 radius, f32 ringThickness,
             const core::vector3df &direction,
@@ -234,7 +234,7 @@ namespace irr
         }
 
 
-        // ! Creates a sphere particle emitter.
+        //! Creates a sphere particle emitter.
         IParticleSphereEmitter* CParticleSystemSceneNode::createSphereEmitter(
             const core::vector3df &center, f32 radius, const core::vector3df &direction,
             u32 minParticlesPerSecond, u32 maxParticlesPerSecond,
@@ -251,8 +251,8 @@ namespace irr
         }
 
 
-        // ! Creates a point attraction affector. This affector modifies the positions of the
-        // ! particles and attracts them to a specified point at a specified speed per second.
+        //! Creates a point attraction affector. This affector modifies the positions of the
+        //! particles and attracts them to a specified point at a specified speed per second.
         IParticleAttractionAffector* CParticleSystemSceneNode::createAttractionAffector(
             const core::vector3df &point, f32 speed, bool attract,
             bool affectX, bool affectY, bool affectZ)
@@ -260,14 +260,14 @@ namespace irr
             return new CParticleAttractionAffector(point, speed, attract, affectX, affectY, affectZ);
         }
 
-        // ! Creates a scale particle affector.
+        //! Creates a scale particle affector.
         IParticleAffector* CParticleSystemSceneNode::createScaleParticleAffector(const core::dimension2df &scaleTo)
         {
             return new CParticleScaleAffector(scaleTo);
         }
 
 
-        // ! Creates a fade out particle affector.
+        //! Creates a fade out particle affector.
         IParticleFadeOutAffector* CParticleSystemSceneNode::createFadeOutParticleAffector(
             const video::SColor &targetColor, u32 timeNeededToFadeOut)
         {
@@ -275,7 +275,7 @@ namespace irr
         }
 
 
-        // ! Creates a gravity affector.
+        //! Creates a gravity affector.
         IParticleGravityAffector* CParticleSystemSceneNode::createGravityAffector(
             const core::vector3df &gravity, u32 timeForceLost)
         {
@@ -283,8 +283,8 @@ namespace irr
         }
 
 
-        // ! Creates a rotation affector. This affector rotates the particles around a specified pivot
-        // ! point.  The speed represents Degrees of rotation per second.
+        //! Creates a rotation affector. This affector rotates the particles around a specified pivot
+        //! point.  The speed represents Degrees of rotation per second.
         IParticleRotationAffector* CParticleSystemSceneNode::createRotationAffector(
             const core::vector3df &speed, const core::vector3df &pivotPoint)
         {
@@ -292,7 +292,7 @@ namespace irr
         }
 
 
-        // ! pre render event
+        //! pre render event
         void CParticleSystemSceneNode::OnRegisterSceneNode()
         {
             doParticleSystem(os::Timer::getTime());
@@ -305,7 +305,7 @@ namespace irr
         }
 
 
-        // ! render
+        //! render
         void CParticleSystemSceneNode::render()
         {
             video::IVideoDriver *driver = SceneManager->getVideoDriver();
@@ -400,7 +400,7 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CParticleSystemSceneNode::getBoundingBox() const
         {
             return Buffer->getBoundingBox();
@@ -495,21 +495,21 @@ namespace irr
         }
 
 
-        // ! Sets if the particles should be global. If it is, the particles are affected by
-        // ! the movement of the particle system scene node too, otherwise they completely
-        // ! ignore it. Default is true.
+        //! Sets if the particles should be global. If it is, the particles are affected by
+        //! the movement of the particle system scene node too, otherwise they completely
+        //! ignore it. Default is true.
         void CParticleSystemSceneNode::setParticlesAreGlobal(bool global)
         {
             ParticlesAreGlobal = global;
         }
 
-        // ! Remove all currently visible particles
+        //! Remove all currently visible particles
         void CParticleSystemSceneNode::clearParticles()
         {
             Particles.set_used(0);
         }
 
-        // ! Sets the size of all particles.
+        //! Sets the size of all particles.
         void CParticleSystemSceneNode::setParticleSize(const core::dimension2d<f32> &size)
         {
             os::Printer::log("setParticleSize is deprecated, use setMinStartSize/setMaxStartSize in emitter.", irr::ELL_WARNING);
@@ -563,7 +563,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void CParticleSystemSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             IParticleSystemSceneNode::serializeAttributes(out, options);
@@ -604,7 +604,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void CParticleSystemSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             IParticleSystemSceneNode::deserializeAttributes(in, options);

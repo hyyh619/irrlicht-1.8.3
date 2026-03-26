@@ -16,7 +16,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIMeshViewer::CGUIMeshViewer(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
             : IGUIMeshViewer(environment, parent, id, rectangle), Mesh(0)
         {
@@ -26,7 +26,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIMeshViewer::~CGUIMeshViewer()
         {
             if (Mesh)
@@ -34,7 +34,7 @@ namespace irr
         }
 
 
-        // ! sets the mesh to be shown
+        //! sets the mesh to be shown
         void CGUIMeshViewer::setMesh(scene::IAnimatedMesh *mesh)
         {
             if (mesh)
@@ -55,35 +55,35 @@ namespace irr
         }
 
 
-        // ! Gets the displayed mesh
+        //! Gets the displayed mesh
         scene::IAnimatedMesh* CGUIMeshViewer::getMesh() const
         {
             return Mesh;
         }
 
 
-        // ! sets the material
+        //! sets the material
         void CGUIMeshViewer::setMaterial(const video::SMaterial &material)
         {
             Material = material;
         }
 
 
-        // ! gets the material
+        //! gets the material
         const video::SMaterial&CGUIMeshViewer::getMaterial() const
         {
             return Material;
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIMeshViewer::OnEvent(const SEvent &event)
         {
             return IGUIElement::OnEvent(event);
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIMeshViewer::draw()
         {
             if (!IsVisible)

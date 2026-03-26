@@ -16,7 +16,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUISpinBox::CGUISpinBox(const wchar_t *text, bool border, IGUIEnvironment *environment,
             IGUIElement *parent, s32 id, const core::rect<s32> &rectangle)
             : IGUISpinBox(environment, parent, id, rectangle),
@@ -57,7 +57,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUISpinBox::~CGUISpinBox()
         {
             if (ButtonSpinUp)
@@ -168,7 +168,7 @@ namespace irr
         }
 
 
-        // ! Sets the number of decimal places to display.
+        //! Sets the number of decimal places to display.
         void CGUISpinBox::setDecimalPlaces(s32 places)
         {
             DecimalPlaces = places;
@@ -298,7 +298,7 @@ namespace irr
         }
 
 
-        // ! Sets the new caption of the element
+        //! Sets the new caption of the element
         void CGUISpinBox::setText(const wchar_t *text)
         {
             EditBox->setText(text);
@@ -307,14 +307,14 @@ namespace irr
         }
 
 
-        // ! Returns caption of this element.
+        //! Returns caption of this element.
         const wchar_t* CGUISpinBox::getText() const
         {
             return EditBox->getText();
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUISpinBox::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             IGUIElement::serializeAttributes(out, options);
@@ -326,7 +326,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUISpinBox::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             IGUIElement::deserializeAttributes(in, options);

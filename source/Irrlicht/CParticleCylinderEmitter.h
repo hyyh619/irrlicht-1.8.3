@@ -12,12 +12,12 @@ namespace irr
 {
     namespace scene
     {
-        // ! A default box emitter
+        //! A default box emitter
         class CParticleCylinderEmitter : public IParticleCylinderEmitter
         {
 public:
 
-            // ! constructor
+            //! constructor
             CParticleCylinderEmitter(
                 const core::vector3df &center, f32 radius,
                 const core::vector3df &normal, f32 length,
@@ -33,194 +33,194 @@ public:
                 const core::dimension2df &maxStartSize = core::dimension2df(5.0f, 5.0f)
                 );
 
-            // ! Prepares an array with new particles to emitt into the system
-            // ! and returns how much new particles there are.
+            //! Prepares an array with new particles to emitt into the system
+            //! and returns how much new particles there are.
             virtual s32 emitt(u32 now, u32 timeSinceLastCall, SParticle* &outArray);
 
-            // ! Set the center of the radius for the cylinder, at one end of the cylinder
+            //! Set the center of the radius for the cylinder, at one end of the cylinder
             virtual void setCenter(const core::vector3df &center)
             {
                 Center = center;
             }
 
-            // ! Set the normal of the cylinder
+            //! Set the normal of the cylinder
             virtual void setNormal(const core::vector3df &normal)
             {
                 Normal = normal;
             }
 
-            // ! Set the radius of the cylinder
+            //! Set the radius of the cylinder
             virtual void setRadius(f32 radius)
             {
                 Radius = radius;
             }
 
-            // ! Set the length of the cylinder
+            //! Set the length of the cylinder
             virtual void setLength(f32 length)
             {
                 Length = length;
             }
 
-            // ! Set whether or not to draw points inside the cylinder
+            //! Set whether or not to draw points inside the cylinder
             virtual void setOutlineOnly(bool outlineOnly)
             {
                 OutlineOnly = outlineOnly;
             }
 
-            // ! Set direction the emitter emits particles
+            //! Set direction the emitter emits particles
             virtual void setDirection(const core::vector3df &newDirection)
             {
                 Direction = newDirection;
             }
 
-            // ! Set direction the emitter emits particles
+            //! Set direction the emitter emits particles
             virtual void setMinParticlesPerSecond(u32 minPPS)
             {
                 MinParticlesPerSecond = minPPS;
             }
 
-            // ! Set direction the emitter emits particles
+            //! Set direction the emitter emits particles
             virtual void setMaxParticlesPerSecond(u32 maxPPS)
             {
                 MaxParticlesPerSecond = maxPPS;
             }
 
-            // ! Set direction the emitter emits particles
+            //! Set direction the emitter emits particles
             virtual void setMinStartColor(const video::SColor &color)
             {
                 MinStartColor = color;
             }
 
-            // ! Set direction the emitter emits particles
+            //! Set direction the emitter emits particles
             virtual void setMaxStartColor(const video::SColor &color)
             {
                 MaxStartColor = color;
             }
 
-            // ! Set the maximum starting size for particles
+            //! Set the maximum starting size for particles
             virtual void setMaxStartSize(const core::dimension2df &size)
             {
                 MaxStartSize = size;
             }
 
-            // ! Set the minimum starting size for particles
+            //! Set the minimum starting size for particles
             virtual void setMinStartSize(const core::dimension2df &size)
             {
                 MinStartSize = size;
             }
 
-            // ! Set the minimum particle life-time in milliseconds
+            //! Set the minimum particle life-time in milliseconds
             virtual void setMinLifeTime(u32 lifeTimeMin)
             {
                 MinLifeTime = lifeTimeMin;
             }
 
-            // ! Set the maximum particle life-time in milliseconds
+            //! Set the maximum particle life-time in milliseconds
             virtual void setMaxLifeTime(u32 lifeTimeMax)
             {
                 MaxLifeTime = lifeTimeMax;
             }
 
-            // !    Maximal random derivation from the direction
+            //!    Maximal random derivation from the direction
             virtual void setMaxAngleDegrees(s32 maxAngleDegrees)
             {
                 MaxAngleDegrees = maxAngleDegrees;
             }
 
-            // ! Get the center of the cylinder
+            //! Get the center of the cylinder
             virtual const core::vector3df&getCenter() const
             {
                 return Center;
             }
 
-            // ! Get the normal of the cylinder
+            //! Get the normal of the cylinder
             virtual const core::vector3df&getNormal() const
             {
                 return Normal;
             }
 
-            // ! Get the radius of the cylinder
+            //! Get the radius of the cylinder
             virtual f32 getRadius() const
             {
                 return Radius;
             }
 
-            // ! Get the center of the cylinder
+            //! Get the center of the cylinder
             virtual f32 getLength() const
             {
                 return Length;
             }
 
-            // ! Get whether or not to draw points inside the cylinder
+            //! Get whether or not to draw points inside the cylinder
             virtual bool getOutlineOnly() const
             {
                 return OutlineOnly;
             }
 
-            // ! Gets direction the emitter emits particles
+            //! Gets direction the emitter emits particles
             virtual const core::vector3df&getDirection() const
             {
                 return Direction;
             }
 
-            // ! Gets direction the emitter emits particles
+            //! Gets direction the emitter emits particles
             virtual u32 getMinParticlesPerSecond() const
             {
                 return MinParticlesPerSecond;
             }
 
-            // ! Gets direction the emitter emits particles
+            //! Gets direction the emitter emits particles
             virtual u32 getMaxParticlesPerSecond() const
             {
                 return MaxParticlesPerSecond;
             }
 
-            // ! Gets direction the emitter emits particles
+            //! Gets direction the emitter emits particles
             virtual const video::SColor&getMinStartColor() const
             {
                 return MinStartColor;
             }
 
-            // ! Gets direction the emitter emits particles
+            //! Gets direction the emitter emits particles
             virtual const video::SColor&getMaxStartColor() const
             {
                 return MaxStartColor;
             }
 
-            // ! Gets the maximum starting size for particles
+            //! Gets the maximum starting size for particles
             virtual const core::dimension2df&getMaxStartSize() const
             {
                 return MaxStartSize;
             }
 
-            // ! Gets the minimum starting size for particles
+            //! Gets the minimum starting size for particles
             virtual const core::dimension2df&getMinStartSize() const
             {
                 return MinStartSize;
             }
 
-            // ! Get the minimum particle life-time in milliseconds
+            //! Get the minimum particle life-time in milliseconds
             virtual u32 getMinLifeTime() const
             {
                 return MinLifeTime;
             }
 
-            // ! Get the maximum particle life-time in milliseconds
+            //! Get the maximum particle life-time in milliseconds
             virtual u32 getMaxLifeTime() const
             {
                 return MaxLifeTime;
             }
 
-            // !    Maximal random derivation from the direction
+            //!    Maximal random derivation from the direction
             virtual s32 getMaxAngleDegrees() const
             {
                 return MaxAngleDegrees;
             }
 
-            // ! Writes attributes of the object.
+            //! Writes attributes of the object.
             virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const;
 
-            // ! Reads attributes of the object.
+            //! Reads attributes of the object.
             virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options);
 
 private:

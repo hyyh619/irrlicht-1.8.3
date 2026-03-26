@@ -641,15 +641,15 @@ namespace irr
         } // end anonymous namespace
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".tga")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".tga")
         bool CImageLoaderDDS::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "dds");
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CImageLoaderDDS::isALoadableFileFormat(io::IReadFile *file) const
         {
             if (!file)
@@ -665,7 +665,7 @@ namespace irr
         }
 
 
-        // ! creates a surface from the file
+        //! creates a surface from the file
         IImage* CImageLoaderDDS::loadImage(io::IReadFile *file) const
         {
             u8 *memFile = new u8[file->getSize()];
@@ -697,7 +697,7 @@ namespace irr
         }
 
 
-        // ! creates a loader which is able to load dds images
+        //! creates a loader which is able to load dds images
         IImageLoader* createImageLoaderDDS()
         {
             return new CImageLoaderDDS();

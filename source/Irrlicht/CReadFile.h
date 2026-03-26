@@ -24,30 +24,30 @@ public:
 
             virtual ~CReadFile();
 
-            // ! returns how much was read
+            //! returns how much was read
             virtual s32 read(void *buffer, u32 sizeToRead);
 
-            // ! changes position in file, returns true if successful
+            //! changes position in file, returns true if successful
             virtual bool seek(long finalPos, bool relativeMovement = false);
 
-            // ! returns size of file
+            //! returns size of file
             virtual long getSize() const;
 
-            // ! returns if file is open
+            //! returns if file is open
             virtual bool isOpen() const
             {
                 return File != 0;
             }
 
-            // ! returns where in the file we are.
+            //! returns where in the file we are.
             virtual long getPos() const;
 
-            // ! returns name of file
+            //! returns name of file
             virtual const io::path&getFileName() const;
 
 private:
 
-            // ! opens the file
+            //! opens the file
             void openFile();
 
             FILE     *File;

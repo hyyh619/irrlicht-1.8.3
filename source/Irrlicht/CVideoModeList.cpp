@@ -9,7 +9,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CVideoModeList::CVideoModeList()
         {
     #ifdef _DEBUG
@@ -28,14 +28,14 @@ namespace irr
         }
 
 
-        // ! Gets amount of video modes in the list.
+        //! Gets amount of video modes in the list.
         s32 CVideoModeList::getVideoModeCount() const
         {
             return (s32)VideoModes.size();
         }
 
 
-        // ! Returns the screen size of a video mode in pixels.
+        //! Returns the screen size of a video mode in pixels.
         core::dimension2d<u32> CVideoModeList::getVideoModeResolution(s32 modeNumber) const
         {
             if (modeNumber < 0 || modeNumber > (s32)VideoModes.size())
@@ -90,7 +90,7 @@ namespace irr
         }
 
 
-        // ! Returns the pixel depth of a video mode in bits.
+        //! Returns the pixel depth of a video mode in bits.
         s32 CVideoModeList::getVideoModeDepth(s32 modeNumber) const
         {
             if (modeNumber < 0 || modeNumber > (s32)VideoModes.size())
@@ -100,21 +100,21 @@ namespace irr
         }
 
 
-        // ! Returns current desktop screen resolution.
+        //! Returns current desktop screen resolution.
         const core::dimension2d<u32>&CVideoModeList::getDesktopResolution() const
         {
             return Desktop.size;
         }
 
 
-        // ! Returns the pixel depth of a video mode in bits.
+        //! Returns the pixel depth of a video mode in bits.
         s32 CVideoModeList::getDesktopDepth() const
         {
             return Desktop.depth;
         }
 
 
-        // ! adds a new mode to the list
+        //! adds a new mode to the list
         void CVideoModeList::addMode(const core::dimension2d<u32> &size, s32 depth)
         {
             SVideoMode m;

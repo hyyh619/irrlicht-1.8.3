@@ -14,19 +14,19 @@ namespace irr
         #endif
     }
 
-    // ! Returns the current set log level.
+    //! Returns the current set log level.
     ELOG_LEVEL CLogger::getLogLevel() const
     {
         return LogLevel;
     }
 
-    // ! Sets a new log level.
+    //! Sets a new log level.
     void CLogger::setLogLevel(ELOG_LEVEL ll)
     {
         LogLevel = ll;
     }
 
-    // ! Prints out a text into the log
+    //! Prints out a text into the log
     void CLogger::log(const c8 *text, ELOG_LEVEL ll)
     {
         if (ll < LogLevel)
@@ -46,7 +46,7 @@ namespace irr
     }
 
 
-    // ! Prints out a text into the log
+    //! Prints out a text into the log
     void CLogger::log(const c8 *text, const c8 *hint, ELOG_LEVEL ll)
     {
         if (ll < LogLevel)
@@ -58,7 +58,7 @@ namespace irr
         log (s.c_str(), ll);
     }
 
-    // ! Prints out a text into the log
+    //! Prints out a text into the log
     void CLogger::log(const wchar_t *text, ELOG_LEVEL ll)
     {
         if (ll < LogLevel)
@@ -69,7 +69,7 @@ namespace irr
     }
 
 
-    // ! Prints out a text into the log
+    //! Prints out a text into the log
     void CLogger::log(const wchar_t *text, const wchar_t *hint, ELOG_LEVEL ll)
     {
         if (ll < LogLevel)
@@ -80,7 +80,7 @@ namespace irr
         log(s1.c_str(), s2.c_str(), ll);
     }
 
-    // ! Prints out a text into the log
+    //! Prints out a text into the log
     void CLogger::log(const c8 *text, const wchar_t *hint, ELOG_LEVEL ll)
     {
         if (ll < LogLevel)
@@ -90,7 +90,7 @@ namespace irr
         log(text, s2.c_str(), ll);
     }
 
-    // ! Sets a new event receiver
+    //! Sets a new event receiver
     void CLogger::setReceiver(IEventReceiver *r)
     {
         Receiver = r;

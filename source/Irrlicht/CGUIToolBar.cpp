@@ -16,7 +16,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIToolBar::CGUIToolBar(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
             : IGUIToolBar(environment, parent, id, rectangle), ButtonX(5)
         {
@@ -64,7 +64,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIToolBar::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -81,7 +81,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIToolBar::draw()
         {
             if (!IsVisible)
@@ -101,7 +101,7 @@ namespace irr
         }
 
 
-        // ! Updates the absolute position.
+        //! Updates the absolute position.
         void CGUIToolBar::updateAbsolutePosition()
         {
             if (Parent)
@@ -114,7 +114,7 @@ namespace irr
         }
 
 
-        // ! Adds a button to the tool bar
+        //! Adds a button to the tool bar
         IGUIButton* CGUIToolBar::addButton(s32 id, const wchar_t *text, const wchar_t *tooltiptext,
             video::ITexture *img, video::ITexture *pressed, bool isPushButton,
             bool useAlphaChannel)

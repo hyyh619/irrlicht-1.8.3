@@ -1,6 +1,6 @@
-// ! Copyright (C) 2009-2012 Gary Conway
-// ! This file is part of the "Irrlicht Engine".
-// ! For conditions of distribution and use, see copyright notice in irrlicht.h
+//! Copyright (C) 2009-2012 Gary Conway
+//! This file is part of the "Irrlicht Engine".
+//! For conditions of distribution and use, see copyright notice in irrlicht.h
 
 /*
  *  Author:    Gary Conway (Viper) - co-author of the ZIP file format, Feb 1989,
@@ -137,7 +137,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CImageLoaderRGB::CImageLoaderRGB()
         {
     #ifdef _DEBUG
@@ -146,8 +146,8 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extensions listed here
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extensions listed here
         bool CImageLoaderRGB::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension(filename, "rgb", "rgba", "sgi") ||
@@ -155,7 +155,7 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CImageLoaderRGB::isALoadableFileFormat(io::IReadFile *file) const
         {
             rgbStruct rgb;
@@ -659,7 +659,7 @@ namespace irr
         }
 
 
-        // ! creates a loader which is able to load SGI RGB images
+        //! creates a loader which is able to load SGI RGB images
         IImageLoader* createImageLoaderRGB()
         {
             return new CImageLoaderRGB;

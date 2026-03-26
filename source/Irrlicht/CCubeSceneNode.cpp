@@ -27,7 +27,7 @@ namespace irr
          | 000       100
          */
 
-        // ! constructor
+        //! constructor
         CCubeSceneNode::CCubeSceneNode(f32 size, ISceneNode *parent, ISceneManager *mgr,
             s32 id, const core::vector3df &position,
             const core::vector3df &rotation, const core::vector3df &scale)
@@ -61,7 +61,7 @@ namespace irr
         }
 
 
-        // ! renders the node.
+        //! renders the node.
         void CCubeSceneNode::render()
         {
             video::IVideoDriver *driver = SceneManager->getVideoDriver();
@@ -125,16 +125,16 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CCubeSceneNode::getBoundingBox() const
         {
             return Mesh->getMeshBuffer(0)->getBoundingBox();
         }
 
 
-        // ! Removes a child from this scene node.
-        // ! Implemented here, to be able to remove the shadow properly, if there is one,
-        // ! or to remove attached childs.
+        //! Removes a child from this scene node.
+        //! Implemented here, to be able to remove the shadow properly, if there is one,
+        //! or to remove attached childs.
         bool CCubeSceneNode::removeChild(ISceneNode *child)
         {
             if (child && Shadow == child)
@@ -147,8 +147,8 @@ namespace irr
         }
 
 
-        // ! Creates shadow volume scene node as child of this node
-        // ! and returns a pointer to it.
+        //! Creates shadow volume scene node as child of this node
+        //! and returns a pointer to it.
         IShadowVolumeSceneNode* CCubeSceneNode::addShadowVolumeSceneNode(
             const IMesh *shadowMesh, s32 id, bool zfailmethod, f32 infinity)
         {
@@ -175,21 +175,21 @@ namespace irr
         }
 
 
-        // ! returns the material based on the zero based index i.
+        //! returns the material based on the zero based index i.
         video::SMaterial&CCubeSceneNode::getMaterial(u32 i)
         {
             return Mesh->getMeshBuffer(0)->getMaterial();
         }
 
 
-        // ! returns amount of materials used by this scene node.
+        //! returns amount of materials used by this scene node.
         u32 CCubeSceneNode::getMaterialCount() const
         {
             return 1;
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void CCubeSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             ISceneNode::serializeAttributes(out, options);
@@ -198,7 +198,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void CCubeSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             f32 newSize = in->getAttributeAsFloat("Size");
@@ -214,7 +214,7 @@ namespace irr
         }
 
 
-        // ! Creates a clone of this scene node and its children.
+        //! Creates a clone of this scene node and its children.
         ISceneNode* CCubeSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
         {
             if (!newParent)

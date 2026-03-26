@@ -18,13 +18,13 @@ namespace irr
         class CImageWriterTGA : public IImageWriter
         {
 public:
-            // ! constructor
+            //! constructor
             CImageWriterTGA();
 
-            // ! return true if this writer can write a file with the given extension
+            //! return true if this writer can write a file with the given extension
             virtual bool isAWriteableFileExtension(const io::path &filename) const;
 
-            // ! write image to file
+            //! write image to file
             virtual bool writeImage(io::IWriteFile *file, IImage *image, u32 param) const;
         };
     } // namespace video

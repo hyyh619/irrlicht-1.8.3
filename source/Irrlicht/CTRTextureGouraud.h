@@ -27,32 +27,32 @@ namespace irr
 {
     namespace video
     {
-        // ! CTRTextureGouraud class
+        //! CTRTextureGouraud class
         class CTRTextureGouraud : public ITriangleRenderer
         {
 public:
 
-            // ! constructor
+            //! constructor
             CTRTextureGouraud(IZBuffer *zbuffer);
 
-            // ! destructor
+            //! destructor
             virtual ~CTRTextureGouraud();
 
-            // ! sets a render target
+            //! sets a render target
             virtual void setRenderTarget(video::IImage *surface, const core::rect<s32> &viewPort);
 
-            // ! draws an indexed triangle list
+            //! draws an indexed triangle list
             virtual void drawIndexedTriangleList(S2DVertex *vertices, s32 vertexCount, const u16 *indexList, s32 triangleCount);
 
-            // ! en or disables the backface culling
+            //! en or disables the backface culling
             virtual void setBackfaceCulling(bool enabled = true);
 
-            // ! sets the Texture
+            //! sets the Texture
             virtual void setTexture(video::IImage *texture);
 
 protected:
 
-            // ! vertauscht zwei vertizen
+            //! vertauscht zwei vertizen
             inline void swapVertices(const S2DVertex **v1, const S2DVertex **v2)
             {
                 const S2DVertex *b = *v1;

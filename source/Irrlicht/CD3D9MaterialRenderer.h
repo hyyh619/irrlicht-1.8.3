@@ -51,22 +51,22 @@ namespace irr
             }
         } // anonymous namespace
 
-        // ! Base class for all internal D3D9 material renderers
+        //! Base class for all internal D3D9 material renderers
         class CD3D9MaterialRenderer : public IMaterialRenderer
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             CD3D9MaterialRenderer(IDirect3DDevice9 *d3ddev, video::IVideoDriver *driver)
                 : pID3DDevice(d3ddev), Driver(driver)
             {}
 
-            // ! sets a variable in the shader.
-            // ! \param vertexShader: True if this should be set in the vertex shader, false if
-            // ! in the pixel shader.
-            // ! \param name: Name of the variable
-            // ! \param floats: Pointer to array of floats
-            // ! \param count: Amount of floats in array.
+            //! sets a variable in the shader.
+            //! \param vertexShader: True if this should be set in the vertex shader, false if
+            //! in the pixel shader.
+            //! \param name: Name of the variable
+            //! \param floats: Pointer to array of floats
+            //! \param count: Amount of floats in array.
             virtual bool setVariable(bool vertexShader, const c8 *name, const f32 *floats, int count)
             {
                 os::Printer::log("Invalid material to set variable in.");
@@ -74,7 +74,7 @@ public:
                 return false;
             }
 
-            // ! Bool interface for the above.
+            //! Bool interface for the above.
             virtual bool setVariable(bool vertexShader, const c8 *name, const bool *bools, int count)
             {
                 os::Printer::log("Invalid material to set variable in.");
@@ -82,7 +82,7 @@ public:
                 return false;
             }
 
-            // ! Int interface for the above.
+            //! Int interface for the above.
             virtual bool setVariable(bool vertexShader, const c8 *name, const s32 *ints, int count)
             {
                 os::Printer::log("Invalid material to set variable in.");
@@ -97,7 +97,7 @@ protected:
         };
 
 
-        // ! Solid material renderer
+        //! Solid material renderer
         class CD3D9MaterialRenderer_SOLID : public CD3D9MaterialRenderer
         {
 public:
@@ -121,7 +121,7 @@ public:
             }
         };
 
-        // ! Generic Texture Blend
+        //! Generic Texture Blend
         class CD3D9MaterialRenderer_ONETEXTURE_BLEND : public CD3D9MaterialRenderer
         {
 public:
@@ -178,7 +178,7 @@ public:
                 }
             }
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             /** The scene management needs to know this for being able to sort the
              * materials by opaque and transparent.
              * The return value could be optimized, but we'd need to know the
@@ -243,7 +243,7 @@ private:
 
 
 
-        // ! Solid 2 layer material renderer
+        //! Solid 2 layer material renderer
         class CD3D9MaterialRenderer_SOLID_2_LAYER : public CD3D9MaterialRenderer
         {
 public:
@@ -269,7 +269,7 @@ public:
         };
 
 
-        // ! Transparent add color material renderer
+        //! Transparent add color material renderer
         class CD3D9MaterialRenderer_TRANSPARENT_ADD_COLOR : public CD3D9MaterialRenderer
         {
 public:
@@ -294,8 +294,8 @@ public:
                 }
             }
 
-            // ! Returns if the material is transparent. The scene management needs to know this
-            // ! for being able to sort the materials by opaque and transparent.
+            //! Returns if the material is transparent. The scene management needs to know this
+            //! for being able to sort the materials by opaque and transparent.
             virtual bool isTransparent() const
             {
                 return true;
@@ -303,7 +303,7 @@ public:
         };
 
 
-        // ! Transparent vertex alpha material renderer
+        //! Transparent vertex alpha material renderer
         class CD3D9MaterialRenderer_TRANSPARENT_VERTEX_ALPHA : public CD3D9MaterialRenderer
         {
 public:
@@ -329,8 +329,8 @@ public:
                 }
             }
 
-            // ! Returns if the material is transparent. The scene managment needs to know this
-            // ! for being able to sort the materials by opaque and transparent.
+            //! Returns if the material is transparent. The scene managment needs to know this
+            //! for being able to sort the materials by opaque and transparent.
             virtual bool isTransparent() const
             {
                 return true;
@@ -338,7 +338,7 @@ public:
         };
 
 
-        // ! Transparent alpha channel material renderer
+        //! Transparent alpha channel material renderer
         class CD3D9MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL : public CD3D9MaterialRenderer
         {
 public:
@@ -374,8 +374,8 @@ public:
                 pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
             }
 
-            // ! Returns if the material is transparent. The scene managment needs to know this
-            // ! for being able to sort the materials by opaque and transparent.
+            //! Returns if the material is transparent. The scene managment needs to know this
+            //! for being able to sort the materials by opaque and transparent.
             virtual bool isTransparent() const
             {
                 return true;
@@ -384,7 +384,7 @@ public:
 
 
 
-        // ! Transparent alpha channel material renderer
+        //! Transparent alpha channel material renderer
         class CD3D9MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL_REF : public CD3D9MaterialRenderer
         {
 public:
@@ -419,8 +419,8 @@ public:
                 pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
             }
 
-            // ! Returns if the material is transparent. The scene managment needs to know this
-            // ! for being able to sort the materials by opaque and transparent.
+            //! Returns if the material is transparent. The scene managment needs to know this
+            //! for being able to sort the materials by opaque and transparent.
             virtual bool isTransparent() const
             {
                 return false; // this material is not really transparent because it does no blending.
@@ -428,7 +428,7 @@ public:
         };
 
 
-        // ! material renderer for all kinds of lightmaps
+        //! material renderer for all kinds of lightmaps
         class CD3D9MaterialRenderer_LIGHTMAP : public CD3D9MaterialRenderer
         {
 public:
@@ -474,7 +474,7 @@ public:
 
 
 
-        // ! material renderer for detail maps
+        //! material renderer for detail maps
         class CD3D9MaterialRenderer_DETAIL_MAP : public CD3D9MaterialRenderer
         {
 public:
@@ -500,7 +500,7 @@ public:
         };
 
 
-        // ! sphere map material renderer
+        //! sphere map material renderer
         class CD3D9MaterialRenderer_SPHERE_MAP : public CD3D9MaterialRenderer
         {
 public:
@@ -536,7 +536,7 @@ public:
         };
 
 
-        // ! reflection 2 layer material renderer
+        //! reflection 2 layer material renderer
         class CD3D9MaterialRenderer_REFLECTION_2_LAYER : public CD3D9MaterialRenderer
         {
 public:
@@ -573,7 +573,7 @@ public:
         };
 
 
-        // ! reflection 2 layer material renderer
+        //! reflection 2 layer material renderer
         class CD3D9MaterialRenderer_TRANSPARENT_REFLECTION_2_LAYER : public CD3D9MaterialRenderer
         {
 public:
@@ -612,8 +612,8 @@ public:
                 pID3DDevice->SetTransform(D3DTS_TEXTURE1, &UnitMatrixD3D9);
             }
 
-            // ! Returns if the material is transparent. The scene managment needs to know this
-            // ! for being able to sort the materials by opaque and transparent.
+            //! Returns if the material is transparent. The scene managment needs to know this
+            //! for being able to sort the materials by opaque and transparent.
             virtual bool isTransparent() const
             {
                 return true;

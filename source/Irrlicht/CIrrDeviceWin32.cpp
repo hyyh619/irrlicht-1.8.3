@@ -960,7 +960,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 namespace irr
 {
-    // ! constructor
+    //! constructor
     CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters &params)
         : CIrrDeviceStub(params), HWnd(0), ChangedToFullScreen(false), Resized(false),
         ExternalWindow(false), Win32CursorControl(0), JoyControl(0)
@@ -1111,7 +1111,7 @@ namespace irr
     }
 
 
-    // ! destructor
+    //! destructor
     CIrrDeviceWin32::~CIrrDeviceWin32()
     {
         delete JoyControl;
@@ -1133,7 +1133,7 @@ namespace irr
     }
 
 
-    // ! create the driver
+    //! create the driver
     void CIrrDeviceWin32::createDriver()
     {
         switch (CreationParams.DriverType)
@@ -1218,7 +1218,7 @@ namespace irr
     }
 
 
-    // ! runs the device. Returns false if device wants to be deleted
+    //! runs the device. Returns false if device wants to be deleted
     bool CIrrDeviceWin32::run()
     {
         os::Timer::tick();
@@ -1238,13 +1238,13 @@ namespace irr
     }
 
 
-    // ! Pause the current process for the minimum time allowed only to allow other processes to execute
+    //! Pause the current process for the minimum time allowed only to allow other processes to execute
     void CIrrDeviceWin32::yield()
     {
         Sleep(1);
     }
 
-    // ! Pause execution and let other processes to run for a specified amount of time.
+    //! Pause execution and let other processes to run for a specified amount of time.
     void CIrrDeviceWin32::sleep(u32 timeMs, bool pauseTimer)
     {
         const bool wasStopped = Timer ? Timer->isStopped() : true;
@@ -1287,7 +1287,7 @@ namespace irr
     }
 
 
-    // ! sets the caption of the window
+    //! sets the caption of the window
     void CIrrDeviceWin32::setWindowCaption(const wchar_t *text)
     {
         // We use SendMessage instead of SetText to ensure proper
@@ -1300,7 +1300,7 @@ namespace irr
     }
 
 
-    // ! presents a surface in the client area
+    //! presents a surface in the client area
     bool CIrrDeviceWin32::present(video::IImage *image, void *windowId, core::rect<s32> *src)
     {
         HWND hwnd = HWnd;
@@ -1352,7 +1352,7 @@ namespace irr
     }
 
 
-    // ! notifies the device that it should close itself
+    //! notifies the device that it should close itself
     void CIrrDeviceWin32::closeDevice()
     {
         MSG msg;
@@ -1372,7 +1372,7 @@ namespace irr
     }
 
 
-    // ! returns if window is active. if not, nothing needs to be drawn
+    //! returns if window is active. if not, nothing needs to be drawn
     bool CIrrDeviceWin32::isWindowActive() const
     {
         _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -1380,7 +1380,7 @@ namespace irr
     }
 
 
-    // ! returns if window has focus
+    //! returns if window has focus
     bool CIrrDeviceWin32::isWindowFocused() const
     {
         const bool ret = (GetFocus() == HWnd);
@@ -1390,7 +1390,7 @@ namespace irr
     }
 
 
-    // ! returns if window is minimized
+    //! returns if window is minimized
     bool CIrrDeviceWin32::isWindowMinimized() const
     {
         WINDOWPLACEMENT plc;
@@ -1405,7 +1405,7 @@ namespace irr
     }
 
 
-    // ! switches to fullscreen
+    //! switches to fullscreen
     bool CIrrDeviceWin32::switchToFullScreen(bool reset)
     {
         if (!CreationParams.Fullscreen)
@@ -1479,15 +1479,15 @@ namespace irr
     }
 
 
-    // ! returns the win32 cursor control
+    //! returns the win32 cursor control
     CIrrDeviceWin32::CCursorControl* CIrrDeviceWin32::getWin32CursorControl()
     {
         return Win32CursorControl;
     }
 
 
-    // ! \return Returns a pointer to a list with all video modes supported
-    // ! by the gfx adapter.
+    //! \return Returns a pointer to a list with all video modes supported
+    //! by the gfx adapter.
     video::IVideoModeList* CIrrDeviceWin32::getVideoModeList()
     {
         if (!VideoModeList->getVideoModeCount())
@@ -1743,13 +1743,13 @@ namespace irr
         }
     }
 
-    // ! Notifies the device, that it has been resized
+    //! Notifies the device, that it has been resized
     void CIrrDeviceWin32::OnResized()
     {
         Resized = true;
     }
 
-    // ! Sets if the window should be resizable in windowed mode.
+    //! Sets if the window should be resizable in windowed mode.
     void CIrrDeviceWin32::setResizable(bool resize)
     {
         if (ExternalWindow || !getVideoDriver() || CreationParams.Fullscreen)
@@ -1786,7 +1786,7 @@ namespace irr
     }
 
 
-    // ! Minimizes the window.
+    //! Minimizes the window.
     void CIrrDeviceWin32::minimizeWindow()
     {
         WINDOWPLACEMENT wndpl;
@@ -1798,7 +1798,7 @@ namespace irr
     }
 
 
-    // ! Maximizes the window.
+    //! Maximizes the window.
     void CIrrDeviceWin32::maximizeWindow()
     {
         WINDOWPLACEMENT wndpl;
@@ -1810,7 +1810,7 @@ namespace irr
     }
 
 
-    // ! Restores the window to its original size.
+    //! Restores the window to its original size.
     void CIrrDeviceWin32::restoreWindow()
     {
         WINDOWPLACEMENT wndpl;
@@ -1831,7 +1831,7 @@ namespace irr
     }
 
 
-    // ! Set the current Gamma Value for the Display
+    //! Set the current Gamma Value for the Display
     bool CIrrDeviceWin32::setGammaRamp(f32 red, f32 green, f32 blue, f32 brightness, f32 contrast)
     {
         bool r;
@@ -1847,7 +1847,7 @@ namespace irr
         return r;
     }
 
-    // ! Get the current Gamma Value for the Display
+    //! Get the current Gamma Value for the Display
     bool CIrrDeviceWin32::getGammaRamp(f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast)
     {
         bool r;
@@ -1872,7 +1872,7 @@ namespace irr
     }
 
 
-    // ! Process system events
+    //! Process system events
     void CIrrDeviceWin32::handleSystemMessages()
     {
         MSG msg;
@@ -1893,7 +1893,7 @@ namespace irr
     }
 
 
-    // ! Remove all messages pending in the system message loop
+    //! Remove all messages pending in the system message loop
     void CIrrDeviceWin32::clearSystemMessages()
     {
         MSG msg;
@@ -2077,7 +2077,7 @@ namespace irr
         }
     }
 
-    // ! Sets the active cursor icon
+    //! Sets the active cursor icon
     void CIrrDeviceWin32::CCursorControl::setActiveIcon(gui::ECURSOR_ICON iconId)
     {
         if (iconId >= (s32)Cursors.size())
@@ -2090,7 +2090,7 @@ namespace irr
     }
 
 
-    // ! Add a custom sprite as cursor icon.
+    //! Add a custom sprite as cursor icon.
     gui::ECURSOR_ICON CIrrDeviceWin32::CCursorControl::addIcon(const gui::SCursorSprite &icon)
     {
         if (icon.SpriteId >= 0)
@@ -2116,7 +2116,7 @@ namespace irr
     }
 
 
-    // ! replace the given cursor icon.
+    //! replace the given cursor icon.
     void CIrrDeviceWin32::CCursorControl::changeIcon(gui::ECURSOR_ICON iconId, const gui::SCursorSprite &icon)
     {
         if (iconId >= (s32)Cursors.size())
@@ -2145,7 +2145,7 @@ namespace irr
     }
 
 
-    // ! Return a system-specific size which is supported for cursors. Larger icons will fail, smaller icons might work.
+    //! Return a system-specific size which is supported for cursors. Larger icons will fail, smaller icons might work.
     core::dimension2di CIrrDeviceWin32::CCursorControl::getSupportedIconSize() const
     {
         core::dimension2di result;

@@ -16,7 +16,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIWindow::CGUIWindow(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
             : IGUIWindow(environment, parent, id, rectangle), Dragging(false), IsDraggable(true), DrawBackground(true), DrawTitlebar(true), IsActive(false)
         {
@@ -74,7 +74,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIWindow::~CGUIWindow()
         {
             if (MinButton)
@@ -118,7 +118,7 @@ namespace irr
             }
         }
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIWindow::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -224,14 +224,14 @@ namespace irr
         }
 
 
-        // ! Updates the absolute position.
+        //! Updates the absolute position.
         void CGUIWindow::updateAbsolutePosition()
         {
             IGUIElement::updateAbsolutePosition();
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIWindow::draw()
         {
             if (IsVisible)
@@ -275,35 +275,35 @@ namespace irr
         }
 
 
-        // ! Returns pointer to the close button
+        //! Returns pointer to the close button
         IGUIButton* CGUIWindow::getCloseButton() const
         {
             return CloseButton;
         }
 
 
-        // ! Returns pointer to the minimize button
+        //! Returns pointer to the minimize button
         IGUIButton* CGUIWindow::getMinimizeButton() const
         {
             return MinButton;
         }
 
 
-        // ! Returns pointer to the maximize button
+        //! Returns pointer to the maximize button
         IGUIButton* CGUIWindow::getMaximizeButton() const
         {
             return RestoreButton;
         }
 
 
-        // ! Returns true if the window is draggable, false if not
+        //! Returns true if the window is draggable, false if not
         bool CGUIWindow::isDraggable() const
         {
             return IsDraggable;
         }
 
 
-        // ! Sets whether the window is draggable
+        //! Sets whether the window is draggable
         void CGUIWindow::setDraggable(bool draggable)
         {
             IsDraggable = draggable;
@@ -313,28 +313,28 @@ namespace irr
         }
 
 
-        // ! Set if the window background will be drawn
+        //! Set if the window background will be drawn
         void CGUIWindow::setDrawBackground(bool draw)
         {
             DrawBackground = draw;
         }
 
 
-        // ! Get if the window background will be drawn
+        //! Get if the window background will be drawn
         bool CGUIWindow::getDrawBackground() const
         {
             return DrawBackground;
         }
 
 
-        // ! Set if the window titlebar will be drawn
+        //! Set if the window titlebar will be drawn
         void CGUIWindow::setDrawTitlebar(bool draw)
         {
             DrawTitlebar = draw;
         }
 
 
-        // ! Get if the window titlebar will be drawn
+        //! Get if the window titlebar will be drawn
         bool CGUIWindow::getDrawTitlebar() const
         {
             return DrawTitlebar;
@@ -357,14 +357,14 @@ namespace irr
         }
 
 
-        // ! Returns the rectangle of the drawable area (without border, without titlebar and without scrollbars)
+        //! Returns the rectangle of the drawable area (without border, without titlebar and without scrollbars)
         core::rect<s32> CGUIWindow::getClientRect() const
         {
             return ClientRect;
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUIWindow::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUIWindow::serializeAttributes(out, options);
@@ -385,7 +385,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUIWindow::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             IGUIWindow::deserializeAttributes(in, options);

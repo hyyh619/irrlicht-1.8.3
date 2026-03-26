@@ -15,16 +15,16 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CTRTextureGouraudAdd(IZBuffer *zbuffer);
 
-            // ! draws an indexed triangle list
+            //! draws an indexed triangle list
             virtual void drawIndexedTriangleList(S2DVertex *vertices, s32 vertexCount, const u16 *indexList, s32 triangleCount);
 
 protected:
         };
 
-        // ! constructor
+        //! constructor
         CTRTextureGouraudAdd::CTRTextureGouraudAdd(IZBuffer *zbuffer)
             : CTRTextureGouraud(zbuffer)
         {
@@ -34,7 +34,7 @@ protected:
         }
 
 
-        // ! draws an indexed triangle list
+        //! draws an indexed triangle list
         void CTRTextureGouraudAdd::drawIndexedTriangleList(S2DVertex *vertices, s32 vertexCount, const u16 *indexList, s32 triangleCount)
         {
             const S2DVertex *v1, *v2, *v3;

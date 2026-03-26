@@ -37,17 +37,17 @@ namespace irr
         class IShaderConstantSetCallBack;
         class IMaterialRenderer;
 
-        // ! Class for using vertex and pixel shaders with OpenGL
+        //! Class for using vertex and pixel shaders with OpenGL
         class COpenGLShaderMaterialRenderer : public IMaterialRenderer
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             COpenGLShaderMaterialRenderer(COpenGLDriver *driver,
                 s32 &outMaterialTypeNr, const c8 *vertexShaderProgram, const c8 *pixelShaderProgram,
                 IShaderConstantSetCallBack *callback, IMaterialRenderer *baseMaterial, s32 userData);
 
-            // ! Destructor
+            //! Destructor
             virtual ~COpenGLShaderMaterialRenderer();
 
             virtual void OnSetMaterial(const SMaterial &material, const SMaterial &lastMaterial,
@@ -57,13 +57,13 @@ public:
 
             virtual void OnUnsetMaterial();
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             virtual bool isTransparent() const;
 
 protected:
 
-            // ! constructor only for use by derived classes who want to
-            // ! create a fall back material for example.
+            //! constructor only for use by derived classes who want to
+            //! create a fall back material for example.
             COpenGLShaderMaterialRenderer(COpenGLDriver *driver,
                 IShaderConstantSetCallBack *callback,
                 IMaterialRenderer *baseMaterial, s32 userData = 0);

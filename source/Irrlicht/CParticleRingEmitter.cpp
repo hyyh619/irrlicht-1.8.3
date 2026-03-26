@@ -10,7 +10,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CParticleRingEmitter::CParticleRingEmitter(
             const core::vector3df &center, f32 radius, f32 ringThickness,
             const core::vector3df &direction, u32 minParticlesPerSecond,
@@ -34,8 +34,8 @@ namespace irr
         }
 
 
-        // ! Prepares an array with new particles to emitt into the system
-        // ! and returns how much new particles there are.
+        //! Prepares an array with new particles to emitt into the system
+        //! and returns how much new particles there are.
         s32 CParticleRingEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle* &outArray)
         {
             Time += timeSinceLastCall;
@@ -107,7 +107,7 @@ namespace irr
             return 0;
         }
 
-        // ! Writes attributes of the object.
+        //! Writes attributes of the object.
         void CParticleRingEmitter::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             out->addVector3d("Center", Center);
@@ -128,7 +128,7 @@ namespace irr
             out->addInt("MaxAngleDegrees", MaxAngleDegrees);
         }
 
-        // ! Reads attributes of the object.
+        //! Reads attributes of the object.
         void CParticleRingEmitter::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             Center        = in->getAttributeAsVector3d("Center");

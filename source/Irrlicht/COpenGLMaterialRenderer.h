@@ -15,12 +15,12 @@ namespace irr
 {
     namespace video
     {
-        // ! Base class for all internal OpenGL material renderers
+        //! Base class for all internal OpenGL material renderers
         class COpenGLMaterialRenderer : public IMaterialRenderer
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             COpenGLMaterialRenderer(video::COpenGLDriver *driver) : Driver(driver)
             {}
 
@@ -30,7 +30,7 @@ protected:
         };
 
 
-        // ! Solid material renderer
+        //! Solid material renderer
         class COpenGLMaterialRenderer_SOLID : public COpenGLMaterialRenderer
         {
 public:
@@ -54,7 +54,7 @@ public:
         };
 
 
-        // ! Generic Texture Blend
+        //! Generic Texture Blend
         class COpenGLMaterialRenderer_ONETEXTURE_BLEND : public COpenGLMaterialRenderer
         {
 public:
@@ -151,7 +151,7 @@ public:
                 glDisable(GL_ALPHA_TEST);
             }
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             /** Is not always transparent, but mostly. */
             virtual bool isTransparent() const
             {
@@ -160,7 +160,7 @@ public:
         };
 
 
-        // ! Solid 2 layer material renderer
+        //! Solid 2 layer material renderer
         class COpenGLMaterialRenderer_SOLID_2_LAYER : public COpenGLMaterialRenderer
         {
 public:
@@ -219,7 +219,7 @@ public:
         };
 
 
-        // ! Transparent add color material renderer
+        //! Transparent add color material renderer
         class COpenGLMaterialRenderer_TRANSPARENT_ADD_COLOR : public COpenGLMaterialRenderer
         {
 public:
@@ -246,7 +246,7 @@ public:
                 glDisable(GL_BLEND);
             }
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             virtual bool isTransparent() const
             {
                 return true;
@@ -254,7 +254,7 @@ public:
         };
 
 
-        // ! Transparent vertex alpha material renderer
+        //! Transparent vertex alpha material renderer
         class COpenGLMaterialRenderer_TRANSPARENT_VERTEX_ALPHA : public COpenGLMaterialRenderer
         {
 public:
@@ -304,7 +304,7 @@ public:
                 glDisable(GL_BLEND);
             }
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             virtual bool isTransparent() const
             {
                 return true;
@@ -312,7 +312,7 @@ public:
         };
 
 
-        // ! Transparent alpha channel material renderer
+        //! Transparent alpha channel material renderer
         class COpenGLMaterialRenderer_TRANSPARENT_ALPHA_CHANNEL : public COpenGLMaterialRenderer
         {
 public:
@@ -364,7 +364,7 @@ public:
                 glDisable(GL_BLEND);
             }
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             virtual bool isTransparent() const
             {
                 return true;
@@ -372,7 +372,7 @@ public:
         };
 
 
-        // ! Transparent alpha channel material renderer
+        //! Transparent alpha channel material renderer
         class COpenGLMaterialRenderer_TRANSPARENT_ALPHA_CHANNEL_REF : public COpenGLMaterialRenderer
         {
 public:
@@ -399,7 +399,7 @@ public:
                 glDisable(GL_ALPHA_TEST);
             }
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             virtual bool isTransparent() const
             {
                 return false; // this material is not really transparent because it does no blending.
@@ -407,7 +407,7 @@ public:
         };
 
 
-        // ! material renderer for all kinds of lightmaps
+        //! material renderer for all kinds of lightmaps
         class COpenGLMaterialRenderer_LIGHTMAP : public COpenGLMaterialRenderer
         {
 public:
@@ -527,7 +527,7 @@ public:
 
 
 
-        // ! detail map  material renderer
+        //! detail map  material renderer
         class COpenGLMaterialRenderer_DETAIL_MAP : public COpenGLMaterialRenderer
         {
 public:
@@ -576,7 +576,7 @@ public:
         };
 
 
-        // ! sphere map material renderer
+        //! sphere map material renderer
         class COpenGLMaterialRenderer_SPHERE_MAP : public COpenGLMaterialRenderer
         {
 public:
@@ -612,7 +612,7 @@ public:
         };
 
 
-        // ! reflection 2 layer material renderer
+        //! reflection 2 layer material renderer
         class COpenGLMaterialRenderer_REFLECTION_2_LAYER : public COpenGLMaterialRenderer
         {
 public:
@@ -669,7 +669,7 @@ public:
         };
 
 
-        // ! reflection 2 layer material renderer
+        //! reflection 2 layer material renderer
         class COpenGLMaterialRenderer_TRANSPARENT_REFLECTION_2_LAYER : public COpenGLMaterialRenderer
         {
 public:
@@ -748,7 +748,7 @@ public:
                 glDisable(GL_BLEND);
             }
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             virtual bool isTransparent() const
             {
                 return true;

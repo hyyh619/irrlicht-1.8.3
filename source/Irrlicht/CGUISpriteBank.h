@@ -22,7 +22,7 @@ namespace irr
     {
         class IGUIEnvironment;
 
-        // ! Sprite bank interface.
+        //! Sprite bank interface.
         class CGUISpriteBank : public IGUISpriteBank
         {
 public:
@@ -38,18 +38,18 @@ public:
             virtual void addTexture(video::ITexture *texture);
             virtual void setTexture(u32 index, video::ITexture *texture);
 
-            // ! Add the texture and use it for a single non-animated sprite.
+            //! Add the texture and use it for a single non-animated sprite.
             virtual s32 addTextureAsSprite(video::ITexture *texture);
 
-            // ! clears sprites, rectangles and textures
+            //! clears sprites, rectangles and textures
             virtual void clear();
 
-            // ! Draws a sprite in 2d with position and color
+            //! Draws a sprite in 2d with position and color
             virtual void draw2DSprite(u32 index, const core::position2di &pos, const core::rect<s32> *clip = 0,
                 const video::SColor &color = video::SColor(255, 255, 255, 255),
                 u32 starttime = 0, u32 currenttime = 0, bool loop = true, bool center = false);
 
-            // ! Draws a sprite batch in 2d using an array of positions and a color
+            //! Draws a sprite batch in 2d using an array of positions and a color
             virtual void draw2DSpriteBatch(const core::array<u32> &indices, const core::array<core::position2di> &pos,
                 const core::rect<s32> *clip = 0,
                 const video::SColor &color = video::SColor(255, 255, 255, 255),

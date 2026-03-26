@@ -12,7 +12,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CSoftwareTexture::CSoftwareTexture(IImage *image, const io::path &name,
             bool renderTarget, void *mipmapData)
             : ITexture(name), Texture(0), IsRenderTarget(renderTarget)
@@ -44,7 +44,7 @@ namespace irr
 
 
 
-        // ! destructor
+        //! destructor
         CSoftwareTexture::~CSoftwareTexture()
         {
             if (Image)
@@ -56,7 +56,7 @@ namespace irr
 
 
 
-        // ! lock function
+        //! lock function
         void* CSoftwareTexture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel)
         {
             return Image->lock();
@@ -64,7 +64,7 @@ namespace irr
 
 
 
-        // ! unlock function
+        //! unlock function
         void CSoftwareTexture::unlock()
         {
             if (Image != Texture)
@@ -77,21 +77,21 @@ namespace irr
         }
 
 
-        // ! Returns original size of the texture.
+        //! Returns original size of the texture.
         const core::dimension2d<u32>&CSoftwareTexture::getOriginalSize() const
         {
             return OrigSize;
         }
 
 
-        // ! Returns (=size) of the texture.
+        //! Returns (=size) of the texture.
         const core::dimension2d<u32>&CSoftwareTexture::getSize() const
         {
             return Image->getDimension();
         }
 
 
-        // ! returns unoptimized surface
+        //! returns unoptimized surface
         CImage* CSoftwareTexture::getImage()
         {
             return Image;
@@ -99,7 +99,7 @@ namespace irr
 
 
 
-        // ! returns texture surface
+        //! returns texture surface
         CImage* CSoftwareTexture::getTexture()
         {
             return Texture;
@@ -107,7 +107,7 @@ namespace irr
 
 
 
-        // ! returns driver type of texture (=the driver, who created the texture)
+        //! returns driver type of texture (=the driver, who created the texture)
         E_DRIVER_TYPE CSoftwareTexture::getDriverType() const
         {
             return EDT_SOFTWARE;
@@ -115,7 +115,7 @@ namespace irr
 
 
 
-        // ! returns color format of texture
+        //! returns color format of texture
         ECOLOR_FORMAT CSoftwareTexture::getColorFormat() const
         {
             return ECOLOR_FORMAT::ECF_A1R5G5B5;
@@ -123,15 +123,15 @@ namespace irr
 
 
 
-        // ! returns pitch of texture (in bytes)
+        //! returns pitch of texture (in bytes)
         u32 CSoftwareTexture::getPitch() const
         {
             return Image->getDimension().Width * 2;
         }
 
 
-        // ! Regenerates the mip map levels of the texture. Useful after locking and
-        // ! modifying the texture
+        //! Regenerates the mip map levels of the texture. Useful after locking and
+        //! modifying the texture
         void CSoftwareTexture::regenerateMipMapLevels(void *mipmapData)
         {
             // our software textures don't have mip maps

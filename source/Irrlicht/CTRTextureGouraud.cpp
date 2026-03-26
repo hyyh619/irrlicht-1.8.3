@@ -10,7 +10,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CTRTextureGouraud::CTRTextureGouraud(IZBuffer *zbuffer)
             : RenderTarget(0), ZBuffer(zbuffer), SurfaceWidth(0), SurfaceHeight(0),
             BackFaceCullingEnabled(true), lockedZBuffer(0),
@@ -27,7 +27,7 @@ namespace irr
 
 
 
-        // ! destructor
+        //! destructor
         CTRTextureGouraud::~CTRTextureGouraud()
         {
             if (RenderTarget)
@@ -42,7 +42,7 @@ namespace irr
 
 
 
-        // ! sets the Texture
+        //! sets the Texture
         void CTRTextureGouraud::setTexture(video::IImage *texture)
         {
             if (Texture)
@@ -63,7 +63,7 @@ namespace irr
 
 
 
-        // ! en or disables the backface culling
+        //! en or disables the backface culling
         void CTRTextureGouraud::setBackfaceCulling(bool enabled)
         {
             BackFaceCullingEnabled = enabled;
@@ -71,7 +71,7 @@ namespace irr
 
 
 
-        // ! sets a render target
+        //! sets a render target
         void CTRTextureGouraud::setRenderTarget(video::IImage *surface, const core::rect<s32> &viewPort)
         {
             if (RenderTarget)
@@ -90,7 +90,7 @@ namespace irr
 
 
 
-        // ! draws an indexed triangle list
+        //! draws an indexed triangle list
         void CTRTextureGouraud::drawIndexedTriangleList(S2DVertex *vertices, s32 vertexCount, const u16 *indexList, s32 triangleCount)
         {
             const S2DVertex *v1, *v2, *v3;
@@ -453,7 +453,7 @@ namespace irr
 {
     namespace video
     {
-        // ! creates a flat triangle renderer
+        //! creates a flat triangle renderer
         ITriangleRenderer* createTriangleRendererTextureGouraud(IZBuffer *zbuffer)
         {
     #ifdef _IRR_COMPILE_WITH_SOFTWARE_

@@ -18,25 +18,25 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CGUICheckBox(bool checked, IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle);
 
-            // ! set if box is checked
+            //! set if box is checked
             virtual void setChecked(bool checked);
 
-            // ! returns if box is checked
+            //! returns if box is checked
             virtual bool isChecked() const;
 
-            // ! called if an event happened.
+            //! called if an event happened.
             virtual bool OnEvent(const SEvent &event);
 
-            // ! draws the element and its children
+            //! draws the element and its children
             virtual void draw();
 
-            // ! Writes attributes of the element.
+            //! Writes attributes of the element.
             virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const;
 
-            // ! Reads attributes of the element
+            //! Reads attributes of the element
             virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options);
 
 private:

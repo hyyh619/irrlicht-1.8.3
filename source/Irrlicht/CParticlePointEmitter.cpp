@@ -10,7 +10,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CParticlePointEmitter::CParticlePointEmitter(
             const core::vector3df &direction, u32 minParticlesPerSecond,
             u32 maxParticlesPerSecond, video::SColor minStartColor,
@@ -32,8 +32,8 @@ namespace irr
         }
 
 
-        // ! Prepares an array with new particles to emitt into the system
-        // ! and returns how much new particles there are.
+        //! Prepares an array with new particles to emitt into the system
+        //! and returns how much new particles there are.
         s32 CParticlePointEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle* &outArray)
         {
             Time += timeSinceLastCall;
@@ -84,7 +84,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the object.
+        //! Writes attributes of the object.
         void CParticlePointEmitter::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             out->addVector3d("Direction", Direction);
@@ -101,7 +101,7 @@ namespace irr
             out->addInt("MaxAngleDegrees", MaxAngleDegrees);
         }
 
-        // ! Reads attributes of the object.
+        //! Reads attributes of the object.
         void CParticlePointEmitter::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             Direction = in->getAttributeAsVector3d("Direction");

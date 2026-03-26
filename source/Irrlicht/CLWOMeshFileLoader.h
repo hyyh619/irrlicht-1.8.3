@@ -21,25 +21,25 @@ namespace irr
         struct SMesh;
         class ISceneManager;
 
-        // ! Meshloader capable of loading Lightwave 3D meshes.
+        //! Meshloader capable of loading Lightwave 3D meshes.
         class CLWOMeshFileLoader : public IMeshLoader
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             CLWOMeshFileLoader(scene::ISceneManager *smgr, io::IFileSystem *fs);
 
-            // ! destructor
+            //! destructor
             virtual ~CLWOMeshFileLoader();
 
-            // ! returns true if the file maybe is able to be loaded by this class
-            // ! based on the file extension (e.g. ".bsp")
+            //! returns true if the file maybe is able to be loaded by this class
+            //! based on the file extension (e.g. ".bsp")
             virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-            // ! creates/loads an animated mesh from the file.
-            // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-            // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-            // ! See IUnknown::drop() for more information.
+            //! creates/loads an animated mesh from the file.
+            //! \return Pointer to the created mesh. Returns 0 if loading failed.
+            //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+            //! See IUnknown::drop() for more information.
             virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
 private:

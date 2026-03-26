@@ -50,8 +50,8 @@ public:
             /** constructor*/
             CDMFLoader(ISceneManager *smgr, io::IFileSystem *filesys);
 
-            // ! returns true if the file maybe is able to be loaded by this class
-            // ! based on the file extension (e.g. ".cob")
+            //! returns true if the file maybe is able to be loaded by this class
+            //! based on the file extension (e.g. ".cob")
             virtual bool isALoadableFileExtension(const io::path &filename) const;
 
             /** creates/loads an animated mesh from the file.

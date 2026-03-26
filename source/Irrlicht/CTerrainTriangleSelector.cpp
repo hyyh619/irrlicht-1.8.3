@@ -10,7 +10,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CTerrainTriangleSelector::CTerrainTriangleSelector (ITerrainSceneNode *node, s32 LOD)
             : SceneNode(node)
         {
@@ -22,14 +22,14 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CTerrainTriangleSelector::~CTerrainTriangleSelector()
         {
             TrianglePatches.TrianglePatchArray.clear();
         }
 
 
-        // ! Clears and sets triangle data
+        //! Clears and sets triangle data
         void CTerrainTriangleSelector::setTriangleData(ITerrainSceneNode *node, s32 LOD)
         {
             // Get pointer to the GeoMipMaps vertices
@@ -76,7 +76,7 @@ namespace irr
         }
 
 
-        // ! Gets all triangles.
+        //! Gets all triangles.
         void CTerrainTriangleSelector::getTriangles(core::triangle3df *triangles,
             s32 arraySize, s32 &outTriangleCount,
             const core::matrix4 *transform) const
@@ -112,7 +112,7 @@ namespace irr
         }
 
 
-        // ! Gets all triangles which lie within a specific bounding box.
+        //! Gets all triangles which lie within a specific bounding box.
         void CTerrainTriangleSelector::getTriangles(core::triangle3df *triangles,
             s32 arraySize, s32 &outTriangleCount,
             const core::aabbox3d<f32> &box, const core::matrix4 *transform) const
@@ -149,7 +149,7 @@ namespace irr
         }
 
 
-        // ! Gets all triangles which have or may have contact with a 3d line.
+        //! Gets all triangles which have or may have contact with a 3d line.
         void CTerrainTriangleSelector::getTriangles(core::triangle3df *triangles,
             s32 arraySize, s32 &outTriangleCount, const core::line3d<f32> &line,
             const core::matrix4 *transform) const
@@ -185,7 +185,7 @@ namespace irr
         }
 
 
-        // ! Returns amount of all available triangles in this selector
+        //! Returns amount of all available triangles in this selector
         s32 CTerrainTriangleSelector::getTriangleCount() const
         {
             return TrianglePatches.TotalTriangles;

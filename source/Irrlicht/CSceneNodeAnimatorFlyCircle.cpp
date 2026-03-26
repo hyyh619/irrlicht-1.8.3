@@ -8,7 +8,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSceneNodeAnimatorFlyCircle::CSceneNodeAnimatorFlyCircle(u32 time,
             const core::vector3df &center, f32 radius, f32 speed,
             const core::vector3df &direction, f32 radiusEllipsoid)
@@ -35,7 +35,7 @@ namespace irr
         }
 
 
-        // ! animates a scene node
+        //! animates a scene node
         void CSceneNodeAnimatorFlyCircle::animateNode(ISceneNode *node, u32 timeMs)
         {
             if (0 == node)
@@ -55,7 +55,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node animator.
+        //! Writes attributes of the scene node animator.
         void CSceneNodeAnimatorFlyCircle::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             out->addVector3d("Center", Center);
@@ -66,7 +66,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node animator.
+        //! Reads attributes of the scene node animator.
         void CSceneNodeAnimatorFlyCircle::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             Center    = in->getAttributeAsVector3d("Center");

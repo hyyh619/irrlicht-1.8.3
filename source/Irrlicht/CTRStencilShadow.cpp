@@ -77,10 +77,10 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CTRStencilShadow(CBurningVideoDriver *driver);
 
-            // ! draws an indexed triangle list
+            //! draws an indexed triangle list
             virtual void drawTriangle(const s4DVertex *a, const s4DVertex *b, const s4DVertex *c);
             virtual void setParam(u32 index, f32 value);
 
@@ -96,7 +96,7 @@ private:
             sScanLineData    line;
         };
 
-        // ! constructor
+        //! constructor
         CTRStencilShadow::CTRStencilShadow(CBurningVideoDriver *driver)
             : IBurningShader(driver)
         {
@@ -902,7 +902,7 @@ namespace irr
 {
     namespace video
     {
-        // ! creates a triangle renderer
+        //! creates a triangle renderer
         IBurningShader* createTRStencilShadow(CBurningVideoDriver *driver)
         {
     #ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_

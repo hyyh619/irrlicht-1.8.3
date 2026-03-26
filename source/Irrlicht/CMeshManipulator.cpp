@@ -34,9 +34,9 @@ namespace irr
         }
 
 
-        // ! Flips the direction of surfaces. Changes backfacing triangles to frontfacing
-        // ! triangles and vice versa.
-        // ! \param mesh: Mesh on which the operation is performed.
+        //! Flips the direction of surfaces. Changes backfacing triangles to frontfacing
+        //! triangles and vice versa.
+        //! \param mesh: Mesh on which the operation is performed.
         void CMeshManipulator::flipSurfaces(scene::IMesh *mesh) const
         {
             if (!mesh)
@@ -126,7 +126,7 @@ namespace irr
         }
 
 
-        // ! Recalculates all normals of the mesh buffer.
+        //! Recalculates all normals of the mesh buffer.
         /** \param buffer: Mesh buffer on which the operation is performed. */
         void CMeshManipulator::recalculateNormals(IMeshBuffer *buffer, bool smooth, bool angleWeighted) const
         {
@@ -140,8 +140,8 @@ namespace irr
         }
 
 
-        // ! Recalculates all normals of the mesh.
-        // ! \param mesh: Mesh on which the operation is performed.
+        //! Recalculates all normals of the mesh.
+        //! \param mesh: Mesh on which the operation is performed.
         void CMeshManipulator::recalculateNormals(scene::IMesh *mesh, bool smooth, bool angleWeighted) const
         {
             if (!mesh)
@@ -248,7 +248,7 @@ namespace irr
             }
 
 
-            // ! Recalculates tangents for a tangent mesh buffer
+            //! Recalculates tangents for a tangent mesh buffer
             template<typename T>
             void recalculateTangentsT(IMeshBuffer *buffer, bool recalculateNormals, bool smooth, bool angleWeighted)
             {
@@ -413,7 +413,7 @@ namespace irr
         }
 
 
-        // ! Recalculates tangents for a tangent mesh buffer
+        //! Recalculates tangents for a tangent mesh buffer
         void CMeshManipulator::recalculateTangents(IMeshBuffer *buffer, bool recalculateNormals, bool smooth, bool angleWeighted) const
         {
             if (buffer && (buffer->getVertexType() == video::EVT_TANGENTS))
@@ -426,7 +426,7 @@ namespace irr
         }
 
 
-        // ! Recalculates tangents for all tangent mesh buffers
+        //! Recalculates tangents for all tangent mesh buffers
         void CMeshManipulator::recalculateTangents(IMesh *mesh, bool recalculateNormals, bool smooth, bool angleWeighted) const
         {
             if (!mesh)
@@ -443,7 +443,7 @@ namespace irr
 
         namespace
         {
-            // ! Creates a planar texture mapping on the meshbuffer
+            //! Creates a planar texture mapping on the meshbuffer
             template<typename T>
             void makePlanarTextureMappingT(scene::IMeshBuffer *buffer, f32 resolution)
             {
@@ -487,7 +487,7 @@ namespace irr
         }
 
 
-        // ! Creates a planar texture mapping on the meshbuffer
+        //! Creates a planar texture mapping on the meshbuffer
         void CMeshManipulator::makePlanarTextureMapping(scene::IMeshBuffer *buffer, f32 resolution) const
         {
             if (!buffer)
@@ -500,7 +500,7 @@ namespace irr
         }
 
 
-        // ! Creates a planar texture mapping on the mesh
+        //! Creates a planar texture mapping on the mesh
         void CMeshManipulator::makePlanarTextureMapping(scene::IMesh *mesh, f32 resolution) const
         {
             if (!mesh)
@@ -517,7 +517,7 @@ namespace irr
 
         namespace
         {
-            // ! Creates a planar texture mapping on the meshbuffer
+            //! Creates a planar texture mapping on the meshbuffer
             template<typename T>
             void makePlanarTextureMappingT(scene::IMeshBuffer *buffer, f32 resolutionS, f32 resolutionT, u8 axis, const core::vector3df &offset)
             {
@@ -556,7 +556,7 @@ namespace irr
         }
 
 
-        // ! Creates a planar texture mapping on the meshbuffer
+        //! Creates a planar texture mapping on the meshbuffer
         void CMeshManipulator::makePlanarTextureMapping(scene::IMeshBuffer *buffer, f32 resolutionS, f32 resolutionT, u8 axis, const core::vector3df &offset) const
         {
             if (!buffer)
@@ -569,7 +569,7 @@ namespace irr
         }
 
 
-        // ! Creates a planar texture mapping on the mesh
+        //! Creates a planar texture mapping on the mesh
         void CMeshManipulator::makePlanarTextureMapping(scene::IMesh *mesh, f32 resolutionS, f32 resolutionT, u8 axis, const core::vector3df &offset) const
         {
             if (!mesh)
@@ -584,7 +584,7 @@ namespace irr
         }
 
 
-        // ! Clones a static IMesh into a modifyable SMesh.
+        //! Clones a static IMesh into a modifyable SMesh.
         // not yet 32bit
         SMesh* CMeshManipulator::createMeshCopy(scene::IMesh *mesh) const
         {
@@ -677,7 +677,7 @@ namespace irr
         }
 
 
-        // ! Creates a copy of the mesh, which will only consist of unique primitives
+        //! Creates a copy of the mesh, which will only consist of unique primitives
         // not yet 32bit
         IMesh* CMeshManipulator::createMeshUniquePrimitives(IMesh *mesh) const
         {
@@ -787,7 +787,7 @@ namespace irr
         }
 
 
-        // ! Creates a copy of a mesh, which will have identical vertices welded together
+        //! Creates a copy of a mesh, which will have identical vertices welded together
         // not yet 32bit
         IMesh* CMeshManipulator::createMeshWelded(IMesh *mesh, f32 tolerance) const
         {
@@ -970,7 +970,7 @@ namespace irr
         }
 
 
-        // ! Creates a copy of the mesh, which will only consist of S3DVertexTangents vertices.
+        //! Creates a copy of the mesh, which will only consist of S3DVertexTangents vertices.
         // not yet 32bit
         IMesh* CMeshManipulator::createMeshWithTangents(IMesh *mesh, bool recalculateNormals, bool smooth, bool angleWeighted, bool calculateTangents) const
         {
@@ -1064,7 +1064,7 @@ namespace irr
         }
 
 
-        // ! Creates a copy of the mesh, which will only consist of S3DVertex2TCoords vertices.
+        //! Creates a copy of the mesh, which will only consist of S3DVertex2TCoords vertices.
         // not yet 32bit
         IMesh* CMeshManipulator::createMeshWith2TCoords(IMesh *mesh) const
         {
@@ -1154,7 +1154,7 @@ namespace irr
         }
 
 
-        // ! Creates a copy of the mesh, which will only consist of S3DVertex vertices.
+        //! Creates a copy of the mesh, which will only consist of S3DVertex vertices.
         // not yet 32bit
         IMesh* CMeshManipulator::createMeshWith1TCoords(IMesh *mesh) const
         {
@@ -1241,7 +1241,7 @@ namespace irr
         }
 
 
-        // ! Returns amount of polygons in mesh.
+        //! Returns amount of polygons in mesh.
         s32 CMeshManipulator::getPolyCount(scene::IMesh *mesh) const
         {
             if (!mesh)
@@ -1256,7 +1256,7 @@ namespace irr
         }
 
 
-        // ! Returns amount of polygons in mesh.
+        //! Returns amount of polygons in mesh.
         s32 CMeshManipulator::getPolyCount(scene::IAnimatedMesh *mesh) const
         {
             if (mesh && mesh->getFrameCount() != 0)
@@ -1266,7 +1266,7 @@ namespace irr
         }
 
 
-        // ! create a new AnimatedMesh and adds the mesh to it
+        //! create a new AnimatedMesh and adds the mesh to it
         IAnimatedMesh* CMeshManipulator::createAnimatedMesh(scene::IMesh *mesh, scene::E_ANIMATED_MESH_TYPE type) const
         {
             return new SAnimatedMesh(mesh, type);

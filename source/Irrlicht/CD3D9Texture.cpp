@@ -28,7 +28,7 @@ namespace irr
 {
     namespace video
     {
-        // ! rendertarget constructor
+        //! rendertarget constructor
         CD3D9Texture::CD3D9Texture(CD3D9Driver *driver, const core::dimension2d<u32> &size,
             const io::path &name, const ECOLOR_FORMAT format)
             : ITexture(name), Texture(0), RTTSurface(0), Driver(driver), DepthSurface(0),
@@ -47,7 +47,7 @@ namespace irr
         }
 
 
-        // ! constructor
+        //! constructor
         CD3D9Texture::CD3D9Texture(IImage *image, CD3D9Driver *driver,
             u32 flags, const io::path &name, void *mipmapData)
             : ITexture(name), Texture(0), RTTSurface(0), Driver(driver), DepthSurface(0),
@@ -79,7 +79,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CD3D9Texture::~CD3D9Texture()
         {
             if (Texture)
@@ -259,7 +259,7 @@ namespace irr
         }
 
 
-        // ! creates the hardware texture
+        //! creates the hardware texture
         bool CD3D9Texture::createTexture(u32 flags, IImage *image)
         {
             ImageSize = image->getDimension();
@@ -352,7 +352,7 @@ namespace irr
         }
 
 
-        // ! copies the image to the texture
+        //! copies the image to the texture
         bool CD3D9Texture::copyTexture(IImage *image)
         {
             if (Texture && image)
@@ -386,7 +386,7 @@ namespace irr
         }
 
 
-        // ! lock function
+        //! lock function
         void* CD3D9Texture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel)
         {
             if (!Texture)
@@ -447,7 +447,7 @@ namespace irr
         }
 
 
-        // ! unlock function
+        //! unlock function
         void CD3D9Texture::unlock()
         {
             if (!Texture)
@@ -460,49 +460,49 @@ namespace irr
         }
 
 
-        // ! Returns original size of the texture.
+        //! Returns original size of the texture.
         const core::dimension2d<u32>&CD3D9Texture::getOriginalSize() const
         {
             return ImageSize;
         }
 
 
-        // ! Returns (=size) of the texture.
+        //! Returns (=size) of the texture.
         const core::dimension2d<u32>&CD3D9Texture::getSize() const
         {
             return TextureSize;
         }
 
 
-        // ! returns driver type of texture (=the driver, who created the texture)
+        //! returns driver type of texture (=the driver, who created the texture)
         E_DRIVER_TYPE CD3D9Texture::getDriverType() const
         {
             return EDT_DIRECT3D9;
         }
 
 
-        // ! returns color format of texture
+        //! returns color format of texture
         ECOLOR_FORMAT CD3D9Texture::getColorFormat() const
         {
             return ColorFormat;
         }
 
 
-        // ! returns pitch of texture (in bytes)
+        //! returns pitch of texture (in bytes)
         u32 CD3D9Texture::getPitch() const
         {
             return Pitch;
         }
 
 
-        // ! returns the DIRECT3D9 Texture
+        //! returns the DIRECT3D9 Texture
         IDirect3DBaseTexture9* CD3D9Texture::getDX9Texture() const
         {
             return Texture;
         }
 
 
-        // ! returns if texture has mipmap levels
+        //! returns if texture has mipmap levels
         bool CD3D9Texture::hasMipMaps() const
         {
             return HasMipMaps;
@@ -597,8 +597,8 @@ namespace irr
         }
 
 
-        // ! Regenerates the mip map levels of the texture. Useful after locking and
-        // ! modifying the texture
+        //! Regenerates the mip map levels of the texture. Useful after locking and
+        //! modifying the texture
         void CD3D9Texture::regenerateMipMapLevels(void *mipmapData)
         {
             if (mipmapData)
@@ -659,14 +659,14 @@ namespace irr
         }
 
 
-        // ! returns if it is a render target
+        //! returns if it is a render target
         bool CD3D9Texture::isRenderTarget() const
         {
             return IsRenderTarget;
         }
 
 
-        // ! Returns pointer to the render target surface
+        //! Returns pointer to the render target surface
         IDirect3DSurface9* CD3D9Texture::getRenderTargetSurface()
         {
             if (!IsRenderTarget)

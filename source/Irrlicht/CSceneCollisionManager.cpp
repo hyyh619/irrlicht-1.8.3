@@ -15,7 +15,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSceneCollisionManager::CSceneCollisionManager(ISceneManager *smanager, video::IVideoDriver *driver)
             : SceneManager(smanager), Driver(driver)
         {
@@ -28,7 +28,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CSceneCollisionManager::~CSceneCollisionManager()
         {
             if (Driver)
@@ -36,8 +36,8 @@ namespace irr
         }
 
 
-        // ! Returns the scene node, which is currently visible at the given
-        // ! screen coordinates, viewed from the currently active camera.
+        //! Returns the scene node, which is currently visible at the given
+        //! screen coordinates, viewed from the currently active camera.
         ISceneNode* CSceneCollisionManager::getSceneNodeFromScreenCoordinatesBB(
             const core::position2d<s32> &pos, s32 idBitMask, bool noDebugObjects, scene::ISceneNode *root)
         {
@@ -50,8 +50,8 @@ namespace irr
         }
 
 
-        // ! Returns the nearest scene node which collides with a 3d ray and
-        // ! which id matches a bitmask.
+        //! Returns the nearest scene node which collides with a 3d ray and
+        //! which id matches a bitmask.
         ISceneNode* CSceneCollisionManager::getSceneNodeFromRayBB(
             const core::line3d<f32> &ray,
             s32 idBitMask, bool noDebugObjects, scene::ISceneNode *root)
@@ -68,7 +68,7 @@ namespace irr
         }
 
 
-        // ! recursive method for going through all scene nodes
+        //! recursive method for going through all scene nodes
         void CSceneCollisionManager::getPickedNodeBB(ISceneNode *root,
             core::line3df &ray, s32 bits, bool noDebugObjects,
             f32 &outbestdistance, ISceneNode* &outbestnode)
@@ -328,8 +328,8 @@ namespace irr
         }
 
 
-        // ! Returns the scene node, at which the overgiven camera is looking at and
-        // ! which id matches the bitmask.
+        //! Returns the scene node, at which the overgiven camera is looking at and
+        //! which id matches the bitmask.
         ISceneNode* CSceneCollisionManager::getSceneNodeFromCameraBB(
             ICameraSceneNode *camera, s32 idBitMask, bool noDebugObjects)
         {
@@ -345,7 +345,7 @@ namespace irr
         }
 
 
-        // ! Finds the collision point of a line and lots of triangles, if there is one.
+        //! Finds the collision point of a line and lots of triangles, if there is one.
         bool CSceneCollisionManager::getCollisionPoint(const core::line3d<f32> &ray,
             ITriangleSelector *selector, core::vector3df &outIntersection,
             core::triangle3df &outTriangle,
@@ -422,8 +422,8 @@ namespace irr
         }
 
 
-        // ! Collides a moving ellipsoid with a 3d world with gravity and returns
-        // ! the resulting new position of the ellipsoid.
+        //! Collides a moving ellipsoid with a 3d world with gravity and returns
+        //! the resulting new position of the ellipsoid.
         core::vector3df CSceneCollisionManager::getCollisionResultPosition(
             ITriangleSelector *selector,
             const core::vector3df &position, const core::vector3df &radius,
@@ -692,8 +692,8 @@ namespace irr
         }
 
 
-        // ! Collides a moving ellipsoid with a 3d world with gravity and returns
-        // ! the resulting new position of the ellipsoid.
+        //! Collides a moving ellipsoid with a 3d world with gravity and returns
+        //! the resulting new position of the ellipsoid.
         core::vector3df CSceneCollisionManager::collideEllipsoidWithWorld(
             ITriangleSelector *selector, const core::vector3df &position,
             const core::vector3df &radius,  const core::vector3df &velocity,
@@ -845,7 +845,7 @@ namespace irr
         }
 
 
-        // ! Returns a 3d ray which would go through the 2d screen coodinates.
+        //! Returns a 3d ray which would go through the 2d screen coodinates.
         core::line3d<f32> CSceneCollisionManager::getRayFromScreenCoordinates(
             const core::position2d<s32> &pos, ICameraSceneNode *camera)
         {
@@ -883,7 +883,7 @@ namespace irr
         }
 
 
-        // ! Calculates 2d screen position from a 3d position.
+        //! Calculates 2d screen position from a 3d position.
         core::position2d<s32> CSceneCollisionManager::getScreenCoordinatesFrom3DPosition(
             const core::vector3df &pos3d, ICameraSceneNode *camera, bool useViewPort)
         {

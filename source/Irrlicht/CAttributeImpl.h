@@ -755,7 +755,7 @@ public:
                 return ret;
             }
 
-            // ! get float array
+            //! get float array
             virtual core::array<f32> getFloatArray()
             {
                 if (!IsFloat)
@@ -769,7 +769,7 @@ public:
                 return ValueF;
             }
 
-            // ! get int array
+            //! get int array
             virtual core::array<s32> getIntArray()
             {
                 if (IsFloat)
@@ -1320,7 +1320,7 @@ public:
                 }
             }
 
-            // ! set float array
+            //! set float array
             virtual void setFloatArray(core::array<f32> &vals)
             {
                 reset();
@@ -1334,7 +1334,7 @@ public:
                 }
             }
 
-            // ! set int array
+            //! set int array
             virtual void setIntArray(core::array<s32> &vals)
             {
                 reset();
@@ -1349,13 +1349,13 @@ public:
             }
 
 
-            // ! is it a number list?
+            //! is it a number list?
             virtual bool isNumberList()
             {
                 return true;
             }
 
-            // ! is it a float list?
+            //! is it a float list?
             virtual bool isFloat()
             {
                 return IsFloat;
@@ -1379,7 +1379,7 @@ public:
 
 protected:
 
-            // ! clear all values
+            //! clear all values
             void reset()
             {
                 if (IsFloat)

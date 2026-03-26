@@ -11,7 +11,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CParticleBoxEmitter::CParticleBoxEmitter(
             const core::aabbox3df &box, const core::vector3df &direction,
             u32 minParticlesPerSecond, u32 maxParticlesPerSecond,
@@ -32,8 +32,8 @@ namespace irr
         }
 
 
-        // ! Prepares an array with new particles to emitt into the system
-        // ! and returns how much new particles there are.
+        //! Prepares an array with new particles to emitt into the system
+        //! and returns how much new particles there are.
         s32 CParticleBoxEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle* &outArray)
         {
             Time += timeSinceLastCall;
@@ -102,7 +102,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the object.
+        //! Writes attributes of the object.
         void CParticleBoxEmitter::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             core::vector3df b = Box.getExtent();
@@ -124,7 +124,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the object.
+        //! Reads attributes of the object.
         void CParticleBoxEmitter::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             // read data and correct input values here

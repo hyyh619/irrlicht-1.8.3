@@ -27,7 +27,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CTerrainSceneNode::CTerrainSceneNode(ISceneNode *parent, ISceneManager *mgr,
             io::IFileSystem *fs, s32 id, s32 maxLOD, E_TERRAIN_PATCH_SIZE patchSize,
             const core::vector3df &position,
@@ -56,7 +56,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CTerrainSceneNode::~CTerrainSceneNode()
         {
             delete[] TerrainData.Patches;
@@ -72,7 +72,7 @@ namespace irr
         }
 
 
-        // ! Initializes the terrain data. Loads the vertices from the heightMapFile
+        //! Initializes the terrain data. Loads the vertices from the heightMapFile
         bool CTerrainSceneNode::loadHeightMap(io::IReadFile *file, video::SColor vertexColor,
             s32 smoothFactor)
         {
@@ -246,7 +246,7 @@ namespace irr
         }
 
 
-        // ! Initializes the terrain data. Loads the vertices from the heightMapFile
+        //! Initializes the terrain data. Loads the vertices from the heightMapFile
         bool CTerrainSceneNode::loadHeightMapRAW(io::IReadFile *file,
             s32 bitsPerPixel, bool signedData, bool floatVals,
             s32 width, video::SColor vertexColor, s32 smoothFactor)
@@ -508,29 +508,29 @@ namespace irr
         }
 
 
-        // ! Returns the mesh
+        //! Returns the mesh
         IMesh* CTerrainSceneNode::getMesh()
         {
             return Mesh;
         }
 
 
-        // ! Returns the material based on the zero based index i.
+        //! Returns the material based on the zero based index i.
         video::SMaterial&CTerrainSceneNode::getMaterial(u32 i)
         {
             return Mesh->getMeshBuffer(i)->getMaterial();
         }
 
 
-        // ! Returns amount of materials used by this scene node ( always 1 )
+        //! Returns amount of materials used by this scene node ( always 1 )
         u32 CTerrainSceneNode::getMaterialCount() const
         {
             return Mesh->getMeshBufferCount();
         }
 
 
-        // ! Sets the scale of the scene node.
-        // ! \param scale: New scale of the node
+        //! Sets the scale of the scene node.
+        //! \param scale: New scale of the node
         void CTerrainSceneNode::setScale(const core::vector3df &scale)
         {
             TerrainData.Scale = scale;
@@ -540,9 +540,9 @@ namespace irr
         }
 
 
-        // ! Sets the rotation of the node. This only modifies
-        // ! the relative rotation of the node.
-        // ! \param rotation: New rotation of the node in degrees.
+        //! Sets the rotation of the node. This only modifies
+        //! the relative rotation of the node.
+        //! \param rotation: New rotation of the node in degrees.
         void CTerrainSceneNode::setRotation(const core::vector3df &rotation)
         {
             TerrainData.Rotation = rotation;
@@ -551,9 +551,9 @@ namespace irr
         }
 
 
-        // ! Sets the pivot point for rotation of this node. This is useful for the TiledTerrainManager to
-        // ! rotate all terrain tiles around a global world point.
-        // ! NOTE: The default for the RotationPivot will be the center of the individual tile.
+        //! Sets the pivot point for rotation of this node. This is useful for the TiledTerrainManager to
+        //! rotate all terrain tiles around a global world point.
+        //! NOTE: The default for the RotationPivot will be the center of the individual tile.
         void CTerrainSceneNode::setRotationPivot(const core::vector3df &pivot)
         {
             UseDefaultRotationPivot   = false;
@@ -561,8 +561,8 @@ namespace irr
         }
 
 
-        // ! Sets the position of the node.
-        // ! \param newpos: New postition of the scene node.
+        //! Sets the position of the node.
+        //! \param newpos: New postition of the scene node.
         void CTerrainSceneNode::setPosition(const core::vector3df &newpos)
         {
             TerrainData.Position = newpos;
@@ -571,7 +571,7 @@ namespace irr
         }
 
 
-        // ! Apply transformation changes(scale, position, rotation)
+        //! Apply transformation changes(scale, position, rotation)
         void CTerrainSceneNode::applyTransformation()
         {
             if (!Mesh->getMeshBufferCount())
@@ -598,11 +598,11 @@ namespace irr
         }
 
 
-        // ! Updates the scene nodes indices if the camera has moved or rotated by a certain
-        // ! threshold, which can be changed using the SetCameraMovementDeltaThreshold and
-        // ! SetCameraRotationDeltaThreshold functions. This also determines if a given patch
-        // ! for the scene node is within the view frustum and if it's not the indices are not
-        // ! generated for that patch.
+        //! Updates the scene nodes indices if the camera has moved or rotated by a certain
+        //! threshold, which can be changed using the SetCameraMovementDeltaThreshold and
+        //! SetCameraRotationDeltaThreshold functions. This also determines if a given patch
+        //! for the scene node is within the view frustum and if it's not the indices are not
+        //! generated for that patch.
         void CTerrainSceneNode::OnRegisterSceneNode()
         {
             if (!IsVisible || !SceneManager->getActiveCamera())
@@ -766,7 +766,7 @@ namespace irr
         }
 
 
-        // ! Render the scene node
+        //! Render the scene node
         void CTerrainSceneNode::render()
         {
             if (!IsVisible || !SceneManager->getActiveCamera())
@@ -832,23 +832,23 @@ namespace irr
         }
 
 
-        // ! Return the bounding box of the entire terrain.
+        //! Return the bounding box of the entire terrain.
         const core::aabbox3d<f32>&CTerrainSceneNode::getBoundingBox() const
         {
             return TerrainData.BoundingBox;
         }
 
 
-        // ! Return the bounding box of a patch
+        //! Return the bounding box of a patch
         const core::aabbox3d<f32>&CTerrainSceneNode::getBoundingBox(s32 patchX, s32 patchZ) const
         {
             return TerrainData.Patches[patchX * TerrainData.PatchCount + patchZ].BoundingBox;
         }
 
 
-        // ! Gets the meshbuffer data based on a specified Level of Detail.
-        // ! \param mb: A reference to an SMeshBuffer object
-        // ! \param LOD: The Level Of Detail you want the indices from.
+        //! Gets the meshbuffer data based on a specified Level of Detail.
+        //! \param mb: A reference to an SMeshBuffer object
+        //! \param LOD: The Level Of Detail you want the indices from.
         void CTerrainSceneNode::getMeshBufferForLOD(IDynamicMeshBuffer &mb, s32 LOD) const
         {
             if (!Mesh->getMeshBufferCount())
@@ -909,14 +909,14 @@ namespace irr
         }
 
 
-        // ! Gets the indices for a specified patch at a specified Level of Detail.
-        // ! \param mb: A reference to an array of u32 indices.
-        // ! \param patchX: Patch x coordinate.
-        // ! \param patchZ: Patch z coordinate.
-        // ! \param LOD: The level of detail to get for that patch. If -1, then get
-        // ! the CurrentLOD. If the CurrentLOD is set to -1, meaning it's not shown,
-        // ! then it will retrieve the triangles at the highest LOD (0).
-        // ! \return: Number if indices put into the buffer.
+        //! Gets the indices for a specified patch at a specified Level of Detail.
+        //! \param mb: A reference to an array of u32 indices.
+        //! \param patchX: Patch x coordinate.
+        //! \param patchZ: Patch z coordinate.
+        //! \param LOD: The level of detail to get for that patch. If -1, then get
+        //! the CurrentLOD. If the CurrentLOD is set to -1, meaning it's not shown,
+        //! then it will retrieve the triangles at the highest LOD (0).
+        //! \return: Number if indices put into the buffer.
         s32 CTerrainSceneNode::getIndicesForPatch(core::array<u32> &indices, s32 patchX, s32 patchZ, s32 LOD)
         {
             if (patchX < 0 || patchX > TerrainData.PatchCount - 1 ||
@@ -989,9 +989,9 @@ namespace irr
         }
 
 
-        // ! Populates an array with the CurrentLOD of each patch.
-        // ! \param LODs: A reference to a core::array<s32> to hold the values
-        // ! \return Returns the number of elements in the array
+        //! Populates an array with the CurrentLOD of each patch.
+        //! \param LODs: A reference to a core::array<s32> to hold the values
+        //! \return Returns the number of elements in the array
         s32 CTerrainSceneNode::getCurrentLODOfPatches(core::array<s32> &LODs) const
         {
             s32 numLODs;
@@ -1007,18 +1007,18 @@ namespace irr
         }
 
 
-        // ! Manually sets the LOD of a patch
-        // ! \param patchX: Patch x coordinate.
-        // ! \param patchZ: Patch z coordinate.
-        // ! \param LOD: The level of detail to set the patch to.
+        //! Manually sets the LOD of a patch
+        //! \param patchX: Patch x coordinate.
+        //! \param patchZ: Patch z coordinate.
+        //! \param LOD: The level of detail to set the patch to.
         void CTerrainSceneNode::setLODOfPatch(s32 patchX, s32 patchZ, s32 LOD)
         {
             TerrainData.Patches[patchX * TerrainData.PatchCount + patchZ].CurrentLOD = LOD;
         }
 
 
-        // ! Override the default generation of distance thresholds for determining the LOD a patch
-        // ! is rendered at.
+        //! Override the default generation of distance thresholds for determining the LOD a patch
+        //! is rendered at.
         bool CTerrainSceneNode::overrideLODDistance(s32 LOD, f64 newDistance)
         {
             OverrideDistanceThreshold = true;
@@ -1032,9 +1032,9 @@ namespace irr
         }
 
 
-        // ! Creates a planar texture mapping on the terrain
-        // ! \param resolution: resolution of the planar mapping. This is the value
-        // ! specifying the relation between world space and texture coordinate space.
+        //! Creates a planar texture mapping on the terrain
+        //! \param resolution: resolution of the planar mapping. This is the value
+        //! specifying the relation between world space and texture coordinate space.
         void CTerrainSceneNode::scaleTexture(f32 resolution, f32 resolution2)
         {
             TCoordScale1 = resolution;
@@ -1082,7 +1082,7 @@ namespace irr
         }
 
 
-        // ! used to get the indices when generating index data for patches at varying levels of detail.
+        //! used to get the indices when generating index data for patches at varying levels of detail.
         u32 CTerrainSceneNode::getIndex(const s32 PatchX, const s32 PatchZ,
             const s32 PatchIndex, u32 vX, u32 vZ) const
         {
@@ -1137,7 +1137,7 @@ namespace irr
         }
 
 
-        // ! smooth the terrain
+        //! smooth the terrain
         void CTerrainSceneNode::smoothTerrain(IDynamicMeshBuffer *mb, s32 smoothFactor)
         {
             for (s32 run = 0; run < smoothFactor; ++run)
@@ -1161,7 +1161,7 @@ namespace irr
         }
 
 
-        // ! calculate smooth normals
+        //! calculate smooth normals
         void CTerrainSceneNode::calculateNormals(IDynamicMeshBuffer *mb)
         {
             s32             count;
@@ -1285,7 +1285,7 @@ namespace irr
         }
 
 
-        // ! create patches, stuff that needs to be done only once for patches goes here.
+        //! create patches, stuff that needs to be done only once for patches goes here.
         void CTerrainSceneNode::createPatches()
         {
             TerrainData.PatchCount = (TerrainData.Size - 1) / (TerrainData.CalcPatchSize);
@@ -1297,7 +1297,7 @@ namespace irr
         }
 
 
-        // ! used to calculate the internal STerrainData structure both at creation and after scaling/position calls.
+        //! used to calculate the internal STerrainData structure both at creation and after scaling/position calls.
         void CTerrainSceneNode::calculatePatchData()
         {
             // Reset the Terrains Bounding Box for re-calculation
@@ -1366,7 +1366,7 @@ namespace irr
         }
 
 
-        // ! used to calculate or recalculate the distance thresholds
+        //! used to calculate or recalculate the distance thresholds
         void CTerrainSceneNode::calculateDistanceThresholds(bool scalechanged)
         {
             // Only update the LODDistanceThreshold if it's not manually changed
@@ -1405,7 +1405,7 @@ namespace irr
         }
 
 
-        // ! Gets the height
+        //! Gets the height
         f32 CTerrainSceneNode::getHeight(f32 x, f32 z) const
         {
             if (!Mesh->getMeshBufferCount())
@@ -1448,7 +1448,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void CTerrainSceneNode::serializeAttributes(io::IAttributes *out,
             io::SAttributeReadWriteOptions *options) const
         {
@@ -1461,7 +1461,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void CTerrainSceneNode::deserializeAttributes(io::IAttributes *in,
             io::SAttributeReadWriteOptions *options)
         {
@@ -1502,7 +1502,7 @@ namespace irr
         }
 
 
-        // ! Creates a clone of this scene node and its children.
+        //! Creates a clone of this scene node and its children.
         ISceneNode* CTerrainSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
         {
             if (!newParent)

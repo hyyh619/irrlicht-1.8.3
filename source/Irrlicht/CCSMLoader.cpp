@@ -590,15 +590,15 @@ private:
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool CCSMLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "csm");
         }
 
 
-        // ! creates/loads an animated mesh from the file.
+        //! creates/loads an animated mesh from the file.
         IAnimatedMesh* CCSMLoader::createMesh(io::IReadFile *file)
         {
             scene::IMesh *m = createCSMMesh(file);

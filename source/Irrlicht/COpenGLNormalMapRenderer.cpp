@@ -150,7 +150,7 @@ namespace irr
             "\n"                                                                      \
             "END\n";
 
-        // ! Constructor
+        //! Constructor
         COpenGLNormalMapRenderer::COpenGLNormalMapRenderer(video::COpenGLDriver *driver,
             s32 &outMaterialTypeNr, IMaterialRenderer *baseMaterial)
             : COpenGLShaderMaterialRenderer(driver, 0, baseMaterial), CompiledShaders(true)
@@ -203,7 +203,7 @@ namespace irr
         }
 
 
-        // ! Destructor
+        //! Destructor
         COpenGLNormalMapRenderer::~COpenGLNormalMapRenderer()
         {
             if (CallBack == this)
@@ -218,7 +218,7 @@ namespace irr
         }
 
 
-        // ! Returns the render capability of the material.
+        //! Returns the render capability of the material.
         s32 COpenGLNormalMapRenderer::getRenderCapability() const
         {
             if (Driver->queryFeature(video::EVDF_ARB_FRAGMENT_PROGRAM_1) &&
@@ -229,8 +229,8 @@ namespace irr
         }
 
 
-        // ! Called by the engine when the vertex and/or pixel shader constants for an
-        // ! material renderer should be set.
+        //! Called by the engine when the vertex and/or pixel shader constants for an
+        //! material renderer should be set.
         void COpenGLNormalMapRenderer::OnSetConstants(IMaterialRendererServices *services, s32 userData)
         {
             video::IVideoDriver *driver = services->getVideoDriver();

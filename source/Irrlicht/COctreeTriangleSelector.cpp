@@ -11,7 +11,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         COctreeTriangleSelector::COctreeTriangleSelector(const IMesh *mesh,
             ISceneNode *node, s32 minimalPolysPerNode)
             : CTriangleSelector(mesh, node), Root(0), NodeCount(0),
@@ -38,7 +38,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         COctreeTriangleSelector::~COctreeTriangleSelector()
         {
             delete Root;
@@ -108,7 +108,7 @@ namespace irr
         }
 
 
-        // ! Gets all triangles which lie within a specific bounding box.
+        //! Gets all triangles which lie within a specific bounding box.
         void COctreeTriangleSelector::getTriangles(core::triangle3df *triangles,
             s32 arraySize, s32 &outTriangleCount,
             const core::aabbox3d<f32> &box,
@@ -177,7 +177,7 @@ namespace irr
         }
 
 
-        // ! Gets all triangles which have or may have contact with a 3d line.
+        //! Gets all triangles which have or may have contact with a 3d line.
         // new version: from user Piraaate
         void COctreeTriangleSelector::getTriangles(core::triangle3df *triangles, s32 arraySize,
             s32 &outTriangleCount, const core::line3d<f32> &line,

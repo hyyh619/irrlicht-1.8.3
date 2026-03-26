@@ -32,96 +32,96 @@ namespace irr
         friend struct SJoystickWin32Control;
 public:
 
-        // ! constructor
+        //! constructor
         CIrrDeviceWin32(const SIrrlichtCreationParameters &params);
 
-        // ! destructor
+        //! destructor
         virtual ~CIrrDeviceWin32();
 
-        // ! runs the device. Returns false if device wants to be deleted
+        //! runs the device. Returns false if device wants to be deleted
         virtual bool run();
 
-        // ! Cause the device to temporarily pause execution and let other processes to run
+        //! Cause the device to temporarily pause execution and let other processes to run
         // This should bring down processor usage without major performance loss for Irrlicht
         virtual void yield();
 
-        // ! Pause execution and let other processes to run for a specified amount of time.
+        //! Pause execution and let other processes to run for a specified amount of time.
         virtual void sleep(u32 timeMs, bool pauseTimer);
 
-        // ! sets the caption of the window
+        //! sets the caption of the window
         virtual void setWindowCaption(const wchar_t *text);
 
-        // ! returns if window is active. if not, nothing need to be drawn
+        //! returns if window is active. if not, nothing need to be drawn
         virtual bool isWindowActive() const;
 
-        // ! returns if window has focus
+        //! returns if window has focus
         virtual bool isWindowFocused() const;
 
-        // ! returns if window is minimized
+        //! returns if window is minimized
         virtual bool isWindowMinimized() const;
 
-        // ! presents a surface in the client area
+        //! presents a surface in the client area
         virtual bool present(video::IImage *surface, void *windowId = 0, core::rect<s32> *src = 0);
 
-        // ! notifies the device that it should close itself
+        //! notifies the device that it should close itself
         virtual void closeDevice();
 
-        // ! \return Returns a pointer to a list with all video modes
-        // ! supported by the gfx adapter.
+        //! \return Returns a pointer to a list with all video modes
+        //! supported by the gfx adapter.
         video::IVideoModeList* getVideoModeList();
 
-        // ! Notifies the device, that it has been resized
+        //! Notifies the device, that it has been resized
         void OnResized();
 
-        // ! Sets if the window should be resizable in windowed mode.
+        //! Sets if the window should be resizable in windowed mode.
         virtual void setResizable(bool resize = false);
 
-        // ! Minimizes the window.
+        //! Minimizes the window.
         virtual void minimizeWindow();
 
-        // ! Maximizes the window.
+        //! Maximizes the window.
         virtual void maximizeWindow();
 
-        // ! Restores the window size.
+        //! Restores the window size.
         virtual void restoreWindow();
 
-        // ! Activate any joysticks, and generate events for them.
+        //! Activate any joysticks, and generate events for them.
         virtual bool activateJoysticks(core::array<SJoystickInfo> &joystickInfo);
 
-        // ! Set the current Gamma Value for the Display
+        //! Set the current Gamma Value for the Display
         virtual bool setGammaRamp(f32 red, f32 green, f32 blue, f32 brightness, f32 contrast);
 
-        // ! Get the current Gamma Value for the Display
+        //! Get the current Gamma Value for the Display
         virtual bool getGammaRamp(f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast);
 
-        // ! Remove all messages pending in the system message loop
+        //! Remove all messages pending in the system message loop
         virtual void clearSystemMessages();
 
-        // ! Get the device type
+        //! Get the device type
         virtual E_DEVICE_TYPE getType() const
         {
             return EIDT_WIN32;
         }
 
-        // ! Compares to the last call of this function to return double and triple clicks.
-        // ! \return Returns only 1,2 or 3. A 4th click will start with 1 again.
+        //! Compares to the last call of this function to return double and triple clicks.
+        //! \return Returns only 1,2 or 3. A 4th click will start with 1 again.
         virtual u32 checkSuccessiveClicks(s32 mouseX, s32 mouseY, EMOUSE_INPUT_EVENT inputEvent)
         {
             // we just have to make it public
             return CIrrDeviceStub::checkSuccessiveClicks(mouseX, mouseY, inputEvent);
         }
 
-        // ! switchs to fullscreen
+        //! switchs to fullscreen
         bool switchToFullScreen(bool reset = false);
 
-        // ! Check for and show last Windows API error to help internal debugging.
-        // ! Does call GetLastError and on errors formats the errortext and displays it in a messagebox.
+        //! Check for and show last Windows API error to help internal debugging.
+        //! Does call GetLastError and on errors formats the errortext and displays it in a messagebox.
         static void ReportLastWinApiError();
 
         // convert an Irrlicht texture to a windows cursor
         HCURSOR TextureToCursor(HWND hwnd, irr::video::ITexture *tex, const core::rect<s32> &sourceRect, const core::position2d<s32> &hotspot);
 
-        // ! Implementation of the win32 cursor control
+        //! Implementation of the win32 cursor control
         class CCursorControl : public gui::ICursorControl
         {
 public:
@@ -129,7 +129,7 @@ public:
             CCursorControl(CIrrDeviceWin32 *device, const core::dimension2d<u32> &wsize, HWND hwnd, bool fullscreen);
             ~CCursorControl();
 
-            // ! Changes the visible state of the mouse cursor.
+            //! Changes the visible state of the mouse cursor.
             virtual void setVisible(bool visible)
             {
                 CURSORINFO info;
@@ -172,20 +172,20 @@ public:
                 IsVisible = visible;
             }
 
-            // ! Returns if the cursor is currently visible.
+            //! Returns if the cursor is currently visible.
             virtual bool isVisible() const
             {
                 _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
                 return IsVisible;
             }
 
-            // ! Sets the new position of the cursor.
+            //! Sets the new position of the cursor.
             virtual void setPosition(const core::position2d<f32> &pos)
             {
                 setPosition(pos.X, pos.Y);
             }
 
-            // ! Sets the new position of the cursor.
+            //! Sets the new position of the cursor.
             virtual void setPosition(f32 x, f32 y)
             {
                 if (!UseReferenceRect)
@@ -194,13 +194,13 @@ public:
                     setPosition(core::round32(x * ReferenceRect.getWidth()), core::round32(y * ReferenceRect.getHeight()));
             }
 
-            // ! Sets the new position of the cursor.
+            //! Sets the new position of the cursor.
             virtual void setPosition(const core::position2d<s32> &pos)
             {
                 setPosition(pos.X, pos.Y);
             }
 
-            // ! Sets the new position of the cursor.
+            //! Sets the new position of the cursor.
             virtual void setPosition(s32 x, s32 y)
             {
                 if (UseReferenceRect)
@@ -219,14 +219,14 @@ public:
                 CursorPos.Y = y;
             }
 
-            // ! Returns the current position of the mouse cursor.
+            //! Returns the current position of the mouse cursor.
             virtual const core::position2d<s32>&getPosition()
             {
                 updateInternalCursorPosition();
                 return CursorPos;
             }
 
-            // ! Returns the current position of the mouse cursor.
+            //! Returns the current position of the mouse cursor.
             virtual core::position2d<f32> getRelativePosition()
             {
                 updateInternalCursorPosition();
@@ -241,7 +241,7 @@ public:
                            CursorPos.Y / (f32)ReferenceRect.getHeight());
             }
 
-            // ! Sets an absolute reference rect for calculating the cursor position.
+            //! Sets an absolute reference rect for calculating the cursor position.
             virtual void setReferenceRect(core::rect<s32> *rect = 0)
             {
                 if (rect)
@@ -299,29 +299,29 @@ public:
             }
 
 
-            // ! Sets the active cursor icon
+            //! Sets the active cursor icon
             virtual void setActiveIcon(gui::ECURSOR_ICON iconId);
 
-            // ! Gets the currently active icon
+            //! Gets the currently active icon
             virtual gui::ECURSOR_ICON getActiveIcon() const
             {
                 return ActiveIcon;
             }
 
-            // ! Add a custom sprite as cursor icon.
+            //! Add a custom sprite as cursor icon.
             virtual gui::ECURSOR_ICON addIcon(const gui::SCursorSprite &icon);
 
-            // ! replace the given cursor icon.
+            //! replace the given cursor icon.
             virtual void changeIcon(gui::ECURSOR_ICON iconId, const gui::SCursorSprite &icon);
 
-            // ! Return a system-specific size which is supported for cursors. Larger icons will fail, smaller icons might work.
+            //! Return a system-specific size which is supported for cursors. Larger icons will fail, smaller icons might work.
             virtual core::dimension2di getSupportedIconSize() const;
 
             void update();
 
 private:
 
-            // ! Updates the internal cursor position
+            //! Updates the internal cursor position
             void updateInternalCursorPosition()
             {
                 POINT p;
@@ -394,15 +394,15 @@ private:
             void initCursors();
         };
 
-        // ! returns the win32 cursor control
+        //! returns the win32 cursor control
         CCursorControl* getWin32CursorControl();
 
 private:
 
-        // ! create the driver
+        //! create the driver
         void createDriver();
 
-        // ! Process system events
+        //! Process system events
         void handleSystemMessages();
 
         void getWindowsVersion(core::stringc &version);

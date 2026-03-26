@@ -438,7 +438,7 @@ namespace irr
         }
 
 
-        // ! constructor
+        //! constructor
         CGUITreeView::CGUITreeView(IGUIEnvironment *environment, IGUIElement *parent,
             s32 id, core::rect<s32> rectangle, bool clip,
             bool drawBack, bool scrollBarVertical, bool scrollBarHorizontal)
@@ -502,7 +502,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUITreeView::~CGUITreeView()
         {
             if (ScrollBarV)
@@ -609,7 +609,7 @@ namespace irr
                 ScrollBarH->setMax(core::max_(0, TotalItemWidth - AbsoluteRect.getWidth()));
         }
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUITreeView::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -814,7 +814,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUITreeView::draw()
         {
             if (!IsVisible)
@@ -1088,10 +1088,10 @@ namespace irr
             IGUIElement::draw();
         }
 
-        // ! Sets the font which should be used as icon font. This font is set to the Irrlicht engine
-        // ! built-in-font by default. Icons can be displayed in front of every list item.
-        // ! An icon is a string, displayed with the icon font. When using the build-in-font of the
-        // ! Irrlicht engine as icon font, the icon strings defined in GUIIcons.h can be used.
+        //! Sets the font which should be used as icon font. This font is set to the Irrlicht engine
+        //! built-in-font by default. Icons can be displayed in front of every list item.
+        //! An icon is a string, displayed with the icon font. When using the build-in-font of the
+        //! Irrlicht engine as icon font, the icon strings defined in GUIIcons.h can be used.
         void CGUITreeView::setIconFont(IGUIFont *font)
         {
             s32 height;
@@ -1115,8 +1115,8 @@ namespace irr
             }
         }
 
-        // ! Sets the image list which should be used for the image and selected image of every node.
-        // ! The default is 0 (no images).
+        //! Sets the image list which should be used for the image and selected image of every node.
+        //! The default is 0 (no images).
         void CGUITreeView::setImageList(IGUIImageList *imageList)
         {
             if (imageList)

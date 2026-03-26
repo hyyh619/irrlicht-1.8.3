@@ -12,7 +12,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSceneNodeAnimatorCollisionResponse::CSceneNodeAnimatorCollisionResponse(
             ISceneManager *scenemanager,
             ITriangleSelector *world, ISceneNode *object,
@@ -37,7 +37,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CSceneNodeAnimatorCollisionResponse::~CSceneNodeAnimatorCollisionResponse()
         {
             if (World)
@@ -48,9 +48,9 @@ namespace irr
         }
 
 
-        // ! Returns if the attached scene node is falling, which means that
-        // ! there is no blocking wall from the scene node in the direction of
-        // ! the gravity.
+        //! Returns if the attached scene node is falling, which means that
+        //! there is no blocking wall from the scene node in the direction of
+        //! the gravity.
         bool CSceneNodeAnimatorCollisionResponse::isFalling() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -58,8 +58,8 @@ namespace irr
         }
 
 
-        // ! Sets the radius of the ellipsoid with which collision detection and
-        // ! response is done.
+        //! Sets the radius of the ellipsoid with which collision detection and
+        //! response is done.
         void CSceneNodeAnimatorCollisionResponse::setEllipsoidRadius(
             const core::vector3df &radius)
         {
@@ -68,15 +68,15 @@ namespace irr
         }
 
 
-        // ! Returns the radius of the ellipsoid with wich the collision detection and
-        // ! response is done.
+        //! Returns the radius of the ellipsoid with wich the collision detection and
+        //! response is done.
         core::vector3df CSceneNodeAnimatorCollisionResponse::getEllipsoidRadius() const
         {
             return Radius;
         }
 
 
-        // ! Sets the gravity of the environment.
+        //! Sets the gravity of the environment.
         void CSceneNodeAnimatorCollisionResponse::setGravity(const core::vector3df &gravity)
         {
             Gravity     = gravity;
@@ -84,14 +84,14 @@ namespace irr
         }
 
 
-        // ! Returns current vector of gravity.
+        //! Returns current vector of gravity.
         core::vector3df CSceneNodeAnimatorCollisionResponse::getGravity() const
         {
             return Gravity;
         }
 
 
-        // ! 'Jump' the animator, by adding a jump speed opposite to its gravity
+        //! 'Jump' the animator, by adding a jump speed opposite to its gravity
         void CSceneNodeAnimatorCollisionResponse::jump(f32 jumpSpeed)
         {
             FallingVelocity -= (core::vector3df(Gravity).normalize()) * jumpSpeed;
@@ -99,22 +99,22 @@ namespace irr
         }
 
 
-        // ! Sets the translation of the ellipsoid for collision detection.
+        //! Sets the translation of the ellipsoid for collision detection.
         void CSceneNodeAnimatorCollisionResponse::setEllipsoidTranslation(const core::vector3df &translation)
         {
             Translation = translation;
         }
 
 
-        // ! Returns the translation of the ellipsoid for collision detection.
+        //! Returns the translation of the ellipsoid for collision detection.
         core::vector3df CSceneNodeAnimatorCollisionResponse::getEllipsoidTranslation() const
         {
             return Translation;
         }
 
 
-        // ! Sets a triangle selector holding all triangles of the world with which
-        // ! the scene node may collide.
+        //! Sets a triangle selector holding all triangles of the world with which
+        //! the scene node may collide.
         void CSceneNodeAnimatorCollisionResponse::setWorld(ITriangleSelector *newWorld)
         {
             if (newWorld)
@@ -129,8 +129,8 @@ namespace irr
         }
 
 
-        // ! Returns the current triangle selector containing all triangles for
-        // ! collision detection.
+        //! Returns the current triangle selector containing all triangles for
+        //! collision detection.
         ITriangleSelector* CSceneNodeAnimatorCollisionResponse::getWorld() const
         {
             return World;
@@ -239,7 +239,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node animator.
+        //! Writes attributes of the scene node animator.
         void CSceneNodeAnimatorCollisionResponse::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             out->addVector3d("Radius", Radius);
@@ -249,7 +249,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node animator.
+        //! Reads attributes of the scene node animator.
         void CSceneNodeAnimatorCollisionResponse::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             Radius              = in->getAttributeAsVector3d("Radius");
@@ -285,14 +285,14 @@ namespace irr
                 CollisionCallback->grab();
         }
 
-        // ! Should the Target react on collision ( default = true )
+        //! Should the Target react on collision ( default = true )
         void CSceneNodeAnimatorCollisionResponse::setAnimateTarget(bool enable)
         {
             AnimateCameraTarget = enable;
             FirstUpdate         = true;
         }
 
-        // ! Should the Target react on collision ( default = true )
+        //! Should the Target react on collision ( default = true )
         bool CSceneNodeAnimatorCollisionResponse::getAnimateTarget() const
         {
             return AnimateCameraTarget;

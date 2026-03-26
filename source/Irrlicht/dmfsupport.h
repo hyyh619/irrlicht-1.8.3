@@ -32,17 +32,17 @@ namespace irr
             struct dmfHeader
             {
                 // main file header
-                core::stringc dmfName; // !<Scene name
-                f32           dmfVersion; // !<File version
-                video::SColor dmfAmbient; // !<Ambient color
-                f32           dmfShadow; // !<Shadow intensity
-                u32           numObjects; // !<Number of objects in this scene
-                u32           numMaterials; // !<Number of materials in this scene
-                u32           numVertices; // !<Total number of vertices faces*(vertices for each face)
-                u32           numFaces; // !<Total number of faces
-                u32           numLights; // !<Number of dynamic lights in this scene
-                u32           numWatVertices; // !<Total number of vertices of water plains watfaces*(vertices for each face)
-                u32           numWatFaces; // !<Total number of faces for water plains.Note that each water plane is a rectangle with one face only.
+                core::stringc dmfName; //!<Scene name
+                f32           dmfVersion; //!<File version
+                video::SColor dmfAmbient; //!<Ambient color
+                f32           dmfShadow; //!<Shadow intensity
+                u32           numObjects; //!<Number of objects in this scene
+                u32           numMaterials; //!<Number of materials in this scene
+                u32           numVertices; //!<Total number of vertices faces*(vertices for each face)
+                u32           numFaces; //!<Total number of faces
+                u32           numLights; //!<Number of dynamic lights in this scene
+                u32           numWatVertices; //!<Total number of vertices of water plains watfaces*(vertices for each face)
+                u32           numWatFaces; //!<Total number of faces for water plains.Note that each water plane is a rectangle with one face only.
             };
 
 
@@ -50,15 +50,15 @@ namespace irr
              * This structure contains texture names, an ID and some flags.*/
             struct dmfMaterial
             {
-                u32           materialID;// !<This material unique ID.
-                u32           textureLayers;// !<First texture Flag (0=Normal, 1=Color).
-                u32           textureFlag;// !<First texture Flag (0=Normal, 1=Color).
-                u32           lightmapFlag;// !<Lightmap Flag (0=Normal, others not considered).
-                u32           textureBlend;// !<Texture Blend mode used to support alpha maps (4=Alpha map, others not implemented yet).
-                core::stringc pathName;// !<Name of path defined in path element.
-                core::stringc textureName;// !<Name of first texture (only file name, no path).
-                core::stringc lightmapName;// !<Name of lightmap (only file name, no path).
-                u32           lightmapBlend;// !<Blend mode used to support alpha maps (not implemented yet).
+                u32           materialID;//!<This material unique ID.
+                u32           textureLayers;//!<First texture Flag (0=Normal, 1=Color).
+                u32           textureFlag;//!<First texture Flag (0=Normal, 1=Color).
+                u32           lightmapFlag;//!<Lightmap Flag (0=Normal, others not considered).
+                u32           textureBlend;//!<Texture Blend mode used to support alpha maps (4=Alpha map, others not implemented yet).
+                core::stringc pathName;//!<Name of path defined in path element.
+                core::stringc textureName;//!<Name of first texture (only file name, no path).
+                core::stringc lightmapName;//!<Name of lightmap (only file name, no path).
+                u32           lightmapBlend;//!<Blend mode used to support alpha maps (not implemented yet).
             };
 
 
@@ -66,9 +66,9 @@ namespace irr
              * This structure contains first vertice index, number of vertices and the material used.*/
             struct dmfFace
             {
-                u32 firstVert;// !<First vertex index.
-                u32 numVerts;// !<Number of vertices for this face.
-                u32 materialID;// !<Material used for this face.
+                u32 firstVert;//!<First vertex index.
+                u32 numVerts;//!<Number of vertices for this face.
+                u32 materialID;//!<Material used for this face.
             };
 
 
@@ -76,9 +76,9 @@ namespace irr
              * This structure contains vertice position coordinates and texture an lightmap UV.*/
             struct dmfVert
             {
-                core::vector3df pos;// !<Position of vertex
-                core::vector2df tc;// !<Texture UV coords
-                core::vector2df lc;// !<Lightmap UV coords
+                core::vector3df pos;//!<Position of vertex
+                core::vector2df tc;//!<Texture UV coords
+                core::vector2df lc;//!<Lightmap UV coords
             };
 
 
@@ -86,23 +86,23 @@ namespace irr
              * This structure contains light position coordinates, diffuse color, specular color and maximum radius of light.*/
             struct dmfLight
             {
-                core::vector3df pos;// !<Position of this light.
-                video::SColorf  diffuseColor;// !<Diffuse color.
-                video::SColorf  specularColor;// !<Specular color.
-                f32             radius;// !<Maximum radius of light.
+                core::vector3df pos;//!<Position of this light.
+                video::SColorf  diffuseColor;//!<Diffuse color.
+                video::SColorf  specularColor;//!<Specular color.
+                f32             radius;//!<Maximum radius of light.
             };
 
             /** A structure representing a single water plane.
              * This structure contains light position coordinates, diffuse color, specular color and maximum radius of light.*/
             struct dmfWaterPlane
             {
-                u32                    waterID;// !<ID of specified water plane.
-                u32                    numFaces;// !<number of faces that make this plain.Owing to the fact that this is a rectangle you'll have 1 every time.
-                u32                    firstFace;// !<first face of this plain.
-                core::dimension2d<u32> tileNum;// !<number of tiles of this water plain.
-                f32                    waveHeight;// !<height of waves.
-                f32                    waveSpeed;// !<waves speed.
-                f32                    waveLength;// !<waves length.
+                u32                    waterID;//!<ID of specified water plane.
+                u32                    numFaces;//!<number of faces that make this plain.Owing to the fact that this is a rectangle you'll have 1 every time.
+                u32                    firstFace;//!<first face of this plain.
+                core::dimension2d<u32> tileNum;//!<number of tiles of this water plain.
+                f32                    waveHeight;//!<height of waves.
+                f32                    waveSpeed;//!<waves speed.
+                f32                    waveLength;//!<waves length.
             };
 
 

@@ -383,20 +383,20 @@ namespace irr
         };
 
 
-        // ! Possible types of Animation Type
+        //! Possible types of Animation Type
         enum E_ANIMATION_TYPE
         {
-            // ! No Animation
+            //! No Animation
             EAMT_STILL,
-            // ! From Start to End, then Stop ( Limited Line )
+            //! From Start to End, then Stop ( Limited Line )
             EAMT_WAYPOINT,
-            // ! Linear Cycling Animation     ( Sawtooth )
+            //! Linear Cycling Animation     ( Sawtooth )
             EAMT_LOOPING,
-            // ! Linear bobbing                 ( Triangle )
+            //! Linear bobbing                 ( Triangle )
             EAMT_PINGPONG
         };
 
-        // ! Names for Animation Type
+        //! Names for Animation Type
         const c8* const MeshAnimationTypeNames[] =
         {
             "still",
@@ -407,7 +407,7 @@ namespace irr
         };
 
 
-        // ! Data for holding named Animation Info
+        //! Data for holding named Animation Info
         struct KeyFrameInterpolation
         {
             core::stringc    Name; // Name of the current Animation/Bone
@@ -445,10 +445,10 @@ namespace irr
         };
 
 
-        // ! a List holding named Animations
+        //! a List holding named Animations
         typedef core::array<KeyFrameInterpolation> IAnimationList;
 
-        // ! a List holding named Skins
+        //! a List holding named Skins
         typedef core::array<core::stringc> ISkinList;
 
 
@@ -467,7 +467,7 @@ namespace irr
             u32                   defaultModel;
             core::array<SubModel> model;
         };
-        // ! a List holding named Models and SubModels
+        //! a List holding named Models and SubModels
         typedef core::array<BodyPart> IBodyList;
 
 
@@ -475,13 +475,13 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CAnimatedMeshHalfLife();
 
-            // ! destructor
+            //! destructor
             virtual ~CAnimatedMeshHalfLife();
 
-            // ! loads a Halflife mdl file
+            //! loads a Halflife mdl file
             virtual bool loadModelFile(io::IReadFile *file, ISceneManager *smgr);
 
             // IAnimatedMesh
@@ -491,32 +491,32 @@ public:
             virtual E_ANIMATED_MESH_TYPE getMeshType() const;
             virtual void renderModel(u32 param, video::IVideoDriver *driver, const core::matrix4 &absoluteTransformation);
 
-            // ! returns amount of mesh buffers.
+            //! returns amount of mesh buffers.
             virtual u32 getMeshBufferCount() const;
-            // ! returns pointer to a mesh buffer
+            //! returns pointer to a mesh buffer
             virtual IMeshBuffer* getMeshBuffer(u32 nr) const;
-            // ! Returns pointer to a mesh buffer which fits a material
+            //! Returns pointer to a mesh buffer which fits a material
             virtual IMeshBuffer* getMeshBuffer(const video::SMaterial &material) const;
 
             virtual void setMaterialFlag(video::E_MATERIAL_FLAG flag, bool newvalue);
 
-            // ! set the hardware mapping hint, for driver
+            //! set the hardware mapping hint, for driver
             virtual void setHardwareMappingHint(E_HARDWARE_MAPPING newMappingHint, E_BUFFER_TYPE buffer = EBT_VERTEX_AND_INDEX);
 
-            // ! flags the meshbuffer as changed, reloads hardware buffers
+            //! flags the meshbuffer as changed, reloads hardware buffers
             virtual void setDirty(E_BUFFER_TYPE buffer = EBT_VERTEX_AND_INDEX);
 
-            // ! set user axis aligned bounding box
+            //! set user axis aligned bounding box
             virtual void setBoundingBox(const core::aabbox3df &box);
 
-            // ! Gets the default animation speed of the animated mesh.
+            //! Gets the default animation speed of the animated mesh.
             /** \return Amount of frames per second. If the amount is 0, it is a static, non animated mesh. */
             virtual f32 getAnimationSpeed() const
             {
                 return FramesPerSecond;
             }
 
-            // ! Gets the frame count of the animated mesh.
+            //! Gets the frame count of the animated mesh.
             /** \param fps Frames per second to play the animation with. If the amount is 0, it is not animated.
              * The actual speed is set in the scene node the mesh is instantiated in.*/
             virtual void setAnimationSpeed(f32 fps)
@@ -524,13 +524,13 @@ public:
                 FramesPerSecond = fps;
             }
 
-            // ! Get the Animation List
+            //! Get the Animation List
             virtual IAnimationList* getAnimList()
             {
                 return &AnimList;
             }
 
-            // ! Return the named Body List of this Animated Mesh
+            //! Return the named Body List of this Animated Mesh
             virtual IBodyList* getBodyList()
             {
                 return &BodyList;
@@ -546,7 +546,7 @@ private:
             // Named meshes of the Body
             IBodyList BodyList;
 
-            // ! return a Mesh per frame
+            //! return a Mesh per frame
             SMesh *MeshIPol;
 
             ISceneManager *SceneManager;
@@ -601,19 +601,19 @@ private:
         };
 
 
-        // ! Meshloader capable of loading HalfLife Model files
+        //! Meshloader capable of loading HalfLife Model files
         class CHalflifeMDLMeshFileLoader : public IMeshLoader
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             CHalflifeMDLMeshFileLoader(scene::ISceneManager *smgr);
 
-            // ! returns true if the file maybe is able to be loaded by this class
+            //! returns true if the file maybe is able to be loaded by this class
             /** based on the file extension (e.g. ".bsp") */
             virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-            // ! creates/loads an animated mesh from the file.
+            //! creates/loads an animated mesh from the file.
             /** \return Pointer to the created mesh. Returns 0 if loading failed.
              * If you no longer need the mesh, you should call IAnimatedMesh::drop().
              * See IReferenceCounted::drop() for more information.

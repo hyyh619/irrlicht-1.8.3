@@ -14,18 +14,18 @@
 /**
  *  Flags for Octree
  */
-// ! use meshbuffer for drawing, enables VBO usage
+//! use meshbuffer for drawing, enables VBO usage
 #define OCTREE_USE_HARDWARE false
-// ! use visibility information together with VBOs
+//! use visibility information together with VBOs
 #define OCTREE_USE_VISIBILITY true
-// ! use bounding box or frustum for calculate polys
+//! use bounding box or frustum for calculate polys
 #define OCTREE_BOX_BASED true
-// ! bypass full invisible/visible test
+//! bypass full invisible/visible test
 #define OCTREE_PARENTTEST
 
 namespace irr
 {
-    // ! template octree.
+    //! template octree.
     /** T must be a vertex type which has a member
      * called .Pos, which is a core::vertex3df position. */
     template<class T>
@@ -63,7 +63,7 @@ public:
         };
 
 
-        // ! Constructor
+        //! Constructor
         Octree(const core::array<SMeshChunk> &meshes, s32 minimalPolysPerNode = 128) :
             IndexData(0), IndexDataCount(meshes.size()), NodeCount(0)
         {
@@ -91,8 +91,8 @@ public:
             Root = new OctreeNode(NodeCount, 0, meshes, indexChunks, minimalPolysPerNode);
         }
 
-        // ! returns all ids of polygons partially or fully enclosed
-        // ! by this bounding box.
+        //! returns all ids of polygons partially or fully enclosed
+        //! by this bounding box.
         void calculatePolys(const core::aabbox3d<f32> &box)
         {
             for (u32 i = 0; i != IndexDataCount; ++i)
@@ -101,8 +101,8 @@ public:
             Root->getPolys(box, IndexData, 0);
         }
 
-        // ! returns all ids of polygons partially or fully enclosed
-        // ! by a view frustum.
+        //! returns all ids of polygons partially or fully enclosed
+        //! by a view frustum.
         void calculatePolys(const scene::SViewFrustum &frustum)
         {
             for (u32 i = 0; i != IndexDataCount; ++i)
@@ -126,14 +126,14 @@ public:
             return NodeCount;
         }
 
-        // ! for debug purposes only, collects the bounding boxes of the tree
+        //! for debug purposes only, collects the bounding boxes of the tree
         void getBoundingBoxes(const core::aabbox3d<f32> &box,
             core::array<const core::aabbox3d<f32>*> &outBoxes) const
         {
             Root->getBoundingBoxes(box, outBoxes);
         }
 
-        // ! destructor
+        //! destructor
         ~Octree()
         {
             for (u32 i = 0; i < IndexDataCount; ++i)
@@ -360,7 +360,7 @@ public:
                         Children[i]->getPolys(frustum, idxdata, parentTest);
             }
 
-            // ! for debug purposes only, collects the bounding boxes of the node
+            //! for debug purposes only, collects the bounding boxes of the node
             void getBoundingBoxes(const core::aabbox3d<f32> &box,
                 core::array<const core::aabbox3d<f32>*> &outBoxes) const
             {

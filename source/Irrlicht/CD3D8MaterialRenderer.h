@@ -48,12 +48,12 @@ namespace irr
             }
         } // anonymous namespace
 
-        // ! Base class for all internal D3D8 material renderers
+        //! Base class for all internal D3D8 material renderers
         class CD3D8MaterialRenderer : public IMaterialRenderer
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             CD3D8MaterialRenderer(IDirect3DDevice8 *d3ddev, video::IVideoDriver *driver)
                 : pID3DDevice(d3ddev), Driver(driver)
             {}
@@ -65,7 +65,7 @@ protected:
         };
 
 
-        // ! Solid material renderer
+        //! Solid material renderer
         class CD3D8MaterialRenderer_SOLID : public CD3D8MaterialRenderer
         {
 public:
@@ -89,7 +89,7 @@ public:
             }
         };
 
-        // ! Generic Texture Blend
+        //! Generic Texture Blend
         class CD3D8MaterialRenderer_ONETEXTURE_BLEND : public CD3D8MaterialRenderer
         {
 public:
@@ -146,7 +146,7 @@ public:
                 }
             }
 
-            // ! Returns if the material is transparent.
+            //! Returns if the material is transparent.
             /** The scene management needs to know this for being able to sort the
              * materials by opaque and transparent.
              * The return value could be optimized, but we'd need to know the
@@ -208,7 +208,7 @@ private:
         };
 
 
-        // ! Solid 2 layer material renderer
+        //! Solid 2 layer material renderer
         class CD3D8MaterialRenderer_SOLID_2_LAYER : public CD3D8MaterialRenderer
         {
 public:
@@ -234,7 +234,7 @@ public:
         };
 
 
-        // ! Transparent add color material renderer
+        //! Transparent add color material renderer
         class CD3D8MaterialRenderer_TRANSPARENT_ADD_COLOR : public CD3D8MaterialRenderer
         {
 public:
@@ -259,8 +259,8 @@ public:
                 }
             }
 
-            // ! Returns if the material is transparent. The scene management needs to know this
-            // ! for being able to sort the materials by opaque and transparent.
+            //! Returns if the material is transparent. The scene management needs to know this
+            //! for being able to sort the materials by opaque and transparent.
             virtual bool isTransparent() const
             {
                 return true;
@@ -268,7 +268,7 @@ public:
         };
 
 
-        // ! Transparent vertex alpha material renderer
+        //! Transparent vertex alpha material renderer
         class CD3D8MaterialRenderer_TRANSPARENT_VERTEX_ALPHA : public CD3D8MaterialRenderer
         {
 public:
@@ -294,8 +294,8 @@ public:
                 }
             }
 
-            // ! Returns if the material is transparent. The scene managment needs to know this
-            // ! for being able to sort the materials by opaque and transparent.
+            //! Returns if the material is transparent. The scene managment needs to know this
+            //! for being able to sort the materials by opaque and transparent.
             virtual bool isTransparent() const
             {
                 return true;
@@ -303,7 +303,7 @@ public:
         };
 
 
-        // ! Transparent alpha channel material renderer
+        //! Transparent alpha channel material renderer
         class CD3D8MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL : public CD3D8MaterialRenderer
         {
 public:
@@ -339,8 +339,8 @@ public:
                 pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
             }
 
-            // ! Returns if the material is transparent. The scene managment needs to know this
-            // ! for being able to sort the materials by opaque and transparent.
+            //! Returns if the material is transparent. The scene managment needs to know this
+            //! for being able to sort the materials by opaque and transparent.
             virtual bool isTransparent() const
             {
                 return true;
@@ -348,7 +348,7 @@ public:
         };
 
 
-        // ! Transparent alpha channel material renderer
+        //! Transparent alpha channel material renderer
         class CD3D8MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL_REF : public CD3D8MaterialRenderer
         {
 public:
@@ -383,8 +383,8 @@ public:
                 pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
             }
 
-            // ! Returns if the material is transparent. The scene managment needs to know this
-            // ! for being able to sort the materials by opaque and transparent.
+            //! Returns if the material is transparent. The scene managment needs to know this
+            //! for being able to sort the materials by opaque and transparent.
             virtual bool isTransparent() const
             {
                 return false; // this material is not really transparent because it does no blending.
@@ -392,7 +392,7 @@ public:
         };
 
 
-        // ! material renderer for all kinds of lightmaps
+        //! material renderer for all kinds of lightmaps
         class CD3D8MaterialRenderer_LIGHTMAP : public CD3D8MaterialRenderer
         {
 public:
@@ -437,7 +437,7 @@ public:
         };
 
 
-        // ! material renderer for detail maps
+        //! material renderer for detail maps
         class CD3D8MaterialRenderer_DETAIL_MAP : public CD3D8MaterialRenderer
         {
 public:
@@ -463,7 +463,7 @@ public:
         };
 
 
-        // ! sphere map material renderer
+        //! sphere map material renderer
         class CD3D8MaterialRenderer_SPHERE_MAP : public CD3D8MaterialRenderer
         {
 public:
@@ -499,7 +499,7 @@ public:
         };
 
 
-        // ! reflection 2 layer material renderer
+        //! reflection 2 layer material renderer
         class CD3D8MaterialRenderer_REFLECTION_2_LAYER : public CD3D8MaterialRenderer
         {
 public:
@@ -536,7 +536,7 @@ public:
         };
 
 
-        // ! reflection 2 layer material renderer
+        //! reflection 2 layer material renderer
         class CD3D8MaterialRenderer_TRANSPARENT_REFLECTION_2_LAYER : public CD3D8MaterialRenderer
         {
 public:
@@ -575,8 +575,8 @@ public:
                 pID3DDevice->SetTransform(D3DTS_TEXTURE1, &UnitMatrixD3D8);
             }
 
-            // ! Returns if the material is transparent. The scene managment needs to know this
-            // ! for being able to sort the materials by opaque and transparent.
+            //! Returns if the material is transparent. The scene managment needs to know this
+            //! for being able to sort the materials by opaque and transparent.
             virtual bool isTransparent() const
             {
                 return true;

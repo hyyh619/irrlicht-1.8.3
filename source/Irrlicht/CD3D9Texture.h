@@ -29,52 +29,52 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CD3D9Texture(IImage *image, CD3D9Driver *driver,
                 u32 flags, const io::path &name, void *mipmapData = 0);
 
-            // ! rendertarget constructor
+            //! rendertarget constructor
             CD3D9Texture(CD3D9Driver *driver, const core::dimension2d<u32> &size, const io::path &name,
                 const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
 
-            // ! destructor
+            //! destructor
             virtual ~CD3D9Texture();
 
-            // ! lock function
+            //! lock function
             virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel = 0);
 
-            // ! unlock function
+            //! unlock function
             virtual void unlock();
 
-            // ! Returns original size of the texture.
+            //! Returns original size of the texture.
             virtual const core::dimension2d<u32>&getOriginalSize() const;
 
-            // ! Returns (=size) of the texture.
+            //! Returns (=size) of the texture.
             virtual const core::dimension2d<u32>&getSize() const;
 
-            // ! returns driver type of texture (=the driver, who created the texture)
+            //! returns driver type of texture (=the driver, who created the texture)
             virtual E_DRIVER_TYPE getDriverType() const;
 
-            // ! returns color format of texture
+            //! returns color format of texture
             virtual ECOLOR_FORMAT getColorFormat() const;
 
-            // ! returns pitch of texture (in bytes)
+            //! returns pitch of texture (in bytes)
             virtual u32 getPitch() const;
 
-            // ! returns the DIRECT3D9 Texture
+            //! returns the DIRECT3D9 Texture
             IDirect3DBaseTexture9* getDX9Texture() const;
 
-            // ! returns if texture has mipmap levels
+            //! returns if texture has mipmap levels
             bool hasMipMaps() const;
 
-            // ! Regenerates the mip map levels of the texture. Useful after locking and
-            // ! modifying the texture
+            //! Regenerates the mip map levels of the texture. Useful after locking and
+            //! modifying the texture
             virtual void regenerateMipMapLevels(void *mipmapData = 0);
 
-            // ! returns if it is a render target
+            //! returns if it is a render target
             virtual bool isRenderTarget() const;
 
-            // ! Returns pointer to the render target surface
+            //! Returns pointer to the render target surface
             IDirect3DSurface9* getRenderTargetSurface();
 
 private:
@@ -82,24 +82,24 @@ private:
 
             void createRenderTarget(const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
 
-            // ! creates the hardware texture
+            //! creates the hardware texture
             bool createTexture(u32 flags, IImage *image);
 
-            // ! copies the image to the texture
+            //! copies the image to the texture
             bool copyTexture(IImage *image);
 
-            // ! Helper function for mipmap generation.
+            //! Helper function for mipmap generation.
             bool createMipMaps(u32 level = 1);
 
-            // ! Helper function for mipmap generation.
+            //! Helper function for mipmap generation.
             void copy16BitMipMap(char *src, char *tgt,
                 s32 width, s32 height,  s32 pitchsrc, s32 pitchtgt) const;
 
-            // ! Helper function for mipmap generation.
+            //! Helper function for mipmap generation.
             void copy32BitMipMap(char *src, char *tgt,
                 s32 width, s32 height,  s32 pitchsrc, s32 pitchtgt) const;
 
-            // ! set Pitch based on the d3d format
+            //! set Pitch based on the d3d format
             void setPitch(D3DFORMAT d3dformat);
 
             IDirect3DDevice9       *Device;

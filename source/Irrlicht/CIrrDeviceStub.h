@@ -47,92 +47,92 @@ namespace irr
 
 
 
-    // ! Stub for an Irrlicht Device implementation
+    //! Stub for an Irrlicht Device implementation
     class CIrrDeviceStub : public IrrlichtDevice
     {
 public:
 
-        // ! constructor
+        //! constructor
         CIrrDeviceStub(const SIrrlichtCreationParameters &param);
 
-        // ! destructor
+        //! destructor
         virtual ~CIrrDeviceStub();
 
-        // ! returns the video driver
+        //! returns the video driver
         virtual video::IVideoDriver* getVideoDriver();
 
-        // ! return file system
+        //! return file system
         virtual io::IFileSystem* getFileSystem();
 
-        // ! returns the gui environment
+        //! returns the gui environment
         virtual gui::IGUIEnvironment* getGUIEnvironment();
 
-        // ! returns the scene manager
+        //! returns the scene manager
         virtual scene::ISceneManager* getSceneManager();
 
-        // ! \return Returns a pointer to the mouse cursor control interface.
+        //! \return Returns a pointer to the mouse cursor control interface.
         virtual gui::ICursorControl* getCursorControl();
 
-        // ! Returns a pointer to a list with all video modes supported by the gfx adapter.
+        //! Returns a pointer to a list with all video modes supported by the gfx adapter.
         virtual video::IVideoModeList* getVideoModeList();
 
-        // ! Returns a pointer to the ITimer object. With it the current Time can be received.
+        //! Returns a pointer to the ITimer object. With it the current Time can be received.
         virtual ITimer* getTimer();
 
-        // ! Returns the version of the engine.
+        //! Returns the version of the engine.
         virtual const char* getVersion() const;
 
-        // ! send the event to the right receiver
+        //! send the event to the right receiver
         virtual bool postEventFromUser(const SEvent &event);
 
-        // ! Sets a new event receiver to receive events
+        //! Sets a new event receiver to receive events
         virtual void setEventReceiver(IEventReceiver *receiver);
 
-        // ! Returns pointer to the current event receiver. Returns 0 if there is none.
+        //! Returns pointer to the current event receiver. Returns 0 if there is none.
         virtual IEventReceiver* getEventReceiver();
 
-        // ! Sets the input receiving scene manager.
+        //! Sets the input receiving scene manager.
         /** If set to null, the main scene manager (returned by GetSceneManager()) will receive the input */
         virtual void setInputReceivingSceneManager(scene::ISceneManager *sceneManager);
 
-        // ! Returns a pointer to the logger.
+        //! Returns a pointer to the logger.
         virtual ILogger* getLogger();
 
-        // ! Provides access to the engine's currently set randomizer.
+        //! Provides access to the engine's currently set randomizer.
         virtual IRandomizer* getRandomizer() const;
 
-        // ! Sets a new randomizer.
+        //! Sets a new randomizer.
         virtual void setRandomizer(IRandomizer *r);
 
-        // ! Creates a new default randomizer.
+        //! Creates a new default randomizer.
         virtual IRandomizer* createDefaultRandomizer() const;
 
-        // ! Returns the operation system opertator object.
+        //! Returns the operation system opertator object.
         virtual IOSOperator* getOSOperator();
 
-        // ! Checks if the window is running in fullscreen mode.
+        //! Checks if the window is running in fullscreen mode.
         virtual bool isFullscreen() const;
 
-        // ! get color format of the current window
+        //! get color format of the current window
         virtual video::ECOLOR_FORMAT getColorFormat() const;
 
-        // ! Activate any joysticks, and generate events for them.
+        //! Activate any joysticks, and generate events for them.
         virtual bool activateJoysticks(core::array<SJoystickInfo> &joystickInfo);
 
-        // ! Set the current Gamma Value for the Display
+        //! Set the current Gamma Value for the Display
         virtual bool setGammaRamp(f32 red, f32 green, f32 blue, f32 brightness, f32 contrast);
 
-        // ! Get the current Gamma Value for the Display
+        //! Get the current Gamma Value for the Display
         virtual bool getGammaRamp(f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast);
 
-        // ! Set the maximal elapsed time between 2 clicks to generate doubleclicks for the mouse. It also affects tripleclick behavior.
-        // ! When set to 0 no double- and tripleclicks will be generated.
+        //! Set the maximal elapsed time between 2 clicks to generate doubleclicks for the mouse. It also affects tripleclick behavior.
+        //! When set to 0 no double- and tripleclicks will be generated.
         virtual void setDoubleClickTime(u32 timeMs);
 
-        // ! Get the maximal elapsed time between 2 clicks to generate double- and tripleclicks for the mouse.
+        //! Get the maximal elapsed time between 2 clicks to generate double- and tripleclicks for the mouse.
         virtual u32 getDoubleClickTime() const;
 
-        // ! Remove all messages pending in the system message loop
+        //! Remove all messages pending in the system message loop
         virtual void clearSystemMessages();
 
 
@@ -140,11 +140,11 @@ protected:
 
         void createGUIAndScene();
 
-        // ! checks version of SDK and prints warning if there might be a problem
+        //! checks version of SDK and prints warning if there might be a problem
         bool checkVersion(const char *version);
 
-        // ! Compares to the last call of this function to return double and triple clicks.
-        // ! \return Returns only 1,2 or 3. A 4th click will start with 1 again.
+        //! Compares to the last call of this function to return double and triple clicks.
+        //! \return Returns only 1,2 or 3. A 4th click will start with 1 again.
         virtual u32 checkSuccessiveClicks(s32 mouseX, s32 mouseY, EMOUSE_INPUT_EVENT inputEvent);
 
         void calculateGammaRamp(u16 *ramp, f32 gamma, f32 relativebrightness, f32 relativecontrast);

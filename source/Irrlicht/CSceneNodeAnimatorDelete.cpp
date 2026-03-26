@@ -9,7 +9,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSceneNodeAnimatorDelete::CSceneNodeAnimatorDelete(ISceneManager *manager, u32 time)
             : ISceneNodeAnimatorFinishing(time), SceneManager(manager)
         {
@@ -19,7 +19,7 @@ namespace irr
         }
 
 
-        // ! animates a scene node
+        //! animates a scene node
         void CSceneNodeAnimatorDelete::animateNode(ISceneNode *node, u32 timeMs)
         {
             if (timeMs > FinishTime)

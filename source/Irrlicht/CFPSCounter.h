@@ -16,19 +16,19 @@ namespace irr
 public:
             CFPSCounter();
 
-            // ! returns current fps
+            //! returns current fps
             s32 getFPS() const;
 
-            // ! returns primitive count
+            //! returns primitive count
             u32 getPrimitive() const;
 
-            // ! returns average primitive count of last period
+            //! returns average primitive count of last period
             u32 getPrimitiveAverage() const;
 
-            // ! returns accumulated primitive count since start
+            //! returns accumulated primitive count since start
             u32 getPrimitiveTotal() const;
 
-            // ! to be called every frame
+            //! to be called every frame
             void registerFrame(u32 now, u32 primitive);
 
 private:

@@ -26,7 +26,7 @@ namespace irr
         }
 
 
-        // ! returns how much was read
+        //! returns how much was read
         s32 CReadFile::read(void *buffer, u32 sizeToRead)
         {
             if (!isOpen())
@@ -36,9 +36,9 @@ namespace irr
         }
 
 
-        // ! changes position in file, returns true if successful
-        // ! if relativeMovement==true, the pos is changed relative to current pos,
-        // ! otherwise from begin of file
+        //! changes position in file, returns true if successful
+        //! if relativeMovement==true, the pos is changed relative to current pos,
+        //! otherwise from begin of file
         bool CReadFile::seek(long finalPos, bool relativeMovement)
         {
             if (!isOpen())
@@ -48,21 +48,21 @@ namespace irr
         }
 
 
-        // ! returns size of file
+        //! returns size of file
         long CReadFile::getSize() const
         {
             return FileSize;
         }
 
 
-        // ! returns where in the file we are.
+        //! returns where in the file we are.
         long CReadFile::getPos() const
         {
             return ftell(File);
         }
 
 
-        // ! opens the file
+        //! opens the file
         void CReadFile::openFile()
         {
             if (Filename.size() == 0) // bugfix posted by rt
@@ -88,7 +88,7 @@ namespace irr
         }
 
 
-        // ! returns name of file
+        //! returns name of file
         const io::path&CReadFile::getFileName() const
         {
             return Filename;

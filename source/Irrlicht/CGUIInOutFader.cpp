@@ -13,7 +13,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIInOutFader::CGUIInOutFader(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
             : IGUIInOutFader(environment, parent, id, rectangle)
         {
@@ -29,7 +29,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIInOutFader::draw()
         {
             if (!IsVisible || !Action)
@@ -61,14 +61,14 @@ namespace irr
         }
 
 
-        // ! Gets the color to fade out to or to fade in from.
+        //! Gets the color to fade out to or to fade in from.
         video::SColor CGUIInOutFader::getColor() const
         {
             return Color[1];
         }
 
 
-        // ! Sets the color to fade out to or to fade in from.
+        //! Sets the color to fade out to or to fade in from.
         void CGUIInOutFader::setColor(video::SColor color)
         {
             video::SColor s = color;
@@ -117,7 +117,7 @@ namespace irr
         }
 
 
-        // ! Returns if the fade in or out process is done.
+        //! Returns if the fade in or out process is done.
         bool CGUIInOutFader::isReady() const
         {
             u32  now = os::Timer::getTime();
@@ -128,7 +128,7 @@ namespace irr
         }
 
 
-        // ! Starts the fade in process.
+        //! Starts the fade in process.
         void CGUIInOutFader::fadeIn(u32 time)
         {
             StartTime = os::Timer::getTime();
@@ -138,7 +138,7 @@ namespace irr
         }
 
 
-        // ! Starts the fade out process.
+        //! Starts the fade out process.
         void CGUIInOutFader::fadeOut(u32 time)
         {
             StartTime = os::Timer::getTime();
@@ -148,7 +148,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUIInOutFader::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUIInOutFader::serializeAttributes(out, options);
@@ -158,7 +158,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUIInOutFader::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             IGUIInOutFader::deserializeAttributes(in, options);

@@ -49,7 +49,7 @@ namespace irr
         }
 
 
-        // ! Gets the full name of a file in the list, path included, based on an index.
+        //! Gets the full name of a file in the list, path included, based on an index.
         const io::path&CFileList::getFullFileName(u32 index) const
         {
             if (index >= Files.size())
@@ -58,7 +58,7 @@ namespace irr
             return Files[index].FullName;
         }
 
-        // ! adds a file or folder
+        //! adds a file or folder
         u32 CFileList::addItem(const io::path &fullPath, u32 offset, u32 size, bool isDirectory, u32 id)
         {
             SFileListEntry entry;
@@ -95,7 +95,7 @@ namespace irr
             return Files.size() - 1;
         }
 
-        // ! Returns the ID of a file in the file list, based on an index.
+        //! Returns the ID of a file in the file list, based on an index.
         u32 CFileList::getID(u32 index) const
         {
             return index < Files.size() ? Files[index].ID : 0;
@@ -112,20 +112,20 @@ namespace irr
             return ret;
         }
 
-        // ! Returns the size of a file
+        //! Returns the size of a file
         u32 CFileList::getFileSize(u32 index) const
         {
             return index < Files.size() ? Files[index].Size : 0;
         }
 
-        // ! Returns the size of a file
+        //! Returns the size of a file
         u32 CFileList::getFileOffset(u32 index) const
         {
             return index < Files.size() ? Files[index].Offset : 0;
         }
 
 
-        // ! Searches for a file or folder within the list, returns the index
+        //! Searches for a file or folder within the list, returns the index
         s32 CFileList::findFile(const io::path &filename, bool isDirectory = false) const
         {
             SFileListEntry entry;
@@ -155,7 +155,7 @@ namespace irr
         }
 
 
-        // ! Returns the base path of the file list
+        //! Returns the base path of the file list
         const io::path&CFileList::getPath() const
         {
             return Path;

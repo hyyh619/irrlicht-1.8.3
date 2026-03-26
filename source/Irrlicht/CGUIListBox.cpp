@@ -18,7 +18,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIListBox::CGUIListBox(IGUIEnvironment *environment, IGUIElement *parent,
             s32 id, core::rect<s32> rectangle, bool clip,
             bool drawBack, bool moveOverSelect)
@@ -54,7 +54,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIListBox::~CGUIListBox()
         {
             if (ScrollBar)
@@ -68,14 +68,14 @@ namespace irr
         }
 
 
-        // ! returns amount of list items
+        //! returns amount of list items
         u32 CGUIListBox::getItemCount() const
         {
             return Items.size();
         }
 
 
-        // ! returns string of a list item. the may be a value from 0 to itemCount-1
+        //! returns string of a list item. the may be a value from 0 to itemCount-1
         const wchar_t* CGUIListBox::getListItem(u32 id) const
         {
             if (id >= Items.size())
@@ -85,7 +85,7 @@ namespace irr
         }
 
 
-        // ! Returns the icon of an item
+        //! Returns the icon of an item
         s32 CGUIListBox::getIcon(u32 id) const
         {
             if (id >= Items.size())
@@ -95,14 +95,14 @@ namespace irr
         }
 
 
-        // ! adds a list item, returns id of item
+        //! adds a list item, returns id of item
         u32 CGUIListBox::addItem(const wchar_t *text)
         {
             return addItem(text, -1);
         }
 
 
-        // ! adds a list item, returns id of item
+        //! adds a list item, returns id of item
         void CGUIListBox::removeItem(u32 id)
         {
             if (id >= Items.size())
@@ -141,7 +141,7 @@ namespace irr
             return item;
         }
 
-        // ! clears the list
+        //! clears the list
         void CGUIListBox::clear()
         {
             Items.clear();
@@ -190,14 +190,14 @@ namespace irr
         }
 
 
-        // ! returns id of selected item. returns -1 if no item is selected.
+        //! returns id of selected item. returns -1 if no item is selected.
         s32 CGUIListBox::getSelected() const
         {
             return Selected;
         }
 
 
-        // ! sets the selected item. Set this to -1 if no item should be selected
+        //! sets the selected item. Set this to -1 if no item should be selected
         void CGUIListBox::setSelected(s32 id)
         {
             if ((u32)id >= Items.size())
@@ -210,7 +210,7 @@ namespace irr
             recalculateScrollPos();
         }
 
-        // ! sets the selected item. Set this to -1 if no item should be selected
+        //! sets the selected item. Set this to -1 if no item should be selected
         void CGUIListBox::setSelected(const wchar_t *item)
         {
             s32 index = -1;
@@ -227,7 +227,7 @@ namespace irr
             setSelected (index);
         }
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIListBox::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -497,7 +497,7 @@ namespace irr
         }
 
 
-        // ! Update the position and size of the listbox, and update the scrollbar
+        //! Update the position and size of the listbox, and update the scrollbar
         void CGUIListBox::updateAbsolutePosition()
         {
             IGUIElement::updateAbsolutePosition();
@@ -506,7 +506,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIListBox::draw()
         {
             if (!IsVisible)
@@ -612,7 +612,7 @@ namespace irr
         }
 
 
-        // ! adds an list item with an icon
+        //! adds an list item with an icon
         u32 CGUIListBox::addItem(const wchar_t *text, s32 icon)
         {
             ListItem i;
@@ -705,7 +705,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUIListBox::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUIListBox::serializeAttributes(out, options);
@@ -745,7 +745,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUIListBox::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             clear();
@@ -816,8 +816,8 @@ namespace irr
         }
 
 
-        // ! Insert the item at the given index
-        // ! Return the index on success or -1 on failure.
+        //! Insert the item at the given index
+        //! Return the index on success or -1 on failure.
         s32 CGUIListBox::insertItem(u32 index, const wchar_t *text, s32 icon)
         {
             ListItem i;
@@ -926,7 +926,7 @@ namespace irr
             }
         }
 
-        // ! set global itemHeight
+        //! set global itemHeight
         void CGUIListBox::setItemHeight(s32 height)
         {
             ItemHeight         = height;
@@ -934,7 +934,7 @@ namespace irr
         }
 
 
-        // ! Sets whether to draw the background
+        //! Sets whether to draw the background
         void CGUIListBox::setDrawBackground(bool draw)
         {
             DrawBack = draw;

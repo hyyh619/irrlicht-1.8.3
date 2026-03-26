@@ -13,12 +13,12 @@ namespace irr
 {
     namespace scene
     {
-        // ! A default box emitter
+        //! A default box emitter
         class CParticleSphereEmitter : public IParticleSphereEmitter
         {
 public:
 
-            // ! constructor
+            //! constructor
             CParticleSphereEmitter(
                 const core::vector3df &center, f32 radius,
                 const core::vector3df &direction = core::vector3df(0.0f, 0.03f, 0.0f),
@@ -32,158 +32,158 @@ public:
                 const core::dimension2df &minStartSize = core::dimension2df(5.0f, 5.0f),
                 const core::dimension2df &maxStartSize = core::dimension2df(5.0f, 5.0f));
 
-            // ! Prepares an array with new particles to emitt into the system
-            // ! and returns how much new particles there are.
+            //! Prepares an array with new particles to emitt into the system
+            //! and returns how much new particles there are.
             virtual s32 emitt(u32 now, u32 timeSinceLastCall, SParticle* &outArray);
 
-            // ! Set direction the emitter emits particles
+            //! Set direction the emitter emits particles
             virtual void setDirection(const core::vector3df &newDirection)
             {
                 Direction = newDirection;
             }
 
-            // ! Set minimum number of particles per second.
+            //! Set minimum number of particles per second.
             virtual void setMinParticlesPerSecond(u32 minPPS)
             {
                 MinParticlesPerSecond = minPPS;
             }
 
-            // ! Set maximum number of particles per second.
+            //! Set maximum number of particles per second.
             virtual void setMaxParticlesPerSecond(u32 maxPPS)
             {
                 MaxParticlesPerSecond = maxPPS;
             }
 
-            // ! Set minimum start color
+            //! Set minimum start color
             virtual void setMinStartColor(const video::SColor &color)
             {
                 MinStartColor = color;
             }
 
-            // ! Set maximum start color
+            //! Set maximum start color
             virtual void setMaxStartColor(const video::SColor &color)
             {
                 MaxStartColor = color;
             }
 
-            // ! Set the maximum starting size for particles
+            //! Set the maximum starting size for particles
             virtual void setMaxStartSize(const core::dimension2df &size)
             {
                 MaxStartSize = size;
             }
 
-            // ! Set the minimum starting size for particles
+            //! Set the minimum starting size for particles
             virtual void setMinStartSize(const core::dimension2df &size)
             {
                 MinStartSize = size;
             }
 
-            // ! Set the minimum particle life-time in milliseconds
+            //! Set the minimum particle life-time in milliseconds
             virtual void setMinLifeTime(u32 lifeTimeMin)
             {
                 MinLifeTime = lifeTimeMin;
             }
 
-            // ! Set the maximum particle life-time in milliseconds
+            //! Set the maximum particle life-time in milliseconds
             virtual void setMaxLifeTime(u32 lifeTimeMax)
             {
                 MaxLifeTime = lifeTimeMax;
             }
 
-            // !    Set maximal random derivation from the direction
+            //!    Set maximal random derivation from the direction
             virtual void setMaxAngleDegrees(s32 maxAngleDegrees)
             {
                 MaxAngleDegrees = maxAngleDegrees;
             }
 
-            // ! Set the center of the sphere for particle emissions
+            //! Set the center of the sphere for particle emissions
             virtual void setCenter(const core::vector3df &center)
             {
                 Center = center;
             }
 
-            // ! Set the radius of the sphere for particle emissions
+            //! Set the radius of the sphere for particle emissions
             virtual void setRadius(f32 radius)
             {
                 Radius = radius;
             }
 
-            // ! Gets direction the emitter emits particles
+            //! Gets direction the emitter emits particles
             virtual const core::vector3df&getDirection() const
             {
                 return Direction;
             }
 
-            // ! Get minimum number of particles per second.
+            //! Get minimum number of particles per second.
             virtual u32 getMinParticlesPerSecond() const
             {
                 return MinParticlesPerSecond;
             }
 
-            // ! Get maximum number of particles per second.
+            //! Get maximum number of particles per second.
             virtual u32 getMaxParticlesPerSecond() const
             {
                 return MaxParticlesPerSecond;
             }
 
-            // ! Get minimum start color
+            //! Get minimum start color
             virtual const video::SColor&getMinStartColor() const
             {
                 return MinStartColor;
             }
 
-            // ! Get maximum start color
+            //! Get maximum start color
             virtual const video::SColor&getMaxStartColor() const
             {
                 return MaxStartColor;
             }
 
-            // ! Gets the maximum starting size for particles
+            //! Gets the maximum starting size for particles
             virtual const core::dimension2df&getMaxStartSize() const
             {
                 return MaxStartSize;
             }
 
-            // ! Gets the minimum starting size for particles
+            //! Gets the minimum starting size for particles
             virtual const core::dimension2df&getMinStartSize() const
             {
                 return MinStartSize;
             }
 
-            // ! Get the minimum particle life-time in milliseconds
+            //! Get the minimum particle life-time in milliseconds
             virtual u32 getMinLifeTime() const
             {
                 return MinLifeTime;
             }
 
-            // ! Get the maximum particle life-time in milliseconds
+            //! Get the maximum particle life-time in milliseconds
             virtual u32 getMaxLifeTime() const
             {
                 return MaxLifeTime;
             }
 
-            // !    Get maximal random derivation from the direction
+            //!    Get maximal random derivation from the direction
             virtual s32 getMaxAngleDegrees() const
             {
                 return MaxAngleDegrees;
             }
 
-            // ! Get the center of the sphere for particle emissions
+            //! Get the center of the sphere for particle emissions
             virtual const core::vector3df&getCenter() const
             {
                 return Center;
             }
 
-            // ! Get the radius of the sphere for particle emissions
+            //! Get the radius of the sphere for particle emissions
             virtual f32 getRadius() const
             {
                 return Radius;
             }
 
-            // ! Writes attributes of the object.
+            //! Writes attributes of the object.
             virtual void serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const;
 
-            // ! Reads attributes of the object.
+            //! Reads attributes of the object.
             virtual void deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options);
 
 private:

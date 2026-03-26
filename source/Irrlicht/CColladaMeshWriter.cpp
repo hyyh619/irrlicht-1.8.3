@@ -26,13 +26,13 @@ namespace irr
 {
     namespace scene
     {
-        // ! Which lighting model should be used in the technique (FX) section when exporting effects (materials)
+        //! Which lighting model should be used in the technique (FX) section when exporting effects (materials)
         E_COLLADA_TECHNIQUE_FX CColladaMeshWriterProperties::getTechniqueFx(const video::SMaterial &material) const
         {
             return ECTF_BLINN;
         }
 
-        // ! Which texture index should be used when writing the texture of the given sampler color.
+        //! Which texture index should be used when writing the texture of the given sampler color.
         s32 CColladaMeshWriterProperties::getTextureIdx(const video::SMaterial &material, E_COLLADA_COLOR_SAMPLER cs) const
         {
             // So far we just export in a way which is similar to how we import colladas.
@@ -91,35 +91,35 @@ namespace irr
             return ECIC_NONE;
         }
 
-        // ! Return custom colors for certain color types requested by collada.
+        //! Return custom colors for certain color types requested by collada.
         video::SColor CColladaMeshWriterProperties::getCustomColor(const video::SMaterial &material, E_COLLADA_COLOR_SAMPLER cs) const
         {
             return video::SColor(255, 0, 0, 0);
         }
 
 
-        // ! Return the settings for transparence
+        //! Return the settings for transparence
         E_COLLADA_TRANSPARENT_FX CColladaMeshWriterProperties::getTransparentFx(const video::SMaterial &material) const
         {
             // TODO: figure out best default mapping
             return ECOF_A_ONE;
         }
 
-        // ! Transparency value for the material.
+        //! Transparency value for the material.
         f32 CColladaMeshWriterProperties::getTransparency(const video::SMaterial &material) const
         {
             // TODO: figure out best default mapping
             return -1.f;
         }
 
-        // ! Reflectivity value for that material
+        //! Reflectivity value for that material
         f32 CColladaMeshWriterProperties::getReflectivity(const video::SMaterial &material) const
         {
             // TODO: figure out best default mapping
             return 0.f;
         }
 
-        // ! Return index of refraction for that material
+        //! Return index of refraction for that material
         f32 CColladaMeshWriterProperties::getIndexOfRefraction(const video::SMaterial &material) const
         {
             return -1.f;
@@ -291,13 +291,13 @@ namespace irr
             MaterialNameCache.clear();
         }
 
-        // ! Returns the type of the mesh writer
+        //! Returns the type of the mesh writer
         EMESH_WRITER_TYPE CColladaMeshWriter::getType() const
         {
             return EMWT_COLLADA;
         }
 
-        // ! writes a scene starting with the given node
+        //! writes a scene starting with the given node
         bool CColladaMeshWriter::writeScene(io::IWriteFile *file, scene::ISceneNode *root)
         {
             if (!file || !root)
@@ -828,7 +828,7 @@ namespace irr
             Writer->writeLineBreak();
         }
 
-        // ! writes a mesh
+        //! writes a mesh
         bool CColladaMeshWriter::writeMesh(io::IWriteFile *file, scene::IMesh *mesh, s32 flags)
         {
             if (!file)

@@ -21,7 +21,7 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             enum eTex2Flags
             {
                 GEN_MIPMAP      = 1,
@@ -31,10 +31,10 @@ public:
             };
             CSoftwareTexture2(IImage *surface, const io::path &name, u32 flags, void *mipmapData = 0);
 
-            // ! destructor
+            //! destructor
             virtual ~CSoftwareTexture2();
 
-            // ! lock function
+            //! lock function
             virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel = 0)
             {
                 if (Flags & GEN_MIPMAP)
@@ -43,80 +43,80 @@ public:
                 return MipMap[MipMapLOD]->lock();
             }
 
-            // ! unlock function
+            //! unlock function
             virtual void unlock()
             {
                 MipMap[MipMapLOD]->unlock();
             }
 
-            // ! Returns original size of the texture.
+            //! Returns original size of the texture.
             virtual const core::dimension2d<u32>&getOriginalSize() const
             {
                 // return MipMap[0]->getDimension();
                 return OrigSize;
             }
 
-            // ! Returns the size of the largest mipmap.
+            //! Returns the size of the largest mipmap.
             f32 getLODFactor(const f32 texArea) const
             {
                 return OrigImageDataSizeInPixels * texArea;
                 // return MipMap[0]->getImageDataSizeInPixels () * texArea;
             }
 
-            // ! Returns (=size) of the texture.
+            //! Returns (=size) of the texture.
             virtual const core::dimension2d<u32>&getSize() const
             {
                 return MipMap[MipMapLOD]->getDimension();
             }
 
-            // ! returns unoptimized surface
+            //! returns unoptimized surface
             virtual CImage* getImage() const
             {
                 return MipMap[0];
             }
 
-            // ! returns texture surface
+            //! returns texture surface
             virtual CImage* getTexture() const
             {
                 return MipMap[MipMapLOD];
             }
 
 
-            // ! returns driver type of texture (=the driver, who created the texture)
+            //! returns driver type of texture (=the driver, who created the texture)
             virtual E_DRIVER_TYPE getDriverType() const
             {
                 return EDT_BURNINGSVIDEO;
             }
 
-            // ! returns color format of texture
+            //! returns color format of texture
             virtual ECOLOR_FORMAT getColorFormat() const
             {
                 return BURNINGSHADER_COLOR_FORMAT;
             }
 
-            // ! returns pitch of texture (in bytes)
+            //! returns pitch of texture (in bytes)
             virtual u32 getPitch() const
             {
                 return MipMap[MipMapLOD]->getPitch();
             }
 
-            // ! Regenerates the mip map levels of the texture. Useful after locking and
-            // ! modifying the texture
+            //! Regenerates the mip map levels of the texture. Useful after locking and
+            //! modifying the texture
             virtual void regenerateMipMapLevels(void *mipmapData = 0);
 
-            // ! support mipmaps
+            //! support mipmaps
             virtual bool hasMipMaps() const
             {
                 return (Flags & GEN_MIPMAP) != 0;
             }
 
-            // ! Returns if the texture has an alpha channel
+            //! Returns if the texture has an alpha channel
             virtual bool hasAlpha() const
             {
                 return (Flags & HAS_ALPHA) != 0;
             }
 
-            // ! is a render target
+            //! is a render target
             virtual bool isRenderTarget() const
             {
                 return (Flags & IS_RENDERTARGET) != 0;

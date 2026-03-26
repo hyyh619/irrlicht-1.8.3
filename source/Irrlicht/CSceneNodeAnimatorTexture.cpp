@@ -9,7 +9,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CSceneNodeAnimatorTexture::CSceneNodeAnimatorTexture(const core::array<video::ITexture*> &textures,
             s32 timePerFrame, bool loop, u32 now)
             : ISceneNodeAnimatorFinishing(0),
@@ -31,7 +31,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CSceneNodeAnimatorTexture::~CSceneNodeAnimatorTexture()
         {
             clearTextures();
@@ -46,7 +46,7 @@ namespace irr
         }
 
 
-        // ! animates a scene node
+        //! animates a scene node
         void CSceneNodeAnimatorTexture::animateNode(ISceneNode *node, u32 timeMs)
         {
             if (!node)
@@ -73,7 +73,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the scene node animator.
+        //! Writes attributes of the scene node animator.
         void CSceneNodeAnimatorTexture::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             out->addInt("TimePerFrame", TimePerFrame);
@@ -96,7 +96,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node animator.
+        //! Reads attributes of the scene node animator.
         void CSceneNodeAnimatorTexture::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             TimePerFrame = in->getAttributeAsInt("TimePerFrame");

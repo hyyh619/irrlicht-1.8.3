@@ -44,80 +44,80 @@ namespace irr
     namespace video
     {
         class COpenGLDriver;
-        // ! OpenGL texture.
+        //! OpenGL texture.
         class COpenGLTexture : public ITexture
         {
 public:
 
-            // ! constructor
+            //! constructor
             COpenGLTexture(IImage *surface, const io::path &name, void *mipmapData = 0, COpenGLDriver *driver = 0);
 
-            // ! destructor
+            //! destructor
             virtual ~COpenGLTexture();
 
-            // ! lock function
+            //! lock function
             virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel = 0);
 
-            // ! unlock function
+            //! unlock function
             virtual void unlock();
 
-            // ! Returns original size of the texture (image).
+            //! Returns original size of the texture (image).
             virtual const core::dimension2d<u32>&getOriginalSize() const;
 
-            // ! Returns size of the texture.
+            //! Returns size of the texture.
             virtual const core::dimension2d<u32>&getSize() const;
 
-            // ! returns driver type of texture (=the driver, that created it)
+            //! returns driver type of texture (=the driver, that created it)
             virtual E_DRIVER_TYPE getDriverType() const;
 
-            // ! returns color format of texture
+            //! returns color format of texture
             virtual ECOLOR_FORMAT getColorFormat() const;
 
-            // ! returns pitch of texture (in bytes)
+            //! returns pitch of texture (in bytes)
             virtual u32 getPitch() const;
 
-            // ! return open gl texture name
+            //! return open gl texture name
             GLuint getOpenGLTextureName() const;
 
-            // ! return whether this texture has mipmaps
+            //! return whether this texture has mipmaps
             virtual bool hasMipMaps() const;
 
-            // ! Regenerates the mip map levels of the texture.
+            //! Regenerates the mip map levels of the texture.
             /** Useful after locking and modifying the texture
              * \param mipmapData Pointer to raw mipmap data, including all necessary mip levels, in the same format as the main texture image. If not set the mipmaps are derived from the main image. */
             virtual void regenerateMipMapLevels(void *mipmapData = 0);
 
-            // ! Is it a render target?
+            //! Is it a render target?
             virtual bool isRenderTarget() const;
 
-            // ! Is it a FrameBufferObject?
+            //! Is it a FrameBufferObject?
             virtual bool isFrameBufferObject() const;
 
-            // ! Bind RenderTargetTexture
+            //! Bind RenderTargetTexture
             virtual void bindRTT();
 
-            // ! Unbind RenderTargetTexture
+            //! Unbind RenderTargetTexture
             virtual void unbindRTT();
 
-            // ! sets whether this texture is intended to be used as a render target.
+            //! sets whether this texture is intended to be used as a render target.
             void setIsRenderTarget(bool isTarget);
 
 protected:
 
-            // ! protected constructor with basic setup, no GL texture name created, for derived classes
+            //! protected constructor with basic setup, no GL texture name created, for derived classes
             COpenGLTexture(const io::path &name, COpenGLDriver *driver);
 
-            // ! get the desired color format based on texture creation flags and the input format.
+            //! get the desired color format based on texture creation flags and the input format.
             ECOLOR_FORMAT getBestColorFormat(ECOLOR_FORMAT format);
 
-            // ! Get the OpenGL color format parameters based on the given Irrlicht color format
+            //! Get the OpenGL color format parameters based on the given Irrlicht color format
             GLint getOpenGLFormatAndParametersFromColorFormat(
                 ECOLOR_FORMAT format, GLint &filtering, GLenum &colorformat, GLenum &type);
 
-            // ! get important numbers of the image and hw texture
+            //! get important numbers of the image and hw texture
             void getImageValues(IImage *image);
 
-            // ! copies the texture into an OpenGL texture.
+            //! copies the texture into an OpenGL texture.
             /** \param newTexture True if method is called for a newly created texture for the first time. Otherwise call with false to improve memory handling.
              * \param mipmapData Pointer to raw mipmap data, including all necessary mip levels, in the same format as the main texture image.
              * \param mipLevel If set to non-zero, only that specific miplevel is updated, using the MipImage member. */
@@ -144,25 +144,25 @@ protected:
             bool KeepImage;
         };
 
-        // ! OpenGL FBO texture.
+        //! OpenGL FBO texture.
         class COpenGLFBOTexture : public COpenGLTexture
         {
 public:
 
-            // ! FrameBufferObject constructor
+            //! FrameBufferObject constructor
             COpenGLFBOTexture(const core::dimension2d<u32> &size, const io::path &name,
                 COpenGLDriver *driver = 0, ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
 
-            // ! destructor
+            //! destructor
             virtual ~COpenGLFBOTexture();
 
-            // ! Is it a FrameBufferObject?
+            //! Is it a FrameBufferObject?
             virtual bool isFrameBufferObject() const;
 
-            // ! Bind RenderTargetTexture
+            //! Bind RenderTargetTexture
             virtual void bindRTT();
 
-            // ! Unbind RenderTargetTexture
+            //! Unbind RenderTargetTexture
             virtual void unbindRTT();
 
             ITexture *DepthTexture;
@@ -171,20 +171,20 @@ protected:
         };
 
 
-        // ! OpenGL FBO depth texture.
+        //! OpenGL FBO depth texture.
         class COpenGLFBODepthTexture : public COpenGLTexture
         {
 public:
-            // ! FrameBufferObject depth constructor
+            //! FrameBufferObject depth constructor
             COpenGLFBODepthTexture(const core::dimension2d<u32> &size, const io::path &name, COpenGLDriver *driver = 0, bool useStencil = false);
 
-            // ! destructor
+            //! destructor
             virtual ~COpenGLFBODepthTexture();
 
-            // ! Bind RenderTargetTexture
+            //! Bind RenderTargetTexture
             virtual void bindRTT();
 
-            // ! Unbind RenderTargetTexture
+            //! Unbind RenderTargetTexture
             virtual void unbindRTT();
 
             bool attach(ITexture*);

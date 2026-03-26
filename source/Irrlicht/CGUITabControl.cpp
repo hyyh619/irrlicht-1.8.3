@@ -21,7 +21,7 @@ namespace irr
         // Tab
         // ------------------------------------------------------------------
 
-        // ! constructor
+        //! constructor
         CGUITab::CGUITab(s32 number, IGUIEnvironment *environment,
             IGUIElement *parent, const core::rect<s32> &rectangle,
             s32 id)
@@ -39,15 +39,15 @@ namespace irr
         }
 
 
-        // ! Returns number of tab in tabcontrol. Can be accessed
-        // ! later IGUITabControl::getTab() by this number.
+        //! Returns number of tab in tabcontrol. Can be accessed
+        //! later IGUITabControl::getTab() by this number.
         s32 CGUITab::getNumber() const
         {
             return Number;
         }
 
 
-        // ! Sets the number
+        //! Sets the number
         void CGUITab::setNumber(s32 n)
         {
             Number = n;
@@ -61,7 +61,7 @@ namespace irr
             }
         }
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUITab::draw()
         {
             if (!IsVisible)
@@ -76,21 +76,21 @@ namespace irr
         }
 
 
-        // ! sets if the tab should draw its background
+        //! sets if the tab should draw its background
         void CGUITab::setDrawBackground(bool draw)
         {
             DrawBackground = draw;
         }
 
 
-        // ! sets the color of the background, if it should be drawn.
+        //! sets the color of the background, if it should be drawn.
         void CGUITab::setBackgroundColor(video::SColor c)
         {
             BackColor = c;
         }
 
 
-        // ! sets the color of the text
+        //! sets the color of the text
         void CGUITab::setTextColor(video::SColor c)
         {
             OverrideTextColorEnabled = true;
@@ -104,7 +104,7 @@ namespace irr
         }
 
 
-        // ! returns true if the tab is drawing its background, false if not
+        //! returns true if the tab is drawing its background, false if not
         bool CGUITab::isDrawingBackground() const
         {
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -112,14 +112,14 @@ namespace irr
         }
 
 
-        // ! returns the color of the background
+        //! returns the color of the background
         video::SColor CGUITab::getBackgroundColor() const
         {
             return BackColor;
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUITab::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUITab::serializeAttributes(out, options);
@@ -132,7 +132,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUITab::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             IGUITab::deserializeAttributes(in, options);
@@ -160,7 +160,7 @@ namespace irr
         // Tabcontrol
         // ------------------------------------------------------------------
 
-        // ! constructor
+        //! constructor
         CGUITabControl::CGUITabControl(IGUIEnvironment *environment,
             IGUIElement *parent, const core::rect<s32> &rectangle,
             bool fillbackground, bool border, s32 id)
@@ -211,7 +211,7 @@ namespace irr
             refreshSprites();
         }
 
-        // ! destructor
+        //! destructor
         CGUITabControl::~CGUITabControl()
         {
             for (u32 i = 0; i < Tabs.size(); ++i)
@@ -250,7 +250,7 @@ namespace irr
             }
         }
 
-        // ! Adds a tab
+        //! Adds a tab
         IGUITab* CGUITabControl::addTab(const wchar_t *caption, s32 id)
         {
             CGUITab *tab = new CGUITab(Tabs.size(), Environment, this, calcTabPos(), id);
@@ -272,7 +272,7 @@ namespace irr
         }
 
 
-        // ! adds a tab which has been created elsewhere
+        //! adds a tab which has been created elsewhere
         void CGUITabControl::addTab(CGUITab *tab)
         {
             if (!tab)
@@ -311,7 +311,7 @@ namespace irr
             }
         }
 
-        // ! Insert the tab at the given index
+        //! Insert the tab at the given index
         IGUITab* CGUITabControl::insertTab(s32 idx, const wchar_t *caption, s32 id)
         {
             if (idx < 0 || idx > (s32)Tabs.size()) // idx == Tabs.size() is indeed ok here as core::array can handle that
@@ -340,7 +340,7 @@ namespace irr
             return tab;
         }
 
-        // ! Removes a tab from the tabcontrol
+        //! Removes a tab from the tabcontrol
         void CGUITabControl::removeTab(s32 idx)
         {
             if (idx < 0 || idx >= (s32)Tabs.size())
@@ -355,7 +355,7 @@ namespace irr
             }
         }
 
-        // ! Clears the tabcontrol removing all tabs
+        //! Clears the tabcontrol removing all tabs
         void CGUITabControl::clear()
         {
             for (u32 i = 0; i < Tabs.size(); ++i)
@@ -367,14 +367,14 @@ namespace irr
             Tabs.clear();
         }
 
-        // ! Returns amount of tabs in the tabcontrol
+        //! Returns amount of tabs in the tabcontrol
         s32 CGUITabControl::getTabCount() const
         {
             return Tabs.size();
         }
 
 
-        // ! Returns a tab based on zero based index
+        //! Returns a tab based on zero based index
         IGUITab* CGUITabControl::getTab(s32 idx) const
         {
             if ((u32)idx >= Tabs.size())
@@ -384,7 +384,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUITabControl::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -581,7 +581,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUITabControl::draw()
         {
             if (!IsVisible)
@@ -755,7 +755,7 @@ namespace irr
         }
 
 
-        // ! Set the height of the tabs
+        //! Set the height of the tabs
         void CGUITabControl::setTabHeight(s32 height)
         {
             if (height < 0)
@@ -768,26 +768,26 @@ namespace irr
         }
 
 
-        // ! Get the height of the tabs
+        //! Get the height of the tabs
         s32 CGUITabControl::getTabHeight() const
         {
             return TabHeight;
         }
 
-        // ! set the maximal width of a tab. Per default width is 0 which means "no width restriction".
+        //! set the maximal width of a tab. Per default width is 0 which means "no width restriction".
         void CGUITabControl::setTabMaxWidth(s32 width)
         {
             TabMaxWidth = width;
         }
 
-        // ! get the maximal width of a tab
+        //! get the maximal width of a tab
         s32 CGUITabControl::getTabMaxWidth() const
         {
             return TabMaxWidth;
         }
 
 
-        // ! Set the extra width added to tabs on each side of the text
+        //! Set the extra width added to tabs on each side of the text
         void CGUITabControl::setTabExtraWidth(s32 extraWidth)
         {
             if (extraWidth < 0)
@@ -799,7 +799,7 @@ namespace irr
         }
 
 
-        // ! Get the extra width added to tabs on each side of the text
+        //! Get the extra width added to tabs on each side of the text
         s32 CGUITabControl::getTabExtraWidth() const
         {
             return TabExtraWidth;
@@ -828,7 +828,7 @@ namespace irr
             bringToFront(DownButton);
         }
 
-        // ! Set the alignment of the tabs
+        //! Set the alignment of the tabs
         void CGUITabControl::setTabVerticalAlignment(EGUI_ALIGNMENT alignment)
         {
             VerticalAlignment = alignment;
@@ -881,7 +881,7 @@ namespace irr
             DownButton->setRelativePosition(core::rect<s32>(ButtonX, ButtonY, ButtonX + ButtonSize, ButtonY + ButtonHeight));
         }
 
-        // ! Get the alignment of the tabs
+        //! Get the alignment of the tabs
         EGUI_ALIGNMENT CGUITabControl::getTabVerticalAlignment() const
         {
             return VerticalAlignment;
@@ -937,14 +937,14 @@ namespace irr
             return -1;
         }
 
-        // ! Returns which tab is currently active
+        //! Returns which tab is currently active
         s32 CGUITabControl::getActiveTab() const
         {
             return ActiveTab;
         }
 
 
-        // ! Brings a tab to front.
+        //! Brings a tab to front.
         bool CGUITabControl::setActiveTab(s32 idx)
         {
             if ((u32)idx >= Tabs.size())
@@ -982,7 +982,7 @@ namespace irr
         }
 
 
-        // ! Removes a child.
+        //! Removes a child.
         void CGUITabControl::removeChild(IGUIElement *child)
         {
             bool isTab = false;
@@ -1017,7 +1017,7 @@ namespace irr
         }
 
 
-        // ! Update the position of the element, decides scroll button status
+        //! Update the position of the element, decides scroll button status
         void CGUITabControl::updateAbsolutePosition()
         {
             IGUIElement::updateAbsolutePosition();
@@ -1026,7 +1026,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUITabControl::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUITabControl::serializeAttributes(out, options);
@@ -1040,7 +1040,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUITabControl::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             Border         = in->getAttributeAsBool("Border");

@@ -77,10 +77,10 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CTRTextureDetailMap2(CBurningVideoDriver *driver);
 
-            // ! draws an indexed triangle list
+            //! draws an indexed triangle list
             virtual void drawTriangle(const s4DVertex *a, const s4DVertex *b, const s4DVertex *c);
 
 
@@ -90,7 +90,7 @@ private:
             sScanLineData    line;
         };
 
-        // ! constructor
+        //! constructor
         CTRTextureDetailMap2::CTRTextureDetailMap2(CBurningVideoDriver *driver)
             : IBurningShader(driver)
         {
@@ -631,7 +631,7 @@ namespace irr
 {
     namespace video
     {
-        // ! creates a flat triangle renderer
+        //! creates a flat triangle renderer
         IBurningShader* createTriangleRendererTextureDetailMap2(CBurningVideoDriver *driver)
         {
     #ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_

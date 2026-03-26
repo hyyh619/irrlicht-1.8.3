@@ -9,7 +9,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CEmptySceneNode::CEmptySceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id)
             : ISceneNode(parent, mgr, id)
         {
@@ -21,7 +21,7 @@ namespace irr
         }
 
 
-        // ! pre render event
+        //! pre render event
         void CEmptySceneNode::OnRegisterSceneNode()
         {
             if (IsVisible)
@@ -31,21 +31,21 @@ namespace irr
         }
 
 
-        // ! render
+        //! render
         void CEmptySceneNode::render()
         {
             // do nothing
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CEmptySceneNode::getBoundingBox() const
         {
             return Box;
         }
 
 
-        // ! Creates a clone of this scene node and its children.
+        //! Creates a clone of this scene node and its children.
         ISceneNode* CEmptySceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
         {
             if (!newParent)

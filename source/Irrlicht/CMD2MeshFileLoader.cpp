@@ -78,7 +78,7 @@ namespace irr
         // Default alignment
 #include "irrunpack.h"
 
-        // ! Constructor
+        //! Constructor
         CMD2MeshFileLoader::CMD2MeshFileLoader()
         {
     #ifdef _DEBUG
@@ -87,18 +87,18 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool CMD2MeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "md2");
         }
 
 
-        // ! creates/loads an animated mesh from the file.
-        // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-        // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-        // ! See IReferenceCounted::drop() for more information.
+        //! creates/loads an animated mesh from the file.
+        //! \return Pointer to the created mesh. Returns 0 if loading failed.
+        //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+        //! See IReferenceCounted::drop() for more information.
         IAnimatedMesh* CMD2MeshFileLoader::createMesh(io::IReadFile *file)
         {
             IAnimatedMesh *msh = new CAnimatedMeshMD2();
@@ -114,7 +114,7 @@ namespace irr
             return 0;
         }
 
-        // ! loads an md2 file
+        //! loads an md2 file
         bool CMD2MeshFileLoader::loadFile(io::IReadFile *file, CAnimatedMeshMD2 *mesh)
         {
             if (!file)

@@ -17,15 +17,15 @@ namespace irr
 {
     namespace video
     {
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".tga")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".tga")
         bool CImageLoaderTGA::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension (filename, "tga");
         }
 
 
-        // ! loads a compressed tga.
+        //! loads a compressed tga.
         u8* CImageLoaderTGA::loadCompressedImage(io::IReadFile *file, const STGAHeader &header) const
         {
             // This was written and sent in by Jon Pry, thank you very much!
@@ -75,7 +75,7 @@ namespace irr
 
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CImageLoaderTGA::isALoadableFileFormat(io::IReadFile *file) const
         {
             if (!file)
@@ -90,7 +90,7 @@ namespace irr
 
 
 
-        // ! creates a surface from the file
+        //! creates a surface from the file
         IImage* CImageLoaderTGA::loadImage(io::IReadFile *file) const
         {
             STGAHeader header;
@@ -236,7 +236,7 @@ namespace irr
         }
 
 
-        // ! creates a loader which is able to load tgas
+        //! creates a loader which is able to load tgas
         IImageLoader* createImageLoaderTGA()
         {
             return new CImageLoaderTGA();

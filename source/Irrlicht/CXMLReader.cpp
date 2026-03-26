@@ -10,31 +10,31 @@ namespace irr
 {
     namespace io
     {
-        // ! Irrlicht implementation of the file read callback for the xml parser
+        //! Irrlicht implementation of the file read callback for the xml parser
         class CIrrXMLFileReadCallBack : public IFileReadCallBack
         {
 public:
 
-            // ! construct from FILE pointer
+            //! construct from FILE pointer
             CIrrXMLFileReadCallBack(IReadFile *file)
                 : ReadFile(file)
             {
                 ReadFile->grab();
             }
 
-            // ! destructor
+            //! destructor
             virtual ~CIrrXMLFileReadCallBack()
             {
                 ReadFile->drop();
             }
 
-            // ! Reads an amount of bytes from the file.
+            //! Reads an amount of bytes from the file.
             virtual int read(void *buffer, int sizeToRead)
             {
                 return ReadFile->read(buffer, sizeToRead);
             }
 
-            // ! Returns size of file in bytes
+            //! Returns size of file in bytes
             virtual long getSize() const
             {
                 return ReadFile->getSize();
@@ -48,7 +48,7 @@ private:
 
         // now create an implementation for IXMLReader using irrXML.
 
-        // ! Creates an instance of a wide character xml parser.
+        //! Creates an instance of a wide character xml parser.
         IXMLReader* createIXMLReader(IReadFile *file)
         {
             if (!file)
@@ -57,7 +57,7 @@ private:
             return new CXMLReaderImpl<wchar_t, IReferenceCounted>(new CIrrXMLFileReadCallBack(file));
         }
 
-        // ! Creates an instance of an UFT-8 or ASCII character xml parser.
+        //! Creates an instance of an UFT-8 or ASCII character xml parser.
         IXMLReaderUTF8* createIXMLReaderUTF8(IReadFile *file)
         {
             if (!file)

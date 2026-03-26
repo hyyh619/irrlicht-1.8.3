@@ -11,7 +11,7 @@ namespace irr
 {
     namespace io
     {
-        // ! Constructor
+        //! Constructor
         CXMLWriter::CXMLWriter(IWriteFile *file)
             : File(file), Tabs(0), TextWrittenLast(false)
         {
@@ -25,7 +25,7 @@ namespace irr
 
 
 
-        // ! Destructor
+        //! Destructor
         CXMLWriter::~CXMLWriter()
         {
             if (File)
@@ -34,7 +34,7 @@ namespace irr
 
 
 
-        // ! Writes a xml 1.0 header like <?xml version="1.0"?>
+        //! Writes a xml 1.0 header like <?xml version="1.0"?>
         void CXMLWriter::writeXMLHeader()
         {
             if (!File)
@@ -60,7 +60,7 @@ namespace irr
 
 
 
-        // ! Writes an xml element with maximal 5 attributes
+        //! Writes an xml element with maximal 5 attributes
         void CXMLWriter::writeElement(const wchar_t *name, bool empty,
             const wchar_t *attr1Name, const wchar_t *attr1Value,
             const wchar_t *attr2Name, const wchar_t *attr2Value,
@@ -102,7 +102,7 @@ namespace irr
             TextWrittenLast = false;
         }
 
-        // ! Writes an xml element with any number of attributes
+        //! Writes an xml element with any number of attributes
         void CXMLWriter::writeElement(const wchar_t *name, bool empty,
             core::array<core::stringw> &names,
             core::array<core::stringw> &values)
@@ -153,7 +153,7 @@ namespace irr
         }
 
 
-        // ! Writes a comment into the xml file
+        //! Writes a comment into the xml file
         void CXMLWriter::writeComment(const wchar_t *comment)
         {
             if (!File || !comment)
@@ -165,7 +165,7 @@ namespace irr
         }
 
 
-        // ! Writes the closing tag for an element. Like </foo>
+        //! Writes the closing tag for an element. Like </foo>
         void CXMLWriter::writeClosingTag(const wchar_t *name)
         {
             if (!File || !name)
@@ -197,8 +197,8 @@ namespace irr
         };
 
 
-        // ! Writes a text into the file. All occurrences of special characters like
-        // ! & (&amp;), < (&lt;), > (&gt;), and " (&quot;) are automaticly replaced.
+        //! Writes a text into the file. All occurrences of special characters like
+        //! & (&amp;), < (&lt;), > (&gt;), and " (&quot;) are automaticly replaced.
         void CXMLWriter::writeText(const wchar_t *text)
         {
             if (!File || !text)
@@ -236,7 +236,7 @@ namespace irr
         }
 
 
-        // ! Writes a line break
+        //! Writes a line break
         void CXMLWriter::writeLineBreak()
         {
             if (!File)

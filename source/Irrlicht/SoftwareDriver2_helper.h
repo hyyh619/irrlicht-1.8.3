@@ -64,7 +64,7 @@ namespace irr
 
     // ----------------------- Generic ----------------------------------
 
-    // ! a more useful memset for pixel
+    //! a more useful memset for pixel
     // (standard memset only works with 8-bit values)
     inline void memset32(void *dest, const u32 value, u32 bytesize)
     {
@@ -101,7 +101,7 @@ namespace irr
         }
     }
 
-    // ! a more useful memset for pixel
+    //! a more useful memset for pixel
     // (standard memset only works with 8-bit values)
     inline void memset16(void *dest, const u16 value, u32 bytesize)
     {
@@ -176,7 +176,7 @@ namespace irr
     }
 
 
-    // ! conditional set based on mask and arithmetic shift
+    //! conditional set based on mask and arithmetic shift
     REALINLINE u32 if_mask_a_else_b(const u32 mask, const u32 a, const u32 b)
     {
         return (mask & (a ^ b)) ^ b;
@@ -1007,7 +1007,7 @@ namespace irr
         s32 y1;
     };
 
-    // ! 2D Intersection test
+    //! 2D Intersection test
     inline bool intersect(AbsRectangle &dest, const AbsRectangle &a, const AbsRectangle &b)
     {
         dest.x0 = core::s32_max(a.x0, b.x0);

@@ -9,7 +9,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! constructor
+        //! constructor
         CTriangleBBSelector::CTriangleBBSelector(ISceneNode *node)
             : CTriangleSelector(node)
         {
@@ -22,7 +22,7 @@ namespace irr
 
 
 
-        // ! Gets all triangles.
+        //! Gets all triangles.
         void CTriangleBBSelector::getTriangles(core::triangle3df *triangles,
             s32 arraySize, s32 &outTriangleCount,
             const core::matrix4 *transform) const

@@ -18,7 +18,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor for usual textures
+        //! constructor for usual textures
         COpenGLTexture::COpenGLTexture(IImage *origImage, const io::path &name, void *mipmapData, COpenGLDriver *driver)
             : ITexture(name), ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), Driver(driver), Image(0), MipImage(0),
             TextureName(0), InternalFormat(GL_RGBA), PixelFormat(GL_BGRA_EXT),
@@ -56,7 +56,7 @@ namespace irr
         }
 
 
-        // ! constructor for basic setup (only for derived classes)
+        //! constructor for basic setup (only for derived classes)
         COpenGLTexture::COpenGLTexture(const io::path &name, COpenGLDriver *driver)
             : ITexture(name), ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), Driver(driver), Image(0), MipImage(0),
             TextureName(0), InternalFormat(GL_RGBA), PixelFormat(GL_BGRA_EXT),
@@ -70,7 +70,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         COpenGLTexture::~COpenGLTexture()
         {
             if (TextureName)
@@ -81,7 +81,7 @@ namespace irr
         }
 
 
-        // ! Choose best matching color format, based on texture creation flags
+        //! Choose best matching color format, based on texture creation flags
         ECOLOR_FORMAT COpenGLTexture::getBestColorFormat(ECOLOR_FORMAT format)
         {
             ECOLOR_FORMAT destFormat = ECOLOR_FORMAT::ECF_A8R8G8B8;
@@ -137,7 +137,7 @@ namespace irr
         }
 
 
-        // ! Get opengl values for the GPU texture storage
+        //! Get opengl values for the GPU texture storage
         GLint COpenGLTexture::getOpenGLFormatAndParametersFromColorFormat(ECOLOR_FORMAT format,
             GLint &filtering,
             GLenum &colorformat,
@@ -323,7 +323,7 @@ namespace irr
         }
 
 
-        // ! copies the the texture into an open gl texture.
+        //! copies the the texture into an open gl texture.
         void COpenGLTexture::uploadTexture(bool newTexture, void *mipmapData, u32 level)
         {
             // check which image needs to be uploaded
@@ -421,7 +421,7 @@ namespace irr
         }
 
 
-        // ! lock function
+        //! lock function
         void* COpenGLTexture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel)
         {
             // store info about which image is locked
@@ -537,7 +537,7 @@ namespace irr
         }
 
 
-        // ! unlock function
+        //! unlock function
         void COpenGLTexture::unlock()
         {
             // test if miplevel or main texture was locked
@@ -573,35 +573,35 @@ namespace irr
         }
 
 
-        // ! Returns size of the original image.
+        //! Returns size of the original image.
         const core::dimension2d<u32>&COpenGLTexture::getOriginalSize() const
         {
             return ImageSize;
         }
 
 
-        // ! Returns size of the texture.
+        //! Returns size of the texture.
         const core::dimension2d<u32>&COpenGLTexture::getSize() const
         {
             return TextureSize;
         }
 
 
-        // ! returns driver type of texture, i.e. the driver, which created the texture
+        //! returns driver type of texture, i.e. the driver, which created the texture
         E_DRIVER_TYPE COpenGLTexture::getDriverType() const
         {
             return EDT_OPENGL;
         }
 
 
-        // ! returns color format of texture
+        //! returns color format of texture
         ECOLOR_FORMAT COpenGLTexture::getColorFormat() const
         {
             return ColorFormat;
         }
 
 
-        // ! returns pitch of texture (in bytes)
+        //! returns pitch of texture (in bytes)
         u32 COpenGLTexture::getPitch() const
         {
             if (Image)
@@ -611,22 +611,22 @@ namespace irr
         }
 
 
-        // ! return open gl texture name
+        //! return open gl texture name
         GLuint COpenGLTexture::getOpenGLTextureName() const
         {
             return TextureName;
         }
 
 
-        // ! Returns whether this texture has mipmaps
+        //! Returns whether this texture has mipmaps
         bool COpenGLTexture::hasMipMaps() const
         {
             return HasMipMaps;
         }
 
 
-        // ! Regenerates the mip map levels of the texture. Useful after locking and
-        // ! modifying the texture
+        //! Regenerates the mip map levels of the texture. Useful after locking and
+        //! modifying the texture
         void COpenGLTexture::regenerateMipMapLevels(void *mipmapData)
         {
             if (AutomaticMipmapUpdate || !HasMipMaps || !Image)
@@ -692,12 +692,12 @@ namespace irr
         }
 
 
-        // ! Bind Render Target Texture
+        //! Bind Render Target Texture
         void COpenGLTexture::bindRTT()
         {}
 
 
-        // ! Unbind Render Target Texture
+        //! Unbind Render Target Texture
         void COpenGLTexture::unbindRTT()
         {
             Driver->setActiveTexture(0, this);
@@ -712,7 +712,7 @@ namespace irr
         // helper function for render to texture
         static bool checkFBOStatus(COpenGLDriver *Driver);
 
-        // ! RTT ColorFrameBuffer constructor
+        //! RTT ColorFrameBuffer constructor
         COpenGLFBOTexture::COpenGLFBOTexture(const core::dimension2d<u32> &size,
             const io::path &name, COpenGLDriver *driver,
             ECOLOR_FORMAT format)
@@ -767,7 +767,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         COpenGLFBOTexture::~COpenGLFBOTexture()
         {
             if (DepthTexture)
@@ -785,7 +785,7 @@ namespace irr
         }
 
 
-        // ! Bind Render Target Texture
+        //! Bind Render Target Texture
         void COpenGLFBOTexture::bindRTT()
         {
 #ifdef GL_EXT_framebuffer_object
@@ -796,7 +796,7 @@ namespace irr
         }
 
 
-        // ! Unbind Render Target Texture
+        //! Unbind Render Target Texture
         void COpenGLFBOTexture::unbindRTT()
         {
 #ifdef GL_EXT_framebuffer_object
@@ -808,7 +808,7 @@ namespace irr
 
         /* FBO Depth Textures */
 
-        // ! RTT DepthBuffer constructor
+        //! RTT DepthBuffer constructor
         COpenGLFBODepthTexture::COpenGLFBODepthTexture(
             const core::dimension2d<u32> &size,
             const io::path &name,
@@ -875,7 +875,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         COpenGLFBODepthTexture::~COpenGLFBODepthTexture()
         {
             if (DepthRenderBuffer && UseStencil)
@@ -936,12 +936,12 @@ namespace irr
         }
 
 
-        // ! Bind Render Target Texture
+        //! Bind Render Target Texture
         void COpenGLFBODepthTexture::bindRTT()
         {}
 
 
-        // ! Unbind Render Target Texture
+        //! Unbind Render Target Texture
         void COpenGLFBODepthTexture::unbindRTT()
         {}
 

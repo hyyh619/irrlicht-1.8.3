@@ -114,7 +114,7 @@ namespace irr
         };
 
 
-        // ! Constructor
+        //! Constructor
         CLWOMeshFileLoader::CLWOMeshFileLoader(scene::ISceneManager *smgr,
             io::IFileSystem *fs)
             : SceneManager(smgr), FileSystem(fs), File(0), Mesh(0)
@@ -125,7 +125,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CLWOMeshFileLoader::~CLWOMeshFileLoader()
         {
             if (Mesh)
@@ -133,15 +133,15 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
-        // ! based on the file extension (e.g. ".bsp")
+        //! returns true if the file maybe is able to be loaded by this class
+        //! based on the file extension (e.g. ".bsp")
         bool CLWOMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension(filename, "lwo");
         }
 
 
-        // ! creates/loads an animated mesh from the file.
+        //! creates/loads an animated mesh from the file.
         IAnimatedMesh* CLWOMeshFileLoader::createMesh(io::IReadFile *file)
         {
             File = file;

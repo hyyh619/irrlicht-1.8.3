@@ -15,7 +15,7 @@ namespace irr
         // byte-align structures
 #include "irrpack.h"
 
-        // ! General properties of a single animation frame.
+        //! General properties of a single animation frame.
         struct SMD3Frame
         {
             f32 mins[3]; // bounding box per frame
@@ -26,7 +26,7 @@ namespace irr
         } PACK_STRUCT;
 
 
-        // ! An attachment point for another MD3 model.
+        //! An attachment point for another MD3 model.
         struct SMD3Tag
         {
             c8  Name[64];   // name of 'tag' as it's usually called in the md3 files try to see it as a sub-mesh/seperate mesh-part.
@@ -34,7 +34,7 @@ namespace irr
             f32 rotationMatrix[9]; // 3x3 rotation direction of tag
         } PACK_STRUCT;
 
-        // !Shader
+        //!Shader
         struct SMD3Shader
         {
             c8  name[64];   // name of shader
@@ -45,7 +45,7 @@ namespace irr
 #include "irrunpack.h"
 
 
-        // ! Constructor
+        //! Constructor
         CAnimatedMeshMD3::CAnimatedMeshMD3()
             : Mesh(0), IPolShift(0), LoopMode(0), Scaling(1.f)// , FramesPerSecond(25.f)
         {
@@ -59,7 +59,7 @@ namespace irr
         }
 
 
-        // ! Destructor
+        //! Destructor
         CAnimatedMeshMD3::~CAnimatedMeshMD3()
         {
             if (Mesh)
@@ -70,14 +70,14 @@ namespace irr
         }
 
 
-        // ! Returns the amount of frames in milliseconds. If the amount is 1, it is a static (=non animated) mesh.
+        //! Returns the amount of frames in milliseconds. If the amount is 1, it is a static (=non animated) mesh.
         u32 CAnimatedMeshMD3::getFrameCount() const
         {
             return Mesh->MD3Header.numFrames << IPolShift;
         }
 
 
-        // ! Rendering Hint
+        //! Rendering Hint
         void CAnimatedMeshMD3::setInterpolationShift(u32 shift, u32 loopMode)
         {
             IPolShift = shift;
@@ -85,21 +85,21 @@ namespace irr
         }
 
 
-        // ! returns amount of mesh buffers.
+        //! returns amount of mesh buffers.
         u32 CAnimatedMeshMD3::getMeshBufferCount() const
         {
             return MeshIPol->getMeshBufferCount();
         }
 
 
-        // ! returns pointer to a mesh buffer
+        //! returns pointer to a mesh buffer
         IMeshBuffer* CAnimatedMeshMD3::getMeshBuffer(u32 nr) const
         {
             return MeshIPol->getMeshBuffer(nr);
         }
 
 
-        // ! Returns pointer to a mesh buffer which fits a material
+        //! Returns pointer to a mesh buffer which fits a material
         IMeshBuffer* CAnimatedMeshMD3::getMeshBuffer(const video::SMaterial &material) const
         {
             return MeshIPol->getMeshBuffer(material);
@@ -112,7 +112,7 @@ namespace irr
         }
 
 
-        // ! set the hardware mapping hint, for driver
+        //! set the hardware mapping hint, for driver
         void CAnimatedMeshMD3::setHardwareMappingHint(E_HARDWARE_MAPPING newMappingHint,
             E_BUFFER_TYPE buffer)
         {
@@ -120,21 +120,21 @@ namespace irr
         }
 
 
-        // ! flags the meshbuffer as changed, reloads hardware buffers
+        //! flags the meshbuffer as changed, reloads hardware buffers
         void CAnimatedMeshMD3::setDirty(E_BUFFER_TYPE buffer)
         {
             MeshIPol->setDirty(buffer);
         }
 
 
-        // ! set user axis aligned bounding box
+        //! set user axis aligned bounding box
         void CAnimatedMeshMD3::setBoundingBox(const core::aabbox3df &box)
         {
             MeshIPol->setBoundingBox(box);
         }
 
 
-        // ! Returns the animated tag list based on a detail level. 0 is the lowest, 255 the highest detail.
+        //! Returns the animated tag list based on a detail level. 0 is the lowest, 255 the highest detail.
         SMD3QuaternionTagList* CAnimatedMeshMD3::getTagList(s32 frame, s32 detailLevel, s32 startFrameLoop, s32 endFrameLoop)
         {
             if (0 == Mesh)
@@ -145,13 +145,13 @@ namespace irr
         }
 
 
-        // ! Returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail.
+        //! Returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail.
         IMesh* CAnimatedMeshMD3::getMesh(s32 frame, s32 detailLevel, s32 startFrameLoop, s32 endFrameLoop)
         {
             if (0 == Mesh)
                 return 0;
 
-            // ! check if we have the mesh in our private cache
+            //! check if we have the mesh in our private cache
             SCacheInfo candidate(frame, startFrameLoop, endFrameLoop);
             if (candidate == Current)
                 return MeshIPol;
@@ -209,7 +209,7 @@ namespace irr
         }
 
 
-        // ! create a Irrlicht MeshBuffer for a MD3 MeshBuffer
+        //! create a Irrlicht MeshBuffer for a MD3 MeshBuffer
         IMeshBuffer* CAnimatedMeshMD3::createMeshBuffer(const SMD3MeshBuffer *source,
             io::IFileSystem *fs, video::IVideoDriver *driver)
         {
@@ -251,7 +251,7 @@ namespace irr
         }
 
 
-        // ! build final mesh's vertices from frames frameA and frameB with linear interpolation.
+        //! build final mesh's vertices from frames frameA and frameB with linear interpolation.
         void CAnimatedMeshMD3::buildVertexArray(u32 frameA, u32 frameB, f32 interpolate,
             const SMD3MeshBuffer *source,
             SMeshBufferLightMap *dest)
@@ -285,7 +285,7 @@ namespace irr
         }
 
 
-        // ! build final mesh's tag from frames frameA and frameB with linear interpolation.
+        //! build final mesh's tag from frames frameA and frameB with linear interpolation.
         void CAnimatedMeshMD3::buildTagArray(u32 frameA, u32 frameB, f32 interpolate)
         {
             const u32 frameOffsetA = frameA * Mesh->MD3Header.numTags;
@@ -318,7 +318,7 @@ namespace irr
             if (!file)
                 return false;
 
-            // ! Check MD3Header
+            //! Check MD3Header
             {
                 file->read(&Mesh->MD3Header, sizeof(SMD3Header));
 
@@ -329,12 +329,12 @@ namespace irr
                 }
             }
 
-            // ! store model name
+            //! store model name
             Mesh->Name = file->getFileName();
 
             u32 i;
 
-            // ! Frame Data (ignore)
+            //! Frame Data (ignore)
 #if 0
             SMD3Frame frameImport;
             file->seek(Mesh->MD3Header.frameStart);
@@ -345,7 +345,7 @@ namespace irr
             }
 #endif
 
-            // ! Tag Data
+            //! Tag Data
             const u32 totalTags = Mesh->MD3Header.numTags * Mesh->MD3Header.numFrames;
 
             SMD3Tag import;
@@ -359,15 +359,15 @@ namespace irr
 
                 SMD3QuaternionTag &exp = Mesh->TagList[i];
 
-                // ! tag name
+                //! tag name
                 exp.Name = import.Name;
 
-                // ! position
+                //! position
                 exp.position.X = import.position[0];
                 exp.position.Y = import.position[2];
                 exp.position.Z = import.position[1];
 
-                // ! construct quaternion from a RH 3x3 Matrix
+                //! construct quaternion from a RH 3x3 Matrix
                 exp.rotation.set(import.rotationMatrix[7],
                     0.f,
                     -import.rotationMatrix[6],
@@ -375,27 +375,27 @@ namespace irr
                 exp.rotation.normalize();
             }
 
-            // ! Meshes
+            //! Meshes
             u32 offset = Mesh->MD3Header.tagEnd;
 
             for (i = 0; i != (u32)Mesh->MD3Header.numMeshes; ++i)
             {
-                // ! construct a new mesh buffer
+                //! construct a new mesh buffer
                 SMD3MeshBuffer *buf = new SMD3MeshBuffer();
 
-                // !read mesh header info
+                //!read mesh header info
                 SMD3MeshHeader &meshHeader = buf->MeshHeader;
 
-                // ! read mesh info
+                //! read mesh info
                 file->seek(offset);
                 file->read(&meshHeader, sizeof(SMD3MeshHeader));
 
-                // ! prepare memory
+                //! prepare memory
                 buf->Vertices.set_used(meshHeader.numVertices * Mesh->MD3Header.numFrames);
                 buf->Indices.set_used(meshHeader.numTriangles * 3);
                 buf->Tex.set_used(meshHeader.numVertices);
 
-                // ! read skins (shaders). should be 1 per meshbuffer
+                //! read skins (shaders). should be 1 per meshbuffer
                 SMD3Shader skin;
                 file->seek(offset + buf->MeshHeader.offset_shaders);
 
@@ -409,19 +409,19 @@ namespace irr
                     buf->Shader = name;
                 }
 
-                // ! read texture coordinates
+                //! read texture coordinates
                 file->seek(offset + buf->MeshHeader.offset_st);
                 file->read(buf->Tex.pointer(), buf->MeshHeader.numVertices * sizeof(SMD3TexCoord));
 
-                // ! read vertices
+                //! read vertices
                 file->seek(offset + meshHeader.vertexStart);
                 file->read(buf->Vertices.pointer(), Mesh->MD3Header.numFrames * meshHeader.numVertices * sizeof(SMD3Vertex));
 
-                // ! read indices
+                //! read indices
                 file->seek(offset + meshHeader.offset_triangles);
                 file->read(buf->Indices.pointer(), meshHeader.numTriangles * sizeof(SMD3Face));
 
-                // ! store meshBuffer
+                //! store meshBuffer
                 Mesh->Buffer.push_back(buf);
 
                 offset += meshHeader.offset_end;
@@ -453,14 +453,14 @@ namespace irr
         }
 
 
-        // ! Returns an axis aligned bounding box
+        //! Returns an axis aligned bounding box
         const core::aabbox3d<f32>&CAnimatedMeshMD3::getBoundingBox() const
         {
             return MeshIPol->BoundingBox;
         }
 
 
-        // ! Returns the type of the animated mesh.
+        //! Returns the type of the animated mesh.
         E_ANIMATED_MESH_TYPE CAnimatedMeshMD3::getMeshType() const
         {
             return EAMT_MD3;

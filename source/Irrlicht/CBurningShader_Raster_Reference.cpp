@@ -419,7 +419,7 @@ namespace irr
             BD3DZB_USEW  = 2                // Enable w-buffering.
         };
 
-        // ! Defines the supported compare functions.
+        //! Defines the supported compare functions.
         enum BD3DCMPFUNC
         {
             BD3DCMP_NEVER = 1, // Always fail the test.
@@ -440,7 +440,7 @@ namespace irr
         };
 
 
-        // ! Defines constants that describe the supported shading modes.
+        //! Defines constants that describe the supported shading modes.
         enum BD3DSHADEMODE
         {
             /*!    BD3DSHADE_FLAT
@@ -506,10 +506,10 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             CBurningShader_Raster_Reference(CBurningVideoDriver *driver);
 
-            // ! draws an indexed triangle list
+            //! draws an indexed triangle list
             virtual void drawTriangle(const s4DVertex *a, const s4DVertex *b, const s4DVertex *c);
 
             virtual void setMaterial(const SBurningShaderMaterial &material);
@@ -531,7 +531,7 @@ private:
             REALINLINE void depthWrite();
         };
 
-        // ! constructor
+        //! constructor
         CBurningShader_Raster_Reference::CBurningShader_Raster_Reference(CBurningVideoDriver *driver)
             : IBurningShader(driver)
         {
@@ -1140,7 +1140,7 @@ namespace irr
 {
     namespace video
     {
-        // ! creates a flat triangle renderer
+        //! creates a flat triangle renderer
         IBurningShader* createTriangleRendererReference(CBurningVideoDriver *driver)
         {
             return new CBurningShader_Raster_Reference(driver);

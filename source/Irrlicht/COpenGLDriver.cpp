@@ -33,7 +33,7 @@ namespace irr
         // WINDOWS CONSTRUCTOR
         // -----------------------------------------------------------------------
 #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-        // ! Windows constructor and init code
+        //! Windows constructor and init code
         COpenGLDriver::COpenGLDriver(const irr::SIrrlichtCreationParameters &params,
             io::IFileSystem *io, CIrrDeviceWin32 *device)
             : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
@@ -85,7 +85,7 @@ namespace irr
             return true;
         }
 
-        // ! inits the open gl driver
+        //! inits the open gl driver
         bool COpenGLDriver::initDriver(CIrrDeviceWin32 *device)
         {
             // Create a window to test antialiasing support
@@ -471,7 +471,7 @@ namespace irr
         // MacOSX CONSTRUCTOR
         // -----------------------------------------------------------------------
 #ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
-        // ! Windows constructor and init code
+        //! Windows constructor and init code
         COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters &params,
             io::IFileSystem *io, CIrrDeviceMacOSX *device)
             : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
@@ -497,7 +497,7 @@ namespace irr
         // LINUX CONSTRUCTOR
         // -----------------------------------------------------------------------
 #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
-        // ! Linux constructor and init code
+        //! Linux constructor and init code
         COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters &params,
             io::IFileSystem *io, CIrrDeviceLinux *device)
             : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
@@ -568,7 +568,7 @@ namespace irr
         }
 
 
-        // ! inits the open gl driver
+        //! inits the open gl driver
         bool COpenGLDriver::initDriver(CIrrDeviceLinux *device)
         {
             ExposedData.OpenGLLinux.X11Context = glXGetCurrentContext();
@@ -590,7 +590,7 @@ namespace irr
         // SDL CONSTRUCTOR
         // -----------------------------------------------------------------------
 #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
-        // ! SDL constructor and init code
+        //! SDL constructor and init code
         COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters &params,
             io::IFileSystem *io, CIrrDeviceSDL *device)
             : CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
@@ -613,7 +613,7 @@ namespace irr
 #endif  // _IRR_COMPILE_WITH_SDL_DEVICE_
 
 
-        // ! destructor
+        //! destructor
         COpenGLDriver::~COpenGLDriver()
         {
     #ifdef _IRR_COMPILE_WITH_CG_
@@ -825,7 +825,7 @@ namespace irr
         }
 
 
-        // ! presents the rendered scene on the screen, returns false if failed
+        //! presents the rendered scene on the screen, returns false if failed
         bool COpenGLDriver::endScene()
         {
             CNullDriver::endScene();
@@ -867,7 +867,7 @@ namespace irr
         }
 
 
-        // ! clears the zbuffer and color buffer
+        //! clears the zbuffer and color buffer
         void COpenGLDriver::clearBuffers(bool backBuffer, bool zBuffer, bool stencilBuffer, SColor color)
         {
             GLbitfield mask = 0;
@@ -896,7 +896,7 @@ namespace irr
         }
 
 
-        // ! init call for rendering start
+        //! init call for rendering start
         bool COpenGLDriver::beginScene(bool backBuffer, bool zBuffer, SColor color,
             const SExposedVideoData &videoData, core::rect<s32> *sourceRect)
         {
@@ -933,14 +933,14 @@ namespace irr
         }
 
 
-        // ! Returns the transformation set by setTransform
+        //! Returns the transformation set by setTransform
         const core::matrix4&COpenGLDriver::getTransform(E_TRANSFORMATION_STATE state) const
         {
             return Matrices[state];
         }
 
 
-        // ! sets transformation
+        //! sets transformation
         void COpenGLDriver::setTransform(E_TRANSFORMATION_STATE state, const core::matrix4 &mat)
         {
             Matrices[state]         = mat;
@@ -1199,7 +1199,7 @@ namespace irr
         }
 
 
-        // ! updates hardware buffer if needed
+        //! updates hardware buffer if needed
         bool COpenGLDriver::updateHardwareBuffer(SHWBufferLink *HWBuffer)
         {
             if (!HWBuffer)
@@ -1233,7 +1233,7 @@ namespace irr
         }
 
 
-        // ! Create hardware buffer from meshbuffer
+        //! Create hardware buffer from meshbuffer
         COpenGLDriver::SHWBufferLink* COpenGLDriver::createHardwareBuffer(const scene::IMeshBuffer *mb)
         {
 #if defined(GL_ARB_vertex_buffer_object)
@@ -1292,7 +1292,7 @@ namespace irr
         }
 
 
-        // ! Draw hardware buffer
+        //! Draw hardware buffer
         void COpenGLDriver::drawHardwareBuffer(SHWBufferLink *_HWBuffer)
         {
             if (!_HWBuffer)
@@ -1331,7 +1331,7 @@ namespace irr
         }
 
 
-        // ! Create occlusion query.
+        //! Create occlusion query.
         /** Use node for identification and mesh for occlusion test. */
         void COpenGLDriver::addOcclusionQuery(scene::ISceneNode *node,
             const scene::IMesh *mesh)
@@ -1346,7 +1346,7 @@ namespace irr
         }
 
 
-        // ! Remove occlusion query.
+        //! Remove occlusion query.
         void COpenGLDriver::removeOcclusionQuery(scene::ISceneNode *node)
         {
             const s32 index = OcclusionQueries.linear_search(SOccQuery(node));
@@ -1361,7 +1361,7 @@ namespace irr
         }
 
 
-        // ! Run occlusion query. Draws mesh stored in query.
+        //! Run occlusion query. Draws mesh stored in query.
         /** If the mesh shall not be rendered visible, use
          * overrideMaterial to disable the color and depth buffer. */
         void COpenGLDriver::runOcclusionQuery(scene::ISceneNode *node, bool visible)
@@ -1395,7 +1395,7 @@ namespace irr
         }
 
 
-        // ! Update occlusion query. Retrieves results from GPU.
+        //! Update occlusion query. Retrieves results from GPU.
         /** If the query shall not block, set the flag to false.
          * Update might not occur in this case, though */
         void COpenGLDriver::updateOcclusionQuery(scene::ISceneNode *node, bool block)
@@ -1441,7 +1441,7 @@ namespace irr
         }
 
 
-        // ! Return query result.
+        //! Return query result.
         /** Return value is the number of visible pixels/fragments.
          * The value is a safe approximation, i.e. can be larger than the
          * actual value of pixels. */
@@ -1463,7 +1463,7 @@ namespace irr
         }
 
 
-        // ! draws a vertex primitive list
+        //! draws a vertex primitive list
         void COpenGLDriver::drawVertexPrimitiveList(const void *vertices, u32 vertexCount,
             const void *indexList, u32 primitiveCount,
             E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType)
@@ -1809,7 +1809,7 @@ namespace irr
         }
 
 
-        // ! draws a vertex primitive list in 2d
+        //! draws a vertex primitive list in 2d
         void COpenGLDriver::draw2DVertexPrimitiveList(const void *vertices, u32 vertexCount,
             const void *indexList, u32 primitiveCount,
             E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType)
@@ -1968,8 +1968,8 @@ namespace irr
         }
 
 
-        // ! draws a set of 2d images, using a color and the alpha channel of the
-        // ! texture if desired.
+        //! draws a set of 2d images, using a color and the alpha channel of the
+        //! texture if desired.
         void COpenGLDriver::draw2DImageBatch(const video::ITexture *texture,
             const core::array<core::position2d<s32>> &positions,
             const core::array<core::rect<s32>> &sourceRects,
@@ -2106,9 +2106,9 @@ namespace irr
         }
 
 
-        // ! draws a 2d image, using a color and the alpha channel of the texture if
-        // ! desired. The image is drawn at pos, clipped against clipRect (if != 0).
-        // ! Only the subtexture defined by sourceRect is used.
+        //! draws a 2d image, using a color and the alpha channel of the texture if
+        //! desired. The image is drawn at pos, clipped against clipRect (if != 0).
+        //! Only the subtexture defined by sourceRect is used.
         void COpenGLDriver::draw2DImage(const video::ITexture *texture,
             const core::position2d<s32> &pos,
             const core::rect<s32> &sourceRect,
@@ -2239,7 +2239,7 @@ namespace irr
         }
 
 
-        // ! The same, but with a four element array of colors, one for each vertex
+        //! The same, but with a four element array of colors, one for each vertex
         void COpenGLDriver::draw2DImage(const video::ITexture *texture, const core::rect<s32> &destRect,
             const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect,
             const video::SColor* const colors, bool useAlphaChannelOfTexture)
@@ -2308,11 +2308,11 @@ namespace irr
         }
 
 
-        // ! draws a set of 2d images, using a color and the alpha channel of the
-        // ! texture if desired. The images are drawn beginning at pos and concatenated
-        // ! in one line. All drawings are clipped against clipRect (if != 0).
-        // ! The subtextures are defined by the array of sourceRects and are chosen
-        // ! by the indices given.
+        //! draws a set of 2d images, using a color and the alpha channel of the
+        //! texture if desired. The images are drawn beginning at pos and concatenated
+        //! in one line. All drawings are clipped against clipRect (if != 0).
+        //! The subtextures are defined by the array of sourceRects and are chosen
+        //! by the indices given.
         void COpenGLDriver::draw2DImage(const video::ITexture *texture,
             const core::position2d<s32> &pos,
             const core::array<core::rect<s32>> &sourceRects,
@@ -2383,7 +2383,7 @@ namespace irr
         }
 
 
-        // ! draw a 2d rectangle
+        //! draw a 2d rectangle
         void COpenGLDriver::draw2DRectangle(SColor color, const core::rect<s32> &position,
             const core::rect<s32> *clip)
         {
@@ -2404,7 +2404,7 @@ namespace irr
         }
 
 
-        // ! draw an 2d rectangle
+        //! draw an 2d rectangle
         void COpenGLDriver::draw2DRectangle(const core::rect<s32> &position,
             SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown,
             const core::rect<s32> *clip)
@@ -2445,7 +2445,7 @@ namespace irr
         }
 
 
-        // ! Draws a 2d line.
+        //! Draws a 2d line.
         void COpenGLDriver::draw2DLine(const core::position2d<s32> &start,
             const core::position2d<s32> &end, SColor color)
         {
@@ -2480,7 +2480,7 @@ namespace irr
             }
         }
 
-        // ! Draws a pixel
+        //! Draws a pixel
         void COpenGLDriver::drawPixel(u32 x, u32 y, const SColor &color)
         {
             const core::dimension2d<u32> &renderTargetSize = getCurrentRenderTargetSize();
@@ -2534,8 +2534,8 @@ namespace irr
         }
 
 
-        // ! disables all textures beginning with the optional fromStage parameter. Otherwise all texture stages are disabled.
-        // ! Returns whether disabling was successful or not.
+        //! disables all textures beginning with the optional fromStage parameter. Otherwise all texture stages are disabled.
+        //! Returns whether disabling was successful or not.
         bool COpenGLDriver::disableTextures(u32 fromStage)
         {
             bool result = true;
@@ -2547,14 +2547,14 @@ namespace irr
         }
 
 
-        // ! creates a matrix in supplied GLfloat array to pass to OpenGL
+        //! creates a matrix in supplied GLfloat array to pass to OpenGL
         inline void COpenGLDriver::getGLMatrix(GLfloat gl_matrix[16], const core::matrix4 &m)
         {
             memcpy(gl_matrix, m.pointer(), 16 * sizeof(f32));
         }
 
 
-        // ! creates a opengltexturematrix from a D3D style texture matrix
+        //! creates a opengltexturematrix from a D3D style texture matrix
         inline void COpenGLDriver::getGLTextureMatrix(GLfloat *o, const core::matrix4 &m)
         {
             o[0] = m[0];
@@ -2579,14 +2579,14 @@ namespace irr
         }
 
 
-        // ! returns a device dependent texture from a software surface (IImage)
+        //! returns a device dependent texture from a software surface (IImage)
         video::ITexture* COpenGLDriver::createDeviceDependentTexture(IImage *surface, const io::path &name, void *mipmapData)
         {
             return new COpenGLTexture(surface, name, mipmapData, this);
         }
 
 
-        // ! Sets a material. All 3d drawing functions draw geometry now using this material.
+        //! Sets a material. All 3d drawing functions draw geometry now using this material.
         void COpenGLDriver::setMaterial(const SMaterial &material)
         {
             Material = material;
@@ -2601,7 +2601,7 @@ namespace irr
         }
 
 
-        // ! prints error if an error happened.
+        //! prints error if an error happened.
         bool COpenGLDriver::testGLError()
         {
 #ifdef _DEBUG
@@ -2648,7 +2648,7 @@ namespace irr
         }
 
 
-        // ! sets the needed renderstates
+        //! sets the needed renderstates
         void COpenGLDriver::setRenderStates3DMode()
         {
             if (CurrentRenderMode != ERM_3D)
@@ -2696,7 +2696,7 @@ namespace irr
         }
 
 
-        // ! Get native wrap mode value
+        //! Get native wrap mode value
         GLint COpenGLDriver::getTextureWrapMode(const u8 clamp)
         {
             GLint mode = GL_REPEAT;
@@ -2830,7 +2830,7 @@ namespace irr
         }
 
 
-        // ! Can be called by an IMaterialRenderer to make its work easier.
+        //! Can be called by an IMaterialRenderer to make its work easier.
         void COpenGLDriver::setBasicRenderStates(const SMaterial &material, const SMaterial &lastmaterial,
             bool resetAllRenderStates)
         {
@@ -3320,7 +3320,7 @@ namespace irr
         }
 
 
-        // ! Enable the 2d override material
+        //! Enable the 2d override material
         void COpenGLDriver::enableMaterial2D(bool enable)
         {
             if (!enable)
@@ -3330,7 +3330,7 @@ namespace irr
         }
 
 
-        // ! sets the needed renderstates
+        //! sets the needed renderstates
         void COpenGLDriver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel)
         {
             if (CurrentRenderMode != ERM_2D || Transformation3DChanged)
@@ -3489,14 +3489,14 @@ namespace irr
         }
 
 
-        // ! \return Returns the name of the video driver.
+        //! \return Returns the name of the video driver.
         const wchar_t* COpenGLDriver::getName() const
         {
             return Name.c_str();
         }
 
 
-        // ! deletes all dynamic lights there are
+        //! deletes all dynamic lights there are
         void COpenGLDriver::deleteAllDynamicLights()
         {
             for (s32 i = 0; i < MaxLights; ++i)
@@ -3508,7 +3508,7 @@ namespace irr
         }
 
 
-        // ! adds a dynamic light
+        //! adds a dynamic light
         s32 COpenGLDriver::addDynamicLight(const SLight &light)
         {
             CNullDriver::addDynamicLight(light);
@@ -3625,9 +3625,9 @@ namespace irr
         }
 
 
-        // ! Turns a dynamic light on or off
-        // ! \param lightIndex: the index returned by addDynamicLight
-        // ! \param turnOn: true to turn the light on, false to turn it off
+        //! Turns a dynamic light on or off
+        //! \param lightIndex: the index returned by addDynamicLight
+        //! \param turnOn: true to turn the light on, false to turn it off
         void COpenGLDriver::turnLightOn(s32 lightIndex, bool turnOn)
         {
             if (lightIndex < 0 || lightIndex >= (s32)RequestedLights.size())
@@ -3664,16 +3664,16 @@ namespace irr
         }
 
 
-        // ! returns the maximal amount of dynamic lights the device can handle
+        //! returns the maximal amount of dynamic lights the device can handle
         u32 COpenGLDriver::getMaximalDynamicLightAmount() const
         {
             return MaxLights;
         }
 
 
-        // ! Sets the dynamic ambient light color. The default color is
-        // ! (0,0,0,0) which means it is dark.
-        // ! \param color: New color of the ambient light.
+        //! Sets the dynamic ambient light color. The default color is
+        //! (0,0,0,0) which means it is dark.
+        //! \param color: New color of the ambient light.
         void COpenGLDriver::setAmbientLight(const SColorf &color)
         {
             GLfloat data[4] = {color.r, color.g, color.b, color.a};
@@ -3704,9 +3704,9 @@ namespace irr
         }
 
 
-        // ! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
-        // ! this: First, draw all geometry. Then use this method, to draw the shadow
-        // ! volume. Next use IVideoDriver::drawStencilShadow() to visualize the shadow.
+        //! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
+        //! this: First, draw all geometry. Then use this method, to draw the shadow
+        //! volume. Next use IVideoDriver::drawStencilShadow() to visualize the shadow.
         void COpenGLDriver::drawStencilShadowVolume(const core::array<core::vector3df> &triangles, bool zfail, u32 debugDataVisible)
         {
             const u32 count = triangles.size();
@@ -3847,9 +3847,9 @@ namespace irr
             glPopAttrib();
         }
 
-        // ! Fills the stencil shadow with color. After the shadow volume has been drawn
-        // ! into the stencil buffer using IVideoDriver::drawStencilShadowVolume(), use this
-        // ! to draw the color of the shadow.
+        //! Fills the stencil shadow with color. After the shadow volume has been drawn
+        //! into the stencil buffer using IVideoDriver::drawStencilShadowVolume(), use this
+        //! to draw the color of the shadow.
         void COpenGLDriver::drawStencilShadow(bool clearStencilBuffer, video::SColor leftUpEdge,
             video::SColor rightUpEdge, video::SColor leftDownEdge, video::SColor rightDownEdge)
         {
@@ -3909,7 +3909,7 @@ namespace irr
         }
 
 
-        // ! Sets the fog mode.
+        //! Sets the fog mode.
         void COpenGLDriver::setFog(SColor c, E_FOG_TYPE fogType, f32 start,
             f32 end, f32 density, bool pixelFog, bool rangeFog)
         {
@@ -3950,7 +3950,7 @@ namespace irr
         }
 
 
-        // ! Draws a 3d line.
+        //! Draws a 3d line.
         void COpenGLDriver::draw3DLine(const core::vector3df &start,
             const core::vector3df &end, SColor color)
         {
@@ -3965,7 +3965,7 @@ namespace irr
         }
 
 
-        // ! Removes a texture from the texture cache and deletes it, freeing lot of memory.
+        //! Removes a texture from the texture cache and deletes it, freeing lot of memory.
         void COpenGLDriver::removeTexture(ITexture *texture)
         {
             if (!texture)
@@ -3977,8 +3977,8 @@ namespace irr
         }
 
 
-        // ! Only used by the internal engine. Used to notify the driver that
-        // ! the window was resized.
+        //! Only used by the internal engine. Used to notify the driver that
+        //! the window was resized.
         void COpenGLDriver::OnResize(const core::dimension2d<u32> &size)
         {
             CNullDriver::OnResize(size);
@@ -3988,21 +3988,21 @@ namespace irr
         }
 
 
-        // ! Returns type of video driver
+        //! Returns type of video driver
         E_DRIVER_TYPE COpenGLDriver::getDriverType() const
         {
             return EDT_OPENGL;
         }
 
 
-        // ! returns color format
+        //! returns color format
         ECOLOR_FORMAT COpenGLDriver::getColorFormat() const
         {
             return ColorFormat;
         }
 
 
-        // ! Sets a vertex shader constant.
+        //! Sets a vertex shader constant.
         void COpenGLDriver::setVertexShaderConstant(const f32 *data, s32 startRegister, s32 constantAmount)
         {
 #ifdef GL_ARB_vertex_program
@@ -4011,7 +4011,7 @@ namespace irr
 #endif
         }
 
-        // ! Sets a pixel shader constant.
+        //! Sets a pixel shader constant.
         void COpenGLDriver::setPixelShaderConstant(const f32 *data, s32 startRegister, s32 constantAmount)
         {
 #ifdef GL_ARB_fragment_program
@@ -4020,26 +4020,26 @@ namespace irr
 #endif
         }
 
-        // ! Sets a constant for the vertex shader based on a name.
+        //! Sets a constant for the vertex shader based on a name.
         bool COpenGLDriver::setVertexShaderConstant(const c8 *name, const f32 *floats, int count)
         {
             // pass this along, as in GLSL the same routine is used for both vertex and fragment shaders
             return setPixelShaderConstant(name, floats, count);
         }
 
-        // ! Bool interface for the above.
+        //! Bool interface for the above.
         bool COpenGLDriver::setVertexShaderConstant(const c8 *name, const bool *bools, int count)
         {
             return setPixelShaderConstant(name, bools, count);
         }
 
-        // ! Int interface for the above.
+        //! Int interface for the above.
         bool COpenGLDriver::setVertexShaderConstant(const c8 *name, const s32 *ints, int count)
         {
             return setPixelShaderConstant(name, ints, count);
         }
 
-        // ! Sets a constant for the pixel shader based on a name.
+        //! Sets a constant for the pixel shader based on a name.
         bool COpenGLDriver::setPixelShaderConstant(const c8 *name, const f32 *floats, int count)
         {
             os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
@@ -4047,7 +4047,7 @@ namespace irr
             return false;
         }
 
-        // ! Bool interface for the above.
+        //! Bool interface for the above.
         bool COpenGLDriver::setPixelShaderConstant(const c8 *name, const bool *bools, int count)
         {
             os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
@@ -4055,7 +4055,7 @@ namespace irr
             return false;
         }
 
-        // ! Int interface for the above.
+        //! Int interface for the above.
         bool COpenGLDriver::setPixelShaderConstant(const c8 *name, const s32 *ints, int count)
         {
             os::Printer::log("Error: Please call services->setPixelShaderConstant(), not VideoDriver->setPixelShaderConstant().");
@@ -4064,8 +4064,8 @@ namespace irr
         }
 
 
-        // ! Adds a new material renderer to the VideoDriver, using pixel and/or
-        // ! vertex shaders to render geometry.
+        //! Adds a new material renderer to the VideoDriver, using pixel and/or
+        //! vertex shaders to render geometry.
         s32 COpenGLDriver::addShaderMaterial(const c8 *vertexShaderProgram,
             const c8 *pixelShaderProgram,
             IShaderConstantSetCallBack *callback,
@@ -4081,7 +4081,7 @@ namespace irr
         }
 
 
-        // ! Adds a new material renderer to the VideoDriver, using GLSL to render geometry.
+        //! Adds a new material renderer to the VideoDriver, using GLSL to render geometry.
         s32 COpenGLDriver::addHighLevelShaderMaterial(
             const c8 *vertexShaderProgram,
             const c8 *vertexShaderEntryPointName,
@@ -4132,8 +4132,8 @@ namespace irr
         }
 
 
-        // ! Returns a pointer to the IVideoDriver interface. (Implementation for
-        // ! IMaterialRendererServices)
+        //! Returns a pointer to the IVideoDriver interface. (Implementation for
+        //! IMaterialRendererServices)
         IVideoDriver* COpenGLDriver::getVideoDriver()
         {
             return this;
@@ -4200,16 +4200,16 @@ namespace irr
         }
 
 
-        // ! Returns the maximum amount of primitives (mostly vertices) which
-        // ! the device is able to render with one drawIndexedTriangleList
-        // ! call.
+        //! Returns the maximum amount of primitives (mostly vertices) which
+        //! the device is able to render with one drawIndexedTriangleList
+        //! call.
         u32 COpenGLDriver::getMaximalPrimitiveCount() const
         {
             return 0x7fffffff;
         }
 
 
-        // ! set or reset render target
+        //! set or reset render target
         bool COpenGLDriver::setRenderTarget(video::E_RENDER_TARGET target, bool clearTarget,
             bool clearZBuffer, SColor color)
         {
@@ -4264,7 +4264,7 @@ namespace irr
         }
 
 
-        // ! set or reset render target
+        //! set or reset render target
         bool COpenGLDriver::setRenderTarget(video::ITexture *texture, bool clearBackBuffer,
             bool clearZBuffer, SColor color)
         {
@@ -4333,7 +4333,7 @@ namespace irr
         }
 
 
-        // ! Sets multiple render targets
+        //! Sets multiple render targets
         bool COpenGLDriver::setRenderTarget(const core::array<video::IRenderTarget> &targets,
             bool clearBackBuffer, bool clearZBuffer, SColor color)
         {
@@ -4557,14 +4557,14 @@ namespace irr
         }
 
 
-        // ! Clears the ZBuffer.
+        //! Clears the ZBuffer.
         void COpenGLDriver::clearZBuffer()
         {
             clearBuffers(false, true, false, 0x0);
         }
 
 
-        // ! Returns an image created from the last rendered frame.
+        //! Returns an image created from the last rendered frame.
         IImage* COpenGLDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RENDER_TARGET target)
         {
             if (target == video::ERT_MULTI_RENDER_TEXTURES || target == video::ERT_RENDER_TEXTURE || target == video::ERT_STEREO_BOTH_BUFFERS)
@@ -4769,7 +4769,7 @@ namespace irr
         }
 
 
-        // ! get depth texture for the given render target texture
+        //! get depth texture for the given render target texture
         ITexture* COpenGLDriver::createDepthTexture(ITexture *texture, bool shared)
         {
             if ((texture->getDriverType() != EDT_OPENGL) || (!texture->isRenderTarget()))
@@ -4812,7 +4812,7 @@ namespace irr
         }
 
 
-        // ! Set/unset a clipping plane.
+        //! Set/unset a clipping plane.
         bool COpenGLDriver::setClipPlane(u32 index, const core::plane3df &plane, bool enable)
         {
             if (index >= MaxUserClipPlanes)
@@ -4837,7 +4837,7 @@ namespace irr
         }
 
 
-        // ! Enable/disable a clipping plane.
+        //! Enable/disable a clipping plane.
         void COpenGLDriver::enableClipPlane(u32 index, bool enable)
         {
             if (index >= MaxUserClipPlanes)
@@ -4864,7 +4864,7 @@ namespace irr
         }
 
 
-        // ! Convert E_PRIMITIVE_TYPE to OpenGL equivalent
+        //! Convert E_PRIMITIVE_TYPE to OpenGL equivalent
         GLenum COpenGLDriver::primitiveTypeToGL(scene::E_PRIMITIVE_TYPE type) const
         {
             switch (type)

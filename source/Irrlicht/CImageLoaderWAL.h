@@ -32,7 +32,7 @@ namespace irr
         // Default alignment
 #include "irrunpack.h"
 
-        // ! An Irrlicht image loader for Quake1,2 engine lmp textures/palette
+        //! An Irrlicht image loader for Quake1,2 engine lmp textures/palette
         class CImageLoaderLMP : public irr::video::IImageLoader
         {
 public:
@@ -43,7 +43,7 @@ public:
 #endif
 
 #ifdef _IRR_COMPILE_WITH_WAL_LOADER_
-        // ! An Irrlicht image loader for quake2 wal engine textures
+        //! An Irrlicht image loader for quake2 wal engine textures
         class CImageLoaderWAL : public irr::video::IImageLoader
         {
 public:
@@ -52,7 +52,7 @@ public:
             virtual irr::video::IImage* loadImage(irr::io::IReadFile *file) const;
         };
 
-        // ! An Irrlicht image loader for Halflife 1 engine textures
+        //! An Irrlicht image loader for Halflife 1 engine textures
         class CImageLoaderWAL2 : public irr::video::IImageLoader
         {
 public:

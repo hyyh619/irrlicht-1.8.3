@@ -80,8 +80,8 @@ public:
 
             virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
-            // ! getting access to the nodes (with transparent material), creating
-            // ! while loading .my3d file
+            //! getting access to the nodes (with transparent material), creating
+            //! while loading .my3d file
             const core::array<ISceneNode*>&getChildNodes() const;
 
 private:

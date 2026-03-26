@@ -48,7 +48,7 @@ namespace irr
 
 namespace irr
 {
-    // ! constructor
+    //! constructor
     CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters &param)
         : CIrrDeviceStub(param),
         Screen((SDL_Surface*)param.WindowId), SDL_Flags(SDL_ANYFORMAT),
@@ -127,7 +127,7 @@ namespace irr
     }
 
 
-    // ! destructor
+    //! destructor
     CIrrDeviceSDL::~CIrrDeviceSDL()
     {
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
@@ -221,7 +221,7 @@ namespace irr
     }
 
 
-    // ! create the driver
+    //! create the driver
     void CIrrDeviceSDL::createDriver()
     {
         switch (CreationParams.DriverType)
@@ -289,7 +289,7 @@ namespace irr
     }
 
 
-    // ! runs the device. Returns false if device wants to be deleted
+    //! runs the device. Returns false if device wants to be deleted
     bool CIrrDeviceSDL::run()
     {
         os::Timer::tick();
@@ -562,7 +562,7 @@ namespace irr
         return !Close;
     }
 
-    // ! Activate any joysticks, and generate events for them.
+    //! Activate any joysticks, and generate events for them.
     bool CIrrDeviceSDL::activateJoysticks(core::array<SJoystickInfo> &joystickInfo)
     {
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)
@@ -607,14 +607,14 @@ namespace irr
 
 
 
-    // ! pause execution temporarily
+    //! pause execution temporarily
     void CIrrDeviceSDL::yield()
     {
         SDL_Delay(0);
     }
 
 
-    // ! pause execution for a specified time
+    //! pause execution for a specified time
     void CIrrDeviceSDL::sleep(u32 timeMs, bool pauseTimer)
     {
         const bool wasStopped = Timer ? Timer->isStopped() : true;
@@ -629,7 +629,7 @@ namespace irr
     }
 
 
-    // ! sets the caption of the window
+    //! sets the caption of the window
     void CIrrDeviceSDL::setWindowCaption(const wchar_t *text)
     {
         core::stringc textc = text;
@@ -638,7 +638,7 @@ namespace irr
     }
 
 
-    // ! presents a surface in the client area
+    //! presents a surface in the client area
     bool CIrrDeviceSDL::present(video::IImage *surface, void *windowId, core::rect<s32> *srcClip)
     {
         SDL_Surface *sdlSurface = SDL_CreateRGBSurfaceFrom(
@@ -723,14 +723,14 @@ namespace irr
     }
 
 
-    // ! notifies the device that it should close itself
+    //! notifies the device that it should close itself
     void CIrrDeviceSDL::closeDevice()
     {
         Close = true;
     }
 
 
-    // ! \return Pointer to a list with all video modes supported
+    //! \return Pointer to a list with all video modes supported
     video::IVideoModeList* CIrrDeviceSDL::getVideoModeList()
     {
         if (!VideoModeList->getVideoModeCount())
@@ -754,7 +754,7 @@ namespace irr
     }
 
 
-    // ! Sets if the window should be resizable in windowed mode.
+    //! Sets if the window should be resizable in windowed mode.
     void CIrrDeviceSDL::setResizable(bool resize)
     {
         if (resize != Resizable)
@@ -770,49 +770,49 @@ namespace irr
     }
 
 
-    // ! Minimizes window if possible
+    //! Minimizes window if possible
     void CIrrDeviceSDL::minimizeWindow()
     {
         SDL_WM_IconifyWindow();
     }
 
 
-    // ! Maximize window
+    //! Maximize window
     void CIrrDeviceSDL::maximizeWindow()
     {
         // do nothing
     }
 
 
-    // ! Restore original window size
+    //! Restore original window size
     void CIrrDeviceSDL::restoreWindow()
     {
         // do nothing
     }
 
 
-    // ! returns if window is active. if not, nothing need to be drawn
+    //! returns if window is active. if not, nothing need to be drawn
     bool CIrrDeviceSDL::isWindowActive() const
     {
         return (WindowHasFocus && !WindowMinimized);
     }
 
 
-    // ! returns if window has focus.
+    //! returns if window has focus.
     bool CIrrDeviceSDL::isWindowFocused() const
     {
         return WindowHasFocus;
     }
 
 
-    // ! returns if window is minimized.
+    //! returns if window is minimized.
     bool CIrrDeviceSDL::isWindowMinimized() const
     {
         return WindowMinimized;
     }
 
 
-    // ! Set the current Gamma Value for the Display
+    //! Set the current Gamma Value for the Display
     bool CIrrDeviceSDL::setGammaRamp(f32 red, f32 green, f32 blue, f32 brightness, f32 contrast)
     {
         /*
@@ -822,7 +822,7 @@ namespace irr
         return false;
     }
 
-    // ! Get the current Gamma Value for the Display
+    //! Get the current Gamma Value for the Display
     bool CIrrDeviceSDL::getGammaRamp(f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast)
     {
         /*    brightness = 0.f;
@@ -831,7 +831,7 @@ namespace irr
         return false;
     }
 
-    // ! returns color format of the window.
+    //! returns color format of the window.
     video::ECOLOR_FORMAT CIrrDeviceSDL::getColorFormat() const
     {
         if (Screen)

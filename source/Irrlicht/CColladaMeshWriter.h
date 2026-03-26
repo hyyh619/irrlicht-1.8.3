@@ -20,42 +20,42 @@ namespace irr
 
     namespace scene
     {
-        // ! Callback interface for properties which can be used to influence collada writing
+        //! Callback interface for properties which can be used to influence collada writing
         // (Implementer note: keep namespace labels here to make it easier for users copying this one)
         class CColladaMeshWriterProperties  : public virtual IColladaMeshWriterProperties
         {
 public:
-            // ! Which lighting model should be used in the technique (FX) section when exporting effects (materials)
+            //! Which lighting model should be used in the technique (FX) section when exporting effects (materials)
             virtual irr::scene::E_COLLADA_TECHNIQUE_FX getTechniqueFx(const irr::video::SMaterial &material) const;
 
-            // ! Which texture index should be used when writing the texture of the given sampler color.
+            //! Which texture index should be used when writing the texture of the given sampler color.
             virtual irr::s32 getTextureIdx(const irr::video::SMaterial &material, irr::scene::E_COLLADA_COLOR_SAMPLER cs) const;
 
-            // ! Return which color from Irrlicht should be used for the color requested by collada
+            //! Return which color from Irrlicht should be used for the color requested by collada
             virtual irr::scene::E_COLLADA_IRR_COLOR getColorMapping(const irr::video::SMaterial &material, irr::scene::E_COLLADA_COLOR_SAMPLER cs) const;
 
-            // ! Return custom colors for certain color types requested by collada.
+            //! Return custom colors for certain color types requested by collada.
             virtual irr::video::SColor getCustomColor(const irr::video::SMaterial &material, irr::scene::E_COLLADA_COLOR_SAMPLER cs) const;
 
-            // ! Return the settings for transparence
+            //! Return the settings for transparence
             virtual irr::scene::E_COLLADA_TRANSPARENT_FX getTransparentFx(const irr::video::SMaterial &material) const;
 
-            // ! Transparency value for that material.
+            //! Transparency value for that material.
             virtual irr::f32 getTransparency(const irr::video::SMaterial &material) const;
 
-            // ! Reflectivity value for that material
+            //! Reflectivity value for that material
             virtual irr::f32 getReflectivity(const irr::video::SMaterial &material) const;
 
-            // ! Return index of refraction for that material
+            //! Return index of refraction for that material
             virtual irr::f32 getIndexOfRefraction(const irr::video::SMaterial &material) const;
 
-            // ! Should node be used in scene export? By default all visible nodes are exported.
+            //! Should node be used in scene export? By default all visible nodes are exported.
             virtual bool isExportable(const irr::scene::ISceneNode *node) const;
 
-            // ! Return the mesh for the given nod. If it has no mesh or shouldn't export it's mesh return 0.
+            //! Return the mesh for the given nod. If it has no mesh or shouldn't export it's mesh return 0.
             virtual irr::scene::IMesh* getMesh(irr::scene::ISceneNode *node);
 
-            // ! Return if the node has it's own material overwriting the mesh-materials
+            //! Return if the node has it's own material overwriting the mesh-materials
             virtual bool useNodeMaterial(const scene::ISceneNode *node) const;
         };
 
@@ -74,7 +74,7 @@ private:
 
 
 
-        // ! class to write meshes, implementing a COLLADA (.dae, .xml) writer
+        //! class to write meshes, implementing a COLLADA (.dae, .xml) writer
         /** This writer implementation has been originally developed for irrEdit and then
          * merged out to the Irrlicht Engine */
         class CColladaMeshWriter : public IColladaMeshWriter
@@ -84,13 +84,13 @@ public:
             CColladaMeshWriter(ISceneManager *smgr, video::IVideoDriver *driver, io::IFileSystem *fs);
             virtual ~CColladaMeshWriter();
 
-            // ! Returns the type of the mesh writer
+            //! Returns the type of the mesh writer
             virtual EMESH_WRITER_TYPE getType() const;
 
-            // ! writes a scene starting with the given node
+            //! writes a scene starting with the given node
             virtual bool writeScene(io::IWriteFile *file, scene::ISceneNode *root);
 
-            // ! writes a mesh
+            //! writes a mesh
             virtual bool writeMesh(io::IWriteFile *file, scene::IMesh *mesh, s32 flags = EMWF_NONE);
 
             // Restrict the characters of oldString a set of allowed characters in xs::NCName and add the prefix.

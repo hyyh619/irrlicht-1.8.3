@@ -21,13 +21,13 @@ namespace irr
 {
     namespace io
     {
-        // ! implementation of the IrrXMLReader
+        //! implementation of the IrrXMLReader
         template<class char_type, class superclass>
         class CXMLReaderImpl : public IIrrXMLReader<char_type, superclass>
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             CXMLReaderImpl(IFileReadCallBack *callback, bool deleteCallBack = true)
                 : IgnoreWhitespaceText(true), TextData(0), P(0), TextBegin(0), TextSize(0), CurrentNodeType(EXN_NONE),
                 SourceFormat(ETF_ASCII), TargetFormat(ETF_ASCII), IsEmptyElement(false)
@@ -55,15 +55,15 @@ public:
             }
 
 
-            // ! Destructor
+            //! Destructor
             virtual ~CXMLReaderImpl()
             {
                 delete[] TextData;
             }
 
 
-            // ! Reads forward to the next xml node.
-            // ! \return Returns false, if there was no further node.
+            //! Reads forward to the next xml node.
+            //! \return Returns false, if there was no further node.
             virtual bool read()
             {
                 // if not end reached, parse the node
@@ -77,21 +77,21 @@ public:
             }
 
 
-            // ! Returns the type of the current XML node.
+            //! Returns the type of the current XML node.
             virtual EXML_NODE getNodeType() const
             {
                 return CurrentNodeType;
             }
 
 
-            // ! Returns attribute count of the current XML node.
+            //! Returns attribute count of the current XML node.
             virtual unsigned int getAttributeCount() const
             {
                 return Attributes.size();
             }
 
 
-            // ! Returns name of an attribute.
+            //! Returns name of an attribute.
             virtual const char_type* getAttributeName(int idx) const
             {
                 if ((u32)idx >= Attributes.size())
@@ -101,7 +101,7 @@ public:
             }
 
 
-            // ! Returns the value of an attribute.
+            //! Returns the value of an attribute.
             virtual const char_type* getAttributeValue(int idx) const
             {
                 if ((unsigned int)idx >= Attributes.size())
@@ -111,7 +111,7 @@ public:
             }
 
 
-            // ! Returns the value of an attribute.
+            //! Returns the value of an attribute.
             virtual const char_type* getAttributeValue(const char_type *name) const
             {
                 const SAttribute *attr = getAttributeByName(name);
@@ -123,7 +123,7 @@ public:
             }
 
 
-            // ! Returns the value of an attribute
+            //! Returns the value of an attribute
             virtual const char_type* getAttributeValueSafe(const char_type *name) const
             {
                 const SAttribute *attr = getAttributeByName(name);
@@ -136,7 +136,7 @@ public:
 
 
 
-            // ! Returns the value of an attribute as integer.
+            //! Returns the value of an attribute as integer.
             int getAttributeValueAsInt(const char_type *name) const
             {
                 const SAttribute *attr = getAttributeByName(name);
@@ -149,7 +149,7 @@ public:
             }
 
 
-            // ! Returns the value of an attribute as integer.
+            //! Returns the value of an attribute as integer.
             int getAttributeValueAsInt(int idx) const
             {
                 const char_type *attrvalue = getAttributeValue(idx);
@@ -162,7 +162,7 @@ public:
             }
 
 
-            // ! Returns the value of an attribute as float.
+            //! Returns the value of an attribute as float.
             float getAttributeValueAsFloat(const char_type *name) const
             {
                 const SAttribute *attr = getAttributeByName(name);
@@ -175,7 +175,7 @@ public:
             }
 
 
-            // ! Returns the value of an attribute as float.
+            //! Returns the value of an attribute as float.
             float getAttributeValueAsFloat(int idx) const
             {
                 const char_type *attrvalue = getAttributeValue(idx);
@@ -188,33 +188,33 @@ public:
             }
 
 
-            // ! Returns the name of the current node.
+            //! Returns the name of the current node.
             virtual const char_type* getNodeName() const
             {
                 return NodeName.c_str();
             }
 
 
-            // ! Returns data of the current node.
+            //! Returns data of the current node.
             virtual const char_type* getNodeData() const
             {
                 return NodeName.c_str();
             }
 
 
-            // ! Returns if an element is an empty element, like <foo />
+            //! Returns if an element is an empty element, like <foo />
             virtual bool isEmptyElement() const
             {
                 return IsEmptyElement;
             }
 
-            // ! Returns format of the source xml file.
+            //! Returns format of the source xml file.
             virtual ETEXT_FORMAT getSourceFormat() const
             {
                 return SourceFormat;
             }
 
-            // ! Returns format of the strings returned by the parser.
+            //! Returns format of the strings returned by the parser.
             virtual ETEXT_FORMAT getParserFormat() const
             {
                 return TargetFormat;
@@ -271,7 +271,7 @@ private:
             }
 
 
-            // ! sets the state that text was found. Returns true if set should be set
+            //! sets the state that text was found. Returns true if set should be set
             bool setText(char_type *start, char_type *end)
             {
                 // By default xml preserves all whitespace. But Irrlicht dropped some whitespace by default
@@ -301,7 +301,7 @@ private:
 
 
 
-            // ! ignores an xml definition like <?xml something />
+            //! ignores an xml definition like <?xml something />
             void ignoreDefinition()
             {
                 CurrentNodeType = EXN_UNKNOWN;
@@ -314,7 +314,7 @@ private:
             }
 
 
-            // ! parses a comment
+            //! parses a comment
             void parseComment()
             {
                 CurrentNodeType = EXN_COMMENT;
@@ -341,7 +341,7 @@ private:
             }
 
 
-            // ! parses an opening xml element and reads attributes
+            //! parses an opening xml element and reads attributes
             void parseOpeningXMLElement()
             {
                 CurrentNodeType = EXN_ELEMENT;
@@ -433,7 +433,7 @@ private:
             }
 
 
-            // ! parses an closing xml tag
+            //! parses an closing xml tag
             void parseClosingXMLElement()
             {
                 CurrentNodeType = EXN_ELEMENT_END;
@@ -450,7 +450,7 @@ private:
                 ++P;
             }
 
-            // ! parses a possible CDATA section, returns false if begin was not a CDATA section
+            //! parses a possible CDATA section, returns false if begin was not a CDATA section
             bool parseCDATA()
             {
                 if (*(P + 1) != L'[')
@@ -571,7 +571,7 @@ private:
 
 
 
-            // ! reads the xml file and converts it into the wanted character format.
+            //! reads the xml file and converts it into the wanted character format.
             bool readFile(IFileReadCallBack *callback)
             {
                 long size = callback->getSize();
@@ -650,7 +650,7 @@ private:
             }
 
 
-            // ! converts the text file into the desired format.
+            //! converts the text file into the desired format.
             /** \param source: begin of the text (without byte order mark)
              * \param pointerToStore: pointer to text data block which can be
              * stored or deleted based on the nesessary conversion.
@@ -703,7 +703,7 @@ private:
                 }
             }
 
-            // ! converts whole text buffer to little endian
+            //! converts whole text buffer to little endian
             template<class src_char_type>
             void convertToLittleEndian(src_char_type *t)
             {
@@ -732,7 +732,7 @@ private:
                 }
             }
 
-            // ! returns if a format is little endian
+            //! returns if a format is little endian
             inline bool isLittleEndian(ETEXT_FORMAT f)
             {
                 return f == ETF_ASCII ||
@@ -742,14 +742,14 @@ private:
             }
 
 
-            // ! returns true if a character is whitespace
+            //! returns true if a character is whitespace
             inline bool isWhiteSpace(char_type c)
             {
                 return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
             }
 
 
-            // ! generates a list with xml special characters
+            //! generates a list with xml special characters
             void createSpecialCharacterList()
             {
                 // list of strings containing special symbols,
@@ -764,7 +764,7 @@ private:
             }
 
 
-            // ! compares the first n characters of the strings
+            //! compares the first n characters of the strings
             bool equalsn(const char_type *str1, const char_type *str2, int len)
             {
                 int i;
@@ -779,7 +779,7 @@ private:
             }
 
 
-            // ! stores the target text format
+            //! stores the target text format
             void storeTargetFormat()
             {
                 // get target format. We could have done this using template specialization,

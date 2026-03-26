@@ -12,12 +12,12 @@ namespace irr
 {
     namespace io
     {
-        // ! Implementation of the file read callback for ordinary files
+        //! Implementation of the file read callback for ordinary files
         class CFileReadCallBack : public IFileReadCallBack
         {
 public:
 
-            // ! construct from filename
+            //! construct from filename
             CFileReadCallBack(const char *filename)
                 : File(0), Size(-1), Close(true)
             {
@@ -28,7 +28,7 @@ public:
                     getFileSize();
             }
 
-            // ! construct from FILE pointer
+            //! construct from FILE pointer
             CFileReadCallBack(FILE *file)
                 : File(file), Size(-1), Close(false)
             {
@@ -36,14 +36,14 @@ public:
                     getFileSize();
             }
 
-            // ! destructor
+            //! destructor
             virtual ~CFileReadCallBack()
             {
                 if (Close && File)
                     fclose(File);
             }
 
-            // ! Reads an amount of bytes from the file.
+            //! Reads an amount of bytes from the file.
             virtual int read(void *buffer, int sizeToRead)
             {
                 if (!File)
@@ -52,7 +52,7 @@ public:
                 return (int)fread(buffer, 1, sizeToRead, File);
             }
 
-            // ! Returns size of file in bytes
+            //! Returns size of file in bytes
             virtual long getSize() const
             {
                 return Size;
@@ -60,7 +60,7 @@ public:
 
 private:
 
-            // ! retrieves the file size of the open file
+            //! retrieves the file size of the open file
             void getFileSize()
             {
                 fseek(File, 0, SEEK_END);
@@ -78,21 +78,21 @@ private:
         // FACTORY FUNCTIONS:
 
 
-        // ! Creates an instance of an UFT-8 or ASCII character xml parser.
+        //! Creates an instance of an UFT-8 or ASCII character xml parser.
         IRRLICHT_API IrrXMLReader* IRRCALLCONV createIrrXMLReader(const char *filename)
         {
             return createIrrXMLReader(new CFileReadCallBack(filename), true);
         }
 
 
-        // ! Creates an instance of an UFT-8 or ASCII character xml parser.
+        //! Creates an instance of an UFT-8 or ASCII character xml parser.
         IRRLICHT_API IrrXMLReader* IRRCALLCONV createIrrXMLReader(FILE *file)
         {
             return createIrrXMLReader(new CFileReadCallBack(file), true);
         }
 
 
-        // ! Creates an instance of an UFT-8 or ASCII character xml parser.
+        //! Creates an instance of an UFT-8 or ASCII character xml parser.
         IRRLICHT_API IrrXMLReader* IRRCALLCONV createIrrXMLReader(IFileReadCallBack *callback,
             bool deleteCallback)
         {
@@ -110,21 +110,21 @@ private:
         }
 
 
-        // ! Creates an instance of an UTF-16 xml parser.
+        //! Creates an instance of an UTF-16 xml parser.
         IRRLICHT_API IrrXMLReaderUTF16* IRRCALLCONV createIrrXMLReaderUTF16(const char *filename)
         {
             return createIrrXMLReaderUTF16(new CFileReadCallBack(filename), true);
         }
 
 
-        // ! Creates an instance of an UTF-16 xml parser.
+        //! Creates an instance of an UTF-16 xml parser.
         IRRLICHT_API IrrXMLReaderUTF16* IRRCALLCONV createIrrXMLReaderUTF16(FILE *file)
         {
             return createIrrXMLReaderUTF16(new CFileReadCallBack(file), true);
         }
 
 
-        // ! Creates an instance of an UTF-16 xml parser.
+        //! Creates an instance of an UTF-16 xml parser.
         IRRLICHT_API IrrXMLReaderUTF16* IRRCALLCONV createIrrXMLReaderUTF16(IFileReadCallBack *callback,
             bool deleteCallback)
         {
@@ -142,21 +142,21 @@ private:
         }
 
 
-        // ! Creates an instance of an UTF-32 xml parser.
+        //! Creates an instance of an UTF-32 xml parser.
         IRRLICHT_API IrrXMLReaderUTF32* IRRCALLCONV createIrrXMLReaderUTF32(const char *filename)
         {
             return createIrrXMLReaderUTF32(new CFileReadCallBack(filename), true);
         }
 
 
-        // ! Creates an instance of an UTF-32 xml parser.
+        //! Creates an instance of an UTF-32 xml parser.
         IRRLICHT_API IrrXMLReaderUTF32* IRRCALLCONV createIrrXMLReaderUTF32(FILE *file)
         {
             return createIrrXMLReaderUTF32(new CFileReadCallBack(file), true);
         }
 
 
-        // ! Creates an instance of an UTF-32 xml parser.
+        //! Creates an instance of an UTF-32 xml parser.
         IRRLICHT_API IrrXMLReaderUTF32* IRRCALLCONV createIrrXMLReaderUTF32(
             IFileReadCallBack *callback, bool deleteCallback)
         {

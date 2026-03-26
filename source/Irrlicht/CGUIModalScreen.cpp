@@ -14,7 +14,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIModalScreen::CGUIModalScreen(IGUIEnvironment *environment, IGUIElement *parent, s32 id)
             : IGUIElement(EGUIET_MODAL_SCREEN, environment, parent, id, core::recti(0, 0, parent->getAbsolutePosition().getWidth(), parent->getAbsolutePosition().getHeight())),
             MouseDownTime(0)
@@ -77,7 +77,7 @@ namespace irr
             return true;
         }
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIModalScreen::OnEvent(const SEvent &event)
         {
             if (!isEnabled() || !isVisible())
@@ -157,7 +157,7 @@ namespace irr
         }
 
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIModalScreen::draw()
         {
             IGUISkin *skin = Environment->getSkin();
@@ -191,7 +191,7 @@ namespace irr
         }
 
 
-        // ! Removes a child.
+        //! Removes a child.
         void CGUIModalScreen::removeChild(IGUIElement *child)
         {
             IGUIElement::removeChild(child);
@@ -203,7 +203,7 @@ namespace irr
         }
 
 
-        // ! adds a child
+        //! adds a child
         void CGUIModalScreen::addChild(IGUIElement *child)
         {
             IGUIElement::addChild(child);
@@ -229,13 +229,13 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUIModalScreen::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUIElement::serializeAttributes(out, options);
         }
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUIModalScreen::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             IGUIElement::deserializeAttributes(in, options);

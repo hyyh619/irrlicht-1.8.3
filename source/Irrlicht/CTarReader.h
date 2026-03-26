@@ -59,37 +59,37 @@ namespace irr
         // Default alignment
 #include "irrunpack.h"
 
-        // ! Archiveloader capable of loading ZIP Archives
+        //! Archiveloader capable of loading ZIP Archives
         class CArchiveLoaderTAR : public IArchiveLoader
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             CArchiveLoaderTAR(io::IFileSystem *fs);
 
-            // ! returns true if the file maybe is able to be loaded by this class
-            // ! based on the file extension (e.g. ".tar")
+            //! returns true if the file maybe is able to be loaded by this class
+            //! based on the file extension (e.g. ".tar")
             virtual bool isALoadableFileFormat(const io::path &filename) const;
 
-            // ! Check if the file might be loaded by this class
+            //! Check if the file might be loaded by this class
             /** Check might look into the file.
              * \param file File handle to check.
              * \return True if file seems to be loadable. */
             virtual bool isALoadableFileFormat(io::IReadFile *file) const;
 
-            // ! Check to see if the loader can create archives of this type.
+            //! Check to see if the loader can create archives of this type.
             /** Check based on the archive type.
              * \param fileType The archive type to check.
              * \return True if the archile loader supports this type, false if not */
             virtual bool isALoadableFileFormat(E_FILE_ARCHIVE_TYPE fileType) const;
 
-            // ! Creates an archive from the filename
+            //! Creates an archive from the filename
             /** \param file File handle to check.
              * \return Pointer to newly created archive, or 0 upon error. */
             virtual IFileArchive* createArchive(const io::path &filename, bool ignoreCase, bool ignorePaths) const;
 
-            // ! creates/loads an archive from the file.
-            // ! \return Pointer to the created archive. Returns 0 if loading failed.
+            //! creates/loads an archive from the file.
+            //! \return Pointer to the created archive. Returns 0 if loading failed.
             virtual io::IFileArchive* createArchive(io::IReadFile *file, bool ignoreCase, bool ignorePaths) const;
 
 private:
@@ -106,16 +106,16 @@ public:
 
             virtual ~CTarReader();
 
-            // ! opens a file by file name
+            //! opens a file by file name
             virtual IReadFile* createAndOpenFile(const io::path &filename);
 
-            // ! opens a file by index
+            //! opens a file by index
             virtual IReadFile* createAndOpenFile(u32 index);
 
-            // ! returns the list of files
+            //! returns the list of files
             virtual const IFileList* getFileList() const;
 
-            // ! get the class Type
+            //! get the class Type
             virtual E_FILE_ARCHIVE_TYPE getType() const
             {
                 return EFAT_TAR;

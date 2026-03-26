@@ -45,14 +45,14 @@ namespace irr
         }
 
 
-        // ! returns true if the file maybe is able to be loaded by this class
+        //! returns true if the file maybe is able to be loaded by this class
         bool CPLYMeshFileLoader::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension(filename, "ply");
         }
 
 
-        // ! creates/loads an animated mesh from the file.
+        //! creates/loads an animated mesh from the file.
         IAnimatedMesh* CPLYMeshFileLoader::createMesh(io::IReadFile *file)
         {
             if (!file)

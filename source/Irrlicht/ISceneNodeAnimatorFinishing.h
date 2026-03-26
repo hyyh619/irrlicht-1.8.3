@@ -11,12 +11,12 @@ namespace irr
 {
     namespace scene
     {
-        // ! This is an abstract base class for animators that have a discrete end time.
+        //! This is an abstract base class for animators that have a discrete end time.
         class ISceneNodeAnimatorFinishing : public ISceneNodeAnimator
         {
 public:
 
-            // ! constructor
+            //! constructor
             ISceneNodeAnimatorFinishing(u32 finishTime)
                 : FinishTime(finishTime), HasFinished(false) { }
 

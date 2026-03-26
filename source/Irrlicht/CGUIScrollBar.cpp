@@ -17,7 +17,7 @@ namespace irr
 {
     namespace gui
     {
-        // ! constructor
+        //! constructor
         CGUIScrollBar::CGUIScrollBar(bool horizontal, IGUIEnvironment *environment,
             IGUIElement *parent, s32 id,
             core::rect<s32> rectangle, bool noclip)
@@ -43,7 +43,7 @@ namespace irr
         }
 
 
-        // ! destructor
+        //! destructor
         CGUIScrollBar::~CGUIScrollBar()
         {
             if (UpButton)
@@ -54,7 +54,7 @@ namespace irr
         }
 
 
-        // ! called if an event happened.
+        //! called if an event happened.
         bool CGUIScrollBar::OnEvent(const SEvent &event)
         {
             if (isEnabled())
@@ -285,7 +285,7 @@ namespace irr
             }
         }
 
-        // ! draws the element and its children
+        //! draws the element and its children
         void CGUIScrollBar::draw()
         {
             if (!IsVisible)
@@ -339,7 +339,7 @@ namespace irr
             setPos (Pos);
         }
 
-        // !
+        //!
         s32 CGUIScrollBar::getPosFromMousePos(const core::position2di &pos) const
         {
             f32 w, p;
@@ -359,7 +359,7 @@ namespace irr
         }
 
 
-        // ! sets the position of the scrollbar
+        //! sets the position of the scrollbar
         void CGUIScrollBar::setPos(s32 pos)
         {
             Pos = core::s32_clamp (pos, Min, Max);
@@ -380,14 +380,14 @@ namespace irr
         }
 
 
-        // ! gets the small step value
+        //! gets the small step value
         s32 CGUIScrollBar::getSmallStep() const
         {
             return SmallStep;
         }
 
 
-        // ! sets the small step value
+        //! sets the small step value
         void CGUIScrollBar::setSmallStep(s32 step)
         {
             if (step > 0)
@@ -397,14 +397,14 @@ namespace irr
         }
 
 
-        // ! gets the small step value
+        //! gets the small step value
         s32 CGUIScrollBar::getLargeStep() const
         {
             return LargeStep;
         }
 
 
-        // ! sets the small step value
+        //! sets the small step value
         void CGUIScrollBar::setLargeStep(s32 step)
         {
             if (step > 0)
@@ -414,14 +414,14 @@ namespace irr
         }
 
 
-        // ! gets the maximum value of the scrollbar.
+        //! gets the maximum value of the scrollbar.
         s32 CGUIScrollBar::getMax() const
         {
             return Max;
         }
 
 
-        // ! sets the maximum value of the scrollbar.
+        //! sets the maximum value of the scrollbar.
         void CGUIScrollBar::setMax(s32 max)
         {
             Max = max;
@@ -434,14 +434,14 @@ namespace irr
             setPos(Pos);
         }
 
-        // ! gets the minimum value of the scrollbar.
+        //! gets the minimum value of the scrollbar.
         s32 CGUIScrollBar::getMin() const
         {
             return Min;
         }
 
 
-        // ! sets the minimum value of the scrollbar.
+        //! sets the minimum value of the scrollbar.
         void CGUIScrollBar::setMin(s32 min)
         {
             Min = min;
@@ -456,14 +456,14 @@ namespace irr
         }
 
 
-        // ! gets the current position of the scrollbar
+        //! gets the current position of the scrollbar
         s32 CGUIScrollBar::getPos() const
         {
             return Pos;
         }
 
 
-        // ! refreshes the position and text on child buttons
+        //! refreshes the position and text on child buttons
         void CGUIScrollBar::refreshControls()
         {
             CurrentIconColor = video::SColor(255, 255, 255, 255);
@@ -552,7 +552,7 @@ namespace irr
         }
 
 
-        // ! Writes attributes of the element.
+        //! Writes attributes of the element.
         void CGUIScrollBar::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options = 0) const
         {
             IGUIScrollBar::serializeAttributes(out, options);
@@ -567,7 +567,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the element
+        //! Reads attributes of the element
         void CGUIScrollBar::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options = 0)
         {
             IGUIScrollBar::deserializeAttributes(in, options);

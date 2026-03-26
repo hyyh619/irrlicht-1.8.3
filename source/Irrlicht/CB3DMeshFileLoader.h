@@ -20,22 +20,22 @@ namespace irr
 {
     namespace scene
     {
-        // ! Meshloader for B3D format
+        //! Meshloader for B3D format
         class CB3DMeshFileLoader : public IMeshLoader
         {
 public:
 
-            // ! Constructor
+            //! Constructor
             CB3DMeshFileLoader(scene::ISceneManager *smgr);
 
-            // ! returns true if the file maybe is able to be loaded by this class
-            // ! based on the file extension (e.g. ".bsp")
+            //! returns true if the file maybe is able to be loaded by this class
+            //! based on the file extension (e.g. ".bsp")
             virtual bool isALoadableFileExtension(const io::path &filename) const;
 
-            // ! creates/loads an animated mesh from the file.
-            // ! \return Pointer to the created mesh. Returns 0 if loading failed.
-            // ! If you no longer need the mesh, you should call IAnimatedMesh::drop().
-            // ! See IReferenceCounted::drop() for more information.
+            //! creates/loads an animated mesh from the file.
+            //! \return Pointer to the created mesh. Returns 0 if loading failed.
+            //! If you no longer need the mesh, you should call IAnimatedMesh::drop().
+            //! See IReferenceCounted::drop() for more information.
             virtual IAnimatedMesh* createMesh(io::IReadFile *file);
 
 private:

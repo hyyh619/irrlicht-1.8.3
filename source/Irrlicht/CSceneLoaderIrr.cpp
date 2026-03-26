@@ -14,7 +14,7 @@ namespace irr
 {
     namespace scene
     {
-        // ! Constructor
+        //! Constructor
         CSceneLoaderIrr::CSceneLoaderIrr(ISceneManager *smgr, io::IFileSystem *fs)
             : SceneManager(smgr), FileSystem(fs),
             IRR_XML_FORMAT_SCENE(L"irr_scene"), IRR_XML_FORMAT_NODE(L"node"), IRR_XML_FORMAT_NODE_ATTR_TYPE(L"type"),
@@ -22,24 +22,24 @@ namespace irr
             IRR_XML_FORMAT_ANIMATORS(L"animators"), IRR_XML_FORMAT_USERDATA(L"userData")
         {}
 
-        // ! Destructor
+        //! Destructor
         CSceneLoaderIrr::~CSceneLoaderIrr()
         {}
 
-        // ! Returns true if the class might be able to load this file.
+        //! Returns true if the class might be able to load this file.
         bool CSceneLoaderIrr::isALoadableFileExtension(const io::path &filename) const
         {
             return core::hasFileExtension(filename, "irr");
         }
 
-        // ! Returns true if the class might be able to load this file.
+        //! Returns true if the class might be able to load this file.
         bool CSceneLoaderIrr::isALoadableFileFormat(io::IReadFile *file) const
         {
             // todo: check inside the file
             return true;
         }
 
-        // ! Loads the scene into the scene manager.
+        //! Loads the scene into the scene manager.
         bool CSceneLoaderIrr::loadScene(io::IReadFile *file, ISceneUserDataSerializer *userDataSerializer,
             ISceneNode *rootNode)
         {
@@ -75,7 +75,7 @@ namespace irr
         }
 
 
-        // ! Reads the next node
+        //! Reads the next node
         void CSceneLoaderIrr::readSceneNode(io::IXMLReader *reader, ISceneNode *parent,
             ISceneUserDataSerializer *userDataSerializer)
         {
@@ -160,7 +160,7 @@ namespace irr
                 userDataSerializer->OnCreateNode(node);
         }
 
-        // ! reads materials of a node
+        //! reads materials of a node
         void CSceneLoaderIrr::readMaterials(io::IXMLReader *reader, ISceneNode *node)
         {
             u32 nr = 0;
@@ -203,7 +203,7 @@ namespace irr
         }
 
 
-        // ! reads animators of a node
+        //! reads animators of a node
         void CSceneLoaderIrr::readAnimators(io::IXMLReader *reader, ISceneNode *node)
         {
             while (reader->read())
@@ -249,7 +249,7 @@ namespace irr
         }
 
 
-        // ! reads user data of a node
+        //! reads user data of a node
         void CSceneLoaderIrr::readUserData(io::IXMLReader *reader, ISceneNode *node, ISceneUserDataSerializer *userDataSerializer)
         {
             while (reader->read())

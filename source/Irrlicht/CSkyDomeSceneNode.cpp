@@ -135,7 +135,7 @@ namespace irr
         }
 
 
-        // ! renders the node.
+        //! renders the node.
         void CSkyDomeSceneNode::render()
         {
             video::IVideoDriver     *driver = SceneManager->getVideoDriver();
@@ -182,7 +182,7 @@ namespace irr
         }
 
 
-        // ! returns the axis aligned bounding box of this node
+        //! returns the axis aligned bounding box of this node
         const core::aabbox3d<f32>&CSkyDomeSceneNode::getBoundingBox() const
         {
             return Buffer->BoundingBox;
@@ -200,25 +200,25 @@ namespace irr
         }
 
 
-        // ! returns the material based on the zero based index i. To get the amount
-        // ! of materials used by this scene node, use getMaterialCount().
-        // ! This function is needed for inserting the node into the scene hirachy on a
-        // ! optimal position for minimizing renderstate changes, but can also be used
-        // ! to directly modify the material of a scene node.
+        //! returns the material based on the zero based index i. To get the amount
+        //! of materials used by this scene node, use getMaterialCount().
+        //! This function is needed for inserting the node into the scene hirachy on a
+        //! optimal position for minimizing renderstate changes, but can also be used
+        //! to directly modify the material of a scene node.
         video::SMaterial&CSkyDomeSceneNode::getMaterial(u32 i)
         {
             return Buffer->Material;
         }
 
 
-        // ! returns amount of materials used by this scene node.
+        //! returns amount of materials used by this scene node.
         u32 CSkyDomeSceneNode::getMaterialCount() const
         {
             return 1;
         }
 
 
-        // ! Writes attributes of the scene node.
+        //! Writes attributes of the scene node.
         void CSkyDomeSceneNode::serializeAttributes(io::IAttributes *out, io::SAttributeReadWriteOptions *options) const
         {
             ISceneNode::serializeAttributes(out, options);
@@ -231,7 +231,7 @@ namespace irr
         }
 
 
-        // ! Reads attributes of the scene node.
+        //! Reads attributes of the scene node.
         void CSkyDomeSceneNode::deserializeAttributes(io::IAttributes *in, io::SAttributeReadWriteOptions *options)
         {
             HorizontalResolution = in->getAttributeAsInt  ("HorizontalResolution");
@@ -246,7 +246,7 @@ namespace irr
             generateMesh();
         }
 
-        // ! Creates a clone of this scene node and its children.
+        //! Creates a clone of this scene node and its children.
         ISceneNode* CSkyDomeSceneNode::clone(ISceneNode *newParent, ISceneManager *newManager)
         {
             if (!newParent)

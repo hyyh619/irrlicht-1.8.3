@@ -12,7 +12,7 @@ namespace irr
 {
     namespace video
     {
-        // ! constructor
+        //! constructor
         CZBuffer::CZBuffer(const core::dimension2d<u32> &size)
             : Buffer(0), BufferEnd(0), Size(0, 0), TotalSize(0)
         {
@@ -25,7 +25,7 @@ namespace irr
 
 
 
-        // ! destructor
+        //! destructor
         CZBuffer::~CZBuffer()
         {
             delete[] Buffer;
@@ -33,7 +33,7 @@ namespace irr
 
 
 
-        // ! clears the zbuffer
+        //! clears the zbuffer
         void CZBuffer::clear()
         {
             memset(Buffer, 0, (BufferEnd - Buffer) * sizeof(TZBufferType));
@@ -41,7 +41,7 @@ namespace irr
 
 
 
-        // ! sets the new size of the zbuffer
+        //! sets the new size of the zbuffer
         void CZBuffer::setSize(const core::dimension2d<u32> &size)
         {
             if (size == Size)
@@ -58,7 +58,7 @@ namespace irr
 
 
 
-        // ! returns the size of the zbuffer
+        //! returns the size of the zbuffer
         const core::dimension2d<u32>&CZBuffer::getSize() const
         {
             return Size;
@@ -66,7 +66,7 @@ namespace irr
 
 
 
-        // ! locks the zbuffer
+        //! locks the zbuffer
         TZBufferType* CZBuffer::lock()
         {
             return Buffer;
@@ -74,7 +74,7 @@ namespace irr
 
 
 
-        // ! unlocks the zbuffer
+        //! unlocks the zbuffer
         void CZBuffer::unlock()
         {}
     } // end namespace video
@@ -85,7 +85,7 @@ namespace irr
 {
     namespace video
     {
-        // ! creates a ZBuffer
+        //! creates a ZBuffer
         IZBuffer* createZBuffer(const core::dimension2d<u32> &size)
         {
     #ifdef _IRR_COMPILE_WITH_SOFTWARE_

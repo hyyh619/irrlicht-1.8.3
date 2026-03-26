@@ -23,7 +23,7 @@ public:
         #endif
             }
 
-            // ! draws an indexed triangle list
+            //! draws an indexed triangle list
             virtual void drawIndexedTriangleList(S2DVertex *vertices, s32 vertexCount, const u16 *indexList, s32 triangleCount)
             {
                 const S2DVertex *v1, *v2, *v3;
@@ -286,7 +286,7 @@ namespace irr
 {
     namespace video
     {
-        // ! creates a flat triangle renderer
+        //! creates a flat triangle renderer
         ITriangleRenderer* createTriangleRendererFlat(IZBuffer *zbuffer)
         {
     #ifdef _IRR_COMPILE_WITH_SOFTWARE_
