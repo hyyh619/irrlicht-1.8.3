@@ -157,7 +157,7 @@ namespace irr
                 return MeshIPol;
 
             startFrameLoop = core::s32_max(0, startFrameLoop >> IPolShift);
-            endFrameLoop   = core::if_c_a_else_b(endFrameLoop<0, Mesh->MD3Header.numFrames - 1, endFrameLoop> > IPolShift);
+            endFrameLoop   = core::if_c_a_else_b(endFrameLoop<0, Mesh->MD3Header.numFrames - 1, endFrameLoop >> IPolShift);
 
             const u32 mask = 1 << IPolShift;
 
