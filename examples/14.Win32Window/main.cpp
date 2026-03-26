@@ -1,12 +1,12 @@
 /** Example 014 Win32 Window
-
-   This example only runs under MS Windows and demonstrates that Irrlicht can
-   render inside a win32 window. MFC and .NET Windows.Forms windows are possible,
-   too.
-
-   In the beginning, we create a windows window using the windows API. I'm not
-   going to explain this code, because it is windows specific. See the MSDN or a
-   windows book for details.
+ *
+ * This example only runs under MS Windows and demonstrates that Irrlicht can
+ * render inside a win32 window. MFC and .NET Windows.Forms windows are possible,
+ * too.
+ *
+ * In the beginning, we create a windows window using the windows API. I'm not
+ * going to explain this code, because it is windows specific. See the MSDN or a
+ * windows book for details.
  */
 
 #include <irrlicht.h>
@@ -25,27 +25,27 @@ HWND hOKButton;
 HWND hWnd;
 
 static LRESULT CALLBACK CustomWndProc(HWND hWnd, UINT message,
-                                      WPARAM wParam, LPARAM lParam)
+    WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
-    case WM_COMMAND:
-    {
-        HWND hwndCtl = (HWND)lParam;
-        int  code    = HIWORD(wParam);
-
-        if (hwndCtl == hOKButton)
+        case WM_COMMAND:
         {
-            DestroyWindow(hWnd);
+            HWND hwndCtl = (HWND)lParam;
+            int  code    = HIWORD(wParam);
+
+            if (hwndCtl == hOKButton)
+            {
+                DestroyWindow(hWnd);
+                PostQuitMessage(0);
+                return 0;
+            }
+        }
+        break;
+
+        case WM_DESTROY:
             PostQuitMessage(0);
             return 0;
-        }
-    }
-    break;
-
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
     }
 
     return DefWindowProc(hWnd, message, wParam, lParam);
@@ -53,7 +53,7 @@ static LRESULT CALLBACK CustomWndProc(HWND hWnd, UINT message,
 
 
 /*
-   Now ask for the driver and create the Windows specific window.
+ * Now ask for the driver and create the Windows specific window.
  */
 int main()
 {
@@ -96,14 +96,14 @@ int main()
     RegisterClassEx(&wcex);
 
     DWORD style = WS_SYSMENU | WS_BORDER | WS_CAPTION |
-                  WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_SIZEBOX;
+        WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_SIZEBOX;
 
     int windowWidth  = 440;
     int windowHeight = 380;
 
     hWnd = CreateWindow(Win32ClassName, "Irrlicht Win32 window example",
-                        style, 100, 100, windowWidth, windowHeight,
-                        NULL, NULL, hInstance, NULL);
+            style, 100, 100, windowWidth, windowHeight,
+            NULL, NULL, hInstance, NULL);
 
     RECT clientRect;
     GetClientRect(hWnd, &clientRect);
@@ -113,26 +113,26 @@ int main()
     // create ok button
 
     hOKButton = CreateWindow("BUTTON", "OK - Close", WS_CHILD | WS_VISIBLE | BS_TEXT,
-                             windowWidth - 160, windowHeight - 40, 150, 30, hWnd, NULL, hInstance, NULL);
+            windowWidth - 160, windowHeight - 40, 150, 30, hWnd, NULL, hInstance, NULL);
 
     // create some text
 
     CreateWindow("STATIC", "This is Irrlicht running inside a standard Win32 window.\n" \
-                 "Also mixing with MFC and .NET Windows.Forms is possible.",
-                 WS_CHILD | WS_VISIBLE, 20, 20, 400, 40, hWnd, NULL, hInstance, NULL);
+                           "Also mixing with MFC and .NET Windows.Forms is possible.",
+        WS_CHILD | WS_VISIBLE, 20, 20, 400, 40, hWnd, NULL, hInstance, NULL);
 
     // create window to put irrlicht in
 
     HWND hIrrlichtWindow = CreateWindow("BUTTON", "",
-                                        WS_CHILD | WS_VISIBLE | BS_OWNERDRAW,
-                                        50, 80, 320, 220, hWnd, NULL, hInstance, NULL);
+            WS_CHILD | WS_VISIBLE | BS_OWNERDRAW,
+            50, 80, 320, 220, hWnd, NULL, hInstance, NULL);
     video::SExposedVideoData videodata((key=='b') ? hIrrlichtWindow : 0);
 
     /*
-       So now that we have some window, we can create an Irrlicht device
-       inside of it. We use Irrlicht createEx() function for this. We only
-       need the handle (HWND) to that window, set it as windowsID parameter
-       and start up the engine as usual. That's it.
+     * So now that we have some window, we can create an Irrlicht device
+     * inside of it. We use Irrlicht createEx() function for this. We only
+     * need the handle (HWND) to that window, set it as windowsID parameter
+     * and start up the engine as usual. That's it.
      */
     // create irrlicht device in the button window
 
@@ -197,15 +197,15 @@ int main()
     // do message queue
 
     /*
-       Now the only thing missing is the drawing loop using
-       IrrlichtDevice::run(). We do this as usual. But instead of this, there
-       is another possibility: You can also simply use your own message loop
-       using GetMessage, DispatchMessage and whatever. Calling
-       Device->run() will cause Irrlicht to dispatch messages internally too.
-       You need not call Device->run() if you want to do your own message
-       dispatching loop, but Irrlicht will not be able to fetch user input
-       then and you have to do it on your own using the window messages,
-       DirectInput, or whatever.
+     * Now the only thing missing is the drawing loop using
+     * IrrlichtDevice::run(). We do this as usual. But instead of this, there
+     * is another possibility: You can also simply use your own message loop
+     * using GetMessage, DispatchMessage and whatever. Calling
+     * Device->run() will cause Irrlicht to dispatch messages internally too.
+     * You need not call Device->run() if you want to do your own message
+     * dispatching loop, but Irrlicht will not be able to fetch user input
+     * then and you have to do it on your own using the window messages,
+     * DirectInput, or whatever.
      */
 
     while (device->run())
@@ -216,30 +216,30 @@ int main()
     }
 
     /*
-       The alternative, own message dispatching loop without Device->run()
-       would look like this:
+     * The alternative, own message dispatching loop without Device->run()
+     * would look like this:
      */
 
     /*MSG msg;
-       while (true)
-       {
-            if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-            {
-                    TranslateMessage(&msg);
-                    DispatchMessage(&msg);
-
-                    if (msg.message == WM_QUIT)
-                            break;
-            }
-
-            // advance virtual time
-            device->getTimer()->tick();
-
-            // draw engine picture
-            driver->beginScene(true, true, 0, (key=='c')?hIrrlichtWindow:0);
-            smgr->drawAll();
-            driver->endScene();
-       }*/
+     * while (true)
+     * {
+     *      if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+     *      {
+     *              TranslateMessage(&msg);
+     *              DispatchMessage(&msg);
+     *
+     *              if (msg.message == WM_QUIT)
+     *                      break;
+     *      }
+     *
+     *      // advance virtual time
+     *      device->getTimer()->tick();
+     *
+     *      // draw engine picture
+     *      driver->beginScene(true, true, 0, (key=='c')?hIrrlichtWindow:0);
+     *      smgr->drawAll();
+     *      driver->endScene();
+     * }*/
 
     device->closeDevice();
     device->drop();
@@ -249,5 +249,5 @@ int main()
 #endif // if windows
 
 /*
-   That's it, Irrlicht now runs in your own windows window.
+ * That's it, Irrlicht now runs in your own windows window.
  **/

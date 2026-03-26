@@ -1,7 +1,7 @@
 /*!
-        Sound Factory.
-        provides a sound interface
-
+ *      Sound Factory.
+ *      provides a sound interface
+ *
  */
 
 #include "sound.h"

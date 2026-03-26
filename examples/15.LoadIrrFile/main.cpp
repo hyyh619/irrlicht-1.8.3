@@ -1,13 +1,13 @@
 /** Example 015 Loading Scenes from .irr Files
-
-   Since version 1.1, Irrlicht is able to save and load
-   the full scene graph into an .irr file, an xml based
-   format. There is an editor available to edit
-   those files, named irrEdit (http://www.ambiera.com/irredit)
-   which can also be used as world and particle editor.
-   This tutorial shows how to use .irr files.
-
-   Lets start: Create an Irrlicht device and setup the window.
+ *
+ * Since version 1.1, Irrlicht is able to save and load
+ * the full scene graph into an .irr file, an xml based
+ * format. There is an editor available to edit
+ * those files, named irrEdit (http://www.ambiera.com/irredit)
+ * which can also be used as world and particle editor.
+ * This tutorial shows how to use .irr files.
+ *
+ * Lets start: Create an Irrlicht device and setup the window.
  */
 
 #include <irrlicht.h>
@@ -41,14 +41,14 @@ int main(int argc, char **argv)
     scene::ISceneManager *smgr   = device->getSceneManager();
 
     /*
-       Now load our .irr file.
-       .irr files can store the whole scene graph including animators,
-       materials and particle systems. And there is also the possibility to
-       store arbitrary user data for every scene node in that file. To keep
-       this example simple, we are simply loading the scene here. See the
-       documentation at ISceneManager::loadScene and ISceneManager::saveScene
-       for more information. So to load and display a complicated huge scene,
-       we only need a single call to loadScene().
+     * Now load our .irr file.
+     * .irr files can store the whole scene graph including animators,
+     * materials and particle systems. And there is also the possibility to
+     * store arbitrary user data for every scene node in that file. To keep
+     * this example simple, we are simply loading the scene here. See the
+     * documentation at ISceneManager::loadScene and ISceneManager::saveScene
+     * for more information. So to load and display a complicated huge scene,
+     * we only need a single call to loadScene().
      */
 
     // load the scene
@@ -58,8 +58,8 @@ int main(int argc, char **argv)
         smgr->loadScene("../../media/example.irr");
 
     /*
-       Now we'll create a camera, and give it a collision response animator
-       that's built from the mesh nodes in the scene we just loaded.
+     * Now we'll create a camera, and give it a collision response animator
+     * that's built from the mesh nodes in the scene we just loaded.
      */
     scene::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0, 50.f, 0.1f);
 
@@ -67,10 +67,10 @@ int main(int argc, char **argv)
     scene::IMetaTriangleSelector *meta = smgr->createMetaTriangleSelector();
 
     /*
-       Now we will find all the nodes in the scene and create triangle
-       selectors for all suitable nodes.  Typically, you would want to make a
-       more informed decision about which nodes to performs collision checks
-       on; you could capture that information in the node name or Id.
+     * Now we will find all the nodes in the scene and create triangle
+     * selectors for all suitable nodes.  Typically, you would want to make a
+     * more informed decision about which nodes to performs collision checks
+     * on; you could capture that information in the node name or Id.
      */
     core::array<scene::ISceneNode*> nodes;
     smgr->getSceneNodesFromType(scene::ESNT_ANY, nodes);     // Find all nodes
@@ -82,30 +82,30 @@ int main(int argc, char **argv)
 
         switch (node->getType())
         {
-        case scene::ESNT_CUBE:
-        case scene::ESNT_ANIMATED_MESH:
-            // Because the selector won't animate with the mesh,
-            // and is only being used for camera collision, we'll just use an approximate
-            // bounding box instead of ((scene::IAnimatedMeshSceneNode*)node)->getMesh(0)
-            selector = smgr->createTriangleSelectorFromBoundingBox(node);
-            break;
+            case scene::ESNT_CUBE:
+            case scene::ESNT_ANIMATED_MESH:
+                // Because the selector won't animate with the mesh,
+                // and is only being used for camera collision, we'll just use an approximate
+                // bounding box instead of ((scene::IAnimatedMeshSceneNode*)node)->getMesh(0)
+                selector = smgr->createTriangleSelectorFromBoundingBox(node);
+                break;
 
-        case scene::ESNT_MESH:
-        case scene::ESNT_SPHERE:         // Derived from IMeshSceneNode
-            selector = smgr->createTriangleSelector(((scene::IMeshSceneNode*)node)->getMesh(), node);
-            break;
+            case scene::ESNT_MESH:
+            case scene::ESNT_SPHERE:     // Derived from IMeshSceneNode
+                selector = smgr->createTriangleSelector(((scene::IMeshSceneNode*)node)->getMesh(), node);
+                break;
 
-        case scene::ESNT_TERRAIN:
-            selector = smgr->createTerrainTriangleSelector((scene::ITerrainSceneNode*)node);
-            break;
+            case scene::ESNT_TERRAIN:
+                selector = smgr->createTerrainTriangleSelector((scene::ITerrainSceneNode*)node);
+                break;
 
-        case scene::ESNT_OCTREE:
-            selector = smgr->createOctreeTriangleSelector(((scene::IMeshSceneNode*)node)->getMesh(), node);
-            break;
+            case scene::ESNT_OCTREE:
+                selector = smgr->createOctreeTriangleSelector(((scene::IMeshSceneNode*)node)->getMesh(), node);
+                break;
 
-        default:
-            // Don't create a selector for this node type
-            break;
+            default:
+                // Don't create a selector for this node type
+                break;
         }
 
         if (selector)
@@ -118,8 +118,8 @@ int main(int argc, char **argv)
     }
 
     /*
-       Now that the mesh scene nodes have had triangle selectors created and added
-       to the meta selector, create a collision response animator from that meta selector.
+     * Now that the mesh scene nodes have had triangle selectors created and added
+     * to the meta selector, create a collision response animator from that meta selector.
      */
     scene::ISceneNodeAnimator *anim = smgr->createCollisionResponseAnimator(
         meta, camera, core::vector3df(5, 5, 5),
@@ -138,7 +138,7 @@ int main(int argc, char **argv)
         camera->setTarget(cube->getAbsolutePosition());
 
     /*
-       That's it. Draw everything and finish as usual.
+     * That's it. Draw everything and finish as usual.
      */
 
     int lastFPS = -1;

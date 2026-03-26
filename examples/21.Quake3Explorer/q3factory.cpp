@@ -1,8 +1,8 @@
 /*!
-        Model Factory.
-        create the additional scenenodes for ( bullets, health... )
-
-        Defines the Entities for Quake3
+ *      Model Factory.
+ *      create the additional scenenodes for ( bullets, health... )
+ *
+ *      Defines the Entities for Quake3
  */
 
 #include <irrlicht.h>
@@ -21,7 +21,7 @@ static const SItemElement Quake3ItemElement[] =
 {
     {       "item_health",
             {"models/powerups/health/medium_cross.md3",
-            "models/powerups/health/medium_sphere.md3"},
+             "models/powerups/health/medium_sphere.md3"},
             "sound/items/n_health.wav",
             "icons/iconh_yellow",
             "25 Health",
@@ -31,7 +31,7 @@ static const SItemElement Quake3ItemElement[] =
             SPECIAL_SFX_BOUNCE | SPECIAL_SFX_ROTATE_1},
     {       "item_health_large",
             {"models/powerups/health/large_cross.md3",
-            "models/powerups/health/large_sphere.md3"},
+             "models/powerups/health/large_sphere.md3"},
             "sound/items/l_health.wav",
             "icons/iconh_red",
             "50 Health",
@@ -42,7 +42,7 @@ static const SItemElement Quake3ItemElement[] =
     {
         "item_health_mega",
         {"models/powerups/health/mega_cross.md3",
-        "models/powerups/health/mega_sphere.md3"},
+         "models/powerups/health/mega_sphere.md3"},
         "sound/items/m_health.wav",
         "icons/iconh_mega",
         "Mega Health",
@@ -54,7 +54,7 @@ static const SItemElement Quake3ItemElement[] =
     {
         "item_health_small",
         {"models/powerups/health/small_cross.md3",
-        "models/powerups/health/small_sphere.md3"},
+         "models/powerups/health/small_sphere.md3"},
         "sound/items/s_health.wav",
         "icons/iconh_green",
         "5 Health",
@@ -65,7 +65,7 @@ static const SItemElement Quake3ItemElement[] =
     },
     {       "ammo_bullets",
             {"models/powerups/ammo/machinegunam.md3",
-            ""},
+             ""},
             "sound/misc/am_pkup.wav",
             "icons/icona_machinegun",
             "Bullets",
@@ -173,7 +173,7 @@ static const SItemElement Quake3ItemElement[] =
     {
         "weapon_machinegun",
         {"models/weapons2/machinegun/machinegun.md3",
-        ""},
+         ""},
         "sound/misc/w_pkup.wav",
         "icons/iconw_machinegun",
         "Machinegun",
@@ -291,16 +291,16 @@ const SItemElement* getItemElement(const stringc &key)
 }
 
 /*!
-        Quake3 Model Factory.
-        Takes the mesh buffers and creates scenenodes for their associated shaders
+ *      Quake3 Model Factory.
+ *      Takes the mesh buffers and creates scenenodes for their associated shaders
  */
 void Q3ShaderFactory(Q3LevelLoadParameter &loadParam,
-                     IrrlichtDevice *device,
-                     IQ3LevelMesh *mesh,
-                     eQ3MeshIndex meshIndex,
-                     ISceneNode *parent,
-                     IMetaTriangleSelector *meta,
-                     bool showShaderName)
+    IrrlichtDevice *device,
+    IQ3LevelMesh *mesh,
+    eQ3MeshIndex meshIndex,
+    ISceneNode *parent,
+    IMetaTriangleSelector *meta,
+    bool showShaderName)
 {
     if (0 == mesh || 0 == device)
         return;
@@ -338,7 +338,7 @@ void Q3ShaderFactory(Q3LevelLoadParameter &loadParam,
         tTexArray tex;
         u32       pos = 0;
         getTextures (tex, "$redimage $blueimage $whiteimage $checkerimage", pos,
-                     device->getFileSystem(), driver);
+            device->getFileSystem(), driver);
     }
 
     s32 sceneNodeID = 0;
@@ -380,9 +380,9 @@ void Q3ShaderFactory(Q3LevelLoadParameter &loadParam,
         else if (1)
         {
 /*
-                        stringc s;
-                        dumpShader ( s, shader );
-                        printf ( s.c_str () );
+ *                      stringc s;
+ *                      dumpShader ( s, shader );
+ *                      printf ( s.c_str () );
  */
             // create sceneNode
             node = smgr->addQuake3SceneNode (meshBuffer, shader, parent, sceneNodeID);
@@ -474,23 +474,23 @@ void Q3ShaderFactory(Q3LevelLoadParameter &loadParam,
     {
         loadParam.endTime = device->getTimer()->getRealTime ();
         snprintf(buf, 128, "q3shaderfactory needed %04d ms to create %d shader nodes",
-                 loadParam.endTime - loadParam.startTime,
-                 sceneNodeID
-                 );
+            loadParam.endTime - loadParam.startTime,
+            sceneNodeID
+            );
         device->getLogger()->log(buf, ELL_INFORMATION);
     }
 }
 
 
 /*!
-        create Items from Entity
+ *      create Items from Entity
  */
 void Q3ModelFactory(Q3LevelLoadParameter &loadParam,
-                    IrrlichtDevice *device,
-                    IQ3LevelMesh *masterMesh,
-                    ISceneNode *parent,
-                    bool showShaderName
-                    )
+    IrrlichtDevice *device,
+    IQ3LevelMesh *masterMesh,
+    ISceneNode *parent,
+    bool showShaderName
+    )
 {
     if (0 == masterMesh)
         return;
@@ -506,17 +506,17 @@ void Q3ModelFactory(Q3LevelLoadParameter &loadParam,
     s32             lastIndex;
 
 /*
-        stringc s;
-        FILE *f = 0;
-        f = fopen ( "entity.txt", "wb" );
-        for ( index = 0; (u32) index < entityList.size (); ++index )
-        {
-                const IEntity *entity = &entityList[ index ];
-                s = entity->name;
-                dumpShader ( s, entity );
-                fwrite ( s.c_str(), 1, s.size(), f );
-        }
-        fclose ( f );
+ *      stringc s;
+ *      FILE *f = 0;
+ *      f = fopen ( "entity.txt", "wb" );
+ *      for ( index = 0; (u32) index < entityList.size (); ++index )
+ *      {
+ *              const IEntity *entity = &entityList[ index ];
+ *              s = entity->name;
+ *              dumpShader ( s, entity );
+ *              fwrite ( s.c_str(), 1, s.size(), f );
+ *      }
+ *      fclose ( f );
  */
     IAnimatedMeshMD3     *model;
     SMD3Mesh             *mesh;
@@ -600,7 +600,7 @@ void Q3ModelFactory(Q3LevelLoadParameter &loadParam,
                     )
                 {
                     anim = smgr->createRotationAnimator (vector3df (0.f,
-                                                                    2.f, 0.f));
+                            2.f, 0.f));
                     node->addAnimator (anim);
                     anim->drop ();
                 }
@@ -662,14 +662,14 @@ void Q3ModelFactory(Q3LevelLoadParameter &loadParam,
 }
 
 /*!
-        so we need a good starting Position in the level.
-        we can ask the Quake3 Loader for all entities with class_name "info_player_deathmatch"
+ *      so we need a good starting Position in the level.
+ *      we can ask the Quake3 Loader for all entities with class_name "info_player_deathmatch"
  */
 s32 Q3StartPosition(IQ3LevelMesh *mesh,
-                    ICameraSceneNode *camera,
-                    s32 startposIndex,
-                    const vector3df &translation
-                    )
+    ICameraSceneNode *camera,
+    s32 startposIndex,
+    const vector3df &translation
+    )
 {
     if (0 == mesh)
         return 0;
@@ -722,7 +722,7 @@ s32 Q3StartPosition(IQ3LevelMesh *mesh,
 
 
 /*!
-        gets a accumulated force on a given surface
+ *      gets a accumulated force on a given surface
  */
 vector3df getGravity(const c8 *surface)
 {
@@ -744,7 +744,7 @@ vector3df getGravity(const c8 *surface)
 
 
 /*
-        Dynamically load the Irrlicht Library
+ *      Dynamically load the Irrlicht Library
  */
 
 #if defined(_IRR_WINDOWS_API_)
@@ -779,7 +779,7 @@ funcptr_createDeviceEx load_createDeviceEx(const c8 *filename)
 #endif
 
 /*
-        get the current collision response camera animator
+ *      get the current collision response camera animator
  */
 ISceneNodeAnimatorCollisionResponse* camCollisionResponse(IrrlichtDevice *device)
 {

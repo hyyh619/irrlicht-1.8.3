@@ -15,8 +15,8 @@ public:
     CMainMenu();
 
     bool run(bool &outFullscreen, bool &outMusic, bool &outShadows,
-             bool &outAdditive, bool &outVSync, bool &outAA,
-             video::E_DRIVER_TYPE &outDriver);
+        bool &outAdditive, bool &outVSync, bool &outAA,
+        video::E_DRIVER_TYPE &outDriver);
 
     virtual bool OnEvent(const SEvent &event);
 

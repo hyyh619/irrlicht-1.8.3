@@ -1,18 +1,18 @@
 /** Example 012 Terrain Rendering
-
-   This tutorial will briefly show how to use the terrain renderer of Irrlicht. It
-   will also show the terrain renderer triangle selector to be able to do
-   collision detection with terrain.
-
-   Note that the Terrain Renderer in Irrlicht is based on Spintz'
-   GeoMipMapSceneNode, lots of thanks go to him. DeusXL provided a new elegant
-   simple solution for building larger area on small heightmaps -> terrain
-   smoothing.
-
-   In the beginning there is nothing special. We include the needed header files
-   and create an event listener to listen if the user presses a key: The 'W' key
-   switches to wireframe mode, the 'P' key to pointcloud mode, and the 'D' key
-   toggles between solid and detail mapped material.
+ *
+ * This tutorial will briefly show how to use the terrain renderer of Irrlicht. It
+ * will also show the terrain renderer triangle selector to be able to do
+ * collision detection with terrain.
+ *
+ * Note that the Terrain Renderer in Irrlicht is based on Spintz'
+ * GeoMipMapSceneNode, lots of thanks go to him. DeusXL provided a new elegant
+ * simple solution for building larger area on small heightmaps -> terrain
+ * smoothing.
+ *
+ * In the beginning there is nothing special. We include the needed header files
+ * and create an event listener to listen if the user presses a key: The 'W' key
+ * switches to wireframe mode, the 'P' key to pointcloud mode, and the 'D' key
+ * toggles between solid and detail mapped material.
  */
 #include <irrlicht.h>
 #include "driverChoice.h"
@@ -42,37 +42,37 @@ public:
         {
             switch (event.KeyInput.Key)
             {
-            case irr::KEY_KEY_W:             // switch wire frame mode
-                Terrain->setMaterialFlag(video::EMF_WIREFRAME,
-                                         !Terrain->getMaterial(0).Wireframe);
-                Terrain->setMaterialFlag(video::EMF_POINTCLOUD, false);
-                return true;
+                case irr::KEY_KEY_W:         // switch wire frame mode
+                    Terrain->setMaterialFlag(video::EMF_WIREFRAME,
+                        !Terrain->getMaterial(0).Wireframe);
+                    Terrain->setMaterialFlag(video::EMF_POINTCLOUD, false);
+                    return true;
 
-            case irr::KEY_KEY_P:             // switch wire frame mode
-                Terrain->setMaterialFlag(video::EMF_POINTCLOUD,
-                                         !Terrain->getMaterial(0).PointCloud);
-                Terrain->setMaterialFlag(video::EMF_WIREFRAME, false);
-                return true;
+                case irr::KEY_KEY_P:         // switch wire frame mode
+                    Terrain->setMaterialFlag(video::EMF_POINTCLOUD,
+                        !Terrain->getMaterial(0).PointCloud);
+                    Terrain->setMaterialFlag(video::EMF_WIREFRAME, false);
+                    return true;
 
-            case irr::KEY_KEY_D:             // toggle detail map
-                Terrain->setMaterialType(
-                    Terrain->getMaterial(0).MaterialType == video::EMT_SOLID ?
-                    video::EMT_DETAIL_MAP : video::EMT_SOLID);
-                return true;
+                case irr::KEY_KEY_D:         // toggle detail map
+                    Terrain->setMaterialType(
+                        Terrain->getMaterial(0).MaterialType == video::EMT_SOLID ?
+                        video::EMT_DETAIL_MAP : video::EMT_SOLID);
+                    return true;
 
-            case irr::KEY_KEY_S:             // toggle skies
-                showBox = !showBox;
-                Skybox->setVisible(showBox);
-                Skydome->setVisible(!showBox);
-                return true;
+                case irr::KEY_KEY_S:         // toggle skies
+                    showBox = !showBox;
+                    Skybox->setVisible(showBox);
+                    Skydome->setVisible(!showBox);
+                    return true;
 
-            case irr::KEY_KEY_X:             // toggle debug information
-                showDebug = !showDebug;
-                Terrain->setDebugDataVisible(showDebug ? scene::EDS_BBOX_ALL : scene::EDS_OFF);
-                return true;
+                case irr::KEY_KEY_X:         // toggle debug information
+                    showDebug = !showDebug;
+                    Terrain->setDebugDataVisible(showDebug ? scene::EDS_BBOX_ALL : scene::EDS_OFF);
+                    return true;
 
-            default:
-                break;
+                default:
+                    break;
             }
         }
 
@@ -89,9 +89,9 @@ private:
 
 
 /*
-   The start of the main function starts like in most other example. We ask the
-   user for the desired renderer and start it up. This time with the advanced
-   parameter handling.
+ * The start of the main function starts like in most other example. We ask the
+ * user for the desired renderer and start it up. This time with the advanced
+ * parameter handling.
  */
 int main()
 {
@@ -112,9 +112,9 @@ int main()
         return 1;         // could not create selected driver.
 
     /*
-       First, we add standard stuff to the scene: A nice irrlicht engine
-       logo, a small help text, a user controlled camera, and we disable
-       the mouse cursor.
+     * First, we add standard stuff to the scene: A nice irrlicht engine
+     * logo, a small help text, a user controlled camera, and we disable
+     * the mouse cursor.
      */
 
     video::IVideoDriver  *driver = device->getVideoDriver();
@@ -125,7 +125,7 @@ int main()
 
     // add irrlicht logo
     env->addImage(driver->getTexture("../../media/irrlichtlogo2.png"),
-                  core::position2d<s32>(10, 10));
+        core::position2d<s32>(10, 10));
 
     // set other font
     env->getSkin()->setFont(env->getFont("../../media/fontlucida.png"));
@@ -147,20 +147,20 @@ int main()
     device->getCursorControl()->setVisible(false);
 
     /*
-       Here comes the terrain renderer scene node: We add it just like any
-       other scene node to the scene using
-       ISceneManager::addTerrainSceneNode(). The only parameter we use is a
-       file name to the heightmap we use. A heightmap is simply a gray scale
-       texture. The terrain renderer loads it and creates the 3D terrain from
-       it.
-
-       To make the terrain look more big, we change the scale factor of
-       it to (40, 4.4, 40). Because we don't have any dynamic lights in the
-       scene, we switch off the lighting, and we set the file
-       terrain-texture.jpg as texture for the terrain and detailmap3.jpg as
-       second texture, called detail map. At last, we set the scale values for
-       the texture: The first texture will be repeated only one time over the
-       whole terrain, and the second one (detail map) 20 times.
+     * Here comes the terrain renderer scene node: We add it just like any
+     * other scene node to the scene using
+     * ISceneManager::addTerrainSceneNode(). The only parameter we use is a
+     * file name to the heightmap we use. A heightmap is simply a gray scale
+     * texture. The terrain renderer loads it and creates the 3D terrain from
+     * it.
+     *
+     * To make the terrain look more big, we change the scale factor of
+     * it to (40, 4.4, 40). Because we don't have any dynamic lights in the
+     * scene, we switch off the lighting, and we set the file
+     * terrain-texture.jpg as texture for the terrain and detailmap3.jpg as
+     * second texture, called detail map. At last, we set the scale values for
+     * the texture: The first texture will be repeated only one time over the
+     * whole terrain, and the second one (detail map) 20 times.
      */
 
     // add terrain scene node
@@ -180,21 +180,21 @@ int main()
     terrain->setMaterialFlag(video::EMF_LIGHTING, false);
 
     terrain->setMaterialTexture(0,
-                                driver->getTexture("../../media/terrain-texture.jpg"));
+        driver->getTexture("../../media/terrain-texture.jpg"));
     terrain->setMaterialTexture(1,
-                                driver->getTexture("../../media/detailmap3.jpg"));
+        driver->getTexture("../../media/detailmap3.jpg"));
 
     terrain->setMaterialType(video::EMT_DETAIL_MAP);
 
     terrain->scaleTexture(1.0f, 20.0f);
 
     /*
-       To be able to do collision with the terrain, we create a triangle selector.
-       If you want to know what triangle selectors do, just take a look into the
-       collision tutorial. The terrain triangle selector works together with the
-       terrain. To demonstrate this, we create a collision response animator
-       and attach it to the camera, so that the camera will not be able to fly
-       through the terrain.
+     * To be able to do collision with the terrain, we create a triangle selector.
+     * If you want to know what triangle selectors do, just take a look into the
+     * collision tutorial. The terrain triangle selector works together with the
+     * terrain. To demonstrate this, we create a collision response animator
+     * and attach it to the camera, so that the camera will not be able to fly
+     * through the terrain.
      */
 
     // create triangle selector for the terrain
@@ -220,11 +220,11 @@ int main()
     buffer->drop();     // When done drop the buffer again.
 
     /*
-       To make the user be able to switch between normal and wireframe mode,
-       we create an instance of the event receiver from above and let Irrlicht
-       know about it. In addition, we add the skybox which we already used in
-       lots of Irrlicht examples and a skydome, which is shown mutually
-       exclusive with the skybox by pressing 'S'.
+     * To make the user be able to switch between normal and wireframe mode,
+     * we create an instance of the event receiver from above and let Irrlicht
+     * know about it. In addition, we add the skybox which we already used in
+     * lots of Irrlicht examples and a skydome, which is shown mutually
+     * exclusive with the skybox by pressing 'S'.
      */
 
     // create skybox and skydome
@@ -246,7 +246,7 @@ int main()
     device->setEventReceiver(&receiver);
 
     /*
-       That's it, draw everything.
+     * That's it, draw everything.
      */
 
     int lastFPS = -1;
@@ -273,7 +273,7 @@ int main()
                 // We can use camera position because terrain is located at coordinate origin
                 str += " Height: ";
                 str += terrain->getHeight(camera->getAbsolutePosition().X,
-                                          camera->getAbsolutePosition().Z);
+                        camera->getAbsolutePosition().Z);
 
                 device->setWindowCaption(str.c_str());
                 lastFPS = fps;
@@ -286,5 +286,5 @@ int main()
 }
 
 /*
-   Now you know how to use terrain in Irrlicht.
+ * Now you know how to use terrain in Irrlicht.
  **/

@@ -1,7 +1,7 @@
 /*!
-        Sound Factory.
-        provides a sound interface
-
+ *      Sound Factory.
+ *      provides a sound interface
+ *
  */
 #ifndef __QUAKE3_SOUND__H_INCLUDED__
 #define __QUAKE3_SOUND__H_INCLUDED__

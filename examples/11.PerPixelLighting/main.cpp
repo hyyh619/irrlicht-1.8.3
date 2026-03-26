@@ -1,12 +1,12 @@
 /** Example 011 Per-Pixel Lighting
-
-   This tutorial shows how to use one of the built in more complex materials in
-   irrlicht: Per pixel lighted surfaces using normal maps and parallax mapping. It
-   will also show how to use fog and moving particle systems. And don't panic: You
-   do not need any experience with shaders to use these materials in Irrlicht.
-
-   At first, we need to include all headers and do the stuff we always do, like in
-   nearly all other tutorials.
+ *
+ * This tutorial shows how to use one of the built in more complex materials in
+ * irrlicht: Per pixel lighted surfaces using normal maps and parallax mapping. It
+ * will also show how to use fog and moving particle systems. And don't panic: You
+ * do not need any experience with shaders to use these materials in Irrlicht.
+ *
+ * At first, we need to include all headers and do the stuff we always do, like in
+ * nearly all other tutorials.
  */
 #include <irrlicht.h>
 #include "driverChoice.h"
@@ -18,18 +18,18 @@ using namespace irr;
 #endif
 
 /*
-   For this example, we need an event receiver, to make it possible for the user
-   to switch between the three available material types. In addition, the event
-   receiver will create some small GUI window which displays what material is
-   currently being used. There is nothing special done in this class, so maybe you
-   want to skip reading it.
+ * For this example, we need an event receiver, to make it possible for the user
+ * to switch between the three available material types. In addition, the event
+ * receiver will create some small GUI window which displays what material is
+ * currently being used. There is nothing special done in this class, so maybe you
+ * want to skip reading it.
  */
 class MyEventReceiver : public IEventReceiver
 {
 public:
 
     MyEventReceiver(scene::ISceneNode *room, scene::ISceneNode *earth,
-                    gui::IGUIEnvironment *env, video::IVideoDriver *driver)
+        gui::IGUIEnvironment *env, video::IVideoDriver *driver)
     {
         // store pointer to room so we can change its drawing mode
         Room   = room;
@@ -114,14 +114,14 @@ private:
         // change material setting
         switch (ListBox->getSelected())
         {
-        case 0: type = video::EMT_SOLID;
-            break;
+            case 0: type = video::EMT_SOLID;
+                break;
 
-        case 1: type = video::EMT_NORMAL_MAP_SOLID;
-            break;
+            case 1: type = video::EMT_NORMAL_MAP_SOLID;
+                break;
 
-        case 2: type = video::EMT_PARALLAX_MAP_SOLID;
-            break;
+            case 2: type = video::EMT_PARALLAX_MAP_SOLID;
+                break;
         }
 
         Room->setMaterialType(type);
@@ -129,27 +129,27 @@ private:
         // change material setting
         switch (ListBox->getSelected())
         {
-        case 0: type = video::EMT_TRANSPARENT_VERTEX_ALPHA;
-            break;
+            case 0: type = video::EMT_TRANSPARENT_VERTEX_ALPHA;
+                break;
 
-        case 1: type = video::EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA;
-            break;
+            case 1: type = video::EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA;
+                break;
 
-        case 2: type = video::EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA;
-            break;
+            case 2: type = video::EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA;
+                break;
         }
 
         Earth->setMaterialType(type);
 
         /*
-           We need to add a warning if the materials will not be able to
-           be displayed 100% correctly. This is no problem, they will be
-           rendered using fall back materials, but at least the user
-           should know that it would look better on better hardware. We
-           simply check if the material renderer is able to draw at full
-           quality on the current hardware. The
-           IMaterialRenderer::getRenderCapability() returns 0 if this is
-           the case.
+         * We need to add a warning if the materials will not be able to
+         * be displayed 100% correctly. This is no problem, they will be
+         * rendered using fall back materials, but at least the user
+         * should know that it would look better on better hardware. We
+         * simply check if the material renderer is able to draw at full
+         * quality on the current hardware. The
+         * IMaterialRenderer::getRenderCapability() returns 0 if this is
+         * the case.
          */
         video::IMaterialRenderer *renderer = Driver->getMaterialRenderer(type);
 
@@ -172,7 +172,7 @@ private:
 
 
 /*
-   Now for the real fun. We create an Irrlicht Device and start to setup the scene.
+ * Now for the real fun. We create an Irrlicht Device and start to setup the scene.
  */
 int main()
 {
@@ -185,19 +185,19 @@ int main()
     // create device
 
     IrrlichtDevice *device = createDevice(driverType,
-                                          core::dimension2d<u32>(640, 480));
+            core::dimension2d<u32>(640, 480));
 
     if (device == 0)
         return 1;         // could not create selected driver.
 
     /*
-       Before we start with the interesting stuff, we do some simple things:
-       Store pointers to the most important parts of the engine (video driver,
-       scene manager, gui environment) to safe us from typing too much, add an
-       irrlicht engine logo to the window and a user controlled first person
-       shooter style camera. Also, we let the engine know that it should store
-       all textures in 32 bit. This necessary because for parallax mapping, we
-       need 32 bit textures.
+     * Before we start with the interesting stuff, we do some simple things:
+     * Store pointers to the most important parts of the engine (video driver,
+     * scene manager, gui environment) to safe us from typing too much, add an
+     * irrlicht engine logo to the window and a user controlled first person
+     * shooter style camera. Also, we let the engine know that it should store
+     * all textures in 32 bit. This necessary because for parallax mapping, we
+     * need 32 bit textures.
      */
 
     video::IVideoDriver  *driver = device->getVideoDriver();
@@ -208,7 +208,7 @@ int main()
 
     // add irrlicht logo
     env->addImage(driver->getTexture("../../media/irrlichtlogo3.png"),
-                  core::position2d<s32>(10, 10));
+        core::position2d<s32>(10, 10));
 
     // add camera
     scene::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS();
@@ -218,22 +218,22 @@ int main()
     device->getCursorControl()->setVisible(false);
 
     /*
-       Because we want the whole scene to look a little bit scarier, we add
-       some fog to it. This is done by a call to IVideoDriver::setFog(). There
-       you can set various fog settings. In this example, we use pixel fog,
-       because it will work well with the materials we'll use in this example.
-       Please note that you will have to set the material flag EMF_FOG_ENABLE
-       to 'true' in every scene node which should be affected by this fog.
+     * Because we want the whole scene to look a little bit scarier, we add
+     * some fog to it. This is done by a call to IVideoDriver::setFog(). There
+     * you can set various fog settings. In this example, we use pixel fog,
+     * because it will work well with the materials we'll use in this example.
+     * Please note that you will have to set the material flag EMF_FOG_ENABLE
+     * to 'true' in every scene node which should be affected by this fog.
      */
     driver->setFog(video::SColor(0, 138, 125, 81), video::EFT_FOG_LINEAR, 250, 1000, .003f, true, false);
 
     /*
-       To be able to display something interesting, we load a mesh from a .3ds
-       file which is a room I modeled with anim8or. It is the same room as
-       from the specialFX example. Maybe you remember from that tutorial, I am
-       no good modeler at all and so I totally messed up the texture mapping
-       in this model, but we can simply repair it with the
-       IMeshManipulator::makePlanarTextureMapping() method.
+     * To be able to display something interesting, we load a mesh from a .3ds
+     * file which is a room I modeled with anim8or. It is the same room as
+     * from the specialFX example. Maybe you remember from that tutorial, I am
+     * no good modeler at all and so I totally messed up the texture mapping
+     * in this model, but we can simply repair it with the
+     * IMeshManipulator::makePlanarTextureMapping() method.
      */
 
     scene::IAnimatedMesh *roomMesh = smgr->getMesh("../../media/room.3ds");
@@ -248,19 +248,19 @@ int main()
             roomMesh->getMesh(0), 0.003f);
 
         /*
-           Now for the first exciting thing: If we successfully loaded the
-           mesh we need to apply textures to it. Because we want this room
-           to be displayed with a very cool material, we have to do a
-           little bit more than just set the textures. Instead of only
-           loading a color map as usual, we also load a height map which
-           is simply a grayscale texture. From this height map, we create
-           a normal map which we will set as second texture of the room.
-           If you already have a normal map, you could directly set it,
-           but I simply didn't find a nice normal map for this texture.
-           The normal map texture is being generated by the
-           makeNormalMapTexture method of the VideoDriver. The second
-           parameter specifies the height of the heightmap. If you set it
-           to a bigger value, the map will look more rocky.
+         * Now for the first exciting thing: If we successfully loaded the
+         * mesh we need to apply textures to it. Because we want this room
+         * to be displayed with a very cool material, we have to do a
+         * little bit more than just set the textures. Instead of only
+         * loading a color map as usual, we also load a height map which
+         * is simply a grayscale texture. From this height map, we create
+         * a normal map which we will set as second texture of the room.
+         * If you already have a normal map, you could directly set it,
+         * but I simply didn't find a nice normal map for this texture.
+         * The normal map texture is being generated by the
+         * makeNormalMapTexture method of the VideoDriver. The second
+         * parameter specifies the height of the heightmap. If you set it
+         * to a bigger value, the map will look more rocky.
          */
 
         video::ITexture *normalMap =
@@ -270,29 +270,29 @@ int main()
             driver->makeNormalMapTexture(normalMap, 9.0f);
 
 /*
-                // The Normal Map and the displacement map/height map in the alpha channel
-                video::ITexture* normalMap =
-                        driver->getTexture("../../media/rockwall_NRM.tga");
+ *              // The Normal Map and the displacement map/height map in the alpha channel
+ *              video::ITexture* normalMap =
+ *                      driver->getTexture("../../media/rockwall_NRM.tga");
  */
         /*
-           But just setting color and normal map is not everything. The
-           material we want to use needs some additional informations per
-           vertex like tangents and binormals. Because we are too lazy to
-           calculate that information now, we let Irrlicht do this for us.
-           That's why we call IMeshManipulator::createMeshWithTangents().
-           It creates a mesh copy with tangents and binormals from another
-           mesh. After we've done that, we simply create a standard
-           mesh scene node with this mesh copy, set color and normal map
-           and adjust some other material settings. Note that we set
-           EMF_FOG_ENABLE to true to enable fog in the room.
+         * But just setting color and normal map is not everything. The
+         * material we want to use needs some additional informations per
+         * vertex like tangents and binormals. Because we are too lazy to
+         * calculate that information now, we let Irrlicht do this for us.
+         * That's why we call IMeshManipulator::createMeshWithTangents().
+         * It creates a mesh copy with tangents and binormals from another
+         * mesh. After we've done that, we simply create a standard
+         * mesh scene node with this mesh copy, set color and normal map
+         * and adjust some other material settings. Note that we set
+         * EMF_FOG_ENABLE to true to enable fog in the room.
          */
 
         scene::IMesh *tangentMesh = smgr->getMeshManipulator()->
-                                    createMeshWithTangents(roomMesh->getMesh(0));
+            createMeshWithTangents(roomMesh->getMesh(0));
 
         room = smgr->addMeshSceneNode(tangentMesh);
         room->setMaterialTexture(0,
-                                 driver->getTexture("../../media/rockwall.jpg"));
+            driver->getTexture("../../media/rockwall.jpg"));
         room->setMaterialTexture(1, normalMap);
 
         // Stones don't glitter..
@@ -309,13 +309,13 @@ int main()
     }
 
     /*
-       After we've created a room shaded by per pixel lighting, we add a
-       sphere into it with the same material, but we'll make it transparent.
-       In addition, because the sphere looks somehow like a familiar planet,
-       we make it rotate. The procedure is similar as before. The difference
-       is that we are loading the mesh from an .x file which already contains
-       a color map so we do not need to load it manually. But the sphere is a
-       little bit too small for our needs, so we scale it by the factor 50.
+     * After we've created a room shaded by per pixel lighting, we add a
+     * sphere into it with the same material, but we'll make it transparent.
+     * In addition, because the sphere looks somehow like a familiar planet,
+     * we make it rotate. The procedure is similar as before. The difference
+     * is that we are loading the mesh from an .x file which already contains
+     * a color map so we do not need to load it manually. But the sphere is a
+     * little bit too small for our needs, so we scale it by the factor 50.
      */
 
     // add earth sphere
@@ -365,17 +365,17 @@ int main()
     }
 
     /*
-       Per pixel lighted materials only look cool when there are moving
-       lights. So we add some. And because moving lights alone are so boring,
-       we add billboards to them, and a whole particle system to one of them.
-       We start with the first light which is red and has only the billboard
-       attached.
+     * Per pixel lighted materials only look cool when there are moving
+     * lights. So we add some. And because moving lights alone are so boring,
+     * we add billboards to them, and a whole particle system to one of them.
+     * We start with the first light which is red and has only the billboard
+     * attached.
      */
 
     // add light 1 (more green)
     scene::ILightSceneNode *light1 =
         smgr->addLightSceneNode(0, core::vector3df(0, 0, 0),
-                                video::SColorf(0.5f, 1.0f, 0.5f, 0.0f), 800.0f);
+            video::SColorf(0.5f, 1.0f, 0.5f, 0.0f), 800.0f);
 
     light1->setDebugDataVisible (scene::EDS_BBOX);
 
@@ -396,26 +396,26 @@ int main()
     bill->setMaterialTexture(0, driver->getTexture("../../media/particlegreen.jpg"));
 
     /*
-       Now the same again, with the second light. The difference is that we
-       add a particle system to it too. And because the light moves, the
-       particles of the particlesystem will follow. If you want to know more
-       about how particle systems are created in Irrlicht, take a look at the
-       specialFx example. Maybe you will have noticed that we only add 2
-       lights, this has a simple reason: The low end version of this material
-       was written in ps1.1 and vs1.1, which doesn't allow more lights. You
-       could add a third light to the scene, but it won't be used to shade the
-       walls. But of course, this will change in future versions of Irrlicht
-       where higher versions of pixel/vertex shaders will be implemented too.
+     * Now the same again, with the second light. The difference is that we
+     * add a particle system to it too. And because the light moves, the
+     * particles of the particlesystem will follow. If you want to know more
+     * about how particle systems are created in Irrlicht, take a look at the
+     * specialFx example. Maybe you will have noticed that we only add 2
+     * lights, this has a simple reason: The low end version of this material
+     * was written in ps1.1 and vs1.1, which doesn't allow more lights. You
+     * could add a third light to the scene, but it won't be used to shade the
+     * walls. But of course, this will change in future versions of Irrlicht
+     * where higher versions of pixel/vertex shaders will be implemented too.
      */
 
     // add light 2 (red)
     scene::ISceneNode *light2 =
         smgr->addLightSceneNode(0, core::vector3df(0, 0, 0),
-                                video::SColorf(1.0f, 0.2f, 0.2f, 0.0f), 800.0f);
+            video::SColorf(1.0f, 0.2f, 0.2f, 0.0f), 800.0f);
 
     // add fly circle animator to light 2
     anim = smgr->createFlyCircleAnimator(core::vector3df(0, 150, 0), 200.0f,
-                                         0.001f, core::vector3df(0.2f, 0.9f, 0.f));
+            0.001f, core::vector3df(0.2f, 0.9f, 0.f));
     light2->addAnimator(anim);
     anim->drop();
 
@@ -458,7 +458,7 @@ int main()
     device->setEventReceiver(&receiver);
 
     /*
-       Finally, draw everything. That's it.
+     * Finally, draw everything. That's it.
      */
 
     int lastFPS = -1;

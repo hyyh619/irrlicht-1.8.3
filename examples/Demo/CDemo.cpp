@@ -113,8 +113,8 @@ void CDemo::run()
             const s32 nowfps = driver->getFPS();
 
             swprintf(tmp, 255, L"%ls fps:%3d triangles:%0.3f mio/s",
-                     driver->getName(), driver->getFPS(),
-                     driver->getPrimitiveCountDrawn(1) * (1.f / 1000000.f));
+                driver->getName(), driver->getFPS(),
+                driver->getPrimitiveCountDrawn(1) * (1.f / 1000000.f));
 
             statusText->setText(tmp);
             if (nowfps != lastfps)
@@ -145,18 +145,18 @@ bool CDemo::OnEvent(const SEvent &event)
             device->closeDevice();
     }
     else if (((event.EventType == EET_KEY_INPUT_EVENT &&
-               event.KeyInput.Key == KEY_SPACE &&
-               event.KeyInput.PressedDown == false) ||
-              (event.EventType == EET_MOUSE_INPUT_EVENT &&
-               event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP)) &&
-             currentScene == 3)
+        event.KeyInput.Key == KEY_SPACE &&
+        event.KeyInput.PressedDown == false) ||
+        (event.EventType == EET_MOUSE_INPUT_EVENT &&
+        event.MouseInput.Event == EMIE_LMOUSE_LEFT_UP)) &&
+        currentScene == 3)
     {
         // shoot
         shoot();
     }
     else if (event.EventType == EET_KEY_INPUT_EVENT &&
-             event.KeyInput.Key == KEY_F9 &&
-             event.KeyInput.PressedDown == false)
+        event.KeyInput.Key == KEY_F9 &&
+        event.KeyInput.PressedDown == false)
     {
         video::IImage *image = device->getVideoDriver()->createScreenShot();
         if (image)
@@ -200,138 +200,138 @@ void CDemo::switchToNextScene()
 
     switch (currentScene)
     {
-    case -1:     // loading screen
-        timeForThisScene = 0;
-        createLoadingScreen();
+        case -1: // loading screen
+            timeForThisScene = 0;
+            createLoadingScreen();
+            break;
+
+        case 0: // load scene
+            timeForThisScene = 0;
+            loadSceneData();
+            break;
+
+        case 1: // panorama camera
+        {
+            currentScene += 1;
+            // camera = sm->addCameraSceneNode(0, core::vector3df(0,0,0), core::vector3df(-586,708,52));
+            // camera->setTarget(core::vector3df(0,400,0));
+
+            core::array<core::vector3df> points;
+
+            points.push_back(core::vector3df(-931.473755f, 138.300003f, 987.279114f));             // -49873
+            points.push_back(core::vector3df(-847.902222f, 136.757553f, 915.792725f));             // -50559
+            points.push_back(core::vector3df(-748.680420f, 152.254501f, 826.418945f));             // -51964
+            points.push_back(core::vector3df(-708.428406f, 213.569580f, 784.466675f));             // -53251
+            points.push_back(core::vector3df(-686.217651f, 288.141174f, 762.965576f));             // -54015
+            points.push_back(core::vector3df(-679.685059f, 365.095612f, 756.551453f));             // -54733
+            points.push_back(core::vector3df(-671.317871f, 447.360107f, 749.394592f));             // -55588
+            points.push_back(core::vector3df(-669.468445f, 583.335632f, 747.711853f));             // -56178
+            points.push_back(core::vector3df(-667.611267f, 727.313232f, 746.018250f));             // -56757
+            points.push_back(core::vector3df(-665.853210f, 862.791931f, 744.436096f));             // -57859
+            points.push_back(core::vector3df(-642.649597f, 1026.047607f, 724.259827f));             // -59705
+            points.push_back(core::vector3df(-517.793884f, 838.396790f, 490.326050f));             // -60983
+            points.push_back(core::vector3df(-474.387299f, 715.691467f, 344.639984f));             // -61629
+            points.push_back(core::vector3df(-444.600250f, 601.155701f, 180.938095f));             // -62319
+            points.push_back(core::vector3df(-414.808899f, 479.691406f, 4.866660f));             // -63048
+            points.push_back(core::vector3df(-410.418945f, 429.642242f, -134.332687f));             // -63757
+            points.push_back(core::vector3df(-399.837585f, 411.498383f, -349.350983f));             // -64418
+            points.push_back(core::vector3df(-390.756653f, 403.970093f, -524.454407f));             // -65005
+            points.push_back(core::vector3df(-334.864227f, 350.065491f, -732.397400f));             // -65701
+            points.push_back(core::vector3df(-195.253387f, 349.577209f, -812.475891f));             // -66335
+            points.push_back(core::vector3df(16.255573f, 363.743134f, -833.800415f));             // -67170
+            points.push_back(core::vector3df(234.940964f, 352.957825f, -820.150696f));             // -67939
+            points.push_back(core::vector3df(436.797668f, 349.236450f, -816.914185f));             // -68596
+            points.push_back(core::vector3df(575.236206f, 356.244812f, -719.788513f));             // -69166
+            points.push_back(core::vector3df(594.131042f, 387.173828f, -609.675598f));             // -69744
+            points.push_back(core::vector3df(617.615234f, 412.002899f, -326.174072f));             // -70640
+            points.push_back(core::vector3df(606.456848f, 403.221954f, -104.179291f));             // -71390
+            points.push_back(core::vector3df(610.958252f, 407.037750f, 117.209778f));             // -72085
+            points.push_back(core::vector3df(597.956909f, 395.167877f, 345.942200f));             // -72817
+            points.push_back(core::vector3df(587.383118f, 391.444519f, 566.098633f));             // -73477
+            points.push_back(core::vector3df(559.572449f, 371.991333f, 777.689453f));             // -74124
+            points.push_back(core::vector3df(423.753204f, 329.990051f, 925.859741f));             // -74941
+            points.push_back(core::vector3df(247.520050f, 252.818954f, 935.311829f));             // -75651
+            points.push_back(core::vector3df(114.756012f, 199.799759f, 805.014160f));
+            points.push_back(core::vector3df(96.783348f, 181.639481f, 648.188110f));
+            points.push_back(core::vector3df(97.865623f, 138.905975f, 484.812561f));
+            points.push_back(core::vector3df(99.612457f, 102.463669f, 347.603210f));
+            points.push_back(core::vector3df(99.612457f, 102.463669f, 347.603210f));
+            points.push_back(core::vector3df(99.612457f, 102.463669f, 347.603210f));
+
+            timeForThisScene = (points.size() - 3) * 1000;
+
+            camera = sm->addCameraSceneNode(0, points[0], core::vector3df(0, 400, 0));
+            // camera->setTarget(core::vector3df(0,400,0));
+
+            sa = sm->createFollowSplineAnimator(device->getTimer()->getTime(),
+                    points);
+            camera->addAnimator(sa);
+            sa->drop();
+
+            model1->setVisible(false);
+            model2->setVisible(false);
+            campFire->setVisible(false);
+            inOutFader->fadeIn(7000);
+        }
         break;
 
-    case 0:     // load scene
-        timeForThisScene = 0;
-        loadSceneData();
-        break;
+        case 2: // down fly anim camera
+            camera = sm->addCameraSceneNode(0, core::vector3df(100, 40, -80), core::vector3df(844, 670, -885));
+            sa     = sm->createFlyStraightAnimator(core::vector3df(94, 1002, 127),
+                    core::vector3df(108, 15, -60), 10000, true);
+            camera->addAnimator(sa);
+            timeForThisScene = 9900;
+            model1->setVisible(true);
+            model2->setVisible(false);
+            campFire->setVisible(false);
+            sa->drop();
+            break;
 
-    case 1:     // panorama camera
-    {
-        currentScene += 1;
-        // camera = sm->addCameraSceneNode(0, core::vector3df(0,0,0), core::vector3df(-586,708,52));
-        // camera->setTarget(core::vector3df(0,400,0));
+        case 3: // interactive, go around
+        {
+            model1->setVisible(true);
+            model2->setVisible(true);
+            campFire->setVisible(true);
+            timeForThisScene = -1;
 
-        core::array<core::vector3df> points;
+            SKeyMap keyMap[9];
+            keyMap[0].Action  = EKA_MOVE_FORWARD;
+            keyMap[0].KeyCode = KEY_UP;
+            keyMap[1].Action  = EKA_MOVE_FORWARD;
+            keyMap[1].KeyCode = KEY_KEY_W;
 
-        points.push_back(core::vector3df(-931.473755f, 138.300003f, 987.279114f));                 // -49873
-        points.push_back(core::vector3df(-847.902222f, 136.757553f, 915.792725f));                 // -50559
-        points.push_back(core::vector3df(-748.680420f, 152.254501f, 826.418945f));                 // -51964
-        points.push_back(core::vector3df(-708.428406f, 213.569580f, 784.466675f));                 // -53251
-        points.push_back(core::vector3df(-686.217651f, 288.141174f, 762.965576f));                 // -54015
-        points.push_back(core::vector3df(-679.685059f, 365.095612f, 756.551453f));                 // -54733
-        points.push_back(core::vector3df(-671.317871f, 447.360107f, 749.394592f));                 // -55588
-        points.push_back(core::vector3df(-669.468445f, 583.335632f, 747.711853f));                 // -56178
-        points.push_back(core::vector3df(-667.611267f, 727.313232f, 746.018250f));                 // -56757
-        points.push_back(core::vector3df(-665.853210f, 862.791931f, 744.436096f));                 // -57859
-        points.push_back(core::vector3df(-642.649597f, 1026.047607f, 724.259827f));                 // -59705
-        points.push_back(core::vector3df(-517.793884f, 838.396790f, 490.326050f));                 // -60983
-        points.push_back(core::vector3df(-474.387299f, 715.691467f, 344.639984f));                 // -61629
-        points.push_back(core::vector3df(-444.600250f, 601.155701f, 180.938095f));                 // -62319
-        points.push_back(core::vector3df(-414.808899f, 479.691406f, 4.866660f));                 // -63048
-        points.push_back(core::vector3df(-410.418945f, 429.642242f, -134.332687f));                 // -63757
-        points.push_back(core::vector3df(-399.837585f, 411.498383f, -349.350983f));                 // -64418
-        points.push_back(core::vector3df(-390.756653f, 403.970093f, -524.454407f));                 // -65005
-        points.push_back(core::vector3df(-334.864227f, 350.065491f, -732.397400f));                 // -65701
-        points.push_back(core::vector3df(-195.253387f, 349.577209f, -812.475891f));                 // -66335
-        points.push_back(core::vector3df(16.255573f, 363.743134f, -833.800415f));                 // -67170
-        points.push_back(core::vector3df(234.940964f, 352.957825f, -820.150696f));                 // -67939
-        points.push_back(core::vector3df(436.797668f, 349.236450f, -816.914185f));                 // -68596
-        points.push_back(core::vector3df(575.236206f, 356.244812f, -719.788513f));                 // -69166
-        points.push_back(core::vector3df(594.131042f, 387.173828f, -609.675598f));                 // -69744
-        points.push_back(core::vector3df(617.615234f, 412.002899f, -326.174072f));                 // -70640
-        points.push_back(core::vector3df(606.456848f, 403.221954f, -104.179291f));                 // -71390
-        points.push_back(core::vector3df(610.958252f, 407.037750f, 117.209778f));                 // -72085
-        points.push_back(core::vector3df(597.956909f, 395.167877f, 345.942200f));                 // -72817
-        points.push_back(core::vector3df(587.383118f, 391.444519f, 566.098633f));                 // -73477
-        points.push_back(core::vector3df(559.572449f, 371.991333f, 777.689453f));                 // -74124
-        points.push_back(core::vector3df(423.753204f, 329.990051f, 925.859741f));                 // -74941
-        points.push_back(core::vector3df(247.520050f, 252.818954f, 935.311829f));                 // -75651
-        points.push_back(core::vector3df(114.756012f, 199.799759f, 805.014160f));
-        points.push_back(core::vector3df(96.783348f, 181.639481f, 648.188110f));
-        points.push_back(core::vector3df(97.865623f, 138.905975f, 484.812561f));
-        points.push_back(core::vector3df(99.612457f, 102.463669f, 347.603210f));
-        points.push_back(core::vector3df(99.612457f, 102.463669f, 347.603210f));
-        points.push_back(core::vector3df(99.612457f, 102.463669f, 347.603210f));
+            keyMap[2].Action  = EKA_MOVE_BACKWARD;
+            keyMap[2].KeyCode = KEY_DOWN;
+            keyMap[3].Action  = EKA_MOVE_BACKWARD;
+            keyMap[3].KeyCode = KEY_KEY_S;
 
-        timeForThisScene = (points.size() - 3) * 1000;
+            keyMap[4].Action  = EKA_STRAFE_LEFT;
+            keyMap[4].KeyCode = KEY_LEFT;
+            keyMap[5].Action  = EKA_STRAFE_LEFT;
+            keyMap[5].KeyCode = KEY_KEY_A;
 
-        camera = sm->addCameraSceneNode(0, points[0], core::vector3df(0, 400, 0));
-        // camera->setTarget(core::vector3df(0,400,0));
+            keyMap[6].Action  = EKA_STRAFE_RIGHT;
+            keyMap[6].KeyCode = KEY_RIGHT;
+            keyMap[7].Action  = EKA_STRAFE_RIGHT;
+            keyMap[7].KeyCode = KEY_KEY_D;
 
-        sa = sm->createFollowSplineAnimator(device->getTimer()->getTime(),
-                                            points);
-        camera->addAnimator(sa);
-        sa->drop();
+            keyMap[8].Action  = EKA_JUMP_UP;
+            keyMap[8].KeyCode = KEY_KEY_J;
 
-        model1->setVisible(false);
-        model2->setVisible(false);
-        campFire->setVisible(false);
-        inOutFader->fadeIn(7000);
-    }
-    break;
+            camera = sm->addCameraSceneNodeFPS(0, 100.0f, .4f, -1, keyMap, 9, false, 3.f);
+            camera->setPosition(core::vector3df(108, 140, -140));
+            camera->setFarValue(5000.0f);
 
-    case 2:     // down fly anim camera
-        camera = sm->addCameraSceneNode(0, core::vector3df(100, 40, -80), core::vector3df(844, 670, -885));
-        sa     = sm->createFlyStraightAnimator(core::vector3df(94, 1002, 127),
-                                               core::vector3df(108, 15, -60), 10000, true);
-        camera->addAnimator(sa);
-        timeForThisScene = 9900;
-        model1->setVisible(true);
-        model2->setVisible(false);
-        campFire->setVisible(false);
-        sa->drop();
-        break;
-
-    case 3:     // interactive, go around
-    {
-        model1->setVisible(true);
-        model2->setVisible(true);
-        campFire->setVisible(true);
-        timeForThisScene = -1;
-
-        SKeyMap keyMap[9];
-        keyMap[0].Action  = EKA_MOVE_FORWARD;
-        keyMap[0].KeyCode = KEY_UP;
-        keyMap[1].Action  = EKA_MOVE_FORWARD;
-        keyMap[1].KeyCode = KEY_KEY_W;
-
-        keyMap[2].Action  = EKA_MOVE_BACKWARD;
-        keyMap[2].KeyCode = KEY_DOWN;
-        keyMap[3].Action  = EKA_MOVE_BACKWARD;
-        keyMap[3].KeyCode = KEY_KEY_S;
-
-        keyMap[4].Action  = EKA_STRAFE_LEFT;
-        keyMap[4].KeyCode = KEY_LEFT;
-        keyMap[5].Action  = EKA_STRAFE_LEFT;
-        keyMap[5].KeyCode = KEY_KEY_A;
-
-        keyMap[6].Action  = EKA_STRAFE_RIGHT;
-        keyMap[6].KeyCode = KEY_RIGHT;
-        keyMap[7].Action  = EKA_STRAFE_RIGHT;
-        keyMap[7].KeyCode = KEY_KEY_D;
-
-        keyMap[8].Action  = EKA_JUMP_UP;
-        keyMap[8].KeyCode = KEY_KEY_J;
-
-        camera = sm->addCameraSceneNodeFPS(0, 100.0f, .4f, -1, keyMap, 9, false, 3.f);
-        camera->setPosition(core::vector3df(108, 140, -140));
-        camera->setFarValue(5000.0f);
-
-        scene::ISceneNodeAnimatorCollisionResponse *collider =
-            sm->createCollisionResponseAnimator(
+            scene::ISceneNodeAnimatorCollisionResponse *collider =
+                sm->createCollisionResponseAnimator(
                 metaSelector, camera, core::vector3df(25, 50, 25),
                 core::vector3df(0, quakeLevelMesh ? -10.f : 0.0f, 0),
                 core::vector3df(0, 45, 0), 0.005f);
 
-        camera->addAnimator(collider);
-        collider->drop();
-    }
-    break;
+            camera->addAnimator(collider);
+            collider->drop();
+        }
+        break;
     }
 
     sceneStartTime = device->getTimer()->getTime();
@@ -370,7 +370,7 @@ void CDemo::loadSceneData()
 
             // create map triangle selector
             mapSelector = sm->createOctreeTriangleSelector(quakeLevelMesh->getMesh(0),
-                                                           quakeLevelNode, 128);
+                    quakeLevelNode, 128);
 
             // if not using shader and no gamma it's better to use more lighting, because
             // quake3 level are usually dark
@@ -485,7 +485,7 @@ void CDemo::loadSceneData()
     for (int r = 0; r<2; ++r)
     {
         bill = sm->addBillboardSceneNode(0, core::dimension2d<f32>(100, 100),
-                                         waypoint[r] + core::vector3df(0, 20, 0));
+                waypoint[r] + core::vector3df(0, 20, 0));
         bill->setMaterialFlag(video::EMF_LIGHTING, false);
         bill->setMaterialTexture(0, driver->getTexture("../../media/portal1.bmp"));
         bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
@@ -499,7 +499,7 @@ void CDemo::loadSceneData()
     scene::ILightSceneNode *light = 0;
 
     light = sm->addLightSceneNode(0,
-                                  core::vector3df(0, 0, 0), video::SColorf(1.0f, 1.0f, 1.f, 1.0f), 500.f);
+            core::vector3df(0, 0, 0), video::SColorf(1.0f, 1.0f, 1.f, 1.0f), 500.f);
 
     anim = sm->createFlyCircleAnimator(
         core::vector3df(100, 150, 80), 80.0f, 0.0005f);
@@ -572,7 +572,7 @@ void CDemo::createLoadingScreen()
 
     // irrlicht logo
     device->getGUIEnvironment()->addImage(device->getVideoDriver()->getTexture("../../media/irrlichtlogo2.png"),
-                                          core::position2d<s32>(5, 5));
+        core::position2d<s32>(5, 5));
 
     // loading text
 
@@ -593,7 +593,7 @@ void CDemo::createLoadingScreen()
     // set new font color
 
     device->getGUIEnvironment()->getSkin()->setColor(gui::EGDC_BUTTON_TEXT,
-                                                     video::SColor(255, 100, 100, 100));
+        video::SColor(255, 100, 100, 100));
 }
 
 
@@ -646,7 +646,7 @@ void CDemo::shoot()
     // create fire ball
     scene::ISceneNode *node = 0;
     node = sm->addBillboardSceneNode(0,
-                                     core::dimension2d<f32>(25, 25), start);
+            core::dimension2d<f32>(25, 25), start);
 
     node->setMaterialFlag(video::EMF_LIGHTING, false);
     node->setMaterialTexture(0, device->getVideoDriver()->getTexture("../../media/fireball.bmp"));

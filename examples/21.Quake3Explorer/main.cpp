@@ -1,22 +1,22 @@
 /** Example 021 Quake3 Explorer
-
-   This Tutorial shows how to load different Quake 3 maps.
-
-   Features:
-        - Load BSP Archives at Runtime from the menu
-        - Load a Map from the menu. Showing with Screenshot
-        - Set the VideoDriver at runtime from menu
-        - Adjust GammaLevel at runtime
-        - Create SceneNodes for the Shaders
-        - Load EntityList and create Entity SceneNodes
-        - Create Players with Weapons and with Collision Response
-        - Play music
-
-   You can download the Quake III Arena demo ( copyright id software )
-   at the following location:
-   ftp://ftp.idsoftware.com/idstuff/quake3/win32/q3ademo.exe
-
-   Copyright 2006-2011 Burningwater, Thomas Alten
+ *
+ * This Tutorial shows how to load different Quake 3 maps.
+ *
+ * Features:
+ *      - Load BSP Archives at Runtime from the menu
+ *      - Load a Map from the menu. Showing with Screenshot
+ *      - Set the VideoDriver at runtime from menu
+ *      - Adjust GammaLevel at runtime
+ *      - Create SceneNodes for the Shaders
+ *      - Load EntityList and create Entity SceneNodes
+ *      - Create Players with Weapons and with Collision Response
+ *      - Play music
+ *
+ * You can download the Quake III Arena demo ( copyright id software )
+ * at the following location:
+ * ftp://ftp.idsoftware.com/idstuff/quake3/win32/q3ademo.exe
+ *
+ * Copyright 2006-2011 Burningwater, Thomas Alten
  */
 
 #include "driverChoice.h"
@@ -25,7 +25,7 @@
 #include "sound.h"
 
 /*
-        Game Data is used to hold Data which is needed to drive the game
+ *      Game Data is used to hold Data which is needed to drive the game
  */
 struct GameData
 {
@@ -65,7 +65,7 @@ struct GameData
 };
 
 /*
-        set default settings
+ *      set default settings
  */
 void GameData::setDefault()
 {
@@ -118,7 +118,7 @@ void GameData::setDefault()
 }
 
 /*
-        Load the current game State from a typical quake3 cfg file
+ *      Load the current game State from a typical quake3 cfg file
  */
 s32 GameData::load(const path &filename)
 {
@@ -164,7 +164,7 @@ s32 GameData::load(const path &filename)
 }
 
 /*
-        Store the current game State in a quake3 configuration file
+ *      Store the current game State in a quake3 configuration file
  */
 s32 GameData::save(const path &filename)
 {
@@ -197,8 +197,8 @@ s32 GameData::save(const path &filename)
         return 0;
 
     snprintf (buf, 128, "playerposition %.f %.f %.f\nplayerrotation %.f %.f %.f\n",
-              PlayerPosition.X, PlayerPosition.Z, PlayerPosition.Y,
-              PlayerRotation.X, PlayerRotation.Z, PlayerRotation.Y);
+        PlayerPosition.X, PlayerPosition.Z, PlayerPosition.Y,
+        PlayerRotation.X, PlayerRotation.Z, PlayerRotation.Y);
     file->write (buf, (s32) strlen (buf));
 
     for (i = 0; i != fs->getFileArchiveCount(); ++i)
@@ -212,7 +212,7 @@ s32 GameData::save(const path &filename)
 }
 
 /*
-        Representing a player
+ *      Representing a player
  */
 struct Q3Player : public IAnimationEndCallBack
 {
@@ -226,10 +226,10 @@ struct Q3Player : public IAnimationEndCallBack
     virtual void OnAnimationEnd(IAnimatedMeshSceneNode *node);
 
     void create(IrrlichtDevice *device,
-                IQ3LevelMesh *mesh,
-                ISceneNode *mapNode,
-                IMetaTriangleSelector *meta
-                );
+        IQ3LevelMesh *mesh,
+        ISceneNode *mapNode,
+        IMetaTriangleSelector *meta
+        );
     void shutdown();
     void setAnim(const c8 *name);
     void respawn();
@@ -353,11 +353,11 @@ void Q3Player::create(IrrlichtDevice *device, IQ3LevelMesh *mesh, ISceneNode *ma
     // create a collision auto response animator
     ISceneNodeAnimator *anim =
         smgr->createCollisionResponseAnimator(meta, camera,
-                                              vector3df(30, 45, 30),
-                                              getGravity ("earth"),
-                                              vector3df(0, 40, 0),
-                                              0.0005f
-                                              );
+            vector3df(30, 45, 30),
+            getGravity ("earth"),
+            vector3df(0, 40, 0),
+            0.0005f
+            );
 
     camera->addAnimator(anim);
     anim->drop();
@@ -373,8 +373,8 @@ void Q3Player::create(IrrlichtDevice *device, IQ3LevelMesh *mesh, ISceneNode *ma
 
 
 /*
-        so we need a good starting Position in the level.
-        we can ask the Quake3 Loader for all entities with class_name "info_player_deathmatch"
+ *      so we need a good starting Position in the level.
+ *      we can ask the Quake3 Loader for all entities with class_name "info_player_deathmatch"
  */
 void Q3Player::respawn()
 {
@@ -391,11 +391,10 @@ void Q3Player::respawn()
     {
         StartPositionCurrent = 0;
     }
-
 }
 
 /*
-        set Player position from saved coordinates
+ *      set Player position from saved coordinates
  */
 void Q3Player::setpos(const vector3df &pos, const vector3df &rotation)
 {
@@ -494,7 +493,7 @@ struct GUI
 
 
 /*
-        CQuake3EventHandler controls the game
+ *      CQuake3EventHandler controls the game
  */
 class CQuake3EventHandler : public IEventReceiver
 {
@@ -652,7 +651,7 @@ void CQuake3EventHandler::createTextures()
 
 
 /*
-        create the GUI
+ *      create the GUI
  */
 void CQuake3EventHandler::CreateGUI()
 {
@@ -690,8 +689,8 @@ void CQuake3EventHandler::CreateGUI()
 
     // add a status line help text
     gui.StatusLine = env->addStaticText(0, rect<s32>(5, dim.Height - 30, dim.Width - 5, dim.Height - 10),
-                                        false, false, gui.Window, -1, true
-                                        );
+            false, false, gui.Window, -1, true
+            );
 
 
     env->addStaticText (L"VideoDriver:", rect<s32>(dim.Width - 400, 24, dim.Width - 310, 40), false, false, gui.Window, -1, false);
@@ -744,8 +743,8 @@ void CQuake3EventHandler::CreateGUI()
     }
 
     gui.VideoMode->setSelected (gui.VideoMode->getIndexForItemData (
-                                    Game->deviceParam.WindowSize.Width << 16 |
-                                    Game->deviceParam.WindowSize.Height));
+            Game->deviceParam.WindowSize.Width << 16 |
+            Game->deviceParam.WindowSize.Height));
 
     gui.FullScreen = env->addCheckBox (Game->deviceParam.Fullscreen, rect<s32>(dim.Width - 400, 64, dim.Width - 300, 80), gui.Window, -1, L"Fullscreen");
     gui.FullScreen->setToolTipText (L"Set Fullscreen or Window Mode");
@@ -828,14 +827,14 @@ void CQuake3EventHandler::CreateGUI()
     // create a visible Scene Tree
     env->addStaticText (L"Scenegraph:", rect<s32>(dim.Width - 400, dim.Height - 400, dim.Width - 5, dim.Height - 380), false, false, gui.Window, -1, false);
     gui.SceneTree = env->addTreeView(rect<s32>(dim.Width - 400, dim.Height - 380, dim.Width - 5, dim.Height - 40),
-                                     gui.Window, -1, true, true, false);
+            gui.Window, -1, true, true, false);
     gui.SceneTree->setToolTipText (L"Show the current Scenegraph");
     gui.SceneTree->getRoot()->clearChildren();
     addSceneTreeItem (Game->Device->getSceneManager()->getRootSceneNode(), gui.SceneTree->getRoot());
 
 
     IGUIImageList *imageList = env->createImageList(driver->getTexture ("iconlist.png"),
-                                                    dimension2di(32, 32), true);
+            dimension2di(32, 32), true);
 
     if (imageList)
     {
@@ -853,7 +852,7 @@ void CQuake3EventHandler::CreateGUI()
 
 
 /*
-        Add an Archive to the FileSystems and updates the GUI
+ *      Add an Archive to the FileSystems and updates the GUI
  */
 void CQuake3EventHandler::AddArchive(const path &archiveName)
 {
@@ -895,28 +894,28 @@ void CQuake3EventHandler::AddArchive(const path &archiveName)
 
             switch (archive->getType())
             {
-            case io::EFAT_ZIP:
-                typeName = "ZIP";
-                break;
+                case io::EFAT_ZIP:
+                    typeName = "ZIP";
+                    break;
 
-            case io::EFAT_GZIP:
-                typeName = "gzip";
-                break;
+                case io::EFAT_GZIP:
+                    typeName = "gzip";
+                    break;
 
-            case io::EFAT_FOLDER:
-                typeName = "Mount";
-                break;
+                case io::EFAT_FOLDER:
+                    typeName = "Mount";
+                    break;
 
-            case io::EFAT_PAK:
-                typeName = "PAK";
-                break;
+                case io::EFAT_PAK:
+                    typeName = "PAK";
+                    break;
 
-            case io::EFAT_TAR:
-                typeName = "TAR";
-                break;
+                case io::EFAT_TAR:
+                    typeName = "TAR";
+                    break;
 
-            default:
-                typeName = "archive";
+                default:
+                    typeName = "archive";
             }
 
             gui.ArchiveList->setCellText (index, 0, typeName);
@@ -1024,7 +1023,7 @@ void CQuake3EventHandler::AddArchive(const path &archiveName)
 }
 
 /*
-        clears the Map in Memory
+ *      clears the Map in Memory
  */
 void CQuake3EventHandler::dropMap()
 {
@@ -1073,7 +1072,7 @@ void CQuake3EventHandler::LoadMap(const stringw &mapName, s32 collision)
     ISceneManager *smgr = Game->Device->getSceneManager ();
 
     IReadFile *file = fs->createMemoryReadFile(&Game->loadParam,
-                                               sizeof(Game->loadParam), L"levelparameter.cfg", false);
+            sizeof(Game->loadParam), L"levelparameter.cfg", false);
 
     // load cfg file
     smgr->getMesh(file);
@@ -1085,8 +1084,8 @@ void CQuake3EventHandler::LoadMap(const stringw &mapName, s32 collision)
         return;
 
     /*
-            add the geometry mesh to the Scene ( polygon & patches )
-            The Geometry mesh is optimised for faster drawing
+     *      add the geometry mesh to the Scene ( polygon & patches )
+     *      The Geometry mesh is optimised for faster drawing
      */
 
     IMesh *geometry = Mesh->getMesh(E_Q3_MESH_GEOMETRY);
@@ -1139,23 +1138,23 @@ void CQuake3EventHandler::LoadMap(const stringw &mapName, s32 collision)
         BulletParent->setName ("Bullet Container");
 
     /*
-            now construct SceneNodes for each Shader
-            The Objects are stored in the quake mesh E_Q3_MESH_ITEMS
-            and the Shader ID is stored in the MaterialParameters
-            mostly dark looking skulls and moving lava.. or green flashing tubes?
+     *      now construct SceneNodes for each Shader
+     *      The Objects are stored in the quake mesh E_Q3_MESH_ITEMS
+     *      and the Shader ID is stored in the MaterialParameters
+     *      mostly dark looking skulls and moving lava.. or green flashing tubes?
      */
     Q3ShaderFactory (Game->loadParam, Game->Device, Mesh, E_Q3_MESH_ITEMS, ShaderParent, Meta, false);
     Q3ShaderFactory (Game->loadParam, Game->Device, Mesh, E_Q3_MESH_FOG, FogParent, 0, false);
     Q3ShaderFactory (Game->loadParam, Game->Device, Mesh, E_Q3_MESH_UNRESOLVED, UnresolvedParent, Meta, true);
 
     /*
-            Now construct Models from Entity List
+     *      Now construct Models from Entity List
      */
     Q3ModelFactory (Game->loadParam, Game->Device, Mesh, ItemParent, false);
 }
 
 /*
-        Adds a SceneNode with an icon to the Scene Tree
+ *      Adds a SceneNode with an icon to the Scene Tree
  */
 void CQuake3EventHandler::addSceneTreeItem(ISceneNode *parent, IGUITreeViewNode *nodeParent)
 {
@@ -1170,35 +1169,35 @@ void CQuake3EventHandler::addSceneTreeItem(ISceneNode *parent, IGUITreeViewNode 
     {
         switch ((*it)->getType ())
         {
-        case ESNT_Q3SHADER_SCENE_NODE: imageIndex = 0; break;
+            case ESNT_Q3SHADER_SCENE_NODE: imageIndex = 0; break;
 
-        case ESNT_CAMERA: imageIndex = 1; break;
+            case ESNT_CAMERA: imageIndex = 1; break;
 
-        case ESNT_EMPTY: imageIndex = 2; break;
+            case ESNT_EMPTY: imageIndex = 2; break;
 
-        case ESNT_MESH: imageIndex = 3; break;
+            case ESNT_MESH: imageIndex = 3; break;
 
-        case ESNT_OCTREE: imageIndex = 3; break;
+            case ESNT_OCTREE: imageIndex = 3; break;
 
-        case ESNT_ANIMATED_MESH: imageIndex = 4; break;
+            case ESNT_ANIMATED_MESH: imageIndex = 4; break;
 
-        case ESNT_SKY_BOX: imageIndex = 5; break;
+            case ESNT_SKY_BOX: imageIndex = 5; break;
 
-        case ESNT_BILLBOARD: imageIndex = 6; break;
+            case ESNT_BILLBOARD: imageIndex = 6; break;
 
-        case ESNT_PARTICLE_SYSTEM: imageIndex = 7; break;
+            case ESNT_PARTICLE_SYSTEM: imageIndex = 7; break;
 
-        case ESNT_TEXT: imageIndex = 8; break;
+            case ESNT_TEXT: imageIndex = 8; break;
 
-        default: imageIndex = -1; break;
+            default: imageIndex = -1; break;
         }
 
         if (imageIndex < 0)
         {
             swprintf (msg, 128, L"%hs,%hs",
-                      Game->Device->getSceneManager ()->getSceneNodeTypeName ((*it)->getType ()),
-                      (*it)->getName()
-                      );
+                Game->Device->getSceneManager ()->getSceneNodeTypeName ((*it)->getType ()),
+                (*it)->getName()
+                );
         }
         else
         {
@@ -1214,22 +1213,22 @@ void CQuake3EventHandler::addSceneTreeItem(ISceneNode *parent, IGUITreeViewNode 
         {
             imageIndex = -1;
             swprintf (msg, 128, L"%hs",
-                      Game->Device->getSceneManager ()->getAnimatorTypeName ((*ait)->getType ())
-                      );
+                Game->Device->getSceneManager ()->getAnimatorTypeName ((*ait)->getType ())
+                );
 
             switch ((*ait)->getType ())
             {
-            case ESNAT_FLY_CIRCLE:
-            case ESNAT_FLY_STRAIGHT:
-            case ESNAT_FOLLOW_SPLINE:
-            case ESNAT_ROTATION:
-            case ESNAT_TEXTURE:
-            case ESNAT_DELETION:
-            case ESNAT_COLLISION_RESPONSE:
-            case ESNAT_CAMERA_FPS:
-            case ESNAT_CAMERA_MAYA:
-            default:
-                break;
+                case ESNAT_FLY_CIRCLE:
+                case ESNAT_FLY_STRAIGHT:
+                case ESNAT_FOLLOW_SPLINE:
+                case ESNAT_ROTATION:
+                case ESNAT_TEXTURE:
+                case ESNAT_DELETION:
+                case ESNAT_COLLISION_RESPONSE:
+                case ESNAT_CAMERA_FPS:
+                case ESNAT_CAMERA_MAYA:
+                default:
+                    break;
             }
 
             node->addChildBack(msg, 0, imageIndex);
@@ -1310,17 +1309,17 @@ void CQuake3EventHandler::SetGUIActive(s32 command)
 
     switch (command)
     {
-    case 0: Game->guiActive = 0; inputState = !Game->guiActive; break;
+        case 0: Game->guiActive = 0; inputState = !Game->guiActive; break;
 
-    case 1: Game->guiActive = 1; inputState = !Game->guiActive;; break;
+        case 1: Game->guiActive = 1; inputState = !Game->guiActive;; break;
 
-    case 2: Game->guiActive ^= 1; inputState = !Game->guiActive; break;
+        case 2: Game->guiActive ^= 1; inputState = !Game->guiActive; break;
 
-    case 3:
-        if (camera)
-            inputState = !camera->isInputReceiverEnabled();
+        case 3:
+            if (camera)
+                inputState = !camera->isInputReceiverEnabled();
 
-        break;
+            break;
     }
 
     if (camera)
@@ -1347,7 +1346,7 @@ void CQuake3EventHandler::SetGUIActive(s32 command)
 
 
 /*
-        Handle game input
+ *      Handle game input
  */
 bool CQuake3EventHandler::OnEvent(const SEvent &eve)
 {
@@ -1408,7 +1407,7 @@ bool CQuake3EventHandler::OnEvent(const SEvent &eve)
             gui.ArchiveFileOpen = 0;
         }
         else if ((eve.GUIEvent.Caller == gui.ArchiveUp || eve.GUIEvent.Caller == gui.ArchiveDown) &&
-                 eve.GUIEvent.EventType == gui::EGET_BUTTON_CLICKED)
+            eve.GUIEvent.EventType == gui::EGET_BUTTON_CLICKED)
         {
             s32 rel = eve.GUIEvent.Caller == gui.ArchiveUp ? -1 : 1;
             if (Game->Device->getFileSystem()->moveFileArchive (gui.ArchiveList->getSelected (), rel))
@@ -1506,7 +1505,7 @@ bool CQuake3EventHandler::OnEvent(const SEvent &eve)
 
     // fire
     if ((eve.EventType == EET_KEY_INPUT_EVENT && eve.KeyInput.Key == KEY_SPACE &&
-         eve.KeyInput.PressedDown == false) ||
+        eve.KeyInput.PressedDown == false) ||
         (eve.EventType == EET_MOUSE_INPUT_EVENT && eve.MouseInput.Event == EMIE_LMOUSE_LEFT_UP)
         )
     {
@@ -1519,7 +1518,7 @@ bool CQuake3EventHandler::OnEvent(const SEvent &eve)
 
     // gui active
     if ((eve.EventType == EET_KEY_INPUT_EVENT && eve.KeyInput.Key == KEY_F1 &&
-         eve.KeyInput.PressedDown == false) ||
+        eve.KeyInput.PressedDown == false) ||
         (eve.EventType == EET_MOUSE_INPUT_EVENT && eve.MouseInput.Event == EMIE_RMOUSE_LEFT_UP)
         )
     {
@@ -1553,11 +1552,11 @@ bool CQuake3EventHandler::OnEvent(const SEvent &eve)
                                              "d3d8", "d3d9", "opengl" };
 
                 snprintf(buf, 256, "%s_%ls_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.jpg",
-                         dName[Game->Device->getVideoDriver()->getDriverType()],
-                         Game->CurrentMapName.c_str(),
-                         pos.X, pos.Y, pos.Z,
-                         rot.X, rot.Y, rot.Z
-                         );
+                    dName[Game->Device->getVideoDriver()->getDriverType()],
+                    Game->CurrentMapName.c_str(),
+                    pos.X, pos.Y, pos.Z,
+                    rot.X, rot.Y, rot.Z
+                    );
                 path filename (buf);
                 filename.replace ('/', '_');
                 printf ("screenshot : %s\n", filename.c_str());
@@ -1573,16 +1572,16 @@ bool CQuake3EventHandler::OnEvent(const SEvent &eve)
 
             switch (Game->debugState)
             {
-            case 1: value = EDS_NORMALS | EDS_MESH_WIRE_OVERLAY | EDS_BBOX_ALL; break;
+                case 1: value = EDS_NORMALS | EDS_MESH_WIRE_OVERLAY | EDS_BBOX_ALL; break;
 
-            case 2: value = EDS_NORMALS | EDS_MESH_WIRE_OVERLAY | EDS_SKELETON; break;
+                case 2: value = EDS_NORMALS | EDS_MESH_WIRE_OVERLAY | EDS_SKELETON; break;
             }
 
 /*
-                        // set debug map data on/off
-                        debugState = debugState == EDS_OFF ?
-                                EDS_NORMALS | EDS_MESH_WIRE_OVERLAY | EDS_BBOX_ALL:
-                                EDS_OFF;
+ *                      // set debug map data on/off
+ *                      debugState = debugState == EDS_OFF ?
+ *                              EDS_NORMALS | EDS_MESH_WIRE_OVERLAY | EDS_BBOX_ALL:
+ *                              EDS_OFF;
  */
             if (ItemParent)
             {
@@ -1726,7 +1725,7 @@ bool CQuake3EventHandler::OnEvent(const SEvent &eve)
 
 
 /*
-        useItem
+ *      useItem
  */
 void CQuake3EventHandler::useItem(Q3Player *player)
 {
@@ -1814,7 +1813,7 @@ void CQuake3EventHandler::useItem(Q3Player *player)
     anim->drop();
 
     snprintf (buf, 64, "bullet: %s on %.1f,%1.f,%1.f",
-              imp.when ? "hit" : "nohit", end.X, end.Y, end.Z);
+        imp.when ? "hit" : "nohit", end.X, end.Y, end.Z);
     node->setName (buf);
 
 
@@ -1826,7 +1825,7 @@ void CQuake3EventHandler::useItem(Q3Player *player)
     {
         // create impact note
         imp.when = Game->Device->getTimer()->getTime() +
-                   (time + (s32) ((1.f + Noiser::get()) * 250.f));
+            (time + (s32) ((1.f + Noiser::get()) * 250.f));
         Impacts.push_back(imp);
     }
 
@@ -1883,7 +1882,7 @@ void CQuake3EventHandler::createParticleImpacts(u32 now)
             pas = sm->addParticleSystemSceneNode(false, BulletParent, -1, Impacts[i].pos);
 
             snprintf (buf, 64, "bullet impact smoke at %.1f,%.1f,%1.f",
-                      Impacts[i].pos.X, Impacts[i].pos.Y, Impacts[i].pos.Z);
+                Impacts[i].pos.X, Impacts[i].pos.Y, Impacts[i].pos.Z);
             pas->setName (buf);
 
             // create a flat smoke
@@ -1922,18 +1921,18 @@ void CQuake3EventHandler::createParticleImpacts(u32 now)
         // play impact sound
                 #ifdef USE_IRRKLANG
 /*
-                if (irrKlang)
-                {
-                        audio::ISound* sound =
-                                irrKlang->play3D(impactSound, Impacts[i].pos, false, false, true);
-
-                        if (sound)
-                        {
-                                // adjust max value a bit to make to sound of an impact louder
-                                sound->setMinDistance(400);
-                                sound->drop();
-                        }
-                }
+ *              if (irrKlang)
+ *              {
+ *                      audio::ISound* sound =
+ *                              irrKlang->play3D(impactSound, Impacts[i].pos, false, false, true);
+ *
+ *                      if (sound)
+ *                      {
+ *                              // adjust max value a bit to make to sound of an impact louder
+ *                              sound->setMinDistance(400);
+ *                              sound->drop();
+ *                      }
+ *              }
  */
                 #endif
 
@@ -1945,7 +1944,7 @@ void CQuake3EventHandler::createParticleImpacts(u32 now)
 }
 
 /*
-        render
+ *      render
  */
 void CQuake3EventHandler::Render()
 {
@@ -1963,10 +1962,10 @@ void CQuake3EventHandler::Render()
         driver->getOverrideMaterial().Material.ColorMask = ECP_NONE;
         driver->getOverrideMaterial().EnableFlags  = EMF_COLOR_MASK;
         driver->getOverrideMaterial().EnablePasses = ESNRP_SKY_BOX +
-                                                     ESNRP_SOLID +
-                                                     ESNRP_TRANSPARENT +
-                                                     ESNRP_TRANSPARENT_EFFECT +
-                                                     ESNRP_SHADOW;
+            ESNRP_SOLID +
+            ESNRP_TRANSPARENT +
+            ESNRP_TRANSPARENT_EFFECT +
+            ESNRP_SHADOW;
         Game->Device->getSceneManager()->drawAll();
         driver->clearZBuffer();
 
@@ -1974,8 +1973,8 @@ void CQuake3EventHandler::Render()
         const vector3df oldTarget   = cameraOld->getTarget();
         const matrix4   startMatrix = cameraOld->getAbsoluteTransformation();
         const vector3df focusPoint  = (oldTarget -
-                                       cameraOld->getAbsolutePosition()).setLength(10000) +
-                                      cameraOld->getAbsolutePosition();
+            cameraOld->getAbsolutePosition()).setLength(10000) +
+            cameraOld->getAbsolutePosition();
 
         scene::ICameraSceneNode *camera = cameraOld;        // Game->Device->getSceneManager()->addCameraSceneNode();
 
@@ -2039,7 +2038,7 @@ void CQuake3EventHandler::Render()
 }
 
 /*
-        update the generic scene node
+ *      update the generic scene node
  */
 void CQuake3EventHandler::Animate()
 {
@@ -2059,33 +2058,33 @@ void CQuake3EventHandler::Animate()
         IAttributes *attr = smgr->getParameters();
 #ifdef _IRR_SCENEMANAGER_DEBUG
         swprintf (msg, 128,
-                  L"Q3 %s [%ls], FPS:%03d Tri:%.03fm Cull %d/%d nodes (%d,%d,%d)",
-                  Game->CurrentMapName.c_str(),
-                  driver->getName(),
-                  driver->getFPS (),
-                  (f32) driver->getPrimitiveCountDrawn(0) * (1.f / 1000000.f),
-                  attr->getAttributeAsInt ("culled"),
-                  attr->getAttributeAsInt ("calls"),
-                  attr->getAttributeAsInt ("drawn_solid"),
-                  attr->getAttributeAsInt ("drawn_transparent"),
-                  attr->getAttributeAsInt ("drawn_transparent_effect")
-                  );
+            L"Q3 %s [%ls], FPS:%03d Tri:%.03fm Cull %d/%d nodes (%d,%d,%d)",
+            Game->CurrentMapName.c_str(),
+            driver->getName(),
+            driver->getFPS (),
+            (f32) driver->getPrimitiveCountDrawn(0) * (1.f / 1000000.f),
+            attr->getAttributeAsInt ("culled"),
+            attr->getAttributeAsInt ("calls"),
+            attr->getAttributeAsInt ("drawn_solid"),
+            attr->getAttributeAsInt ("drawn_transparent"),
+            attr->getAttributeAsInt ("drawn_transparent_effect")
+            );
 #else
         swprintf (msg, 128,
-                  L"Q3 %s [%ls], FPS:%03d Tri:%.03fm",
-                  Game->CurrentMapName.c_str(),
-                  driver->getName(),
-                  driver->getFPS (),
-                  (f32) driver->getPrimitiveCountDrawn(0) * (1.f / 1000000.f)
-                  );
+            L"Q3 %s [%ls], FPS:%03d Tri:%.03fm",
+            Game->CurrentMapName.c_str(),
+            driver->getName(),
+            driver->getFPS (),
+            (f32) driver->getPrimitiveCountDrawn(0) * (1.f / 1000000.f)
+            );
 #endif
         Game->Device->setWindowCaption(msg);
 
         swprintf (msg, 128,
-                  L"%03d fps, F1 GUI on/off, F2 respawn, F3-F6 toggle Nodes, F7 Collision on/off"
-                  L", F8 Gravity on/off, Right Mouse Toggle GUI",
-                  Game->Device->getVideoDriver()->getFPS ()
-                  );
+            L"%03d fps, F1 GUI on/off, F2 respawn, F3-F6 toggle Nodes, F7 Collision on/off"
+            L", F8 Gravity on/off, Right Mouse Toggle GUI",
+            Game->Device->getVideoDriver()->getFPS ()
+            );
         if (gui.StatusLine)
             gui.StatusLine->setText (msg);
 

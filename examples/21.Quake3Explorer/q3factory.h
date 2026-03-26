@@ -1,8 +1,8 @@
 /*!
-        Model Factory.
-        create the additional scenenodes for ( bullets, health... )
-
-        Defines the Entities for Quake3
+ *      Model Factory.
+ *      create the additional scenenodes for ( bullets, health... )
+ *
+ *      Defines the Entities for Quake3
  */
 #ifndef __QUAKE3_FACTORY__H_INCLUDED__
 #define __QUAKE3_FACTORY__H_INCLUDED__
@@ -74,46 +74,46 @@ struct SItemElement
 const SItemElement* getItemElement(const stringc &key);
 
 /*!
-        Quake3 Model Factory.
-        Takes the mesh buffers and creates scenenodes for their associated shaders
+ *      Quake3 Model Factory.
+ *      Takes the mesh buffers and creates scenenodes for their associated shaders
  */
 void Q3ShaderFactory(Q3LevelLoadParameter &loadParam,
-                     IrrlichtDevice *device,
-                     IQ3LevelMesh *mesh,
-                     eQ3MeshIndex meshIndex,
-                     ISceneNode *parent,
-                     IMetaTriangleSelector *meta,
-                     bool showShaderName
-                     );
+    IrrlichtDevice *device,
+    IQ3LevelMesh *mesh,
+    eQ3MeshIndex meshIndex,
+    ISceneNode *parent,
+    IMetaTriangleSelector *meta,
+    bool showShaderName
+    );
 
 
 /*!
-        Creates Model based on the entity list
+ *      Creates Model based on the entity list
  */
 void Q3ModelFactory(Q3LevelLoadParameter &loadParam,
-                    IrrlichtDevice *device,
-                    IQ3LevelMesh *masterMesh,
-                    ISceneNode *parent,
-                    bool showShaderName
-                    );
+    IrrlichtDevice *device,
+    IQ3LevelMesh *masterMesh,
+    ISceneNode *parent,
+    bool showShaderName
+    );
 
 /*!
-        so we need a good starting Position in the level.
-        we can ask the Quake3 Loader for all entities with class_name "info_player_deathmatch"
+ *      so we need a good starting Position in the level.
+ *      we can ask the Quake3 Loader for all entities with class_name "info_player_deathmatch"
  */
 s32 Q3StartPosition(IQ3LevelMesh *mesh,
-                    ICameraSceneNode *camera,
-                    s32 startposIndex,
-                    const vector3df &translation
-                    );
+    ICameraSceneNode *camera,
+    s32 startposIndex,
+    const vector3df &translation
+    );
 /*!
-        gets a accumulated force on a given surface
+ *      gets a accumulated force on a given surface
  */
 vector3df getGravity(const c8 *surface);
 
 
 /*
-        Dynamically load the Irrlicht Library
+ *      Dynamically load the Irrlicht Library
  */
 funcptr_createDevice load_createDevice(const c8 *filename);
 funcptr_createDeviceEx load_createDeviceEx(const c8 *filename);
@@ -124,7 +124,7 @@ funcptr_createDeviceEx load_createDeviceEx(const c8 *filename);
 
 
 /*
-        get the current collision respone camera animator
+ *      get the current collision respone camera animator
  */
 ISceneNodeAnimatorCollisionResponse* camCollisionResponse(IrrlichtDevice *device);
 

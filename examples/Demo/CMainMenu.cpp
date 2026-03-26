@@ -12,8 +12,8 @@ CMainMenu::CMainMenu()
 
 
 bool CMainMenu::run(bool &outFullscreen, bool &outMusic, bool &outShadows,
-                    bool &outAdditive, bool &outVSync, bool &outAA,
-                    video::E_DRIVER_TYPE &outDriver)
+    bool &outAdditive, bool &outVSync, bool &outAA,
+    video::E_DRIVER_TYPE &outDriver)
 {
     // video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
     // video::E_DRIVER_TYPE driverType = video::EDT_OPENGL;
@@ -22,7 +22,7 @@ bool CMainMenu::run(bool &outFullscreen, bool &outMusic, bool &outShadows,
     // video::E_DRIVER_TYPE driverType = video::EDT_SOFTWARE;
 
     MenuDevice = createDevice(driverType,
-                              core::dimension2d<u32>(512, 384), 16, false, false, false, this);
+            core::dimension2d<u32>(512, 384), 16, false, false, false, this);
 
     if (MenuDevice->getFileSystem()->existFile("irrlicht.dat"))
         MenuDevice->getFileSystem()->addFileArchive("irrlicht.dat");
@@ -53,7 +53,7 @@ bool CMainMenu::run(bool &outFullscreen, bool &outMusic, bool &outShadows,
 
     // add tab control
     gui::IGUITabControl *tabctrl = guienv->addTabControl(core::rect<int>(leftX, 10, 512 - 10, 384 - 10),
-                                                         0, true, true);
+            0, true, true);
     gui::IGUITab *optTab   = tabctrl->addTab(L"Demo");
     gui::IGUITab *aboutTab = tabctrl->addTab(L"About");
 
@@ -76,17 +76,17 @@ bool CMainMenu::run(bool &outFullscreen, bool &outMusic, bool &outShadows,
     const s32 d = 50;
 
     guienv->addCheckBox(fullscreen, core::rect<int>(20, 85 + d, 130, 110 + d),
-                        optTab, 3, L"Fullscreen");
+        optTab, 3, L"Fullscreen");
     guienv->addCheckBox(music, core::rect<int>(135, 85 + d, 245, 110 + d),
-                        optTab, 4, L"Music & Sfx");
+        optTab, 4, L"Music & Sfx");
     guienv->addCheckBox(shadows, core::rect<int>(20, 110 + d, 135, 135 + d),
-                        optTab, 5, L"Realtime shadows");
+        optTab, 5, L"Realtime shadows");
     guienv->addCheckBox(additive, core::rect<int>(20, 135 + d, 230, 160 + d),
-                        optTab, 6, L"Old HW compatible blending");
+        optTab, 6, L"Old HW compatible blending");
     guienv->addCheckBox(vsync, core::rect<int>(20, 160 + d, 230, 185 + d),
-                        optTab, 7, L"Vertical synchronisation");
+        optTab, 7, L"Vertical synchronisation");
     guienv->addCheckBox(aa, core::rect<int>(20, 185 + d, 230, 210 + d),
-                        optTab, 8, L"Antialiasing");
+        optTab, 8, L"Antialiasing");
 
     // add about text
 
@@ -99,7 +99,7 @@ bool CMainMenu::run(bool &outFullscreen, bool &outMusic, bool &outShadows,
                            L"For more informations, please visit the homepage of the Irrlicht engine:\nhttp://irrlicht.sourceforge.net";
 
     guienv->addStaticText(text2, core::rect<int>(10, 10, 230, 320),
-                          true, true, aboutTab);
+        true, true, aboutTab);
 
     // add md2 model
 
@@ -156,54 +156,54 @@ bool CMainMenu::run(bool &outFullscreen, bool &outMusic, bool &outShadows,
     {
         switch (l->type)
         {
-        case LIGHT_GLOBAL:
-            // add illumination from the background
-            light = smgr->addLightSceneNode(0, core::vector3df(10.f, 40.f, -5.f),
-                                            video::SColorf(0.2f, 0.2f, 0.2f), 90.f);
-            break;
+            case LIGHT_GLOBAL:
+                // add illumination from the background
+                light = smgr->addLightSceneNode(0, core::vector3df(10.f, 40.f, -5.f),
+                        video::SColorf(0.2f, 0.2f, 0.2f), 90.f);
+                break;
 
-        case LIGHT_RED:
-            // add light nearly red
-            light = smgr->addLightSceneNode(0, core::vector3df(0, 1, 0),
-                                            video::SColorf(0.8f, 0.f, 0.f, 0.0f), 30.0f);
-            // attach red billboard to the light
-            bill = smgr->addBillboardSceneNode(light, core::dimension2d<f32>(10, 10));
-            if (bill)
-            {
-                bill->setMaterialFlag(video::EMF_LIGHTING, false);
-                bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-                bill->setMaterialTexture(0, driver->getTexture("../../media/particlered.bmp"));
-            }
+            case LIGHT_RED:
+                // add light nearly red
+                light = smgr->addLightSceneNode(0, core::vector3df(0, 1, 0),
+                        video::SColorf(0.8f, 0.f, 0.f, 0.0f), 30.0f);
+                // attach red billboard to the light
+                bill = smgr->addBillboardSceneNode(light, core::dimension2d<f32>(10, 10));
+                if (bill)
+                {
+                    bill->setMaterialFlag(video::EMF_LIGHTING, false);
+                    bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+                    bill->setMaterialTexture(0, driver->getTexture("../../media/particlered.bmp"));
+                }
 
-            // add fly circle animator to the light
-            anim = smgr->createFlyCircleAnimator(core::vector3df(0.f, 0.f, -5.f), 20.f,
-                                                 0.002f, lightDir[l->dir]);
-            light->addAnimator(anim);
-            anim->drop();
-            break;
+                // add fly circle animator to the light
+                anim = smgr->createFlyCircleAnimator(core::vector3df(0.f, 0.f, -5.f), 20.f,
+                        0.002f, lightDir[l->dir]);
+                light->addAnimator(anim);
+                anim->drop();
+                break;
 
-        case LIGHT_BLUE:
-            // add light nearly blue
-            light = smgr->addLightSceneNode(0, core::vector3df(0, 1, 0),
-                                            video::SColorf(0.f, 0.0f, 0.8f, 0.0f), 30.0f);
-            // attach blue billboard to the light
-            bill = smgr->addBillboardSceneNode(light, core::dimension2d<f32>(10, 10));
-            if (bill)
-            {
-                bill->setMaterialFlag(video::EMF_LIGHTING, false);
-                bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-                bill->setMaterialTexture(0, driver->getTexture("../../media/portal1.bmp"));
-            }
+            case LIGHT_BLUE:
+                // add light nearly blue
+                light = smgr->addLightSceneNode(0, core::vector3df(0, 1, 0),
+                        video::SColorf(0.f, 0.0f, 0.8f, 0.0f), 30.0f);
+                // attach blue billboard to the light
+                bill = smgr->addBillboardSceneNode(light, core::dimension2d<f32>(10, 10));
+                if (bill)
+                {
+                    bill->setMaterialFlag(video::EMF_LIGHTING, false);
+                    bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+                    bill->setMaterialTexture(0, driver->getTexture("../../media/portal1.bmp"));
+                }
 
-            // add fly circle animator to the light
-            anim = smgr->createFlyCircleAnimator(core::vector3df(0.f, 0.f, -5.f), 20.f,
-                                                 -0.002f, lightDir[l->dir], 0.5f);
-            light->addAnimator(anim);
-            anim->drop();
-            break;
+                // add fly circle animator to the light
+                anim = smgr->createFlyCircleAnimator(core::vector3df(0.f, 0.f, -5.f), 20.f,
+                        -0.002f, lightDir[l->dir], 0.5f);
+                light->addAnimator(anim);
+                anim->drop();
+                break;
 
-        case LIGHT_NONE:
-            break;
+            case LIGHT_NONE:
+                break;
         }
 
         l += 1;
@@ -219,7 +219,7 @@ bool CMainMenu::run(bool &outFullscreen, bool &outMusic, bool &outShadows,
     driver->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
 
     guienv->addImage(driver->getTexture("../../media/irrlichtlogo3.png"),
-                     core::position2d<s32>(5, 5));
+        core::position2d<s32>(5, 5));
 
     video::ITexture *irrlichtBack = driver->getTexture("../../media/demoback.jpg");
 
@@ -241,7 +241,7 @@ bool CMainMenu::run(bool &outFullscreen, bool &outMusic, bool &outShadows,
 
             if (irrlichtBack)
                 driver->draw2DImage(irrlichtBack,
-                                    core::position2d<int>(0, 0));
+                    core::position2d<int>(0, 0));
 
             smgr->drawAll();
             guienv->drawAll();
@@ -260,15 +260,15 @@ bool CMainMenu::run(bool &outFullscreen, bool &outMusic, bool &outShadows,
 
     switch (selected)
     {
-    case 0: outDriver = video::EDT_OPENGL; break;
+        case 0: outDriver = video::EDT_OPENGL; break;
 
-    case 1: outDriver = video::EDT_DIRECT3D8; break;
+        case 1: outDriver = video::EDT_DIRECT3D8; break;
 
-    case 2: outDriver = video::EDT_DIRECT3D9; break;
+        case 2: outDriver = video::EDT_DIRECT3D9; break;
 
-    case 3: outDriver = video::EDT_BURNINGSVIDEO; break;
+        case 3: outDriver = video::EDT_BURNINGSVIDEO; break;
 
-    case 4: outDriver = video::EDT_SOFTWARE; break;
+        case 4: outDriver = video::EDT_SOFTWARE; break;
     }
 
     return start;
@@ -289,7 +289,7 @@ bool CMainMenu::OnEvent(const SEvent &event)
         }
     }
     else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT &&
-             event.MouseInput.Event == EMIE_RMOUSE_LEFT_UP)
+        event.MouseInput.Event == EMIE_RMOUSE_LEFT_UP)
     {
         core::rect<s32>      r(event.MouseInput.X, event.MouseInput.Y, 0, 0);
         gui::IGUIContextMenu *menu = MenuDevice->getGUIEnvironment()->addContextMenu(r, 0, 45);
@@ -304,72 +304,72 @@ bool CMainMenu::OnEvent(const SEvent &event)
 
         switch (id)
         {
-        case 45:         // context menu
-            if (event.GUIEvent.EventType == gui::EGET_MENU_ITEM_SELECTED)
-            {
-                s32 s = ((gui::IGUIContextMenu*)event.GUIEvent.Caller)->getSelectedItem();
-                if (s == 0 || s == 1)
+            case 45:     // context menu
+                if (event.GUIEvent.EventType == gui::EGET_MENU_ITEM_SELECTED)
                 {
-                    transparent = !transparent;
-                    setTransparency();
+                    s32 s = ((gui::IGUIContextMenu*)event.GUIEvent.Caller)->getSelectedItem();
+                    if (s == 0 || s == 1)
+                    {
+                        transparent = !transparent;
+                        setTransparency();
+                    }
                 }
-            }
 
-            break;
+                break;
 
-        case 1:
-            if (event.GUIEvent.EventType == gui::EGET_LISTBOX_CHANGED ||
-                event.GUIEvent.EventType == gui::EGET_LISTBOX_SELECTED_AGAIN)
-            {
-                selected = ((gui::IGUIListBox*)event.GUIEvent.Caller)->getSelected();
-                // startButton->setEnabled(selected != 4);
-                startButton->setEnabled(true);
-            }
+            case 1:
+                if (event.GUIEvent.EventType == gui::EGET_LISTBOX_CHANGED ||
+                    event.GUIEvent.EventType == gui::EGET_LISTBOX_SELECTED_AGAIN)
+                {
+                    selected = ((gui::IGUIListBox*)event.GUIEvent.Caller)->getSelected();
+                    // startButton->setEnabled(selected != 4);
+                    startButton->setEnabled(true);
+                }
 
-            break;
+                break;
 
-        case 2:
-            if (event.GUIEvent.EventType == gui::EGET_BUTTON_CLICKED)
-            {
-                MenuDevice->closeDevice();
-                start = true;
-            }
+            case 2:
+                if (event.GUIEvent.EventType == gui::EGET_BUTTON_CLICKED)
+                {
+                    MenuDevice->closeDevice();
+                    start = true;
+                }
 
-        case 3:
-            if (event.GUIEvent.EventType == gui::EGET_CHECKBOX_CHANGED)
-                fullscreen = ((gui::IGUICheckBox*)event.GUIEvent.Caller)->isChecked();
+            case 3:
+                if (event.GUIEvent.EventType == gui::EGET_CHECKBOX_CHANGED)
+                    fullscreen = ((gui::IGUICheckBox*)event.GUIEvent.Caller)->isChecked();
 
-            break;
+                break;
 
-        case 4:
-            if (event.GUIEvent.EventType == gui::EGET_CHECKBOX_CHANGED)
-                music = ((gui::IGUICheckBox*)event.GUIEvent.Caller)->isChecked();
+            case 4:
+                if (event.GUIEvent.EventType == gui::EGET_CHECKBOX_CHANGED)
+                    music = ((gui::IGUICheckBox*)event.GUIEvent.Caller)->isChecked();
 
-            break;
+                break;
 
-        case 5:
-            if (event.GUIEvent.EventType == gui::EGET_CHECKBOX_CHANGED)
-                shadows = ((gui::IGUICheckBox*)event.GUIEvent.Caller)->isChecked();
+            case 5:
+                if (event.GUIEvent.EventType == gui::EGET_CHECKBOX_CHANGED)
+                    shadows = ((gui::IGUICheckBox*)event.GUIEvent.Caller)->isChecked();
 
-            break;
+                break;
 
-        case 6:
-            if (event.GUIEvent.EventType == gui::EGET_CHECKBOX_CHANGED)
-                additive = ((gui::IGUICheckBox*)event.GUIEvent.Caller)->isChecked();
+            case 6:
+                if (event.GUIEvent.EventType == gui::EGET_CHECKBOX_CHANGED)
+                    additive = ((gui::IGUICheckBox*)event.GUIEvent.Caller)->isChecked();
 
-            break;
+                break;
 
-        case 7:
-            if (event.GUIEvent.EventType == gui::EGET_CHECKBOX_CHANGED)
-                vsync = ((gui::IGUICheckBox*)event.GUIEvent.Caller)->isChecked();
+            case 7:
+                if (event.GUIEvent.EventType == gui::EGET_CHECKBOX_CHANGED)
+                    vsync = ((gui::IGUICheckBox*)event.GUIEvent.Caller)->isChecked();
 
-            break;
+                break;
 
-        case 8:
-            if (event.GUIEvent.EventType == gui::EGET_CHECKBOX_CHANGED)
-                aa = ((gui::IGUICheckBox*)event.GUIEvent.Caller)->isChecked();
+            case 8:
+                if (event.GUIEvent.EventType == gui::EGET_CHECKBOX_CHANGED)
+                    aa = ((gui::IGUICheckBox*)event.GUIEvent.Caller)->isChecked();
 
-            break;
+                break;
         }
     }
 
