@@ -83,7 +83,7 @@ namespace irr
 
         // ! Utility function to convert a radian value to degrees
         /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
-           \param radians    The radians value to convert to degrees.
+         * \param radians    The radians value to convert to degrees.
          */
         inline constexpr f32 radToDeg(f32 radians) noexcept
         {
@@ -92,7 +92,7 @@ namespace irr
 
         // ! Utility function to convert a radian value to degrees
         /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
-           \param radians    The radians value to convert to degrees.
+         * \param radians    The radians value to convert to degrees.
          */
         inline constexpr f64 radToDeg(f64 radians) noexcept
         {
@@ -101,7 +101,7 @@ namespace irr
 
         // ! Utility function to convert a degrees value to radians
         /** Provided as it can be clearer to write degToRad(X) than DEGTORAD * X
-           \param degrees    The degrees value to convert to radians.
+         * \param degrees    The degrees value to convert to radians.
          */
         inline constexpr f32 degToRad(f32 degrees) noexcept
         {
@@ -110,7 +110,7 @@ namespace irr
 
         // ! Utility function to convert a degrees value to radians
         /** Provided as it can be clearer to write degToRad(X) than DEGTORAD * X
-           \param degrees    The degrees value to convert to radians.
+         * \param degrees    The degrees value to convert to radians.
          */
         inline constexpr f64 degToRad(f64 degrees) noexcept
         {
@@ -195,7 +195,7 @@ namespace irr
 
         union FloatIntUnion32
         {
-            FloatIntUnion32(float f1 = 0.0f) noexcept: f(f1) {}
+            FloatIntUnion32(float f1 = 0.0f) noexcept : f(f1) {}
             // Portable sign-extraction
             bool sign() const noexcept
             {
@@ -328,16 +328,16 @@ namespace irr
         }
 
         /*
-            float IEEE-754 bit represenation
-
-            0      0x00000000
-            1.0    0x3f800000
-            0.5    0x3f000000
-            3      0x40400000
-           +inf   0x7f800000
-            -inf   0xff800000
-           +NaN   0x7fc00000 or 0x7ff00000
-            in general: number = (sign ? -1:1) * 2^(exponent) * 1.(mantissa bits)
+         *  float IEEE-754 bit represenation
+         *
+         *  0      0x00000000
+         *  1.0    0x3f800000
+         *  0.5    0x3f000000
+         *  3      0x40400000
+         * +inf   0x7f800000
+         *  -inf   0xff800000
+         * +NaN   0x7fc00000 or 0x7ff00000
+         *  in general: number = (sign ? -1:1) * 2^(exponent) * 1.(mantissa bits)
          */
 
         typedef union { u32 u; s32 s; f32 f; } inttofloat;
@@ -449,7 +449,7 @@ namespace irr
 #endif
 
         /*
-            if (condition) state |= m; else state &= ~m;
+         *  if (condition) state |= m; else state &= ~m;
          */
         REALINLINE void setbit_cond(u32 &state, s32 condition, u32 mask) noexcept
         {
@@ -523,12 +523,12 @@ namespace irr
             __asm movss recsqrt, xmm0   // return xmm0
             return recsqrt;
 
-/*
-        // comes from Nvidia
-        u32 tmp = (u32(IEEE_1_0 << 1) + IEEE_1_0 - *(u32*)&x) >> 1;
-        f32 y = *(f32*)&tmp;
-        return y * (1.47f - 0.47f * x * y * y);
- */
+            /*
+             *      // comes from Nvidia
+             *      u32 tmp = (u32(IEEE_1_0 << 1) + IEEE_1_0 - *(u32*)&x) >> 1;
+             *      f32 y = *(f32*)&tmp;
+             *      return y * (1.47f - 0.47f * x * y * y);
+             */
     #else
             return 1.f / sqrtf(f);
     #endif
@@ -602,18 +602,18 @@ namespace irr
             return rec;
 
 
-/*
-        // SSE reciprocal estimate, accurate to 12 significant bits of
-        f32 rec;
-        __asm rcpss xmm0, f             // xmm0 = rcpss(f)
-        __asm movss rec , xmm0          // return xmm0
-        return rec;
- */
-/*
-        register u32 x = 0x7F000000 - IR ( p );
-        const f32 r = FR ( x );
-        return r * (2.0f - p * r);
- */
+            /*
+             *      // SSE reciprocal estimate, accurate to 12 significant bits of
+             *      f32 rec;
+             *      __asm rcpss xmm0, f             // xmm0 = rcpss(f)
+             *      __asm movss rec , xmm0          // return xmm0
+             *      return rec;
+             */
+            /*
+             *      register u32 x = 0x7F000000 - IR ( p );
+             *      const f32 r = FR ( x );
+             *      return r * (2.0f - p * r);
+             */
 #else       // no fast math
             return 1.f / f;
 #endif
@@ -736,5 +736,4 @@ namespace irr
 using irr::core::IR;
 using irr::core::FR;
 #endif
-
 #endif

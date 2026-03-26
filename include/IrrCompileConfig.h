@@ -6,8 +6,8 @@
 #define __IRR_COMPILE_CONFIG_H_INCLUDED__
 
 //! Irrlicht SDK Version
-#define IRRLICHT_VERSION_MAJOR 1
-#define IRRLICHT_VERSION_MINOR 8
+#define IRRLICHT_VERSION_MAJOR    1
+#define IRRLICHT_VERSION_MINOR    8
 #define IRRLICHT_VERSION_REVISION 3
 // This flag will be defined only in SVN, the official release code will have
 // it undefined
@@ -82,9 +82,9 @@
     #undef _IRR_WINDOWS_
     #define _IRR_XBOX_PLATFORM_
     #define _IRR_WINDOWS_API_
-    //#define _IRR_COMPILE_WITH_WINDOWS_DEVICE_
+//#define _IRR_COMPILE_WITH_WINDOWS_DEVICE_
     #undef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
-    //#define _IRR_COMPILE_WITH_SDL_DEVICE_
+//#define _IRR_COMPILE_WITH_SDL_DEVICE_
 
     #include <xtl.h>
 #endif
@@ -119,23 +119,23 @@
 //! Define _IRR_COMPILE_WITH_DIRECT3D_8_ and _IRR_COMPILE_WITH_DIRECT3D_9_ to
 //! compile the Irrlicht engine with Direct3D8 and/or DIRECT3D9.
 /** If you only want to use the software device or opengl you can disable those defines.
-This switch is mostly disabled because people do not get the g++ compiler compile
-directX header files, and directX is only available on Windows platforms. If you
-are using Dev-Cpp, and want to compile this using a DX dev pack, you can define
-_IRR_COMPILE_WITH_DX9_DEV_PACK_. So you simply need to add something like this
-to the compiler settings: -DIRR_COMPILE_WITH_DX9_DEV_PACK
-and this to the linker settings: -ld3dx9 -ld3dx8
-
-Microsoft have chosen to remove D3D8 headers from their recent DXSDKs, and
-so D3D8 support is now disabled by default.  If you really want to build
-with D3D8 support, then you will have to source a DXSDK with the appropriate
-headers, e.g. Summer 2004.  This is a Microsoft issue, not an Irrlicht one.
-*/
+ * This switch is mostly disabled because people do not get the g++ compiler compile
+ * directX header files, and directX is only available on Windows platforms. If you
+ * are using Dev-Cpp, and want to compile this using a DX dev pack, you can define
+ * _IRR_COMPILE_WITH_DX9_DEV_PACK_. So you simply need to add something like this
+ * to the compiler settings: -DIRR_COMPILE_WITH_DX9_DEV_PACK
+ * and this to the linker settings: -ld3dx9 -ld3dx8
+ *
+ * Microsoft have chosen to remove D3D8 headers from their recent DXSDKs, and
+ * so D3D8 support is now disabled by default.  If you really want to build
+ * with D3D8 support, then you will have to source a DXSDK with the appropriate
+ * headers, e.g. Summer 2004.  This is a Microsoft issue, not an Irrlicht one.
+ */
 #if defined(_IRR_WINDOWS_API_) && (!defined(__GNUC__) || defined(IRR_COMPILE_WITH_DX9_DEV_PACK))
 
 //! Define _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_ if you want to use DirectInput for joystick handling.
 /** This only applies to Windows devices, currently only supported under Win32 device.
-If not defined, Windows Multimedia library is used, which offers also broad support for joystick devices. */
+ * If not defined, Windows Multimedia library is used, which offers also broad support for joystick devices. */
 //#define _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
 #ifdef NO_IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
 #undef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
@@ -155,12 +155,11 @@ If not defined, Windows Multimedia library is used, which offers also broad supp
 #ifdef NO_IRR_COMPILE_WITH_DIRECT3D_9_
 #undef _IRR_COMPILE_WITH_DIRECT3D_9_
 #endif
-
 #endif
 
 //! Define _IRR_COMPILE_WITH_OPENGL_ to compile the Irrlicht engine with OpenGL.
 /** If you do not wish the engine to be compiled with OpenGL, comment this
-define out. */
+ * define out. */
 #define _IRR_COMPILE_WITH_OPENGL_
 #ifdef NO_IRR_COMPILE_WITH_OPENGL_
 #undef _IRR_COMPILE_WITH_OPENGL_
@@ -168,7 +167,7 @@ define out. */
 
 //! Define _IRR_COMPILE_WITH_SOFTWARE_ to compile the Irrlicht engine with software driver
 /** If you do not need the software driver, or want to use Burning's Video instead,
-comment this define out */
+ * comment this define out */
 #define _IRR_COMPILE_WITH_SOFTWARE_
 #ifdef NO_IRR_COMPILE_WITH_SOFTWARE_
 #undef _IRR_COMPILE_WITH_SOFTWARE_
@@ -183,7 +182,7 @@ comment this define out */
 
 //! Define _IRR_COMPILE_WITH_X11_ to compile the Irrlicht engine with X11 support.
 /** If you do not wish the engine to be compiled with X11, comment this
-define out. */
+ * define out. */
 // Only used in LinuxDevice.
 #define _IRR_COMPILE_WITH_X11_
 #ifdef NO_IRR_COMPILE_WITH_X11_
@@ -192,7 +191,7 @@ define out. */
 
 //! Define _IRR_OPENGL_USE_EXTPOINTER_ if the OpenGL renderer should use OpenGL extensions via function pointers.
 /** On some systems there is no support for the dynamic extension of OpenGL
-    via function pointers such that this has to be undef'ed. */
+ *  via function pointers such that this has to be undef'ed. */
 #if !defined(_IRR_OSX_PLATFORM_) && !defined(_IRR_SOLARIS_PLATFORM_)
 #define _IRR_OPENGL_USE_EXTPOINTER_
 #endif
@@ -217,12 +216,11 @@ define out. */
 #ifdef NO_IRR_LINUX_XCURSOR_
 #undef _IRR_LINUX_XCURSOR_
 #endif
-
 #endif
 
 //! Define _IRR_COMPILE_WITH_GUI_ to compile the engine with the built-in GUI
 /** Disable this if you are using an external library to draw the GUI. If you disable this then
-you will not be able to use anything provided by the GUI Environment, including loading fonts. */
+ * you will not be able to use anything provided by the GUI Environment, including loading fonts. */
 #define _IRR_COMPILE_WITH_GUI_
 #ifdef NO_IRR_COMPILE_WITH_GUI_
 #undef _IRR_COMPILE_WITH_GUI_
@@ -230,9 +228,9 @@ you will not be able to use anything provided by the GUI Environment, including 
 
 //! Define _IRR_WCHAR_FILESYSTEM to enable unicode filesystem support for the engine.
 /** This enables the engine to read/write from unicode filesystem. If you
-disable this feature, the engine behave as before (ansi). This is currently only supported
-for Windows based systems. You also have to set #define UNICODE for this to compile.
-*/
+ * disable this feature, the engine behave as before (ansi). This is currently only supported
+ * for Windows based systems. You also have to set #define UNICODE for this to compile.
+ */
 //#define _IRR_WCHAR_FILESYSTEM
 #ifdef NO_IRR_WCHAR_FILESYSTEM
 #undef _IRR_WCHAR_FILESYSTEM
@@ -240,7 +238,7 @@ for Windows based systems. You also have to set #define UNICODE for this to comp
 
 //! Define _IRR_COMPILE_WITH_JPEGLIB_ to enable compiling the engine using libjpeg.
 /** This enables the engine to read jpeg images. If you comment this out,
-the engine will no longer read .jpeg images. */
+ * the engine will no longer read .jpeg images. */
 #define _IRR_COMPILE_WITH_LIBJPEG_
 #ifdef NO_IRR_COMPILE_WITH_LIBJPEG_
 #undef _IRR_COMPILE_WITH_LIBJPEG_
@@ -248,7 +246,7 @@ the engine will no longer read .jpeg images. */
 
 //! Define _IRR_USE_NON_SYSTEM_JPEG_LIB_ to let irrlicht use the jpeglib which comes with irrlicht.
 /** If this is commented out, Irrlicht will try to compile using the jpeg lib installed in the system.
-    This is only used when _IRR_COMPILE_WITH_LIBJPEG_ is defined. */
+ *  This is only used when _IRR_COMPILE_WITH_LIBJPEG_ is defined. */
 #define _IRR_USE_NON_SYSTEM_JPEG_LIB_
 #ifdef NO_IRR_USE_NON_SYSTEM_JPEG_LIB_
 #undef _IRR_USE_NON_SYSTEM_JPEG_LIB_
@@ -256,7 +254,7 @@ the engine will no longer read .jpeg images. */
 
 //! Define _IRR_COMPILE_WITH_LIBPNG_ to enable compiling the engine using libpng.
 /** This enables the engine to read png images. If you comment this out,
-the engine will no longer read .png images. */
+ * the engine will no longer read .png images. */
 #define _IRR_COMPILE_WITH_LIBPNG_
 #ifdef NO_IRR_COMPILE_WITH_LIBPNG_
 #undef _IRR_COMPILE_WITH_LIBPNG_
@@ -264,7 +262,7 @@ the engine will no longer read .png images. */
 
 //! Define _IRR_USE_NON_SYSTEM_LIBPNG_ to let irrlicht use the libpng which comes with irrlicht.
 /** If this is commented out, Irrlicht will try to compile using the libpng installed in the system.
-    This is only used when _IRR_COMPILE_WITH_LIBPNG_ is defined. */
+ *  This is only used when _IRR_COMPILE_WITH_LIBPNG_ is defined. */
 #define _IRR_USE_NON_SYSTEM_LIB_PNG_
 #ifdef NO_IRR_USE_NON_SYSTEM_LIB_PNG_
 #undef _IRR_USE_NON_SYSTEM_LIB_PNG_
@@ -272,14 +270,14 @@ the engine will no longer read .png images. */
 
 //! Define _IRR_D3D_NO_SHADER_DEBUGGING to disable shader debugging in D3D9
 /** If _IRR_D3D_NO_SHADER_DEBUGGING is undefined in IrrCompileConfig.h,
-it is possible to debug all D3D9 shaders in VisualStudio. All shaders
-(which have been generated in memory or read from archives for example) will be emitted
-into a temporary file at runtime for this purpose. To debug your shaders, choose
-Debug->Direct3D->StartWithDirect3DDebugging in Visual Studio, and for every shader a
-file named 'irr_dbg_shader_%%.vsh' or 'irr_dbg_shader_%%.psh' will be created. Drag'n'drop
-the file you want to debug into visual studio. That's it. You can now set breakpoints and
-watch registers, variables etc. This works with ASM, HLSL, and both with pixel and vertex shaders.
-Note that the engine will run in D3D REF for this, which is a lot slower than HAL. */
+ * it is possible to debug all D3D9 shaders in VisualStudio. All shaders
+ * (which have been generated in memory or read from archives for example) will be emitted
+ * into a temporary file at runtime for this purpose. To debug your shaders, choose
+ * Debug->Direct3D->StartWithDirect3DDebugging in Visual Studio, and for every shader a
+ * file named 'irr_dbg_shader_%%.vsh' or 'irr_dbg_shader_%%.psh' will be created. Drag'n'drop
+ * the file you want to debug into visual studio. That's it. You can now set breakpoints and
+ * watch registers, variables etc. This works with ASM, HLSL, and both with pixel and vertex shaders.
+ * Note that the engine will run in D3D REF for this, which is a lot slower than HAL. */
 #define _IRR_D3D_NO_SHADER_DEBUGGING
 #ifdef NO_IRR_D3D_NO_SHADER_DEBUGGING
 #undef _IRR_D3D_NO_SHADER_DEBUGGING
@@ -287,9 +285,9 @@ Note that the engine will run in D3D REF for this, which is a lot slower than HA
 
 //! Define _IRR_D3D_USE_LEGACY_HLSL_COMPILER to enable the old HLSL compiler in recent DX SDKs
 /** This enables support for ps_1_x shaders for recent DX SDKs. Otherwise, support
-for this shader model is not available anymore in SDKs after Oct2006. You need to
-distribute the OCT2006_d3dx9_31_x86.cab or OCT2006_d3dx9_31_x64.cab though, in order
-to provide the user with the proper DLL. That's why it's disabled by default. */
+ * for this shader model is not available anymore in SDKs after Oct2006. You need to
+ * distribute the OCT2006_d3dx9_31_x86.cab or OCT2006_d3dx9_31_x64.cab though, in order
+ * to provide the user with the proper DLL. That's why it's disabled by default. */
 //#define _IRR_D3D_USE_LEGACY_HLSL_COMPILER
 #ifdef NO_IRR_D3D_USE_LEGACY_HLSL_COMPILER
 #undef _IRR_D3D_USE_LEGACY_HLSL_COMPILER
@@ -306,26 +304,26 @@ to provide the user with the proper DLL. That's why it's disabled by default. */
 
 //! Define _IRR_USE_NVIDIA_PERFHUD_ to opt-in to using the nVidia PerHUD tool
 /** Enable, by opting-in, to use the nVidia PerfHUD performance analysis driver
-tool <http://developer.nvidia.com/object/nvperfhud_home.html>. */
+ * tool <http://developer.nvidia.com/object/nvperfhud_home.html>. */
 #undef _IRR_USE_NVIDIA_PERFHUD_
 
 //! Define one of the three setting for Burning's Video Software Rasterizer
 /** So if we were marketing guys we could say Irrlicht has 4 Software-Rasterizers.
-    In a Nutshell:
-        All Burnings Rasterizers use 32 Bit Backbuffer, 32Bit Texture & 32 Bit Z or WBuffer,
-        16 Bit/32 Bit can be adjusted on a global flag.
-
-        BURNINGVIDEO_RENDERER_BEAUTIFUL
-            32 Bit + Vertexcolor + Lighting + Per Pixel Perspective Correct + SubPixel/SubTexel Correct +
-            Bilinear Texturefiltering + WBuffer
-
-        BURNINGVIDEO_RENDERER_FAST
-            32 Bit + Per Pixel Perspective Correct + SubPixel/SubTexel Correct + WBuffer +
-            Bilinear Dithering TextureFiltering + WBuffer
-
-        BURNINGVIDEO_RENDERER_ULTRA_FAST
-            16Bit + SubPixel/SubTexel Correct + ZBuffer
-*/
+ *  In a Nutshell:
+ *      All Burnings Rasterizers use 32 Bit Backbuffer, 32Bit Texture & 32 Bit Z or WBuffer,
+ *      16 Bit/32 Bit can be adjusted on a global flag.
+ *
+ *      BURNINGVIDEO_RENDERER_BEAUTIFUL
+ *          32 Bit + Vertexcolor + Lighting + Per Pixel Perspective Correct + SubPixel/SubTexel Correct +
+ *          Bilinear Texturefiltering + WBuffer
+ *
+ *      BURNINGVIDEO_RENDERER_FAST
+ *          32 Bit + Per Pixel Perspective Correct + SubPixel/SubTexel Correct + WBuffer +
+ *          Bilinear Dithering TextureFiltering + WBuffer
+ *
+ *      BURNINGVIDEO_RENDERER_ULTRA_FAST
+ *          16Bit + SubPixel/SubTexel Correct + ZBuffer
+ */
 
 #define BURNINGVIDEO_RENDERER_BEAUTIFUL
 //#define BURNINGVIDEO_RENDERER_FAST
@@ -344,7 +342,7 @@ tool <http://developer.nvidia.com/object/nvperfhud_home.html>. */
 
 //! Define _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_ if you want to use bone based
 /** animated meshes. If you compile without this, you will be unable to load
-B3D, MS3D or X meshes */
+ * B3D, MS3D or X meshes */
 #define _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
 #ifdef NO_IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
 #undef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
@@ -592,16 +590,16 @@ B3D, MS3D or X meshes */
 #ifdef __IRR_COMPILE_WITH_ZIP_ARCHIVE_LOADER_
 //! Define _IRR_COMPILE_WITH_ZLIB_ to enable compiling the engine using zlib.
 /** This enables the engine to read from compressed .zip archives. If you
-disable this feature, the engine can still read archives, but only uncompressed
-ones. */
+ * disable this feature, the engine can still read archives, but only uncompressed
+ * ones. */
 #define _IRR_COMPILE_WITH_ZLIB_
 #ifdef NO_IRR_COMPILE_WITH_ZLIB_
 #undef _IRR_COMPILE_WITH_ZLIB_
 #endif
 //! Define _IRR_USE_NON_SYSTEM_ZLIB_ to let irrlicht use the zlib which comes with irrlicht.
 /** If this is commented out, Irrlicht will try to compile using the zlib
-installed on the system. This is only used when _IRR_COMPILE_WITH_ZLIB_ is
-defined. */
+ * installed on the system. This is only used when _IRR_COMPILE_WITH_ZLIB_ is
+ * defined. */
 #define _IRR_USE_NON_SYSTEM_ZLIB_
 #ifdef NO_IRR_USE_NON_SYSTEM_ZLIB_
 #undef _IRR_USE_NON_SYSTEM_ZLIB_
@@ -613,23 +611,23 @@ defined. */
 #endif
 //! Define _IRR_COMPILE_WITH_BZIP2_ if you want to support bzip2 compressed zip archives
 /** bzip2 is superior to the original zip file compression modes, but requires
-a certain amount of memory for decompression and adds several files to the
-library. */
+ * a certain amount of memory for decompression and adds several files to the
+ * library. */
 #define _IRR_COMPILE_WITH_BZIP2_
 #ifdef NO_IRR_COMPILE_WITH_BZIP2_
 #undef _IRR_COMPILE_WITH_BZIP2_
 #endif
 //! Define _IRR_USE_NON_SYSTEM_BZLIB_ to let irrlicht use the bzlib which comes with irrlicht.
 /** If this is commented out, Irrlicht will try to compile using the bzlib
-installed on the system. This is only used when _IRR_COMPILE_WITH_BZLIB_ is
-defined. */
+ * installed on the system. This is only used when _IRR_COMPILE_WITH_BZLIB_ is
+ * defined. */
 #define _IRR_USE_NON_SYSTEM_BZLIB_
 #ifdef NO_IRR_USE_NON_SYSTEM_BZLIB_
 #undef _IRR_USE_NON_SYSTEM_BZLIB_
 #endif
 //! Define _IRR_COMPILE_WITH_LZMA_ if you want to use LZMA compressed zip files.
 /** LZMA is a very efficient compression code, known from 7zip. Irrlicht
-currently only supports zip archives, though. */
+ * currently only supports zip archives, though. */
 #define _IRR_COMPILE_WITH_LZMA_
 #ifdef NO_IRR_COMPILE_WITH_LZMA_
 #undef _IRR_COMPILE_WITH_LZMA_
@@ -664,10 +662,10 @@ currently only supports zip archives, though. */
 
 //! Set FPU settings
 /** Irrlicht should use approximate float and integer fpu techniques
-precision will be lower but speed higher. currently X86 only
-*/
+ * precision will be lower but speed higher. currently X86 only
+ */
 #if !defined(_IRR_OSX_PLATFORM_) && !defined(_IRR_SOLARIS_PLATFORM_)
-    //#define IRRLICHT_FAST_MATH
+//#define IRRLICHT_FAST_MATH
     #ifdef NO_IRRLICHT_FAST_MATH
     #undef IRRLICHT_FAST_MATH
     #endif
@@ -706,7 +704,6 @@ precision will be lower but speed higher. currently X86 only
 #endif
 
 #define IRRCALLCONV
-
 #endif // _IRR_WINDOWS_API_
 
 // We need to disable DIRECT3D9 support for Visual Studio 6.0 because
@@ -739,10 +736,10 @@ precision will be lower but speed higher. currently X86 only
 
     #undef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
     #define _IRR_COMPILE_WITH_WINDOWS_CE_DEVICE_
-    //#define _IRR_WCHAR_FILESYSTEM
+//#define _IRR_WCHAR_FILESYSTEM
 
     #undef _IRR_COMPILE_WITH_IRR_MESH_LOADER_
-    //#undef _IRR_COMPILE_WITH_MD2_LOADER_
+//#undef _IRR_COMPILE_WITH_MD2_LOADER_
     #undef _IRR_COMPILE_WITH_MD3_LOADER_
     #undef _IRR_COMPILE_WITH_3DS_LOADER_
     #undef _IRR_COMPILE_WITH_COLLADA_LOADER_
@@ -760,13 +757,13 @@ precision will be lower but speed higher. currently X86 only
     #undef _IRR_COMPILE_WITH_COLLADA_WRITER_
     #undef _IRR_COMPILE_WITH_STL_WRITER_
     #undef _IRR_COMPILE_WITH_OBJ_WRITER_
-    //#undef _IRR_COMPILE_WITH_BMP_LOADER_
-    //#undef _IRR_COMPILE_WITH_JPG_LOADER_
+//#undef _IRR_COMPILE_WITH_BMP_LOADER_
+//#undef _IRR_COMPILE_WITH_JPG_LOADER_
     #undef _IRR_COMPILE_WITH_PCX_LOADER_
-    //#undef _IRR_COMPILE_WITH_PNG_LOADER_
+//#undef _IRR_COMPILE_WITH_PNG_LOADER_
     #undef _IRR_COMPILE_WITH_PPM_LOADER_
     #undef _IRR_COMPILE_WITH_PSD_LOADER_
-    //#undef _IRR_COMPILE_WITH_TGA_LOADER_
+//#undef _IRR_COMPILE_WITH_TGA_LOADER_
     #undef _IRR_COMPILE_WITH_WAL_LOADER_
     #undef _IRR_COMPILE_WITH_BMP_WRITER_
     #undef _IRR_COMPILE_WITH_JPG_WRITER_
@@ -775,7 +772,6 @@ precision will be lower but speed higher. currently X86 only
     #undef _IRR_COMPILE_WITH_PPM_WRITER_
     #undef _IRR_COMPILE_WITH_PSD_WRITER_
     #undef _IRR_COMPILE_WITH_TGA_WRITER_
-
 #endif
 
 #ifndef _IRR_WINDOWS_API_
@@ -799,9 +795,9 @@ precision will be lower but speed higher. currently X86 only
 #if defined(__BORLANDC__)
     #include <tchar.h>
 
-    // Borland 5.5.1 does not have _strcmpi defined
+// Borland 5.5.1 does not have _strcmpi defined
     #if __BORLANDC__ == 0x551
-    //    #define _strcmpi strcmpi
+//    #define _strcmpi strcmpi
         #undef _tfinddata_t
         #undef _tfindfirst
         #undef _tfindnext
@@ -809,24 +805,21 @@ precision will be lower but speed higher. currently X86 only
         #define _tfinddata_t __tfinddata_t
         #define _tfindfirst  __tfindfirst
         #define _tfindnext   __tfindnext
-        typedef long intptr_t;
+typedef long intptr_t;
     #endif
-
 #endif
 
 #ifdef _DEBUG
-    //! A few attributes are written in CSceneManager when _IRR_SCENEMANAGER_DEBUG is enabled
-    // NOTE: Those attributes were used always until 1.8.0 and became a global define for 1.8.1
-    // which is only enabled in debug because it had a large (sometimes >5%) impact on speed.
-    // A better solution in the long run is to break the interface and remove _all_ attribute
-    // access in functions like CSceneManager::drawAll and instead put that information in some
-    // own struct/class or in CSceneManager.
-    // See http://irrlicht.sourceforge.net/forum/viewtopic.php?f=2&t=48211 for the discussion.
+//! A few attributes are written in CSceneManager when _IRR_SCENEMANAGER_DEBUG is enabled
+// NOTE: Those attributes were used always until 1.8.0 and became a global define for 1.8.1
+// which is only enabled in debug because it had a large (sometimes >5%) impact on speed.
+// A better solution in the long run is to break the interface and remove _all_ attribute
+// access in functions like CSceneManager::drawAll and instead put that information in some
+// own struct/class or in CSceneManager.
+// See http://irrlicht.sourceforge.net/forum/viewtopic.php?f=2&t=48211 for the discussion.
     #define _IRR_SCENEMANAGER_DEBUG
     #ifdef NO_IRR_SCENEMANAGER_DEBUG
         #undef _IRR_SCENEMANAGER_DEBUG
     #endif
 #endif
-
 #endif // __IRR_COMPILE_CONFIG_H_INCLUDED__
-

@@ -9,32 +9,28 @@
 
 namespace irr
 {
-namespace video
-{
-    class ITexture;
-} // end namespace video
-namespace gui
-{
-    class IGUIButton;
-
-    //! Stays at the top of its parent like the menu bar and contains tool buttons
-    class IGUIToolBar : public IGUIElement
+    namespace video
     {
-    public:
+        class ITexture;
+    } // end namespace video
+    namespace gui
+    {
+        class IGUIButton;
 
-        //! constructor
-        IGUIToolBar(IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle)
-            : IGUIElement(EGUIET_TOOL_BAR, environment, parent, id, rectangle) {}
+        //! Stays at the top of its parent like the menu bar and contains tool buttons
+        class IGUIToolBar : public IGUIElement
+        {
+public:
 
-        //! Adds a button to the tool bar
-        virtual IGUIButton* addButton(s32 id=-1, const wchar_t* text=0,const wchar_t* tooltiptext=0,
-            video::ITexture* img=0, video::ITexture* pressedimg=0,
-            bool isPushButton=false, bool useAlphaChannel=false) = 0;
-    };
+            //! constructor
+            IGUIToolBar(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
+                : IGUIElement(EGUIET_TOOL_BAR, environment, parent, id, rectangle) {}
 
-
-} // end namespace gui
+            //! Adds a button to the tool bar
+            virtual IGUIButton* addButton(s32 id = -1, const wchar_t *text = 0, const wchar_t *tooltiptext = 0,
+                video::ITexture *img = 0, video::ITexture *pressedimg = 0,
+                bool isPushButton = false, bool useAlphaChannel = false) = 0;
+        };
+    } // end namespace gui
 } // end namespace irr
-
 #endif
-

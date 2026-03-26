@@ -14,25 +14,25 @@ namespace irr
 {
     namespace video
     {
-// ! Interface for software image data.
-/** Image loaders create these images from files. IVideoDrivers convert
-   these images into their (hardware) textures.
- */
+        // ! Interface for software image data.
+        /** Image loaders create these images from files. IVideoDrivers convert
+         * these images into their (hardware) textures.
+         */
         class IImage : public virtual IReferenceCounted
         {
 public:
 
             // ! Lock function. Use this to get a pointer to the image data.
             /** After you don't need the pointer anymore, you must call unlock().
-               \return Pointer to the image data. What type of data is pointed to
-               depends on the color format of the image. For example if the color
-               format is ECF_A8R8G8B8, it is of u32. Be sure to call unlock() after
-               you don't need the pointer any more. */
+             * \return Pointer to the image data. What type of data is pointed to
+             * depends on the color format of the image. For example if the color
+             * format is ECF_A8R8G8B8, it is of u32. Be sure to call unlock() after
+             * you don't need the pointer any more. */
             virtual void* lock() = 0;
 
             // ! Unlock function.
             /** Should be called after the pointer received by lock() is not
-               needed anymore. */
+             * needed anymore. */
             virtual void unlock() = 0;
 
             // ! Returns width and height of image data.
@@ -88,8 +88,8 @@ public:
 
             // ! copies this surface into another, using the alpha mask and cliprect and a color to add with
             virtual void copyToWithAlpha(IImage *target, const core::position2d<s32> &pos,
-                                         const core::rect<s32> &sourceRect, const SColor &color,
-                                         const core::rect<s32> *clipRect = 0) = 0;
+                const core::rect<s32> &sourceRect, const SColor &color,
+                const core::rect<s32> *clipRect = 0) = 0;
 
             // ! copies this surface into another, scaling it to fit, appyling a box filter
             virtual void copyToScalingBoxFilter(IImage *target, s32 bias = 0, bool blend = false) = 0;
@@ -139,8 +139,8 @@ public:
 
             // ! test if the color format is only viable for RenderTarget textures
             /** Since we don't have support for e.g. floating point IImage formats
-               one should test if the color format can be used for arbitrary usage, or
-               if it is restricted to RTTs. */
+             * one should test if the color format can be used for arbitrary usage, or
+             * if it is restricted to RTTs. */
             static bool isRenderTargetOnlyFormat(const ECOLOR_FORMAT format)
             {
                 switch (format)
@@ -158,5 +158,4 @@ public:
         };
     } // end namespace video
 } // end namespace irr
-
 #endif

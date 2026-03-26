@@ -19,9 +19,9 @@ namespace irr
 {
     namespace core
     {
-// ! Quaternion class for representing rotations.
-/** It provides cheap combinations and avoids gimbal locks.
-   Also useful for interpolations. */
+        // ! Quaternion class for representing rotations.
+        /** It provides cheap combinations and avoids gimbal locks.
+         * Also useful for interpolations. */
         class quaternion
         {
 public:
@@ -92,7 +92,7 @@ public:
 
             // ! returns if this quaternion equals the other one, taking floating point rounding errors into account
             inline bool equals(const quaternion &other,
-                               const f32 tolerance = ROUNDING_ERROR_f32) const;
+                const f32 tolerance = ROUNDING_ERROR_f32) const;
 
             // ! Normalizes the quaternion
             inline quaternion&normalize();
@@ -106,21 +106,21 @@ public:
             void getMatrix(matrix4 &dest, const core::vector3df &translation = core::vector3df()) const;
 
             /*!
-                Creates a matrix from this quaternion
-                Rotate about a center point
-                shortcut for
-                core::quaternion q;
-                q.rotationFromTo ( vin[i].Normal, forward );
-                q.getMatrixCenter ( lookat, center, newPos );
-
-                core::matrix4 m2;
-                m2.setInverseTranslation ( center );
-                lookat *= m2;
-
-                core::matrix4 m3;
-                m2.setTranslation ( newPos );
-                lookat *= m3;
-
+             *  Creates a matrix from this quaternion
+             *  Rotate about a center point
+             *  shortcut for
+             *  core::quaternion q;
+             *  q.rotationFromTo ( vin[i].Normal, forward );
+             *  q.getMatrixCenter ( lookat, center, newPos );
+             *
+             *  core::matrix4 m2;
+             *  m2.setInverseTranslation ( center );
+             *  lookat *= m2;
+             *
+             *  core::matrix4 m3;
+             *  m2.setTranslation ( newPos );
+             *  lookat *= m3;
+             *
              */
             void getMatrixCenter(matrix4 &dest, const core::vector3df &center, const core::vector3df &translation) const;
 
@@ -132,34 +132,34 @@ public:
 
             // ! Set this quaternion to the linear interpolation between two quaternions
             /** \param q1 First quaternion to be interpolated.
-               \param q2 Second quaternion to be interpolated.
-               \param time Progress of interpolation. For time=0 the result is
-               q1, for time=1 the result is q2. Otherwise interpolation
-               between q1 and q2.
+             * \param q2 Second quaternion to be interpolated.
+             * \param time Progress of interpolation. For time=0 the result is
+             * q1, for time=1 the result is q2. Otherwise interpolation
+             * between q1 and q2.
              */
             quaternion&lerp(quaternion q1, quaternion q2, f32 time);
 
             // ! Set this quaternion to the result of the spherical interpolation between two quaternions
             /** \param q1 First quaternion to be interpolated.
-               \param q2 Second quaternion to be interpolated.
-               \param time Progress of interpolation. For time=0 the result is
-               q1, for time=1 the result is q2. Otherwise interpolation
-               between q1 and q2.
-               \param threshold To avoid inaccuracies at the end (time=1) the
-               interpolation switches to linear interpolation at some point.
-               This value defines how much of the remaining interpolation will
-               be calculated with lerp. Everything from 1-threshold up will be
-               linear interpolation.
+             * \param q2 Second quaternion to be interpolated.
+             * \param time Progress of interpolation. For time=0 the result is
+             * q1, for time=1 the result is q2. Otherwise interpolation
+             * between q1 and q2.
+             * \param threshold To avoid inaccuracies at the end (time=1) the
+             * interpolation switches to linear interpolation at some point.
+             * This value defines how much of the remaining interpolation will
+             * be calculated with lerp. Everything from 1-threshold up will be
+             * linear interpolation.
              */
             quaternion&slerp(quaternion q1, quaternion q2,
-                             f32 time, f32 threshold = .05f);
+                f32 time, f32 threshold = .05f);
 
             // ! Create quaternion from rotation angle and rotation axis.
             /** Axis must be unit length.
-               The quaternion representing the rotation is
-               q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k).
-               \param angle Rotation Angle in radians.
-               \param axis Rotation axis. */
+            *  The quaternion representing the rotation is
+            *  q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k).
+            *  \param angle Rotation Angle in radians.
+            *  \param axis Rotation axis. */
             quaternion&fromAngleAxis(f32 angle, const vector3df &axis);
 
             // ! Fills an angle (radians) around an axis (unit vector)
@@ -182,43 +182,43 @@ public:
         };
 
 
-// Constructor which converts euler angles to a quaternion
+        // Constructor which converts euler angles to a quaternion
         inline quaternion::quaternion(f32 x, f32 y, f32 z)
         {
             set(x, y, z);
         }
 
 
-// Constructor which converts euler angles to a quaternion
+        // Constructor which converts euler angles to a quaternion
         inline quaternion::quaternion(const vector3df &vec)
         {
             set(vec.X, vec.Y, vec.Z);
         }
 
 #if !IRR_TEST_BROKEN_QUATERNION_USE
-// Constructor which converts a matrix to a quaternion
+        // Constructor which converts a matrix to a quaternion
         inline quaternion::quaternion(const matrix4 &mat)
         {
             (*this) = mat;
         }
 #endif
 
-// equal operator
+        // equal operator
         inline bool quaternion::operator==(const quaternion &other) const
         {
             return ((X == other.X) &&
-                    (Y == other.Y) &&
-                    (Z == other.Z) &&
-                    (W == other.W));
+                   (Y == other.Y) &&
+                   (Z == other.Z) &&
+                   (W == other.W));
         }
 
-// inequality operator
+        // inequality operator
         inline bool quaternion::operator!=(const quaternion &other) const
         {
             return !(*this == other);
         }
 
-// assignment operator
+        // assignment operator
         inline quaternion&quaternion::operator=(const quaternion &other)
         {
             X = other.X;
@@ -229,7 +229,7 @@ public:
         }
 
 #if !IRR_TEST_BROKEN_QUATERNION_USE
-// matrix assignment operator
+        // matrix assignment operator
         inline quaternion&quaternion::operator=(const matrix4 &m)
         {
             const f32 diag = m[0] + m[5] + m[10] + 1;
@@ -246,7 +246,7 @@ public:
             }
             else
             {
-                if (m[0]>m[5] && m[0]>m[10])
+                if (m[0] > m[5] && m[0] > m[10])
                 {
                     // 1st element of diag is greatest value
                     // find scale according to 1st element, and double it
@@ -258,7 +258,7 @@ public:
                     Z = (m[2] + m[8]) / scale;
                     W = (m[6] - m[9]) / scale;
                 }
-                else if (m[5]>m[10])
+                else if (m[5] > m[10])
                 {
                     // 2nd element of diag is greatest value
                     // find scale according to 2nd element, and double it
@@ -289,7 +289,7 @@ public:
 #endif
 
 
-// multiplication operator
+        // multiplication operator
         inline quaternion quaternion::operator*(const quaternion &other) const
         {
             quaternion tmp;
@@ -303,14 +303,14 @@ public:
         }
 
 
-// multiplication operator
+        // multiplication operator
         inline quaternion quaternion::operator*(f32 s) const
         {
             return quaternion(s * X, s * Y, s * Z, s * W);
         }
 
 
-// multiplication operator
+        // multiplication operator
         inline quaternion&quaternion::operator*=(f32 s)
         {
             X *= s;
@@ -320,20 +320,20 @@ public:
             return *this;
         }
 
-// multiplication operator
+        // multiplication operator
         inline quaternion&quaternion::operator*=(const quaternion &other)
         {
             return (*this = other * (*this));
         }
 
-// add operator
+        // add operator
         inline quaternion quaternion::operator+(const quaternion &b) const
         {
             return quaternion(X + b.X, Y + b.Y, Z + b.Z, W + b.W);
         }
 
 #if !IRR_TEST_BROKEN_QUATERNION_USE
-// Creates a matrix from this quaternion
+        // Creates a matrix from this quaternion
         inline matrix4 quaternion::getMatrix() const
         {
             core::matrix4 m;
@@ -343,11 +343,11 @@ public:
         }
 #endif
 
-/*!
-    Creates a matrix from this quaternion
- */
+        /*!
+         *  Creates a matrix from this quaternion
+         */
         inline void quaternion::getMatrix(matrix4 &dest,
-                                          const core::vector3df &center) const
+            const core::vector3df &center) const
         {
             dest[0] = 1.0f - 2.0f * Y * Y - 2.0f * Z * Z;
             dest[1] = 2.0f * X * Y + 2.0f * Z * W;
@@ -373,21 +373,21 @@ public:
         }
 
 
-/*!
-    Creates a matrix from this quaternion
-    Rotate about a center point
-    shortcut for
-    core::quaternion q;
-    q.rotationFromTo(vin[i].Normal, forward);
-    q.getMatrix(lookat, center);
-
-    core::matrix4 m2;
-    m2.setInverseTranslation(center);
-    lookat *= m2;
- */
+        /*!
+         *  Creates a matrix from this quaternion
+         *  Rotate about a center point
+         *  shortcut for
+         *  core::quaternion q;
+         *  q.rotationFromTo(vin[i].Normal, forward);
+         *  q.getMatrix(lookat, center);
+         *
+         *  core::matrix4 m2;
+         *  m2.setInverseTranslation(center);
+         *  lookat *= m2;
+         */
         inline void quaternion::getMatrixCenter(matrix4 &dest,
-                                                const core::vector3df &center,
-                                                const core::vector3df &translation) const
+            const core::vector3df &center,
+            const core::vector3df &translation) const
         {
             dest[0] = 1.0f - 2.0f * Y * Y - 2.0f * Z * Z;
             dest[1] = 2.0f * X * Y + 2.0f * Z * W;
@@ -407,7 +407,7 @@ public:
             dest.setRotationCenter (center, translation);
         }
 
-// Creates a matrix from this quaternion
+        // Creates a matrix from this quaternion
         inline void quaternion::getMatrix_transposed(matrix4 &dest) const
         {
             dest[0]  = 1.0f - 2.0f * Y * Y - 2.0f * Z * Z;
@@ -434,7 +434,7 @@ public:
         }
 
 
-// Inverts this quaternion
+        // Inverts this quaternion
         inline quaternion&quaternion::makeInverse()
         {
             X = -X; Y = -Y; Z = -Z;
@@ -442,7 +442,7 @@ public:
         }
 
 
-// sets new quaternion
+        // sets new quaternion
         inline quaternion&quaternion::set(f32 x, f32 y, f32 z, f32 w)
         {
             X = x;
@@ -453,7 +453,7 @@ public:
         }
 
 
-// sets new quaternion based on euler angles
+        // sets new quaternion based on euler angles
         inline quaternion&quaternion::set(f32 x, f32 y, f32 z)
         {
             f64 angle;
@@ -483,20 +483,20 @@ public:
             return normalize();
         }
 
-// sets new quaternion based on euler angles
+        // sets new quaternion based on euler angles
         inline quaternion&quaternion::set(const core::vector3df &vec)
         {
             return set(vec.X, vec.Y, vec.Z);
         }
 
-// sets new quaternion based on other quaternion
+        // sets new quaternion based on other quaternion
         inline quaternion&quaternion::set(const core::quaternion &quat)
         {
             return (*this = quat);
         }
 
 
-// ! returns if this quaternion equals the other one, taking floating point rounding errors into account
+        // ! returns if this quaternion equals the other one, taking floating point rounding errors into account
         inline bool quaternion::equals(const quaternion &other, const f32 tolerance) const
         {
             return core::equals(X, other.X, tolerance) &&
@@ -506,7 +506,7 @@ public:
         }
 
 
-// normalizes the quaternion
+        // normalizes the quaternion
         inline quaternion&quaternion::normalize()
         {
             const f32 n = X * X + Y * Y + Z * Z + W * W;
@@ -519,7 +519,7 @@ public:
         }
 
 
-// set this quaternion to the result of the linear interpolation between two quaternions
+        // set this quaternion to the result of the linear interpolation between two quaternions
         inline quaternion&quaternion::lerp(quaternion q1, quaternion q2, f32 time)
         {
             const f32 scale = 1.0f - time;
@@ -528,7 +528,7 @@ public:
         }
 
 
-// set this quaternion to the result of the interpolation between two quaternions
+        // set this quaternion to the result of the interpolation between two quaternions
         inline quaternion&quaternion::slerp(quaternion q1, quaternion q2, f32 time, f32 threshold)
         {
             f32 angle = q1.dotProduct(q2);
@@ -553,14 +553,14 @@ public:
         }
 
 
-// calculates the dot product
+        // calculates the dot product
         inline f32 quaternion::dotProduct(const quaternion &q2) const
         {
             return (X * q2.X) + (Y * q2.Y) + (Z * q2.Z) + (W * q2.W);
         }
 
 
-// ! axis must be unit length, angle in radians
+        // ! axis must be unit length, angle in radians
         inline quaternion&quaternion::fromAngleAxis(f32 angle, const vector3df &axis)
         {
             const f32 fHalfAngle = 0.5f * angle;
@@ -648,7 +648,7 @@ public:
             return v + uv + uuv;
         }
 
-// set quaternion to identity
+        // set quaternion to identity
         inline core::quaternion&quaternion::makeIdentity()
         {
             W = 1.f;
@@ -677,7 +677,7 @@ public:
             {
                 core::vector3df axis(1.0f, 0.f, 0.f);
                 axis = axis.crossProduct(v0);
-                if (axis.getLength()==0)
+                if (axis.getLength() == 0)
                 {
                     axis.set(0.f, 1.f, 0.f);
                     axis = axis.crossProduct(v0);
@@ -694,5 +694,4 @@ public:
         }
     } // end namespace core
 } // end namespace irr
-
 #endif

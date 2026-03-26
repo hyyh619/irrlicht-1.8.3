@@ -16,17 +16,17 @@ namespace irr
 {
     namespace core
     {
-// ! Very simple string class with some useful features.
-/** string<c8> and string<wchar_t> both accept Unicode AND ASCII/Latin-1,
-   so you can assign Unicode to string<c8> and ASCII/Latin-1 to string<wchar_t>
-   (and the other way round) if you want to.
-
-   However, note that the conversation between both is not done using any encoding.
-   This means that c8 strings are treated as ASCII/Latin-1, not UTF-8, and
-   are simply expanded to the equivalent wchar_t, while Unicode/wchar_t
-   characters are truncated to 8-bit ASCII/Latin-1 characters, discarding all
-   other information in the wchar_t.
- */
+        // ! Very simple string class with some useful features.
+        /** string<c8> and string<wchar_t> both accept Unicode AND ASCII/Latin-1,
+         * so you can assign Unicode to string<c8> and ASCII/Latin-1 to string<wchar_t>
+         * (and the other way round) if you want to.
+         *
+         * However, note that the conversation between both is not done using any encoding.
+         * This means that c8 strings are treated as ASCII/Latin-1, not UTF-8, and
+         * are simply expanded to the equivalent wchar_t, while Unicode/wchar_t
+         * characters are truncated to 8-bit ASCII/Latin-1 characters, discarding all
+         * other information in the wchar_t.
+         */
 
         enum class eLocaleID
         {
@@ -40,7 +40,7 @@ namespace irr
             locale_current = id;
         }
 
-// ! Returns a character converted to lower case
+        // ! Returns a character converted to lower case
         static inline u32 locale_lower(u32 x) noexcept
         {
             switch (locale_current)
@@ -54,7 +54,7 @@ namespace irr
             return x >= 'A' && x <= 'Z' ? x + 0x20 : x;
         }
 
-// ! Returns a character converted to upper case
+        // ! Returns a character converted to upper case
         static inline u32 locale_upper(u32 x) noexcept
         {
             switch (locale_current)
@@ -69,7 +69,7 @@ namespace irr
         }
 
 
-        template<typename T, typename TAlloc = irrAllocator<T> >
+        template<typename T, typename TAlloc = irrAllocator<T>>
         class string
         {
 public:
@@ -287,7 +287,7 @@ public:
                 allocated = used = length + 1;
                 array     = allocator.allocate(used); // new T[used];
 
-                for (u32 l = 0; l<length; ++l)
+                for (u32 l = 0; l < length; ++l)
                     array[l] = (T)c[l];
 
                 array[length] = 0;
@@ -317,7 +317,7 @@ public:
                     return *this;
 
                 used = other.size() + 1;
-                if (used>allocated)
+                if (used > allocated)
                 {
                     allocator.deallocate(array); // delete [] array;
                     allocated = used;
@@ -326,7 +326,7 @@ public:
 
                 const T *p = other.c_str();
 
-                for (u32 i = 0; i<used; ++i, ++p)
+                for (u32 i = 0; i < used; ++i, ++p)
                     array[i] = *p;
 
                 return *this;
@@ -375,13 +375,13 @@ public:
                 T *oldArray = array;
 
                 used = len;
-                if (used>allocated)
+                if (used > allocated)
                 {
                     allocated = used;
                     array     = allocator.allocate(used); // new T[used];
                 }
 
-                for (u32 l = 0; l<len; ++l)
+                for (u32 l = 0; l < len; ++l)
                     array[l] = (T)c[l];
 
                 if (oldArray != array)
@@ -415,7 +415,7 @@ public:
             // ! Direct access operator
             T&operator [](const u32 index)
             {
-                _IRR_DEBUG_BREAK_IF(index>=used) // bad index
+                _IRR_DEBUG_BREAK_IF(index >= used) // bad index
                 return array[index];
             }
 
@@ -423,7 +423,7 @@ public:
             // ! Direct access operator
             const T&operator [](const u32 index) const
             {
-                _IRR_DEBUG_BREAK_IF(index>=used) // bad index
+                _IRR_DEBUG_BREAK_IF(index >= used) // bad index
                 return array[index];
             }
 
@@ -485,7 +485,7 @@ public:
 
             // ! Returns length of the string's content
             /** \return Length of the string's content in characters, excluding
-               the trailing NUL. */
+             * the trailing NUL. */
             u32 size() const
             {
                 return used - 1;
@@ -528,7 +528,7 @@ public:
 
             // ! Compares the strings ignoring case.
             /** \param other: Other string to compare.
-               \return True if the strings are equal ignoring case. */
+             * \return True if the strings are equal ignoring case. */
             bool equals_ignore_case(const string<T, TAlloc> &other) const
             {
                 for (u32 i = 0; array[i] && other[i]; ++i)
@@ -540,8 +540,8 @@ public:
 
             // ! Compares the strings ignoring case.
             /** \param other: Other string to compare.
-                \param sourcePos: where to start to compare in the string
-               \return True if the strings are equal ignoring case. */
+             *  \param sourcePos: where to start to compare in the string
+             * \return True if the strings are equal ignoring case. */
             bool equals_substring_ignore_case(const string<T, TAlloc> &other, const s32 sourcePos = 0) const
             {
                 if ((u32) sourcePos >= used)
@@ -559,7 +559,7 @@ public:
 
             // ! Compares the strings ignoring case.
             /** \param other: Other string to compare.
-               \return True if this string is smaller ignoring case. */
+             * \return True if this string is smaller ignoring case. */
             bool lower_ignore_case(const string<T, TAlloc> &other) const
             {
                 for (u32 i = 0; array[i] && other.array[i]; ++i)
@@ -575,8 +575,8 @@ public:
 
             // ! compares the first n characters of the strings
             /** \param other Other string to compare.
-               \param n Number of characters to compare
-               \return True if the n first characters of both strings are equal. */
+             * \param n Number of characters to compare
+             * \return True if the n first characters of both strings are equal. */
             bool equalsn(const string<T, TAlloc> &other, u32 n) const
             {
                 u32 i;
@@ -593,8 +593,8 @@ public:
 
             // ! compares the first n characters of the strings
             /** \param str Other string to compare.
-               \param n Number of characters to compare
-               \return True if the n first characters of both strings are equal. */
+             * \param n Number of characters to compare
+             * \return True if the n first characters of both strings are equal. */
             bool equalsn(const T* const str, u32 n) const
             {
                 if (!str)
@@ -654,7 +654,7 @@ public:
                 --used;
                 ++len;
 
-                for (u32 l = 0; l<len; ++l)
+                for (u32 l = 0; l < len; ++l)
                     array[l + used] = *(other + l);
 
                 used += len;
@@ -676,7 +676,7 @@ public:
                 if (used + len > allocated)
                     reallocate(used + len);
 
-                for (u32 l = 0; l<len; ++l)
+                for (u32 l = 0; l < len; ++l)
                     array[used + l] = other[l];
 
                 used += len;
@@ -687,7 +687,7 @@ public:
 
             // ! Appends a string of the length l to this string.
             /** \param other: other String to append to this string.
-               \param length: How much characters of the other string to add to this one. */
+             * \param length: How much characters of the other string to add to this one. */
             string<T, TAlloc>&append(const string<T, TAlloc> &other, u32 length)
             {
                 if (other.size() == 0)
@@ -704,7 +704,7 @@ public:
 
                 --used;
 
-                for (u32 l = 0; l<length; ++l)
+                for (u32 l = 0; l < length; ++l)
                     array[l + used] = other[l];
 
                 used += length;
@@ -730,11 +730,11 @@ public:
 
             // ! finds first occurrence of character in string
             /** \param c: Character to search for.
-               \return Position where the character has been found,
-               or -1 if not found. */
+             * \return Position where the character has been found,
+             * or -1 if not found. */
             s32 findFirst(T c) const
             {
-                for (u32 i = 0; i<used - 1; ++i)
+                for (u32 i = 0; i < used - 1; ++i)
                     if (array[i] == c)
                         return i;
 
@@ -743,18 +743,18 @@ public:
 
             // ! finds first occurrence of a character of a list in string
             /** \param c: List of characters to find. For example if the method
-               should find the first occurrence of 'a' or 'b', this parameter should be "ab".
-               \param count: Amount of characters in the list. Usually,
-               this should be strlen(c)
-               \return Position where one of the characters has been found,
-               or -1 if not found. */
+             * should find the first occurrence of 'a' or 'b', this parameter should be "ab".
+             * \param count: Amount of characters in the list. Usually,
+             * this should be strlen(c)
+             * \return Position where one of the characters has been found,
+             * or -1 if not found. */
             s32 findFirstChar(const T* const c, u32 count = 1) const
             {
                 if (!c || !count)
                     return -1;
 
-                for (u32 i = 0; i<used - 1; ++i)
-                    for (u32 j = 0; j<count; ++j)
+                for (u32 i = 0; i < used - 1; ++i)
+                    for (u32 j = 0; j < count; ++j)
                         if (array[i] == c[j])
                             return i;
 
@@ -764,26 +764,26 @@ public:
 
             // ! Finds first position of a character not in a given list.
             /** \param c: List of characters not to find. For example if the method
-               should find the first occurrence of a character not 'a' or 'b', this parameter should be "ab".
-               \param count: Amount of characters in the list. Usually,
-               this should be strlen(c)
-               \return Position where the character has been found,
-               or -1 if not found. */
+             * should find the first occurrence of a character not 'a' or 'b', this parameter should be "ab".
+             * \param count: Amount of characters in the list. Usually,
+             * this should be strlen(c)
+             * \return Position where the character has been found,
+             * or -1 if not found. */
             template<class B>
             s32 findFirstCharNotInList(const B* const c, u32 count = 1) const
             {
                 if (!c || !count)
                     return -1;
 
-                for (u32 i = 0; i<used - 1; ++i)
+                for (u32 i = 0; i < used - 1; ++i)
                 {
                     u32 j;
 
-                    for (j = 0; j<count; ++j)
+                    for (j = 0; j < count; ++j)
                         if (array[i] == c[j])
                             break;
 
-                    if (j==count)
+                    if (j == count)
                         return i;
                 }
 
@@ -792,26 +792,26 @@ public:
 
             // ! Finds last position of a character not in a given list.
             /** \param c: List of characters not to find. For example if the method
-               should find the first occurrence of a character not 'a' or 'b', this parameter should be "ab".
-               \param count: Amount of characters in the list. Usually,
-               this should be strlen(c)
-               \return Position where the character has been found,
-               or -1 if not found. */
+             * should find the first occurrence of a character not 'a' or 'b', this parameter should be "ab".
+             * \param count: Amount of characters in the list. Usually,
+             * this should be strlen(c)
+             * \return Position where the character has been found,
+             * or -1 if not found. */
             template<class B>
             s32 findLastCharNotInList(const B* const c, u32 count = 1) const
             {
                 if (!c || !count)
                     return -1;
 
-                for (s32 i = (s32)(used - 2); i>=0; --i)
+                for (s32 i = (s32)(used - 2); i >= 0; --i)
                 {
                     u32 j;
 
-                    for (j = 0; j<count; ++j)
+                    for (j = 0; j < count; ++j)
                         if (array[i] == c[j])
                             break;
 
-                    if (j==count)
+                    if (j == count)
                         return i;
                 }
 
@@ -820,12 +820,12 @@ public:
 
             // ! finds next occurrence of character in string
             /** \param c: Character to search for.
-               \param startPos: Position in string to start searching.
-               \return Position where the character has been found,
-               or -1 if not found. */
+             * \param startPos: Position in string to start searching.
+             * \return Position where the character has been found,
+             * or -1 if not found. */
             s32 findNext(T c, u32 startPos) const
             {
-                for (u32 i = startPos; i<used - 1; ++i)
+                for (u32 i = startPos; i < used - 1; ++i)
                     if (array[i] == c)
                         return i;
 
@@ -835,14 +835,14 @@ public:
 
             // ! finds last occurrence of character in string
             /** \param c: Character to search for.
-               \param start: start to search reverse ( default = -1, on end )
-               \return Position where the character has been found,
-               or -1 if not found. */
+             * \param start: start to search reverse ( default = -1, on end )
+             * \return Position where the character has been found,
+             * or -1 if not found. */
             s32 findLast(T c, s32 start = -1) const
             {
                 start = core::clamp (start < 0 ? (s32)(used) - 2 : start, 0, (s32)(used) - 2);
 
-                for (s32 i = start; i>=0; --i)
+                for (s32 i = start; i >= 0; --i)
                     if (array[i] == c)
                         return i;
 
@@ -851,18 +851,18 @@ public:
 
             // ! finds last occurrence of a character of a list in string
             /** \param c: List of strings to find. For example if the method
-               should find the last occurrence of 'a' or 'b', this parameter should be "ab".
-               \param count: Amount of characters in the list. Usually,
-               this should be strlen(c)
-               \return Position where one of the characters has been found,
-               or -1 if not found. */
+             * should find the last occurrence of 'a' or 'b', this parameter should be "ab".
+             * \param count: Amount of characters in the list. Usually,
+             * this should be strlen(c)
+             * \return Position where one of the characters has been found,
+             * or -1 if not found. */
             s32 findLastChar(const T* const c, u32 count = 1) const
             {
                 if (!c || !count)
                     return -1;
 
-                for (s32 i = (s32)used - 2; i>=0; --i)
-                    for (u32 j = 0; j<count; ++j)
+                for (s32 i = (s32)used - 2; i >= 0; --i)
+                    for (u32 j = 0; j < count; ++j)
                         if (array[i] == c[j])
                             return i;
 
@@ -872,9 +872,9 @@ public:
 
             // ! finds another string in this string
             /** \param str: Another string
-               \param start: Start position of the search
-               \return Positions where the string has been found,
-               or -1 if not found. */
+             * \param start: Start position of the search
+             * \return Positions where the string has been found,
+             * or -1 if not found. */
             template<class B>
             s32 find(const B* const str, const u32 start = 0) const
             {
@@ -888,7 +888,7 @@ public:
                     if (len > used - 1)
                         return -1;
 
-                    for (u32 i = start; i<used - len; ++i)
+                    for (u32 i = start; i < used - len; ++i)
                     {
                         u32 j = 0;
 
@@ -906,13 +906,13 @@ public:
 
             // ! Returns a substring
             /** \param begin Start of substring.
-               \param length Length of substring.
-               \param make_lower copy only lower case */
+             * \param length Length of substring.
+             * \param make_lower copy only lower case */
             string<T> subString(u32 begin, s32 length, bool make_lower = false) const
             {
                 // if start after string
                 // or no proper substring length
-                if ((length <= 0) || (begin>=size()))
+                if ((length <= 0) || (begin >= size()))
                     return string<T>("");
 
                 // clamp length to maximal value
@@ -925,12 +925,12 @@ public:
                 s32 i;
                 if (!make_lower)
                 {
-                    for (i = 0; i<length; ++i)
+                    for (i = 0; i < length; ++i)
                         o.array[i] = array[i + begin];
                 }
                 else
                 {
-                    for (i = 0; i<length; ++i)
+                    for (i = 0; i < length; ++i)
                         o.array[i] = locale_lower (array[i + begin]);
                 }
 
@@ -1024,10 +1024,10 @@ public:
 
             // ! Replaces all characters of a special type with another one
             /** \param toReplace Character to replace.
-               \param replaceWith Character replacing the old one. */
+             * \param replaceWith Character replacing the old one. */
             string<T, TAlloc>&replace(T toReplace, T replaceWith)
             {
-                for (u32 i = 0; i<used - 1; ++i)
+                for (u32 i = 0; i < used - 1; ++i)
                     if (array[i] == toReplace)
                         array[i] = replaceWith;
 
@@ -1037,7 +1037,7 @@ public:
 
             // ! Replaces all instances of a string with another one.
             /** \param toReplace The string to replace.
-               \param replaceWith The string replacing the old one. */
+             * \param replaceWith The string replacing the old one. */
             string<T, TAlloc>&replace(const string<T, TAlloc> &toReplace, const string<T, TAlloc> &replaceWith)
             {
                 if (toReplace.size() == 0)
@@ -1160,7 +1160,7 @@ public:
                 u32 pos   = 0;
                 u32 found = 0;
 
-                for (u32 i = 0; i<used - 1; ++i)
+                for (u32 i = 0; i < used - 1; ++i)
                 {
                     if (array[i] == c)
                     {
@@ -1189,7 +1189,7 @@ public:
                 u32 pos   = 0;
                 u32 found = 0;
 
-                for (u32 i = 0; i<used - 1; ++i)
+                for (u32 i = 0; i < used - 1; ++i)
                 {
                     u32 j = 0;
 
@@ -1227,13 +1227,13 @@ public:
                 u32 pos   = 0;
                 u32 found = 0;
 
-                for (u32 i = 0; i<used - 1; ++i)
+                for (u32 i = 0; i < used - 1; ++i)
                 {
                     // Don't use characters.findFirst as it finds the \0,
                     // causing used to become incorrect.
                     bool docontinue = false;
 
-                    for (u32 j = 0; j<characters.size(); ++j)
+                    for (u32 j = 0; j < characters.size(); ++j)
                     {
                         if (characters[j] == array[i])
                         {
@@ -1258,7 +1258,7 @@ public:
 
             // ! Trims the string.
             /** Removes the specified characters (by default, Latin-1 whitespace)
-               from the begining and the end of the string. */
+             * from the begining and the end of the string. */
             string<T, TAlloc>&trim(const string<T, TAlloc> &whitespace = " \t\n\r")
             {
                 // find start and end of the substring without the specified characters
@@ -1275,13 +1275,13 @@ public:
 
             // ! Erases a character from the string.
             /** May be slow, because all elements
-               following after the erased element have to be copied.
-               \param index: Index of element to be erased. */
+             * following after the erased element have to be copied.
+             * \param index: Index of element to be erased. */
             string<T, TAlloc>&erase(u32 index)
             {
-                _IRR_DEBUG_BREAK_IF(index>=used) // access violation
+                _IRR_DEBUG_BREAK_IF(index >= used) // access violation
 
-                for (u32 i = index + 1; i<used; ++i)
+                for (u32 i = index + 1; i < used; ++i)
                     array[i - 1] = array[i];
 
                 --used;
@@ -1292,7 +1292,7 @@ public:
             string<T, TAlloc>&validate()
             {
                 // terminate on existing null
-                for (u32 i = 0; i<allocated; ++i)
+                for (u32 i = 0; i < allocated; ++i)
                 {
                     if (array[i] == 0)
                     {
@@ -1323,21 +1323,21 @@ public:
 
             // ! split string into parts.
             /** This method will split a string at certain delimiter characters
-               into the container passed in as reference. The type of the container
-               has to be given as template parameter. It must provide a push_back and
-               a size method.
-               \param ret The result container
-               \param c C-style string of delimiter characters
-               \param count Number of delimiter characters
-               \param ignoreEmptyTokens Flag to avoid empty substrings in the result
-               container. If two delimiters occur without a character in between, an
-               empty substring would be placed in the result. If this flag is set,
-               only non-empty strings are stored.
-               \param keepSeparators Flag which allows to add the separator to the
-               result string. If this flag is true, the concatenation of the
-               substrings results in the original string. Otherwise, only the
-               characters between the delimiters are returned.
-               \return The number of resulting substrings
+             * into the container passed in as reference. The type of the container
+             * has to be given as template parameter. It must provide a push_back and
+             * a size method.
+             * \param ret The result container
+             * \param c C-style string of delimiter characters
+             * \param count Number of delimiter characters
+             * \param ignoreEmptyTokens Flag to avoid empty substrings in the result
+             * container. If two delimiters occur without a character in between, an
+             * empty substring would be placed in the result. If this flag is set,
+             * only non-empty strings are stored.
+             * \param keepSeparators Flag which allows to add the separator to the
+             * result string. If this flag is true, the concatenation of the
+             * substrings results in the original string. Otherwise, only the
+             * characters between the delimiters are returned.
+             * \return The number of resulting substrings
              */
             template<class container>
             u32 split(container &ret, const T* const c, u32 count = 1, bool ignoreEmptyTokens = true, bool keepSeparators = false) const
@@ -1349,11 +1349,11 @@ public:
                 u32       lastpos          = 0;
                 bool      lastWasSeparator = false;
 
-                for (u32 i = 0; i<used; ++i)
+                for (u32 i = 0; i < used; ++i)
                 {
                     bool foundSeparator = false;
 
-                    for (u32 j = 0; j<count; ++j)
+                    for (u32 j = 0; j < count; ++j)
                     {
                         if (array[i] == c[j])
                         {
@@ -1388,7 +1388,7 @@ private:
 
                 const u32 amount = used < new_size ? used : new_size;
 
-                for (u32 i = 0; i<amount; ++i)
+                for (u32 i = 0; i < amount; ++i)
                     array[i] = old_array[i];
 
                 if (allocated < used)
@@ -1406,12 +1406,11 @@ private:
         };
 
 
-// ! Typedef for character strings
+        // ! Typedef for character strings
         typedef string<c8> stringc;
 
-// ! Typedef for wide character strings
+        // ! Typedef for wide character strings
         typedef string<wchar_t> stringw;
     } // end namespace core
 } // end namespace irr
-
 #endif

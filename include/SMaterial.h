@@ -100,7 +100,7 @@ namespace irr
 
         // ! Source of the alpha value to take
         /** This is currently only supported in EMT_ONETEXTURE_BLEND. You can use an
-           or'ed combination of values. Alpha values are modulated (multiplicated). */
+         * or'ed combination of values. Alpha values are modulated (multiplicated). */
         enum E_ALPHA_SOURCE
         {
             // ! Use no alpha, somewhat redundant with other settings
@@ -123,7 +123,7 @@ namespace irr
         // ! EMT_ONETEXTURE_BLEND: unpack srcFact & dstFact and Modulo to MaterialTypeParam
         /** The fields don't use the full byte range, so we could pack even more... */
         inline void unpack_textureBlendFunc(E_BLEND_FACTOR &srcFact, E_BLEND_FACTOR &dstFact,
-                                            E_MODULATE_FUNC &modulo, u32 &alphaSource, const f32 param)
+            E_MODULATE_FUNC &modulo, u32 &alphaSource, const f32 param)
         {
             const u32 state = IR(param);
 
@@ -153,10 +153,10 @@ namespace irr
 
         // ! These flags are used to specify the anti-aliasing and smoothing modes
         /** Techniques supported are multisampling, geometry smoothing, and alpha
-           to coverage.
-           Some drivers don't support a per-material setting of the anti-aliasing
-           modes. In those cases, FSAA/multisampling is defined by the device mode
-           chosen upon creation via irr::SIrrCreationParameters.
+         * to coverage.
+         * Some drivers don't support a per-material setting of the anti-aliasing
+         * modes. In those cases, FSAA/multisampling is defined by the device mode
+         * chosen upon creation via irr::SIrrCreationParameters.
          */
         enum E_ANTI_ALIASING_MODE
         {
@@ -179,11 +179,11 @@ namespace irr
 
         // ! These flags allow to define the interpretation of vertex color when lighting is enabled
         /** Without lighting being enabled the vertex color is the only value defining the fragment color.
-           Once lighting is enabled, the four values for diffuse, ambient, emissive, and specular take over.
-           With these flags it is possible to define which lighting factor shall be defined by the vertex color
-           instead of the lighting factor which is the same for all faces of that material.
-           The default is to use vertex color for the diffuse value, another pretty common value is to use
-           vertex color for both diffuse and ambient factor. */
+         * Once lighting is enabled, the four values for diffuse, ambient, emissive, and specular take over.
+         * With these flags it is possible to define which lighting factor shall be defined by the vertex color
+         * instead of the lighting factor which is the same for all faces of that material.
+         * The default is to use vertex color for the diffuse value, another pretty common value is to use
+         * vertex color for both diffuse and ambient factor. */
         enum E_COLOR_MATERIAL
         {
             // ! Don't use vertex color for lighting
@@ -209,7 +209,7 @@ namespace irr
             EPO_BACK = 0,
             // ! Pull pixels towards the camera.
             /** This is typically used for polygons which should appear on top
-               of other elements, such as decals. */
+             * of other elements, such as decals. */
             EPO_FRONT = 1
         };
 
@@ -247,7 +247,7 @@ public:
             SMaterial(const SMaterial &other)
             {
                 // These pointers are checked during assignment
-                for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                     TextureLayer[i].TextureMatrix = 0;
 
                 *this = other;
@@ -272,7 +272,7 @@ public:
                 MaterialTypeParam2 = other.MaterialTypeParam2;
                 Thickness          = other.Thickness;
 
-                for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 {
                     TextureLayer[i] = other.TextureLayer[i];
                 }
@@ -306,8 +306,8 @@ public:
 
             // ! How much ambient light (a global light) is reflected by this material.
             /** The default is full white, meaning objects are completely
-               globally illuminated. Reduce this if you want to see diffuse
-               or specular light effects. */
+             * globally illuminated. Reduce this if you want to see diffuse
+             * or specular light effects. */
             SColor AmbientColor;
 
             // ! How much diffuse light coming from a light source is reflected by this material.
@@ -319,44 +319,44 @@ public:
 
             // ! How much specular light (highlights from a light) is reflected.
             /** The default is to reflect white specular light. See
-               SMaterial::Shininess on how to enable specular lights. */
+             * SMaterial::Shininess on how to enable specular lights. */
             SColor SpecularColor;
 
             // ! Value affecting the size of specular highlights.
             /** A value of 20 is common. If set to 0, no specular
-               highlights are being used. To activate, simply set the
-               shininess of a material to a value in the range [0.5;128]:
-               \code
-               sceneNode->getMaterial(0).Shininess = 20.0f;
-               \endcode
-
-               You can change the color of the highlights using
-               \code
-               sceneNode->getMaterial(0).SpecularColor.set(255,255,255,255);
-               \endcode
-
-               The specular color of the dynamic lights
-               (SLight::SpecularColor) will influence the the highlight color
-               too, but they are set to a useful value by default when
-               creating the light scene node. Here is a simple example on how
-               to use specular highlights:
-               \code
-               // load and display mesh
-               scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode(
-               smgr->getMesh("data/faerie.md2"));
-               node->setMaterialTexture(0, driver->getTexture("data/Faerie2.pcx")); // set diffuse texture
-               node->setMaterialFlag(video::EMF_LIGHTING, true); // enable dynamic lighting
-               node->getMaterial(0).Shininess = 20.0f; // set size of specular highlights
-
-               // add white light
-               scene::ILightSceneNode* light = smgr->addLightSceneNode(0,
-                core::vector3df(5,5,5), video::SColorf(1.0f, 1.0f, 1.0f));
-               \endcode */
+             * highlights are being used. To activate, simply set the
+             * shininess of a material to a value in the range [0.5;128]:
+             * \code
+             * sceneNode->getMaterial(0).Shininess = 20.0f;
+             * \endcode
+             *
+             * You can change the color of the highlights using
+             * \code
+             * sceneNode->getMaterial(0).SpecularColor.set(255,255,255,255);
+             * \endcode
+             *
+             * The specular color of the dynamic lights
+             * (SLight::SpecularColor) will influence the the highlight color
+             * too, but they are set to a useful value by default when
+             * creating the light scene node. Here is a simple example on how
+             * to use specular highlights:
+             * \code
+             * // load and display mesh
+             * scene::IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode(
+             * smgr->getMesh("data/faerie.md2"));
+             * node->setMaterialTexture(0, driver->getTexture("data/Faerie2.pcx")); // set diffuse texture
+             * node->setMaterialFlag(video::EMF_LIGHTING, true); // enable dynamic lighting
+             * node->getMaterial(0).Shininess = 20.0f; // set size of specular highlights
+             *
+             * // add white light
+             * scene::ILightSceneNode* light = smgr->addLightSceneNode(0,
+             *  core::vector3df(5,5,5), video::SColorf(1.0f, 1.0f, 1.0f));
+             * \endcode */
             f32 Shininess;
 
             // ! Free parameter, dependent on the material type.
             /** Mostly ignored, used for example in EMT_PARALLAX_MAP_SOLID
-               and EMT_TRANSPARENT_ALPHA_CHANNEL. */
+             * and EMT_TRANSPARENT_ALPHA_CHANNEL. */
             f32 MaterialTypeParam;
 
             // ! Second free parameter, dependent on the material type.
@@ -372,33 +372,33 @@ public:
 
             // ! Sets the antialiasing mode
             /** Values are chosen from E_ANTI_ALIASING_MODE. Default is
-               EAAM_SIMPLE|EAAM_LINE_SMOOTH, i.e. simple multi-sample
-               anti-aliasing and lime smoothing is enabled. */
+             * EAAM_SIMPLE|EAAM_LINE_SMOOTH, i.e. simple multi-sample
+             * anti-aliasing and lime smoothing is enabled. */
             u8 AntiAliasing;
 
             // ! Defines the enabled color planes
             /** Values are defined as or'ed values of the E_COLOR_PLANE enum.
-               Only enabled color planes will be rendered to the current render
-               target. Typical use is to disable all colors when rendering only to
-               depth or stencil buffer, or using Red and Green for Stereo rendering. */
+             * Only enabled color planes will be rendered to the current render
+             * target. Typical use is to disable all colors when rendering only to
+             * depth or stencil buffer, or using Red and Green for Stereo rendering. */
             u8 ColorMask : 4;
 
             // ! Defines the interpretation of vertex color in the lighting equation
             /** Values should be chosen from E_COLOR_MATERIAL.
-               When lighting is enabled, vertex color can be used instead of the
-               material values for light modulation. This allows to easily change e.g. the
-               diffuse light behavior of each face. The default, ECM_DIFFUSE, will result in
-               a very similar rendering as with lighting turned off, just with light shading. */
+             * When lighting is enabled, vertex color can be used instead of the
+             * material values for light modulation. This allows to easily change e.g. the
+             * diffuse light behavior of each face. The default, ECM_DIFFUSE, will result in
+             * a very similar rendering as with lighting turned off, just with light shading. */
             u8 ColorMaterial : 3;
 
             // ! Store the blend operation of choice
             /** Values to be chosen from E_BLEND_OPERATION. The actual way to use this value
-               is not yet determined, so ignore it for now. */
+             * is not yet determined, so ignore it for now. */
             E_BLEND_OPERATION BlendOperation : 4;
 
             // ! Factor specifying how far the polygon offset should be made
             /** Specifying 0 disables the polygon offset. The direction is specified spearately.
-               The factor can be from 0 to 7.*/
+             * The factor can be from 0 to 7.*/
             u8 PolygonOffsetFactor : 3;
 
             // ! Flag defining the direction the polygon offset is applied to.
@@ -407,8 +407,8 @@ public:
 
             // ! Draw as wireframe or filled triangles? Default: false
             /** The user can access a material flag using
-               \code material.Wireframe=true \endcode
-               or \code material.setFlag(EMF_WIREFRAME, true); \endcode */
+             * \code material.Wireframe=true \endcode
+             * or \code material.setFlag(EMF_WIREFRAME, true); \endcode */
             bool Wireframe : 1;
 
             // ! Draw as point cloud or filled triangles? Default: false
@@ -422,8 +422,8 @@ public:
 
             // ! Is the zbuffer writeable or is it read-only. Default: true.
             /** This flag is forced to false if the MaterialType is a
-               transparent type and the scene parameter
-               ALLOW_ZWRITE_ON_TRANSPARENT is not set. */
+             * transparent type and the scene parameter
+             * ALLOW_ZWRITE_ON_TRANSPARENT is not set. */
             bool ZWriteEnable : 1;
 
             // ! Is backface culling enabled? Default: true
@@ -445,7 +445,7 @@ public:
 
             // ! Gets the texture transformation matrix for level i
             /** \param i The desired level. Must not be larger than MATERIAL_MAX_TEXTURES.
-               \return Texture matrix for texture level i. */
+             * \return Texture matrix for texture level i. */
             core::matrix4&getTextureMatrix(u32 i)
             {
                 return TextureLayer[i].getTextureMatrix();
@@ -453,10 +453,10 @@ public:
 
             // ! Gets the immutable texture transformation matrix for level i
             /** \param i The desired level.
-               \return Texture matrix for texture level i, or identity matrix for levels larger than MATERIAL_MAX_TEXTURES. */
+             * \return Texture matrix for texture level i, or identity matrix for levels larger than MATERIAL_MAX_TEXTURES. */
             const core::matrix4&getTextureMatrix(u32 i) const
             {
-                if (i<MATERIAL_MAX_TEXTURES)
+                if (i < MATERIAL_MAX_TEXTURES)
                     return TextureLayer[i].getTextureMatrix();
                 else
                     return core::IdentityMatrix;
@@ -464,10 +464,10 @@ public:
 
             // ! Sets the i-th texture transformation matrix
             /** \param i The desired level.
-               \param mat Texture matrix for texture level i. */
+             * \param mat Texture matrix for texture level i. */
             void setTextureMatrix(u32 i, const core::matrix4 &mat)
             {
-                if (i>=MATERIAL_MAX_TEXTURES)
+                if (i >= MATERIAL_MAX_TEXTURES)
                     return;
 
                 TextureLayer[i].setTextureMatrix(mat);
@@ -475,7 +475,7 @@ public:
 
             // ! Gets the i-th texture
             /** \param i The desired level.
-               \return Texture for texture level i, if defined, else 0. */
+             * \return Texture for texture level i, if defined, else 0. */
             ITexture* getTexture(u32 i) const
             {
                 return i < MATERIAL_MAX_TEXTURES ? TextureLayer[i].Texture : 0;
@@ -483,11 +483,11 @@ public:
 
             // ! Sets the i-th texture
             /** If i>=MATERIAL_MAX_TEXTURES this setting will be ignored.
-               \param i The desired level.
-               \param tex Texture for texture level i. */
+             * \param i The desired level.
+             * \param tex Texture for texture level i. */
             void setTexture(u32 i, ITexture *tex)
             {
-                if (i>=MATERIAL_MAX_TEXTURES)
+                if (i >= MATERIAL_MAX_TEXTURES)
                     return;
 
                 TextureLayer[i].Texture = tex;
@@ -495,7 +495,7 @@ public:
 
             // ! Sets the Material flag to the given value
             /** \param flag The flag to be set.
-               \param value The new value for the flag. */
+             * \param value The new value for the flag. */
             void setFlag(E_MATERIAL_FLAG flag, bool value)
             {
                 switch (flag)
@@ -526,14 +526,14 @@ public:
 
                     case EMF_BILINEAR_FILTER:
                     {
-                        for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                        for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                             TextureLayer[i].BilinearFilter = value;
                     }
                     break;
 
                     case EMF_TRILINEAR_FILTER:
                     {
-                        for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                        for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                             TextureLayer[i].TrilinearFilter = value;
                     }
                     break;
@@ -541,11 +541,11 @@ public:
                     case EMF_ANISOTROPIC_FILTER:
                     {
                         if (value)
-                            for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                            for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                                 TextureLayer[i].AnisotropicFilter = 0xFF;
 
                         else
-                            for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                            for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                                 TextureLayer[i].AnisotropicFilter = 0;
                     }
                     break;
@@ -558,7 +558,7 @@ public:
 
                     case EMF_TEXTURE_WRAP:
                     {
-                        for (u32 i = 0; i<MATERIAL_MAX_TEXTURES; ++i)
+                        for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                         {
                             TextureLayer[i].TextureWrapU = (E_TEXTURE_CLAMP)value;
                             TextureLayer[i].TextureWrapV = (E_TEXTURE_CLAMP)value;
@@ -593,7 +593,7 @@ public:
 
             // ! Gets the Material flag
             /** \param flag The flag to query.
-               \return The current value of the flag. */
+             * \return The current value of the flag. */
             bool getFlag(E_MATERIAL_FLAG flag) const
             {
                 switch (flag)
@@ -611,7 +611,7 @@ public:
                         return Lighting;
 
                     case EMF_ZBUFFER:
-                        return ZBuffer!=ECFN_NEVER;
+                        return ZBuffer != ECFN_NEVER;
 
                     case EMF_ZWRITE_ENABLE:
                         return ZWriteEnable;
@@ -629,7 +629,7 @@ public:
                         return TextureLayer[0].TrilinearFilter;
 
                     case EMF_ANISOTROPIC_FILTER:
-                        return TextureLayer[0].AnisotropicFilter!=0;
+                        return TextureLayer[0].AnisotropicFilter != 0;
 
                     case EMF_FOG_ENABLE:
                         return FogEnable;
@@ -639,19 +639,19 @@ public:
 
                     case EMF_TEXTURE_WRAP:
                         return !(TextureLayer[0].TextureWrapU ||
-                                 TextureLayer[0].TextureWrapV ||
-                                 TextureLayer[1].TextureWrapU ||
-                                 TextureLayer[1].TextureWrapV ||
-                                 TextureLayer[2].TextureWrapU ||
-                                 TextureLayer[2].TextureWrapV ||
-                                 TextureLayer[3].TextureWrapU ||
-                                 TextureLayer[3].TextureWrapV);
+                               TextureLayer[0].TextureWrapV ||
+                               TextureLayer[1].TextureWrapU ||
+                               TextureLayer[1].TextureWrapV ||
+                               TextureLayer[2].TextureWrapU ||
+                               TextureLayer[2].TextureWrapV ||
+                               TextureLayer[3].TextureWrapU ||
+                               TextureLayer[3].TextureWrapV);
 
                     case EMF_ANTI_ALIASING:
-                        return (AntiAliasing==1);
+                        return (AntiAliasing == 1);
 
                     case EMF_COLOR_MASK:
-                        return (ColorMask!=ECP_NONE);
+                        return (ColorMask != ECP_NONE);
 
                     case EMF_COLOR_MATERIAL:
                         return (ColorMaterial != ECM_NONE);
@@ -671,7 +671,7 @@ public:
 
             // ! Inequality operator
             /** \param b Material to compare to.
-               \return True if the materials differ, else false. */
+             * \return True if the materials differ, else false. */
             inline bool operator!=(const SMaterial &b) const
             {
                 bool different =
@@ -702,7 +702,7 @@ public:
                     PolygonOffsetDirection != b.PolygonOffsetDirection ||
                     UseMipMaps != b.UseMipMaps;
 
-                for (u32 i = 0; (i<MATERIAL_MAX_TEXTURES) && !different; ++i)
+                for (u32 i = 0; (i < MATERIAL_MAX_TEXTURES) && !different; ++i)
                 {
                     different |= (TextureLayer[i] != b.TextureLayer[i]);
                 }
@@ -712,18 +712,18 @@ public:
 
             // ! Equality operator
             /** \param b Material to compare to.
-               \return True if the materials are equal, else false. */
+             * \return True if the materials are equal, else false. */
             inline bool operator==(const SMaterial &b) const
             {
-                return !(b!=*this);
+                return !(b != *this);
             }
 
             bool isTransparent() const
             {
-                return MaterialType==EMT_TRANSPARENT_ADD_COLOR ||
-                       MaterialType==EMT_TRANSPARENT_ALPHA_CHANNEL ||
-                       MaterialType==EMT_TRANSPARENT_VERTEX_ALPHA ||
-                       MaterialType==EMT_TRANSPARENT_REFLECTION_2_LAYER;
+                return MaterialType == EMT_TRANSPARENT_ADD_COLOR ||
+                       MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL ||
+                       MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA ||
+                       MaterialType == EMT_TRANSPARENT_REFLECTION_2_LAYER;
             }
         };
 
@@ -731,5 +731,4 @@ public:
         IRRLICHT_API extern SMaterial IdentityMaterial;
     } // end namespace video
 } // end namespace irr
-
 #endif

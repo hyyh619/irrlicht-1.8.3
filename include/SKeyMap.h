@@ -9,7 +9,6 @@
 
 namespace irr
 {
-
     //! enumeration for key actions. Used for example in the FPS Camera.
     enum EKEY_ACTION
     {
@@ -32,10 +31,7 @@ namespace irr
         SKeyMap(EKEY_ACTION action, EKEY_CODE keyCode) : Action(action), KeyCode(keyCode) {}
 
         EKEY_ACTION Action;
-        EKEY_CODE KeyCode;
+        EKEY_CODE   KeyCode;
     };
-
 } // end namespace irr
-
 #endif
-

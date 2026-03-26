@@ -11,50 +11,51 @@
 
 namespace irr
 {
-namespace scene
-{
-    class IMeshBuffer;
-
-    class IVolumeLightSceneNode : public ISceneNode
+    namespace scene
     {
-    public:
+        class IMeshBuffer;
 
-        //! constructor
-        IVolumeLightSceneNode(ISceneNode* parent, ISceneManager* mgr, s32 id,
-            const core::vector3df& position,
-            const core::vector3df& rotation,
-            const core::vector3df& scale)
-            : ISceneNode(parent, mgr, id, position, rotation, scale) {};
+        class IVolumeLightSceneNode : public ISceneNode
+        {
+public:
 
-        //! Returns type of the scene node
-        virtual ESCENE_NODE_TYPE getType() const { return ESNT_VOLUME_LIGHT; }
+            //! constructor
+            IVolumeLightSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id,
+                const core::vector3df &position,
+                const core::vector3df &rotation,
+                const core::vector3df &scale)
+                : ISceneNode(parent, mgr, id, position, rotation, scale) {};
 
-        //! Sets the number of segments across the U axis
-        virtual void setSubDivideU(const u32 inU) =0;
+            //! Returns type of the scene node
+            virtual ESCENE_NODE_TYPE getType() const
+            {
+                return ESNT_VOLUME_LIGHT;
+            }
 
-        //! Sets the number of segments across the V axis
-        virtual void setSubDivideV(const u32 inV) =0;
+            //! Sets the number of segments across the U axis
+            virtual void setSubDivideU(const u32 inU) = 0;
 
-        //! Returns the number of segments across the U axis
-        virtual u32 getSubDivideU() const =0;
+            //! Sets the number of segments across the V axis
+            virtual void setSubDivideV(const u32 inV) = 0;
 
-        //! Returns the number of segments across the V axis
-        virtual u32 getSubDivideV() const =0;
+            //! Returns the number of segments across the U axis
+            virtual u32 getSubDivideU() const = 0;
 
-        //! Sets the color of the base of the light
-        virtual void setFootColor(const video::SColor inColor) =0;
+            //! Returns the number of segments across the V axis
+            virtual u32 getSubDivideV() const = 0;
 
-        //! Sets the color of the tip of the light
-        virtual void setTailColor(const video::SColor inColor) =0;
+            //! Sets the color of the base of the light
+            virtual void setFootColor(const video::SColor inColor) = 0;
 
-        //! Returns the color of the base of the light
-        virtual video::SColor getFootColor() const =0;
+            //! Sets the color of the tip of the light
+            virtual void setTailColor(const video::SColor inColor) = 0;
 
-        //! Returns the color of the tip of the light
-        virtual video::SColor getTailColor() const =0;
-    };
+            //! Returns the color of the base of the light
+            virtual video::SColor getFootColor() const = 0;
 
-} // end namespace scene
+            //! Returns the color of the tip of the light
+            virtual video::SColor getTailColor() const = 0;
+        };
+    } // end namespace scene
 } // end namespace irr
-
 #endif

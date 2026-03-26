@@ -19,7 +19,7 @@ namespace irr
 #define DEBUG_CLIENTBLOCK new
 #endif
 
-// ! Very simple allocator implementation, containers using it can be used across dll boundaries
+        // ! Very simple allocator implementation, containers using it can be used across dll boundaries
         template<typename T>
         class irrAllocator
         {
@@ -66,9 +66,9 @@ protected:
         };
 
 
-// ! Fast allocator, only to be used in containers inside the same memory heap.
-/** Containers using it are NOT able to be used it across dll boundaries. Use this
-   when using in an internal class or function or when compiled into a static lib */
+        // ! Fast allocator, only to be used in containers inside the same memory heap.
+        /** Containers using it are NOT able to be used it across dll boundaries. Use this
+         * when using in an internal class or function or when compiled into a static lib */
         template<typename T>
         class irrAllocatorFast
         {
@@ -106,7 +106,7 @@ public:
 #define DEBUG_CLIENTBLOCK new(_CLIENT_BLOCK, __FILE__, __LINE__)
 #endif
 
-// ! defines an allocation strategy
+        // ! defines an allocation strategy
         enum eAllocStrategy
         {
             ALLOC_STRATEGY_SAFE   = 0,
@@ -115,5 +115,4 @@ public:
         };
     } // end namespace core
 } // end namespace irr
-
 #endif

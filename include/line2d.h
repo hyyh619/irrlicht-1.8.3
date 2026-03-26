@@ -12,7 +12,7 @@ namespace irr
 {
     namespace core
     {
-// ! 2D line between two points with intersection methods.
+        // ! 2D line between two points with intersection methods.
         template<class T>
         class line2d
         {
@@ -48,11 +48,11 @@ public:
 
             bool operator==(const line2d<T> &other) const
             {
-                return (start==other.start && end==other.end) || (end==other.start && start==other.end);
+                return (start == other.start && end == other.end) || (end == other.start && start == other.end);
             }
             bool operator!=(const line2d<T> &other) const
             {
-                return !(start==other.start && end==other.end) || (end==other.start && start==other.end);
+                return !(start == other.start && end == other.end) || (end == other.start && start == other.end);
             }
 
             // functions
@@ -102,23 +102,23 @@ public:
 
             // ! Tests if this line intersects with another line.
             /** \param l: Other line to test intersection with.
-               \param checkOnlySegments: Default is to check intersection between the begin and endpoints.
-               When set to false the function will check for the first intersection point when extending the lines.
-               \param out: If there is an intersection, the location of the
-               intersection will be stored in this vector.
-               \return True if there is an intersection, false if not. */
+             * \param checkOnlySegments: Default is to check intersection between the begin and endpoints.
+             * When set to false the function will check for the first intersection point when extending the lines.
+             * \param out: If there is an intersection, the location of the
+             * intersection will be stored in this vector.
+             * \return True if there is an intersection, false if not. */
             bool intersectWith(const line2d<T> &l, vector2d<T> &out, bool checkOnlySegments = true) const
             {
                 // Uses the method given at:
                 // http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
                 const f32 commonDenominator = (f32)(l.end.Y - l.start.Y) * (end.X - start.X) -
-                                              (l.end.X - l.start.X) * (end.Y - start.Y);
+                    (l.end.X - l.start.X) * (end.Y - start.Y);
 
                 const f32 numeratorA = (f32)(l.end.X - l.start.X) * (start.Y - l.start.Y) -
-                                       (l.end.Y - l.start.Y) * (start.X - l.start.X);
+                    (l.end.Y - l.start.Y) * (start.X - l.start.X);
 
                 const f32 numeratorB = (f32)(end.X - start.X) * (start.Y - l.start.Y) -
-                                       (end.Y - start.Y) * (start.X - l.start.X);
+                    (end.Y - start.Y) * (start.X - l.start.X);
 
                 if (equals(commonDenominator, 0.f))
                 {
@@ -132,13 +132,13 @@ public:
                         else if (l.end == end || l.start == end)
                             out = end;
                         // now check if the two segments are disjunct
-                        else if (l.start.X>start.X && l.end.X>start.X && l.start.X>end.X && l.end.X>end.X)
+                        else if (l.start.X > start.X && l.end.X > start.X && l.start.X > end.X && l.end.X > end.X)
                             return false;
-                        else if (l.start.Y>start.Y && l.end.Y>start.Y && l.start.Y>end.Y && l.end.Y>end.Y)
+                        else if (l.start.Y > start.Y && l.end.Y > start.Y && l.start.Y > end.Y && l.end.Y > end.Y)
                             return false;
-                        else if (l.start.X<start.X && l.end.X<start.X && l.start.X<end.X && l.end.X<end.X)
+                        else if (l.start.X < start.X && l.end.X < start.X && l.start.X < end.X && l.end.X < end.X)
                             return false;
-                        else if (l.start.Y<start.Y && l.end.Y<start.Y && l.start.Y<end.Y && l.end.Y<end.Y)
+                        else if (l.start.Y < start.Y && l.end.Y < start.Y && l.start.Y < end.Y && l.end.Y < end.Y)
                             return false;
                         // else the lines are overlapping to some extent
                         else
@@ -147,20 +147,20 @@ public:
                             // common part
                             vector2d<T> maxp;
                             vector2d<T> minp;
-                            if ((start.X>l.start.X && start.X>l.end.X && start.X>end.X) || (start.Y>l.start.Y && start.Y>l.end.Y && start.Y>end.Y))
+                            if ((start.X > l.start.X && start.X > l.end.X && start.X > end.X) || (start.Y > l.start.Y && start.Y > l.end.Y && start.Y > end.Y))
                                 maxp = start;
-                            else if ((end.X>l.start.X && end.X>l.end.X && end.X>start.X) || (end.Y>l.start.Y && end.Y>l.end.Y && end.Y>start.Y))
+                            else if ((end.X > l.start.X && end.X > l.end.X && end.X > start.X) || (end.Y > l.start.Y && end.Y > l.end.Y && end.Y > start.Y))
                                 maxp = end;
-                            else if ((l.start.X>start.X && l.start.X>l.end.X && l.start.X>end.X) || (l.start.Y>start.Y && l.start.Y>l.end.Y && l.start.Y>end.Y))
+                            else if ((l.start.X > start.X && l.start.X > l.end.X && l.start.X > end.X) || (l.start.Y > start.Y && l.start.Y > l.end.Y && l.start.Y > end.Y))
                                 maxp = l.start;
                             else
                                 maxp = l.end;
 
-                            if (maxp != start && ((start.X<l.start.X && start.X<l.end.X && start.X<end.X) || (start.Y<l.start.Y && start.Y<l.end.Y && start.Y<end.Y)))
+                            if (maxp != start && ((start.X < l.start.X && start.X < l.end.X && start.X < end.X) || (start.Y < l.start.Y && start.Y < l.end.Y && start.Y < end.Y)))
                                 minp = start;
-                            else if (maxp != end && ((end.X<l.start.X && end.X<l.end.X && end.X<start.X) || (end.Y<l.start.Y && end.Y<l.end.Y && end.Y<start.Y)))
+                            else if (maxp != end && ((end.X < l.start.X && end.X < l.end.X && end.X < start.X) || (end.Y < l.start.Y && end.Y < l.end.Y && end.Y < start.Y)))
                                 minp = end;
-                            else if (maxp != l.start && ((l.start.X<start.X && l.start.X<l.end.X && l.start.X<end.X) || (l.start.Y<start.Y && l.start.Y<l.end.Y && l.start.Y<end.Y)))
+                            else if (maxp != l.start && ((l.start.X < start.X && l.start.X < l.end.X && l.start.X < end.X) || (l.start.Y < start.Y && l.start.Y < l.end.Y && l.start.Y < end.Y)))
                                 minp = l.start;
                             else
                                 minp = l.end;
@@ -217,7 +217,7 @@ public:
 
             // ! Get angle between this line and given line.
             /** \param l Other line for test.
-               \return Angle in degrees. */
+             * \return Angle in degrees. */
             f64 getAngleWith(const line2d<T> &l) const
             {
                 vector2d<T> vect  = getVector();
@@ -227,11 +227,11 @@ public:
 
             // ! Tells us if the given point lies to the left, right, or on the line.
             /** \return 0 if the point is on the line
-               <0 if to the left, or >0 if to the right. */
+             * <0 if to the left, or >0 if to the right. */
             T getPointOrientation(const vector2d<T> &point) const
             {
                 return ((end.X - start.X) * (point.Y - start.Y) -
-                        (point.X - start.X) * (end.Y - start.Y));
+                       (point.X - start.X) * (end.Y - start.Y));
             }
 
             // ! Check if the given point is a member of the line
@@ -252,7 +252,7 @@ public:
 
             // ! Get the closest point on this line to a point
             /** \param checkOnlySegments: Default (true) is to return a point on the line-segment (between begin and end) of the line.
-               When set to false the function will check for the first the closest point on the the line even when outside the segment. */
+             * When set to false the function will check for the first the closest point on the the line even when outside the segment. */
             vector2d<T> getClosestPoint(const vector2d<T> &point, bool checkOnlySegments = true) const
             {
                 vector2d<f64> c((f64)(point.X - start.X), (f64)(point.Y - start.Y));
@@ -317,5 +317,4 @@ public:
         typedef line2d<s32> line2di;
     } // end namespace core
 } // end namespace irr
-
 #endif

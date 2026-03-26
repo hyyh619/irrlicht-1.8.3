@@ -60,7 +60,7 @@ public:
             CMatrix4(eConstructor constructor = EM4CONST_IDENTITY);
             // ! Copy constructor
             /** \param other Other matrix to copy from
-               \param constructor Choose the initialization style */
+             * \param constructor Choose the initialization style */
             CMatrix4(const CMatrix4<T> &other, eConstructor constructor = EM4CONST_COPY);
 
             // ! Simple operator for directly accessing every element of the matrix.
@@ -136,7 +136,7 @@ public:
 
             // ! Set this matrix to the product of two matrices
             /** Calculate b*a, no optimization used,
-               use it if you know you never have a identity matrix */
+             * use it if you know you never have a identity matrix */
             CMatrix4<T>&setbyproduct_nocheck(const CMatrix4<T> &other_a, const CMatrix4<T> &other_b);
 
             // ! Multiply by another matrix.
@@ -246,12 +246,12 @@ public:
 
             // ! Transforms a axis aligned bounding box
             /** The result box of this operation may not be accurate at all. For
-               correct results, use transformBoxEx() */
+             * correct results, use transformBoxEx() */
             void transformBox(core::aabbox3d<f32> &box) const;
 
             // ! Transforms a axis aligned bounding box
             /** The result box of this operation should by accurate, but this operation
-               is slower than transformBox(). */
+             * is slower than transformBox(). */
             void transformBoxEx(core::aabbox3d<f32> &box) const;
 
             // ! Multiplies this matrix by a 1x4 matrix
@@ -268,7 +268,7 @@ public:
 
             // ! Gets the inversed matrix of this one
             /** \param out: where result matrix is written to.
-               \return Returns false if there is no inverse matrix. */
+             * \return Returns false if there is no inverse matrix. */
             bool getInverse(CMatrix4<T> &out) const;
 
             // ! Builds a right-handed perspective projection matrix based on a field of view
@@ -306,9 +306,9 @@ public:
 
             // ! Builds a matrix that flattens geometry into a plane.
             /** \param light: light source
-               \param plane: plane into which the geometry if flattened into
-               \param point: value between 0 and 1, describing the light source.
-               If this is 1, it is a point light, if it is 0, it is a directional light. */
+             * \param plane: plane into which the geometry if flattened into
+             * \param point: value between 0 and 1, describing the light source.
+             * If this is 1, it is a point light, if it is 0, it is a directional light. */
             CMatrix4<T>&buildShadowMatrix(const core::vector3df &light, core::plane3df plane, f32 point = 1.0f);
 
             // ! Builds a matrix which transforms a normalized Device Coordinate to Device Coordinates.
@@ -317,7 +317,7 @@ public:
 
             // ! Creates a new matrix as interpolated matrix from two other ones.
             /** \param b: other matrix to interpolate with
-               \param time: Must be a value between 0 and 1. */
+             * \param time: Must be a value between 0 and 1. */
             CMatrix4<T> interpolate(const core::CMatrix4<T> &b, f32 time) const;
 
             // ! Gets transposed matrix
@@ -328,72 +328,72 @@ public:
 
             // ! Builds a matrix that rotates from one vector to another
             /** \param from: vector to rotate from
-               \param to: vector to rotate to
+             * \param to: vector to rotate to
              */
             CMatrix4<T>&buildRotateFromTo(const core::vector3df &from, const core::vector3df &to);
 
             // ! Builds a combined matrix which translates to a center before rotation and translates from origin afterwards
             /** \param center Position to rotate around
-               \param translate Translation applied after the rotation
+             * \param translate Translation applied after the rotation
              */
             void setRotationCenter(const core::vector3df &center, const core::vector3df &translate);
 
             // ! Builds a matrix which rotates a source vector to a look vector over an arbitrary axis
             /** \param camPos: viewer position in world coo
-               \param center: object position in world-coo and rotation pivot
-               \param translation: object final translation from center
-               \param axis: axis to rotate about
-               \param from: source vector to rotate from
+             * \param center: object position in world-coo and rotation pivot
+             * \param translation: object final translation from center
+             * \param axis: axis to rotate about
+             * \param from: source vector to rotate from
              */
             void buildAxisAlignedBillboard(const core::vector3df &camPos,
-                                           const core::vector3df &center,
-                                           const core::vector3df &translation,
-                                           const core::vector3df &axis,
-                                           const core::vector3df &from);
+                const core::vector3df &center,
+                const core::vector3df &translation,
+                const core::vector3df &axis,
+                const core::vector3df &from);
 
             /*
-                construct 2D Texture transformations
-                rotate about center, scale, and transform.
+             *  construct 2D Texture transformations
+             *  rotate about center, scale, and transform.
              */
             // ! Set to a texture transformation matrix with the given parameters.
             CMatrix4<T>&buildTextureTransform(f32 rotateRad,
-                                              const core::vector2df &rotatecenter,
-                                              const core::vector2df &translate,
-                                              const core::vector2df &scale);
+                const core::vector2df &rotatecenter,
+                const core::vector2df &translate,
+                const core::vector2df &scale);
 
             // ! Set texture transformation rotation
             /** Rotate about z axis, recenter at (0.5,0.5).
-               Doesn't clear other elements than those affected
-               \param radAngle Angle in radians
-               \return Altered matrix */
+             * Doesn't clear other elements than those affected
+             * \param radAngle Angle in radians
+             * \return Altered matrix */
             CMatrix4<T>&setTextureRotationCenter(f32 radAngle);
 
             // ! Set texture transformation translation
             /** Doesn't clear other elements than those affected.
-               \param x Offset on x axis
-               \param y Offset on y axis
-               \return Altered matrix */
+             * \param x Offset on x axis
+             * \param y Offset on y axis
+             * \return Altered matrix */
             CMatrix4<T>&setTextureTranslate(f32 x, f32 y);
 
             // ! Set texture transformation translation, using a transposed representation
             /** Doesn't clear other elements than those affected.
-               \param x Offset on x axis
-               \param y Offset on y axis
-               \return Altered matrix */
+             * \param x Offset on x axis
+             * \param y Offset on y axis
+             * \return Altered matrix */
             CMatrix4<T>&setTextureTranslateTransposed(f32 x, f32 y);
 
             // ! Set texture transformation scale
             /** Doesn't clear other elements than those affected.
-               \param sx Scale factor on x axis
-               \param sy Scale factor on y axis
-               \return Altered matrix. */
+             * \param sx Scale factor on x axis
+             * \param sy Scale factor on y axis
+             * \return Altered matrix. */
             CMatrix4<T>&setTextureScale(f32 sx, f32 sy);
 
             // ! Set texture transformation scale, and recenter at (0.5,0.5)
             /** Doesn't clear other elements than those affected.
-               \param sx Scale factor on x axis
-               \param sy Scale factor on y axis
-               \return Altered matrix. */
+             * \param sx Scale factor on x axis
+             * \param sy Scale factor on y axis
+             * \return Altered matrix. */
             CMatrix4<T>&setTextureScaleCenter(f32 sx, f32 sy);
 
             // ! Sets all matrix data members at once
@@ -804,11 +804,11 @@ private:
 
         // ! Returns the absolute values of the scales of the matrix.
         /**
-           Note that this returns the absolute (positive) values unless only scale is set.
-           Unfortunately it does not appear to be possible to extract any original negative
-           values. The best that we could do would be to arbitrarily make one scale
-           negative if one or three of them were negative.
-           FIXME - return the original values.
+         * Note that this returns the absolute (positive) values unless only scale is set.
+         * Unfortunately it does not appear to be possible to extract any original negative
+         * values. The best that we could do would be to arbitrarily make one scale
+         * negative if one or three of them were negative.
+         * FIXME - return the original values.
          */
         template<class T>
         inline vector3d<T> CMatrix4<T>::getScale() const
@@ -824,8 +824,8 @@ private:
 
             // We have to do the full calculation.
             return vector3d<T>(sqrtf(M[0] * M[0] + M[1] * M[1] + M[2] * M[2]),
-                               sqrtf(M[4] * M[4] + M[5] * M[5] + M[6] * M[6]),
-                               sqrtf(M[8] * M[8] + M[9] * M[9] + M[10] * M[10]));
+                       sqrtf(M[4] * M[4] + M[5] * M[5] + M[6] * M[6]),
+                       sqrtf(M[8] * M[8] + M[9] * M[9] + M[10] * M[10]));
         }
 
         template<class T>
@@ -873,8 +873,8 @@ private:
 
         // ! Returns a rotation that is equivalent to that set by setRotationDegrees().
         /** This code was sent in by Chev.  Note that it does not necessarily return
-           the *same* Euler angles as those set by setRotationDegrees(), but the rotation will
-           be equivalent, i.e. will have the same result when used to rotate a vector or node. */
+         * the *same* Euler angles as those set by setRotationDegrees(), but the rotation will
+         * be equivalent, i.e. will have the same result when used to rotate a vector or node. */
         template<class T>
         inline core::vector3d<T> CMatrix4<T>::getRotationDegrees() const
         {
@@ -882,17 +882,17 @@ private:
             core::vector3d<T> scale = getScale();
 
             // we need to check for negative scale on to axes, which would bring up wrong results
-            if (scale.Y<0 && scale.Z<0)
+            if (scale.Y < 0 && scale.Z < 0)
             {
                 scale.Y = -scale.Y;
                 scale.Z = -scale.Z;
             }
-            else if (scale.X<0 && scale.Z<0)
+            else if (scale.X < 0 && scale.Z < 0)
             {
                 scale.X = -scale.X;
                 scale.Z = -scale.Z;
             }
-            else if (scale.X<0 && scale.Y<0)
+            else if (scale.X < 0 && scale.Y < 0)
             {
                 scale.X = -scale.X;
                 scale.Y = -scale.Y;
@@ -1019,8 +1019,8 @@ private:
 
 
         /*
-            check identity with epsilon
-            solve floating range problems..
+         *  check identity with epsilon
+         *  solve floating range problems..
          */
         template<class T>
         inline bool CMatrix4<T>::isIdentity() const
@@ -1041,18 +1041,18 @@ private:
             if (!core::equals(M[8], (T)0) || !core::equals(M[9], (T)0) || !core::equals(M[10], (T)1) || !core::equals(M[11], (T)0))
                 return false;
 
-/*
-        if (!core::equals( M[ 0], (T)1 ) ||
-            !core::equals( M[ 5], (T)1 ) ||
-            !core::equals( M[10], (T)1 ) ||
-            !core::equals( M[15], (T)1 ))
-            return false;
-
-        for (s32 i=0; i<4; ++i)
-            for (s32 j=0; j<4; ++j)
-                if ((j != i) && (!iszero((*this)(i,j))))
-                    return false;
- */
+            /*
+             *      if (!core::equals( M[ 0], (T)1 ) ||
+             *          !core::equals( M[ 5], (T)1 ) ||
+             *          !core::equals( M[10], (T)1 ) ||
+             *          !core::equals( M[15], (T)1 ))
+             *          return false;
+             *
+             *      for (s32 i=0; i<4; ++i)
+             *          for (s32 j=0; j<4; ++j)
+             *              if ((j != i) && (!iszero((*this)(i,j))))
+             *                  return false;
+             */
 #if defined (USE_MATRIX_TEST)
             definitelyIdentityMatrix = true;
 #endif
@@ -1091,10 +1091,10 @@ private:
 
 
         /*
-            doesn't solve floating range problems..
-            but takes care on +/- 0 on translation because we are changing it..
-            reducing floating point branches
-            but it needs the floats in memory..
+         *  doesn't solve floating range problems..
+         *  but takes care on +/- 0 on translation because we are changing it..
+         *  reducing floating point branches
+         *  but it needs the floats in memory..
          */
         template<class T>
         inline bool CMatrix4<T>::isIdentity_integer_base() const
@@ -1103,52 +1103,52 @@ private:
             if (definitelyIdentityMatrix)
                 return true;
 #endif
-            if (IR(M[0])!=F32_VALUE_1)
+            if (IR(M[0]) != F32_VALUE_1)
                 return false;
 
-            if (IR(M[1])!=0)
+            if (IR(M[1]) != 0)
                 return false;
 
-            if (IR(M[2])!=0)
+            if (IR(M[2]) != 0)
                 return false;
 
-            if (IR(M[3])!=0)
+            if (IR(M[3]) != 0)
                 return false;
 
-            if (IR(M[4])!=0)
+            if (IR(M[4]) != 0)
                 return false;
 
-            if (IR(M[5])!=F32_VALUE_1)
+            if (IR(M[5]) != F32_VALUE_1)
                 return false;
 
-            if (IR(M[6])!=0)
+            if (IR(M[6]) != 0)
                 return false;
 
-            if (IR(M[7])!=0)
+            if (IR(M[7]) != 0)
                 return false;
 
-            if (IR(M[8])!=0)
+            if (IR(M[8]) != 0)
                 return false;
 
-            if (IR(M[9])!=0)
+            if (IR(M[9]) != 0)
                 return false;
 
-            if (IR(M[10])!=F32_VALUE_1)
+            if (IR(M[10]) != F32_VALUE_1)
                 return false;
 
-            if (IR(M[11])!=0)
+            if (IR(M[11]) != 0)
                 return false;
 
-            if (IR(M[12])!=0)
+            if (IR(M[12]) != 0)
                 return false;
 
-            if (IR(M[13])!=0)
+            if (IR(M[13]) != 0)
                 return false;
 
-            if (IR(M[13])!=0)
+            if (IR(M[13]) != 0)
                 return false;
 
-            if (IR(M[15])!=F32_VALUE_1)
+            if (IR(M[15]) != F32_VALUE_1)
                 return false;
 
 #if defined (USE_MATRIX_TEST)
@@ -1332,10 +1332,10 @@ private:
         inline void CMatrix4<T>::multiplyWith1x4Matrix(T *matrix) const
         {
             /*
-               0  1  2  3
-               4  5  6  7
-               8  9  10 11
-               12 13 14 15
+             * 0  1  2  3
+             * 4  5  6  7
+             * 8  9  10 11
+             * 12 13 14 15
              */
 
             T mat[4];
@@ -1385,11 +1385,11 @@ private:
             const CMatrix4<T> &m = *this;
 
             f32 d = (m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0)) * (m(2, 2) * m(3, 3) - m(2, 3) * m(3, 2)) -
-                    (m(0, 0) * m(1, 2) - m(0, 2) * m(1, 0)) * (m(2, 1) * m(3, 3) - m(2, 3) * m(3, 1)) +
-                    (m(0, 0) * m(1, 3) - m(0, 3) * m(1, 0)) * (m(2, 1) * m(3, 2) - m(2, 2) * m(3, 1)) +
-                    (m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1)) * (m(2, 0) * m(3, 3) - m(2, 3) * m(3, 0)) -
-                    (m(0, 1) * m(1, 3) - m(0, 3) * m(1, 1)) * (m(2, 0) * m(3, 2) - m(2, 2) * m(3, 0)) +
-                    (m(0, 2) * m(1, 3) - m(0, 3) * m(1, 2)) * (m(2, 0) * m(3, 1) - m(2, 1) * m(3, 0));
+                (m(0, 0) * m(1, 2) - m(0, 2) * m(1, 0)) * (m(2, 1) * m(3, 3) - m(2, 3) * m(3, 1)) +
+                (m(0, 0) * m(1, 3) - m(0, 3) * m(1, 0)) * (m(2, 1) * m(3, 2) - m(2, 2) * m(3, 1)) +
+                (m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1)) * (m(2, 0) * m(3, 3) - m(2, 3) * m(3, 0)) -
+                (m(0, 1) * m(1, 3) - m(0, 3) * m(1, 1)) * (m(2, 0) * m(3, 2) - m(2, 2) * m(3, 0)) +
+                (m(0, 2) * m(1, 3) - m(0, 3) * m(1, 2)) * (m(2, 0) * m(3, 1) - m(2, 1) * m(3, 0));
 
             if (core::iszero (d, FLT_MIN))
                 return false;
@@ -1397,53 +1397,53 @@ private:
             d = core::reciprocal (d);
 
             out(0, 0) = d * (m(1, 1) * (m(2, 2) * m(3, 3) - m(2, 3) * m(3, 2)) +
-                             m(1, 2) * (m(2, 3) * m(3, 1) - m(2, 1) * m(3, 3)) +
-                             m(1, 3) * (m(2, 1) * m(3, 2) - m(2, 2) * m(3, 1)));
+                m(1, 2) * (m(2, 3) * m(3, 1) - m(2, 1) * m(3, 3)) +
+                m(1, 3) * (m(2, 1) * m(3, 2) - m(2, 2) * m(3, 1)));
             out(0, 1) = d * (m(2, 1) * (m(0, 2) * m(3, 3) - m(0, 3) * m(3, 2)) +
-                             m(2, 2) * (m(0, 3) * m(3, 1) - m(0, 1) * m(3, 3)) +
-                             m(2, 3) * (m(0, 1) * m(3, 2) - m(0, 2) * m(3, 1)));
+                m(2, 2) * (m(0, 3) * m(3, 1) - m(0, 1) * m(3, 3)) +
+                m(2, 3) * (m(0, 1) * m(3, 2) - m(0, 2) * m(3, 1)));
             out(0, 2) = d * (m(3, 1) * (m(0, 2) * m(1, 3) - m(0, 3) * m(1, 2)) +
-                             m(3, 2) * (m(0, 3) * m(1, 1) - m(0, 1) * m(1, 3)) +
-                             m(3, 3) * (m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1)));
+                m(3, 2) * (m(0, 3) * m(1, 1) - m(0, 1) * m(1, 3)) +
+                m(3, 3) * (m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1)));
             out(0, 3) = d * (m(0, 1) * (m(1, 3) * m(2, 2) - m(1, 2) * m(2, 3)) +
-                             m(0, 2) * (m(1, 1) * m(2, 3) - m(1, 3) * m(2, 1)) +
-                             m(0, 3) * (m(1, 2) * m(2, 1) - m(1, 1) * m(2, 2)));
+                m(0, 2) * (m(1, 1) * m(2, 3) - m(1, 3) * m(2, 1)) +
+                m(0, 3) * (m(1, 2) * m(2, 1) - m(1, 1) * m(2, 2)));
             out(1, 0) = d * (m(1, 2) * (m(2, 0) * m(3, 3) - m(2, 3) * m(3, 0)) +
-                             m(1, 3) * (m(2, 2) * m(3, 0) - m(2, 0) * m(3, 2)) +
-                             m(1, 0) * (m(2, 3) * m(3, 2) - m(2, 2) * m(3, 3)));
+                m(1, 3) * (m(2, 2) * m(3, 0) - m(2, 0) * m(3, 2)) +
+                m(1, 0) * (m(2, 3) * m(3, 2) - m(2, 2) * m(3, 3)));
             out(1, 1) = d * (m(2, 2) * (m(0, 0) * m(3, 3) - m(0, 3) * m(3, 0)) +
-                             m(2, 3) * (m(0, 2) * m(3, 0) - m(0, 0) * m(3, 2)) +
-                             m(2, 0) * (m(0, 3) * m(3, 2) - m(0, 2) * m(3, 3)));
+                m(2, 3) * (m(0, 2) * m(3, 0) - m(0, 0) * m(3, 2)) +
+                m(2, 0) * (m(0, 3) * m(3, 2) - m(0, 2) * m(3, 3)));
             out(1, 2) = d * (m(3, 2) * (m(0, 0) * m(1, 3) - m(0, 3) * m(1, 0)) +
-                             m(3, 3) * (m(0, 2) * m(1, 0) - m(0, 0) * m(1, 2)) +
-                             m(3, 0) * (m(0, 3) * m(1, 2) - m(0, 2) * m(1, 3)));
+                m(3, 3) * (m(0, 2) * m(1, 0) - m(0, 0) * m(1, 2)) +
+                m(3, 0) * (m(0, 3) * m(1, 2) - m(0, 2) * m(1, 3)));
             out(1, 3) = d * (m(0, 2) * (m(1, 3) * m(2, 0) - m(1, 0) * m(2, 3)) +
-                             m(0, 3) * (m(1, 0) * m(2, 2) - m(1, 2) * m(2, 0)) +
-                             m(0, 0) * (m(1, 2) * m(2, 3) - m(1, 3) * m(2, 2)));
+                m(0, 3) * (m(1, 0) * m(2, 2) - m(1, 2) * m(2, 0)) +
+                m(0, 0) * (m(1, 2) * m(2, 3) - m(1, 3) * m(2, 2)));
             out(2, 0) = d * (m(1, 3) * (m(2, 0) * m(3, 1) - m(2, 1) * m(3, 0)) +
-                             m(1, 0) * (m(2, 1) * m(3, 3) - m(2, 3) * m(3, 1)) +
-                             m(1, 1) * (m(2, 3) * m(3, 0) - m(2, 0) * m(3, 3)));
+                m(1, 0) * (m(2, 1) * m(3, 3) - m(2, 3) * m(3, 1)) +
+                m(1, 1) * (m(2, 3) * m(3, 0) - m(2, 0) * m(3, 3)));
             out(2, 1) = d * (m(2, 3) * (m(0, 0) * m(3, 1) - m(0, 1) * m(3, 0)) +
-                             m(2, 0) * (m(0, 1) * m(3, 3) - m(0, 3) * m(3, 1)) +
-                             m(2, 1) * (m(0, 3) * m(3, 0) - m(0, 0) * m(3, 3)));
+                m(2, 0) * (m(0, 1) * m(3, 3) - m(0, 3) * m(3, 1)) +
+                m(2, 1) * (m(0, 3) * m(3, 0) - m(0, 0) * m(3, 3)));
             out(2, 2) = d * (m(3, 3) * (m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0)) +
-                             m(3, 0) * (m(0, 1) * m(1, 3) - m(0, 3) * m(1, 1)) +
-                             m(3, 1) * (m(0, 3) * m(1, 0) - m(0, 0) * m(1, 3)));
+                m(3, 0) * (m(0, 1) * m(1, 3) - m(0, 3) * m(1, 1)) +
+                m(3, 1) * (m(0, 3) * m(1, 0) - m(0, 0) * m(1, 3)));
             out(2, 3) = d * (m(0, 3) * (m(1, 1) * m(2, 0) - m(1, 0) * m(2, 1)) +
-                             m(0, 0) * (m(1, 3) * m(2, 1) - m(1, 1) * m(2, 3)) +
-                             m(0, 1) * (m(1, 0) * m(2, 3) - m(1, 3) * m(2, 0)));
+                m(0, 0) * (m(1, 3) * m(2, 1) - m(1, 1) * m(2, 3)) +
+                m(0, 1) * (m(1, 0) * m(2, 3) - m(1, 3) * m(2, 0)));
             out(3, 0) = d * (m(1, 0) * (m(2, 2) * m(3, 1) - m(2, 1) * m(3, 2)) +
-                             m(1, 1) * (m(2, 0) * m(3, 2) - m(2, 2) * m(3, 0)) +
-                             m(1, 2) * (m(2, 1) * m(3, 0) - m(2, 0) * m(3, 1)));
+                m(1, 1) * (m(2, 0) * m(3, 2) - m(2, 2) * m(3, 0)) +
+                m(1, 2) * (m(2, 1) * m(3, 0) - m(2, 0) * m(3, 1)));
             out(3, 1) = d * (m(2, 0) * (m(0, 2) * m(3, 1) - m(0, 1) * m(3, 2)) +
-                             m(2, 1) * (m(0, 0) * m(3, 2) - m(0, 2) * m(3, 0)) +
-                             m(2, 2) * (m(0, 1) * m(3, 0) - m(0, 0) * m(3, 1)));
+                m(2, 1) * (m(0, 0) * m(3, 2) - m(0, 2) * m(3, 0)) +
+                m(2, 2) * (m(0, 1) * m(3, 0) - m(0, 0) * m(3, 1)));
             out(3, 2) = d * (m(3, 0) * (m(0, 2) * m(1, 1) - m(0, 1) * m(1, 2)) +
-                             m(3, 1) * (m(0, 0) * m(1, 2) - m(0, 2) * m(1, 0)) +
-                             m(3, 2) * (m(0, 1) * m(1, 0) - m(0, 0) * m(1, 1)));
+                m(3, 1) * (m(0, 0) * m(1, 2) - m(0, 2) * m(1, 0)) +
+                m(3, 2) * (m(0, 1) * m(1, 0) - m(0, 0) * m(1, 1)));
             out(3, 3) = d * (m(0, 0) * (m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1)) +
-                             m(0, 1) * (m(1, 2) * m(2, 0) - m(1, 0) * m(2, 2)) +
-                             m(0, 2) * (m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0)));
+                m(0, 1) * (m(1, 2) * m(2, 0) - m(1, 0) * m(2, 2)) +
+                m(0, 2) * (m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0)));
 
 #if defined (USE_MATRIX_TEST)
             out.definitelyIdentityMatrix = definitelyIdentityMatrix;
@@ -1507,7 +1507,7 @@ private:
         template<class T>
         inline CMatrix4<T>&CMatrix4<T>::operator=(const CMatrix4<T> &other)
         {
-            if (this==&other)
+            if (this == &other)
                 return *this;
 
             memcpy(M, other.M, 16 * sizeof(T));
@@ -1561,10 +1561,10 @@ private:
         {
             const f64 h = reciprocal(tan(fieldOfViewRadians * 0.5));
 
-            _IRR_DEBUG_BREAK_IF(aspectRatio==0.f); // divide by zero
+            _IRR_DEBUG_BREAK_IF(aspectRatio == 0.f); // divide by zero
             const T w = static_cast<T>(h / aspectRatio);
 
-            _IRR_DEBUG_BREAK_IF(zNear==zFar); // divide by zero
+            _IRR_DEBUG_BREAK_IF(zNear == zFar); // divide by zero
             M[0] = w;
             M[1] = 0;
             M[2] = 0;
@@ -1578,13 +1578,13 @@ private:
             M[8]  = 0;
             M[9]  = 0;
             M[10] = (T)(zFar / (zNear - zFar)); // DirectX version
-//        M[10] = (T)(zFar+zNear/(zNear-zFar)); // OpenGL version
+            //        M[10] = (T)(zFar+zNear/(zNear-zFar)); // OpenGL version
             M[11] = -1;
 
             M[12] = 0;
             M[13] = 0;
             M[14] = (T)(zNear * zFar / (zNear - zFar)); // DirectX version
-//        M[14] = (T)(2.0f*zNear*zFar/(zNear-zFar)); // OpenGL version
+            //        M[14] = (T)(2.0f*zNear*zFar/(zNear-zFar)); // OpenGL version
             M[15] = 0;
 
 #if defined (USE_MATRIX_TEST)
@@ -1601,10 +1601,10 @@ private:
         {
             const f64 h = reciprocal(tan(fieldOfViewRadians * 0.5));
 
-            _IRR_DEBUG_BREAK_IF(aspectRatio==0.f); // divide by zero
+            _IRR_DEBUG_BREAK_IF(aspectRatio == 0.f); // divide by zero
             const T w = static_cast<T>(h / aspectRatio);
 
-            _IRR_DEBUG_BREAK_IF(zNear==zFar); // divide by zero
+            _IRR_DEBUG_BREAK_IF(zNear == zFar); // divide by zero
             M[0] = w;
             M[1] = 0;
             M[2] = 0;
@@ -1639,7 +1639,7 @@ private:
         {
             const f64 h = reciprocal(tan(fieldOfViewRadians * 0.5));
 
-            _IRR_DEBUG_BREAK_IF(aspectRatio==0.f); // divide by zero
+            _IRR_DEBUG_BREAK_IF(aspectRatio == 0.f); // divide by zero
             const T w = static_cast<T>(h / aspectRatio);
 
             M[0] = w;
@@ -1674,9 +1674,9 @@ private:
         inline CMatrix4<T>&CMatrix4<T>::buildProjectionMatrixOrthoLH(
             f32 widthOfViewVolume, f32 heightOfViewVolume, f32 zNear, f32 zFar)
         {
-            _IRR_DEBUG_BREAK_IF(widthOfViewVolume==0.f); // divide by zero
-            _IRR_DEBUG_BREAK_IF(heightOfViewVolume==0.f); // divide by zero
-            _IRR_DEBUG_BREAK_IF(zNear==zFar); // divide by zero
+            _IRR_DEBUG_BREAK_IF(widthOfViewVolume == 0.f); // divide by zero
+            _IRR_DEBUG_BREAK_IF(heightOfViewVolume == 0.f); // divide by zero
+            _IRR_DEBUG_BREAK_IF(zNear == zFar); // divide by zero
             M[0] = (T)(2 / widthOfViewVolume);
             M[1] = 0;
             M[2] = 0;
@@ -1709,9 +1709,9 @@ private:
         inline CMatrix4<T>&CMatrix4<T>::buildProjectionMatrixOrthoRH(
             f32 widthOfViewVolume, f32 heightOfViewVolume, f32 zNear, f32 zFar)
         {
-            _IRR_DEBUG_BREAK_IF(widthOfViewVolume==0.f); // divide by zero
-            _IRR_DEBUG_BREAK_IF(heightOfViewVolume==0.f); // divide by zero
-            _IRR_DEBUG_BREAK_IF(zNear==zFar); // divide by zero
+            _IRR_DEBUG_BREAK_IF(widthOfViewVolume == 0.f); // divide by zero
+            _IRR_DEBUG_BREAK_IF(heightOfViewVolume == 0.f); // divide by zero
+            _IRR_DEBUG_BREAK_IF(zNear == zFar); // divide by zero
             M[0] = (T)(2 / widthOfViewVolume);
             M[1] = 0;
             M[2] = 0;
@@ -1744,9 +1744,9 @@ private:
         inline CMatrix4<T>&CMatrix4<T>::buildProjectionMatrixPerspectiveRH(
             f32 widthOfViewVolume, f32 heightOfViewVolume, f32 zNear, f32 zFar)
         {
-            _IRR_DEBUG_BREAK_IF(widthOfViewVolume==0.f); // divide by zero
-            _IRR_DEBUG_BREAK_IF(heightOfViewVolume==0.f); // divide by zero
-            _IRR_DEBUG_BREAK_IF(zNear==zFar); // divide by zero
+            _IRR_DEBUG_BREAK_IF(widthOfViewVolume == 0.f); // divide by zero
+            _IRR_DEBUG_BREAK_IF(heightOfViewVolume == 0.f); // divide by zero
+            _IRR_DEBUG_BREAK_IF(zNear == zFar); // divide by zero
             M[0] = (T)(2 * zNear / widthOfViewVolume);
             M[1] = 0;
             M[2] = 0;
@@ -1779,9 +1779,9 @@ private:
         inline CMatrix4<T>&CMatrix4<T>::buildProjectionMatrixPerspectiveLH(
             f32 widthOfViewVolume, f32 heightOfViewVolume, f32 zNear, f32 zFar)
         {
-            _IRR_DEBUG_BREAK_IF(widthOfViewVolume==0.f); // divide by zero
-            _IRR_DEBUG_BREAK_IF(heightOfViewVolume==0.f); // divide by zero
-            _IRR_DEBUG_BREAK_IF(zNear==zFar); // divide by zero
+            _IRR_DEBUG_BREAK_IF(widthOfViewVolume == 0.f); // divide by zero
+            _IRR_DEBUG_BREAK_IF(heightOfViewVolume == 0.f); // divide by zero
+            _IRR_DEBUG_BREAK_IF(zNear == zFar); // divide by zero
             M[0] = (T)(2 * zNear / widthOfViewVolume);
             M[1] = 0;
             M[2] = 0;
@@ -1999,9 +1999,9 @@ private:
 
         // ! Builds a matrix that rotates from one vector to another
         /** \param from: vector to rotate from
-           \param to: vector to rotate to
-
-            http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToMatrix/index.htm
+         * \param to: vector to rotate to
+         *
+         *  http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToMatrix/index.htm
          */
         template<class T>
         inline CMatrix4<T>&CMatrix4<T>::buildRotateFromTo(const core::vector3df &from, const core::vector3df &to)
@@ -2055,10 +2055,10 @@ private:
 
         // ! Builds a matrix which rotates a source vector to a look vector over an arbitrary axis
         /** \param camPos: viewer position in world coord
-           \param center: object position in world-coord, rotation pivot
-           \param translation: object final translation from center
-           \param axis: axis to rotate about
-           \param from: source vector to rotate from
+         * \param center: object position in world-coord, rotation pivot
+         * \param translation: object final translation from center
+         * \param axis: axis to rotate about
+         * \param from: source vector to rotate from
          */
         template<class T>
         inline void CMatrix4<T>::buildAxisAlignedBillboard(
@@ -2125,22 +2125,22 @@ private:
         }
 
         /*!
-            Generate texture coordinates as linear functions so that:
-                u = Ux*x + Uy*y + Uz*z + Uw
-                v = Vx*x + Vy*y + Vz*z + Vw
-            The matrix M for this case is:
-                Ux  Vx  0  0
-                Uy  Vy  0  0
-                Uz  Vz  0  0
-                Uw  Vw  0  0
+         *  Generate texture coordinates as linear functions so that:
+         *      u = Ux*x + Uy*y + Uz*z + Uw
+         *      v = Vx*x + Vy*y + Vz*z + Vw
+         *  The matrix M for this case is:
+         *      Ux  Vx  0  0
+         *      Uy  Vy  0  0
+         *      Uz  Vz  0  0
+         *      Uw  Vw  0  0
          */
 
 
         template<class T>
         inline CMatrix4<T>&CMatrix4<T>::buildTextureTransform(f32 rotateRad,
-                                                              const core::vector2df &rotatecenter,
-                                                              const core::vector2df &translate,
-                                                              const core::vector2df &scale)
+            const core::vector2df &rotatecenter,
+            const core::vector2df &translate,
+            const core::vector2df &scale)
         {
             const f32 c = cosf(rotateRad);
             const f32 s = sinf(rotateRad);
@@ -2188,7 +2188,7 @@ private:
             M[9] = (T)(-0.5f * (s + c) + 0.5f);
 
 #if defined (USE_MATRIX_TEST)
-            definitelyIdentityMatrix = definitelyIdentityMatrix && (rotateRad==0.0f);
+            definitelyIdentityMatrix = definitelyIdentityMatrix && (rotateRad == 0.0f);
 #endif
             return *this;
         }
@@ -2201,7 +2201,7 @@ private:
             M[9] = (T)y;
 
 #if defined (USE_MATRIX_TEST)
-            definitelyIdentityMatrix = definitelyIdentityMatrix && (x==0.0f) && (y==0.0f);
+            definitelyIdentityMatrix = definitelyIdentityMatrix && (x == 0.0f) && (y == 0.0f);
 #endif
             return *this;
         }
@@ -2214,7 +2214,7 @@ private:
             M[6] = (T)y;
 
 #if defined (USE_MATRIX_TEST)
-            definitelyIdentityMatrix = definitelyIdentityMatrix && (x==0.0f) && (y==0.0f);
+            definitelyIdentityMatrix = definitelyIdentityMatrix && (x == 0.0f) && (y == 0.0f);
 #endif
             return *this;
         }
@@ -2225,7 +2225,7 @@ private:
             M[0] = (T)sx;
             M[5] = (T)sy;
 #if defined (USE_MATRIX_TEST)
-            definitelyIdentityMatrix = definitelyIdentityMatrix && (sx==1.0f) && (sy==1.0f);
+            definitelyIdentityMatrix = definitelyIdentityMatrix && (sx == 1.0f) && (sy == 1.0f);
 #endif
             return *this;
         }
@@ -2240,7 +2240,7 @@ private:
             M[9] = (T)(0.5f - 0.5f * sy);
 
 #if defined (USE_MATRIX_TEST)
-            definitelyIdentityMatrix = definitelyIdentityMatrix && (sx==1.0f) && (sy==1.0f);
+            definitelyIdentityMatrix = definitelyIdentityMatrix && (sx == 1.0f) && (sy == 1.0f);
 #endif
             return *this;
         }
@@ -2313,5 +2313,4 @@ private:
         IRRLICHT_API extern const matrix4 IdentityMatrix;
     } // end namespace core
 } // end namespace irr
-
 #endif

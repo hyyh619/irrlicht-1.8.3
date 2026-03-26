@@ -80,7 +80,7 @@ public:
 
             // ! Assignment operator
             /** \param other Material layer to copy from.
-               \return This material layer, updated. */
+             * \return This material layer, updated. */
             SMaterialLayer&operator=(const SMaterialLayer &other)
             {
                 // Check for self-assignment!
@@ -158,7 +158,7 @@ public:
 
             // ! Inequality operator
             /** \param b Layer to compare to.
-               \return True if layers are different, else false. */
+             * \return True if layers are different, else false. */
             inline bool operator!=(const SMaterialLayer &b) const
             {
                 bool different =
@@ -174,18 +174,18 @@ public:
                     return true;
                 else
                     different |= (TextureMatrix != b.TextureMatrix) &&
-                                 TextureMatrix && b.TextureMatrix &&
-                                 (*TextureMatrix != *(b.TextureMatrix));
+                        TextureMatrix && b.TextureMatrix &&
+                        (*TextureMatrix != *(b.TextureMatrix));
 
                 return different;
             }
 
             // ! Equality operator
             /** \param b Layer to compare to.
-               \return True if layers are equal, else false. */
+             * \return True if layers are equal, else false. */
             inline bool operator==(const SMaterialLayer &b) const
             {
-                return !(b!=*this);
+                return !(b != *this);
             }
 
             // ! Texture
@@ -201,23 +201,23 @@ public:
 
             // ! Is trilinear filtering enabled? Default: false
             /** If the trilinear filter flag is enabled,
-               the bilinear filtering flag is ignored. */
+             * the bilinear filtering flag is ignored. */
             bool TrilinearFilter : 1;
 
             // ! Is anisotropic filtering enabled? Default: 0, disabled
             /** In Irrlicht you can use anisotropic texture filtering
-               in conjunction with bilinear or trilinear texture
-               filtering to improve rendering results. Primitives
-               will look less blurry with this flag switched on. The number gives
-               the maximal anisotropy degree, and is often in the range 2-16.
-               Value 1 is equivalent to 0, but should be avoided. */
+             * in conjunction with bilinear or trilinear texture
+             * filtering to improve rendering results. Primitives
+             * will look less blurry with this flag switched on. The number gives
+             * the maximal anisotropy degree, and is often in the range 2-16.
+             * Value 1 is equivalent to 0, but should be avoided. */
             u8 AnisotropicFilter;
 
             // ! Bias for the mipmap choosing decision.
             /** This value can make the textures more or less blurry than with the
-               default value of 0. The value (divided by 8.f) is added to the mipmap level
-               chosen initially, and thus takes a smaller mipmap for a region
-               if the value is positive. */
+             * default value of 0. The value (divided by 8.f) is added to the mipmap level
+             * chosen initially, and thus takes a smaller mipmap for a region
+             * if the value is positive. */
             s8 LODBias;
 
 private:
@@ -226,10 +226,9 @@ private:
 
             // ! Texture Matrix
             /** Do not access this element directly as the internal
-               ressource management has to cope with Null pointers etc. */
+             * ressource management has to cope with Null pointers etc. */
             core::matrix4 *TextureMatrix;
         };
     } // end namespace video
 } // end namespace irr
-
 #endif // __S_MATERIAL_LAYER_H_INCLUDED__

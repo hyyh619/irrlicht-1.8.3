@@ -17,7 +17,7 @@ namespace irr
         //              used there has to be rewritten first.
         IRRLICHT_API extern irr::core::stringc LOCALE_DECIMAL_POINTS;
 
-// we write [17] here instead of [] to work around a swig bug
+        // we write [17] here instead of [] to work around a swig bug
         const float fast_atof_table[17] =
         {
             0.f,
@@ -39,14 +39,14 @@ namespace irr
             0.0000000000000001f
         };
 
-// ! Convert a simple string of base 10 digits into an unsigned 32 bit integer.
-/** \param[in] in: The string of digits to convert. No leading chars are
-    allowed, only digits 0 to 9. Parsing stops at the first non-digit.
-    \param[out] out: (optional) If provided, it will be set to point at the
-    first character not used in the calculation.
-    \return The unsigned integer value of the digits. If the string specifies
-    too many digits to encode in an u32 then INT_MAX will be returned.
- */
+        // ! Convert a simple string of base 10 digits into an unsigned 32 bit integer.
+        /** \param[in] in: The string of digits to convert. No leading chars are
+         *  allowed, only digits 0 to 9. Parsing stops at the first non-digit.
+         *  \param[out] out: (optional) If provided, it will be set to point at the
+         *  first character not used in the calculation.
+         *  \return The unsigned integer value of the digits. If the string specifies
+         *  too many digits to encode in an u32 then INT_MAX will be returned.
+         */
         inline u32 strtoul10(const char *in, const char **out = 0)
         {
             if (!in)
@@ -63,7 +63,7 @@ namespace irr
             while ((*in >= '0') && (*in <= '9'))
             {
                 const u32 tmp = (unsignedValue * 10) + (*in - '0');
-                if (tmp<unsignedValue)
+                if (tmp < unsignedValue)
                 {
                     unsignedValue = (u32)0xffffffff;
                     overflow      = true;
@@ -81,16 +81,16 @@ namespace irr
             return unsignedValue;
         }
 
-// ! Convert a simple string of base 10 digits into a signed 32 bit integer.
-/** \param[in] in: The string of digits to convert. Only a leading - or +
-    followed by digits 0 to 9 will be considered. Parsing stops at the first
-    non-digit.
-    \param[out] out: (optional) If provided, it will be set to point at the
-    first character not used in the calculation.
-    \return The signed integer value of the digits. If the string specifies
-    too many digits to encode in an s32 then +INT_MAX or -INT_MAX will be
-    returned.
- */
+        // ! Convert a simple string of base 10 digits into a signed 32 bit integer.
+        /** \param[in] in: The string of digits to convert. Only a leading - or +
+         *  followed by digits 0 to 9 will be considered. Parsing stops at the first
+         *  non-digit.
+         *  \param[out] out: (optional) If provided, it will be set to point at the
+         *  first character not used in the calculation.
+         *  \return The signed integer value of the digits. If the string specifies
+         *  too many digits to encode in an s32 then +INT_MAX or -INT_MAX will be
+         *  returned.
+         */
         inline s32 strtol10(const char *in, const char **out = 0)
         {
             if (!in)
@@ -122,12 +122,12 @@ namespace irr
             }
         }
 
-// ! Convert a hex-encoded character to an unsigned integer.
-/** \param[in] in The digit to convert. Only digits 0 to 9 and chars A-F,a-f
-    will be considered.
-    \return The unsigned integer value of the digit. 0xffffffff if the input is
-    not hex
- */
+        // ! Convert a hex-encoded character to an unsigned integer.
+        /** \param[in] in The digit to convert. Only digits 0 to 9 and chars A-F,a-f
+         *  will be considered.
+         *  \return The unsigned integer value of the digit. 0xffffffff if the input is
+         *  not hex
+         */
         inline u32 ctoul16(char in)
         {
             if (in >= '0' && in <= '9')
@@ -140,15 +140,15 @@ namespace irr
                 return 0xffffffff;
         }
 
-// ! Convert a simple string of base 16 digits into an unsigned 32 bit integer.
-/** \param[in] in: The string of digits to convert. No leading chars are
-    allowed, only digits 0 to 9 and chars A-F,a-f are allowed. Parsing stops
-    at the first illegal char.
-    \param[out] out: (optional) If provided, it will be set to point at the
-    first character not used in the calculation.
-    \return The unsigned integer value of the digits. If the string specifies
-    too many digits to encode in an u32 then INT_MAX will be returned.
- */
+        // ! Convert a simple string of base 16 digits into an unsigned 32 bit integer.
+        /** \param[in] in: The string of digits to convert. No leading chars are
+         *  allowed, only digits 0 to 9 and chars A-F,a-f are allowed. Parsing stops
+         *  at the first illegal char.
+         *  \param[out] out: (optional) If provided, it will be set to point at the
+         *  first character not used in the calculation.
+         *  \return The unsigned integer value of the digits. If the string specifies
+         *  too many digits to encode in an u32 then INT_MAX will be returned.
+         */
         inline u32 strtoul16(const char *in, const char **out = 0)
         {
             if (!in)
@@ -174,7 +174,7 @@ namespace irr
                 else
                     break;
 
-                if (tmp<unsignedValue)
+                if (tmp < unsignedValue)
                 {
                     unsignedValue = (u32)INT_MAX;
                     overflow      = true;
@@ -192,15 +192,15 @@ namespace irr
             return unsignedValue;
         }
 
-// ! Convert a simple string of base 8 digits into an unsigned 32 bit integer.
-/** \param[in] in The string of digits to convert. No leading chars are
-    allowed, only digits 0 to 7 are allowed. Parsing stops at the first illegal
-    char.
-    \param[out] out (optional) If provided, it will be set to point at the
-    first character not used in the calculation.
-    \return The unsigned integer value of the digits. If the string specifies
-    too many digits to encode in an u32 then INT_MAX will be returned.
- */
+        // ! Convert a simple string of base 8 digits into an unsigned 32 bit integer.
+        /** \param[in] in The string of digits to convert. No leading chars are
+         *  allowed, only digits 0 to 7 are allowed. Parsing stops at the first illegal
+         *  char.
+         *  \param[out] out (optional) If provided, it will be set to point at the
+         *  first character not used in the calculation.
+         *  \return The unsigned integer value of the digits. If the string specifies
+         *  too many digits to encode in an u32 then INT_MAX will be returned.
+         */
         inline u32 strtoul8(const char *in, const char **out = 0)
         {
             if (!in)
@@ -222,7 +222,7 @@ namespace irr
                 else
                     break;
 
-                if (tmp<unsignedValue)
+                if (tmp < unsignedValue)
                 {
                     unsignedValue = (u32)INT_MAX;
                     overflow      = true;
@@ -240,15 +240,15 @@ namespace irr
             return unsignedValue;
         }
 
-// ! Convert a C-style prefixed string (hex, oct, integer) into an unsigned 32 bit integer.
-/** \param[in] in The string of digits to convert. If string starts with 0x the
-    hex parser is used, if only leading 0 is used, oct parser is used. In all
-    other cases, the usual unsigned parser is used.
-    \param[out] out (optional) If provided, it will be set to point at the
-    first character not used in the calculation.
-    \return The unsigned integer value of the digits. If the string specifies
-    too many digits to encode in an u32 then INT_MAX will be returned.
- */
+        // ! Convert a C-style prefixed string (hex, oct, integer) into an unsigned 32 bit integer.
+        /** \param[in] in The string of digits to convert. If string starts with 0x the
+         *  hex parser is used, if only leading 0 is used, oct parser is used. In all
+         *  other cases, the usual unsigned parser is used.
+         *  \param[out] out (optional) If provided, it will be set to point at the
+         *  first character not used in the calculation.
+         *  \return The unsigned integer value of the digits. If the string specifies
+         *  too many digits to encode in an u32 then INT_MAX will be returned.
+         */
         inline u32 strtoul_prefix(const char *in, const char **out = 0)
         {
             if (!in)
@@ -259,21 +259,21 @@ namespace irr
                 return 0;
             }
 
-            if ('0'==in[0])
-                return ('x'==in[1] ? strtoul16(in + 2, out) : strtoul8(in + 1, out));
+            if ('0' == in[0])
+                return ('x' == in[1] ? strtoul16(in + 2, out) : strtoul8(in + 1, out));
 
             return strtoul10(in, out);
         }
 
-// ! Converts a sequence of digits into a whole positive floating point value.
-/** Only digits 0 to 9 are parsed.  Parsing stops at any other character,
-    including sign characters or a decimal point.
-    \param in: the sequence of digits to convert.
-    \param out: (optional) will be set to point at the first non-converted
-    character.
-    \return The whole positive floating point representation of the digit
-    sequence.
- */
+        // ! Converts a sequence of digits into a whole positive floating point value.
+        /** Only digits 0 to 9 are parsed.  Parsing stops at any other character,
+         *  including sign characters or a decimal point.
+         *  \param in: the sequence of digits to convert.
+         *  \param out: (optional) will be set to point at the first non-converted
+         *  character.
+         *  \return The whole positive floating point representation of the digit
+         *  sequence.
+         */
         inline f32 strtof10(const char *in, const char **out = 0)
         {
             if (!in)
@@ -318,14 +318,14 @@ namespace irr
             return floatValue;
         }
 
-// ! Provides a fast function for converting a string into a float.
-/** This is not guaranteed to be as accurate as atof(), but is
-    approximately 6 to 8 times as fast.
-    \param[in] in The string to convert.
-    \param[out] result The resultant float will be written here.
-    \return Pointer to the first character in the string that wasn't used
-    to create the float value.
- */
+        // ! Provides a fast function for converting a string into a float.
+        /** This is not guaranteed to be as accurate as atof(), but is
+         *  approximately 6 to 8 times as fast.
+         *  \param[in] in The string to convert.
+         *  \param[out] result The resultant float will be written here.
+         *  \return Pointer to the first character in the string that wasn't used
+         *  to create the float value.
+         */
         inline const char* fast_atof_move(const char *in, f32 &result)
         {
             // Please run the regression test when making any modifications to this function.
@@ -335,7 +335,7 @@ namespace irr
                 return 0;
 
             const bool negative = ('-' == *in);
-            if (negative || ('+'==*in))
+            if (negative || ('+' == *in))
                 ++in;
 
             f32 value = strtof10(in, &in);
@@ -361,12 +361,12 @@ namespace irr
             return in;
         }
 
-// ! Convert a string to a floating point number
-/** \param floatAsString The string to convert.
-    \param out Optional pointer to the first character in the string that
-    wasn't used to create the float value.
-    \result Float value parsed from the input string
- */
+        // ! Convert a string to a floating point number
+        /** \param floatAsString The string to convert.
+         *  \param out Optional pointer to the first character in the string that
+         *  wasn't used to create the float value.
+         *  \result Float value parsed from the input string
+         */
         inline float fast_atof(const char *floatAsString, const char **out = 0)
         {
             float ret;
@@ -380,5 +380,4 @@ namespace irr
         }
     } // end namespace core
 } // end namespace irr
-
 #endif

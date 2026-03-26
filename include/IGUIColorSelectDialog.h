@@ -9,22 +9,17 @@
 
 namespace irr
 {
-namespace gui
-{
+    namespace gui
+    {
+        //! Standard color chooser dialog.
+        class IGUIColorSelectDialog : public IGUIElement
+        {
+public:
 
-	//! Standard color chooser dialog.
-	class IGUIColorSelectDialog : public IGUIElement
-	{
-	public:
-
-		//! constructor
-		IGUIColorSelectDialog(IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle)
-			: IGUIElement(EGUIET_COLOR_SELECT_DIALOG, environment, parent, id, rectangle) {}
-	};
-
-
-} // end namespace gui
+            //! constructor
+            IGUIColorSelectDialog(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
+                : IGUIElement(EGUIET_COLOR_SELECT_DIALOG, environment, parent, id, rectangle) {}
+        };
+    } // end namespace gui
 } // end namespace irr
-
 #endif
-

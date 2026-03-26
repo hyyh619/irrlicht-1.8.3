@@ -9,30 +9,26 @@
 
 namespace irr
 {
-namespace gui
-{
-
-    //! GUI Check box interface.
-    /** \par This element can create the following events of type EGUI_EVENT_TYPE:
-    \li EGET_CHECKBOX_CHANGED
-    */
-    class IGUICheckBox : public IGUIElement
+    namespace gui
     {
-    public:
+        //! GUI Check box interface.
+        /** \par This element can create the following events of type EGUI_EVENT_TYPE:
+         * \li EGET_CHECKBOX_CHANGED
+         */
+        class IGUICheckBox : public IGUIElement
+        {
+public:
 
-        //! constructor
-        IGUICheckBox(IGUIEnvironment* environment, IGUIElement* parent, s32 id, core::rect<s32> rectangle)
-            : IGUIElement(EGUIET_CHECK_BOX, environment, parent, id, rectangle) {}
+            //! constructor
+            IGUICheckBox(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
+                : IGUIElement(EGUIET_CHECK_BOX, environment, parent, id, rectangle) {}
 
-        //! Set if box is checked.
-        virtual void setChecked(bool checked) = 0;
+            //! Set if box is checked.
+            virtual void setChecked(bool checked) = 0;
 
-        //! Returns true if box is checked.
-        virtual bool isChecked() const = 0;
-    };
-
-} // end namespace gui
+            //! Returns true if box is checked.
+            virtual bool isChecked() const = 0;
+        };
+    } // end namespace gui
 } // end namespace irr
-
 #endif
-

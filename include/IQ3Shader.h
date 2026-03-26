@@ -129,7 +129,7 @@ namespace irr
 
 
             /*
-                extract substrings
+             *  extract substrings
              */
             inline void getAsStringList(tStringList &list, s32 max, const core::stringc &string, u32 &startPos)
             {
@@ -229,15 +229,15 @@ namespace irr
 
 
             /*!
-                parses the content of Variable blendfunc,alphafunc
-                it also make a hint for rendering as transparent or solid node.
-
-                we assume a typical quake scene would look like this..
-                1) Big Static Mesh ( solid )
-                2) static scene item ( may use transparency ) but rendered in the solid pass
-                3) additional transparency item in the transparent pass
-
-                it's not 100% accurate! it just empirical..
+             *  parses the content of Variable blendfunc,alphafunc
+             *  it also make a hint for rendering as transparent or solid node.
+             *
+             *  we assume a typical quake scene would look like this..
+             *  1) Big Static Mesh ( solid )
+             *  2) static scene item ( may use transparency ) but rendered in the solid pass
+             *  3) additional transparency item in the transparent pass
+             *
+             *  it's not 100% accurate! it just empirical..
              */
             inline static void getBlendFunc(const core::stringc &string, SBlendFunc &blendfunc)
             {
@@ -556,8 +556,8 @@ namespace irr
                 const f32 lat = j * 2.0f * core::PI / 255.0f;
 
                 return core::vector3df(cosf (lat) * sinf (lng),
-                                       sinf (lat) * sinf (lng),
-                                       cosf (lng));
+                           sinf (lat) * sinf (lng),
+                           cosf (lng));
             }
 
             //
@@ -739,8 +739,8 @@ namespace irr
             typedef core::array<IEntity> tQ3EntityList;
 
             /*
-                dump shader like original layout, regardless of internal data holding
-                no recursive folding..
+             *  dump shader like original layout, regardless of internal data holding
+             *  no recursive folding..
              */
             inline void dumpVarGroup(core::stringc &dest, const SVarGroup *group, s32 stack)
             {
@@ -786,7 +786,7 @@ namespace irr
             }
 
             /*!
-                dump a Shader or an Entity
+             *  dump a Shader or an Entity
              */
             inline core::stringc&dumpShader(core::stringc &dest, const IShader *shader, bool entity = false)
             {
@@ -818,14 +818,14 @@ namespace irr
 
 
             /*
-                quake3 doesn't care much about tga & jpg
-                load one or multiple files stored in name started at startPos to the texture array textures
-                if texture is not loaded 0 will be added ( to find missing textures easier)
+             *  quake3 doesn't care much about tga & jpg
+             *  load one or multiple files stored in name started at startPos to the texture array textures
+             *  if texture is not loaded 0 will be added ( to find missing textures easier)
              */
             inline void getTextures(tTexArray &textures,
-                                    const core::stringc &name, u32 &startPos,
-                                    io::IFileSystem *fileSystem,
-                                    video::IVideoDriver *driver)
+                const core::stringc &name, u32 &startPos,
+                io::IFileSystem *fileSystem,
+                video::IVideoDriver *driver)
             {
                 static const char *extension[] =
                 {
@@ -846,7 +846,7 @@ namespace irr
 
                 io::path loadFile;
 
-                for (u32 i = 0; i!= stringList.size (); ++i)
+                for (u32 i = 0; i != stringList.size (); ++i)
                 {
                     video::ITexture *texture = 0;
 
@@ -933,5 +933,4 @@ namespace irr
         } // end namespace quake3
     } // end namespace scene
 } // end namespace irr
-
 #endif

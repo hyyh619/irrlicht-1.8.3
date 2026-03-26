@@ -9,30 +9,27 @@
 
 namespace irr
 {
-namespace scene
-{
-    class IMesh;
-
-    //! Scene node for rendering a shadow volume into a stencil buffer.
-    class IShadowVolumeSceneNode : public ISceneNode
+    namespace scene
     {
-    public:
+        class IMesh;
 
-        //! constructor
-        IShadowVolumeSceneNode(ISceneNode* parent, ISceneManager* mgr, s32 id)
-            : ISceneNode(parent, mgr, id) {}
+        //! Scene node for rendering a shadow volume into a stencil buffer.
+        class IShadowVolumeSceneNode : public ISceneNode
+        {
+public:
 
-        //! Sets the mesh from which the shadow volume should be generated.
-        /** To optimize shadow rendering, use a simpler mesh for shadows.
-        */
-        virtual void setShadowMesh(const IMesh* mesh) = 0;
+            //! constructor
+            IShadowVolumeSceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id)
+                : ISceneNode(parent, mgr, id) {}
 
-        //! Updates the shadow volumes for current light positions.
-        virtual void updateShadowVolumes() = 0;
-    };
+            //! Sets the mesh from which the shadow volume should be generated.
+            /** To optimize shadow rendering, use a simpler mesh for shadows.
+             */
+            virtual void setShadowMesh(const IMesh *mesh) = 0;
 
-} // end namespace scene
+            //! Updates the shadow volumes for current light positions.
+            virtual void updateShadowVolumes() = 0;
+        };
+    } // end namespace scene
 } // end namespace irr
-
 #endif
-
