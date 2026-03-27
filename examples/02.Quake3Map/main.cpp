@@ -57,9 +57,9 @@ int main()
     video::E_DRIVER_TYPE driverType;
 
     printf("Please select the driver you want for this example:\n"      \
-           " (a) OpenGL 1.5\n (b) Direct3D 9.0c\n (c) Direct3D 8.1\n"   \
-           " (d) Burning's Software Renderer\n (e) Software Renderer\n" \
-           " (f) NullDevice\n (otherKey) exit\n\n");
+            " (a) OpenGL 1.5\n (b) Direct3D 9.0c\n (c) Direct3D 8.1\n"   \
+            " (d) Burning's Software Renderer\n (e) Software Renderer\n" \
+            " (f) NullDevice\n (otherKey) exit\n\n");
 
     char i;
     std::cin >> i;
