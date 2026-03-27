@@ -9,71 +9,72 @@
 
 @implementation AppDelegate
 
-- (id)initWithDevice:(irr::CIrrDeviceMacOSX *)device
+- (id)initWithDevice:(irr::CIrrDeviceMacOSX*)device
 {
-	self = [super init];
-	if (self) _device = device;
-	return (self);
+    self = [super init];
+    if (self)
+        _device = device;
+
+    return (self);
 }
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+- (void)applicationDidFinishLaunching:(NSNotification*)aNotification
 {
-	_quit = FALSE;
+    _quit = FALSE;
 }
 
 - (void)orderFrontStandardAboutPanel:(id)sender
 {
-	[NSApp orderFrontStandardAboutPanel:sender];
+    [NSApp orderFrontStandardAboutPanel:sender];
 }
 
 - (void)unhideAllApplications:(id)sender
 {
-	[NSApp unhideAllApplications:sender];
+    [NSApp unhideAllApplications:sender];
 }
 
 - (void)hide:(id)sender
 {
-	[NSApp hide:sender];
+    [NSApp hide:sender];
 }
 
 - (void)hideOtherApplications:(id)sender
 {
-	[NSApp hideOtherApplications:sender];
+    [NSApp hideOtherApplications:sender];
 }
 
 - (void)terminate:(id)sender
 {
-	_quit = TRUE;
+    _quit = TRUE;
 }
 
 - (void)windowWillClose:(id)sender
 {
-	_quit = TRUE;
+    _quit = TRUE;
 }
 
-- (NSSize)windowWillResize:(NSWindow *)window toSize:(NSSize)proposedFrameSize
+- (NSSize)windowWillResize:(NSWindow*)window toSize:(NSSize)proposedFrameSize
 {
-	if (_device->isResizable())
-		return proposedFrameSize;
-	else
-		return [window frame].size;
+    if (_device->isResizable())
+        return proposedFrameSize;
+    else
+        return [window frame].size;
 }
 
-- (void)windowDidResize:(NSNotification *)aNotification
+- (void)windowDidResize:(NSNotification*)aNotification
 {
-	NSWindow	*window;
-	NSRect		frame;
+    NSWindow *window;
+    NSRect   frame;
 
-	window = [aNotification object];
-	frame = [window frame];
-	_device->setResize((int)frame.size.width,(int)frame.size.height);
+    window = [aNotification object];
+    frame  = [window frame];
+    _device->setResize((int)frame.size.width, (int)frame.size.height);
 }
 
 - (BOOL)isQuit
 {
-	return (_quit);
+    return (_quit);
 }
 
 @end
-
 #endif // _IRR_COMPILE_WITH_OSX_DEVICE_
