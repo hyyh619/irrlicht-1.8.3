@@ -2,10 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(lldb) Launch 10.Shaders",
+            "name": "(lldb) Launch 01.HelloWorld",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/MacOSX/10.Shaders",
+            "program": "${workspaceFolder}/bin/MacOSX/01.HelloWorld",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/bin/MacOSX",
@@ -14,6 +14,20 @@
             "MIMode": "lldb",
             "targetArchitecture": "arm64",
             "preLaunchTask": "Build 01.HelloWorld"
+        },
+        {
+            "name": "(lldb) Launch 02.Quake3Map",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/MacOSX/02.Quake3Map",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/bin/MacOSX",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "targetArchitecture": "arm64",
+            "preLaunchTask": "Build 02.Quake3Map",
         }
     ]
 }
