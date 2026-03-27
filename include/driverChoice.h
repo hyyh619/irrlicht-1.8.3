@@ -11,11 +11,18 @@
 #include "irrTypes.h"
 #include "IrrlichtDevice.h"
 
+#if defined(__APPLE__) || defined(MACOSX)
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
 namespace irr
 {
     //! ask user for driver
     static irr::video::E_DRIVER_TYPE driverChoiceConsole(bool allDrivers = true)
     {
+#if defined(__APPLE__) || defined(MACOSX)
+        return irr::video::EDT_OPENGL;
+#else
         const char* const names[] = {"NullDriver", "Software Renderer", "Burning's Video", "Direct3D 8.1", "Direct3D 9.0c", "OpenGL 1.x/2.x/3.x"};
 
         printf("Please select the driver you want:\n");
@@ -41,6 +48,7 @@ namespace irr
         }
 
         return irr::video::EDT_COUNT;
+#endif
     }
 } // end namespace irr
 #endif
