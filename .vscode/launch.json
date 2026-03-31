@@ -10,10 +10,10 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "--template-dir",
-                "./scripts",
+                "./scripts/BiliBiliDownloader",
                 "--confidence",
-                "0.8",
-                "橐驼",
+                "0.7",
+                "胡志明-未说的故事",
                 "Hello"
             ]
         },
