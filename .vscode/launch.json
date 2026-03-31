@@ -8,7 +8,14 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "args": ["--template-dir", "./scripts", "--confidence", "0.8", "橐驼", "Hello"]
+            "args": [
+                "--template-dir",
+                "./scripts",
+                "--confidence",
+                "0.8",
+                "橐驼",
+                "Hello"
+            ]
         },
         {
             "name": "(lldb) Launch 01.HelloWorld",
