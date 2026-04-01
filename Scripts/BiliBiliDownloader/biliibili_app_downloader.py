@@ -113,22 +113,22 @@ def main():
     parser.add_argument("message", type=str, nargs="?", help="Message to send")
     parser.add_argument("--template-dir", type=str, default=".", help="Directory containing template images")
     parser.add_argument("--confidence", type=float, default=0.8, help="Image match confidence (0-1)")
-    
+
     args = parser.parse_args()
-    
+
     if not args.video_name or not args.message:
         parser.print_help()
         print("\nExample: python bilibili_automation.py \"张三\" \"你好\"")
         sys.exit(1)
-    
+
     video_name = args.video_name
     message = args.message
     template_dir = args.template_dir
     confidence = args.confidence
-    
+
     print(f"Searching for: {video_name}")
     print(f"Message: {message}")
-    
+
     searchIcons = [f"{template_dir}/SearchInput1-1080.png", f"{template_dir}/SearchInput1-2160.png"]
     searchInputs = [f"{template_dir}/SearchInput2-1080.png", f"{template_dir}/SearchInput2-2160.png"]
     search_list = f"{template_dir}/bilibili_search_list.png"
@@ -136,7 +136,7 @@ def main():
     chat_input = f"{template_dir}/bilibili_chatinput.png"
     debug_png = f"{template_dir}/bilibili_debug.png"
     error_png = f"{template_dir}/bilibili_error.png"
-    
+
     try:
         print("Step 1: Looking for search input...")
         if click_image_by_list(searchIcons, timeout=15, confidence=confidence, double_click=True):
@@ -166,16 +166,16 @@ def main():
                 print("Step 3: Cannot find the user.")
         else:
             print("Search icon not found. Make sure bilibili is open and templates are correct.")
-            print(f"Expected template: {search_icon}")
+            print(f"Expected template: {searchIcons}")
             SaveScreenshot(debug_png)
 
     except Exception as e:
 
-        
+
         print(f"Error: {e}")
         SaveScreenshot(error_png)
         raise
-    
+
     print("\nDone!")
 
 
