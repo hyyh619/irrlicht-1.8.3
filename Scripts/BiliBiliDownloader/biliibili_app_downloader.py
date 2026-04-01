@@ -234,6 +234,22 @@ def CheckAndProcessSearchInput(searchInputs, searchInputMoves, video_name, confi
     return state
 
 
+def CheckAndProcessSearchResult(searchResults, confidence, state):
+    pos, posLeft = wait_for_image_by_list(searchResults, timeout=2, confidence=confidence)
+    if pos:
+        print("Step 3: click results...")
+        
+        # Move pos to the first video result
+        pyautogui.click(posLeft.left + posLeft.width, posLeft.top + posLeft.height + 20)
+        time.sleep(0.5)
+
+        print("Current state: state_search_result")
+        return state_search_result
+
+    # reture default state
+    return state
+
+
 def main():
     parser = argparse.ArgumentParser(description="BiliBili Downloader")
     parser.add_argument("video_name", type=str, nargs="?", help="Video name to search")
@@ -265,32 +281,24 @@ def main():
     # Set default state
     state = state_init
 
+    # Count the time and break the loop if it takes too long
+    counter = 0
+    
     while(True):
         # Check the current states
         state = CheckAndProcessSearchIcon(searchIcons, confidence, state)
         state = CheckAndProcessSearchInput(searchInputs, searchInputMoves, video_name, confidence, state)
+        state = CheckAndProcessSearchResult(searchResults, confidence, state)
 
-        if state == state_unknown or state == state_search_input:
-            break
-
-        if state == state_search_input:
-            if click_image_by_list(searchResults, timeout=5, confidence=confidence):
-                print("Step 3: Search result found and clicked")
-
-                if click_image(text_input, timeout=5, confidence=confidence):
-                    print(f"Step 4: Typing message: {message}")
-                    pyperclip.copy(message)
-                    pyautogui.hotkey('command', 'v')
-                    pyautogui.press('enter')
-                    time.sleep(1)
-                    print("Message sent successfully!")
-            else:
-                print("Step 3: Cannot find the user.")
-                state = state_unknown
-        else:
-            print("Search icon not found. Make sure bilibili is open and templates are correct.")
-            print(f"Expected template: {searchIcons}")
+        if state == state_unknown or state == state_search_result:
             SaveScreenshot(debug_png)
+            print(f"The last state is {state}, break the loop.")
+            break
+        
+        if counter == 10:
+            print("Timeout! Current state: ", state)
+            SaveScreenshot(debug_png)
+            print(f"Debug screenshot saved to {debug_png}")
             break
 
     print("\nDone!")
