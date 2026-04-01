@@ -59,13 +59,33 @@ def wait_for_image(template_path, timeout=10, confidence=0.8):
             except Exception:
                 pass
 
-        actConf -= 0.01
+        # actConf -= 0.01
         time.sleep(0.5)
     return None
 
 
 def click_image(template_path, timeout=10, confidence=0.8, double_click=False, move=True):
     pos = wait_for_image(template_path, timeout, confidence)
+    if pos:
+        pyautogui.click(pos.x, pos.y)
+
+        if move:
+            pyautogui.moveTo(pos.x, pos.y, duration=0.2)
+
+        if double_click:
+            time.sleep(0.2)
+            pyautogui.click(pos.x, pos.y)
+        return True
+    return False
+
+
+def click_image_by_list(template_list, timeout=10, confidence=0.8, double_click=False, move=True):
+    for template_path in template_list:
+        pos = wait_for_image(template_path, timeout, confidence)
+        if pos:
+            print(f"Found {template_path} at {pos}")
+            break
+
     if pos:
         pyautogui.click(pos.x, pos.y)
 
@@ -109,8 +129,8 @@ def main():
     print(f"Searching for: {video_name}")
     print(f"Message: {message}")
     
-    search_icon = f"{template_dir}/SearchInput1.png"
-    search_input = f"{template_dir}/SearchInput2.png"
+    searchIcons = [f"{template_dir}/SearchInput1-1080.png", f"{template_dir}/SearchInput1-2160.png"]
+    searchInputs = [f"{template_dir}/SearchInput2-1080.png", f"{template_dir}/SearchInput2-2160.png"]
     search_list = f"{template_dir}/bilibili_search_list.png"
     text_input = f"{template_dir}/bilibili_text_input.png"
     chat_input = f"{template_dir}/bilibili_chatinput.png"
@@ -119,11 +139,11 @@ def main():
     
     try:
         print("Step 1: Looking for search input...")
-        if click_image(search_icon, timeout=15, confidence=confidence, double_click=True):
+        if click_image_by_list(searchIcons, timeout=15, confidence=confidence, double_click=True):
             print("Search input found and clicked")
             time.sleep(0.5)
 
-            if click_image(search_input, timeout=5, confidence=confidence, double_click=True):
+            if click_image_by_list(searchInputs, timeout=5, confidence=confidence, double_click=True):
                 print(f"Step 2: Typing contact name: {video_name}")
                 pyautogui.write(video_name, interval=0.2)
                 #pyperclip.copy(video_name)
