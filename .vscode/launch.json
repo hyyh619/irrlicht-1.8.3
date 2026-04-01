@@ -12,9 +12,9 @@
                 "--template-dir",
                 "./scripts/BiliBiliDownloader",
                 "--confidence",
-                "0.7",
+                "0.8",
                 "胡志明-未说的故事",
-                "Hello"
+                "胡志明-未说的故事"
             ]
         },
         {

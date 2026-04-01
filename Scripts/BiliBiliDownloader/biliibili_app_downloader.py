@@ -6,6 +6,8 @@ Usage:
     python wechat_automation.py "video_name" "message"
 """
 
+import os
+#import cv2
 import sys
 import argparse
 import time
@@ -14,10 +16,16 @@ import pyperclip
 import subprocess
 from screeninfo import get_monitors
 
-
 pyautogui.PAUSE = 1.0
 pyautogui.FAILSAFE = True
 g_monitors = get_monitors()
+
+
+def apple_script_paste():
+    # 直接让 macOS 系统进程执行“按下 command + v”
+    cmd = 'osascript -e "tell application \\"System Events\\" to keystroke \\"v\\" using command down"'
+    os.system(cmd)
+    return
 
 
 def ScreenshotMonitor(m):
@@ -51,26 +59,55 @@ def wait_for_image(template_path, timeout=10, confidence=0.8):
         for m in monitors:
             try:
                 print(f"Searching for {template_path} on monitor ({m.x}, {m.y}, {m.width}, {m.height}) with confidence {actConf:.2f}")
+                posLeft = pyautogui.locateOnScreen(
+                    template_path, confidence=actConf, region=(m.x, m.y, m.width, m.height), grayscale=True)
                 pos = pyautogui.locateCenterOnScreen(
                     template_path, confidence=actConf, region=(m.x, m.y, m.width, m.height), grayscale=True)
                 if pos:
                     print(f"Found {template_path} at {pos} on monitor ({m.x}, {m.y})")
-                    return pos
+                    return pos, posLeft
             except Exception:
                 pass
 
         # actConf -= 0.01
         time.sleep(0.5)
-    return None
+    return None, None
+
+
+def wait_for_image_by_list(template_list, timeout=10, confidence=0.8):
+    global g_monitors
+    monitors = g_monitors
+
+    actConf = confidence
+    start = time.time()
+    while time.time() - start < timeout:
+        for m in monitors:
+            for template_path in template_list:
+                try:
+                    print(f"Searching for {template_path} on monitor ({m.x}, {m.y}, {m.width}, {m.height}) with confidence {actConf:.2f}")
+                    posLeft = pyautogui.locateOnScreen(
+                        template_path, confidence=actConf, region=(m.x, m.y, m.width, m.height), grayscale=True)
+                    pos = pyautogui.locateCenterOnScreen(
+                        template_path, confidence=actConf, region=(m.x, m.y, m.width, m.height), grayscale=True)
+                    if pos:
+                        print(f"Found {template_path} at {pos} on monitor ({m.x}, {m.y})")
+                        return pos, posLeft
+                except Exception:
+                    pass
+
+        # actConf -= 0.01
+        time.sleep(0.5)
+    return None, None
 
 
 def click_image(template_path, timeout=10, confidence=0.8, double_click=False, move=True):
-    pos = wait_for_image(template_path, timeout, confidence)
+    pos, posLeft = wait_for_image(template_path, timeout, confidence)
     if pos:
         pyautogui.click(pos.x, pos.y)
 
         if move:
-            pyautogui.moveTo(pos.x, pos.y, duration=0.2)
+            pyautogui.moveTo(posLeft.left+5, posLeft.Top+5, duration=0.2)
+            time.sleep(0.2)
 
         if double_click:
             time.sleep(0.2)
@@ -81,21 +118,38 @@ def click_image(template_path, timeout=10, confidence=0.8, double_click=False, m
 
 def click_image_by_list(template_list, timeout=10, confidence=0.8, double_click=False, move=True):
     for template_path in template_list:
-        pos = wait_for_image(template_path, timeout, confidence)
+        pos, posLeft = wait_for_image(template_path, timeout, confidence)
         if pos:
             print(f"Found {template_path} at {pos}")
             break
 
     if pos:
         pyautogui.click(pos.x, pos.y)
+        time.sleep(0.2)
 
         if move:
-            pyautogui.moveTo(pos.x, pos.y, duration=0.2)
+            pyautogui.moveTo(posLeft.left+5, posLeft.top+5, duration=0.2)
+            time.sleep(0.2)
 
         if double_click:
             time.sleep(0.2)
             pyautogui.click(pos.x, pos.y)
         return True
+    return False
+
+
+def move_image_by_list(template_list, timeout=10, confidence=0.8):
+    for template_path in template_list:
+        pos, posLeft = wait_for_image(template_path, timeout, confidence)
+        if pos:
+            print(f"Found {template_path} at {pos}")
+            break
+
+    if pos:
+        pyautogui.moveTo(posLeft.left+5, posLeft.top+5, duration=0.2)
+        time.sleep(0.2)
+        return True
+
     return False
 
 
@@ -131,27 +185,82 @@ def main():
 
     searchIcons = [f"{template_dir}/SearchInput1-1080.png", f"{template_dir}/SearchInput1-2160.png"]
     searchInputs = [f"{template_dir}/SearchInput2-1080.png", f"{template_dir}/SearchInput2-2160.png"]
+    searchInputMoves = [f"{template_dir}/SearchInputMoveDown-1080.png", f"{template_dir}/SearchInputMoveDown-2160.png"]
     search_list = f"{template_dir}/bilibili_search_list.png"
     text_input = f"{template_dir}/bilibili_text_input.png"
     chat_input = f"{template_dir}/bilibili_chatinput.png"
     debug_png = f"{template_dir}/bilibili_debug.png"
     error_png = f"{template_dir}/bilibili_error.png"
 
-    try:
-        print("Step 1: Looking for search input...")
-        if click_image_by_list(searchIcons, timeout=15, confidence=confidence, double_click=True):
-            print("Search input found and clicked")
-            time.sleep(0.5)
+    state_search_icon_right = 1
+    state_search_input = 2
+    state_search_result = 3
+    state_unknown = 99 
 
+    state = state_unknown
+
+    while(True):
+        # Check the current states
+        pos = wait_for_image_by_list(searchIcons, timeout=2, confidence=confidence)
+        if pos:
+            print("Current state: Search-Right-Icon")
+            state = state_search_icon_right
+
+            print("Step 1: Looking for search input...")
+            if click_image_by_list(searchIcons, timeout=15, confidence=confidence, double_click=True):
+                print("Search input found and clicked")
+                time.sleep(0.5)
+
+        pos = wait_for_image_by_list(searchInputs, timeout=2, confidence=confidence)
+        if pos:
+            print("Current state: Search-Input")
+            state = state_search_input
+
+            print(f"Step 2: Typing video name: {video_name}")
             if click_image_by_list(searchInputs, timeout=5, confidence=confidence, double_click=True):
-                print(f"Step 2: Typing contact name: {video_name}")
-                pyautogui.write(video_name, interval=0.2)
-                #pyperclip.copy(video_name)
-                #pyautogui.hotkey('command', 'v')
+                # Move cursor
+                move_image_by_list(searchInputMoves, timeout=5, confidence=confidence)
                 time.sleep(0.2)
+
+                #pyautogui.write(video_name, interval=0.2)
+                #pyautogui.write(" ", interval=0.2)
+                #time.sleep(5.2)
+                pyperclip.copy(video_name)
+                print(f"Copy video name: {video_name}")
+                time.sleep(0.3)
+                
+                # 立即读取出来打印
+                current_clipboard = pyperclip.paste()
+
+                if current_clipboard == video_name:
+                    print("剪贴板写入成功，问题出在下一步的 hotkey('command', 'v')")
+                else:
+                    print("剪贴板写入失败，请检查 pyperclip 安装情况")
+
+                """
+                There are two methods from pyautogui to copy/paste content.
+                But the both are useless for bilibili application. 
+                1. Using hotKey directly. (This method is verified in wechat. it works well.)
+                pyautogui.hotkey('command', 'v')
+                2. Using keyDown/Press/keyUp to simulate human operation.
+                pyautogui.keyDown('command')
+                time.sleep(0.1)
+                pyautogui.press('v')
+                time.sleep(0.1)
+                pyautogui.keyUp('command')
+                time.sleep(0.2)
+
+                Therefore, we have to use apple script paste
+                """
+                apple_script_paste()
+
                 pyautogui.press('enter')
                 time.sleep(1)
+            
+        if state == state_unknown:
+            break
 
+        if state == state_search_input:
             if click_image(search_list, timeout=5, confidence=confidence):
                 print("Step 3: Search result found and clicked")
 
@@ -164,17 +273,12 @@ def main():
                     print("Message sent successfully!")
             else:
                 print("Step 3: Cannot find the user.")
+                state = state_unknown
         else:
             print("Search icon not found. Make sure bilibili is open and templates are correct.")
             print(f"Expected template: {searchIcons}")
             SaveScreenshot(debug_png)
-
-    except Exception as e:
-
-
-        print(f"Error: {e}")
-        SaveScreenshot(error_png)
-        raise
+            break
 
     print("\nDone!")
 
