@@ -256,13 +256,15 @@ def CheckAndProcessCacheVideo(cacheVideos, confidence, state):
     pos, posLeft = wait_for_image_by_list(cacheVideos, timeout=2, confidence=confidence)
     if pos:
         print("Step 4: Caching video...")
-        # Move pos to the first video result
-        pyautogui.move(pos.x, pos.y)
 
         # before click, we need to stop playing the video.
-        time.sleep(0.5)
+        time.sleep(5)
         pyautogui.press('space')
         time.sleep(0.1)
+        print("Stop playing video...")
+
+        # Move pos to the first video result
+        pyautogui.move(pos.x, pos.y)
 
         if click_image_by_list(cacheVideos, timeout=15, confidence=confidence, double_click=False):
             time.sleep(0.5)
