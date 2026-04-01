@@ -91,7 +91,7 @@ def wait_for_image_by_list(template_list, timeout=10, confidence=0.8):
         for m in monitors:
             for template_path in template_list:
                 try:
-                    print(f"Searching for {template_path} on monitor ({m.x}, {m.y}, {m.width}, {m.height}) with confidence {actConf:.2f}")
+                    # print(f"Searching for {template_path} on monitor ({m.x}, {m.y}, {m.width}, {m.height}) with confidence {actConf:.2f}")
                     posLeft = pyautogui.locateOnScreen(
                         template_path, confidence=actConf, region=(m.x, m.y, m.width, m.height), grayscale=True)
                     pos = pyautogui.locateCenterOnScreen(
@@ -264,7 +264,7 @@ def CheckAndProcessCacheVideo(cacheVideos, confidence, state):
         pyautogui.press('space')
         time.sleep(0.1)
 
-        if click_image_by_list(cacheVideos, timeout=15, confidence=confidence, double_click=True):
+        if click_image_by_list(cacheVideos, timeout=15, confidence=confidence, double_click=False):
             time.sleep(0.5)
 
             print("Current state: state_cache_video")
@@ -275,11 +275,11 @@ def CheckAndProcessCacheVideo(cacheVideos, confidence, state):
 
 
 def CheckAndProcessDownloadVideo(downloadVideos, confidence, state):
-    pos, posLeft = wait_for_image_by_list(downloadVideos, timeout=2, confidence=confidence)
+    pos, posLeft = wait_for_image_by_list(downloadVideos, timeout=5, confidence=confidence)
     if pos:
         print("Step 5: Downloading video...")
 
-        if click_image_by_list(downloadVideos, timeout=15, confidence=confidence, double_click=True):
+        if click_image_by_list(downloadVideos, timeout=15, confidence=confidence, double_click=False):
             time.sleep(0.5)
 
             print("Current state: state_download_video")
