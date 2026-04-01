@@ -20,6 +20,11 @@ pyautogui.PAUSE = 1.0
 pyautogui.FAILSAFE = True
 g_monitors = get_monitors()
 
+state_init              = 0
+state_search_icon_right = 1
+state_search_input      = 2
+state_search_result     = 3
+state_unknown           = 99 
 
 def apple_script_paste():
     # 直接让 macOS 系统进程执行“按下 command + v”
@@ -159,6 +164,74 @@ def activate_wechat():
         time.sleep(3)
     except Exception:
         pass
+    
+    
+def CheckAndProcessSearchIcon(searchIcons, confidence, state):
+    pos = wait_for_image_by_list(searchIcons, timeout=2, confidence=confidence)
+    if pos:
+        print("Step 1: Looking for search input...")
+        if click_image_by_list(searchIcons, timeout=15, confidence=confidence, double_click=True):
+            print("Search input found and clicked")
+            time.sleep(0.5)
+
+            print("Current state: Search-Right-Icon")
+            return state_search_icon_right
+
+    # reture default state
+    return state
+
+
+def CheckAndProcessSearchInput(searchInputs, searchInputMoves, video_name, confidence, state):
+    pos = wait_for_image_by_list(searchInputs, timeout=2, confidence=confidence)
+    if pos:
+        print(f"Step 2: Typing video name: {video_name}")
+        if click_image_by_list(searchInputs, timeout=5, confidence=confidence, double_click=True):
+            # Move cursor
+            move_image_by_list(searchInputMoves, timeout=5, confidence=confidence)
+            time.sleep(0.2)
+
+            #pyautogui.write(video_name, interval=0.2)
+            #pyautogui.write(" ", interval=0.2)
+            #time.sleep(5.2)
+            pyperclip.copy(video_name)
+            print(f"Copy video name: {video_name}")
+            time.sleep(0.3)
+
+            """
+            # 立即读取出来打印
+            current_clipboard = pyperclip.paste()
+
+            if current_clipboard == video_name:
+                print("剪贴板写入成功，问题出在下一步的 hotkey('command', 'v')")
+            else:
+                print("剪贴板写入失败，请检查 pyperclip 安装情况")
+            """
+
+            """
+            There are two methods from pyautogui to copy/paste content.
+            But the both are useless for bilibili application. 
+            1. Using hotKey directly. (This method is verified in wechat. it works well.)
+            pyautogui.hotkey('command', 'v')
+            2. Using keyDown/Press/keyUp to simulate human operation.
+            pyautogui.keyDown('command')
+            time.sleep(0.1)
+            pyautogui.press('v')
+            time.sleep(0.1)
+            pyautogui.keyUp('command')
+            time.sleep(0.2)
+
+            Therefore, we have to use apple script paste
+            """
+            apple_script_paste()
+
+            pyautogui.press('enter')
+            time.sleep(1)
+
+            print("Current state: Search-Input")
+            return state_search_input
+
+    # reture default state
+    return state
 
 
 def main():
@@ -186,82 +259,22 @@ def main():
     searchIcons = [f"{template_dir}/SearchInput1-1080.png", f"{template_dir}/SearchInput1-2160.png"]
     searchInputs = [f"{template_dir}/SearchInput2-1080.png", f"{template_dir}/SearchInput2-2160.png"]
     searchInputMoves = [f"{template_dir}/SearchInputMoveDown-1080.png", f"{template_dir}/SearchInputMoveDown-2160.png"]
-    search_list = f"{template_dir}/bilibili_search_list.png"
-    text_input = f"{template_dir}/bilibili_text_input.png"
-    chat_input = f"{template_dir}/bilibili_chatinput.png"
+    searchResults = [f"{template_dir}/SearchResult-1080.png", f"{template_dir}/SearchResult-2160.png"]
     debug_png = f"{template_dir}/bilibili_debug.png"
-    error_png = f"{template_dir}/bilibili_error.png"
 
-    state_search_icon_right = 1
-    state_search_input = 2
-    state_search_result = 3
-    state_unknown = 99 
-
-    state = state_unknown
+    # Set default state
+    state = state_init
 
     while(True):
         # Check the current states
-        pos = wait_for_image_by_list(searchIcons, timeout=2, confidence=confidence)
-        if pos:
-            print("Current state: Search-Right-Icon")
-            state = state_search_icon_right
+        state = CheckAndProcessSearchIcon(searchIcons, confidence, state)
+        state = CheckAndProcessSearchInput(searchInputs, searchInputMoves, video_name, confidence, state)
 
-            print("Step 1: Looking for search input...")
-            if click_image_by_list(searchIcons, timeout=15, confidence=confidence, double_click=True):
-                print("Search input found and clicked")
-                time.sleep(0.5)
-
-        pos = wait_for_image_by_list(searchInputs, timeout=2, confidence=confidence)
-        if pos:
-            print("Current state: Search-Input")
-            state = state_search_input
-
-            print(f"Step 2: Typing video name: {video_name}")
-            if click_image_by_list(searchInputs, timeout=5, confidence=confidence, double_click=True):
-                # Move cursor
-                move_image_by_list(searchInputMoves, timeout=5, confidence=confidence)
-                time.sleep(0.2)
-
-                #pyautogui.write(video_name, interval=0.2)
-                #pyautogui.write(" ", interval=0.2)
-                #time.sleep(5.2)
-                pyperclip.copy(video_name)
-                print(f"Copy video name: {video_name}")
-                time.sleep(0.3)
-                
-                # 立即读取出来打印
-                current_clipboard = pyperclip.paste()
-
-                if current_clipboard == video_name:
-                    print("剪贴板写入成功，问题出在下一步的 hotkey('command', 'v')")
-                else:
-                    print("剪贴板写入失败，请检查 pyperclip 安装情况")
-
-                """
-                There are two methods from pyautogui to copy/paste content.
-                But the both are useless for bilibili application. 
-                1. Using hotKey directly. (This method is verified in wechat. it works well.)
-                pyautogui.hotkey('command', 'v')
-                2. Using keyDown/Press/keyUp to simulate human operation.
-                pyautogui.keyDown('command')
-                time.sleep(0.1)
-                pyautogui.press('v')
-                time.sleep(0.1)
-                pyautogui.keyUp('command')
-                time.sleep(0.2)
-
-                Therefore, we have to use apple script paste
-                """
-                apple_script_paste()
-
-                pyautogui.press('enter')
-                time.sleep(1)
-            
-        if state == state_unknown:
+        if state == state_unknown or state == state_search_input:
             break
 
         if state == state_search_input:
-            if click_image(search_list, timeout=5, confidence=confidence):
+            if click_image_by_list(searchResults, timeout=5, confidence=confidence):
                 print("Step 3: Search result found and clicked")
 
                 if click_image(text_input, timeout=5, confidence=confidence):
