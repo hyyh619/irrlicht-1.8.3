@@ -24,6 +24,7 @@ state_init              = 0
 state_search_icon_right = 1
 state_search_input      = 2
 state_search_result     = 3
+state_cache_video       = 4
 state_unknown           = 99 
 
 def apple_script_paste():
@@ -250,6 +251,28 @@ def CheckAndProcessSearchResult(searchResults, confidence, state):
     return state
 
 
+def CheckAndProcessCacheVideo(cacheVideos, confidence, state):
+    pos, posLeft = wait_for_image_by_list(cacheVideos, timeout=2, confidence=confidence)
+    if pos:
+        print("Step 4: Caching video...")
+        # Move pos to the first video result
+        pyautogui.move(pos.x, pos.y)
+
+        # before click, we need to stop playing the video.
+        time.sleep(0.5)
+        pyautogui.press('space')
+        time.sleep(0.1)
+
+        if click_image_by_list(cacheVideos, timeout=15, confidence=confidence, double_click=True):
+            time.sleep(0.5)
+
+            print("Current state: state_cache_video")
+            return state_cache_video
+
+    # reture default state
+    return state
+
+
 def main():
     parser = argparse.ArgumentParser(description="BiliBili Downloader")
     parser.add_argument("video_name", type=str, nargs="?", help="Video name to search")
@@ -276,6 +299,7 @@ def main():
     searchInputs = [f"{template_dir}/SearchInput2-1080.png", f"{template_dir}/SearchInput2-2160.png"]
     searchInputMoves = [f"{template_dir}/SearchInputMoveDown-1080.png", f"{template_dir}/SearchInputMoveDown-2160.png"]
     searchResults = [f"{template_dir}/SearchResult-1080.png", f"{template_dir}/SearchResult-2160.png"]
+    cacheVideos = [f"{template_dir}/CacheVideo-1080.png", f"{template_dir}/CacheVideo-2160.png"]
     debug_png = f"{template_dir}/bilibili_debug.png"
 
     # Set default state
@@ -289,6 +313,7 @@ def main():
         state = CheckAndProcessSearchIcon(searchIcons, confidence, state)
         state = CheckAndProcessSearchInput(searchInputs, searchInputMoves, video_name, confidence, state)
         state = CheckAndProcessSearchResult(searchResults, confidence, state)
+        state = CheckAndProcessCacheVideo(cacheVideos, confidence, state)
 
         if state == state_unknown or state == state_search_result:
             SaveScreenshot(debug_png)
