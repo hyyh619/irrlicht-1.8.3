@@ -12,7 +12,7 @@
                 "--template-dir",
                 "./scripts/BiliBiliDownloader",
                 "--confidence",
-                "0.8",
+                "0.7",
                 "生怕危害英国国家安全，英国政府宁可没电用",
                 "胡志明-未说的故事"
             ]

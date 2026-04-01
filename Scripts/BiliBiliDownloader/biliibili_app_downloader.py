@@ -313,12 +313,12 @@ def main():
     print(f"Searching for: {video_name}")
     print(f"Message: {message}")
 
-    searchIcons = [f"{template_dir}/SearchInput1-1080.png", f"{template_dir}/SearchInput1-2160.png"]
-    searchInputs = [f"{template_dir}/SearchInput2-1080.png", f"{template_dir}/SearchInput2-2160.png"]
-    searchInputMoves = [f"{template_dir}/SearchInputMoveDown-1080.png", f"{template_dir}/SearchInputMoveDown-2160.png"]
-    searchResults = [f"{template_dir}/SearchResult-1080.png", f"{template_dir}/SearchResult-2160.png"]
-    cacheVideos = [f"{template_dir}/CacheVideo-1080.png", f"{template_dir}/CacheVideo-2160.png"]
-    downloadVideos = [f"{template_dir}/DownloadVideo-1080.png", f"{template_dir}/DownloadVideo-2160.png"]
+    searchIcons = [f"{template_dir}/SearchInput1-2160.png", f"{template_dir}/SearchInput1-1080.png"]
+    searchInputs = [f"{template_dir}/SearchInput2-2160.png", f"{template_dir}/SearchInput2-1080.png"]
+    searchInputMoves = [f"{template_dir}/SearchInputMoveDown-2160.png", f"{template_dir}/SearchInputMoveDown-1080.png"]
+    searchResults = [f"{template_dir}/SearchResult-2160.png", f"{template_dir}/SearchResult-1080.png"]
+    cacheVideos = [f"{template_dir}/CacheVideo-2160.png", f"{template_dir}/CacheVideo-1080.png"]
+    downloadVideos = [f"{template_dir}/DownloadVideo-2160.png", f"{template_dir}/DownloadVideo-1080.png"]
     debug_png = f"{template_dir}/bilibili_debug.png"
 
     # Set default state
