@@ -7,7 +7,7 @@ Usage:
 """
 
 import os
-#import cv2
+import cv2
 import sys
 import argparse
 import time
@@ -294,9 +294,7 @@ def CheckAndProcessDownloadVideo(downloadVideos, confidence, state):
     return state
 
 
-def main():
-    test()
-
+def ParseArgs():
     parser = argparse.ArgumentParser(description="BiliBili Downloader")
     parser.add_argument("video_name", type=str, nargs="?", help="Video name to search")
     parser.add_argument("message", type=str, nargs="?", help="Message to send")
@@ -304,16 +302,26 @@ def main():
     parser.add_argument("--confidence", type=float, default=0.8, help="Image match confidence (0-1)")
 
     args = parser.parse_args()
-
     if not args.video_name or not args.message:
         parser.print_help()
         print("\nExample: python bilibili_automation.py \"张三\" \"你好\"")
         sys.exit(1)
 
+    return args
+
+
+def GetDataFromArgs():
+    args = ParseArgs()
     video_name = args.video_name
     message = args.message
     template_dir = args.template_dir
     confidence = args.confidence
+
+    return video_name, message, template_dir, confidence
+
+
+def MainImgRecog():
+    video_name, message, template_dir, confidence = GetDataFromArgs()
 
     print(f"Searching for: {video_name}")
     print(f"Message: {message}")
@@ -370,8 +378,51 @@ def GetBoxByText(results, text):
     return box
 
 
-def test():
+def ClickByBox(box, type="center"):
+    if box is None:
+        return False
+
+    width = box[2] - box[0]
+    height = box[3] - box[1]
+
+    if type == "center":
+        x = box[0] + width / 2
+        y = box[1] + height / 2
+    elif type == "top_left":
+        x = box[0] + 5
+        y = box[1] + 5
+    else:
+        x = box[0] + width / 2
+        y = box[1] + height / 2
+
+    pyautogui.click(x, y)
+    time.sleep(0.5)
+    return True
+
+
+def DebugSaveResults(img_np, boxes, texts):
+    for box, text in zip(boxes, texts):
+        #box = np.array(line[0]).astype(np.int32).reshape((-1, 1, 2))
+
+        # 1. 将 list 转换为 numpy 数组
+        # 2. 强制转换为 int32 (CV_32S)
+        # 3. reshape 为 (-1, 1, 2) 
+        box_np = np.array(box).astype(np.int32).reshape((-1, 1, 2))
+
+        cv2.polylines(img_np, [box_np], True, (0, 255, 0), 2)
+        cv2.putText(img_np, text, (box_np[0][0][0], box_np[0][0][1]-10), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+    cv2.imwrite("./scripts/BiliBiliDownloader/ocr_debug.png", img_np)
+    print("已保存调试图 ocr_debug.png，请检查绿框是否准确对准文字")
+
+
+def MainOCR():
     global g_monitors
+
+    video_name, message, template_dir, confidence = GetDataFromArgs()
+
+    print(f"Searching for: {video_name}")
+    print(f"Message: {message}")
 
     debug_png = "./scripts/BiliBiliDownloader/bilibili_ocr_test.png"
     monitors = g_monitors
@@ -382,7 +433,7 @@ def test():
         index += 1
 
         # 初始化 OCR 引擎（第一次运行会自动下载模型）
-        ocr = PaddleOCR(use_angle_cls=True, lang='ch') 
+        ocr = PaddleOCR(use_angle_cls=True, lang='ch', det_db_unclip_ratio=1.4) # , text_det_limit_side_len=5120) 
 
         # 1. 截图并转换为 NumPy 数组供 OCR 使用
         screenshot = ScreenshotMonitor(m)
@@ -395,9 +446,12 @@ def test():
         # results = ocr.ocr(img_np)
         results = ocr.predict(debug_png)
 
+        DebugSaveResults(img_np, results[0]['rec_polys'], results[0]['rec_texts'])
+
         # Find "搜索你感兴趣的视频"
         text = "搜索你感兴趣的视频"
         box = GetBoxByText(results, text)
+        ClickByBox(box)
 
         print(f"{text} OCR Results: {box}")
 
@@ -405,4 +459,5 @@ def test():
 
 
 if __name__ == "__main__":
-    main()
+    # MainImgRecog()
+    MainOCR()
