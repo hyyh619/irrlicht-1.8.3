@@ -158,3 +158,4 @@ source/Irrlicht/latex
 *.pyc
 *.pyd
 *.pyo
+Scripts/BiliBiliDownloader/bilibili_ocr_test.png
