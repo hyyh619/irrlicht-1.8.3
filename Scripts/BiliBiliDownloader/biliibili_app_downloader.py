@@ -354,8 +354,26 @@ def main():
     print("\nDone!")
 
 
+def GetIndexByText(results, text):
+    for i, line in enumerate(results):
+        if text in line:
+            return i
+    return -1
+
+
+def GetBoxByText(results, text):
+    index = GetIndexByText(results[0]['rec_texts'], text)
+    if index == -1:
+        return None
+
+    box = results[0]['rec_boxes'][index]
+    return box
+
+
 def test():
     global g_monitors
+
+    debug_png = "./scripts/BiliBiliDownloader/bilibili_ocr_test.png"
     monitors = g_monitors
 
     index = 0
@@ -368,14 +386,20 @@ def test():
 
         # 1. 截图并转换为 NumPy 数组供 OCR 使用
         screenshot = ScreenshotMonitor(m)
-        # img_np = np.array(screenshot)
-        img_np = np.ndarray(screenshot)
+
+        screenshot.save(debug_png) 
+        img_np = np.array(screenshot)
 
         # 2. 执行识别
-        results = ocr.predict(img_np)
-        print(f"Screenshot {index} OCR Results:")
-        for line in results:
-            print(line)
+        # results = ocr.predict(img_np)
+        # results = ocr.ocr(img_np)
+        results = ocr.predict(debug_png)
+
+        # Find "搜索你感兴趣的视频"
+        text = "搜索你感兴趣的视频"
+        box = GetBoxByText(results, text)
+
+        print(f"{text} OCR Results: {box}")
 
     return
 
