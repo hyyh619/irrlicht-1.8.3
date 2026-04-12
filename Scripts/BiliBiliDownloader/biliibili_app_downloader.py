@@ -433,7 +433,10 @@ def MainOCR():
         index += 1
 
         # 初始化 OCR 引擎（第一次运行会自动下载模型）
-        ocr = PaddleOCR(use_angle_cls=True, lang='ch', det_db_unclip_ratio=1.4) # , text_det_limit_side_len=5120) 
+        ocr = PaddleOCR(use_angle_cls=True,
+                        lang='ch',
+                        det_limit_side_len=1350,
+                        det_db_unclip_ratio=1.2)
 
         # 1. 截图并转换为 NumPy 数组供 OCR 使用
         screenshot = ScreenshotMonitor(m)
@@ -441,12 +444,15 @@ def MainOCR():
         screenshot.save(debug_png) 
         img_np = np.array(screenshot)
 
-        # 2. 执行识别
-        # results = ocr.predict(img_np)
-        # results = ocr.ocr(img_np)
-        results = ocr.predict(debug_png)
+        # 确保传给 OCR 的是 BGR 格式
+        img_for_ocr = cv2.cvtColor(img_np, cv2.COLOR_RGBA2BGR)
 
-        DebugSaveResults(img_np, results[0]['rec_polys'], results[0]['rec_texts'])
+        # 2. 执行识别
+        results = ocr.predict(img_for_ocr)
+        # results = ocr.ocr(img_np)
+        # results = ocr.predict(debug_png)
+
+        DebugSaveResults(img_for_ocr, results[0]['rec_polys'], results[0]['rec_texts'])
 
         # Find "搜索你感兴趣的视频"
         text = "搜索你感兴趣的视频"
