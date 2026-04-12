@@ -15,6 +15,9 @@ import pyautogui
 import pyperclip
 import subprocess
 from screeninfo import get_monitors
+from paddleocr import PaddleOCR
+import pyautogui
+import numpy as np
 
 pyautogui.PAUSE = 1.0
 pyautogui.FAILSAFE = True
@@ -292,6 +295,8 @@ def CheckAndProcessDownloadVideo(downloadVideos, confidence, state):
 
 
 def main():
+    test()
+
     parser = argparse.ArgumentParser(description="BiliBili Downloader")
     parser.add_argument("video_name", type=str, nargs="?", help="Video name to search")
     parser.add_argument("message", type=str, nargs="?", help="Message to send")
@@ -347,6 +352,32 @@ def main():
             break
 
     print("\nDone!")
+
+
+def test():
+    global g_monitors
+    monitors = g_monitors
+
+    index = 0
+    for m in monitors:
+        print(f"Monitor {index}: {m.width}x{m.height} at ({m.x}, {m.y})") 
+        index += 1
+
+        # 初始化 OCR 引擎（第一次运行会自动下载模型）
+        ocr = PaddleOCR(use_angle_cls=True, lang='ch') 
+
+        # 1. 截图并转换为 NumPy 数组供 OCR 使用
+        screenshot = ScreenshotMonitor(m)
+        # img_np = np.array(screenshot)
+        img_np = np.ndarray(screenshot)
+
+        # 2. 执行识别
+        results = ocr.predict(img_np)
+        print(f"Screenshot {index} OCR Results:")
+        for line in results:
+            print(line)
+
+    return
 
 
 if __name__ == "__main__":
