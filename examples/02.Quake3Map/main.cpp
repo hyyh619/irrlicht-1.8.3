@@ -56,6 +56,7 @@ int main()
     // ask user for driver
 
     video::E_DRIVER_TYPE driverType = driverChoiceConsole();
+
     if (driverType == video::EDT_COUNT)
         return 1;
 
