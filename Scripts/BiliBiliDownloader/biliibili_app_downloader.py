@@ -400,7 +400,7 @@ def ClickByBox(box, type="center"):
     return True
 
 
-def DebugSaveResults(img_np, boxes, texts):
+def DebugSaveResults(img_np, boxes, texts, index):
     for box, text in zip(boxes, texts):
         #box = np.array(line[0]).astype(np.int32).reshape((-1, 1, 2))
 
@@ -412,8 +412,10 @@ def DebugSaveResults(img_np, boxes, texts):
         cv2.polylines(img_np, [box_np], True, (0, 255, 0), 2)
         cv2.putText(img_np, text, (box_np[0][0][0], box_np[0][0][1]-10), 
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-    cv2.imwrite("./scripts/BiliBiliDownloader/ocr_debug.png", img_np)
-    print("已保存调试图 ocr_debug.png，请检查绿框是否准确对准文字")
+
+    debug_png = f"./scripts/BiliBiliDownloader/ocr_debug_m{index}.png"
+    cv2.imwrite(debug_png, img_np)
+    print(f"已保存调试图 {debug_png}，请检查绿框是否准确对准文字")
 
 
 def MainOCR():
@@ -424,7 +426,6 @@ def MainOCR():
     print(f"Searching for: {video_name}")
     print(f"Message: {message}")
 
-    debug_png = "./scripts/BiliBiliDownloader/bilibili_ocr_test.png"
     monitors = g_monitors
 
     index = 0
@@ -436,23 +437,35 @@ def MainOCR():
         ocr = PaddleOCR(use_angle_cls=True,
                         lang='ch',
                         det_limit_side_len=1350,
+                        use_doc_unwarping=False,
                         det_db_unclip_ratio=1.2)
 
         # 1. 截图并转换为 NumPy 数组供 OCR 使用
         screenshot = ScreenshotMonitor(m)
 
+        debug_png = f"./scripts/BiliBiliDownloader/bilibili_ocr_test_m{index}.png"
         screenshot.save(debug_png) 
         img_np = np.array(screenshot)
 
         # 确保传给 OCR 的是 BGR 格式
         img_for_ocr = cv2.cvtColor(img_np, cv2.COLOR_RGBA2BGR)
 
+        # 确保传给 OCR 的是 BGR 格式
+        #img_for_ocr = cv2.cvtColor(img_np, cv2.COLOR_RGBA2GRAY)
+
+        # 目标尺寸 (Width, Height)
+        # target_size = (1920, 1080)
+
+        # 执行缩放
+        # 建议使用 INTER_AREA，它在缩小图片时能更好地保留文字边缘像素
+        # img_resized = cv2.resize(img_for_ocr, target_size, interpolation=cv2.INTER_AREA)
+
         # 2. 执行识别
         results = ocr.predict(img_for_ocr)
         # results = ocr.ocr(img_np)
         # results = ocr.predict(debug_png)
 
-        DebugSaveResults(img_for_ocr, results[0]['rec_polys'], results[0]['rec_texts'])
+        DebugSaveResults(img_for_ocr, results[0]['rec_polys'], results[0]['rec_texts'], index)
 
         # Find "搜索你感兴趣的视频"
         text = "搜索你感兴趣的视频"
