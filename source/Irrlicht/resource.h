@@ -2,7 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by Irrlicht.rc
 
-// Nächste Standardwerte für neue Objekte
+// Nchste Standardwerte for neue Objekte
 //
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
