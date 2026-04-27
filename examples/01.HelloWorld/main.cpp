@@ -124,9 +124,15 @@ int main()
      * Always check the return value to cope with unsupported drivers,
      * dimensions, etc.
      */
+#ifdef WIN32
+    IrrlichtDevice *device =
+        createDevice(video::EDT_DIRECT3D9, dimension2d<u32>(640, 480), 16,
+            false, false, false, 0);
+#else
     IrrlichtDevice *device =
         createDevice(video::EDT_OPENGL, dimension2d<u32>(640, 480), 16,
             false, false, false, 0);
+#endif
 
     if (!device)
         return 1;
