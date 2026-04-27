@@ -13,7 +13,7 @@ if not exist "%MSBUILD%" (
 echo Building Irrlicht Engine (x64 Debug)...
 echo.
 
-"%MSBUILD%" examples\BuildAllExamples.2019.sln /p:Configuration=Debug /p:Platform=x64 /m /v:minimal
+"%MSBUILD%" BuildAllExamples.2019.sln /p:Configuration=Debug /p:Platform=x64 /m /v:minimal
 
 if %ERRORLEVEL% neq 0 (
     echo.
