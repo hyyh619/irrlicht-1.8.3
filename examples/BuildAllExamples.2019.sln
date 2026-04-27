@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31205.134
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36908.2 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01.HelloWorld", "01.HelloWorld\HelloWorld_vc12.vcxproj", "{5AD4C95C-BA38-4692-BA4B-8C25A86208F9}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -140,6 +140,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "25.XmlHandling", "25.XmlHan
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10.Shaders", "10.Shaders\Shaders_vc12.vcxproj", "{27158C82-CD15-4A9B-9848-35E7065B209F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E08E042A-6C45-411B-92BE-3CC31331019F} = {E08E042A-6C45-411B-92BE-3CC31331019F}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Irrlicht", "..\source\Irrlicht\Irrlicht.2019.vcxproj", "{E08E042A-6C45-411B-92BE-3CC31331019F}"
 EndProject
