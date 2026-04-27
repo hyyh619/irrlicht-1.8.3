@@ -82,7 +82,9 @@ using namespace gui;
 #pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 #endif
 
+#ifndef CONFORM_TEST
 #define CONFORM_TEST 0
+#endif
 
 /*
  * This is the main method. We can now use main() on every platform.
