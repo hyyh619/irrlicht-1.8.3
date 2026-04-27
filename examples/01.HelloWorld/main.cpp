@@ -82,6 +82,7 @@ using namespace gui;
 #pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 #endif
 
+#define CONFORM_TEST 0
 
 /*
  * This is the main method. We can now use main() on every platform.
@@ -217,6 +218,16 @@ int main()
         guienv->drawAll();
 
         driver->endScene();
+
+#if CONFORM_TEST
+        video::IImage *image = device->getVideoDriver()->createScreenShot();
+        if (image)
+        {
+            device->getVideoDriver()->writeImageToFile(image, "screenshot.bmp");
+        }
+
+        break;
+#endif
     }
 
     /*
