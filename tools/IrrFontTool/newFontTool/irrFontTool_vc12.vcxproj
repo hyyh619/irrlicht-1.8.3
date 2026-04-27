@@ -197,7 +197,7 @@
     <ClInclude Include="CVectorFontTool.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\source\Irrlicht\Irrlicht10.0.vcxproj">
+    <ProjectReference Include="..\..\..\source\Irrlicht\Irrlicht.2019.vcxproj">
       <Project>{e08e042a-6c45-411b-92be-3cc31331019f}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
