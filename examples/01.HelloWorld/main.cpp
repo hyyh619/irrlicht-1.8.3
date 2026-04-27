@@ -228,6 +228,8 @@ int main()
         driver->endScene();
 
 #if CONFORM_TEST
+#pragma message("CONFORM_TEST")
+
         video::IImage *image = device->getVideoDriver()->createScreenShot();
         if (image)
         {
