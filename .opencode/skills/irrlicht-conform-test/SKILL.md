@@ -9,6 +9,10 @@ description: |
   - Run regression tests for the graphics engine
 ---
 
+## IMPORTANT: Use Windows CMD (not PowerShell)
+
+All shell commands must be run in Windows CMD. Do **NOT** use PowerShell. Use `cmd /c` or run .bat scripts directly.
+
 ## Test List
 The following examples are tested:
 1. 01.HelloWorld
