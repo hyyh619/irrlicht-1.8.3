@@ -17,6 +17,7 @@ All shell commands must be run in Windows CMD. Do **NOT** use PowerShell. Use `c
 The following examples are tested:
 1. 01.HelloWorld
 2. 02.Quake3Map
+3. 03.CustomSceneNode
 
 ## Workflow
 
