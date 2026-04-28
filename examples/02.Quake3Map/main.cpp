@@ -37,6 +37,10 @@ using namespace irr;
 #pragma comment(lib, "Irrlicht.lib")
 #endif
 
+#ifndef CONFORM_TEST
+#define CONFORM_TEST 0
+#endif
+
 /*
  * Ok, lets start. Again, we use the main() method as start, not the WinMain().
  */
@@ -55,7 +59,11 @@ int main()
 
     // ask user for driver
 
+#if CONFORM_TEST
+    video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+#else
     video::E_DRIVER_TYPE driverType = driverChoiceConsole();
+#endif
 
     if (driverType == video::EDT_COUNT)
         return 1;
@@ -164,6 +172,19 @@ int main()
             driver->beginScene(true, true, video::SColor(255, 200, 200, 200));
             smgr->drawAll();
             driver->endScene();
+
+#if CONFORM_TEST
+#pragma message("CONFORM_TEST")
+
+            video::IImage *image = device->getVideoDriver()->createScreenShot();
+            if (image)
+            {
+                device->getVideoDriver()->writeImageToFile(image, "screenshot.bmp");
+                image->drop();
+            }
+
+            break;
+#endif
 
             int fps       = driver->getFPS();
             int drawCount = driver->getPrimitiveCountDrawn();
