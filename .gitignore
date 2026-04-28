@@ -150,7 +150,9 @@ v16
 *.xml
 
 .agents
-.opencode
+.opencode/node_modules
+.opencode/skills/*
+!.opencode/skills/irrlicht-conform-test/
 *.log
 
 source/Irrlicht/html
