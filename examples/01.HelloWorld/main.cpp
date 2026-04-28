@@ -234,6 +234,7 @@ int main()
         if (image)
         {
             device->getVideoDriver()->writeImageToFile(image, "screenshot.bmp");
+            image->drop();
         }
 
         break;
