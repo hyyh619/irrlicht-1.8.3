@@ -30,6 +30,7 @@ This compiles with CONFORM_TEST enabled, which makes test programs capture scree
 For each example in the test list:
 1. Navigate to the built executable location
 2. Run the example to generate screenshot.bmp
+3. Move screenshot.bmp to `examples/<ExampleName>/`
 
 The executable is located at: `bin/Win64-VisualStudio/<ExampleName>.exe`
 
