@@ -46,6 +46,11 @@ namespace irr
              * primitives. */
             EDT_DIRECT3D9,
 
+            //! Direct3D 11 device, only available on Win32 platforms.
+            /** Performs hardware accelerated rendering of 3D and 2D
+             * primitives using DirectX 11. */
+            EDT_DIRECT3D11,
+
             //! OpenGL device, available on most platforms.
             /** Performs hardware accelerated rendering of 3D and 2D
              * primitives. */

@@ -148,12 +148,17 @@
 //! Only define _IRR_COMPILE_WITH_DIRECT3D_8_ if you have an appropriate DXSDK, e.g. Summer 2004
 // #define _IRR_COMPILE_WITH_DIRECT3D_8_
 #define _IRR_COMPILE_WITH_DIRECT3D_9_
+//! Define _IRR_COMPILE_WITH_DIRECT3D_11_ to compile the D3D11 driver
+#define _IRR_COMPILE_WITH_DIRECT3D_11_
 
 #ifdef NO_IRR_COMPILE_WITH_DIRECT3D_8_
 #undef _IRR_COMPILE_WITH_DIRECT3D_8_
 #endif
 #ifdef NO_IRR_COMPILE_WITH_DIRECT3D_9_
 #undef _IRR_COMPILE_WITH_DIRECT3D_9_
+#endif
+#ifdef NO_IRR_COMPILE_WITH_DIRECT3D_11_
+#undef _IRR_COMPILE_WITH_DIRECT3D_11_
 #endif
 #endif
 
