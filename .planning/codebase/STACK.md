@@ -1,97 +1,99 @@
 # Technology Stack
 
-**Analysis Date:** 2026-04-09
+**Analysis Date:** 2026-04-29
 
 ## Languages
 
 **Primary:**
-- **C++** (pre-11 standard) - Core engine implementation
-  - Compiled with `-fno-exceptions -fno-rtti` (exceptions and RTTI disabled)
-  - Uses custom container types (`irr::core`) instead of STL
+- C++ (C++03 standard with some modern features) - Core engine, rendering drivers, scene management, GUI, all core implementation
 
 **Secondary:**
-- **C** - Third-party libraries (zlib, libpng, jpeglib, bzip2)
-- **Objective-C++** - macOS platform integration (`*.mm` files in `MacOSX/`)
+- C - Embedded libraries (zlib, bzip2), some legacy code
+- Assembly - Minimal inline assembly for performance-critical paths in image processing
 
-## Build System
+## Runtime
 
-**Primary:** GNU Make
-- `source/Irrlicht/Makefile` - Main engine build (Linux/Unix)
-- `source/Irrlicht/MacOSX/Makefile` - macOS specific compilation (arm64)
-- `examples/Makefile` - Example applications
-- Individual example Makefiles in `examples/*/`
+**Environment:**
+- Native C++ compilation (no managed runtime)
+- Platform-specific: Windows (Win32/Win64), Linux (X11/Framebuffer), macOS (Cocoa), SDL (cross-platform)
 
-**Build Output:**
-- Static library: `libIrrlicht.a` (Linux/macOS)
-- Shared library: `libIrrlicht.so` (Linux)
-- Prebuilt binaries: `lib/` folder for Windows, Linux, macOS
+**Build System:**
+- Hand-written Makefiles (GNU Make on Linux/macOS)
+- Visual Studio project files (.vcxproj for VS2010-2019)
+- No modern CMake or other build system
 
-**Build Variants:**
-- Debug: `make` (includes `-g -O0 -D_DEBUG`)
-- Release: `make NDEBUG=1` (includes `-O3`)
-- Shared library: `make sharedlib`
-- macOS: `make staticlib_osx` or `make sharedlib_osx`
+## Frameworks
+
+**Core:**
+- Irrlicht Engine 1.8.3 - 3D graphics engine
+  - Rendering drivers: OpenGL, Direct3D 8/9, Software renderer
+  - Scene graph management
+  - GUI system (built-in)
+  - Particle system
+  - Physics/collision detection
+
+**Bundled Libraries (embedded in source):**
+- zlib 1.2.x - ZIP archive support and compression
+- libpng - PNG image loading/saving
+- jpeglib (IJG) - JPEG image loading/saving
+- bzip2 - BZ2 archive support and compression
+- LZMA SDK - LZMA compression for NPK archives
+- aesGladman - AES encryption for archives
+
+**Testing:**
+- No formal test framework - manual testing only
+- Conformance tests exist via skill (`.opencode/skills/irrlicht-conform-test/`)
+- Build with `CONFORM_TEST=1` to enable screenshot comparison tests
+
+**Build/Dev:**
+- Visual Studio 2010-2019 (.vcxproj)
+- GNU Make
+- GCC/Clang on Linux
+- MinGW on Windows
 
 ## Key Dependencies
 
-**Bundled (in source/Irrlicht/):**
-- **zlib** (1.2.8) - Compression library (embedded)
-- **libpng** (1.5.x) - PNG image format support
-- **jpeglib** (Independent JPEG Group) - JPEG image support
-- **bzip2** - Compression library
-- **lzma** - LZMA compression (for archive reading)
-- **aesGladman** - AES encryption (for archive formats)
+**Critical (bundled):**
+- No external dependencies - all libraries are bundled in source
+- zlib - Archive handling, mesh compression
+- libpng - Texture loading
+- jpeglib - Texture loading
 
-**System (required):**
-- **Linux:** X11 (XServer with dev headers), OpenGL (optional)
-- **macOS:** Cocoa framework, OpenGL headers
-- **Windows:** Platform SDK, DirectX SDK (optional for D3D8/D3D9)
-
-## Platform Support
-
-| Platform | Renderer Backends | Device Type |
-|----------|-------------------|-------------|
-| Windows | OpenGL, Direct3D 8/9, Software | `CIrrDeviceWin32` |
-| Linux | OpenGL, Software, Framebuffer | `CIrrDeviceLinux`, `CIrrDeviceFB` |
-| macOS | OpenGL | `CIrrDeviceMacOSX` (Cocoa) |
-| SDL | Cross-platform | `CIrrDeviceSDL` |
-| Console | Software | `CIrrDeviceConsole` |
-
-**Supported Architectures:**
-- x86 (32-bit)
-- x86_64 (64-bit)
-- arm64 (Apple Silicon)
-
-## Renderer Backends
-
-**OpenGL Driver:** `COpenGLDriver.cpp`
-- GLSL shader support
-- Normal mapping, parallax mapping
-- VBO (Vertex Buffer Objects)
-- RTT (Render To Texture)
-
-**Direct3D Drivers:**
-- `CD3D8Driver.cpp` - DirectX 8 (legacy)
-- `CD3D9Driver.cpp` - DirectX 9
-
-**Software Renderer:** `CSoftwareDriver.cpp` (`source/Irrlicht/CSoftwareDriver.cpp`)
-- Fallback renderer for systems without GPU
-- "Burnings Video" software rasterizer (advanced 2D primitives)
+**Infrastructure:**
+- Platform graphics APIs:
+  - OpenGL (all platforms)
+  - Direct3D 8/9 (Windows only)
+  - SDL 1.x (optional, for cross-platform device)
+- OS windowing systems: Win32, X11, Cocoa, FB (framebuffer)
 
 ## Configuration
 
-**Compiler Requirements:**
-- GCC 4.x
-- Visual Studio 2008-2012
-- Code::Blocks with gcc/Visual Studio
+**Build Configuration:**
+- `source/Irrlicht/Makefile` - Main engine build
+  - `NDEBUG=1` - Release mode
+  - Platform targets: `win32`, `linux`, `darwin`
+- `IrrCompileConfig.h` - Compile-time feature flags
+  - Device selection: Windows Device, X11, SDL, Console, Framebuffer
+  - Driver selection: OpenGL, Direct3D 8/9, Software
+  - Optional features: ZIP support, GUI, textures, etc.
 
-**Key Compiler Flags:**
-```makefile
--fno-exceptions    # No exception support
--fno-rtti          # No RTTI
--fstrict-aliasing  # Aggressive aliasing optimization
-```
+**Environment:**
+- No runtime configuration files - all via API
+- No .env or environment variable handling in engine core
+
+## Platform Requirements
+
+**Development:**
+- C++ compiler with RTTI support
+- Platform SDK (DirectX SDK for Windows, X11 dev libs for Linux)
+- Make or MSVC 2010+
+
+**Production:**
+- Platform runtime (Windows, Linux, macOS)
+- For Windows: DirectX 8/9 or OpenGL driver
+- For Linux: OpenGL + X11 libs
+- No additional runtime dependencies (static linking typical)
 
 ---
 
-*Stack analysis: 2026-04-09*
+*Stack analysis: 2026-04-29*

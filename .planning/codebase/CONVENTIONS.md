@@ -1,202 +1,288 @@
 # Coding Conventions
 
-**Analysis Date:** 2026-04-09
+**Analysis Date:** 2026-04-29
 
 ## Naming Patterns
 
+### Files
+- **Headers:** `I` prefix for interfaces (e.g., `IVideoDriver.h`, `ISceneManager.h`) in `include/`
+- **Implementations:** `C` prefix for implementations (e.g., `COpenGLDriver.cpp`, `CSceneManager.cpp`) in `source/Irrlicht/`
+- **Platform-specific:** `CIrrDevice` prefix with platform suffix (e.g., `CIrrDeviceWin32.cpp`, `CIrrDeviceLinux.cpp`)
+
 ### Classes
-
-- **Interfaces:** Prefix with `I` (e.g., `IVideoDriver`, `ISceneManager`, `IGUIEnvironment`)
-- **Implementations:** Prefix with `C` (e.g., `COpenGLDriver`, `CSceneManager`, `CGUIButton`)
-- **Base classes:** Prefix with `I` for abstract interfaces (e.g., `ISceneNode`)
-
-### Functions
-
-- **Methods:** `camelCase` (e.g., `createDevice`, `drop`, `grab`)
-- **Getters/setters:** Direct naming (e.g., `getReferenceCount()`, `setDebugName()`)
+- **Interfaces:** `I` prefix - e.g., `IReferenceCounted`, `IVideoDriver`, `ISceneManager`
+- **Implementations:** `C` prefix - e.g., `CNullDriver`, `COpenGLDriver`, `CSceneManager`
+- **Structs:** `S` prefix for data structures - e.g., `SMaterial`, `SLight`, `SColor`
 
 ### Variables
+- **Member variables:** Underscore suffix (e.g., `ReferenceCounter`, `DebugName`)
+- **Types:** Uses custom typedefs - `u8`, `s8`, `u16`, `s16`, `u32`, `s32`, `f32`, `f64` (see `include/irrTypes.h`)
+- **Constants:** `E` prefix for enumerations - e.g., `ELL_WARNING`, `EMF_LIGHTING`
 
-- **Members:** Often prefixed with lowercase letter (e.g., `ReferenceCounter`, `DebugName`)
-- **Globals:** Rarely used; avoid when possible
-- **Pointers:** Raw pointers with `*` (e.g., `ITexture* texture`)
-
-### Types
-
-- **Custom types in `irrTypes.h`:** Use prefixed names (`f32`, `s32`, `u32`, `c8`, etc.)
+### Functions
+- **Methods:** camelCase (e.g., `createDevice`, `getVideoDriver`, `run`)
+- **Factory methods:** `create` prefix - e.g., `createDevice()`, `createTexture()`
+- **Getters:** `get` prefix - e.g., `getVideoDriver()`, `getReferenceCount()`
+- **Predicates:** `is` prefix - e.g., `isEmpty()`, `isFrontFacing()`
 
 ## Code Style
 
-### Indentation
-
-- **Standard:** 4 spaces (or tabs, configured per-platform)
-- ** bracing:** Allman style (braces on new lines) common in headers
-
 ### Formatting
+- **Standard:** Not enforced via auto-formatter - uses hand-written Makefiles
+- **Indentation:** 4 spaces (tabs not used in main source)
+- **Line length:** No strict limit - typical 80-120 characters
 
-- **Line length:** Not strictly enforced; wrap at ~100 characters when practical
-- **Spacing:** Operators spaced (e.g., `a + b`, not `a+b`)
+### Linting
+- **Tool:** None - no automated linting in build system
+- **Manual review:** Code is manually maintained
 
-### Naming Files
+### Namespace Usage
+- **Headers:** Uses explicit `irr::` prefix (e.g., `irr::core::array`, `irr::video::IVideoDriver`)
+- **Implementation:** Often uses `using namespace irr;` after includes
+- **Sub-namespaces:** `core`, `video`, `scene`, `gui`, `io`, `os`
 
-- **Headers:** `.h` extension (e.g., `IReferenceCounted.h`)
-- **Sources:** `.cpp` extension (e.g., `os.cpp`)
-- **Pattern:** Class name matches filename (e.g., `IReferenceCounted` in `IReferenceCounted.h`)
-
-## Type System
-
-### Custom Integer Types
-
+### Header Organization
 ```cpp
-// Defined in include/irrTypes.h
-typedef unsigned char u8;
-typedef signed char s8;
-typedef unsigned short u16;
-typedef signed short s16;
-typedef unsigned int u32;
-typedef signed int s32;
-typedef unsigned long long u64;
-typedef signed long long s64;
+// Copyright (C) 2002-2012 Nikolaus Gebhardt
+// This file is part of the "Irrlicht Engine".
+// For conditions of distribution and see copyright notice in irrlicht.h
+
+#ifndef __IRR_STRING_H_INCLUDED__
+#define __IRR_STRING_H_INCLUDED__
+
+#include "irrTypes.h"
+// ... other includes
+
+namespace irr
+{
+    namespace core
+    {
+        // ... class definitions
+    } // end namespace core
+} // end namespace irr
+
+#endif
 ```
-
-### Custom Floating-Point Types
-
-```cpp
-typedef float f32;      // 32-bit float
-typedef double f64;     // 64-bit float
-```
-
-### Usage
-
-- **Always prefer engine types** over standard types for portability
-- Use `f32` instead of `float`, `s32` instead of `int`, etc.
 
 ## Memory Management
 
-### Reference Counting (grab/drop)
-
-The engine uses **intrusive reference counting** via `IReferenceCounted`:
+### Reference Counting
+- Most engine objects inherit from `IReferenceCounted` (see `include/IReferenceCounted.h`)
+- Objects created via `create*()` or `add*()` require manual `drop()` when done
+- Methods without `create` prefix return owned objects that don't need `drop()`
 
 ```cpp
-// include/IReferenceCounted.h
-class IReferenceCounted
+// Example from examples/01.HelloWorld/main.cpp
+IrrlichtDevice *device = createDevice(video::EDT_DIRECT3D9, ...);
+if (!device)
+    return 1;
+// ... use device
+device->drop();  // Must drop objects created with create*
+
+// Textures loaded via getTexture() don't need drop():
+ITexture* tex = driver->getTexture("texture.png");  // Managed by driver
+```
+
+### Custom Allocators
+- Uses custom `irrAllocator<T>` template (see `include/irrAllocator.h`)
+- Array class uses allocator pattern:
+```cpp
+// From include/irrArray.h
+template<class T, typename TAlloc = irrAllocator<T>>
+class array
 {
-public:
-    void grab() const noexcept { ++ReferenceCounter; }
-    bool drop() const noexcept
-    {
-        --ReferenceCounter;
-        if (!ReferenceCounter) { delete this; return true; }
-        return false;
-    }
+    T* data;
+    TAlloc allocator;
+    // ...
 };
 ```
 
-### Ownership Rules
+## Containers
 
-- Objects created with `create...()` methods: caller owns, MUST call `drop()` when done
-- Objects returned from `load...()` methods: engine owns, do NOT call `drop()`
-- Example from `include/IReferenceCounted.h`:
-  ```cpp
-  ITexture* texture = driver->createTexture(...);
-  texture->drop();  // Must drop
-  ```
+### irr::core Containers (NOT std::)
+- `core::array<T>` - Dynamic array (see `include/irrArray.h`)
+- `core::string<T>` - String class (see `include/irrString.h`)
+- `core::list<T>` - Linked list (see `include/irrList.h`)
+- `core::map<K,V>` - Map (see `include/irrMap.h`)
+- **IMPORTANT:** Do NOT use `std::` containers in core engine code
 
-### Anti-Patterns
-
-- **Do NOT use `std::shared_ptr` or `std::unique_ptr`** - use grab/drop
-- **Do NOT use `new`/`delete` directly** on engine objects - use factory methods
-- **Do NOT call `drop()` twice** - causes double-delete
-
-## Custom Containers
-
-The engine provides custom containers in `include/`:
-
-### Core Containers
-
-| Container | Header | Purpose |
-|-----------|--------|---------|
-| `core::array<T>` | `irrArray.h` | Dynamic array (like `std::vector`) |
-| `core::string<T>` | `irrString.h` | String class |
-| `core::list<T>` | `irrList.h` | Linked list |
-| `core::map<K,V>` | `irrMap.h` | Associative container |
-
-### Usage Example
-
+### Container Patterns
 ```cpp
-#include <irrArray.h>
-#include <irrString.h>
-#include <irrList.h>
+// Dynamic array
+core::array<video::IImage*> Images;
 
-irr::core::array<s32> numbers;
-irr::core::string<c8> filename;
-irr::core::list<IMesh*> meshList;
+// String
+core::stringc filename = "example.txt";  // c8 char string
+core::stringw wfilename = L"example.txt"; // wchar_t string
 ```
 
-### Anti-Pattern
+## Import Organization
 
-- **Do NOT use `std::vector`, `std::string`, `std::list`, `std::map`** - use irr equivalents
-- The engine is NOT linked against STL in some builds
+### Include Order
+1. Project header (e.g., `"IrrCompileConfig.h"`)
+2. Corresponding header (e.g., `"CSceneManager.h"`)
+3. Interface headers (e.g., `"IVideoDriver.h"`, `"IFileSystem.h"`)
+4. Other engine headers
+5. System/platform headers (e.g., `<winuser.h>`, `<dinput.h>`)
+
+Example from `source/Irrlicht/CSceneManager.cpp`:
+```cpp
+#include "IrrCompileConfig.h"
+#include "CSceneManager.h"
+#include "IVideoDriver.h"
+#include "IFileSystem.h"
+// ... more engine headers
+
+#include "os.h"  // OS utilities last
+
+#ifdef _IRR_COMPILE_WITH_XXX_LOADER_
+#include "CXXXLoader.h"
+#endif
+```
+
+### Conditional Compilation
+- Use `#ifdef` blocks to include optional loaders/renderers
+- Example from `source/Irrlicht/CSceneManager.cpp`:
+```cpp
+#ifdef _IRR_COMPILE_WITH_IRR_MESH_LOADER_
+#include "CIrrMeshFileLoader.h"
+#endif
+
+#ifdef _IRR_COMPILE_WITH_BSP_LOADER_
+#include "CBSPMeshFileLoader.h"
+#endif
+```
 
 ## Error Handling
 
+### Logging
+- Use `os::Printer::log()` function (see `source/Irrlicht/os.h`)
+- Log levels: `ELL_INFORMATION`, `ELL_WARNING`, `ELL_ERROR`, `ELL_DEBUG`
+
+```cpp
+// From source/Irrlicht/CIrrDeviceWin32.cpp
+os::Printer::log("Could not create DirectInput8 Object", ELL_WARNING);
+```
+
+### Debug Assertions
+- Use `_IRR_DEBUG_BREAK_IF(condition)` for debug asserts
+- Use `#ifdef _IRR_DEBUG_*` for conditional debug code
+
+```cpp
+// From include/IrrCompileConfig.h
+_IRR_DEBUG_BREAK_IF(ReferenceCounter <= 0)
+
+// Conditional debug logging
+#ifdef _IRR_DEBUG_OBJ_LOADER_
+    os::Printer::log("Loading object", objectName.c_str(), ELL_DEBUG);
+#endif
+```
+
+### Null Checks
+- Check return values explicitly
+- Early returns on error conditions
+```cpp
+IAnimatedMesh *mesh = smgr->getMesh("../../media/sydney.md2");
+if (!mesh)
+{
+    device->drop();
+    return 1;
+}
+```
+
+## Comments
+
+### Doxygen Format
+- Headers use Doxygen-formatted comments (`/** ... */`)
+- Method descriptions with `\param`, `\return`, `\see`
+- Class descriptions with brief and detailed documentation
+
+Example from `include/IrrlichtDevice.h`:
+```cpp
+//! The Irrlicht device. You can create it with createDevice() or createDeviceEx().
+/** This is the most important class of the Irrlicht Engine. You can
+*  access everything in the engine if you have a pointer to an instance of
+*  this class.  There should be only one instance of this class at any
+*  time.
+*/
+class IrrlichtDevice : public virtual IReferenceCounted
+{
+    //! Runs the device.
+    /** Also increments the virtual timer by calling
+    *  ITimer::tick();. You can prevent this
+    *  by calling ITimer::stop(); before and ITimer::start() after
+    *  calling IrrlichtDevice::run(). Returns false if device wants
+    *  to be deleted.
+    *  \return Returns false if device wants to be deleted. */
+    virtual bool run() = 0;
+};
+```
+
+### Inline Comments
+- Use `//` for implementation notes
+- Use `// ...` for omitted code
+
+```cpp
+// copy old data
+const s32 end = used < new_size ? used : new_size;
+
+// data[i] = old_data[i];
+allocator.construct(&data[i], old_data[i]);
+```
+
+## Platform-Specific Code
+
+### Platform Isolation
+- Platform-specific code in `CIrrDevice*.cpp` files
+- OS subdirectories for platform details (e.g., `MacOSX/`, `Linux/`)
+- Avoid direct OS API calls outside device layer
+
+### Platform Detection
+From `include/IrrCompileConfig.h`:
+```cpp
+#if defined(_WIN32) || defined(_WIN64)
+#define _IRR_WINDOWS_
+#define _IRR_WINDOWS_API_
+#endif
+
+#if defined(__APPLE__) || defined(MACOSX)
+#define _IRR_OSX_PLATFORM_
+#endif
+
+#ifndef _IRR_WINDOWS_API_
+#define _IRR_LINUX_PLATFORM_
+#define _IRR_POSIX_API_
+#endif
+```
+
+### Conditional Compilation with Preprocessor
+```cpp
+#ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
+#include "CIrrDeviceWin32.h"
+#endif
+
+#ifdef _IRR_COMPILE_WITH_OPENGL_
+IVideoDriver* createOpenGLDriver(...);
+#endif
+```
+
+## Function Design
+
+### Parameter Order
+1. Output parameters (pointers/references that get modified)
+2. Input parameters
+3. Optional parameters with defaults
+
 ### Return Values
+- Return pointers for objects needing reference counting
+- Return `bool` for success/failure checks
+- Return by value for simple types (integers, floats)
 
-- **Boolean returns:** `true` for success, `false` for failure
-- **Nullptr:** Return `0` or `nullptr` on failure (common in factory methods)
-- **Error codes:** Limited use; prefer boolean returns
-
-### Pattern Example
-
-```cpp
-// From source/Irrlicht/CIrrDeviceStub.cpp
-if (!createContext()) return false;
-// ... operation ...
-return true;
-```
-
-### No Exceptions
-
-The engine is compiled with `-fno-exceptions` and `-fno-rtti`:
-
-- **Do NOT use `try`/`catch`/`throw`**
-- Use error codes and return values instead
-- Third-party libs (libpng, jpeglib) use `setjmp`/`longjmp` for error recovery
-
-## RTTI and Type System
-
-### No RTTI
-
-- **Do NOT use `dynamic_cast`** - the engine has no RTTI
-- Use custom type checking where needed (e.g., `getType()` methods)
-- Use `static_cast` where type is known
-
-### Custom Type Checking
-
-```cpp
-// Common pattern in scene nodes
-virtual ESCENE_NODE_TYPE getType() const = 0;
-```
-
-## Namespace Organization
-
-### Main Namespaces
-
-- `irr` - root namespace
-  - `irr::core` - math, containers, strings
-  - `irr::scene` - scene graph, nodes
-  - `irr::video` - rendering, drivers
-  - `irr::gui` - GUI system
-  - `irr::io` - file system, archives
-
-### Usage
-
-```cpp
-irr::core::string<c8> str;
-irr::scene::ISceneManager* smgr;
-irr::video::IVideoDriver* driver;
-```
+### Virtual Methods
+- Use `virtual` keyword for overrideable methods
+- Use `= 0` for pure virtual (abstract) methods
+- Use `override` suffix comment to indicate overriding (older C++ style)
 
 ---
 
-*Convention analysis: 2026-04-09*
+*Convention analysis: 2026-04-29*

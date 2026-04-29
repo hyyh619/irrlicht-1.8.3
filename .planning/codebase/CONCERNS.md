@@ -1,199 +1,265 @@
 # Codebase Concerns
 
-**Analysis Date:** 2026-04-09
+**Analysis Date:** 2026-04-29
 
-## Technical Debt
+## Tech Debt
 
-### Custom Container Usage
-- **Issue:** Engine uses custom containers (`irr::core::array`, `irr::core::stringc`, `irr::core::list`, `irr::core::map`) instead of STL equivalents
-- **Files:** Throughout `source/Irrlicht/` and `include/irrlicht.h`
-- **Impact:** Developers unfamiliar with Irrlicht may accidentally use `std::vector` or `std::string`, breaking memory management patterns
-- **Fix approach:** Document this convention prominently; could consider migration to STL with proper wrapper for reference counting
+### HalfLife Animation Angle Calculation Bug
+- **Issue:** Angle rescaling uses 1/2 multiplier incorrectly in quaternion calculation
+- **Files:** `source/Irrlicht/CAnimatedMeshHalfLife.cpp`
+- **Impact:** Animations with certain rotation angles render incorrectly, causing visual artifacts in HalfLife model playback
+- **Fix approach:** Fix the angle rescaling formula at line 28 to use correct trigonometric conversion
 
-### No Exceptions / No RTTI
-- **Issue:** Engine built with `-fno-exceptions` and `-fno-rtti`
-- **Files:** `include/IrrCompileConfig.h`
-- **Impact:** Cannot use `try`/`catch`/`throw`, cannot use `dynamic_cast`
-- **Fix approach:** Use custom type system and error code returns; avoid C++ features requiring RTTI
+### Software Rendering Incomplete Features
+- **Issue:** Multiple TODO comments indicating unimplemented clipping, primitive conversion, and optimization
+- **Files:** `source/Irrlicht/CSoftwareDriver.cpp`
+- **Areas:**
+  - Line 325: Clipping not correct for projections
+  - Line 465: Triangle fan to list conversion incomplete
+  - Line 886: Unimplemented method
+- **Impact:** Software rendering mode produces incorrect visual output in edge cases
+- **Fix approach:** Implement proper clipping algorithms and vertex conversion
 
-### Intrusive Reference Counting
-- **Issue:** Memory management via `grab()`/`drop()` pattern rather than smart pointers
-- **Files:** `include/IReferenceCounted.h`
-- **Impact:** Easy to cause memory leaks if `grab()` not called when retaining objects
-- **Fix approach:** Requires careful adherence to ownership conventions
+### COLLADA Loader/Writer Incomplete
+- **Issue:** Multiple missing features in COLLADA file handling
+- **Files:** `source/Irrlicht/CColladaFileLoader.cpp`, `source/Irrlicht/CColladaMeshWriter.cpp`
+- **Areas:**
+  - Second UV coordinates not supported for textures
+  - Perspective matrix building incomplete
+  - XML comment skipping not implemented
+  - URI formatting issues with whitespaces
+- **Impact:** Loading certain COLLADA files fails; exported files lose coordinate data
+- **Fix approach:** Complete missing XML parsing logic and multi-UV support
 
-### Quaternion Workarounds
-- **Issue:** Quaternion-to-matrix conversion inverts rotations; code uses workarounds like `getMatrix_transposed()` for downward compatibility
-- **Files:** `source/Irrlicht/CSkinnedMesh.cpp`, `source/Irrlicht/COgreMeshFileLoader.cpp`, `source/Irrlicht/CXMeshFileLoader.cpp`, `source/Irrlicht/CMS3DMeshFileLoader.cpp`
-- **Impact:** Complex code paths; can be enabled for testing with `IRR_TEST_BROKEN_QUATERNION_USE`
-- **Fix approach:** Clean up after ensuring no user code depends on old behavior
+### Quake3 Shader Scene Node
+- **Issue:** Camera not involved in shader calculations (TODO at line 338)
+- **Files:** `source/Irrlicht/CQuake3ShaderSceneNode.cpp`
+- **Impact:** Dynamic lighting does not account for camera position/view
+- **Fix approach:** Integrate view matrix into shader parameters
 
----
+### Shadow Volume Geometry
+- **Issue:** Only correct for point lights (TODO at line 286), not spot/directional
+- **Files:** `source/Irrlicht/CShadowVolumeSceneNode.cpp`
+- **Impact:** Incorrect shadow volumes for non-point light sources
+- **Fix approach:** Add spot/directional light shadow computation
 
-## Known Bugs and Limitations
+### GUI EditBox and String Handling
+- **Issue:** Core string missing important functions (TODO at lines 348, 881)
+- **Files:** `source/Irrlicht/CGUIEditBox.cpp`
+- **Impact:** Text manipulation limited, requires custom workarounds
+- **Fix approach:** Add missing string manipulation functions to `irr::core::string`
 
-### Software Driver Issues (OSX)
-- **Issue:** Software driver doesn't work properly under OSX 10.9
-- **Files:** `changes.txt` line 34
-- **Trigger:** Running software renderer on OSX 10.9+
-- **Workaround:** Use OpenGL or Direct3D drivers on OSX
+### Scene Manager Attribute Performance
+- **Issue:** Using attribute instead of proper parameter (TODO at line 1390)
+- **Files:** `source/Irrlicht/CSceneManager.cpp`
+- **Impact:** Performance degradation from reflection-based attribute access
+- **Fix approach:** Convert to direct parameter access
 
-### CGUIEditBox Crash
-- **Issue:** Can crash with wordwrap enabled when spaces entered beyond border followed by cursor key press
-- **Files:** `source/Irrlicht/CGUIEditBox.cpp` (multiple fixes in `changes.txt`)
-- **Trigger:** Specific sequence of user input
-- **Workaround:** Avoid combination of wordwrap + spaces at border + cursor movement
+### XML Writer Performance
+- **Issue:** Excessive use of reserve() call slows down XML writing (TODO at line 207)
+- **Files:** `source/Irrlicht/CXMLWriter.cpp`
+- **Impact:** Unnecessary memory allocation during XML export
+- **Fix approach:** Remove unnecessary reserve call
 
-### 3DS Mesh Loader
-- **Issue:** Multiple unimplemented features in 3DS format loader
-- **Files:** `source/Irrlicht/C3DSMeshFileLoader.cpp` (lines 651, 655, 1035)
-- **Impact:** Some 3DS model features not loaded correctly
+### D3D9 Hardware Primitive Support
+- **Issue:** TODO at line 1606 indicates incomplete hardware primitive type support
+- **Files:** `source/Irrlicht/CD3D9Driver.cpp`
+- **Impact:** Some rendering features use software emulation unnecessarily
+- **Fix approach:** Implement proper hardware support for the primitive type
 
-### XML Comment Handling
-- **Issue:** XML reader doesn't properly handle comments inside elements
-- **Files:** `source/Irrlicht/CIrrMeshFileLoader.cpp` (lines 486, 499, 513), `source/Irrlicht/CColladaFileLoader.cpp` (lines 2585, 2599, 2632)
-
----
-
-## Platform-Specific Issues
-
-### MacOS XCode Project
-- **Issue:** XCode project builds static library only, not the full demo applications
-- **Files:** `source/Irrlicht/MacOSX/`
-- **Impact:** Limited out-of-box experience for Mac developers
-- **Fix approach:** Add XCode scheme for building demo applications
-
-### Linux File System
-- **Issue:** Path handling needs normalization; drive letter support incomplete
-- **Files:** `source/Irrlicht/CFileSystem.cpp` (lines 329, 871, 891)
-- **Impact:** Cross-platform path handling issues
-
-### Windows 8 Cursor
-- **Issue:** Cursor visibility update problems on Windows 8
-- **Files:** `changes.txt` (1.8.1 notes)
-
----
-
-## Unfinished Features (TODO)
-
-### Font/Texture Cache
-- **Issue:** `IGUIEnvironment::removeFont` does not remove texture from cache
-- **Files:** `include/IGUIEnvironment.h`, `changes.txt` line 428
-- **Impact:** Potential memory leak when removing fonts
-
-### Quake3 Explorer
-- **Issue:** Texture handling incomplete; dynamic loading for other OSes not implemented
-- **Files:** `examples/21.Quake3Explorer/main.cpp` (line 1056), `examples/21.Quake3Explorer/q3factory.cpp` (lines 571, 769)
-
-### B3D Loader
-- **Issue:** Color key texture creation and cube map support not implemented
-- **Files:** `source/Irrlicht/CB3DMeshFileLoader.cpp` (lines 1003, 1007)
-
-### GUI Elements
-- **Issue:** Multiple GUI improvements pending (text clipping, scrolling, alignment)
-- **Files:** `source/Irrlicht/CGUITabControl.cpp` (lines 665, 685), `source/Irrlicht/CGUIEditBox.cpp` (lines 1434, 1447), `source/Irrlicht/CGUIStaticText.cpp` (line 562)
-
-### Collada Writer
-- **Issue:** Second UV coordinates ignored; tangents not supported
-- **Files:** `source/Irrlicht/CColladaMeshWriter.cpp` (lines 5, 964, 1493)
-
-### Scene Manager Debug
-- **Issue:** Performance parameters not updated in release builds
-- **Files:** `changes.txt` (1.8.1 notes)
-- **Impact:** Cannot debug scene rendering performance without `_IRR_SCENEMANAGER_DEBUG`
+### B3D Mesh File Loader Issues
+- **Issue:** Two unaddressed TODOs at lines 651 and 655
+- **Files:** `source/Irrlicht/CB3DMeshFileLoader.cpp`
+- **Impact:** Potential loader failures for certain B3D files
+- **Fix approach:** Investigate and address the uncompleted code paths
 
 ---
 
-## Performance Considerations
+## Known Bugs
 
-### Matrix4 Operations
-- **Issue:** Quaternion operations marked as needing speed optimization
-- **Files:** `include/quaternion.h` (lines 242, 256, 268, 280)
-- **Impact:** Slower rotation calculations
+### HalfLife Mesh Angle Rescaling
+- **Symptoms:** Animations appear rotated incorrectly during playback
+- **Files:** `source/Irrlicht/CAnimatedMeshHalfLife.cpp`
+- **Trigger:** Loading and playing HalfLife (MDL) animation files
+- **Workaround:** None - render results are incorrect
 
-### Scene Node Culling
-- **Issue:** Point light culling not implemented
-- **Files:** `source/Irrlicht/CSceneManager.cpp` (line 1263)
+### Triangle Selector Line Optimization
+- **Issue:** Not optimized for line intersection testing (TODO at line 257)
+- **Files:** `source/Irrlicht/CTriangleSelector.cpp`
+- **Trigger:** Collision detection with triangle-based geometry
+- **Workaround:** Use alternative selector types (octree-based)
 
-### XML Writing
-- **Issue:** `reserve()` call slows down XML writing
-- **Files:** `source/Irrlicht/CXMLWriter.cpp` (line 207)
+### OpenGL Extension Checking Incomplete
+- **Issue:** TODO indicates GLX swap control extensions not properly checked
+- **Files:** `source/Irrlicht/COpenGLExtensionHandler.h`
+- **Trigger:** Running on Linux with certain GPU drivers
+- **Workaround:** None identified
 
-### Array Reallocation
-- **Issue:** Previously had excessive reallocation; now controllable but defaults could be optimized
-- **Files:** `changes.txt` (1.8 notes about reallocate function)
+### Light Radius and Attenuation Confusion
+- **Issue:** TODO indicates Radius vs Linear Attenuation terminology unclear
+- **Files:** `source/Irrlicht/CLightSceneNode.cpp`
+- **Trigger:** Setting light falloff parameters
+- **Workaround:** Be careful with parameter values
 
 ---
 
 ## Security Considerations
 
-### ZIP Password Support
-- **Issue:** Previously had 64-bit password handling bug
-- **Files:** `changes.txt` (line 154 - fixed in 1.8)
-- **Current status:** Fixed in version 1.8
+### Embedded Third-Party Libraries
+- **Issue:** Bundled copies of zlib, libpng, jpeglib, bzip2, lzma, aesGladman with unknown update status
+- **Files:** `source/Irrlicht/zlib/`, `source/Irrlicht/libpng/`, `source/Irrlicht/jpeglib/`, etc.
+- **Risk:** Potential security vulnerabilities in outdated bundled libraries
+- **Current mitigation:** Libraries are statically compiled; application typically rebuilt per-release
+- **Recommendations:** Update bundled libraries to latest stable versions; monitor CVE databases
 
-### No User Authentication
-- **Issue:** Engine has no built-in user authentication or permission system
-- **Impact:** Applications must implement their own security
-- **Recommendation:** Document security requirements for application developers
-
----
-
-## Code Quality Observations
-
-### Large Embedded Libraries
-- **Issue:** Contains significant embedded code from zlib, libpng, libjpeg, and bzip2
-- **Files:** `source/Irrlicht/zlib/`, `source/Irrlicht/libpng/`, `source/Irrlicht/jpeglib/`, `source/Irrlicht/bzip2/`
-- **Impact:** Large codebase; security patches from upstream need manual merging
-- **Recommendation:** Consider using system libraries or submodule approach
-
-### Missing Doxygen Updates
-- **Issue:** Doxygen config has TODO list generation enabled but likely outdated
-- **Files:** `source/Irrlicht/Doxyfile` (lines 613, 617)
-
-### API Documentation
-- **Issue:** Some functions have minimal or missing documentation
-- **Impact:** Developers must read source to understand some APIs
+### No Input Sanitization in File Loaders
+- **Issue:** File loaders directly process untrusted input without robust bounds checking
+- **Files:** `source/Irrlicht/C*Loader.cpp` (various mesh/image loaders)
+- **Risk:** Malicious file formats could cause buffer overflows or crashes
+- **Current mitigation:** Partial validation exists
+- **Recommendations:** Add comprehensive input validation; implement failsafe defaults
 
 ---
 
-## Missing Documentation
+## Performance Bottlenecks
 
-### Upgrade Path
-- **Issue:** Last major release (1.8.3) in 2015; limited documentation for modern development
-- **Files:** `doc/upgrade-guide.txt`
-- **Impact:** New users may struggle with outdated tutorials
+### Legacy OpenGL Immediate Mode
+- **Problem:** Uses deprecated glBegin/glEnd for 2D drawing operations
+- **Files:** `source/Irrlicht/COpenGLDriver.cpp` (lines 1997-2463)
+- **Cause:** 2D overlay rendering uses immediate mode rendering
+- **Improvement path:** Convert all 2D drawing to vertex buffer objects (VBO)
 
-### Platform-Specific Setup
-- **Issue:** Limited instructions for modern development environments (VS2015+, modern Linux distros)
-- **Impact:** Users report build issues with newer compilers
+### Attribute-Based Scene Loading
+- **Problem:** Scene manager uses attribute system for loading operations
+- **Files:** CSceneLoaderIrr.cpp
+- **Cause:** Slow reflection-based property access
+- **Improvement path:** Direct property deserialization
 
-### Shader Development
-- **Issue:** Advanced shader features (Cg, HLSL, GLSL) lack comprehensive tutorials
-- **Files:** `source/Irrlicht/CD3D9CgMaterialRenderer.cpp`, `source/Irrlicht/COpenGLCgMaterialRenderer.cpp`
+### XML Processing Performance
+- **Problem:** Excessive memory reservation in XML writer
+- **Files:** `source/Irrlicht/CXMLWriter.cpp`
+- **Cause:** Unnecessary reserve() calls
+- **Improvement path:** Remove unnecessary allocations
 
----
-
-## Test Coverage
-
-### No Built-in Test Framework
-- **Issue:** Engine lacks comprehensive unit tests
-- **Impact:** Changes may introduce regressions without detection
-
----
-
-## Deprecated / Historical
-
-### Old Compiler Support
-- **Issue:** Readme lists support for older compilers (GCC 4.x, VS 2008-2012)
-- **Files:** `readme.txt` (lines 77-79)
-- **Current status:** Likely outdated
-
-### D3D8 Support
-- **Issue:** DirectX 8 support requires older DirectX SDK (prior to May 2006)
-- **Files:** `readme.txt` (line 88)
-- **Impact:** Effectively deprecated
+### String Allocation in GUI
+- **Problem:** Multiple string reallocations in edit controls
+- **Files:** `source/Irrlicht/CGUIEditBox.cpp`
+- **Cause:** Inefficient string class usage
+- **Improvement path:** Implement proper string caching
 
 ---
 
-*Concerns audit: 2026-04-09*
+## Fragile Areas
+
+### X Mesh File Loader
+- **Files:** `source/Irrlicht/CXMeshFileLoader.cpp`
+- **Why fragile:** Large file (2400+ lines), numerous parsing branches, debug switches
+- **Safe modification:** Add incremental features with clear parsing logic; disable debug defines in production
+- **Test coverage:** Limited - manual testing required for each mesh format variant
+
+### COLLADA Loader
+- **Files:** `source/Irrlicht/CColladaFileLoader.cpp`
+- **Why fragile:** Complex multi-format XML parsing, many branches
+- **Safe modification:** Test each node type independently; use incremental additions
+- **Test coverage:** Gaps in format variant testing
+
+### Software Driver
+- **Files:** `source/Irrlicht/CSoftwareDriver.cpp`
+- **Why fragile:** Complex rasterization logic, multiple clipping code paths
+- **Safe modification:** Test each primitive type separately
+- **Test coverage:** Comprehensive test suite needed
+
+### Cg/GLSL Shader Material Renderers
+- **Files:** `source/Irrlicht/CCgMaterialRenderer.cpp`, `source/Irrlicht/COpenGLCgMaterialRenderer.cpp`
+- **Why fragile:** GPU shader compilation errors are difficult to debug
+- **Safe modification:** Pre-validate shader code; provide clear error messages
+- **Test coverage:** Limited - shader compilation errors difficult to catch
+
+---
+
+## Scaling Limits
+
+### No Core Set Container
+- **Current capacity:** Missing feature - no core::set class exists
+- **Limit:** Cannot use set-based unique collections
+- **Scaling path:** Implement core::set or adapt std::set where acceptable
+
+### Octree Triangle Selector
+- **Current capacity:** Designed for moderate-complexity scenes
+- **Limit:** Performance degrades with very large open environments
+- **Scaling path:** Add LOD-based selector switching
+
+### Mesh Loaders
+- **Current capacity:** Single-threaded loading
+- **Limit:** Large mesh files cause frame hitches during load
+- **Scaling path:** Add async/chunked loading support
+
+---
+
+## Dependencies at Risk
+
+### Cg Shader Compiler
+- **Risk:** NVIDIA Cg toolkit is largely abandoned
+- **Impact:** May stop working on modern systems
+- **Migration plan:** Deprecate Cg; migrate to GLSL/HLSL directly
+
+### DirectX 8 Support
+- **Risk:** D3D8 is legacy - Windows XP era
+- **Impact:** May not work on modern Windows
+- **Migration plan:** Remove D3D8 driver; focus on D3D9/OpenGL
+
+### SDL 1.x
+- **Risk:** SDL2 is current; SDL1.x deprecated
+- **Impact:** SDL device may not work with modern systems
+- **Migration plan:** Consider SDL2 port
+
+---
+
+## Missing Critical Features
+
+### Test Suite
+- **Problem:** No automated test framework
+- **Blocks:** Regression detection, refactoring confidence
+- **Priority:** High
+
+### CMake Build System
+- **Problem:** Hand-written Makefiles
+- **Blocks:** Modern IDE integration, cross-platform builds
+- **Priority:** Medium
+
+### Standard Container Adapters
+- **Problem:** No core::set, core::unordered_set
+- **Blocks:** Proper unique-value collections
+- **Priority:** Medium
+
+---
+
+## Test Coverage Gaps
+
+### Mesh Loaders
+- **What's not tested:** All format variants, error conditions, malformed files
+- **Files:** `source/Irrlicht/C*Loader.cpp`
+- **Risk:** Unhandled cases cause crashes
+- **Priority:** High
+
+### GUI Components
+- **What's not tested:** All keyboard/mouse interactions, focus states
+- **Files:** `source/Irrlicht/CGUI*.cpp`
+- **Risk:** GUI state machine bugs undetected
+- **Priority:** Medium
+
+### Render Drivers
+- **What's not tested:** All primitive types, blending modes, shader variations
+- **Files:** `source/Irrlicht/C*Driver.cpp`
+- **Risk:** Rendering artifacts in edge cases
+- **Priority:** High
+
+### File System
+- **What's not tested:** Unicode paths, edge cases, long paths
+- **Files:** `source/Irrlicht/CFileSystem.cpp`
+- **Risk:** Crash on unusual file paths
+- **Priority:** Medium
+
+---
+
+*Concerns audit: 2026-04-29*

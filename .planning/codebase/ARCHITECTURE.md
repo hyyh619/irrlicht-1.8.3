@@ -1,134 +1,221 @@
+<!-- refreshed: 2026-04-29 -->
 # Architecture
 
-**Analysis Date:** 2026-04-09
+**Analysis Date:** 2026-04-29
+
+## System Overview
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                   Application Layer                        │
+│              (examples/, user code)                       │
+├─────────────────────────────────────────────────────────────┤
+│                      IrrlichtDevice                         │
+│            `source/Irrlicht/Irrlicht.cpp`                  │
+├─────────────────────────────────────────────────────────┬─┴───────────────┤
+│   Video Driver    │  Scene Manager  │  GUI Env  │ FileSys │
+│  IVideoDriver    │ ISceneManager   │IGUIEnv   │IFileSys│
+│ `IVideoDriver.h` │`ISceneManager.h`│`IGUIEnv.h`│`IFileS.│
+├─────────────────┴─────────────────┴─────────────┴─────────┤
+│              Platform Abstraction Layer                    │
+│   CIrrDeviceWin32  │  CIrrDeviceLinux  │  CIrrDeviceSDL │
+│ `CIrrDeviceWin32` │ `CIrrDeviceLinux`│ `CIrrDeviceS │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Component Responsibilities
+
+| Component | Responsibility | File |
+|-----------|----------------|------|
+| IrrlichtDevice | Central engine hub, owns all managers, handles window/input | `source/Irrlicht/Irrlicht.cpp:66` |
+| IVideoDriver | Rendering, textures, materials, meshes | `include/IVideoDriver.h` |
+| ISceneManager | Scene graph, nodes, animators, collision | `include/ISceneManager.h` |
+| IGUIEnvironment | GUI elements, events, rendering | `include/IGUIEnvironment.h` |
+| IFileSystem | File I/O, archives, zip reading | `include/IFileSystem.h` |
+| IEventReceiver | Input event handling | `include/IEventReceiver.h` |
 
 ## Pattern Overview
 
-**Overall:** Layered component-based architecture with interface-driven design
+**Overall:** Component-Based Service Locator with Reference Counting
 
 **Key Characteristics:**
-- Central `IrrlichtDevice` acts as the root object and service locator
-- Interface-based abstractions for all major subsystems (video, scene, GUI, IO)
-- Reference-counted memory management via `IReferenceCounted`
-- Multiple rendering driver backends (OpenGL, Direct3D 8/9, Software)
-- Cross-platform device abstraction (Win32, Linux, MacOSX, SDL, Framebuffer)
+- Engine core (IrrlichtDevice) acts as service locator for all subsystems
+- Public API uses `I` prefix for interfaces, `C` prefix for implementations
+- Reference counting via `IReferenceCounted` (grab()/drop()) for memory management
+- Platform-specific code isolated in CIrrDevice*.cpp files
+- Heavy use of irr::core containers (core::array, core::string)
 
 ## Layers
 
-**Device Layer:**
-- Purpose: Root object providing access to all engine subsystems
-- Location: `include/IrrlichtDevice.h`, `source/Irrlicht/CIrrDevice*.cpp`
-- Contains: `IrrlichtDevice` interface with platform-specific implementations
-- Depends on: Nothing (other than OS APIs)
-- Used by: Application code via `createDevice()`
+**Application Layer:**
+- Purpose: User code and examples
+- Location: `examples/`, user applications
+- Contains: Tutorial examples, demo applications
+- Depends on: Irrlicht public API
 
-**Video Driver Layer:**
-- Purpose: All 2D and 3D rendering, texture management
-- Location: `include/IVideoDriver.h`, `source/Irrlicht/C*Driver.cpp`
-- Contains: `IVideoDriver` interface, concrete drivers (COpenGLDriver, CD3D9Driver, CSoftwareDriver, CNullDriver)
-- Depends on: Device layer
-- Used by: Scene manager, GUI environment, application code
+**Public API Layer:**
+- Purpose: Stable interface definitions for applications
+- Location: `include/*.h`
+- Contains: I-prefixed interfaces (IVideoDriver, ISceneManager, etc.)
+- Depends on: None (pure interfaces)
 
-**Scene Manager Layer:**
-- Purpose: Scene graph management, mesh loading, scene node creation
-- Location: `include/ISceneManager.h`, `source/Irrlicht/CSceneManager.cpp`
-- Contains: `ISceneManager` interface, scene nodes, animators, mesh loaders
-- Depends on: Video driver, GUI environment
-- Used by: Application code
+**Engine Implementation Layer:**
+- Purpose: Core engine functionality
+- Location: `source/Irrlicht/`
+- Contains: C-prefixed implementations
+- Depends on: Public API headers
 
-**GUI Layer:**
-- Purpose: Graphical user interface management
-- Location: `include/IGUIEnvironment.h`, `source/Irrlicht/CGUIEnvironment.cpp`
-- Contains: `IGUIEnvironment` interface, GUI elements (buttons, windows, etc.)
-- Depends on: Video driver
-- Used by: Application code
+**Platform Abstraction Layer:**
+- Purpose: OS/windowing system abstraction
+- Location: `source/Irrlicht/CIrrDevice*.cpp`
+- Contains: CIrrDeviceWin32, CIrrDeviceLinux, CIrrDeviceSDL, etc.
+- Depends on: Platform APIs (Windows API, X11, SDL)
 
-**IO Layer:**
-- Purpose: File system, archive access, XML handling
-- Location: `include/IFileSystem.h`, `source/Irrlicht/CFileSystem.cpp`
-- Contains: `IFileSystem` interface, archive readers (ZIP, TAR, WAD)
-- Used by: Scene manager, GUI environment, application code
+**Rendering Driver Layer:**
+- Purpose: Graphics API implementation
+- Location: `source/Irrlicht/C*Driver.cpp`
+- Contains: COpenGLDriver, CD3D9Driver, CSoftwareDriver2
+- Depends on: Graphics APIs (OpenGL, Direct3D)
+
+**Embedded Libraries Layer:**
+- Purpose: Compression, image decode
+- Location: `source/Irrlicht/{zlib,libpng,jpeglib,bzip2,lzma,aesGladman}/`
+- Contains: Third-party libraries
+- Used by: File system, image loaders
 
 ## Data Flow
 
-**Main Render Loop:**
+### Primary Rendering Path
 
-1. Application calls `device->run()`
-2. Device pumps window messages
-3. Application calls `driver->beginScene()`
-4. Application calls `sceneManager->drawAll()`
-5. Scene manager renders scene nodes in pass order (camera, light, skybox, solid, transparent, shadow)
-6. Application calls `guiEnvironment->drawAll()`
-7. Application calls `driver->endScene()`
+1. **Application creates device** (`source/Irrlicht/Irrlicht.cpp:48`)
+   - Calls `createDevice()` or `createDeviceEx()`
+   - Creates platform-specific CIrrDevice*
 
-**Scene Graph Traversal:**
-- Root scene node contains children
-- Each node's `render()` calls `registerNodeForRendering()` with a render pass
-- Scene manager iterates registered nodes in proper order
-- Each node draws itself via video driver
+2. **Device runs main loop** (`CIrrDeviceWin32.cpp`)
+   - Handles window messages
+   - Polls input devices
 
-**State Management:**
-- Video driver maintains global transform matrices (world, view, projection)
-- Current material set on driver before drawing
-- Scene nodes manage their own position, rotation, scale via `ISceneNode`
-- Global override material applies to all rendered objects
+3. **Scene rendering** (`CSceneManager.cpp`)
+   - `drawAll()` traverses scene graph
+   - Registers nodes for render passes
+   - Calls video driver to render
+
+4. **Video driver renders** (`COpenGLDriver.cpp` / `CD3D9Driver.cpp`)
+   - `beginScene()` / `endScene()`
+   - `drawMeshBuffer()` for each geometry
+   - Manages textures and materials
+
+### Event Flow
+
+1. **OS generates input** (mouse, keyboard)
+2. **Device captures** (`CIrrDeviceWin32.cpp:msg`)
+3. **Device posts event** (`postEventFromUser()`)
+4. **Event propagates** through receivers:
+   - User event receiver first
+   - GUI environment
+   - Scene manager (active camera)
+   - Application handles viaOnEvent()
+
+### File Loading Path
+
+1. **Application requests mesh** (`sceneManager->getMesh()`)
+2. **Scene manager finds loader** (IMeshLoader registry)
+3. **Loader reads file** (C*MeshFileLoader.cpp)
+4. **Creates animated mesh** (IAnimatedMesh)
+5. **Creates scene node** (addMeshToScene())
 
 ## Key Abstractions
 
-**IrrlichtDevice:**
-- Purpose: Central engine interface and service locator
-- Examples: `include/IrrlichtDevice.h`
-- Pattern: Factory + service locator
+**IReferenceCounted:**
+- Purpose: Reference-counted base for all engine objects
+- Examples: All IVideoDriver, ISceneManager, ITexture
+- Pattern: grab() increments, drop() decrements, auto-delete at 0
+
+**ISceneNode:**
+- Purpose: Base for all scene graph objects
+- Examples: CMeshSceneNode, CCameraSceneNode, CLightSceneNode
+- Pattern: Parent-child hierarchy, render() called by manager
 
 **IVideoDriver:**
-- Purpose: Rendering abstraction
-- Examples: `include/IVideoDriver.h`
-- Pattern: Interface with multiple implementations
+- Purpose: Graphics API abstraction
+- Examples: COpenGLDriver, CD3D9Driver, CSoftwareDriver2
+- Pattern: Single driver per device, manages all rendering
+
+**CIrrDevice* (Platform):**
+- Purpose: Platform-specific window/input
+- Examples: CIrrDeviceWin32, CIrrDeviceLinux, CIrrDeviceSDL
+- Pattern: Create one per IrrlichtDevice instance
 
 **ISceneManager:**
-- Purpose: Scene graph and resource management
-- Examples: `include/ISceneManager.h`
-- Pattern: Factory + manager
+- Purpose: Scene graph orchestration
+- Example: `CSceneManager`
+- Pattern: Owns scene root, traverses for rendering
 
 **IGUIEnvironment:**
-- Purpose: GUI element factory and manager
-- Examples: `include/IGUIEnvironment.h`
-- Pattern: Composite + factory
-
-**IReferenceCounted:**
-- Purpose: Base class for reference-counted memory management
-- Examples: `include/IReferenceCounted.h`
-- Pattern: Intrusive reference counting
+- Purpose: GUI system management
+- Example: `CGUIEnvironment`
+- Pattern: Owns root GUI element, draws after scene
 
 ## Entry Points
 
-**createDevice:**
-- Location: `include/irrlicht.h`, `source/Irrlicht/Irrlicht.cpp`
-- Triggers: Application startup
-- Responsibilities: Create platform-specific device, initialize all subsystems
+**createDevice():**
+- Location: `source/Irrlicht/Irrlicht.cpp:48`
+- Triggers: Application call
+- Responsibilities: Creates IrrlichtDevice, initializes graphics driver
 
-**IrrlichtDevice (interface):**
-- Location: `include/IrrlichtDevice.h`
-- Triggers: After device creation
-- Responsibilities: Provides access to video driver, scene manager, GUI, file system, timer
+**IrrlichtDevice::run():**
+- Location: `source/Irrlicht/CIrrDeviceWin32.cpp` (platform-specific)
+- Triggers: Application main loop
+- Responsibilities: Process window messages, input polling
+
+**ISceneManager::drawAll():**
+- Location: `source/Irrlicht/CSceneManager.cpp`
+- Triggers: Each frame from application
+- Responsibilities: Render entire scene, GUI on top
+
+## Architectural Constraints
+
+- **Threading:** Single-threaded rendering; OpenGL/D3D manage their own threads
+- **Global state:** `irr::core::IdentityMatrix`, `irr::video::IdentityMaterial` singletons (`Irrlicht.cpp:118-125`)
+- **Circular imports:** None detected - clean interface/implementation separation
+- **Memory:** No smart pointers; manual grab()/drop() required
+- **No std:::** Uses irr::core containers exclusively
+
+## Anti-Patterns
+
+### Using std:: Containers Internally
+
+**What happens:** Code uses `std::vector`, `std::string` in engine internals
+**Why it's wrong:** Inconsistent with codebase patterns, potential ABI issues
+**Do this instead:** Use `irr::core::array`, `irr::core::stringc` in `source/Irrlicht/`
+
+### Direct OS API Outside Device Layer
+
+**What happens:** Windows API calls outside CIrrDevice*.cpp
+**Why it's wrong:** Breaks cross-platform abstraction
+**Do this instead:** Keep OS-specific code in platform device implementations only
+
+### Forgetting to drop() Objects
+
+**What happens:** Memory leaks when dropping reference counting
+**Why it's wrong:** Engine relies on reference counting for cleanup
+**Do this instead:** Always pair createX() with object->drop()
 
 ## Error Handling
 
 **Strategy:** Return codes and null checks
 
 **Patterns:**
-- Methods return `bool` for success/failure
-- `0`/`nullptr` returned on error conditions
-- Debug assertions via `_IRR_DEBUG_BREAK_IF`
-- No exceptions (engine built with `-fno-exceptions`)
+- Return 0/null on failure (e.g., `getMesh()` returns 0 if not found)
+- Log warnings via ILogger
+- Device continues but reports errors
 
 ## Cross-Cutting Concerns
 
-**Logging:** `ILogger` interface for debug output
-**Validation:** `IAttributeExchangingObject` for serialization
-**Authentication:** Not applicable (local graphics engine)
-**Timing:** `ITimer` interface for frame timing
+**Logging:** ILogger interface, log to file/console
+**Validation:** Parameters checked in public API methods
+**Authentication:** N/A (graphics engine)
 
 ---
 
-*Architecture analysis: 2026-04-09*
+*Architecture analysis: 2026-04-29*
