@@ -18,6 +18,10 @@ The following examples are tested:
 1. 01.HelloWorld
 2. 02.Quake3Map
 3. 03.CustomSceneNode
+4. 07.Collision
+5. 08.SpecialFX
+6. 09.Meshviewer
+7. 10.Shaders
 
 ## Workflow
 

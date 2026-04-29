@@ -22,19 +22,32 @@ using namespace irr;
 #pragma comment(lib, "Irrlicht.lib")
 #endif
 
+#ifndef CONFORM_TEST
+#define CONFORM_TEST 0
+#endif
+
 int main()
 {
     // ask if user would like shadows
     char i;
 
+#if CONFORM_TEST
+    i = 'y';
+#else
     printf("Please press 'y' if you want to use realtime shadows.\n");
-
     std::cin >> i;
+#endif
 
     const bool shadows = (i == 'y');
 
     // ask user for driver
+
+#if CONFORM_TEST
+    video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+#else
     video::E_DRIVER_TYPE driverType = driverChoiceConsole();
+#endif
+
     if (driverType==video::EDT_COUNT)
         return 1;
 
@@ -286,6 +299,16 @@ int main()
             smgr->drawAll();
 
             driver->endScene();
+
+#if CONFORM_TEST
+            video::IImage *image = device->getVideoDriver()->createScreenShot();
+            if (image)
+            {
+                device->getVideoDriver()->writeImageToFile(image, "screenshot.bmp");
+                image->drop();
+            }
+            break;
+#endif
 
             const s32 fps = driver->getFPS();
 

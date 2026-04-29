@@ -25,6 +25,10 @@ using namespace gui;
 #pragma comment(lib, "Irrlicht.lib")
 #endif
 
+#ifndef CONFORM_TEST
+#define CONFORM_TEST 0
+#endif
+
 // Declare a structure to hold some context for the event receiver so that it
 // has it available inside its OnEvent() method.
 struct SAppContext
@@ -180,7 +184,12 @@ private:
 int main()
 {
     // ask user for driver
+
+#if CONFORM_TEST
+    video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+#else
     video::E_DRIVER_TYPE driverType = driverChoiceConsole();
+#endif
 
     if (driverType==video::EDT_COUNT)
         return 1;
@@ -283,6 +292,16 @@ int main()
             env->drawAll();
 
             driver->endScene();
+
+#if CONFORM_TEST
+            video::IImage *image = device->getVideoDriver()->createScreenShot();
+            if (image)
+            {
+                device->getVideoDriver()->writeImageToFile(image, "screenshot.bmp");
+                image->drop();
+            }
+            break;
+#endif
         }
 
     device->drop();

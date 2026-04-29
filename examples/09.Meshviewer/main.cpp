@@ -23,6 +23,10 @@ using namespace gui;
 #pragma comment(lib, "Irrlicht.lib")
 #endif
 
+#ifndef CONFORM_TEST
+#define CONFORM_TEST 0
+#endif
+
 
 /*
    Some global variables used later on
@@ -798,7 +802,12 @@ public:
 int main(int argc, char *argv[])
 {
     // ask user for driver
+
+#if CONFORM_TEST
+    video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+#else
     video::E_DRIVER_TYPE driverType = driverChoiceConsole();
+#endif
 
     if (driverType==video::EDT_COUNT)
         return 1;
@@ -1076,6 +1085,16 @@ int main(int argc, char *argv[])
             env->drawAll();
 
             driver->endScene();
+
+#if CONFORM_TEST
+            video::IImage *image = Device->getVideoDriver()->createScreenShot();
+            if (image)
+            {
+                Device->getVideoDriver()->writeImageToFile(image, "screenshot.bmp");
+                image->drop();
+            }
+            break;
+#endif
 
             // update information about current frame-rate
             core::stringw str(L"FPS: ");

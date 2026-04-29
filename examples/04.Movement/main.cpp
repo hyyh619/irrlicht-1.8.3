@@ -22,6 +22,14 @@
 
 using namespace irr;
 
+#ifdef _MSC_VER
+#pragma comment(lib, "Irrlicht.lib")
+#endif
+
+#ifndef CONFORM_TEST
+#define CONFORM_TEST 0
+#endif
+
 /*
  * To receive events like mouse and keyboard input, or GUI events like "the OK
  * button has been clicked", we need an object which is derived from the
@@ -71,7 +79,12 @@ private:
 int main()
 {
     // ask user for driver
+
+#if CONFORM_TEST
+    video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+#else
     video::E_DRIVER_TYPE driverType = driverChoiceConsole();
+#endif
 
     if (driverType==video::EDT_COUNT)
         return 1;
@@ -230,6 +243,16 @@ int main()
         device->getGUIEnvironment()->drawAll();         // draw the gui environment (the logo)
 
         driver->endScene();
+
+#if CONFORM_TEST
+        video::IImage *image = device->getVideoDriver()->createScreenShot();
+        if (image)
+        {
+            device->getVideoDriver()->writeImageToFile(image, "screenshot.bmp");
+            image->drop();
+        }
+        break;
+#endif
 
         int fps = driver->getFPS();
 

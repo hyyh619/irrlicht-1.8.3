@@ -19,6 +19,10 @@ using namespace irr;
 #pragma comment(lib, "Irrlicht.lib")
 #endif
 
+#ifndef CONFORM_TEST
+#define CONFORM_TEST 0
+#endif
+
 enum
 {
     // I use this ISceneNode ID to indicate a scene node that is
@@ -38,7 +42,12 @@ enum
 int main()
 {
     // ask user for driver
+
+#if CONFORM_TEST
+    video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+#else
     video::E_DRIVER_TYPE driverType = driverChoiceConsole();
+#endif
 
     if (driverType==video::EDT_COUNT)
         return 1;
@@ -306,6 +315,16 @@ int main()
 
             // We're all done drawing, so end the scene.
             driver->endScene();
+
+#if CONFORM_TEST
+            video::IImage *image = device->getVideoDriver()->createScreenShot();
+            if (image)
+            {
+                device->getVideoDriver()->writeImageToFile(image, "screenshot.bmp");
+                image->drop();
+            }
+            break;
+#endif
 
             int fps = driver->getFPS();
 

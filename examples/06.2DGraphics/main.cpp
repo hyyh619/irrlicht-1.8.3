@@ -18,6 +18,10 @@ using namespace irr;
 #pragma comment(lib, "Irrlicht.lib")
 #endif
 
+#ifndef CONFORM_TEST
+#define CONFORM_TEST 0
+#endif
+
 /*
    At first, we let the user select the driver type, then start up the engine, set
    a caption, and get a pointer to the video driver.
@@ -25,7 +29,12 @@ using namespace irr;
 int main()
 {
     // ask user for driver
+
+#if CONFORM_TEST
+    video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+#else
     video::E_DRIVER_TYPE driverType = driverChoiceConsole();
+#endif
 
     if (driverType==video::EDT_COUNT)
         return 1;
@@ -154,6 +163,16 @@ int main()
                                     core::rect<s32>(m.X - 20, m.Y - 20, m.X + 20, m.Y + 20));
 
             driver->endScene();
+
+#if CONFORM_TEST
+            video::IImage *image = device->getVideoDriver()->createScreenShot();
+            if (image)
+            {
+                device->getVideoDriver()->writeImageToFile(image, "screenshot.bmp");
+                image->drop();
+            }
+            break;
+#endif
         }
     }
 
