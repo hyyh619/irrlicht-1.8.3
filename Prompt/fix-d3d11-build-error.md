@@ -56,3 +56,13 @@
 错误(活动)	E0298	不允许使用继承成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1125		
 错误(活动)	E0020	未定义标识符 "CurrentRenderMode"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1147		
 错误(活动)	E0020	未定义标识符 "CurrentRenderMode"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1153		
+
+# 4.
+修复下面问题
+
+错误(活动)	E0020	未定义标识符 "SD3D11DepthStencilView"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	986		
+错误(活动)	E1578	case 标签值已经出现在此开关 所在行数:1062 中	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1065		
+错误(活动)	E0298	不允许使用继承成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1118		
+错误(活动)	E0298	不允许使用继承成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1125		
+错误(活动)	E0020	未定义标识符 "SD3D11DepthStencilView"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	285		
+错误(活动)	E0020	未定义标识符 "SD3D11DepthStencilView"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	287		

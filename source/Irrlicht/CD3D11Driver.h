@@ -27,6 +27,25 @@ namespace irr
 {
     namespace video
     {
+        struct SD3D11DepthStencilView : public IReferenceCounted
+        {
+            SD3D11DepthStencilView() : Surface(0)
+            {
+#ifdef _DEBUG
+                setDebugName("SD3D11DepthStencilView");
+#endif
+            }
+
+            virtual ~SD3D11DepthStencilView()
+            {
+                if (Surface)
+                    Surface->Release();
+            }
+
+            ID3D11DepthStencilView  *Surface;
+            core::dimension2du Size;
+        };
+
         class CD3D11Driver : public CNullDriver, IMaterialRendererServices
         {
 public:
@@ -281,6 +300,28 @@ private:
             virtual const core::dimension2d<u32>&getCurrentRenderTargetSize() const;
 
             void checkDepthBuffer(ITexture *tex);
+
+            s32 addShaderMaterial(const c8 *vertexShaderProgram, const c8 *pixelShaderProgram,
+                IShaderConstantSetCallBack *callback,
+                E_MATERIAL_TYPE baseMaterial, s32 userData);
+
+            virtual s32 addHighLevelShaderMaterial(
+                const c8 *vertexShaderProgram,
+                const c8 *vertexShaderEntryPointName = "main",
+                E_VERTEX_SHADER_TYPE vsCompileTarget = EVST_VS_4_0,
+                const c8 *pixelShaderProgram = 0,
+                const c8 *pixelShaderEntryPointName = "main",
+                E_PIXEL_SHADER_TYPE psCompileTarget = EPST_PS_4_0,
+                const c8 *geometryShaderProgram = 0,
+                const c8 *geometryShaderEntryPointName = "main",
+                E_GEOMETRY_SHADER_TYPE gsCompileTarget = EGST_GS_4_0,
+                scene::E_PRIMITIVE_TYPE inType = scene::EPT_TRIANGLES,
+                scene::E_PRIMITIVE_TYPE outType = scene::EPT_TRIANGLE_STRIP,
+                u32 verticesOut = 0,
+                IShaderConstantSetCallBack *callback = 0,
+                E_MATERIAL_TYPE baseMaterial = video::EMT_SOLID,
+                s32 userData = 0,
+                E_GPU_SHADING_LANGUAGE shadingLang = EGSL_DEFAULT);
 
             core::array<SD3D11DepthStencilView*>    DepthBuffers;
 
