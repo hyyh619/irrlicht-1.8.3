@@ -215,6 +215,8 @@ public:
                 return DriverWasReset;
             }
 
+            void removeDepthSurface(SD3D11DepthStencilView *depth);
+
             virtual ECOLOR_FORMAT getColorFormat() const;
 
             virtual core::dimension2du getMaxTextureSize() const;
@@ -306,6 +308,15 @@ public:
 
             core::stringc VendorName;
             u16           VendorID;
+
+            struct SD3D11DepthStencilView : public IReferenceCounted
+            {
+                SD3D11DepthStencilView() : DepthStencilView(0) {}
+                virtual ~SD3D11DepthStencilView() { if (DepthStencilView) DepthStencilView->Release(); }
+                ID3D11DepthStencilView *DepthStencilView;
+                core::dimension2du Size;
+            };
+            core::array<SD3D11DepthStencilView*> DepthBuffers;
 
             u32 MaxTextureUnits;
             u32 MaxUserClipPlanes;

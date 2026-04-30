@@ -103,6 +103,9 @@
     <Filter Include="Irrlicht\gui">
       <UniqueIdentifier>{da421793-4674-481c-be46-f7a44e78aee5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Irrlicht\video\Direct3D11">
+      <UniqueIdentifier>{b92505ac-9c0b-428b-9a57-07689e133854}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\IEventReceiver.h">
@@ -975,15 +978,6 @@
     <ClInclude Include="CD3D9Texture.h">
       <Filter>Irrlicht\video\Direct3D9</Filter>
     </ClInclude>
-    <ClInclude Include="CD3D11Driver.h">
-      <Filter>Irrlicht\video\Direct3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="CD3D11MaterialRenderer.h">
-      <Filter>Irrlicht\video\Direct3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="CD3D11Texture.h">
-      <Filter>Irrlicht\video\Direct3D11</Filter>
-    </ClInclude>
     <ClInclude Include="CDepthBuffer.h">
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClInclude>
@@ -1314,6 +1308,15 @@
     </ClInclude>
     <ClInclude Include="CCgMaterialRenderer.h">
       <Filter>Irrlicht\video</Filter>
+    </ClInclude>
+    <ClInclude Include="CD3D11Driver.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="CD3D11MaterialRenderer.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="CD3D11Texture.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1729,15 +1732,6 @@
     </ClCompile>
     <ClCompile Include="CD3D9Texture.cpp">
       <Filter>Irrlicht\video\Direct3D9</Filter>
-    </ClCompile>
-    <ClCompile Include="CD3D11Driver.cpp">
-      <Filter>Irrlicht\video\Direct3D11</Filter>
-    </ClCompile>
-    <ClCompile Include="CD3D11MaterialRenderer.cpp">
-      <Filter>Irrlicht\video\Direct3D11</Filter>
-    </ClCompile>
-    <ClCompile Include="CD3D11Texture.cpp">
-      <Filter>Irrlicht\video\Direct3D11</Filter>
     </ClCompile>
     <ClCompile Include="CBurningShader_Raster_Reference.cpp">
       <Filter>Irrlicht\video\Burning Video</Filter>
@@ -2257,6 +2251,15 @@
     </ClCompile>
     <ClCompile Include="CCgMaterialRenderer.cpp">
       <Filter>Irrlicht\video</Filter>
+    </ClCompile>
+    <ClCompile Include="CD3D11Driver.cpp">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="CD3D11MaterialRenderer.cpp">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="CD3D11Texture.cpp">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
