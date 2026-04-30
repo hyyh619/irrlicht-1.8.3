@@ -110,3 +110,9 @@ C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include
 错误	C2027	使用了未定义类型“irr::video::SDepthStencilSurface”	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	83		
 错误	C2664	“void irr::video::CD3D11Driver::removeDepthSurface(irr::video::SD3D11DepthStencilView *)”: 无法将参数 1 从“irr::video::SDepthStencilSurface *”转换为“irr::video::SD3D11DepthStencilView *”	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	84		
 错误	C2065	“ECF_A8R8G8B8”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	167		
+
+# 9.
+修复下列错误
+
+错误	LNK2019	无法解析的外部符号 CreateDXGIFactory1，函数 "public: bool __cdecl irr::video::CD3D11Driver::initDriver(struct HWND__ *,bool)" (?initDriver@CD3D11Driver@video@irr@@QEAA_NPEAUHWND__@@_N@Z) 中引用了该符号	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.obj	1		
+错误	LNK1120	1 个无法解析的外部命令	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\bin\Win64-visualstudio\Irrlicht.dll	1		
