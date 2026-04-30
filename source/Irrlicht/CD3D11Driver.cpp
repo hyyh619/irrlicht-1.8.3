@@ -196,7 +196,7 @@ namespace irr
 
             DXGIFactory->MakeWindowAssociation(hwnd, 0);
 
-            ID3D11Texture2D *backBuffer = 0;
+            ID3D11Texture2D    *backBuffer = 0;
             hr = SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
             if (FAILED(hr))
             {
@@ -225,7 +225,7 @@ namespace irr
             depthDesc.CPUAccessFlags        = 0;
             depthDesc.MiscFlags             = 0;
 
-            ID3D11Texture2D *depthTexture = 0;
+            ID3D11Texture2D    *depthTexture = 0;
             hr = pID3DDevice->CreateTexture2D(&depthDesc, 0, &depthTexture);
             if (FAILED(hr))
             {
@@ -390,7 +390,7 @@ namespace irr
         void CD3D11Driver::setTransform(E_TRANSFORMATION_STATE state, const core::matrix4 &mat)
         {
             Matrices[state] = mat;
-            if (state == ETS_MODEL)
+            if (state == ETS_WORLD)
                 Transformation3DChanged = true;
         }
 
@@ -425,10 +425,10 @@ namespace irr
 
         void CD3D11Driver::setViewPort(const core::rect<s32> &area)
         {
-            core::rect<s32>             vp          = area;
-            core::dimension2d<u32>      screenDim   = ScreenSize;
+            core::rect<s32>         vp          = area;
+            core::rect<s32>         rendert(0, 0, getCurrentRenderTargetSize().Width, getCurrentRenderTargetSize().Height);
 
-            vp.clip(screenDim);
+            vp.clipAgainst(rendert);
 
             D3D11_VIEWPORT    vpD3D;
             vpD3D.TopLeftX  = (FLOAT)vp.UpperLeftCorner.X;
