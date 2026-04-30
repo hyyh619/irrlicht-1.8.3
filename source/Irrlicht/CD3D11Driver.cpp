@@ -157,7 +157,6 @@ namespace irr
             SwapChainBufferDesc.Format                  = DXGI_FORMAT_B8G8R8A8_UNORM;
             SwapChainBufferDesc.ScanlineOrdering        = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
             SwapChainBufferDesc.Scaling                 = DXGI_MODE_SCALING_UNSPECIFIED;
-            SwapChainBufferDesc.Stereo                  = FALSE;
 
             SwapChainDesc.BufferDesc            = SwapChainBufferDesc;
             SwapChainDesc.SampleDesc.Count      = 1;
@@ -197,8 +196,8 @@ namespace irr
 
             DXGIFactory->MakeWindowAssociation(hwnd, 0);
 
-            ID3D11Texture    *backBuffer = 0;
-            hr = SwapChain->GetBuffer(0, __uuidof(ID3D11Texture), (void**)&backBuffer);
+            ID3D11Texture2D *backBuffer = 0;
+            hr = SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not get back buffer.", ELL_ERROR);
@@ -226,7 +225,7 @@ namespace irr
             depthDesc.CPUAccessFlags        = 0;
             depthDesc.MiscFlags             = 0;
 
-            ID3D11Texture    *depthTexture = 0;
+            ID3D11Texture2D *depthTexture = 0;
             hr = pID3DDevice->CreateTexture2D(&depthDesc, 0, &depthTexture);
             if (FAILED(hr))
             {

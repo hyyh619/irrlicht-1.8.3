@@ -49,7 +49,7 @@ public:
 
             virtual u32 getPitch() const;
 
-            ID3D11Texture* getD3D11Texture() const;
+            ID3D11Texture2D* getD3D11Texture() const;
 
             bool hasMipMaps() const;
 

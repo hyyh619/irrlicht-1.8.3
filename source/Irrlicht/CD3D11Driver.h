@@ -290,27 +290,20 @@ private:
             bool                LastTextureMipMapsAvailable[MATERIAL_MAX_TEXTURES];
             core::matrix4       Matrices[ETS_COUNT];
 
-            HMODULE                     D3D11Library;
-            IDXGIFactory1               *DXGIFactory;
-            IDXGIAdapter1               *Adapter;
-            core::dimension2d<u32>      CurrentRendertargetSize;
-
-            D3D11_VIEWPORT    Viewport;
-
-            HWND                WindowId;
-            core::rect<s32>     ViewPort;
-            core::rect<s32>     *SceneSourceRect;
-
-            D3D11_FEATURE_DATA_D3D10_X_HARDWARE_OPTIONS    Caps;
-
-            SIrrlichtCreationParameters    Params;
-
-            E_VERTEX_TYPE    LastVertexType;
-
-            SColorf    AmbientLight;
-
-            core::stringc       VendorName;
-            u16                 VendorID;
+            HMODULE                         D3D11Library;
+            IDXGIFactory1                   *DXGIFactory;
+            IDXGIAdapter1                   *Adapter;
+            core::dimension2d<u32>          CurrentRendertargetSize;
+            D3D11_VIEWPORT                  Viewport;
+            HWND                            WindowId;
+            core::rect<s32>                 ViewPort;
+            core::rect<s32>                 *SceneSourceRect;
+            UINT                            Caps;
+            SIrrlichtCreationParameters     Params;
+            E_VERTEX_TYPE                   LastVertexType;
+            SColorf                         AmbientLight;
+            core::stringc                   VendorName;
+            u16                             VendorID;
 
             struct SD3D11DepthStencilView : public IReferenceCounted
             {

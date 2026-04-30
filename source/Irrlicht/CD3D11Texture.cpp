@@ -129,7 +129,7 @@ namespace irr
         }
 
 
-        ID3D11Texture* CD3D11Texture::getD3D11Texture() const
+        ID3D11Texture2D* CD3D11Texture::getD3D11Texture() const
         {
             return Texture;
         }
