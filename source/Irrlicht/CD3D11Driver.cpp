@@ -12,6 +12,10 @@
 #include "SColor.h"
 #include "CD3D11Texture.h"
 #include "CD3D11MaterialRenderer.h"
+#include "CD3D11ShaderMaterialRenderer.h"
+#include "CD3D11NormalMapRenderer.h"
+#include "CD3D11ParallaxMapRenderer.h"
+#include "CD3D11HLSLMaterialRenderer.h"
 #include "SIrrCreationParameters.h"
 
 namespace irr
@@ -1087,7 +1091,31 @@ namespace irr
 
 
         void CD3D11Driver::createMaterialRenderers()
-        {}
+        {
+            s32 matType = -1;
+
+            new CD3D11MaterialRenderer(this, matType, "solid");
+            new CD3D11MaterialRenderer(this, matType, "solid_lightmap");
+            new CD3D11MaterialRenderer(this, matType, "solid_2_layer");
+            new CD3D11MaterialRenderer(this, matType, "translucent");
+            new CD3D11MaterialRenderer(this, matType, "translucent_2_layer");
+            new CD3D11MaterialRenderer(this, matType, "translucent_add_color");
+            new CD3D11MaterialRenderer(this, matType, "translucent_vertex_alpha");
+            new CD3D11MaterialRenderer(this, matType, "translucent_alpha_channel");
+            new CD3D11MaterialRenderer(this, matType, "translucent_alpha_channel_ref");
+            new CD3D11MaterialRenderer(this, matType, "one_texture_blend");
+            new CD3D11MaterialRenderer(this, matType, "lightmap_blend");
+            new CD3D11MaterialRenderer(this, matType, "detail_map");
+            new CD3D11MaterialRenderer(this, matType, "sphere_map");
+            new CD3D11MaterialRenderer(this, matType, "reflection_2_layer");
+            new CD3D11MaterialRenderer(this, matType, "transparent_reflection_2_layer");
+
+            if (queryFeature(video::EVDF_PIXEL_SHADER_1_1) && queryFeature(video::EVDF_VERTEX_SHADER_1_1))
+            {
+                new CD3D11NormalMapRenderer(pID3DDevice, pID3DDeviceContext, this, matType, getMaterialRenderer(EMT_SOLID));
+                new CD3D11ParallaxMapRenderer(pID3DDevice, pID3DDeviceContext, this, matType, getMaterialRenderer(EMT_SOLID));
+            }
+        }
 
 
         D3D11_TEXTURE_ADDRESS_MODE CD3D11Driver::getTextureWrapMode(const u8 clamp) const

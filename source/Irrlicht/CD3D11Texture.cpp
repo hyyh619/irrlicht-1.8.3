@@ -158,6 +158,12 @@ namespace irr
         }
 
 
+        ID3D11ShaderResourceView* CD3D11Texture::getShaderResourceView() const
+        {
+            return ShaderResourceView;
+        }
+
+
         void CD3D11Texture::createRenderTarget(const ECOLOR_FORMAT format)
         {
             if (!Device)

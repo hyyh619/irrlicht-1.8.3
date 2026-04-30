@@ -61,6 +61,8 @@ public:
 
             ID3D11RenderTargetView* getRenderTargetView();
 
+            ID3D11ShaderResourceView* getShaderResourceView() const;
+
 private:
             friend class CD3D11Driver;
 

@@ -48,6 +48,14 @@ namespace irr
             core::dimension2du Size;
         };
 
+        class CD3D11ShaderMaterialRenderer;
+        class CD3D11NormalMapRenderer;
+        class CD3D11ParallaxMapRenderer;
+
+#if defined(_IRR_COMPILE_WITH_CG_)
+        class CD3D11CgMaterialRenderer;
+#endif
+
         class CD3D11Driver : public CNullDriver, IMaterialRendererServices
         {
 public:
