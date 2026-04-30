@@ -648,9 +648,9 @@ namespace irr
             core::rect<s32>    clippedRect(pos);
 
             if (clip)
-                clippedRect.clip(*clip);
+                clippedRect.clipAgainst(*clip);
 
-            if (clippedRect.isEmpty())
+            if (!clippedRect.isValid())
                 return;
 
             core::position2d<s32>    pos2[4];
@@ -799,7 +799,7 @@ namespace irr
 
         void CD3D11Driver::draw3DLine(const core::vector3df &start, const core::vector3df &end, SColor color)
         {
-            video::SVertex3D    vertices[2];
+            video::S3DVertex    vertices[2];
 
             vertices[0].Pos     = start;
             vertices[0].Color   = color;
@@ -807,7 +807,7 @@ namespace irr
             vertices[1].Color   = color;
             u16    index[2] = { 0, 1 };
 
-            drawVertexPrimitiveList(vertices, 2, index, 1, video::EVT_STANDARD, scene::EPT_LINE_LIST, EIT_16BIT);
+            drawVertexPrimitiveList(vertices, 2, index, 1, video::EVT_STANDARD, scene::EPT_LINES, EIT_16BIT);
         }
 
 
@@ -819,21 +819,21 @@ namespace irr
 
         void CD3D11Driver::deleteAllDynamicLights()
         {
-            for (u32 i = 0; i < MaxLightDistance; ++i)
-                Lights[i].position = core::vector3df(0, 0, 0);
+            for (u32 i = 0; i < Lights.size(); ++i)
+                Lights[i].Position = core::vector3df(0, 0, 0);
 
-            LightCount      = 0;
+            Lights.clear();
             LastSetLight    = -1;
         }
 
 
         s32 CD3D11Driver::addDynamicLight(const SLight &light)
         {
-            if (LightCount >= MaxDynamicLights)
+            if (Lights.size() >= 32)
                 return -1;
 
-            Lights[LightCount] = light;
-            return LightCount++;
+            Lights.push_back(light);
+            return Lights.size() - 1;
         }
 
 
@@ -845,7 +845,7 @@ namespace irr
 
         u32 CD3D11Driver::getMaximalDynamicLightAmount() const
         {
-            return MaxDynamicLights;
+            return 32;
         }
 
 
