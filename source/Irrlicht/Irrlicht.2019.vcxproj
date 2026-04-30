@@ -2100,6 +2100,11 @@
     <ClCompile Include="CD3D11Driver.cpp" />
     <ClCompile Include="CD3D11MaterialRenderer.cpp" />
     <ClCompile Include="CD3D11Texture.cpp" />
+    <ClCompile Include="CD3D11ShaderMaterialRenderer.cpp" />
+    <ClCompile Include="CD3D11HLSLMaterialRenderer.cpp" />
+    <ClCompile Include="CD3D11NormalMapRenderer.cpp" />
+    <ClCompile Include="CD3D11ParallaxMapRenderer.cpp" />
+    <ClCompile Include="CD3D11CgMaterialRenderer.cpp" />
     <ClCompile Include="CBurningShader_Raster_Reference.cpp" />
     <ClCompile Include="CDepthBuffer.cpp" />
     <ClCompile Include="CSoftwareDriver2.cpp" />

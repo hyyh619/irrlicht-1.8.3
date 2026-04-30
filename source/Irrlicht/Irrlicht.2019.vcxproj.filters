@@ -1318,6 +1318,21 @@
     <ClInclude Include="CD3D11Texture.h">
       <Filter>Irrlicht\video\Direct3D11</Filter>
     </ClInclude>
+    <ClInclude Include="CD3D11ShaderMaterialRenderer.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="CD3D11HLSLMaterialRenderer.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="CD3D11NormalMapRenderer.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="CD3D11ParallaxMapRenderer.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="CD3D11CgMaterialRenderer.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\changes.txt">
@@ -2259,6 +2274,21 @@
       <Filter>Irrlicht\video\Direct3D11</Filter>
     </ClCompile>
     <ClCompile Include="CD3D11Texture.cpp">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="CD3D11ShaderMaterialRenderer.cpp">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="CD3D11HLSLMaterialRenderer.cpp">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="CD3D11NormalMapRenderer.cpp">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="CD3D11ParallaxMapRenderer.cpp">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="CD3D11CgMaterialRenderer.cpp">
       <Filter>Irrlicht\video\Direct3D11</Filter>
     </ClCompile>
   </ItemGroup>
