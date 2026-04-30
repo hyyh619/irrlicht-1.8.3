@@ -108,6 +108,11 @@ public:
                                                    E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
                                                    E_INDEX_TYPE iType);
 
+            void draw2D3DVertexPrimitiveList(const void *vertices,
+                                             u32 vertexCount, const void *indexList, u32 primitiveCount,
+                                             E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
+                                             E_INDEX_TYPE iType, bool is3D);
+
             virtual void draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos,
                                      const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect = 0,
                                      SColor color = SColor(255, 255, 255, 255), bool useAlphaChannelOfTexture = false);

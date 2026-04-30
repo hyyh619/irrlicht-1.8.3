@@ -531,7 +531,7 @@ namespace irr
         }
 
 
-        SHWBufferLink* CD3D11Driver::createHardwareBuffer(const scene::IMeshBuffer *mb)
+        CD3D11Driver::SHWBufferLink* CD3D11Driver::createHardwareBuffer(const scene::IMeshBuffer *mb)
         {
             return new SHWBufferLink_d3d11(mb);
         }
