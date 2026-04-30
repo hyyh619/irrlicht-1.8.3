@@ -327,19 +327,19 @@ namespace irr
         {
             switch (feature)
             {
-                case EVDF_RENDER_TARGET:
+                case EVDF_RENDER_TO_TARGET:
                     return true;
 
                 case EVDF_MULTITEXTURE:
                     return true;
 
-                case EVDF_BILINEAR_FILTERING:
+                case EVDF_BILINEAR_FILTER:
                     return true;
 
-                case EVDF_MIPMAP:
+                case EVDF_MIP_MAP:
                     return true;
 
-                case EVDF_MIPMAP_AUTO_UPDATE:
+                case EVDF_MIP_MAP_AUTO_UPDATE:
                     return false;
 
                 case EVDF_VERTEX_SHADER_1_1:
@@ -355,7 +355,7 @@ namespace irr
                 case EVDF_HARDWARE_TL:
                     return true;
 
-                case EVDF_TEXTURE_NSCRIBE:
+                case EVDF_TEXTURE_NSQUARE:
                     return true;
 
                 case EVDF_STENCIL_BUFFER:
@@ -364,17 +364,8 @@ namespace irr
                 case EVDF_ALPHA_TO_COVERAGE:
                     return AlphaToCoverageSupport;
 
-                case EVDF_COLOR_BUFFER:
+                case EVDF_COLOR_MASK:
                     return true;
-
-                case EVDF_DEPTH_BUFFER:
-                    return true;
-
-                case EVDFstencil_BUFFER:
-                    return true;
-
-                case EVDF_W_BUFFER:
-                    return false;
 
                 case EVDF_GEOMETRY_SHADER:
                     return true;
@@ -382,43 +373,13 @@ namespace irr
                 case EVDF_OCCLUSION_QUERY:
                     return OcclusionQuerySupport;
 
-                case EVDF_NIVERSE_CULLING:
-                    return true;
-
                 case EVDF_POLYGON_OFFSET:
                     return true;
 
                 case EVDF_BLEND_OPERATIONS:
                     return true;
 
-                case EVDF_BLEND_SEPARATE:
-                    return true;
-
-                case EVDF_TEXTURE_MIRROR:
-                    return true;
-
-                case EVDF_TEXTURE_WRAP:
-                    return true;
-
-                case EVDF_STEREO:
-                    return false;
-
-                case EVDF_COMPUTE_SHADER:
-                    return false;
-
-                case EVDF_MRT_INDEPNT_BIT_DEPTH:
-                    return false;
-
-                case EVDF_MRT_AUTOMSRT_BIND:
-                    return false;
-
-                case EVDF_EVALUATOR:
-                    return true;
-
-                case EVDF_POINT_SPRITE:
-                    return true;
-
-                case EVDF_VIRTUAL_COORDINATE:
+                case EVDF_TEXTURE_MATRIX:
                     return true;
             }
 
