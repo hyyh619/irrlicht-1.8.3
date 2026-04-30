@@ -38,9 +38,9 @@ public:
             virtual ~CD3D11Driver();
 
             virtual bool beginScene(bool backBuffer = true, bool zBuffer = true,
-                SColor color = SColor(255, 0, 0, 0),
-                const SExposedVideoData &videoData = SExposedVideoData(),
-                core::rect<s32> *sourceRect = 0);
+                                    SColor color = SColor(255, 0, 0, 0),
+                                    const SExposedVideoData &videoData = SExposedVideoData(),
+                                    core::rect<s32> *sourceRect = 0);
 
             virtual bool endScene();
 
@@ -51,12 +51,12 @@ public:
             virtual void setMaterial(const SMaterial &material);
 
             virtual bool setRenderTarget(video::ITexture *texture,
-                bool clearBackBuffer = true, bool clearZBuffer = true,
-                SColor color = video::SColor(0, 0, 0, 0));
+                                         bool clearBackBuffer = true, bool clearZBuffer = true,
+                                         SColor color = video::SColor(0, 0, 0, 0));
 
             virtual bool setRenderTarget(const core::array<video::IRenderTarget> &texture,
-                bool clearBackBuffer = true, bool clearZBuffer = true,
-                SColor color = video::SColor(0, 0, 0, 0));
+                                         bool clearBackBuffer = true, bool clearZBuffer = true,
+                                         SColor color = video::SColor(0, 0, 0, 0));
 
             virtual void setViewPort(const core::rect<s32> &area);
 
@@ -69,8 +69,8 @@ public:
                     vertexBuffer(0), indexBuffer(0),
                     vertexBufferSize(0), indexBufferSize(0) {}
 
-                ID3D11Buffer *vertexBuffer;
-                ID3D11Buffer *indexBuffer;
+                ID3D11Buffer    *vertexBuffer;
+                ID3D11Buffer    *indexBuffer;
 
                 u32 vertexBufferSize;
                 u32 indexBufferSize;
@@ -88,7 +88,7 @@ public:
             virtual void drawHardwareBuffer(SHWBufferLink *HWBuffer);
 
             virtual void addOcclusionQuery(scene::ISceneNode *node,
-                const scene::IMesh *mesh = 0);
+                                           const scene::IMesh *mesh = 0);
 
             virtual void removeOcclusionQuery(scene::ISceneNode *node);
 
@@ -99,42 +99,42 @@ public:
             virtual u32 getOcclusionQueryResult(scene::ISceneNode *node) const;
 
             virtual void drawVertexPrimitiveList(const void *vertices, u32 vertexCount,
-                const void *indexList, u32 primitiveCount,
-                E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
-                E_INDEX_TYPE iType);
+                                                 const void *indexList, u32 primitiveCount,
+                                                 E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
+                                                 E_INDEX_TYPE iType);
 
             virtual void draw2DVertexPrimitiveList(const void *vertices, u32 vertexCount,
-                const void *indexList, u32 primitiveCount,
-                E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
-                E_INDEX_TYPE iType);
+                                                   const void *indexList, u32 primitiveCount,
+                                                   E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
+                                                   E_INDEX_TYPE iType);
 
             virtual void draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos,
-                const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect = 0,
-                SColor color = SColor(255, 255, 255, 255), bool useAlphaChannelOfTexture = false);
+                                     const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect = 0,
+                                     SColor color = SColor(255, 255, 255, 255), bool useAlphaChannelOfTexture = false);
 
             virtual void draw2DImage(const video::ITexture *texture, const core::rect<s32> &destRect,
-                const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect = 0,
-                const video::SColor* const colors = 0, bool useAlphaChannelOfTexture = false);
+                                     const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect = 0,
+                                     const video::SColor* const colors = 0, bool useAlphaChannelOfTexture = false);
 
             virtual void draw2DImageBatch(const video::ITexture *texture,
-                const core::array<core::position2d<s32>> &positions,
-                const core::array<core::rect<s32>> &sourceRects,
-                const core::rect<s32> *clipRect = 0,
-                SColor color = SColor(255, 255, 255, 255),
-                bool useAlphaChannelOfTexture = false);
+                                          const core::array<core::position2d<s32> > &positions,
+                                          const core::array<core::rect<s32> > &sourceRects,
+                                          const core::rect<s32> *clipRect = 0,
+                                          SColor color = SColor(255, 255, 255, 255),
+                                          bool useAlphaChannelOfTexture = false);
 
             virtual void draw2DRectangle(const core::rect<s32> &pos,
-                SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown,
-                const core::rect<s32> *clip);
+                                         SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown,
+                                         const core::rect<s32> *clip);
 
             virtual void draw2DLine(const core::position2d<s32> &start,
-                const core::position2d<s32> &end,
-                SColor color = SColor(255, 255, 255, 255));
+                                    const core::position2d<s32> &end,
+                                    SColor color = SColor(255, 255, 255, 255));
 
             virtual void drawPixel(u32 x, u32 y, const SColor &color);
 
             virtual void draw3DLine(const core::vector3df &start,
-                const core::vector3df &end, SColor color = SColor(255, 255, 255, 255));
+                                    const core::vector3df &end, SColor color = SColor(255, 255, 255, 255));
 
             bool initDriver(HWND hwnd, bool pureSoftware);
 
@@ -153,22 +153,22 @@ public:
             virtual void drawStencilShadowVolume(const core::array<core::vector3df> &triangles, bool zfail = true, u32 debugDataVisible = 0);
 
             virtual void drawStencilShadow(bool clearStencilBuffer = false,
-                video::SColor leftUpEdge = video::SColor(0, 0, 0, 0),
-                video::SColor rightUpEdge = video::SColor(0, 0, 0, 0),
-                video::SColor leftDownEdge = video::SColor(0, 0, 0, 0),
-                video::SColor rightDownEdge = video::SColor(0, 0, 0, 0));
+                                           video::SColor leftUpEdge = video::SColor(0, 0, 0, 0),
+                                           video::SColor rightUpEdge = video::SColor(0, 0, 0, 0),
+                                           video::SColor leftDownEdge = video::SColor(0, 0, 0, 0),
+                                           video::SColor rightDownEdge = video::SColor(0, 0, 0, 0));
 
             virtual u32 getMaximalPrimitiveCount() const;
 
             virtual void setTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag, bool enabled);
 
             virtual void setFog(SColor color, E_FOG_TYPE fogType, f32 start,
-                f32 end, f32 density, bool pixelFog, bool rangeFog);
+                                f32 end, f32 density, bool pixelFog, bool rangeFog);
 
             virtual void OnResize(const core::dimension2d<u32> &size);
 
             virtual void setBasicRenderStates(const SMaterial &material, const SMaterial &lastMaterial,
-                bool resetAllRenderstates);
+                                              bool resetAllRenderstates);
 
             virtual E_DRIVER_TYPE getDriverType() const;
 
@@ -193,7 +193,7 @@ public:
             virtual IVideoDriver* getVideoDriver();
 
             virtual ITexture* addRenderTargetTexture(const core::dimension2d<u32> &size,
-                const io::path &name, const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
+                                                     const io::path &name, const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
 
             virtual void clearZBuffer();
 
@@ -231,23 +231,23 @@ public:
 
             inline FLOAT* colorToD3D(const SColor &col, FLOAT *f)
             {
-                f[0] = col.getRed() / 255.0f;
-                f[1] = col.getGreen() / 255.0f;
-                f[2] = col.getBlue() / 255.0f;
-                f[3] = col.getAlpha() / 255.0f;
+                f[0]    = col.getRed() / 255.0f;
+                f[1]    = col.getGreen() / 255.0f;
+                f[2]    = col.getBlue() / 255.0f;
+                f[3]    = col.getAlpha() / 255.0f;
                 return f;
             }
 
-            ID3D11Device *pID3DDevice;
-            ID3D11DeviceContext *pID3DDeviceContext;
-            IDXGISwapChain *SwapChain;
-            ID3D11RenderTargetView *BackBufferRenderTargetView;
-            ID3D11DepthStencilView *DepthStencilView;
+            ID3D11Device                *pID3DDevice;
+            ID3D11DeviceContext         *pID3DDeviceContext;
+            IDXGISwapChain              *SwapChain;
+            ID3D11RenderTargetView      *BackBufferRenderTargetView;
+            ID3D11DepthStencilView      *DepthStencilView;
 #ifdef _DEBUG
-            ID3D11Debug *pID3D11Debug;
+            ID3D11Debug    *pID3D11Debug;
 #endif
 
-        private:
+private:
 
             enum E_RENDER_MODE
             {
@@ -279,66 +279,69 @@ public:
 
             void checkDepthBuffer(ITexture *tex);
 
-            E_RENDER_MODE         CurrentRenderMode;
-            DXGI_MODE_DESC SwapChainBufferDesc;
-            DXGI_SWAP_CHAIN_DESC SwapChainDesc;
+            E_RENDER_MODE           CurrentRenderMode;
+            DXGI_MODE_DESC          SwapChainBufferDesc;
+            DXGI_SWAP_CHAIN_DESC    SwapChainDesc;
 
-            SMaterial      Material, LastMaterial;
-            bool           ResetRenderStates;
-            bool           Transformation3DChanged;
-            const ITexture *CurrentTexture[MATERIAL_MAX_TEXTURES];
-            bool           LastTextureMipMapsAvailable[MATERIAL_MAX_TEXTURES];
-            core::matrix4  Matrices[ETS_COUNT];
+            SMaterial           Material, LastMaterial;
+            bool                ResetRenderStates;
+            bool                Transformation3DChanged;
+            const ITexture      *CurrentTexture[MATERIAL_MAX_TEXTURES];
+            bool                LastTextureMipMapsAvailable[MATERIAL_MAX_TEXTURES];
+            core::matrix4       Matrices[ETS_COUNT];
 
-            HMODULE        D3D11Library;
-            IDXGIFactory1 *DXGIFactory;
-            IDXGIAdapter1 *Adapter;
-            core::dimension2d<u32> CurrentRendertargetSize;
+            HMODULE                     D3D11Library;
+            IDXGIFactory1               *DXGIFactory;
+            IDXGIAdapter1               *Adapter;
+            core::dimension2d<u32>      CurrentRendertargetSize;
 
-            D3D11_VIEWPORT Viewport;
+            D3D11_VIEWPORT    Viewport;
 
-            HWND            WindowId;
-            core::rect<s32> ViewPort;
-            core::rect<s32> *SceneSourceRect;
+            HWND                WindowId;
+            core::rect<s32>     ViewPort;
+            core::rect<s32>     *SceneSourceRect;
 
-            D3D11_FEATURE_DATA_D3D10_X_HARDWARE_OPTIONS Caps;
+            D3D11_FEATURE_DATA_D3D10_X_HARDWARE_OPTIONS    Caps;
 
-            SIrrlichtCreationParameters Params;
+            SIrrlichtCreationParameters    Params;
 
-            E_VERTEX_TYPE LastVertexType;
+            E_VERTEX_TYPE    LastVertexType;
 
-            SColorf AmbientLight;
+            SColorf    AmbientLight;
 
-            core::stringc VendorName;
-            u16           VendorID;
+            core::stringc       VendorName;
+            u16                 VendorID;
 
             struct SD3D11DepthStencilView : public IReferenceCounted
             {
                 SD3D11DepthStencilView() : DepthStencilView(0) {}
-                virtual ~SD3D11DepthStencilView() { if (DepthStencilView) DepthStencilView->Release(); }
-                ID3D11DepthStencilView *DepthStencilView;
-                core::dimension2du Size;
+                virtual ~SD3D11DepthStencilView()
+                {
+                    if (DepthStencilView)
+                        DepthStencilView->Release();
+                }
+                ID3D11DepthStencilView  *DepthStencilView;
+                core::dimension2du      Size;
             };
-            core::array<SD3D11DepthStencilView*> DepthBuffers;
+            core::array<SD3D11DepthStencilView*>    DepthBuffers;
 
-            u32 MaxTextureUnits;
-            u32 MaxUserClipPlanes;
-            u32 MaxMRTs;
-            u32 NumSetMRTs;
-            f32 MaxLightDistance;
-            s32 LastSetLight;
+            u32     MaxTextureUnits;
+            u32     MaxUserClipPlanes;
+            u32     MaxMRTs;
+            u32     NumSetMRTs;
+            f32     MaxLightDistance;
+            s32     LastSetLight;
 
-            ECOLOR_FORMAT ColorFormat;
-            DXGI_FORMAT     DXGIFormat;
-            bool          DeviceRemoved;
-            bool          DriverWasReset;
-            bool          OcclusionQuerySupport;
-            bool          AlphaToCoverageSupport;
+            ECOLOR_FORMAT       ColorFormat;
+            DXGI_FORMAT         DXGIFormat;
+            bool                DeviceRemoved;
+            bool                DriverWasReset;
+            bool                OcclusionQuerySupport;
+            bool                AlphaToCoverageSupport;
         };
 
         IVideoDriver* createDirectX11Driver(const SIrrlichtCreationParameters &params,
-            io::IFileSystem *io, HWND hwnd);
-
+                                            io::IFileSystem *io, HWND hwnd);
     } // end namespace video
 } // end namespace irr
 #endif // _IRR_COMPILE_WITH_DIRECT3D_11_

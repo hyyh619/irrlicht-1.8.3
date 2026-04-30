@@ -14,20 +14,17 @@ namespace irr
     namespace video
     {
         CD3D11MaterialRenderer::CD3D11MaterialRenderer(CD3D11Driver *driver, s32 &materialType,
-            const c8 *name)
+                                                       const c8 *name)
             : IMaterialRenderer(name), Driver(driver), MaterialType(materialType)
-        {
-        }
+        {}
 
 
         CD3D11MaterialRenderer::~CD3D11MaterialRenderer()
-        {
-        }
+        {}
 
 
         void CD3D11MaterialRenderer::OnSetMaterial(const SMaterial &material)
-        {
-        }
+        {}
 
 
         bool CD3D11MaterialRenderer::OnSetTexture(u32 textureIndex, ITexture *texture)
@@ -37,14 +34,11 @@ namespace irr
 
 
         void CD3D11MaterialRenderer::OnSetConstants(IMaterialRendererServices *services, s32 userData)
-        {
-        }
+        {}
 
 
         void CD3D11MaterialRenderer::PostRender()
-        {
-        }
-
+        {}
     } // end namespace video
 } // end namespace irr
 #endif // _IRR_COMPILE_WITH_DIRECT3D_11_

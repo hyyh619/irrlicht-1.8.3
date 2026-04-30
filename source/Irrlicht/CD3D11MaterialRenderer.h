@@ -22,7 +22,7 @@ namespace irr
 public:
 
             CD3D11MaterialRenderer(CD3D11Driver *driver, s32 &materialType,
-                const c8 *name);
+                                   const c8 *name);
 
             virtual ~CD3D11MaterialRenderer();
 
@@ -31,10 +31,10 @@ public:
             virtual void OnSetConstants(IMaterialRendererServices *services, s32 userData);
             virtual void PostRender();
 
-        private:
+private:
 
-            CD3D11Driver *Driver;
-            s32 &MaterialType;
+            CD3D11Driver    *Driver;
+            s32             &MaterialType;
         };
     } // end namespace video
 } // end namespace irr

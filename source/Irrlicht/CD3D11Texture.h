@@ -28,10 +28,10 @@ namespace irr
 public:
 
             CD3D11Texture(IImage *image, CD3D11Driver *driver,
-                u32 flags, const io::path &name, void *mipmapData = 0);
+                          u32 flags, const io::path &name, void *mipmapData = 0);
 
             CD3D11Texture(CD3D11Driver *driver, const core::dimension2d<u32> &size, const io::path &name,
-                const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
+                          const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
 
             virtual ~CD3D11Texture();
 
@@ -59,7 +59,7 @@ public:
 
             ID3D11RenderTargetView* getRenderTargetView();
 
-        private:
+private:
             friend class CD3D11Driver;
 
             void createRenderTarget(const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN);
@@ -71,29 +71,29 @@ public:
             bool createMipMaps(u32 level = 1);
 
             void copy16BitMipMap(char *src, char *tgt,
-                s32 width, s32 height,  s32 pitchsrc, s32 pitchtgt) const;
+                                 s32 width, s32 height,  s32 pitchsrc, s32 pitchtgt) const;
 
             void copy32BitMipMap(char *src, char *tgt,
-                s32 width, s32 height,  s32 pitchsrc, s32 pitchtgt) const;
+                                 s32 width, s32 height,  s32 pitchsrc, s32 pitchtgt) const;
 
             void setPitch(DXGI_FORMAT dxgiFormat);
 
-            ID3D11Device            *Device;
-            ID3D11Texture2D         *Texture;
-            ID3D11ShaderResourceView *ShaderResourceView;
-            ID3D11RenderTargetView  *RenderTargetView;
-            CD3D11Driver            *Driver;
-            SDepthStencilSurface   *DepthSurface;
-            core::dimension2d<u32> TextureSize;
-            core::dimension2d<u32> ImageSize;
-            s32                    Pitch;
-            u32                    MipLevelLocked;
-            ECOLOR_FORMAT          ColorFormat;
-            DXGI_FORMAT            DXGIFormat;
+            ID3D11Device                *Device;
+            ID3D11Texture2D             *Texture;
+            ID3D11ShaderResourceView    *ShaderResourceView;
+            ID3D11RenderTargetView      *RenderTargetView;
+            CD3D11Driver                *Driver;
+            SDepthStencilSurface        *DepthSurface;
+            core::dimension2d<u32>      TextureSize;
+            core::dimension2d<u32>      ImageSize;
+            s32                         Pitch;
+            u32                         MipLevelLocked;
+            ECOLOR_FORMAT               ColorFormat;
+            DXGI_FORMAT                 DXGIFormat;
 
-            bool HasMipMaps;
-            bool HardwareMipMaps;
-            bool IsRenderTarget;
+            bool    HasMipMaps;
+            bool    HardwareMipMaps;
+            bool    IsRenderTarget;
         };
     } // end namespace video
 } // end namespace irr
