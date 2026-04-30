@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -1143,6 +1143,9 @@
     <ClInclude Include="CD3D9ParallaxMapRenderer.h" />
     <ClInclude Include="CD3D9ShaderMaterialRenderer.h" />
     <ClInclude Include="CD3D9Texture.h" />
+    <ClInclude Include="CD3D11Driver.h" />
+    <ClInclude Include="CD3D11MaterialRenderer.h" />
+    <ClInclude Include="CD3D11Texture.h" />
     <ClInclude Include="CDepthBuffer.h" />
     <ClInclude Include="CSoftware2MaterialRenderer.h" />
     <ClInclude Include="CSoftwareDriver2.h" />
@@ -1389,6 +1392,9 @@
     <ClCompile Include="CD3D9ParallaxMapRenderer.cpp" />
     <ClCompile Include="CD3D9ShaderMaterialRenderer.cpp" />
     <ClCompile Include="CD3D9Texture.cpp" />
+    <ClCompile Include="CD3D11Driver.cpp" />
+    <ClCompile Include="CD3D11MaterialRenderer.cpp" />
+    <ClCompile Include="CD3D11Texture.cpp" />
     <ClCompile Include="CBurningShader_Raster_Reference.cpp" />
     <ClCompile Include="CDepthBuffer.cpp" />
     <ClCompile Include="CSoftwareDriver2.cpp" />

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="include">
@@ -975,6 +975,15 @@
     <ClInclude Include="CD3D9Texture.h">
       <Filter>Irrlicht\video\Direct3D9</Filter>
     </ClInclude>
+    <ClInclude Include="CD3D11Driver.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="CD3D11MaterialRenderer.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="CD3D11Texture.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClInclude>
     <ClInclude Include="CDepthBuffer.h">
       <Filter>Irrlicht\video\Burning Video</Filter>
     </ClInclude>
@@ -1720,6 +1729,15 @@
     </ClCompile>
     <ClCompile Include="CD3D9Texture.cpp">
       <Filter>Irrlicht\video\Direct3D9</Filter>
+    </ClCompile>
+    <ClCompile Include="CD3D11Driver.cpp">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="CD3D11MaterialRenderer.cpp">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="CD3D11Texture.cpp">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
     </ClCompile>
     <ClCompile Include="CBurningShader_Raster_Reference.cpp">
       <Filter>Irrlicht\video\Burning Video</Filter>
