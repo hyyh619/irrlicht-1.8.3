@@ -9,6 +9,7 @@
 
 #include "os.h"
 #include "S3DVertex.h"
+#include "SColor.h"
 #include "CD3D11Texture.h"
 #include "CD3D11MaterialRenderer.h"
 #include "SIrrCreationParameters.h"
@@ -1012,34 +1013,34 @@ namespace irr
         {
             switch (format)
             {
-                case ECF_A1R5G5B5:
+                case ECOLOR_FORMAT::ECF_A1R5G5B5:
                     return DXGI_FORMAT_B5G5R5A1_UNORM;
 
-                case ECF_R5G6B5:
+                case ECOLOR_FORMAT::ECF_R5G6B5:
                     return DXGI_FORMAT_B5G6R5_UNORM;
 
-                case ECF_R8G8B8:
+                case ECOLOR_FORMAT::ECF_R8G8B8:
                     return DXGI_FORMAT_B8G8R8_UNORM;
 
-                case ECF_A8R8G8B8:
+                case ECOLOR_FORMAT::ECF_A8R8G8B8:
                     return DXGI_FORMAT_B8G8R8A8_UNORM;
 
-                case ECF_R16F:
+                case ECOLOR_FORMAT::ECF_R16F:
                     return DXGI_FORMAT_R16_FLOAT;
 
-                case ECF_G16R16F:
+                case ECOLOR_FORMAT::ECF_G16R16F:
                     return DXGI_FORMAT_R16G16_FLOAT;
 
-                case ECF_A16B16G16R16F:
+                case ECOLOR_FORMAT::ECF_A16B16G16R16F:
                     return DXGI_FORMAT_R16G16B16A16_FLOAT;
 
-                case ECF_R32F:
+                case ECOLOR_FORMAT::ECF_R32F:
                     return DXGI_FORMAT_R32_FLOAT;
 
-                case ECF_G32R32F:
+                case ECOLOR_FORMAT::ECF_G32R32F:
                     return DXGI_FORMAT_R32G32_FLOAT;
 
-                case ECF_A32B32G32R32F:
+                case ECOLOR_FORMAT::ECF_A32B32G32R32F:
                     return DXGI_FORMAT_R32G32B32A32_FLOAT;
 
                 default:
@@ -1053,37 +1054,37 @@ namespace irr
             switch (format)
             {
                 case DXGI_FORMAT_B5G5R5A1_UNORM:
-                    return ECF_A1R5G5B5;
+                    return ECOLOR_FORMAT::ECF_A1R5G5B5;
 
                 case DXGI_FORMAT_B5G6R5_UNORM:
-                    return ECF_R5G6B5;
+                    return ECOLOR_FORMAT::ECF_R5G6B5;
 
                 case DXGI_FORMAT_B8G8R8_UNORM:
-                    return ECF_R8G8B8;
+                    return ECOLOR_FORMAT::ECF_R8G8B8;
 
                 case DXGI_FORMAT_B8G8R8A8_UNORM:
-                    return ECF_A8R8G8B8;
+                    return ECOLOR_FORMAT::ECF_A8R8G8B8;
 
                 case DXGI_FORMAT_R16_FLOAT:
-                    return ECF_R16F;
+                    return ECOLOR_FORMAT::ECF_R16F;
 
                 case DXGI_FORMAT_R16G16_FLOAT:
-                    return ECF_G16R16F;
+                    return ECOLOR_FORMAT::ECF_G16R16F;
 
                 case DXGI_FORMAT_R16G16B16A16_FLOAT:
-                    return ECF_A16B16G16R16F;
+                    return ECOLOR_FORMAT::ECF_A16B16G16R16F;
 
                 case DXGI_FORMAT_R32_FLOAT:
-                    return ECF_R32F;
+                    return ECOLOR_FORMAT::ECF_R32F;
 
                 case DXGI_FORMAT_R32G32_FLOAT:
-                    return ECF_G32R32F;
+                    return ECOLOR_FORMAT::ECF_G32R32F;
 
                 case DXGI_FORMAT_R32G32B32A32_FLOAT:
-                    return ECF_A32B32G32R32F;
+                    return ECOLOR_FORMAT::ECF_A32B32G32R32F;
 
                 default:
-                    return ECF_A8R8G8B8;
+                    return ECOLOR_FORMAT::ECF_A8R8G8B8;
             }
         }
 
@@ -1092,7 +1093,7 @@ namespace irr
         {}
 
 
-        D3D11_TEXTURE_ADDRESS CD3D11Driver::getTextureWrapMode(const u8 clamp) const
+        D3D11_TEXTURE_ADDRESS_MODE CD3D11Driver::getTextureWrapMode(const u8 clamp) const
         {
             return D3D11_TEXTURE_ADDRESS_WRAP;
         }

@@ -220,8 +220,6 @@ public:
                 return DriverWasReset;
             }
 
-            void removeDepthSurface(SD3D11DepthStencilView *depth);
-
             virtual ECOLOR_FORMAT getColorFormat() const;
 
             virtual core::dimension2du getMaxTextureSize() const;
@@ -232,7 +230,7 @@ public:
 
             void createMaterialRenderers();
 
-            D3D11_TEXTURE_ADDRESS getTextureWrapMode(const u8 clamp) const;
+            D3D11_TEXTURE_ADDRESS_MODE getTextureWrapMode(const u8 clamp) const;
 
             inline FLOAT* colorToD3D(const SColor &col, FLOAT *f)
             {
@@ -284,7 +282,20 @@ private:
 
             void checkDepthBuffer(ITexture *tex);
 
-            E_RENDER_MODE           CurrentRenderMode;
+            struct SD3D11DepthStencilView : public IReferenceCounted
+            {
+                SD3D11DepthStencilView() : DepthStencilView(0) {}
+                virtual ~SD3D11DepthStencilView()
+                {
+                    if (DepthStencilView)
+                        DepthStencilView->Release();
+                }
+                ID3D11DepthStencilView  *DepthStencilView;
+                core::dimension2du      Size;
+            };
+            core::array<SD3D11DepthStencilView*>    DepthBuffers;
+
+            void removeDepthSurface(SD3D11DepthStencilView *depth);
             DXGI_MODE_DESC          SwapChainBufferDesc;
             DXGI_SWAP_CHAIN_DESC    SwapChainDesc;
 
