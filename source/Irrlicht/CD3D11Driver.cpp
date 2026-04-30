@@ -1020,7 +1020,7 @@ namespace irr
                     return DXGI_FORMAT_B5G6R5_UNORM;
 
                 case ECOLOR_FORMAT::ECF_R8G8B8:
-                    return DXGI_FORMAT_B8G8R8_UNORM;
+                    return DXGI_FORMAT_B8G8R8A8_UNORM;
 
                 case ECOLOR_FORMAT::ECF_A8R8G8B8:
                     return DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -1059,7 +1059,7 @@ namespace irr
                 case DXGI_FORMAT_B5G6R5_UNORM:
                     return ECOLOR_FORMAT::ECF_R5G6B5;
 
-                case DXGI_FORMAT_B8G8R8_UNORM:
+                case DXGI_FORMAT_B8G8R8A8_UNORM:
                     return ECOLOR_FORMAT::ECF_R8G8B8;
 
                 case DXGI_FORMAT_B8G8R8A8_UNORM:

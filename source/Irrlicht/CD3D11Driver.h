@@ -282,17 +282,6 @@ private:
 
             void checkDepthBuffer(ITexture *tex);
 
-            struct SD3D11DepthStencilView : public IReferenceCounted
-            {
-                SD3D11DepthStencilView() : DepthStencilView(0) {}
-                virtual ~SD3D11DepthStencilView()
-                {
-                    if (DepthStencilView)
-                        DepthStencilView->Release();
-                }
-                ID3D11DepthStencilView  *DepthStencilView;
-                core::dimension2du      Size;
-            };
             core::array<SD3D11DepthStencilView*>    DepthBuffers;
 
             void removeDepthSurface(SD3D11DepthStencilView *depth);
@@ -321,19 +310,6 @@ private:
             core::stringc                   VendorName;
             u16                             VendorID;
 
-            struct SD3D11DepthStencilView : public IReferenceCounted
-            {
-                SD3D11DepthStencilView() : DepthStencilView(0) {}
-                virtual ~SD3D11DepthStencilView()
-                {
-                    if (DepthStencilView)
-                        DepthStencilView->Release();
-                }
-                ID3D11DepthStencilView  *DepthStencilView;
-                core::dimension2du      Size;
-            };
-            core::array<SD3D11DepthStencilView*>    DepthBuffers;
-
             u32     MaxTextureUnits;
             u32     MaxUserClipPlanes;
             u32     MaxMRTs;
@@ -347,6 +323,8 @@ private:
             bool                DriverWasReset;
             bool                OcclusionQuerySupport;
             bool                AlphaToCoverageSupport;
+
+            E_RENDER_MODE       CurrentRenderMode;
         };
 
         IVideoDriver* createDirectX11Driver(const SIrrlichtCreationParameters &params,

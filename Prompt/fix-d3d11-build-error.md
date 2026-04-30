@@ -43,3 +43,16 @@
 错误(活动)	E0020	未定义标识符 "SD3D11DepthStencilView"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	223		
 错误(活动)	E0020	未定义标识符 "D3D11_TEXTURE_ADDRESS"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	235		
 
+# 3.
+修复下面问题
+
+错误(活动)	E0292	"CurrentRenderMode" 不是类 "irr::video::CD3D11Driver" 的非静态数据成员或基类	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	22		
+错误(活动)	E0020	未定义标识符 "CurrentRenderMode"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	503		
+错误(活动)	E0020	未定义标识符 "CurrentRenderMode"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	513		
+错误(活动)	E0147	声明与 "void irr::video::CD3D11Driver::removeDepthSurface(irr::video::CD3D11Driver::SD3D11DepthStencilView *depth)" (已声明 所在行数:298，所属文件:"C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h") 不兼容	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	986		
+错误(活动)	E0020	未定义标识符 "DXGI_FORMAT_B8G8R8_UNORM"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1023		
+错误(活动)	E0020	未定义标识符 "DXGI_FORMAT_B8G8R8_UNORM"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1062		
+错误(活动)	E0298	不允许使用继承成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1118		
+错误(活动)	E0298	不允许使用继承成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1125		
+错误(活动)	E0020	未定义标识符 "CurrentRenderMode"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1147		
+错误(活动)	E0020	未定义标识符 "CurrentRenderMode"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1153		
