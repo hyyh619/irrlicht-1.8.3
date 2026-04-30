@@ -249,13 +249,12 @@ namespace irr
             Viewport.MaxDepth   = 1.0f;
 
             CurrentRendertargetSize = currentDim;
-            Rectu32    driverInitArea(0, 0, currentDim.Width, currentDim.Height);
+            core::rect<s32>    driverInitArea(0, 0, currentDim.Width, currentDim.Height);
             setViewPort(driverInitArea);
 
-            mcp = core::matrix4();
-            setTransform(ETS_VIEW, mcp);
-            setTransform(ETS_PROJECTION, mcp);
-            setTransform(ETS_MODEL, mcp);
+            setTransform(ETS_VIEW, core::IdentityMatrix);
+            setTransform(ETS_PROJECTION, core::IdentityMatrix);
+            setTransform(ETS_WORLD, core::IdentityMatrix);
 
             return true;
         }
