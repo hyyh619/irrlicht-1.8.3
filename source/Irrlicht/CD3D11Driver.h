@@ -243,6 +243,9 @@ public:
             IDXGISwapChain *SwapChain;
             ID3D11RenderTargetView *BackBufferRenderTargetView;
             ID3D11DepthStencilView *DepthStencilView;
+#ifdef _DEBUG
+            ID3D11Debug *pID3D11Debug;
+#endif
 
         private:
 
