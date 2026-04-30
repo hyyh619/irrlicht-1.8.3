@@ -27,24 +27,6 @@ namespace irr
 {
     namespace video
     {
-        struct SD3D11DepthStencilView : public IReferenceCounted
-        {
-            SD3D11DepthStencilView() : DepthStencilView(0)
-            {
-            #ifdef _DEBUG
-                setDebugName("SD3D11DepthStencilView");
-            #endif
-            }
-            virtual ~SD3D11DepthStencilView()
-            {
-                if (DepthStencilView)
-                    DepthStencilView->Release();
-            }
-
-            ID3D11DepthStencilView *DepthStencilView;
-            core::dimension2du Size;
-        };
-
         class CD3D11Driver : public CNullDriver, IMaterialRendererServices
         {
 public:
@@ -233,8 +215,6 @@ public:
                 return DriverWasReset;
             }
 
-            void removeDepthSurface(SD3D11DepthStencilView *depth);
-
             virtual ECOLOR_FORMAT getColorFormat() const;
 
             virtual core::dimension2du getMaxTextureSize() const;
@@ -245,12 +225,7 @@ public:
 
             void createMaterialRenderers();
 
-            void draw2D3DVertexPrimitiveList(const void *vertices,
-                u32 vertexCount, const void *indexList, u32 primitiveCount,
-                E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
-                E_INDEX_TYPE iType, bool is3D);
-
-            D3D11_TEXTURE_ADDRESS getTextureWrapMode(const u8 clamp);
+            D3D11_TEXTURE_ADDRESS getTextureWrapMode(const u8 clamp) const;
 
             inline FLOAT* colorToD3D(const SColor &col, FLOAT *f)
             {
@@ -260,6 +235,12 @@ public:
                 f[3] = col.getAlpha() / 255.0f;
                 return f;
             }
+
+            ID3D11Device *pID3DDevice;
+            ID3D11DeviceContext *pID3DDeviceContext;
+            IDXGISwapChain *SwapChain;
+            ID3D11RenderTargetView *BackBufferRenderTargetView;
+            ID3D11DepthStencilView *DepthStencilView;
 
         private:
 
@@ -293,28 +274,6 @@ public:
 
             void checkDepthBuffer(ITexture *tex);
 
-            s32 addShaderMaterial(const c8 *vertexShaderProgram, const c8 *pixelShaderProgram,
-                IShaderConstantSetCallBack *callback,
-                E_MATERIAL_TYPE baseMaterial, s32 userData);
-
-            virtual s32 addHighLevelShaderMaterial(
-                const c8 *vertexShaderProgram,
-                const c8 *vertexShaderEntryPointName,
-                E_VERTEX_SHADER_TYPE vsCompileTarget,
-                const c8 *pixelShaderProgram,
-                const c8 *pixelShaderEntryPointName,
-                E_PIXEL_SHADER_TYPE psCompileTarget,
-                const c8 *geometryShaderProgram,
-                const c8 *geometryShaderEntryPointName = "main",
-                E_GEOMETRY_SHADER_TYPE gsCompileTarget = EGST_GS_4_0,
-                scene::E_PRIMITIVE_TYPE inType = scene::EPT_TRIANGLES,
-                scene::E_PRIMITIVE_TYPE outType = scene::EPT_TRIANGLE_STRIP,
-                u32 verticesOut = 0,
-                IShaderConstantSetCallBack *callback = 0,
-                E_MATERIAL_TYPE baseMaterial = video::EMT_SOLID,
-                s32 userData = 0,
-                E_GPU_SHADING_LANGUAGE shadingLang = EGSL_DEFAULT);
-
             E_RENDER_MODE         CurrentRenderMode;
             DXGI_MODE_DESC SwapChainBufferDesc;
             DXGI_SWAP_CHAIN_DESC SwapChainDesc;
@@ -329,17 +288,12 @@ public:
             HMODULE        D3D11Library;
             IDXGIFactory1 *DXGIFactory;
             IDXGIAdapter1 *Adapter;
-            ID3D11Device *pID3DDevice;
-            ID3D11DeviceContext *pID3DDeviceContext;
-            IDXGISwapChain *SwapChain;
-
-            ID3D11RenderTargetView *BackBufferRenderTargetView;
-            ID3D11DepthStencilView *DepthStencilView;
             core::dimension2d<u32> CurrentRendertargetSize;
 
             D3D11_VIEWPORT Viewport;
 
             HWND            WindowId;
+            core::rect<s32> ViewPort;
             core::rect<s32> *SceneSourceRect;
 
             D3D11_FEATURE_DATA_D3D10_X_HARDWARE_OPTIONS Caps;
@@ -353,21 +307,12 @@ public:
             core::stringc VendorName;
             u16           VendorID;
 
-            core::array<SD3D11DepthStencilView*> DepthBuffers;
-
             u32 MaxTextureUnits;
             u32 MaxUserClipPlanes;
             u32 MaxMRTs;
             u32 NumSetMRTs;
             f32 MaxLightDistance;
             s32 LastSetLight;
-
-            enum E_CACHE_2D_ATTRIBUTES
-            {
-                EC2D_ALPHA         = 0x1,
-                EC2D_TEXTURE       = 0x2,
-                EC2D_ALPHA_CHANNEL = 0x4
-            };
 
             ECOLOR_FORMAT ColorFormat;
             DXGI_FORMAT     DXGIFormat;
