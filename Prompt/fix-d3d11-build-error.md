@@ -96,3 +96,9 @@
 错误(活动)	E0020	未定义标识符 "BYTE"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	101		
 错误(活动)	E0020	未定义标识符 "BYTE"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	102		
 错误(活动)	E0020	未定义标识符 "BYTE"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	107		
+
+# 7.
+dxgitype.h同时在下面两个目录中都有，造成定义重复，未定义标识符 "BOOL"等问题。
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include
+我只想使用最新的C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared下面的头文件。该对Irrlicht.2019.vcxproj如何处理
