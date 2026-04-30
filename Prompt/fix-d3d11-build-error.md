@@ -102,3 +102,11 @@ dxgitype.h同时在下面两个目录中都有，造成定义重复，未定义�
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include
 我只想使用最新的C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared下面的头文件。该对Irrlicht.2019.vcxproj如何处理
+
+# 8.
+修复下列错误
+
+错误	C2665	“irr::video::IMaterialRenderer::IMaterialRenderer”: 没有重载函数可以转换所有参数类型	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.cpp	18		
+错误	C2027	使用了未定义类型“irr::video::SDepthStencilSurface”	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	83		
+错误	C2664	“void irr::video::CD3D11Driver::removeDepthSurface(irr::video::SD3D11DepthStencilView *)”: 无法将参数 1 从“irr::video::SDepthStencilSurface *”转换为“irr::video::SD3D11DepthStencilView *”	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	84		
+错误	C2065	“ECF_A8R8G8B8”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	167		

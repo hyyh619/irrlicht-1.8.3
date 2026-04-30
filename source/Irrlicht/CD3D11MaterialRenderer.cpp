@@ -15,7 +15,7 @@ namespace irr
     {
         CD3D11MaterialRenderer::CD3D11MaterialRenderer(CD3D11Driver *driver, s32 &materialType,
                                                        const c8 *name)
-            : IMaterialRenderer(name), Driver(driver), MaterialType(materialType)
+            : Driver(driver), MaterialType(materialType)
         {}
 
 

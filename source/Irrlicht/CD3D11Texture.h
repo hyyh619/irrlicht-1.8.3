@@ -23,7 +23,7 @@ namespace irr
     namespace video
     {
         class CD3D11Driver;
-        struct SDepthStencilSurface;
+        struct SD3D11DepthStencilView;
 
         class CD3D11Texture : public ITexture
         {
@@ -85,7 +85,7 @@ private:
             ID3D11ShaderResourceView    *ShaderResourceView;
             ID3D11RenderTargetView      *RenderTargetView;
             CD3D11Driver                *Driver;
-            SDepthStencilSurface        *DepthSurface;
+            SD3D11DepthStencilView        *DepthSurface;
             core::dimension2d<u32>      TextureSize;
             core::dimension2d<u32>      ImageSize;
             s32                         Pitch;

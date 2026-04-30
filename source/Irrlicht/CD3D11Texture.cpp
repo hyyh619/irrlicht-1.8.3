@@ -8,6 +8,7 @@
 #define _IRR_DONT_DO_MEMORY_DEBUGGING_HERE
 #include "CD3D11Texture.h"
 #include "CD3D11Driver.h"
+#include "SColor.h"
 #include "os.h"
 
 namespace irr
@@ -81,7 +82,7 @@ namespace irr
             if (DepthSurface)
             {
                 if (DepthSurface->drop())
-                    Driver->removeDepthSurface(DepthSurface);
+                    Driver->removeDepthSurface(reinterpret_cast<SD3D11DepthStencilView*>(DepthSurface));
             }
 
             if (Device)
@@ -164,7 +165,7 @@ namespace irr
 
             ECOLOR_FORMAT    colorFormat = format;
             if (colorFormat == ECOLOR_FORMAT::ECF_UNKNOWN)
-                colorFormat = ECF_A8R8G8B8;
+                colorFormat = ECOLOR_FORMAT::ECF_A8R8G8B8;
 
             DXGIFormat = Driver->getDXGIFormatFromColorFormat(colorFormat);
 
