@@ -362,7 +362,7 @@
       <TypeLibraryName>.\..\Debug/Irrlicht.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\include;zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Windows Kits\10\Include\10.0.26100.0;..\..\include;zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_WINDOWS;_USRDLL;IRRLICHT_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions); _ITERATOR_DEBUG_LEVEL=0</PreprocessorDefinitions>
       <ExceptionHandling>
       </ExceptionHandling>

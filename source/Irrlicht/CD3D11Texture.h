@@ -14,6 +14,7 @@
 #include "irrMath.h"
 #endif
 #include <d3d11.h>
+#include <dxgitype.h>
 #include <dxgi1_2.h>
 
 namespace irr

@@ -66,3 +66,33 @@
 错误(活动)	E0298	不允许使用继承成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1125		
 错误(活动)	E0020	未定义标识符 "SD3D11DepthStencilView"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	285		
 错误(活动)	E0020	未定义标识符 "SD3D11DepthStencilView"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	287		
+
+# 5.
+修复下面问题
+	
+错误	C2065	“SD3D11DepthStencilView”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	285		
+错误	C2059	语法错误:“>”	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	285		
+错误	C2061	语法错误: 标识符“SD3D11DepthStencilView”	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	287		
+错误	C2065	“SD3D11DepthStencilView”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	986		
+错误	C2065	“depth”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	986		
+错误	C2761	“void irr::video::CD3D11Driver::removeDepthSurface(void)”: 不允许重新声明成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	986		
+错误	C2143	语法错误: 缺少“;”(在“{”的前面)	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	987		
+错误	C2447	“{”: 缺少函数标题(是否是老式的形式表?)	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	987		
+错误	C2196	case 值“DXGI_FORMAT_B8G8R8A8_UNORM”已使用	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1065		
+错误	C2509	“addShaderMaterial”: 成员函数没有在“irr::video::CD3D11Driver”中声明	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1118		
+错误	C2509	“addHighLevelShaderMaterial”: 成员函数没有在“irr::video::CD3D11Driver”中声明	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1125		
+
+# 6.
+修复下面问题
+	
+错误(活动)	E0020	未定义标识符 "BOOL"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	52		
+错误(活动)	E0020	未定义标识符 "BOOL"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	52		
+错误(活动)	E0020	未定义标识符 "UINT"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	55		
+错误(活动)	E0020	未定义标识符 "UINT"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	55		
+错误(活动)	E0020	未定义标识符 "UINT"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	85		
+错误(活动)	E0020	未定义标识符 "UINT"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	86		
+错误(活动)	E0020	未定义标识符 "BYTE"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	95		
+错误(活动)	E0020	未定义标识符 "BYTE"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	96		
+错误(活动)	E0020	未定义标识符 "BYTE"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	101		
+错误(活动)	E0020	未定义标识符 "BYTE"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	102		
+错误(活动)	E0020	未定义标识符 "BYTE"	Irrlicht	C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\dxgitype.h	107		
