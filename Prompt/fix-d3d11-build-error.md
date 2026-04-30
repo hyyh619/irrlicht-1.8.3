@@ -116,3 +116,20 @@ C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include
 
 错误	LNK2019	无法解析的外部符号 CreateDXGIFactory1，函数 "public: bool __cdecl irr::video::CD3D11Driver::initDriver(struct HWND__ *,bool)" (?initDriver@CD3D11Driver@video@irr@@QEAA_NPEAUHWND__@@_N@Z) 中引用了该符号	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.obj	1		
 错误	LNK1120	1 个无法解析的外部命令	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\bin\Win64-visualstudio\Irrlicht.dll	1		
+
+# 9.
+修复x64/release编译的下列错误
+
+错误	C1083	无法打开包括文件: “d3dx9shader.h”: No such file or directory	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9ShaderMaterialRenderer.h	15		
+错误	C1083	无法打开包括文件: “d3dx9shader.h”: No such file or directory	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9ShaderMaterialRenderer.h	15		
+错误	C1083	无法打开包括文件: “d3dx9shader.h”: No such file or directory	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9ShaderMaterialRenderer.h	15		
+错误	C1083	无法打开包括文件: “d3dx9shader.h”: No such file or directory	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9ShaderMaterialRenderer.h	15		
+错误	C1083	无法打开包括文件: “d3dx9shader.h”: No such file or directory	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9ShaderMaterialRenderer.h	15		
+错误	C1083	无法打开包括文件: “d3dx9tex.h”: No such file or directory	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Texture.cpp	13		
+
+# 10.
+编译D3D11时，不能包含DXSDK目录，因为dxgitype.h同时在下面两个目录都有，
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include
+会引起冲突。
+但是我想irrlicht.2019.vcxproj工程能够同时支持D3D9和D3D11。能够给我一份解决方案吗？
