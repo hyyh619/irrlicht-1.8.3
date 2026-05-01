@@ -40,12 +40,6 @@ public:
 
             ~CD3D11HLSLMaterialRenderer();
 
-            virtual bool setVariable(bool vertexShader, const c8 *name, const f32 *floats, int count);
-
-            virtual bool setVariable(bool vertexShader, const c8 *name, const bool *bools, int count);
-
-            virtual bool setVariable(bool vertexShader, const c8 *name, const s32 *ints, int count);
-
             virtual bool OnRender(IMaterialRendererServices *service, E_VERTEX_TYPE vtxtype);
 
 protected:
