@@ -87,6 +87,8 @@ namespace irr
             if (FAILED(h))
             {
                 os::Printer::log("HLSL vertex shader compilation failed:", ELL_ERROR);
+                os::Printer::log("Shader name (first 64 chars):", ELL_ERROR);
+                os::Printer::log(core::stringc(vertexShaderProgram).subString(0, 64).c_str(), ELL_ERROR);
                 if (errors)
                 {
                     os::Printer::log((c8*)errors->GetBufferPointer(), ELL_ERROR);
@@ -147,6 +149,8 @@ namespace irr
             if (FAILED(h))
             {
                 os::Printer::log("HLSL pixel shader compilation failed:", ELL_ERROR);
+                os::Printer::log("Shader name (first 64 chars):", ELL_ERROR);
+                os::Printer::log(core::stringc(pixelShaderProgram).subString(0, 64).c_str(), ELL_ERROR);
                 if (errors)
                 {
                     os::Printer::log((c8*)errors->GetBufferPointer(), ELL_ERROR);

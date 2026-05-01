@@ -173,6 +173,8 @@ namespace irr
             if (errors)
             {
                 os::Printer::log("Pixel shader compilation failed:", ELL_ERROR);
+                os::Printer::log("Shader name (first 64 chars):", ELL_ERROR);
+                os::Printer::log(core::stringc(pxsh).subString(0, 64).c_str(), ELL_ERROR);
                 os::Printer::log((c8*)errors->GetBufferPointer(), ELL_ERROR);
                 errors->Release();
                 if (code)
@@ -222,6 +224,8 @@ namespace irr
             if (errors)
             {
                 os::Printer::log("Vertex shader compilation failed:", ELL_ERROR);
+                os::Printer::log("Shader name (first 64 chars):", ELL_ERROR);
+                os::Printer::log(core::stringc(vtxsh).subString(0, 64).c_str(), ELL_ERROR);
                 os::Printer::log((c8*)errors->GetBufferPointer(), ELL_ERROR);
                 errors->Release();
                 if (code)
