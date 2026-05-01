@@ -22,8 +22,12 @@ using namespace irr;
 #pragma comment(lib, "Irrlicht.lib")
 #endif
 
-#ifndef CONFORM_TEST
-#define CONFORM_TEST 0
+#ifndef CONFORM_TEST_DX9
+#define CONFORM_TEST_DX9 0
+#endif
+
+#ifndef CONFORM_TEST_DX11
+#define CONFORM_TEST_DX11 0
 #endif
 
 /*
@@ -130,8 +134,10 @@ int main()
 {
     // ask user for driver
 
-#if CONFORM_TEST
+#if CONFORM_TEST_DX9
     video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+#elif CONFORM_TEST_DX11
+    video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D11;
 #else
     video::E_DRIVER_TYPE driverType = driverChoiceConsole();
 #endif
@@ -141,11 +147,12 @@ int main()
 
     // ask the user if we should use high level shaders for this example
     if (driverType == video::EDT_DIRECT3D9 ||
+        driverType == video::EDT_DIRECT3D11 ||
         driverType == video::EDT_OPENGL)
     {
         char i;
 
-#if CONFORM_TEST
+#if CONFORM_TEST_DX9 || CONFORM_TEST_DX11
         i = 'y';
         UseHighLevelShaders = true;
         i = 'y';
@@ -445,7 +452,15 @@ int main()
             smgr->drawAll();
             driver->endScene();
 
-#if CONFORM_TEST
+#if CONFORM_TEST_DX9
+            video::IImage *image = device->getVideoDriver()->createScreenShot();
+            if (image)
+            {
+                device->getVideoDriver()->writeImageToFile(image, "screenshot.bmp");
+                image->drop();
+            }
+            break;
+#elif CONFORM_TEST_DX11
             video::IImage *image = device->getVideoDriver()->createScreenShot();
             if (image)
             {

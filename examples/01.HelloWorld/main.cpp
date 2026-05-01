@@ -82,8 +82,12 @@ using namespace gui;
 #pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 #endif
 
-#ifndef CONFORM_TEST
-#define CONFORM_TEST 0
+#ifndef CONFORM_TEST_DX9
+#define CONFORM_TEST_DX9 0
+#endif
+
+#ifndef CONFORM_TEST_DX11
+#define CONFORM_TEST_DX11 1
 #endif
 
 /*
@@ -125,9 +129,19 @@ int main()
      * dimensions, etc.
      */
 #ifdef WIN32
+#if CONFORM_TEST_DX9
     IrrlichtDevice *device =
         createDevice(video::EDT_DIRECT3D9, dimension2d<u32>(640, 480), 16,
             false, false, false, 0);
+#elif CONFORM_TEST_DX11
+    IrrlichtDevice *device =
+        createDevice(video::EDT_DIRECT3D11, dimension2d<u32>(640, 480), 16,
+            false, false, false, 0);
+#else
+    IrrlichtDevice *device =
+        createDevice(video::EDT_DIRECT3D9, dimension2d<u32>(640, 480), 16,
+            false, false, false, 0);
+#endif
 #else
     IrrlichtDevice *device =
         createDevice(video::EDT_OPENGL, dimension2d<u32>(640, 480), 16,
@@ -227,8 +241,19 @@ int main()
 
         driver->endScene();
 
-#if CONFORM_TEST
-#pragma message("CONFORM_TEST")
+#if CONFORM_TEST_DX9
+#pragma message("CONFORM_TEST_DX9")
+
+        video::IImage *image = device->getVideoDriver()->createScreenShot();
+        if (image)
+        {
+            device->getVideoDriver()->writeImageToFile(image, "screenshot.bmp");
+            image->drop();
+        }
+
+        break;
+#elif CONFORM_TEST_DX11
+#pragma message("CONFORM_TEST_DX11")
 
         video::IImage *image = device->getVideoDriver()->createScreenShot();
         if (image)

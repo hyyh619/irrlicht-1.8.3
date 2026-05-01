@@ -23,8 +23,12 @@ using namespace gui;
 #pragma comment(lib, "Irrlicht.lib")
 #endif
 
-#ifndef CONFORM_TEST
-#define CONFORM_TEST 0
+#ifndef CONFORM_TEST_DX9
+#define CONFORM_TEST_DX9 0
+#endif
+
+#ifndef CONFORM_TEST_DX11
+#define CONFORM_TEST_DX11 0
 #endif
 
 
@@ -803,8 +807,10 @@ int main(int argc, char *argv[])
 {
     // ask user for driver
 
-#if CONFORM_TEST
+#if CONFORM_TEST_DX9
     video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
+#elif CONFORM_TEST_DX11
+    video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D11;
 #else
     video::E_DRIVER_TYPE driverType = driverChoiceConsole();
 #endif
@@ -1086,7 +1092,15 @@ int main(int argc, char *argv[])
 
             driver->endScene();
 
-#if CONFORM_TEST
+#if CONFORM_TEST_DX9
+            video::IImage *image = Device->getVideoDriver()->createScreenShot();
+            if (image)
+            {
+                Device->getVideoDriver()->writeImageToFile(image, "screenshot.bmp");
+                image->drop();
+            }
+            break;
+#elif CONFORM_TEST_DX11
             video::IImage *image = Device->getVideoDriver()->createScreenShot();
             if (image)
             {
