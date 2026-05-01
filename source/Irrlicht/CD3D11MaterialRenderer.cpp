@@ -55,6 +55,46 @@ namespace irr
         {}
 
 
+        CD3D11MaterialRenderer_SOLID::CD3D11MaterialRenderer_SOLID(CD3D11Driver *p, video::IVideoDriver *d)
+            : CD3D11MaterialRenderer(p, -1, "solid") {}
+
+
+        CD3D11MaterialRenderer_SOLID_2_LAYER::CD3D11MaterialRenderer_SOLID_2_LAYER(CD3D11Driver *p, video::IVideoDriver *d)
+            : CD3D11MaterialRenderer(p, -1, "solid_2_layer") {}
+
+
+        CD3D11MaterialRenderer_TRANSPARENT_ADD_COLOR::CD3D11MaterialRenderer_TRANSPARENT_ADD_COLOR(CD3D11Driver *p, video::IVideoDriver *d)
+            : CD3D11MaterialRenderer(p, -1, "transparent_add_color") {}
+
+
+        CD3D11MaterialRenderer_TRANSPARENT_VERTEX_ALPHA::CD3D11MaterialRenderer_TRANSPARENT_VERTEX_ALPHA(CD3D11Driver *p, video::IVideoDriver *d)
+            : CD3D11MaterialRenderer(p, -1, "transparent_vertex_alpha") {}
+
+
+        CD3D11MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL::CD3D11MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL(CD3D11Driver *p, video::IVideoDriver *d)
+            : CD3D11MaterialRenderer(p, -1, "transparent_alpha_channel") {}
+
+
+        CD3D11MaterialRenderer_ONETEXTURE_BLEND::CD3D11MaterialRenderer_ONETEXTURE_BLEND(CD3D11Driver *p, video::IVideoDriver *d)
+            : CD3D11MaterialRenderer(p, -1, "one_texture_blend") { transparent = false; }
+
+
+        CD3D11MaterialRenderer_LIGHTMAP::CD3D11MaterialRenderer_LIGHTMAP(CD3D11Driver *p, video::IVideoDriver *d)
+            : CD3D11MaterialRenderer(p, -1, "lightmap") {}
+
+
+        CD3D11MaterialRenderer_DETAIL_MAP::CD3D11MaterialRenderer_DETAIL_MAP(CD3D11Driver *p, video::IVideoDriver *d)
+            : CD3D11MaterialRenderer(p, -1, "detail_map") {}
+
+
+        CD3D11MaterialRenderer_SPHERE_MAP::CD3D11MaterialRenderer_SPHERE_MAP(CD3D11Driver *p, video::IVideoDriver *d)
+            : CD3D11MaterialRenderer(p, -1, "sphere_map") {}
+
+
+        CD3D11MaterialRenderer_REFLECTION_2_LAYER::CD3D11MaterialRenderer_REFLECTION_2_LAYER(CD3D11Driver *p, video::IVideoDriver *d)
+            : CD3D11MaterialRenderer(p, -1, "reflection_2_layer") {}
+
+
         void CD3D11MaterialRenderer_SOLID::OnSetMaterial(const SMaterial &material,
             const SMaterial &lastMaterial, bool resetAllRenderstates, IMaterialRendererServices *services)
         {

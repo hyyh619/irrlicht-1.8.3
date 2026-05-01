@@ -133,3 +133,47 @@ C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include
 会引起冲突。
 但是我想irrlicht.2019.vcxproj工程能够同时支持D3D9和D3D11。能够给我一份解决方案吗？
+
+# 11.
+修复下列错误
+
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	44		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	44		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	54		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	54		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	64		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	64		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	76		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	76		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	88		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	88		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	102		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	102		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	119		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	119		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	129		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	129		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	139		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	139		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	151		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	151		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	44		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	44		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	54		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	54		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	64		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	64		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	76		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	76		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	88		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	88		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	102		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	102		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	119		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	119		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	129		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	129		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	139		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	139		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	151		
+错误	C2065	“matType”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11MaterialRenderer.h	151		
