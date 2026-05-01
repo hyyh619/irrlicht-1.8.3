@@ -102,7 +102,7 @@ namespace irr
 
             if (buffer)
             {
-                if (FAILED(pID3DDevice->CreateVertexShader((DWORD*)buffer->GetBufferPointer(), &VertexShader)))
+                if (FAILED(pID3DDevice->CreateVertexShader(buffer->GetBufferPointer(), buffer->GetBufferSize(), nullptr, &VertexShader)))
                 {
                     os::Printer::log("Could not create hlsl vertex shader.", ELL_ERROR);
                     buffer->Release();
@@ -162,7 +162,7 @@ namespace irr
 
             if (buffer)
             {
-                if (FAILED(pID3DDevice->CreatePixelShader((DWORD*)buffer->GetBufferPointer(), &PixelShader)))
+                if (FAILED(pID3DDevice->CreatePixelShader(buffer->GetBufferPointer(), buffer->GetBufferSize(), nullptr, &PixelShader)))
                 {
                     os::Printer::log("Could not create hlsl pixel shader.", ELL_ERROR);
                     buffer->Release();

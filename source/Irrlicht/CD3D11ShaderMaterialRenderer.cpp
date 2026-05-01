@@ -180,7 +180,7 @@ namespace irr
                 return false;
             }
 
-            if (FAILED(pID3DDevice->CreatePixelShader((DWORD*)code->GetBufferPointer(), &PixelShader)))
+            if (FAILED(pID3DDevice->CreatePixelShader(code->GetBufferPointer(), code->GetBufferSize(), nullptr, &PixelShader)))
             {
                 os::Printer::log("Could not create pixel shader.", ELL_ERROR);
                 if (code)
@@ -229,7 +229,7 @@ namespace irr
                 return false;
             }
 
-            if (!code || FAILED(pID3DDevice->CreateVertexShader((DWORD*)code->GetBufferPointer(), &VertexShader)))
+            if (!code || FAILED(pID3DDevice->CreateVertexShader(code->GetBufferPointer(), code->GetBufferSize(), nullptr, &VertexShader)))
             {
                 os::Printer::log("Could not create vertex shader.", ELL_ERROR);
                 if (code)

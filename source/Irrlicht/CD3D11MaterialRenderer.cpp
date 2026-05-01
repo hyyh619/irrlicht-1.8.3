@@ -8,20 +8,21 @@
 #define _IRR_DONT_DO_MEMORY_DEBUGGING_HERE
 #include "CD3D11MaterialRenderer.h"
 #include "CD3D11Driver.h"
+#include "CD3D11Texture.h"
 #include "IMaterialRendererServices.h"
 
 namespace irr
 {
     namespace video
     {
-        CD3D11MaterialRenderer::CD3D11MaterialRenderer(CD3D11Driver *driver, s32 &materialType,
+        CD3D11MaterialRenderer::CD3D11MaterialRenderer(CD3D11Driver *driver, s32 materialType,
                                                        const c8 *name)
             : Driver(driver), MaterialType(materialType)
         {
 #ifdef _DEBUG
             setDebugName("CD3D11MaterialRenderer");
 #endif
-            MaterialType = driver->addMaterialRenderer(this);
+            driver->addMaterialRenderer(this);
         }
 
 
@@ -29,10 +30,10 @@ namespace irr
         {}
 
 
-        void CD3D11MaterialRenderer::OnSetMaterial(const SMaterial &material)
+        void CD3D11MaterialRenderer::OnSetMaterial(const SMaterial &material, const SMaterial &lastMaterial,
+            bool resetAllRenderstates, IMaterialRendererServices *services)
         {
-            Driver->setBasicRenderStates(material, LastMaterial, true);
-            LastMaterial = material;
+            Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
         }
 
 
@@ -41,7 +42,8 @@ namespace irr
             if (texture)
             {
                 CD3D11Texture* tex = (CD3D11Texture*)texture;
-                Driver->pID3DDeviceContext->PSSetShaderResources(textureIndex, 1, &tex->ShaderResourceView);
+                ID3D11ShaderResourceView* srv = tex->getShaderResourceView();
+                Driver->pID3DDeviceContext->PSSetShaderResources(textureIndex, 1, &srv);
             }
             return true;
         }

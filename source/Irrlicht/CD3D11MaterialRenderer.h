@@ -21,12 +21,13 @@ namespace irr
         {
 public:
 
-            CD3D11MaterialRenderer(CD3D11Driver *driver, s32 &materialType,
+            CD3D11MaterialRenderer(CD3D11Driver *driver, s32 materialType,
                                    const c8 *name);
 
             virtual ~CD3D11MaterialRenderer();
 
-            virtual void OnSetMaterial(const SMaterial &material);
+            virtual void OnSetMaterial(const SMaterial &material, const SMaterial &lastMaterial,
+                bool resetAllRenderstates, IMaterialRendererServices *services);
             virtual bool OnSetTexture(u32 textureIndex, ITexture *texture);
             virtual void OnSetConstants(IMaterialRendererServices *services, s32 userData);
             virtual void PostRender();
@@ -34,7 +35,7 @@ public:
 protected:
 
             CD3D11Driver    *Driver;
-            s32             &MaterialType;
+            s32             MaterialType;
         };
 
         class CD3D11MaterialRenderer_SOLID : public CD3D11MaterialRenderer

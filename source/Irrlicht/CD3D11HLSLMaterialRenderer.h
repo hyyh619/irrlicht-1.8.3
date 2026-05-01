@@ -12,6 +12,7 @@
 
 #include "CD3D11ShaderMaterialRenderer.h"
 #include "IGPUProgrammingServices.h"
+#include "irrMap.h"
 
 namespace irr
 {
