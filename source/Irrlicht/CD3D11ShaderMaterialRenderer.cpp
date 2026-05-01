@@ -155,7 +155,7 @@ namespace irr
             ID3DBlob *errors = 0;
 
 #ifdef _IRR_D3D_NO_SHADER_DEBUGGING
-            HRESULT hr = D3DCompile(pxsh, (UINT)strlen(pxsh), 0, 0, 0, "main", "ps_4_0", 0, 0, &code, &errors);
+            HRESULT hr = D3DCompile(pxsh, (UINT)strlen(pxsh), 0, 0, 0, "main", "ps_5_0", 0, 0, &code, &errors);
 #else
             static int irr_dbg_file_nr = 0;
             ++irr_dbg_file_nr;
@@ -167,7 +167,7 @@ namespace irr
             fflush(f);
             fclose(f);
 
-            HRESULT hr = D3DCompileFromFile(utf8ToUtf16(tmp).c_str(), 0, 0, "main", "ps_4_0", 0, 0, &code, &errors);
+            HRESULT hr = D3DCompileFromFile(utf8ToUtf16(tmp).c_str(), 0, 0, "main", "ps_5_0", 0, 0, &code, &errors);
 #endif
 
             if (errors)
@@ -206,7 +206,7 @@ namespace irr
             ID3DBlob *errors = 0;
 
 #ifdef _IRR_D3D_NO_SHADER_DEBUGGING
-            HRESULT hr = D3DCompile(vtxsh, (UINT)strlen(vtxsh), 0, 0, 0, "main", "vs_4_0", 0, 0, &code, &errors);
+            HRESULT hr = D3DCompile(vtxsh, (UINT)strlen(vtxsh), 0, 0, 0, "main", "vs_5_0", 0, 0, &code, &errors);
 #else
             static int irr_dbg_file_nr = 0;
             ++irr_dbg_file_nr;
@@ -218,7 +218,7 @@ namespace irr
             fflush(f);
             fclose(f);
 
-            HRESULT hr = D3DCompileFromFile(utf8ToUtf16(tmp).c_str(), 0, 0, "main", "vs_4_0", 0, 0, &code, &errors);
+            HRESULT hr = D3DCompileFromFile(utf8ToUtf16(tmp).c_str(), 0, 0, "main", "vs_5_0", 0, 0, &code, &errors);
 #endif
 
             if (errors)
