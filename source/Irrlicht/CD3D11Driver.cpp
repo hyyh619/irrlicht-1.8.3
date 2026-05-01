@@ -123,9 +123,9 @@ namespace irr
                 return false;
             }
 
-            #ifdef _DEBUG
+ #ifdef _DEBUG
             hr = pID3DDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&pID3D11Debug);
-            #endif
+ #endif
 
             pID3DDevice->CheckFormatSupport(DXGI_FORMAT_D24_UNORM_S8_UINT, &Caps);
 
