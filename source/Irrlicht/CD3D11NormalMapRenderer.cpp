@@ -16,13 +16,13 @@ namespace irr
     namespace video
     {
         const char D3D11_NORMAL_MAP_VSH[] =
-            ";Irrlicht Engine D3D11 render path normal map vertex shader\n"
-            "; c0-3: Transposed world matrix \n"
-            "; c8-11: Transposed worldViewProj matrix \n"
-            "; c12: Light01 position \n"
-            "; c13: x,y,z: Light01 color; .w: 1/LightRadius?\n"
-            "; c14: Light02 position \n"
-            "; c15: x,y,z: Light02 color; .w: 1/LightRadius?\n"
+            "// Irrlicht Engine D3D11 render path normal map vertex shader\n"
+            "// c0-3: Transposed world matrix \n"
+            "// c8-11: Transposed worldViewProj matrix \n"
+            "// c12: Light01 position \n"
+            "// c13: x,y,z: Light01 color; .w: 1/LightRadius?\n"
+            "// c14: Light02 position \n"
+            "// c15: x,y,z: Light02 color; .w: 1/LightRadius?\n"
             "cbuffer cbWorldMatrix : register(b0) { matrix WorldMatrix; } \n"
             "cbuffer cbWorldViewProj : register(b1) { matrix WorldViewProjMatrix; } \n"
             "cbuffer cbLights : register(b2) { float4 LightPos[2]; float4 LightColor[2]; } \n"
@@ -73,7 +73,7 @@ namespace irr
             "} \n";
 
         const char D3D11_NORMAL_MAP_PSH[] =
-            ";Irrlicht Engine D3D11 render path normal map pixel shader\n"
+            "// Irrlicht Engine D3D11 render path normal map pixel shader\n"
             "Texture2D colorMap : register(t0); \n"
             "Texture2D normalMap : register(t1); \n"
             "SamplerState sampleLinear : register(s0); \n"
