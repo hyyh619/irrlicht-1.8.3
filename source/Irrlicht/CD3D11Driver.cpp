@@ -1132,7 +1132,7 @@ namespace irr
 
         video::ITexture* CD3D11Driver::createDeviceDependentTexture(IImage *surface, const io::path &name, void *mipmapData)
         {
-            return 0;
+            return new CD3D11Texture(surface, this, TextureCreationFlags, name, mipmapData);
         }
 
 
