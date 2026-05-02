@@ -305,12 +305,12 @@ namespace irr
             desc.Format             = DXGIFormat;
             desc.SampleDesc.Count   = 1;
             desc.SampleDesc.Quality = 0;
-            desc.Usage              = D3D11_USAGE_DYNAMIC;
+            desc.Usage              = D3D11_USAGE_DEFAULT;
             desc.BindFlags          = D3D11_BIND_SHADER_RESOURCE;
             if (mipmaps)
                 desc.BindFlags |= D3D11_BIND_RENDER_TARGET;
 
-            desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+            desc.CPUAccessFlags = 0;
             desc.MiscFlags      = mipmaps ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0;
 
             HRESULT    hr = Device->CreateTexture2D(&desc, 0, &Texture);
@@ -351,17 +351,18 @@ namespace irr
 
             ID3D11DeviceContext    *context = Driver->pID3DDeviceContext;
 
-            D3D11_MAPPED_SUBRESOURCE    mapped;
-            HRESULT                     hr = context->Map(Texture, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
-            if (FAILED(hr))
-            {
-                os::Printer::log("Could not map DIRECT3D11 Texture.", ELL_WARNING);
-                return false;
-            }
+            D3D11_BOX    destBox;
+            destBox.left    = 0;
+            destBox.top     = 0;
+            destBox.front   = 0;
+            destBox.right   = image->getDimension().Width;
+            destBox.bottom  = image->getDimension().Height;
+            destBox.back    = 1;
 
-            image->copyToScaling(mapped.pData, TextureSize.Width, TextureSize.Height, ColorFormat, mapped.RowPitch);
-
-            context->Unmap(Texture, 0);
+            u32     imagePitch  = image->getPitch();
+            void    *imageData  = image->lock();
+            context->UpdateSubresource(Texture, 0, &destBox, imageData, imagePitch, 0);
+            image->unlock();
 
             return true;
         }
@@ -381,15 +382,15 @@ namespace irr
             if (level == 0)
                 return true;
 
-            ID3D11DeviceContext *context = Driver->pID3DDeviceContext;
+            ID3D11DeviceContext    *context = Driver->pID3DDeviceContext;
 
-            const u32 width = TextureSize.Width >> level;
-            const u32 height = TextureSize.Height >> level;
+            const u32       width   = TextureSize.Width >> level;
+            const u32       height  = TextureSize.Height >> level;
 
-            D3D11_MAPPED_SUBRESOURCE upperRes;
-            D3D11_MAPPED_SUBRESOURCE lowerRes;
+            D3D11_MAPPED_SUBRESOURCE    upperRes;
+            D3D11_MAPPED_SUBRESOURCE    lowerRes;
 
-            HRESULT hr = context->Map(Texture, level - 1, D3D11_MAP_READ, 0, &upperRes);
+            HRESULT    hr = context->Map(Texture, level - 1, D3D11_MAP_READ, 0, &upperRes);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not map upper texture for mip map generation", ELL_WARNING);
@@ -406,10 +407,10 @@ namespace irr
 
             if (DXGIFormat == DXGI_FORMAT_B5G6R5_UNORM || DXGIFormat == DXGI_FORMAT_B5G5R5A1_UNORM)
                 copy16BitMipMap((char*)upperRes.pData, (char*)lowerRes.pData,
-                    width, height, upperRes.RowPitch, lowerRes.RowPitch);
+                                width, height, upperRes.RowPitch, lowerRes.RowPitch);
             else if (DXGIFormat == DXGI_FORMAT_B8G8R8A8_UNORM || DXGIFormat == DXGI_FORMAT_B8G8R8X8_UNORM)
                 copy32BitMipMap((char*)upperRes.pData, (char*)lowerRes.pData,
-                    width, height, upperRes.RowPitch, lowerRes.RowPitch);
+                                width, height, upperRes.RowPitch, lowerRes.RowPitch);
             else
                 os::Printer::log("Unsupported mipmap format, cannot copy.", ELL_WARNING);
 
@@ -427,35 +428,35 @@ namespace irr
             {
                 for (s32 x = 0; x < width; ++x)
                 {
-                    u32 a = 0, r = 0, g = 0, b = 0;
+                    u32    a = 0, r = 0, g = 0, b = 0;
 
                     for (s32 dy = 0; dy < 2; ++dy)
                     {
-                        const s32 tgy = (y * 2) + dy;
+                        const s32    tgy = (y * 2) + dy;
 
                         for (s32 dx = 0; dx < 2; ++dx)
                         {
-                            const s32 tgx = (x * 2) + dx;
+                            const s32    tgx = (x * 2) + dx;
 
-                            SColor c;
+                            SColor    c;
                             if (ColorFormat == ECOLOR_FORMAT::ECF_A1R5G5B5)
                                 c = A1R5G5B5toA8R8G8B8(*(u16*)(&src[(tgx * 2) + (tgy * pitchsrc)]));
                             else
                                 c = R5G6B5toA8R8G8B8(*(u16*)(&src[(tgx * 2) + (tgy * pitchsrc)]));
 
-                            a += c.getAlpha();
-                            r += c.getRed();
-                            g += c.getGreen();
-                            b += c.getBlue();
+                            a   += c.getAlpha();
+                            r   += c.getRed();
+                            g   += c.getGreen();
+                            b   += c.getBlue();
                         }
                     }
 
-                    a /= 4;
-                    r /= 4;
-                    g /= 4;
-                    b /= 4;
+                    a   /= 4;
+                    r   /= 4;
+                    g   /= 4;
+                    b   /= 4;
 
-                    u16 c;
+                    u16    c;
                     if (ColorFormat == ECOLOR_FORMAT::ECF_A1R5G5B5)
                         c = RGBA16(r, g, b, a);
                     else
@@ -474,30 +475,30 @@ namespace irr
             {
                 for (s32 x = 0; x < width; ++x)
                 {
-                    u32 a = 0, r = 0, g = 0, b = 0;
-                    SColor c;
+                    u32         a = 0, r = 0, g = 0, b = 0;
+                    SColor      c;
 
                     for (s32 dy = 0; dy < 2; ++dy)
                     {
-                        const s32 tgy = (y * 2) + dy;
+                        const s32    tgy = (y * 2) + dy;
 
                         for (s32 dx = 0; dx < 2; ++dx)
                         {
-                            const s32 tgx = (x * 2) + dx;
+                            const s32    tgx = (x * 2) + dx;
 
                             c = *(u32*)(&src[(tgx * 4) + (tgy * pitchsrc)]);
 
-                            a += c.getAlpha();
-                            r += c.getRed();
-                            g += c.getGreen();
-                            b += c.getBlue();
+                            a   += c.getAlpha();
+                            r   += c.getRed();
+                            g   += c.getGreen();
+                            b   += c.getBlue();
                         }
                     }
 
-                    a /= 4;
-                    r /= 4;
-                    g /= 4;
-                    b /= 4;
+                    a   /= 4;
+                    r   /= 4;
+                    g   /= 4;
+                    b   /= 4;
 
                     c.set(a, r, g, b);
                     *(u32*)(&tgt[(x * 4) + (y * pitchtgt)]) = c.color;
