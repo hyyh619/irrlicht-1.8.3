@@ -363,6 +363,9 @@ namespace irr
                 case EVDF_TEXTURE_NSQUARE:
                     return true;
 
+                case EVDF_TEXTURE_NPOT:
+                    return true;
+
                 case EVDF_STENCIL_BUFFER:
                     return true;
 

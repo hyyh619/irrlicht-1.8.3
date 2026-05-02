@@ -89,3 +89,5 @@ destBox参数如下
 		Format	ECF_A1R5G5B5 (0)	irr::video::ECOLOR_FORMAT
 		DeleteMemory	true	bool
 
+# 10
+bool CD3D11Driver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const没有检查EVDF_TEXTURE_NPOT，请根据D3D11的Spec查看是否支持NPOT
