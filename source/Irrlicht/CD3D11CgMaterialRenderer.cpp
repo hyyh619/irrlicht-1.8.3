@@ -40,7 +40,7 @@ namespace irr
             const c8 *geometryProgram, const c8 *geometryEntry, E_GEOMETRY_SHADER_TYPE geometryProfile,
             scene::E_PRIMITIVE_TYPE inType, scene::E_PRIMITIVE_TYPE outType, u32 vertices,
             IShaderConstantSetCallBack *callback, IMaterialRenderer *baseMaterial, s32 userData)
-            : Driver(driver), CCgMaterialRenderer(callback, baseMaterial, userData)
+            : m_Driver(driver), CCgMaterialRenderer(callback, baseMaterial, userData)
         {
 #ifdef _DEBUG
             setDebugName("CD3D11CgMaterialRenderer");
@@ -125,12 +125,12 @@ namespace irr
         void CD3D11CgMaterialRenderer::setBasicRenderStates(const SMaterial &material,
             const SMaterial &lastMaterial, bool resetAllRenderstates)
         {
-            Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+            m_Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
         }
 
         IVideoDriver* CD3D11CgMaterialRenderer::getVideoDriver()
         {
-            return Driver;
+            return m_Driver;
         }
 
         void CD3D11CgMaterialRenderer::init(s32 &materialType,
@@ -149,14 +149,14 @@ namespace irr
                 VertexProfile = cgD3D11GetLatestVertexProfile();
 
                 if (VertexProfile)
-                    VertexProgram = cgCreateProgram(Driver->getCgContext(), CG_SOURCE, vertexProgram,
+                    VertexProgram = cgCreateProgram(m_Driver->getCgContext(), CG_SOURCE, vertexProgram,
                         VertexProfile, vertexEntry, 0);
 
                 if (!VertexProgram)
                 {
                     Error = cgGetError();
                     os::Printer::log("Cg vertex program failed to compile:", ELL_ERROR);
-                    os::Printer::log(cgGetLastListing(Driver->getCgContext()), ELL_ERROR);
+                    os::Printer::log(cgGetLastListing(m_Driver->getCgContext()), ELL_ERROR);
                     Status = false;
                 }
                 else
@@ -168,14 +168,14 @@ namespace irr
                 FragmentProfile = cgD3D11GetLatestPixelProfile();
 
                 if (FragmentProfile)
-                    FragmentProgram = cgCreateProgram(Driver->getCgContext(), CG_SOURCE, fragmentProgram,
+                    FragmentProgram = cgCreateProgram(m_Driver->getCgContext(), CG_SOURCE, fragmentProgram,
                         FragmentProfile, fragmentEntry, 0);
 
                 if (!FragmentProgram)
                 {
                     Error = cgGetError();
                     os::Printer::log("Cg fragment program failed to compile:", ELL_ERROR);
-                    os::Printer::log(cgGetLastListing(Driver->getCgContext()), ELL_ERROR);
+                    os::Printer::log(cgGetLastListing(m_Driver->getCgContext()), ELL_ERROR);
                     Status = false;
                 }
                 else
@@ -187,14 +187,14 @@ namespace irr
                 GeometryProfile = cgD3D11GetLatestGeometryProfile();
 
                 if (GeometryProfile)
-                    GeometryProgram = cgCreateProgram(Driver->getCgContext(), CG_SOURCE, geometryProgram,
+                    GeometryProgram = cgCreateProgram(m_Driver->getCgContext(), CG_SOURCE, geometryProgram,
                         GeometryProfile, geometryEntry, 0);
 
                 if (!GeometryProgram)
                 {
                     Error = cgGetError();
                     os::Printer::log("Cg geometry program failed to compile:", ELL_ERROR);
-                    os::Printer::log(cgGetLastListing(Driver->getCgContext()), ELL_ERROR);
+                    os::Printer::log(cgGetLastListing(m_Driver->getCgContext()), ELL_ERROR);
                     Status = false;
                 }
                 else
@@ -218,7 +218,7 @@ namespace irr
             }
 
             if (Status)
-                materialType = Driver->addMaterialRenderer(this);
+                materialType = m_Driver->addMaterialRenderer(this);
         }
     }
 }

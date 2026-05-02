@@ -69,7 +69,7 @@ protected:
                 scene::E_PRIMITIVE_TYPE outType = scene::EPT_TRIANGLE_STRIP,
                 u32 vertices = 0);
 
-            CD3D11Driver *Driver;
+            CD3D11Driver *m_Driver;
         };
     }
 }

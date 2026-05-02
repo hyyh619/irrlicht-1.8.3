@@ -47,7 +47,7 @@ namespace irr
                 pixelShaderEntryPointName, PIXEL_SHADER_TYPE_NAMES[psCompileTarget]))
                 return;
 
-            outMaterialTypeNr = Driver->addMaterialRenderer(this);
+            outMaterialTypeNr = m_Driver->addMaterialRenderer(this);
         }
 
 
@@ -104,7 +104,7 @@ namespace irr
 
             if (buffer)
             {
-                if (FAILED(pID3DDevice->CreateVertexShader(buffer->GetBufferPointer(), buffer->GetBufferSize(), nullptr, &VertexShader)))
+                if (FAILED(m_pID3DDevice->CreateVertexShader(buffer->GetBufferPointer(), buffer->GetBufferSize(), nullptr, &m_VertexShader)))
                 {
                     os::Printer::log("Could not create hlsl vertex shader.", ELL_ERROR);
                     buffer->Release();
@@ -166,7 +166,7 @@ namespace irr
 
             if (buffer)
             {
-                if (FAILED(pID3DDevice->CreatePixelShader(buffer->GetBufferPointer(), buffer->GetBufferSize(), nullptr, &PixelShader)))
+                if (FAILED(m_pID3DDevice->CreatePixelShader(buffer->GetBufferPointer(), buffer->GetBufferSize(), nullptr, &m_PixelShader)))
                 {
                     os::Printer::log("Could not create hlsl pixel shader.", ELL_ERROR);
                     buffer->Release();

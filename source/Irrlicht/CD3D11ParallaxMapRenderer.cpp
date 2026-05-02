@@ -124,13 +124,13 @@ namespace irr
             ID3D11DeviceContext *d3dContext, video::IVideoDriver *driver,
             s32 &outMaterialTypeNr, IMaterialRenderer *baseMaterial)
             : CD3D11ShaderMaterialRenderer(d3dDevice, d3dContext, driver, 0, baseMaterial),
-            CurrentScale(0.0f)
+            m_CurrentScale(0.0f)
         {
 #ifdef _DEBUG
             setDebugName("CD3D11ParallaxMapRenderer");
 #endif
 
-            CallBack = this;
+            m_CallBack = this;
 
             if (!createVertexShader(D3D11_PARALLAX_MAP_VSH))
             {
@@ -150,8 +150,8 @@ namespace irr
 
         CD3D11ParallaxMapRenderer::~CD3D11ParallaxMapRenderer()
         {
-            if (CallBack == this)
-                CallBack = 0;
+            if (m_CallBack == this)
+                m_CallBack = 0;
         }
 
 
@@ -169,7 +169,7 @@ namespace irr
 
         void CD3D11ParallaxMapRenderer::OnSetMaterial(const video::SMaterial &material)
         {
-            CurrentScale = material.MaterialTypeParam;
+            m_CurrentScale = material.MaterialTypeParam;
         }
 
 
@@ -180,7 +180,7 @@ namespace irr
             CD3D11ShaderMaterialRenderer::OnSetMaterial(material, lastMaterial,
                 resetAllRenderstates, services);
 
-            CurrentScale = material.MaterialTypeParam;
+            m_CurrentScale = material.MaterialTypeParam;
         }
 
 
@@ -236,7 +236,7 @@ namespace irr
             services->setVertexShaderConstant(lightPos, 32, 2);
             services->setVertexShaderConstant(lightColor, 40, 2);
 
-            f32 factor = (CurrentScale != 0) ? CurrentScale : 0.02f;
+            f32 factor = (m_CurrentScale != 0) ? m_CurrentScale : 0.02f;
             f32 materialParams[4] = {factor, 0, 0, 0};
             services->setPixelShaderConstant(materialParams, 0, 1);
         }

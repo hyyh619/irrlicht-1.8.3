@@ -55,17 +55,17 @@ protected:
             bool createPixelShader(const c8 *pxsh);
             bool createVertexShader(const char *vtxsh);
 
-            ID3D11Device                *pID3DDevice;
-            ID3D11DeviceContext         *pID3DDeviceContext;
-            video::IVideoDriver         *Driver;
-            IShaderConstantSetCallBack  *CallBack;
-            IMaterialRenderer           *BaseMaterial;
+            ID3D11Device                *m_pID3DDevice;
+            ID3D11DeviceContext         *m_pID3DDeviceContext;
+            video::IVideoDriver         *m_Driver;
+            IShaderConstantSetCallBack  *m_CallBack;
+            IMaterialRenderer           *m_BaseMaterial;
 
-            ID3D11VertexShader          *VertexShader;
-            ID3D11VertexShader          *OldVertexShader;
-            ID3D11PixelShader           *PixelShader;
-            ID3D11InputLayout           *InputLayout;
-            s32                         UserData;
+            ID3D11VertexShader          *m_VertexShader;
+            ID3D11VertexShader          *m_OldVertexShader;
+            ID3D11PixelShader           *m_PixelShader;
+            ID3D11InputLayout           *m_InputLayout;
+            s32                         m_UserData;
         };
     } // end namespace video
 } // end namespace irr

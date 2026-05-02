@@ -34,8 +34,8 @@ public:
 
 protected:
 
-            CD3D11Driver    *Driver;
-            s32             MaterialType;
+            CD3D11Driver    *m_Driver;
+            s32             m_MaterialType;
         };
 
         class CD3D11MaterialRenderer_SOLID : public CD3D11MaterialRenderer
@@ -104,7 +104,7 @@ public:
         private:
             u32 getD3D11Blend(E_BLEND_FACTOR factor) const;
             u32 getD3D11Modulate(E_MODULATE_FUNC func) const;
-            bool transparent;
+            bool m_Transparent;
         };
 
         class CD3D11MaterialRenderer_LIGHTMAP : public CD3D11MaterialRenderer

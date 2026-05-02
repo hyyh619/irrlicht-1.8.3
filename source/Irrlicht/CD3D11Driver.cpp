@@ -23,17 +23,17 @@ namespace irr
     namespace video
     {
         CD3D11Driver::CD3D11Driver(const SIrrlichtCreationParameters &params, io::IFileSystem *io)
-            : CNullDriver(io, params.WindowSize), CurrentRenderMode(ERM_NONE),
-            ResetRenderStates(true), Transformation3DChanged(false),
-            D3D11Library(0), DXGIFactory(0), Adapter(0), pID3DDevice(0), pID3DDeviceContext(0), SwapChain(0),
-            BackBufferRenderTargetView(0), DepthStencilView(0),
-            WindowId(0), SceneSourceRect(0),
-            LastVertexType((video::E_VERTEX_TYPE)-1), VendorID(0),
-            MaxTextureUnits(0), MaxUserClipPlanes(0), MaxMRTs(1), NumSetMRTs(1),
-            MaxLightDistance(0.f), LastSetLight(-1),
-            ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), DeviceRemoved(false),
-            DriverWasReset(true), OcclusionQuerySupport(false),
-            AlphaToCoverageSupport(false), Params(params)
+            : CNullDriver(io, params.WindowSize), m_CurrentRenderMode(ERM_NONE),
+            m_ResetRenderStates(true), m_Transformation3DChanged(false),
+            m_D3D11Library(0), m_DXGIFactory(0), m_Adapter(0), m_pID3DDevice(0), m_pID3DDeviceContext(0), m_SwapChain(0),
+            m_BackBufferRenderTargetView(0), m_DepthStencilView(0),
+            m_WindowId(0), m_SceneSourceRect(0),
+            m_LastVertexType((video::E_VERTEX_TYPE)-1), m_VendorID(0),
+            m_MaxTextureUnits(0), m_MaxUserClipPlanes(0), m_MaxMRTs(1), m_NumSetMRTs(1),
+            m_MaxLightDistance(0.f), m_LastSetLight(-1),
+            m_ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), m_DeviceRemoved(false),
+            m_DriverWasReset(true), m_OcclusionQuerySupport(false),
+            m_AlphaToCoverageSupport(false), m_Params(params)
         {
 #ifdef _DEBUG
             setDebugName("CD3D11Driver");
@@ -43,11 +43,11 @@ namespace irr
 
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
-                CurrentTexture[i]               = 0;
-                LastTextureMipMapsAvailable[i]  = false;
+                m_CurrentTexture[i]               = 0;
+                m_LastTextureMipMapsAvailable[i]  = false;
             }
 
-            MaxLightDistance = sqrtf(FLT_MAX);
+            m_MaxLightDistance = sqrtf(FLT_MAX);
         }
 
 
@@ -58,30 +58,30 @@ namespace irr
             removeAllOcclusionQueries();
             removeAllHardwareBuffers();
 
-            for (u32 i = 0; i < DepthBuffers.size(); ++i)
+            for (u32 i = 0; i < m_DepthBuffers.size(); ++i)
             {
-                DepthBuffers[i]->drop();
+                m_DepthBuffers[i]->drop();
             }
 
-            DepthBuffers.clear();
+            m_DepthBuffers.clear();
 
-            if (pID3DDeviceContext)
-                pID3DDeviceContext->Release();
+            if (m_pID3DDeviceContext)
+                m_pID3DDeviceContext->Release();
 
-            if (pID3DDevice)
-                pID3DDevice->Release();
+            if (m_pID3DDevice)
+                m_pID3DDevice->Release();
 
-            if (SwapChain)
-                SwapChain->Release();
+            if (m_SwapChain)
+                m_SwapChain->Release();
 
-            if (DXGIFactory)
-                DXGIFactory->Release();
+            if (m_DXGIFactory)
+                m_DXGIFactory->Release();
 
-            if (Adapter)
-                Adapter->Release();
+            if (m_Adapter)
+                m_Adapter->Release();
 
-            if (D3D11Library)
-                FreeLibrary(D3D11Library);
+            if (m_D3D11Library)
+                FreeLibrary(m_D3D11Library);
         }
 
 
@@ -89,17 +89,17 @@ namespace irr
         {
             char tmp[512];
 
-            WindowId = hwnd;
+            m_WindowId = hwnd;
 
-            D3D11Library = LoadLibraryA("d3d11.dll");
-            if (!D3D11Library)
+            m_D3D11Library = LoadLibraryA("d3d11.dll");
+            if (!m_D3D11Library)
             {
                 os::Printer::log("Could not load d3d11.dll.", ELL_ERROR);
                 return false;
             }
 
             typedef HRESULT (WINAPI * PFN_D3D11CreateDevice)(IDXGIAdapter*, D3D_DRIVER_TYPE, HMODULE, UINT, CONST D3D_FEATURE_LEVEL*, UINT, UINT, ID3D11Device**, D3D_FEATURE_LEVEL*, ID3D11DeviceContext**);
-            PFN_D3D11CreateDevice    D3D11CreateDevice = (PFN_D3D11CreateDevice)GetProcAddress(D3D11Library, "D3D11CreateDevice");
+            PFN_D3D11CreateDevice    D3D11CreateDevice = (PFN_D3D11CreateDevice)GetProcAddress(m_D3D11Library, "D3D11CreateDevice");
             if (!D3D11CreateDevice)
             {
                 os::Printer::log("Could not find D3D11CreateDevice.", ELL_ERROR);
@@ -115,9 +115,9 @@ namespace irr
                 0,
                 0,
                 D3D11_SDK_VERSION,
-                &pID3DDevice,
+                &m_pID3DDevice,
                 &featureLevel,
-                &pID3DDeviceContext);
+                &m_pID3DDeviceContext);
 
             if (FAILED(hr))
             {
@@ -126,15 +126,15 @@ namespace irr
             }
 
  #ifdef _DEBUG
-            hr = pID3DDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&pID3D11Debug);
+            hr = m_pID3DDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_pID3D11Debug);
  #endif
 
-            pID3DDevice->CheckFormatSupport(DXGI_FORMAT_D24_UNORM_S8_UINT, &Caps);
+            m_pID3DDevice->CheckFormatSupport(DXGI_FORMAT_D24_UNORM_S8_UINT, &m_Caps);
 
             createMaterialRenderers();
 
-            core::dimension2d<u32>    dim = Params.WindowSize;
-            if (Params.Fullscreen)
+            core::dimension2d<u32>    dim = m_Params.WindowSize;
+            if (m_Params.Fullscreen)
             {
                 DEVMODEW            devmode;
                 core::stringw       tmp;
@@ -157,32 +157,32 @@ namespace irr
 
             currentDim = dim;
 
-            SwapChainBufferDesc.Width                   = currentDim.Width;
-            SwapChainBufferDesc.Height                  = currentDim.Height;
-            SwapChainBufferDesc.RefreshRate.Numerator   = 60;
-            SwapChainBufferDesc.RefreshRate.Denominator = 1;
-            SwapChainBufferDesc.Format                  = DXGI_FORMAT_B8G8R8A8_UNORM;
-            SwapChainBufferDesc.ScanlineOrdering        = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-            SwapChainBufferDesc.Scaling                 = DXGI_MODE_SCALING_UNSPECIFIED;
+            m_SwapChainBufferDesc.Width                   = currentDim.Width;
+            m_SwapChainBufferDesc.Height                  = currentDim.Height;
+            m_SwapChainBufferDesc.RefreshRate.Numerator   = 60;
+            m_SwapChainBufferDesc.RefreshRate.Denominator = 1;
+            m_SwapChainBufferDesc.Format                  = DXGI_FORMAT_B8G8R8A8_UNORM;
+            m_SwapChainBufferDesc.ScanlineOrdering        = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+            m_SwapChainBufferDesc.Scaling                 = DXGI_MODE_SCALING_UNSPECIFIED;
 
-            SwapChainDesc.BufferDesc            = SwapChainBufferDesc;
-            SwapChainDesc.SampleDesc.Count      = 1;
-            SwapChainDesc.SampleDesc.Quality    = 0;
-            SwapChainDesc.BufferUsage           = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-            SwapChainDesc.BufferCount           = 1;
-            SwapChainDesc.OutputWindow          = hwnd;
-            SwapChainDesc.Windowed              = !Params.Fullscreen;
-            SwapChainDesc.SwapEffect            = DXGI_SWAP_EFFECT_DISCARD;
-            SwapChainDesc.Flags                 = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+            m_SwapChainDesc.BufferDesc            = m_SwapChainBufferDesc;
+            m_SwapChainDesc.SampleDesc.Count      = 1;
+            m_SwapChainDesc.SampleDesc.Quality    = 0;
+            m_SwapChainDesc.BufferUsage           = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+            m_SwapChainDesc.BufferCount           = 1;
+            m_SwapChainDesc.OutputWindow          = hwnd;
+            m_SwapChainDesc.Windowed              = !m_Params.Fullscreen;
+            m_SwapChainDesc.SwapEffect            = DXGI_SWAP_EFFECT_DISCARD;
+            m_SwapChainDesc.Flags                 = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-            hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&DXGIFactory);
+            hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&m_DXGIFactory);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create DXGIFactory.", ELL_ERROR);
                 return false;
             }
 
-            hr = DXGIFactory->EnumAdapters1(0, &Adapter);
+            hr = m_DXGIFactory->EnumAdapters1(0, &m_Adapter);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not enumerate adapters.", ELL_ERROR);
@@ -190,50 +190,50 @@ namespace irr
             }
 
             DXGI_ADAPTER_DESC    desc;
-            Adapter->GetDesc(&desc);
+            m_Adapter->GetDesc(&desc);
 
-            VendorID = static_cast<u16>(desc.VendorId);
+            m_VendorID = static_cast<u16>(desc.VendorId);
 
             switch (desc.VendorId)
             {
-                case 0x1002: VendorName = "ATI Technologies Inc."; break;
+                case 0x1002: m_VendorName = "ATI Technologies Inc."; break;
 
-                case 0x10DE: VendorName = "NVIDIA Corporation"; break;
+                case 0x10DE: m_VendorName = "NVIDIA Corporation"; break;
 
-                case 0x102B: VendorName = "Matrox Electronic Systems Ltd."; break;
+                case 0x102B: m_VendorName = "Matrox Electronic Systems Ltd."; break;
 
-                case 0x121A: VendorName = "3dfx Interactive Inc"; break;
+                case 0x121A: m_VendorName = "3dfx Interactive Inc"; break;
 
-                case 0x5333: VendorName = "S3 Graphics Co., Ltd."; break;
+                case 0x5333: m_VendorName = "S3 Graphics Co., Ltd."; break;
 
-                case 0x8086: VendorName = "Intel Corporation"; break;
+                case 0x8086: m_VendorName = "Intel Corporation"; break;
 
-                case 0x05404c42: VendorName = "Parallel Desktop"; break;
+                case 0x05404c42: m_VendorName = "Parallel Desktop"; break;
 
-                default: VendorName = "Unknown VendorId: "; VendorName += (u32)desc.VendorId; break;
+                default: m_VendorName = "Unknown VendorId: "; m_VendorName += (u32)desc.VendorId; break;
             }
 
-            sprintf(tmp, "vendor: %s", VendorName.c_str());
+            sprintf(tmp, "vendor: %s", m_VendorName.c_str());
             os::Printer::log(tmp, ELL_INFORMATION);
 
-            hr = DXGIFactory->CreateSwapChain(pID3DDevice, &SwapChainDesc, &SwapChain);
+            hr = m_DXGIFactory->CreateSwapChain(m_pID3DDevice, &m_SwapChainDesc, &m_SwapChain);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create swap chain.", ELL_ERROR);
                 return false;
             }
 
-            DXGIFactory->MakeWindowAssociation(hwnd, 0);
+            m_DXGIFactory->MakeWindowAssociation(hwnd, 0);
 
             ID3D11Texture2D    *backBuffer = 0;
-            hr = SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
+            hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not get back buffer.", ELL_ERROR);
                 return false;
             }
 
-            hr = pID3DDevice->CreateRenderTargetView(backBuffer, 0, &BackBufferRenderTargetView);
+            hr = m_pID3DDevice->CreateRenderTargetView(backBuffer, 0, &m_BackBufferRenderTargetView);
             backBuffer->Release();
             if (FAILED(hr))
             {
@@ -255,14 +255,14 @@ namespace irr
             depthDesc.MiscFlags             = 0;
 
             ID3D11Texture2D    *depthTexture = 0;
-            hr = pID3DDevice->CreateTexture2D(&depthDesc, 0, &depthTexture);
+            hr = m_pID3DDevice->CreateTexture2D(&depthDesc, 0, &depthTexture);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create depth stencil texture.", ELL_ERROR);
                 return false;
             }
 
-            hr = pID3DDevice->CreateDepthStencilView(depthTexture, 0, &DepthStencilView);
+            hr = m_pID3DDevice->CreateDepthStencilView(depthTexture, 0, &m_DepthStencilView);
             depthTexture->Release();
             if (FAILED(hr))
             {
@@ -270,14 +270,14 @@ namespace irr
                 return false;
             }
 
-            Viewport.TopLeftX   = 0;
-            Viewport.TopLeftY   = 0;
-            Viewport.Width      = (FLOAT)currentDim.Width;
-            Viewport.Height     = (FLOAT)currentDim.Height;
-            Viewport.MinDepth   = 0.0f;
-            Viewport.MaxDepth   = 1.0f;
+            m_Viewport.TopLeftX   = 0;
+            m_Viewport.TopLeftY   = 0;
+            m_Viewport.Width      = (FLOAT)currentDim.Width;
+            m_Viewport.Height     = (FLOAT)currentDim.Height;
+            m_Viewport.MinDepth   = 0.0f;
+            m_Viewport.MaxDepth   = 1.0f;
 
-            CurrentRendertargetSize = currentDim;
+            m_CurrentRendertargetSize = currentDim;
             core::rect<s32>    driverInitArea(0, 0, currentDim.Width, currentDim.Height);
             setViewPort(driverInitArea);
 
@@ -292,9 +292,9 @@ namespace irr
         bool CD3D11Driver::beginScene(bool backBuffer, bool zBuffer, SColor color,
                                       const SExposedVideoData &videoData, core::rect<s32> *sourceRect)
         {
-            if (DeviceRemoved)
+            if (m_DeviceRemoved)
             {
-                HRESULT    hr = pID3DDevice->GetDeviceRemovedReason();
+                HRESULT    hr = m_pID3DDevice->GetDeviceRemovedReason();
                 if (hr == DXGI_ERROR_DEVICE_REMOVED)
                 {
                     os::Printer::log("Device lost. Reason: DXGI_ERROR_DEVICE_REMOVED", ELL_WARNING);
@@ -321,31 +321,31 @@ namespace irr
                 {
                     FLOAT       depth   = 1.0f;
                     UINT8       stencil = 0;
-                    pID3DDeviceContext->ClearDepthStencilView(DepthStencilView, flags, depth, stencil);
+                    m_pID3DDeviceContext->ClearDepthStencilView(m_DepthStencilView, flags, depth, stencil);
                 }
 
                 if (backBuffer)
                 {
                     FLOAT    colorF[4];
                     colorToD3D(color, colorF);
-                    pID3DDeviceContext->ClearRenderTargetView(BackBufferRenderTargetView, colorF);
+                    m_pID3DDeviceContext->ClearRenderTargetView(m_BackBufferRenderTargetView, colorF);
                 }
             }
 
-            pID3DDeviceContext->OMSetRenderTargets(1, &BackBufferRenderTargetView, DepthStencilView);
-            pID3DDeviceContext->RSSetViewports(1, &Viewport);
+            m_pID3DDeviceContext->OMSetRenderTargets(1, &m_BackBufferRenderTargetView, m_DepthStencilView);
+            m_pID3DDeviceContext->RSSetViewports(1, &m_Viewport);
 
-            SceneSourceRect = sourceRect;
+            m_SceneSourceRect = sourceRect;
             return true;
         }
 
 
         bool CD3D11Driver::endScene()
         {
-            HRESULT    hr = SwapChain->Present(Params.Vsync ? 1 : 0, 0);
+            HRESULT    hr = m_SwapChain->Present(m_Params.Vsync ? 1 : 0, 0);
 
-            DeviceRemoved = (hr == DXGI_ERROR_DEVICE_REMOVED);
-            if (DeviceRemoved && !reset())
+            m_DeviceRemoved = (hr == DXGI_ERROR_DEVICE_REMOVED);
+            if (m_DeviceRemoved && !reset())
                 return false;
 
             return true;
@@ -394,7 +394,7 @@ namespace irr
                     return true;
 
                 case EVDF_ALPHA_TO_COVERAGE:
-                    return AlphaToCoverageSupport;
+                    return m_AlphaToCoverageSupport;
 
                 case EVDF_COLOR_MASK:
                     return true;
@@ -403,7 +403,7 @@ namespace irr
                     return true;
 
                 case EVDF_OCCLUSION_QUERY:
-                    return OcclusionQuerySupport;
+                    return m_OcclusionQuerySupport;
 
                 case EVDF_POLYGON_OFFSET:
                     return true;
@@ -421,23 +421,23 @@ namespace irr
 
         void CD3D11Driver::setTransform(E_TRANSFORMATION_STATE state, const core::matrix4 &mat)
         {
-            Matrices[state] = mat;
+            m_Matrices[state] = mat;
             if (state == ETS_WORLD)
-                Transformation3DChanged = true;
+                m_Transformation3DChanged = true;
         }
 
 
         void CD3D11Driver::setMaterial(const SMaterial &material)
         {
-            Material = material;
+            m_Material = material;
 
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
                 setActiveTexture(i, material.getTexture(i));
             }
 
-            setBasicRenderStates(material, LastMaterial, true);
-            LastMaterial = material;
+            setBasicRenderStates(material, m_LastMaterial, true);
+            m_LastMaterial = material;
         }
 
 
@@ -470,16 +470,16 @@ namespace irr
             vpD3D.MinDepth  = 0.0f;
             vpD3D.MaxDepth  = 1.0f;
 
-            Viewport = vpD3D;
+            m_Viewport = vpD3D;
 
-            ViewPort = vp;
-            pID3DDeviceContext->RSSetViewports(1, &Viewport);
+            m_ViewPort = vp;
+            m_pID3DDeviceContext->RSSetViewports(1, &m_Viewport);
         }
 
 
         const core::rect<s32>&CD3D11Driver::getViewPort() const
         {
-            return ViewPort;
+            return m_ViewPort;
         }
 
 
@@ -494,14 +494,14 @@ namespace irr
                     return false;
             }
 
-            CurrentTexture[stage] = texture;
+            m_CurrentTexture[stage] = texture;
             return true;
         }
 
 
         const core::dimension2d<u32>&CD3D11Driver::getCurrentRenderTargetSize() const
         {
-            return CurrentRendertargetSize;
+            return m_CurrentRendertargetSize;
         }
 
 
@@ -510,7 +510,7 @@ namespace irr
         {
             if (resetAllRenderstates || lastMaterial.Wireframe != material.Wireframe)
             {
-                pID3DDeviceContext->RSSetState(0);
+                m_pID3DDeviceContext->RSSetState(0);
             }
 
             if (resetAllRenderstates || lastMaterial.GouraudShading != material.GouraudShading)
@@ -521,7 +521,7 @@ namespace irr
 
             if (resetAllRenderstates || lastMaterial.ZWriteEnable != material.ZWriteEnable)
             {
-                pID3DDeviceContext->OMSetDepthStencilState(0, 0);
+                m_pID3DDeviceContext->OMSetDepthStencilState(0, 0);
             }
 
             if (resetAllRenderstates || lastMaterial.FogEnable != material.FogEnable)
@@ -531,17 +531,17 @@ namespace irr
 
         bool CD3D11Driver::setRenderStates3DMode()
         {
-            if (CurrentRenderMode == ERM_3D)
+            if (m_CurrentRenderMode == ERM_3D)
                 return true;
 
-            CurrentRenderMode = ERM_3D;
+            m_CurrentRenderMode = ERM_3D;
             return true;
         }
 
 
         void CD3D11Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel)
         {
-            CurrentRenderMode = ERM_2D;
+            m_CurrentRenderMode = ERM_2D;
         }
 
 
@@ -643,12 +643,12 @@ namespace irr
         {
             setRenderStates3DMode();
 
-            if (CurrentTexture[0])
-                setActiveTexture(0, CurrentTexture[0]);
+            if (m_CurrentTexture[0])
+                setActiveTexture(0, m_CurrentTexture[0]);
 
             if (!is3D)
             {
-                pID3DDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+                m_pID3DDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
             }
         }
 
@@ -855,7 +855,7 @@ namespace irr
                 Lights[i].Position = core::vector3df(0, 0, 0);
 
             Lights.clear();
-            LastSetLight    = -1;
+            m_LastSetLight    = -1;
         }
 
 
@@ -871,7 +871,7 @@ namespace irr
 
         void CD3D11Driver::turnLightOn(s32 lightIndex, bool turnOn)
         {
-            LastSetLight = turnOn ? lightIndex : -1;
+            m_LastSetLight = turnOn ? lightIndex : -1;
         }
 
 
@@ -883,7 +883,7 @@ namespace irr
 
         void CD3D11Driver::setAmbientLight(const SColorf &color)
         {
-            AmbientLight = color;
+            m_AmbientLight = color;
         }
 
 
@@ -927,7 +927,7 @@ namespace irr
 
         const core::matrix4&CD3D11Driver::getTransform(E_TRANSFORMATION_STATE state) const
         {
-            return Matrices[state];
+            return m_Matrices[state];
         }
 
 
@@ -990,7 +990,7 @@ namespace irr
 
         void CD3D11Driver::clearZBuffer()
         {
-            pID3DDeviceContext->ClearDepthStencilView(DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+            m_pID3DDeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
         }
 
 
@@ -1016,12 +1016,12 @@ namespace irr
 
         void CD3D11Driver::removeDepthSurface(SD3D11DepthStencilView *depth)
         {
-            for (u32 i = 0; i < DepthBuffers.size(); ++i)
+            for (u32 i = 0; i < m_DepthBuffers.size(); ++i)
             {
-                if (DepthBuffers[i] == depth)
+                if (m_DepthBuffers[i] == depth)
                 {
                     depth->drop();
-                    DepthBuffers.erase(i);
+                    m_DepthBuffers.erase(i);
                     break;
                 }
             }
@@ -1030,7 +1030,7 @@ namespace irr
 
         ECOLOR_FORMAT CD3D11Driver::getColorFormat() const
         {
-            return ColorFormat;
+            return m_ColorFormat;
         }
 
 
@@ -1139,8 +1139,8 @@ namespace irr
 
             if (queryFeature(video::EVDF_PIXEL_SHADER_1_1) && queryFeature(video::EVDF_VERTEX_SHADER_1_1))
             {
-                new CD3D11NormalMapRenderer(pID3DDevice, pID3DDeviceContext, this, matType, getMaterialRenderer(EMT_SOLID));
-                new CD3D11ParallaxMapRenderer(pID3DDevice, pID3DDeviceContext, this, matType, getMaterialRenderer(EMT_SOLID));
+                new CD3D11NormalMapRenderer(m_pID3DDevice, m_pID3DDeviceContext, this, matType, getMaterialRenderer(EMT_SOLID));
+                new CD3D11ParallaxMapRenderer(m_pID3DDevice, m_pID3DDeviceContext, this, matType, getMaterialRenderer(EMT_SOLID));
             }
         }
 
@@ -1190,19 +1190,19 @@ namespace irr
 
         void CD3D11Driver::setVertexShader(video::E_VERTEX_TYPE newType)
         {
-            LastVertexType = newType;
+            m_LastVertexType = newType;
         }
 
 
         void CD3D11Driver::setRenderStatesStencilFillMode(bool alpha)
         {
-            CurrentRenderMode = ERM_STENCIL_FILL;
+            m_CurrentRenderMode = ERM_STENCIL_FILL;
         }
 
 
         void CD3D11Driver::setRenderStatesStencilShadowMode(bool zfail, u32 debugDataVisible)
         {
-            CurrentRenderMode = zfail ? ERM_SHADOW_VOLUME_ZFAIL : ERM_SHADOW_VOLUME_ZPASS;
+            m_CurrentRenderMode = zfail ? ERM_SHADOW_VOLUME_ZFAIL : ERM_SHADOW_VOLUME_ZPASS;
         }
 
 

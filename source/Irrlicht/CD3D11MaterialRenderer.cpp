@@ -17,7 +17,7 @@ namespace irr
     {
         CD3D11MaterialRenderer::CD3D11MaterialRenderer(CD3D11Driver *driver, s32 materialType,
                                                        const c8 *name)
-            : Driver(driver), MaterialType(materialType)
+            : m_Driver(driver), m_MaterialType(materialType)
         {
 #ifdef _DEBUG
             setDebugName("CD3D11MaterialRenderer");
@@ -33,7 +33,7 @@ namespace irr
         void CD3D11MaterialRenderer::OnSetMaterial(const SMaterial &material, const SMaterial &lastMaterial,
             bool resetAllRenderstates, IMaterialRendererServices *services)
         {
-            Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
+            m_Driver->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
         }
 
 
@@ -43,7 +43,7 @@ namespace irr
             {
                 CD3D11Texture* tex = (CD3D11Texture*)texture;
                 ID3D11ShaderResourceView* srv = tex->getShaderResourceView();
-                Driver->pID3DDeviceContext->PSSetShaderResources(textureIndex, 1, &srv);
+                m_Driver->m_pID3DDeviceContext->PSSetShaderResources(textureIndex, 1, &srv);
             }
             return true;
         }
@@ -78,7 +78,7 @@ namespace irr
 
 
         CD3D11MaterialRenderer_ONETEXTURE_BLEND::CD3D11MaterialRenderer_ONETEXTURE_BLEND(CD3D11Driver *p, video::IVideoDriver *d)
-            : CD3D11MaterialRenderer(p, -1, "one_texture_blend") { transparent = false; }
+            : CD3D11MaterialRenderer(p, -1, "one_texture_blend") { m_Transparent = false; }
 
 
         CD3D11MaterialRenderer_LIGHTMAP::CD3D11MaterialRenderer_LIGHTMAP(CD3D11Driver *p, video::IVideoDriver *d)
@@ -165,7 +165,7 @@ namespace irr
             u32 alphaSource;
             unpack_textureBlendFunc(srcFact, dstFact, modulate, alphaSource, material.MaterialTypeParam);
 
-            transparent = (srcFact != EBF_SRC_COLOR || dstFact != EBF_ZERO);
+            m_Transparent = (srcFact != EBF_SRC_COLOR || dstFact != EBF_ZERO);
 
             if (srcFact == EBF_SRC_COLOR && dstFact == EBF_ZERO)
             {
@@ -182,7 +182,7 @@ namespace irr
 
         bool CD3D11MaterialRenderer_ONETEXTURE_BLEND::isTransparent() const
         {
-            return transparent;
+            return m_Transparent;
         }
 
 

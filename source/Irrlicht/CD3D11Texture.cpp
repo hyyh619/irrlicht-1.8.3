@@ -17,19 +17,19 @@ namespace irr
     {
         CD3D11Texture::CD3D11Texture(CD3D11Driver *driver, const core::dimension2d<u32> &size,
                                      const io::path &name, const ECOLOR_FORMAT format)
-            : ITexture(name), Texture(0), ShaderResourceView(0), RenderTargetView(0),
-            Driver(driver), DepthSurface(0),
-            TextureSize(size), ImageSize(size), Pitch(0), ColorFormat(ECOLOR_FORMAT::ECF_UNKNOWN),
-            DXGIFormat(DXGI_FORMAT_UNKNOWN),
-            HasMipMaps(false), HardwareMipMaps(false), IsRenderTarget(true)
+            : ITexture(name), m_Texture(0), m_ShaderResourceView(0), m_RenderTargetView(0),
+            m_Driver(driver), m_DepthSurface(0),
+            m_TextureSize(size), m_ImageSize(size), m_Pitch(0), m_ColorFormat(ECOLOR_FORMAT::ECF_UNKNOWN),
+            m_DXGIFormat(DXGI_FORMAT_UNKNOWN),
+            m_HasMipMaps(false), m_HardwareMipMaps(false), m_IsRenderTarget(true)
         {
 #ifdef _DEBUG
             setDebugName("CD3D11Texture");
 #endif
 
-            Device = driver->pID3DDevice;
-            if (Device)
-                Device->AddRef();
+            m_Device = driver->pID3DDevice;
+            if (m_Device)
+                m_Device->AddRef();
 
             createRenderTarget(format);
         }
@@ -37,21 +37,21 @@ namespace irr
 
         CD3D11Texture::CD3D11Texture(IImage *image, CD3D11Driver *driver,
                                      u32 flags, const io::path &name, void *mipmapData)
-            : ITexture(name), Texture(0), ShaderResourceView(0), RenderTargetView(0),
-            Driver(driver), DepthSurface(0),
-            TextureSize(0, 0), ImageSize(0, 0), Pitch(0), ColorFormat(ECOLOR_FORMAT::ECF_UNKNOWN),
-            DXGIFormat(DXGI_FORMAT_UNKNOWN),
-            HasMipMaps(false), HardwareMipMaps(false), IsRenderTarget(false)
+            : ITexture(name), m_Texture(0), m_ShaderResourceView(0), m_RenderTargetView(0),
+            m_Driver(driver), m_DepthSurface(0),
+            m_TextureSize(0, 0), m_ImageSize(0, 0), m_Pitch(0), m_ColorFormat(ECOLOR_FORMAT::ECF_UNKNOWN),
+            m_DXGIFormat(DXGI_FORMAT_UNKNOWN),
+            m_HasMipMaps(false), m_HardwareMipMaps(false), m_IsRenderTarget(false)
         {
 #ifdef _DEBUG
             setDebugName("CD3D11Texture");
 #endif
 
-            HasMipMaps = Driver->getTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS);
+            m_HasMipMaps = m_Driver->getTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS);
 
-            Device = driver->pID3DDevice;
-            if (Device)
-                Device->AddRef();
+            m_Device = driver->pID3DDevice;
+            if (m_Device)
+                m_Device->AddRef();
 
             if (image)
             {
@@ -70,23 +70,23 @@ namespace irr
 
         CD3D11Texture::~CD3D11Texture()
         {
-            if (Texture)
-                Texture->Release();
+            if (m_Texture)
+                m_Texture->Release();
 
-            if (RenderTargetView)
-                RenderTargetView->Release();
+            if (m_RenderTargetView)
+                m_RenderTargetView->Release();
 
-            if (ShaderResourceView)
-                ShaderResourceView->Release();
+            if (m_ShaderResourceView)
+                m_ShaderResourceView->Release();
 
-            if (DepthSurface)
+            if (m_DepthSurface)
             {
-                if (DepthSurface->drop())
-                    Driver->removeDepthSurface(reinterpret_cast<SD3D11DepthStencilView*>(DepthSurface));
+                if (m_DepthSurface->drop())
+                    m_Driver->removeDepthSurface(reinterpret_cast<SD3D11DepthStencilView*>(m_DepthSurface));
             }
 
-            if (Device)
-                Device->Release();
+            if (m_Device)
+                m_Device->Release();
         }
 
 
@@ -102,13 +102,13 @@ namespace irr
 
         const core::dimension2d<u32>&CD3D11Texture::getOriginalSize() const
         {
-            return ImageSize;
+            return m_ImageSize;
         }
 
 
         const core::dimension2d<u32>&CD3D11Texture::getSize() const
         {
-            return TextureSize;
+            return m_TextureSize;
         }
 
 
@@ -120,75 +120,75 @@ namespace irr
 
         ECOLOR_FORMAT CD3D11Texture::getColorFormat() const
         {
-            return ColorFormat;
+            return m_ColorFormat;
         }
 
 
         u32 CD3D11Texture::getPitch() const
         {
-            return Pitch;
+            return m_Pitch;
         }
 
 
         ID3D11Texture2D* CD3D11Texture::getD3D11Texture() const
         {
-            return Texture;
+            return m_Texture;
         }
 
 
         bool CD3D11Texture::hasMipMaps() const
         {
-            return HasMipMaps;
+            return m_HasMipMaps;
         }
 
 
         void CD3D11Texture::regenerateMipMapLevels(void *mipmapData)
         {
-            if (!Texture || !Driver->pID3DDeviceContext)
+            if (!m_Texture || !m_Driver->pID3DDeviceContext)
                 return;
 
-            if (HasMipMaps)
+            if (m_HasMipMaps)
             {
-                Driver->pID3DDeviceContext->GenerateMips(ShaderResourceView);
+                m_Driver->pID3DDeviceContext->GenerateMips(m_ShaderResourceView);
             }
         }
 
 
         bool CD3D11Texture::isRenderTarget() const
         {
-            return IsRenderTarget;
+            return m_IsRenderTarget;
         }
 
 
         ID3D11RenderTargetView* CD3D11Texture::getRenderTargetView()
         {
-            return RenderTargetView;
+            return m_RenderTargetView;
         }
 
 
         ID3D11ShaderResourceView* CD3D11Texture::getShaderResourceView() const
         {
-            return ShaderResourceView;
+            return m_ShaderResourceView;
         }
 
 
         void CD3D11Texture::createRenderTarget(const ECOLOR_FORMAT format)
         {
-            if (!Device)
+            if (!m_Device)
                 return;
 
             ECOLOR_FORMAT    colorFormat = format;
             if (colorFormat == ECOLOR_FORMAT::ECF_UNKNOWN)
                 colorFormat = ECOLOR_FORMAT::ECF_A8R8G8B8;
 
-            DXGIFormat = Driver->getDXGIFormatFromColorFormat(colorFormat);
+            m_DXGIFormat = m_Driver->getDXGIFormatFromColorFormat(colorFormat);
 
             D3D11_TEXTURE2D_DESC    desc;
-            desc.Width              = TextureSize.Width;
-            desc.Height             = TextureSize.Height;
+            desc.Width              = m_TextureSize.Width;
+            desc.Height             = m_TextureSize.Height;
             desc.MipLevels          = 1;
             desc.ArraySize          = 1;
-            desc.Format             = DXGIFormat;
+            desc.Format             = m_DXGIFormat;
             desc.SampleDesc.Count   = 1;
             desc.SampleDesc.Quality = 0;
             desc.Usage              = D3D11_USAGE_DEFAULT;
@@ -196,7 +196,7 @@ namespace irr
             desc.CPUAccessFlags     = 0;
             desc.MiscFlags          = 0;
 
-            HRESULT    hr = Device->CreateTexture2D(&desc, 0, &Texture);
+            HRESULT    hr = m_Device->CreateTexture2D(&desc, 0, &m_Texture);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create render target texture.", ELL_WARNING);
@@ -204,11 +204,11 @@ namespace irr
             }
 
             D3D11_RENDER_TARGET_VIEW_DESC    rtvDesc;
-            rtvDesc.Format              = DXGIFormat;
+            rtvDesc.Format              = m_DXGIFormat;
             rtvDesc.ViewDimension       = D3D11_RTV_DIMENSION_TEXTURE2D;
             rtvDesc.Texture2D.MipSlice  = 0;
 
-            hr = Device->CreateRenderTargetView(Texture, &rtvDesc, &RenderTargetView);
+            hr = m_Device->CreateRenderTargetView(m_Texture, &rtvDesc, &m_RenderTargetView);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create render target view.", ELL_WARNING);
@@ -216,33 +216,33 @@ namespace irr
             }
 
             D3D11_SHADER_RESOURCE_VIEW_DESC    srvDesc;
-            srvDesc.Format                      = DXGIFormat;
+            srvDesc.Format                      = m_DXGIFormat;
             srvDesc.ViewDimension               = D3D11_SRV_DIMENSION_TEXTURE2D;
             srvDesc.Texture2D.MostDetailedMip   = 0;
             srvDesc.Texture2D.MipLevels         = 1;
 
-            hr = Device->CreateShaderResourceView(Texture, &srvDesc, &ShaderResourceView);
+            hr = m_Device->CreateShaderResourceView(m_Texture, &srvDesc, &m_ShaderResourceView);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create shader resource view.", ELL_WARNING);
                 return;
             }
 
-            ColorFormat     = colorFormat;
-            IsRenderTarget  = true;
+            m_ColorFormat     = colorFormat;
+            m_IsRenderTarget  = true;
         }
 
 
         bool CD3D11Texture::createTexture(u32 flags, IImage *image)
         {
-            if (!Device || !image)
+            if (!m_Device || !image)
                 return false;
 
-            ImageSize = image->getDimension();
+            m_ImageSize = image->getDimension();
 
-            core::dimension2d<u32>    optSize = ImageSize.getOptimalSize(
-                !Driver->queryFeature(EVDF_TEXTURE_NPOT),
-                !Driver->queryFeature(EVDF_TEXTURE_NSQUARE),
+            core::dimension2d<u32>    optSize = m_ImageSize.getOptimalSize(
+                !m_Driver->queryFeature(EVDF_TEXTURE_NPOT),
+                !m_Driver->queryFeature(EVDF_TEXTURE_NSQUARE),
                 true, 0);
 
             ECOLOR_FORMAT    format = image->getColorFormat();
@@ -282,7 +282,7 @@ namespace irr
                     break;
             }
 
-            if (Driver->getTextureCreationFlag(video::ETCF_NO_ALPHA_CHANNEL))
+            if (m_Driver->getTextureCreationFlag(video::ETCF_NO_ALPHA_CHANNEL))
             {
                 if (format == ECOLOR_FORMAT::ECF_A8R8G8B8)
                     format = ECOLOR_FORMAT::ECF_R8G8B8;
@@ -290,11 +290,11 @@ namespace irr
                     format = ECOLOR_FORMAT::ECF_R5G6B5;
             }
 
-            DXGIFormat = Driver->getDXGIFormatFromColorFormat(format);
-            if (DXGIFormat == DXGI_FORMAT_UNKNOWN)
-                DXGIFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+            m_DXGIFormat = m_Driver->getDXGIFormatFromColorFormat(format);
+            if (m_DXGIFormat == DXGI_FORMAT_UNKNOWN)
+                m_DXGIFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
 
-            const bool      mipmaps     = Driver->getTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS);
+            const bool      mipmaps     = m_Driver->getTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS);
             const u32       mipLevels   = mipmaps ? 0 : 1;
 
             D3D11_TEXTURE2D_DESC    desc;
@@ -302,7 +302,7 @@ namespace irr
             desc.Height             = optSize.Height;
             desc.MipLevels          = mipLevels;
             desc.ArraySize          = 1;
-            desc.Format             = DXGIFormat;
+            desc.Format             = m_DXGIFormat;
             desc.SampleDesc.Count   = 1;
             desc.SampleDesc.Quality = 0;
             desc.Usage              = D3D11_USAGE_DEFAULT;
@@ -313,7 +313,7 @@ namespace irr
             desc.CPUAccessFlags = 0;
             desc.MiscFlags      = mipmaps ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0;
 
-            HRESULT    hr = Device->CreateTexture2D(&desc, 0, &Texture);
+            HRESULT    hr = m_Device->CreateTexture2D(&desc, 0, &m_Texture);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create DIRECT3D11 Texture.", ELL_WARNING);
@@ -321,24 +321,24 @@ namespace irr
             }
 
             D3D11_SHADER_RESOURCE_VIEW_DESC    srvDesc;
-            srvDesc.Format                      = DXGIFormat;
+            srvDesc.Format                      = m_DXGIFormat;
             srvDesc.ViewDimension               = D3D11_SRV_DIMENSION_TEXTURE2D;
             srvDesc.Texture2D.MostDetailedMip   = 0;
             srvDesc.Texture2D.MipLevels         = mipmaps ? -1 : 1;
 
-            hr = Device->CreateShaderResourceView(Texture, &srvDesc, &ShaderResourceView);
+            hr = m_Device->CreateShaderResourceView(m_Texture, &srvDesc, &m_ShaderResourceView);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create shader resource view.", ELL_WARNING);
-                Texture->Release();
-                Texture = 0;
+                m_Texture->Release();
+                m_Texture = 0;
                 return false;
             }
 
-            TextureSize = optSize;
-            ColorFormat = format;
-            HasMipMaps  = mipmaps;
-            setPitch(DXGIFormat);
+            m_TextureSize = optSize;
+            m_ColorFormat = format;
+            m_HasMipMaps  = mipmaps;
+            setPitch(m_DXGIFormat);
 
             return true;
         }
@@ -346,10 +346,10 @@ namespace irr
 
         bool CD3D11Texture::copyTexture(IImage *image)
         {
-            if (!Texture || !image)
+            if (!m_Texture || !image)
                 return false;
 
-            ID3D11DeviceContext    *context = Driver->pID3DDeviceContext;
+            ID3D11DeviceContext    *context = m_Driver->pID3DDeviceContext;
 
             D3D11_BOX    destBox;
             destBox.left    = 0;
@@ -361,7 +361,7 @@ namespace irr
 
             u32     imagePitch  = image->getPitch();
             void    *imageData  = image->lock();
-            context->UpdateSubresource(Texture, 0, &destBox, imageData, imagePitch, 0);
+            context->UpdateSubresource(m_Texture, 0, &destBox, imageData, imagePitch, 0);
             image->unlock();
 
             return true;
@@ -370,52 +370,52 @@ namespace irr
 
         bool CD3D11Texture::createMipMaps(u32 level)
         {
-            if (!Texture || !Driver->pID3DDeviceContext)
+            if (!m_Texture || !m_Driver->pID3DDeviceContext)
                 return false;
 
-            if (HardwareMipMaps)
+            if (m_HardwareMipMaps)
             {
-                Driver->pID3DDeviceContext->GenerateMips(ShaderResourceView);
+                m_Driver->pID3DDeviceContext->GenerateMips(m_ShaderResourceView);
                 return true;
             }
 
             if (level == 0)
                 return true;
 
-            ID3D11DeviceContext    *context = Driver->pID3DDeviceContext;
+            ID3D11DeviceContext    *context = m_Driver->pID3DDeviceContext;
 
-            const u32       width   = TextureSize.Width >> level;
-            const u32       height  = TextureSize.Height >> level;
+            const u32       width   = m_TextureSize.Width >> level;
+            const u32       height  = m_TextureSize.Height >> level;
 
             D3D11_MAPPED_SUBRESOURCE    upperRes;
             D3D11_MAPPED_SUBRESOURCE    lowerRes;
 
-            HRESULT    hr = context->Map(Texture, level - 1, D3D11_MAP_READ, 0, &upperRes);
+            HRESULT    hr = context->Map(m_Texture, level - 1, D3D11_MAP_READ, 0, &upperRes);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not map upper texture for mip map generation", ELL_WARNING);
                 return false;
             }
 
-            hr = context->Map(Texture, level, D3D11_MAP_READ, 0, &lowerRes);
+            hr = context->Map(m_Texture, level, D3D11_MAP_READ, 0, &lowerRes);
             if (FAILED(hr))
             {
-                context->Unmap(Texture, level - 1);
+                context->Unmap(m_Texture, level - 1);
                 os::Printer::log("Could not map lower texture for mip map generation", ELL_WARNING);
                 return false;
             }
 
-            if (DXGIFormat == DXGI_FORMAT_B5G6R5_UNORM || DXGIFormat == DXGI_FORMAT_B5G5R5A1_UNORM)
+            if (m_DXGIFormat == DXGI_FORMAT_B5G6R5_UNORM || m_DXGIFormat == DXGI_FORMAT_B5G5R5A1_UNORM)
                 copy16BitMipMap((char*)upperRes.pData, (char*)lowerRes.pData,
                                 width, height, upperRes.RowPitch, lowerRes.RowPitch);
-            else if (DXGIFormat == DXGI_FORMAT_B8G8R8A8_UNORM || DXGIFormat == DXGI_FORMAT_B8G8R8X8_UNORM)
+            else if (m_DXGIFormat == DXGI_FORMAT_B8G8R8A8_UNORM || m_DXGIFormat == DXGI_FORMAT_B8G8R8X8_UNORM)
                 copy32BitMipMap((char*)upperRes.pData, (char*)lowerRes.pData,
                                 width, height, upperRes.RowPitch, lowerRes.RowPitch);
             else
                 os::Printer::log("Unsupported mipmap format, cannot copy.", ELL_WARNING);
 
-            context->Unmap(Texture, level - 1);
-            context->Unmap(Texture, level);
+            context->Unmap(m_Texture, level - 1);
+            context->Unmap(m_Texture, level);
 
             return createMipMaps(level + 1);
         }
@@ -439,7 +439,7 @@ namespace irr
                             const s32    tgx = (x * 2) + dx;
 
                             SColor    c;
-                            if (ColorFormat == ECOLOR_FORMAT::ECF_A1R5G5B5)
+                            if (m_ColorFormat == ECOLOR_FORMAT::ECF_A1R5G5B5)
                                 c = A1R5G5B5toA8R8G8B8(*(u16*)(&src[(tgx * 2) + (tgy * pitchsrc)]));
                             else
                                 c = R5G6B5toA8R8G8B8(*(u16*)(&src[(tgx * 2) + (tgy * pitchsrc)]));
@@ -457,7 +457,7 @@ namespace irr
                     b   /= 4;
 
                     u16    c;
-                    if (ColorFormat == ECOLOR_FORMAT::ECF_A1R5G5B5)
+                    if (m_ColorFormat == ECOLOR_FORMAT::ECF_A1R5G5B5)
                         c = RGBA16(r, g, b, a);
                     else
                         c = A8R8G8B8toR5G6B5(SColor(a, r, g, b).color);
@@ -509,7 +509,7 @@ namespace irr
 
         void CD3D11Texture::setPitch(DXGI_FORMAT dxgiFormat)
         {
-            Pitch = TextureSize.Width * 4;
+            m_Pitch = m_TextureSize.Width * 4;
         }
     } // end namespace video
 } // end namespace irr

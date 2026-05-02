@@ -23,19 +23,19 @@ namespace irr
             ID3D11DeviceContext *d3dContext, video::IVideoDriver *driver, s32 &outMaterialTypeNr,
             const c8 *vertexShaderProgram, const c8 *pixelShaderProgram,
             IShaderConstantSetCallBack *callback, IMaterialRenderer *baseMaterial, s32 userData)
-            : pID3DDevice(d3dDevice), pID3DDeviceContext(d3dContext), Driver(driver),
-            CallBack(callback), BaseMaterial(baseMaterial),
-            VertexShader(0), OldVertexShader(0), PixelShader(0), InputLayout(0), UserData(userData)
+            : m_pID3DDevice(d3dDevice), m_pID3DDeviceContext(d3dContext), m_Driver(driver),
+            m_CallBack(callback), m_BaseMaterial(baseMaterial),
+            m_VertexShader(0), m_OldVertexShader(0), m_PixelShader(0), m_InputLayout(0), m_UserData(userData)
         {
 #ifdef _DEBUG
             setDebugName("CD3D11ShaderMaterialRenderer");
 #endif
 
-            if (BaseMaterial)
-                BaseMaterial->grab();
+            if (m_BaseMaterial)
+                m_BaseMaterial->grab();
 
-            if (CallBack)
-                CallBack->grab();
+            if (m_CallBack)
+                m_CallBack->grab();
 
             init(outMaterialTypeNr, vertexShaderProgram, pixelShaderProgram);
         }
@@ -44,19 +44,19 @@ namespace irr
         CD3D11ShaderMaterialRenderer::CD3D11ShaderMaterialRenderer(ID3D11Device *d3dDevice,
             ID3D11DeviceContext *d3dContext, video::IVideoDriver *driver,
             IShaderConstantSetCallBack *callback, IMaterialRenderer *baseMaterial, s32 userData)
-            : pID3DDevice(d3dDevice), pID3DDeviceContext(d3dContext), Driver(driver),
-            CallBack(callback), BaseMaterial(baseMaterial),
-            VertexShader(0), OldVertexShader(0), PixelShader(0), InputLayout(0), UserData(userData)
+            : m_pID3DDevice(d3dDevice), m_pID3DDeviceContext(d3dContext), m_Driver(driver),
+            m_CallBack(callback), m_BaseMaterial(baseMaterial),
+            m_VertexShader(0), m_OldVertexShader(0), m_PixelShader(0), m_InputLayout(0), m_UserData(userData)
         {
 #ifdef _DEBUG
             setDebugName("CD3D11ShaderMaterialRenderer");
 #endif
 
-            if (BaseMaterial)
-                BaseMaterial->grab();
+            if (m_BaseMaterial)
+                m_BaseMaterial->grab();
 
-            if (CallBack)
-                CallBack->grab();
+            if (m_CallBack)
+                m_CallBack->grab();
         }
 
 
@@ -71,33 +71,33 @@ namespace irr
             if (!createPixelShader(pixelShaderProgram))
                 return;
 
-            outMaterialTypeNr = Driver->addMaterialRenderer(this);
+            outMaterialTypeNr = m_Driver->addMaterialRenderer(this);
         }
 
 
         CD3D11ShaderMaterialRenderer::~CD3D11ShaderMaterialRenderer()
         {
-            if (CallBack)
-                CallBack->drop();
+            if (m_CallBack)
+                m_CallBack->drop();
 
-            if (VertexShader)
-                VertexShader->Release();
+            if (m_VertexShader)
+                m_VertexShader->Release();
 
-            if (PixelShader)
-                PixelShader->Release();
+            if (m_PixelShader)
+                m_PixelShader->Release();
 
-            if (InputLayout)
-                InputLayout->Release();
+            if (m_InputLayout)
+                m_InputLayout->Release();
 
-            if (BaseMaterial)
-                BaseMaterial->drop();
+            if (m_BaseMaterial)
+                m_BaseMaterial->drop();
         }
 
 
         bool CD3D11ShaderMaterialRenderer::OnRender(IMaterialRendererServices *service, E_VERTEX_TYPE vtxtype)
         {
-            if (CallBack && (VertexShader || PixelShader))
-                CallBack->OnSetConstants(service, UserData);
+            if (m_CallBack && (m_VertexShader || m_PixelShader))
+                m_CallBack->OnSetConstants(service, m_UserData);
 
             return true;
         }
@@ -109,22 +109,22 @@ namespace irr
         {
             if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
             {
-                if (VertexShader)
+                if (m_VertexShader)
                 {
-                    pID3DDeviceContext->VSSetShader(VertexShader, 0, 0);
+                    m_pID3DDeviceContext->VSSetShader(m_VertexShader, 0, 0);
                 }
 
-                if (PixelShader)
+                if (m_PixelShader)
                 {
-                    pID3DDeviceContext->PSSetShader(PixelShader, 0, 0);
+                    m_pID3DDeviceContext->PSSetShader(m_PixelShader, 0, 0);
                 }
 
-                if (BaseMaterial)
-                    BaseMaterial->OnSetMaterial(material, material, true, services);
+                if (m_BaseMaterial)
+                    m_BaseMaterial->OnSetMaterial(material, material, true, services);
             }
 
-            if (CallBack)
-                CallBack->OnSetMaterial(material);
+            if (m_CallBack)
+                m_CallBack->OnSetMaterial(material);
 
             services->setBasicRenderStates(material, lastMaterial, resetAllRenderstates);
         }
@@ -132,17 +132,17 @@ namespace irr
 
         void CD3D11ShaderMaterialRenderer::OnUnsetMaterial()
         {
-            pID3DDeviceContext->VSSetShader(0, 0, 0);
-            pID3DDeviceContext->PSSetShader(0, 0, 0);
+            m_pID3DDeviceContext->VSSetShader(0, 0, 0);
+            m_pID3DDeviceContext->PSSetShader(0, 0, 0);
 
-            if (BaseMaterial)
-                BaseMaterial->OnUnsetMaterial();
+            if (m_BaseMaterial)
+                m_BaseMaterial->OnUnsetMaterial();
         }
 
 
         bool CD3D11ShaderMaterialRenderer::isTransparent() const
         {
-            return BaseMaterial ? BaseMaterial->isTransparent() : false;
+            return m_BaseMaterial ? m_BaseMaterial->isTransparent() : false;
         }
 
 
@@ -182,7 +182,7 @@ namespace irr
                 return false;
             }
 
-            if (FAILED(pID3DDevice->CreatePixelShader(code->GetBufferPointer(), code->GetBufferSize(), nullptr, &PixelShader)))
+            if (FAILED(m_pID3DDevice->CreatePixelShader(code->GetBufferPointer(), code->GetBufferSize(), nullptr, &m_PixelShader)))
             {
                 os::Printer::log("Could not create pixel shader.", ELL_ERROR);
                 if (code)
@@ -233,7 +233,7 @@ namespace irr
                 return false;
             }
 
-            if (!code || FAILED(pID3DDevice->CreateVertexShader(code->GetBufferPointer(), code->GetBufferSize(), nullptr, &VertexShader)))
+            if (!code || FAILED(m_pID3DDevice->CreateVertexShader(code->GetBufferPointer(), code->GetBufferSize(), nullptr, &m_VertexShader)))
             {
                 os::Printer::log("Could not create vertex shader.", ELL_ERROR);
                 if (code)

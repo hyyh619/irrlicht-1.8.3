@@ -54,8 +54,8 @@ protected:
 
             void printHLSLVariables(ID3DBlob *constantTable);
 
-            core::map<core::stringc, D3D11_SHADER_VARIABLE_DESC> VSVariables;
-            core::map<core::stringc, D3D11_SHADER_VARIABLE_DESC> PSVariables;
+            core::map<core::stringc, D3D11_SHADER_VARIABLE_DESC> m_VSVariables;
+            core::map<core::stringc, D3D11_SHADER_VARIABLE_DESC> m_PSVariables;
         };
     } // end namespace video
 } // end namespace irr

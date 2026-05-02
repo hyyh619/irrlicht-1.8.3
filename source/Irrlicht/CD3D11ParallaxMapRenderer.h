@@ -44,7 +44,7 @@ public:
 
 private:
 
-            f32 CurrentScale;
+            f32 m_CurrentScale;
         };
     } // end namespace video
 } // end namespace irr

@@ -270,13 +270,13 @@ public:
                 return f;
             }
 
-            ID3D11Device                *pID3DDevice;
-            ID3D11DeviceContext         *pID3DDeviceContext;
-            IDXGISwapChain              *SwapChain;
-            ID3D11RenderTargetView      *BackBufferRenderTargetView;
-            ID3D11DepthStencilView      *DepthStencilView;
+            ID3D11Device                *m_pID3DDevice;
+            ID3D11DeviceContext         *m_pID3DDeviceContext;
+            IDXGISwapChain              *m_SwapChain;
+            ID3D11RenderTargetView      *m_BackBufferRenderTargetView;
+            ID3D11DepthStencilView      *m_DepthStencilView;
 #ifdef _DEBUG
-            ID3D11Debug    *pID3D11Debug;
+            ID3D11Debug    *m_pID3D11Debug;
 #endif
 
 private:
@@ -333,49 +333,49 @@ private:
                 s32 userData = 0,
                 E_GPU_SHADING_LANGUAGE shadingLang = EGSL_DEFAULT);
 
-            core::array<SD3D11DepthStencilView*>    DepthBuffers;
+core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
 
             void removeDepthSurface(SD3D11DepthStencilView *depth);
-            DXGI_MODE_DESC          SwapChainBufferDesc;
-            DXGI_SWAP_CHAIN_DESC    SwapChainDesc;
+            DXGI_MODE_DESC          m_SwapChainBufferDesc;
+            DXGI_SWAP_CHAIN_DESC    m_SwapChainDesc;
 
-            SMaterial           Material, LastMaterial;
-            bool                ResetRenderStates;
-            bool                Transformation3DChanged;
-            const ITexture      *CurrentTexture[MATERIAL_MAX_TEXTURES];
-            bool                LastTextureMipMapsAvailable[MATERIAL_MAX_TEXTURES];
-            core::matrix4       Matrices[ETS_COUNT];
+            SMaterial           m_Material, m_LastMaterial;
+            bool                m_ResetRenderStates;
+            bool                m_Transformation3DChanged;
+            const ITexture      *m_CurrentTexture[MATERIAL_MAX_TEXTURES];
+            bool                m_LastTextureMipMapsAvailable[MATERIAL_MAX_TEXTURES];
+            core::matrix4       m_Matrices[ETS_COUNT];
 
-            HMODULE                         D3D11Library;
-            IDXGIFactory1                   *DXGIFactory;
-            IDXGIAdapter1                   *Adapter;
-            core::dimension2d<u32>          CurrentRendertargetSize;
-            D3D11_VIEWPORT                  Viewport;
-            HWND                            WindowId;
-            core::rect<s32>                 ViewPort;
-            core::rect<s32>                 *SceneSourceRect;
-            UINT                            Caps;
-            SIrrlichtCreationParameters     Params;
-            E_VERTEX_TYPE                   LastVertexType;
-            SColorf                         AmbientLight;
-            core::stringc                   VendorName;
-            u16                             VendorID;
+            HMODULE                         m_D3D11Library;
+            IDXGIFactory1                   *m_DXGIFactory;
+            IDXGIAdapter1                   *m_Adapter;
+            core::dimension2d<u32>          m_CurrentRendertargetSize;
+            D3D11_VIEWPORT                  m_Viewport;
+            HWND                            m_WindowId;
+            core::rect<s32>                 m_ViewPort;
+            core::rect<s32>                 *m_SceneSourceRect;
+            UINT                            m_Caps;
+            SIrrlichtCreationParameters     m_Params;
+            E_VERTEX_TYPE                   m_LastVertexType;
+            SColorf                         m_AmbientLight;
+            core::stringc                   m_VendorName;
+            u16                             m_VendorID;
 
-            u32     MaxTextureUnits;
-            u32     MaxUserClipPlanes;
-            u32     MaxMRTs;
-            u32     NumSetMRTs;
-            f32     MaxLightDistance;
-            s32     LastSetLight;
+            u32     m_MaxTextureUnits;
+            u32     m_MaxUserClipPlanes;
+            u32     m_MaxMRTs;
+            u32     m_NumSetMRTs;
+            f32     m_MaxLightDistance;
+            s32     m_LastSetLight;
 
-            ECOLOR_FORMAT       ColorFormat;
-            DXGI_FORMAT         DXGIFormat;
-            bool                DeviceRemoved;
-            bool                DriverWasReset;
-            bool                OcclusionQuerySupport;
-            bool                AlphaToCoverageSupport;
+            ECOLOR_FORMAT       m_ColorFormat;
+            DXGI_FORMAT         m_DXGIFormat;
+            bool                m_DeviceRemoved;
+            bool                m_DriverWasReset;
+            bool                m_OcclusionQuerySupport;
+            bool                m_AlphaToCoverageSupport;
 
-            E_RENDER_MODE       CurrentRenderMode;
+            E_RENDER_MODE       m_CurrentRenderMode;
         };
 
         IVideoDriver* createDirectX11Driver(const SIrrlichtCreationParameters &params,
