@@ -91,3 +91,64 @@ destBox参数如下
 
 # 10
 bool CD3D11Driver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const没有检查EVDF_TEXTURE_NPOT，请根据D3D11的Spec查看是否支持NPOT
+
+# 11
+仿照CD3D9Driver::initDriver代码
+            // print device information
+            D3DADAPTER_IDENTIFIER9 dai;
+            if (!FAILED(pID3D->GetAdapterIdentifier(Params.DisplayAdapter, 0, &dai)))
+            {
+                char tmp[512];
+
+                s32 Product    = HIWORD(dai.DriverVersion.HighPart);
+                s32 Version    = LOWORD(dai.DriverVersion.HighPart);
+                s32 SubVersion = HIWORD(dai.DriverVersion.LowPart);
+                s32 Build      = LOWORD(dai.DriverVersion.LowPart);
+
+                sprintf(tmp, "%s %s %d.%d.%d.%d", dai.Description, dai.Driver, Product, Version,
+                    SubVersion, Build);
+                os::Printer::log(tmp, ELL_INFORMATION);
+
+                // Assign vendor name based on vendor id.
+                VendorID = static_cast<u16>(dai.VendorId);
+
+                switch (dai.VendorId)
+                {
+                    case 0x1002: VendorName = "ATI Technologies Inc."; break;
+
+                    case 0x10DE: VendorName = "NVIDIA Corporation"; break;
+
+                    case 0x102B: VendorName = "Matrox Electronic Systems Ltd."; break;
+
+                    case 0x121A: VendorName = "3dfx Interactive Inc"; break;
+
+                    case 0x5333: VendorName = "S3 Graphics Co., Ltd."; break;
+
+                    case 0x8086: VendorName = "Intel Corporation"; break;
+
+                    default: VendorName = "Unknown VendorId: "; VendorName += (u32)dai.VendorId; break;
+                }
+            }
+
+            D3DDISPLAYMODE d3ddm;
+            if (FAILED(pID3D->GetAdapterDisplayMode(Params.DisplayAdapter, &d3ddm)))
+            {
+                os::Printer::log("Error: Could not get Adapter Display mode.", ELL_ERROR);
+                return false;
+            }
+实现CD3D11Driver::initDriver的相应功能。
+
+根据DXGI_ADAPTER_DESC的定义，修复下面代码的问题
+            DXGI_ADAPTER_DESC    desc;
+            Adapter->GetDesc(&desc);
+
+            char tmp[512];
+
+            s32 Product    = HIWORD(desc.DriverVersion.HighPart);
+            s32 Version    = LOWORD(desc.DriverVersion.HighPart);
+            s32 SubVersion = HIWORD(desc.DriverVersion.LowPart);
+            s32 Build      = LOWORD(desc.DriverVersion.LowPart);
+
+参考d3d11
+                case 0x05404c42: VendorName = "Parallel Desktop"; break;
+为其他video driver增加新的vendor

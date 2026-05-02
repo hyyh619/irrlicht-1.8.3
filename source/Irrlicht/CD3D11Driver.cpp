@@ -87,6 +87,8 @@ namespace irr
 
         bool CD3D11Driver::initDriver(HWND hwnd, bool pureSoftware)
         {
+            char tmp[512];
+
             WindowId = hwnd;
 
             D3D11Library = LoadLibraryA("d3d11.dll");
@@ -187,10 +189,32 @@ namespace irr
                 return false;
             }
 
-            DXGI_ADAPTER_DESC1    desc;
-            Adapter->GetDesc1(&desc);
-            VendorID    = desc.SubSysId;
-            VendorName  = core::stringc("");
+            DXGI_ADAPTER_DESC    desc;
+            Adapter->GetDesc(&desc);
+
+            VendorID = static_cast<u16>(desc.VendorId);
+
+            switch (desc.VendorId)
+            {
+                case 0x1002: VendorName = "ATI Technologies Inc."; break;
+
+                case 0x10DE: VendorName = "NVIDIA Corporation"; break;
+
+                case 0x102B: VendorName = "Matrox Electronic Systems Ltd."; break;
+
+                case 0x121A: VendorName = "3dfx Interactive Inc"; break;
+
+                case 0x5333: VendorName = "S3 Graphics Co., Ltd."; break;
+
+                case 0x8086: VendorName = "Intel Corporation"; break;
+
+                case 0x05404c42: VendorName = "Parallel Desktop"; break;
+
+                default: VendorName = "Unknown VendorId: "; VendorName += (u32)desc.VendorId; break;
+            }
+
+            sprintf(tmp, "vendor: %s", VendorName.c_str());
+            os::Printer::log(tmp, ELL_INFORMATION);
 
             hr = DXGIFactory->CreateSwapChain(pID3DDevice, &SwapChainDesc, &SwapChain);
             if (FAILED(hr))

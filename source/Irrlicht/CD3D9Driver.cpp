@@ -242,8 +242,13 @@ namespace irr
 
                     case 0x8086: VendorName = "Intel Corporation"; break;
 
+                    case 0x05404c42: VendorName = "Parallel Desktop"; break;
+
                     default: VendorName = "Unknown VendorId: "; VendorName += (u32)dai.VendorId; break;
                 }
+
+                sprintf(tmp, "vendor: %s", VendorName.c_str());
+                os::Printer::log(tmp, ELL_INFORMATION);
             }
 
             D3DDISPLAYMODE d3ddm;
