@@ -1144,7 +1144,7 @@ namespace irr
         switch (CreationParams.DriverType)
         {
             case video::EDT_DIRECT3D8:
-        #ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
+#ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
                 VideoDriver = video::createDirectX8Driver(CreationParams, FileSystem, HWnd);
 
                 if (!VideoDriver)
@@ -1152,13 +1152,13 @@ namespace irr
                     os::Printer::log("Could not create DIRECT3D8 Driver.", ELL_ERROR);
                 }
 
-        #else
+#else
                 os::Printer::log("DIRECT3D8 Driver was not compiled into this dll. Try another one.", ELL_ERROR);
-        #endif // _IRR_COMPILE_WITH_DIRECT3D_8_
+#endif // _IRR_COMPILE_WITH_DIRECT3D_8_
 
                 break;
 
-case video::EDT_DIRECT3D9:
+            case video::EDT_DIRECT3D9:
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
                 VideoDriver = video::createDirectX9Driver(CreationParams, FileSystem, HWnd);
 
@@ -1190,7 +1190,7 @@ case video::EDT_DIRECT3D9:
 
             case video::EDT_OPENGL:
 
-        #ifdef _IRR_COMPILE_WITH_OPENGL_
+#ifdef _IRR_COMPILE_WITH_OPENGL_
                 switchToFullScreen();
 
                 VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, this);
@@ -1199,31 +1199,31 @@ case video::EDT_DIRECT3D9:
                     os::Printer::log("Could not create OpenGL driver.", ELL_ERROR);
                 }
 
-        #else
+#else
                 os::Printer::log("OpenGL driver was not compiled in.", ELL_ERROR);
-        #endif
+#endif
                 break;
 
             case video::EDT_SOFTWARE:
 
-        #ifdef _IRR_COMPILE_WITH_SOFTWARE_
+#ifdef _IRR_COMPILE_WITH_SOFTWARE_
                 switchToFullScreen();
 
                 VideoDriver = video::createSoftwareDriver(CreationParams.WindowSize, CreationParams.Fullscreen, FileSystem, this);
-        #else
+#else
                 os::Printer::log("Software driver was not compiled in.", ELL_ERROR);
-        #endif
+#endif
 
                 break;
 
             case video::EDT_BURNINGSVIDEO:
-        #ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
+#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
                 switchToFullScreen();
 
                 VideoDriver = video::createBurningVideoDriver(CreationParams, FileSystem, this);
-        #else
+#else
                 os::Printer::log("Burning's Video driver was not compiled in.", ELL_ERROR);
-        #endif
+#endif
                 break;
 
             case video::EDT_NULL:
