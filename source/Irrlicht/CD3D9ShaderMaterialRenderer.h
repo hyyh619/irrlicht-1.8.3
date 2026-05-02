@@ -80,15 +80,15 @@ protected:
                 LPCSTR pProfile, DWORD Flags, LPD3DXBUFFER *ppShader, LPD3DXBUFFER *ppErrorMsgs,
                 LPD3DXCONSTANTTABLE *ppConstantTable);
 
-            IDirect3DDevice9           *pID3DDevice;
-            video::IVideoDriver        *Driver;
-            IShaderConstantSetCallBack *CallBack;
-            IMaterialRenderer          *BaseMaterial;
+            IDirect3DDevice9           *m_pID3DDevice;
+            video::IVideoDriver        *m_Driver;
+            IShaderConstantSetCallBack *m_CallBack;
+            IMaterialRenderer          *m_BaseMaterial;
 
-            IDirect3DVertexShader9 *VertexShader;
-            IDirect3DVertexShader9 *OldVertexShader;
-            IDirect3DPixelShader9  *PixelShader;
-            s32                    UserData;
+            IDirect3DVertexShader9 *m_VertexShader;
+            IDirect3DVertexShader9 *m_OldVertexShader;
+            IDirect3DPixelShader9  *m_PixelShader;
+            s32                    m_UserData;
         };
     } // end namespace video
 } // end namespace irr

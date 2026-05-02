@@ -70,8 +70,8 @@ protected:
 
             void printHLSLVariables(LPD3DXCONSTANTTABLE table);
 
-            LPD3DXCONSTANTTABLE VSConstantsTable;
-            LPD3DXCONSTANTTABLE PSConstantsTable;
+            LPD3DXCONSTANTTABLE m_VSConstantsTable;
+            LPD3DXCONSTANTTABLE m_PSConstantsTable;
         };
     } // end namespace video
 } // end namespace irr

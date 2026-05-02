@@ -102,20 +102,20 @@ private:
             //! set Pitch based on the d3d format
             void setPitch(D3DFORMAT d3dformat);
 
-            IDirect3DDevice9       *Device;
-            IDirect3DTexture9      *Texture;
-            IDirect3DSurface9      *RTTSurface;
-            CD3D9Driver            *Driver;
-            SDepthSurface          *DepthSurface;
-            core::dimension2d<u32> TextureSize;
-            core::dimension2d<u32> ImageSize;
-            s32                    Pitch;
-            u32                    MipLevelLocked;
-            ECOLOR_FORMAT          ColorFormat;
+            IDirect3DDevice9       *m_Device;
+            IDirect3DTexture9      *m_Texture;
+            IDirect3DSurface9      *m_RTTSurface;
+            CD3D9Driver            *m_Driver;
+            SDepthSurface          *m_DepthSurface;
+            core::dimension2d<u32> m_TextureSize;
+            core::dimension2d<u32> m_ImageSize;
+            s32                    m_Pitch;
+            u32                    m_MipLevelLocked;
+            ECOLOR_FORMAT          m_ColorFormat;
 
-            bool HasMipMaps;
-            bool HardwareMipMaps;
-            bool IsRenderTarget;
+            bool m_HasMipMaps;
+            bool m_HardwareMipMaps;
+            bool m_IsRenderTarget;
         };
     } // end namespace video
 } // end namespace irr

@@ -188,3 +188,10 @@ bool CD3D11Driver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const没有检�
 错误	C2065	“CallBack”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11NormalMapRenderer.cpp	119		
 错误	C2065	“CallBack”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11NormalMapRenderer.cpp	139		
 错误	C2065	“CallBack”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11NormalMapRenderer.cpp	140		
+
+# 14
+1. 找到所有以CD3D9开头的class定义的非静态成员变量名字，
+2. 逐个处理1找到的所有成员变量：
+   A. 该成员变量名字如果不是以'm_'开头,就给成员变量的名字增加一个'm_'
+   B. 更改所有该成员变量被引用的地方
+   C. 注意不要更改成员函数名字，调用函数名字，数据结构名字

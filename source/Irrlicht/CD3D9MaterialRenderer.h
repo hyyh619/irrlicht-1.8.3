@@ -92,8 +92,8 @@ public:
 
 protected:
 
-            IDirect3DDevice9    *pID3DDevice;
-            video::IVideoDriver *Driver;
+            IDirect3DDevice9    *m_pID3DDevice;
+            video::IVideoDriver *m_Driver;
         };
 
 

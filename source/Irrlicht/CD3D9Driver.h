@@ -434,45 +434,45 @@ private:
                 return v;
             }
 
-            E_RENDER_MODE         CurrentRenderMode;
-            D3DPRESENT_PARAMETERS present;
+            E_RENDER_MODE         m_CurrentRenderMode;
+            D3DPRESENT_PARAMETERS m_present;
 
-            SMaterial      Material, LastMaterial;
-            bool           ResetRenderStates; // bool to make all renderstates be reseted if set.
-            bool           Transformation3DChanged;
-            const ITexture *CurrentTexture[MATERIAL_MAX_TEXTURES];
-            bool           LastTextureMipMapsAvailable[MATERIAL_MAX_TEXTURES];
-            core::matrix4  Matrices[ETS_COUNT]; // matrizes of the 3d mode we need to restore when we switch back from the 2d mode.
+            SMaterial      m_Material, m_LastMaterial;
+            bool           m_ResetRenderStates;
+            bool           m_Transformation3DChanged;
+            const ITexture *m_CurrentTexture[MATERIAL_MAX_TEXTURES];
+            bool           m_LastTextureMipMapsAvailable[MATERIAL_MAX_TEXTURES];
+            core::matrix4  m_Matrices[ETS_COUNT];
 
-            HINSTANCE        D3DLibrary;
-            IDirect3D9       *pID3D;
-            IDirect3DDevice9 *pID3DDevice;
+            HINSTANCE        m_D3DLibrary;
+            IDirect3D9       *m_pID3D;
+            IDirect3DDevice9 *m_pID3DDevice;
 
-            IDirect3DSurface9      *PrevRenderTarget;
-            core::dimension2d<u32> CurrentRendertargetSize;
+            IDirect3DSurface9      *m_PrevRenderTarget;
+            core::dimension2d<u32> m_CurrentRendertargetSize;
 
-            HWND            WindowId;
-            core::rect<s32> *SceneSourceRect;
+            HWND            m_WindowId;
+            core::rect<s32> *m_SceneSourceRect;
 
-            D3DCAPS9 Caps;
+            D3DCAPS9 m_Caps;
 
-            SIrrlichtCreationParameters Params;
+            SIrrlichtCreationParameters m_Params;
 
-            E_VERTEX_TYPE LastVertexType;
+            E_VERTEX_TYPE m_LastVertexType;
 
-            SColorf AmbientLight;
+            SColorf m_AmbientLight;
 
-            core::stringc VendorName;
-            u16           VendorID;
+            core::stringc m_VendorName;
+            u16           m_VendorID;
 
-            core::array<SDepthSurface*> DepthBuffers;
+            core::array<SDepthSurface*> m_DepthBuffers;
 
-            u32 MaxTextureUnits;
-            u32 MaxUserClipPlanes;
-            u32 MaxMRTs;
-            u32 NumSetMRTs;
-            f32 MaxLightDistance;
-            s32 LastSetLight;
+            u32 m_MaxTextureUnits;
+            u32 m_MaxUserClipPlanes;
+            u32 m_MaxMRTs;
+            u32 m_NumSetMRTs;
+            f32 m_MaxLightDistance;
+            s32 m_LastSetLight;
 
             enum E_CACHE_2D_ATTRIBUTES
             {
@@ -481,15 +481,15 @@ private:
                 EC2D_ALPHA_CHANNEL = 0x4
             };
 
-            ECOLOR_FORMAT ColorFormat;
-            D3DFORMAT     D3DColorFormat;
-            bool          DeviceLost;
-            bool          DriverWasReset;
-            bool          OcclusionQuerySupport;
-            bool          AlphaToCoverageSupport;
+            ECOLOR_FORMAT m_ColorFormat;
+            D3DFORMAT     m_D3DColorFormat;
+            bool          m_DeviceLost;
+            bool          m_DriverWasReset;
+            bool          m_OcclusionQuerySupport;
+            bool          m_AlphaToCoverageSupport;
 
         #ifdef _IRR_COMPILE_WITH_CG_
-            CGcontext CgContext;
+            CGcontext m_CgContext;
         #endif
         };
     } // end namespace video

@@ -10,12 +10,12 @@
 #include "os.h"
 #include "S3DVertex.h"
 #include "CD3D9Texture.h"
-#include "CD3D9MaterialRenderer.h"
-#include "CD3D9ShaderMaterialRenderer.h"
+#include "CD3D9m_MaterialRenderer.h"
+#include "CD3D9Shaderm_MaterialRenderer.h"
 #include "CD3D9NormalMapRenderer.h"
 #include "CD3D9ParallaxMapRenderer.h"
-#include "CD3D9HLSLMaterialRenderer.h"
-#include "CD3D9CgMaterialRenderer.h"
+#include "CD3D9HLSLm_MaterialRenderer.h"
+#include "CD3D9Cgm_MaterialRenderer.h"
 #include "SIrrCreationParameters.h"
 
 namespace irr
@@ -32,16 +32,16 @@ namespace irr
 
         //! constructor
         CD3D9Driver::CD3D9Driver(const SIrrlichtCreationParameters &params, io::IFileSystem *io)
-            : CNullDriver(io, params.WindowSize), CurrentRenderMode(ERM_NONE),
-            ResetRenderStates(true), Transformation3DChanged(false),
-            D3DLibrary(0), pID3D(0), pID3DDevice(0), PrevRenderTarget(0),
-            WindowId(0), SceneSourceRect(0),
-            LastVertexType((video::E_VERTEX_TYPE)-1), VendorID(0),
-            MaxTextureUnits(0), MaxUserClipPlanes(0), MaxMRTs(1), NumSetMRTs(1),
-            MaxLightDistance(0.f), LastSetLight(-1),
-            ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), DeviceLost(false),
-            DriverWasReset(true), OcclusionQuerySupport(false),
-            AlphaToCoverageSupport(false), Params(params)
+            : CNullDriver(io, params.WindowSize), m_CurrentRenderMode(ERM_NONE),
+            m_ResetRenderStates(true), m_Transformation3DChanged(false),
+            m_D3DLibrary(0), m_pID3D(0), m_pID3DDevice(0), m_PrevRenderTarget(0),
+            m_WindowId(0), m_SceneSourceRect(0),
+            m_LastVertexType((video::E_VERTEX_TYPE)-1), m_VendorID(0),
+            m_MaxTextureUnits(0), m_MaxUserClipPlanes(0), m_MaxMRTs(1), m_NumSetMRTs(1),
+            m_MaxLightDistance(0.f), m_LastSetLight(-1),
+            m_ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), m_DeviceLost(false),
+            m_DriverWasReset(true), m_OcclusionQuerySupport(false),
+            m_AlphaToCoverageSupport(false), m_Params(params)
         {
     #ifdef _DEBUG
             setDebugName("CD3D9Driver");
@@ -51,11 +51,11 @@ namespace irr
 
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
-                CurrentTexture[i]              = 0;
-                LastTextureMipMapsAvailable[i] = false;
+                m_CurrentTexture[i]              = 0;
+                m_LastTextureMipMapsAvailable[i] = false;
             }
 
-            MaxLightDistance = sqrtf(FLT_MAX);
+            m_MaxLightDistance = sqrtf(FLT_MAX);
             // create sphere map matrix
 
             SphereMapMatrixD3D9._11 = 0.5f; SphereMapMatrixD3D9._12 = 0.0f;
@@ -71,7 +71,7 @@ namespace irr
             UnitMatrixD3D9 = *(D3DMATRIX*)((void*)mat.pointer());
 
     #ifdef _IRR_COMPILE_WITH_CG_
-            CgContext = 0;
+            m_CgContext = 0;
     #endif
 
             // init direct 3d is done in the factory function
@@ -81,32 +81,32 @@ namespace irr
         //! destructor
         CD3D9Driver::~CD3D9Driver()
         {
-            deleteMaterialRenders();
+            deletem_MaterialRenders();
             deleteAllTextures();
             removeAllOcclusionQueries();
             removeAllHardwareBuffers();
 
-            for (u32 i = 0; i < DepthBuffers.size(); ++i)
+            for (u32 i = 0; i < m_DepthBuffers.size(); ++i)
             {
-                DepthBuffers[i]->drop();
+                m_DepthBuffers[i]->drop();
             }
 
-            DepthBuffers.clear();
+            m_DepthBuffers.clear();
 
             // drop d3d9
 
-            if (pID3DDevice)
-                pID3DDevice->Release();
+            if (m_pID3DDevice)
+                m_pID3DDevice->Release();
 
-            if (pID3D)
-                pID3D->Release();
+            if (m_pID3D)
+                m_pID3D->Release();
 
     #ifdef _IRR_COMPILE_WITH_CG_
             cgD3D9SetDevice(0);
 
-            if (CgContext)
+            if (m_CgContext)
             {
-                cgDestroyContext(CgContext);
+                cgDestroyContext(m_CgContext);
             }
     #endif
         }
@@ -116,83 +116,83 @@ namespace irr
         {
             // create D3D9 material renderers
 
-            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_SOLID(pID3DDevice, this));
-            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_SOLID_2_LAYER(pID3DDevice, this));
+            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_SOLID(m_pID3DDevice, this));
+            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_SOLID_2_LAYER(m_pID3DDevice, this));
 
             // add the same renderer for all lightmap types
 
-            CD3D9MaterialRenderer_LIGHTMAP *lmr = new CD3D9MaterialRenderer_LIGHTMAP(pID3DDevice, this);
-            addMaterialRenderer(lmr); // for EMT_LIGHTMAP:
-            addMaterialRenderer(lmr); // for EMT_LIGHTMAP_ADD:
-            addMaterialRenderer(lmr); // for EMT_LIGHTMAP_M2:
-            addMaterialRenderer(lmr); // for EMT_LIGHTMAP_M4:
-            addMaterialRenderer(lmr); // for EMT_LIGHTMAP_LIGHTING:
-            addMaterialRenderer(lmr); // for EMT_LIGHTMAP_LIGHTING_M2:
-            addMaterialRenderer(lmr); // for EMT_LIGHTMAP_LIGHTING_M4:
+            CD3D9MaterialRenderer_LIGHTMAP *lmr = new CD3D9MaterialRenderer_LIGHTMAP(m_pID3DDevice, this);
+            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP:
+            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP_ADD:
+            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP_M2:
+            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP_M4:
+            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP_LIGHTING:
+            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP_LIGHTING_M2:
+            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP_LIGHTING_M4:
             lmr->drop();
 
             // add remaining fixed function pipeline material renderers
 
-            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_DETAIL_MAP(pID3DDevice, this));
-            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_SPHERE_MAP(pID3DDevice, this));
-            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_REFLECTION_2_LAYER(pID3DDevice, this));
-            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_TRANSPARENT_ADD_COLOR(pID3DDevice, this));
-            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL(pID3DDevice, this));
-            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL_REF(pID3DDevice, this));
-            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_TRANSPARENT_VERTEX_ALPHA(pID3DDevice, this));
-            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_TRANSPARENT_REFLECTION_2_LAYER(pID3DDevice, this));
+            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_DETAIL_MAP(m_pID3DDevice, this));
+            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_SPHERE_MAP(m_pID3DDevice, this));
+            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_REFLECTION_2_LAYER(m_pID3DDevice, this));
+            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_TRANSPARENT_ADD_COLOR(m_pID3DDevice, this));
+            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL(m_pID3DDevice, this));
+            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_TRANSPARENT_ALPHA_CHANNEL_REF(m_pID3DDevice, this));
+            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_TRANSPARENT_VERTEX_ALPHA(m_pID3DDevice, this));
+            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_TRANSPARENT_REFLECTION_2_LAYER(m_pID3DDevice, this));
 
             // add normal map renderers
 
             s32                      tmp       = 0;
-            video::IMaterialRenderer *renderer = 0;
+            video::Im_MaterialRenderer *renderer = 0;
 
-            renderer = new CD3D9NormalMapRenderer(pID3DDevice, this, tmp,
-                    MaterialRenderers[EMT_SOLID].Renderer);
+            renderer = new CD3D9NormalMapRenderer(m_pID3DDevice, this, tmp,
+                    m_MaterialRenderers[EMT_SOLID].Renderer);
             renderer->drop();
 
-            renderer = new CD3D9NormalMapRenderer(pID3DDevice, this, tmp,
-                    MaterialRenderers[EMT_TRANSPARENT_ADD_COLOR].Renderer);
+            renderer = new CD3D9NormalMapRenderer(m_pID3DDevice, this, tmp,
+                    m_MaterialRenderers[EMT_TRANSPARENT_ADD_COLOR].Renderer);
             renderer->drop();
 
-            renderer = new CD3D9NormalMapRenderer(pID3DDevice, this, tmp,
-                    MaterialRenderers[EMT_TRANSPARENT_VERTEX_ALPHA].Renderer);
+            renderer = new CD3D9NormalMapRenderer(m_pID3DDevice, this, tmp,
+                    m_MaterialRenderers[EMT_TRANSPARENT_VERTEX_ALPHA].Renderer);
             renderer->drop();
 
             // add parallax map renderers
 
-            renderer = new CD3D9ParallaxMapRenderer(pID3DDevice, this, tmp,
-                    MaterialRenderers[EMT_SOLID].Renderer);
+            renderer = new CD3D9ParallaxMapRenderer(m_pID3DDevice, this, tmp,
+                    m_MaterialRenderers[EMT_SOLID].Renderer);
             renderer->drop();
 
-            renderer = new CD3D9ParallaxMapRenderer(pID3DDevice, this, tmp,
-                    MaterialRenderers[EMT_TRANSPARENT_ADD_COLOR].Renderer);
+            renderer = new CD3D9ParallaxMapRenderer(m_pID3DDevice, this, tmp,
+                    m_MaterialRenderers[EMT_TRANSPARENT_ADD_COLOR].Renderer);
             renderer->drop();
 
-            renderer = new CD3D9ParallaxMapRenderer(pID3DDevice, this, tmp,
-                    MaterialRenderers[EMT_TRANSPARENT_VERTEX_ALPHA].Renderer);
+            renderer = new CD3D9ParallaxMapRenderer(m_pID3DDevice, this, tmp,
+                    m_MaterialRenderers[EMT_TRANSPARENT_VERTEX_ALPHA].Renderer);
             renderer->drop();
 
             // add basic 1 texture blending
-            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_ONETEXTURE_BLEND(pID3DDevice, this));
+            addAndDropMaterialRenderer(new CD3D9MaterialRenderer_ONETEXTURE_BLEND(m_pID3DDevice, this));
         }
 
 
         //! initialises the Direct3D API
         bool CD3D9Driver::initDriver(HWND hwnd, bool pureSoftware)
         {
-            if (!pID3D)
+            if (!m_pID3D)
             {
-                D3DLibrary = LoadLibrary(__TEXT("d3d9.dll"));
+                m_D3DLibrary = LoadLibrary(__TEXT("d3d9.dll"));
 
-                if (!D3DLibrary)
+                if (!m_D3DLibrary)
                 {
                     os::Printer::log("Error, could not load d3d9.dll.", ELL_ERROR);
                     return false;
                 }
 
                 typedef IDirect3D9* (__stdcall * D3DCREATETYPE)(UINT);
-                D3DCREATETYPE d3dCreate = (D3DCREATETYPE) GetProcAddress(D3DLibrary, "Direct3DCreate9");
+                D3DCREATETYPE d3dCreate = (D3DCREATETYPE) GetProcAddress(m_D3DLibrary, "Direct3DCreate9");
 
                 if (!d3dCreate)
                 {
@@ -200,10 +200,10 @@ namespace irr
                     return false;
                 }
 
-                // just like pID3D = Direct3DCreate9(D3D_SDK_VERSION);
-                pID3D = (*d3dCreate)(D3D_SDK_VERSION);
+                // just like m_pID3D = Direct3DCreate9(D3D_SDK_VERSION);
+                m_pID3D = (*d3dCreate)(D3D_SDK_VERSION);
 
-                if (!pID3D)
+                if (!m_pID3D)
                 {
                     os::Printer::log("Error initializing D3D.", ELL_ERROR);
                     return false;
@@ -212,7 +212,7 @@ namespace irr
 
             // print device information
             D3DADAPTER_IDENTIFIER9 dai;
-            if (!FAILED(pID3D->GetAdapterIdentifier(Params.DisplayAdapter, 0, &dai)))
+            if (!FAILED(m_pID3D->GetAdapterIdentifier(m_Params.DisplayAdapter, 0, &dai)))
             {
                 char tmp[512];
 
@@ -226,77 +226,77 @@ namespace irr
                 os::Printer::log(tmp, ELL_INFORMATION);
 
                 // Assign vendor name based on vendor id.
-                VendorID = static_cast<u16>(dai.VendorId);
+                m_VendorID = static_cast<u16>(dai.VendorId);
 
                 switch (dai.VendorId)
                 {
-                    case 0x1002: VendorName = "ATI Technologies Inc."; break;
+                    case 0x1002: m_VendorName = "ATI Technologies Inc."; break;
 
-                    case 0x10DE: VendorName = "NVIDIA Corporation"; break;
+                    case 0x10DE: m_VendorName = "NVIDIA Corporation"; break;
 
-                    case 0x102B: VendorName = "Matrox Electronic Systems Ltd."; break;
+                    case 0x102B: m_VendorName = "Matrox Electronic Systems Ltd."; break;
 
-                    case 0x121A: VendorName = "3dfx Interactive Inc"; break;
+                    case 0x121A: m_VendorName = "3dfx Interactive Inc"; break;
 
-                    case 0x5333: VendorName = "S3 Graphics Co., Ltd."; break;
+                    case 0x5333: m_VendorName = "S3 Graphics Co., Ltd."; break;
 
-                    case 0x8086: VendorName = "Intel Corporation"; break;
+                    case 0x8086: m_VendorName = "Intel Corporation"; break;
 
-                    case 0x05404c42: VendorName = "Parallel Desktop"; break;
+                    case 0x05404c42: m_VendorName = "Parallel Desktop"; break;
 
-                    default: VendorName = "Unknown VendorId: "; VendorName += (u32)dai.VendorId; break;
+                    default: m_VendorName = "Unknown VendorId: "; m_VendorName += (u32)dai.VendorId; break;
                 }
 
-                sprintf(tmp, "vendor: %s", VendorName.c_str());
+                sprintf(tmp, "vendor: %s", m_VendorName.c_str());
                 os::Printer::log(tmp, ELL_INFORMATION);
             }
 
             D3DDISPLAYMODE d3ddm;
-            if (FAILED(pID3D->GetAdapterDisplayMode(Params.DisplayAdapter, &d3ddm)))
+            if (FAILED(m_pID3D->GetAdapterDisplayMode(m_Params.DisplayAdapter, &d3ddm)))
             {
                 os::Printer::log("Error: Could not get Adapter Display mode.", ELL_ERROR);
                 return false;
             }
 
-            ZeroMemory(&present, sizeof(present));
+            ZeroMemory(&m_present, sizeof(m_present));
 
-            present.BackBufferCount        = 1;
-            present.EnableAutoDepthStencil = TRUE;
-            if (Params.Vsync)
-                present.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+            m_present.BackBufferCount        = 1;
+            m_present.EnableAutoDepthStencil = TRUE;
+            if (m_Params.Vsync)
+                m_present.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
             else
-                present.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+                m_present.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
-            if (Params.Fullscreen)
+            if (m_Params.Fullscreen)
             {
-                present.BackBufferWidth  = Params.WindowSize.Width;
-                present.BackBufferHeight = Params.WindowSize.Height;
+                m_present.BackBufferWidth  = m_Params.WindowSize.Width;
+                m_present.BackBufferHeight = m_Params.WindowSize.Height;
                 // request 32bit mode if user specified 32 bit, added by Thomas Stuefe
-                if (Params.Bits == 32)
-                    present.BackBufferFormat = D3DFMT_X8R8G8B8;
+                if (m_Params.Bits == 32)
+                    m_present.BackBufferFormat = D3DFMT_X8R8G8B8;
                 else
-                    present.BackBufferFormat = D3DFMT_R5G6B5;
+                    m_present.BackBufferFormat = D3DFMT_R5G6B5;
 
-                present.SwapEffect                 = D3DSWAPEFFECT_FLIP;
-                present.Windowed                   = FALSE;
-                present.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+                m_present.SwapEffect                 = D3DSWAPEFFECT_FLIP;
+                m_present.Windowed                   = FALSE;
+                m_present.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
             }
             else
             {
-                present.BackBufferFormat = d3ddm.Format;
-                present.SwapEffect       = D3DSWAPEFFECT_DISCARD;
-                present.Windowed         = TRUE;
+                m_present.BackBufferFormat = d3ddm.Format;
+                m_present.SwapEffect       = D3DSWAPEFFECT_DISCARD;
+                m_present.Windowed         = TRUE;
             }
 
-            UINT       adapter = Params.DisplayAdapter;
+            UINT       adapter = m_Params.DisplayAdapter;
             D3DDEVTYPE devtype = D3DDEVTYPE_HAL;
     #ifndef _IRR_D3D_NO_SHADER_DEBUGGING
             devtype = D3DDEVTYPE_REF;
     #elif defined(_IRR_USE_NVIDIA_PERFHUD_)
-            for (UINT adapter_i = 0; adapter_i < pID3D->GetAdapterCount(); ++adapter_i)
+            for (UINT adapter_i = 0; adapter_i < m_pID3D->GetAdapterCount(); ++adapter_i)
             {
                 D3DADAPTER_IDENTIFIER9 identifier;
-                pID3D->GetAdapterIdentifier(adapter_i, 0, &identifier);
+                m_pID3D->GetAdapterIdentifier(adapter_i, 0, &identifier);
                 if (strstr(identifier.Description, "PerfHUD") != 0)
                 {
                     adapter = adapter_i;
@@ -307,82 +307,82 @@ namespace irr
     #endif
 
             // enable anti alias if possible and desired
-            if (Params.AntiAlias > 0)
+            if (m_Params.AntiAlias > 0)
             {
-                if (Params.AntiAlias > 32)
-                    Params.AntiAlias = 32;
+                if (m_Params.AntiAlias > 32)
+                    m_Params.AntiAlias = 32;
 
                 DWORD qualityLevels = 0;
 
-                while (Params.AntiAlias > 0)
+                while (m_Params.AntiAlias > 0)
                 {
-                    if (SUCCEEDED(pID3D->CheckDeviceMultiSampleType(adapter,
-                        devtype, present.BackBufferFormat, !Params.Fullscreen,
-                        (D3DMULTISAMPLE_TYPE)Params.AntiAlias, &qualityLevels)))
+                    if (SUCCEEDED(m_pID3D->CheckDeviceMultiSampleType(adapter,
+                        devtype, m_present.BackBufferFormat, !m_Params.Fullscreen,
+                        (D3DMULTISAMPLE_TYPE)m_Params.AntiAlias, &qualityLevels)))
                     {
-                        present.MultiSampleType    = (D3DMULTISAMPLE_TYPE)Params.AntiAlias;
-                        present.MultiSampleQuality = qualityLevels - 1;
-                        present.SwapEffect         = D3DSWAPEFFECT_DISCARD;
+                        m_present.MultiSampleType    = (D3DMULTISAMPLE_TYPE)m_Params.AntiAlias;
+                        m_present.MultiSampleQuality = qualityLevels - 1;
+                        m_present.SwapEffect         = D3DSWAPEFFECT_DISCARD;
                         break;
                     }
 
-                    --Params.AntiAlias;
+                    --m_Params.AntiAlias;
                 }
 
-                if (Params.AntiAlias == 0)
+                if (m_Params.AntiAlias == 0)
                 {
                     os::Printer::log("Anti aliasing disabled because hardware/driver lacks necessary caps.", ELL_WARNING);
                 }
             }
 
             // check stencil buffer compatibility
-            if (Params.Stencilbuffer)
+            if (m_Params.Stencilbuffer)
             {
-                present.AutoDepthStencilFormat = D3DFMT_D24S8;
-                if (FAILED(pID3D->CheckDeviceFormat(adapter, devtype,
-                    present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL,
-                    D3DRTYPE_SURFACE, present.AutoDepthStencilFormat)))
+                m_present.AutoDepthStencilFormat = D3DFMT_D24S8;
+                if (FAILED(m_pID3D->CheckDeviceFormat(adapter, devtype,
+                    m_present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL,
+                    D3DRTYPE_SURFACE, m_present.AutoDepthStencilFormat)))
                 {
-                    present.AutoDepthStencilFormat = D3DFMT_D24X4S4;
-                    if (FAILED(pID3D->CheckDeviceFormat(adapter, devtype,
-                        present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL,
-                        D3DRTYPE_SURFACE, present.AutoDepthStencilFormat)))
+                    m_present.AutoDepthStencilFormat = D3DFMT_D24X4S4;
+                    if (FAILED(m_pID3D->CheckDeviceFormat(adapter, devtype,
+                        m_present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL,
+                        D3DRTYPE_SURFACE, m_present.AutoDepthStencilFormat)))
                     {
-                        present.AutoDepthStencilFormat = D3DFMT_D15S1;
-                        if (FAILED(pID3D->CheckDeviceFormat(adapter, devtype,
-                            present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL,
-                            D3DRTYPE_SURFACE, present.AutoDepthStencilFormat)))
+                        m_present.AutoDepthStencilFormat = D3DFMT_D15S1;
+                        if (FAILED(m_pID3D->CheckDeviceFormat(adapter, devtype,
+                            m_present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL,
+                            D3DRTYPE_SURFACE, m_present.AutoDepthStencilFormat)))
                         {
                             os::Printer::log("Device does not support stencilbuffer, disabling stencil buffer.", ELL_WARNING);
-                            Params.Stencilbuffer = false;
+                            m_Params.Stencilbuffer = false;
                         }
                     }
                 }
-                else if (FAILED(pID3D->CheckDepthStencilMatch(adapter, devtype,
-                    present.BackBufferFormat, present.BackBufferFormat, present.AutoDepthStencilFormat)))
+                else if (FAILED(m_pID3D->CheckDepthStencilMatch(adapter, devtype,
+                    m_present.BackBufferFormat, m_present.BackBufferFormat, m_present.AutoDepthStencilFormat)))
                 {
                     os::Printer::log("Depth-stencil format is not compatible with display format, disabling stencil buffer.", ELL_WARNING);
-                    Params.Stencilbuffer = false;
+                    m_Params.Stencilbuffer = false;
                 }
             }
 
             // do not use else here to cope with flag change in previous block
-            if (!Params.Stencilbuffer)
+            if (!m_Params.Stencilbuffer)
             {
-                present.AutoDepthStencilFormat = D3DFMT_D32;
-                if (FAILED(pID3D->CheckDeviceFormat(adapter, devtype,
-                    present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL,
-                    D3DRTYPE_SURFACE, present.AutoDepthStencilFormat)))
+                m_present.AutoDepthStencilFormat = D3DFMT_D32;
+                if (FAILED(m_pID3D->CheckDeviceFormat(adapter, devtype,
+                    m_present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL,
+                    D3DRTYPE_SURFACE, m_present.AutoDepthStencilFormat)))
                 {
-                    present.AutoDepthStencilFormat = D3DFMT_D24X8;
-                    if (FAILED(pID3D->CheckDeviceFormat(adapter, devtype,
-                        present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL,
-                        D3DRTYPE_SURFACE, present.AutoDepthStencilFormat)))
+                    m_present.AutoDepthStencilFormat = D3DFMT_D24X8;
+                    if (FAILED(m_pID3D->CheckDeviceFormat(adapter, devtype,
+                        m_present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL,
+                        D3DRTYPE_SURFACE, m_present.AutoDepthStencilFormat)))
                     {
-                        present.AutoDepthStencilFormat = D3DFMT_D16;
-                        if (FAILED(pID3D->CheckDeviceFormat(adapter, devtype,
-                            present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL,
-                            D3DRTYPE_SURFACE, present.AutoDepthStencilFormat)))
+                        m_present.AutoDepthStencilFormat = D3DFMT_D16;
+                        if (FAILED(m_pID3D->CheckDeviceFormat(adapter, devtype,
+                            m_present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL,
+                            D3DRTYPE_SURFACE, m_present.AutoDepthStencilFormat)))
                         {
                             os::Printer::log("Device does not support required depth buffer.", ELL_WARNING);
                             return false;
@@ -393,50 +393,50 @@ namespace irr
 
             // create device
 
-            DWORD fpuPrecision  = Params.HighPrecisionFPU ? D3DCREATE_FPU_PRESERVE : 0;
-            DWORD multithreaded = Params.DriverMultithreaded ? D3DCREATE_MULTITHREADED : 0;
+            DWORD fpuPrecision  = m_Params.HighPrecisionFPU ? D3DCREATE_FPU_PRESERVE : 0;
+            DWORD multithreaded = m_Params.DriverMultithreaded ? D3DCREATE_MULTITHREADED : 0;
             if (pureSoftware)
             {
-                if (FAILED(pID3D->CreateDevice(Params.DisplayAdapter, D3DDEVTYPE_REF, hwnd,
-                    fpuPrecision | D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present, &pID3DDevice)))
+                if (FAILED(m_pID3D->CreateDevice(m_Params.DisplayAdapter, D3DDEVTYPE_REF, hwnd,
+                    fpuPrecision | D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_present, &m_pID3DDevice)))
                     os::Printer::log("Was not able to create Direct3D9 software device.", ELL_ERROR);
             }
             else
             {
-                HRESULT hr = pID3D->CreateDevice(adapter, devtype, hwnd,
-                        fpuPrecision | multithreaded | D3DCREATE_HARDWARE_VERTEXPROCESSING, &present, &pID3DDevice);
+                HRESULT hr = m_pID3D->CreateDevice(adapter, devtype, hwnd,
+                        fpuPrecision | multithreaded | D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_present, &m_pID3DDevice);
 
                 if (FAILED(hr))
-                    hr = pID3D->CreateDevice(adapter, devtype, hwnd,
-                            fpuPrecision | multithreaded | D3DCREATE_MIXED_VERTEXPROCESSING, &present, &pID3DDevice);
+                    hr = m_pID3D->CreateDevice(adapter, devtype, hwnd,
+                            fpuPrecision | multithreaded | D3DCREATE_MIXED_VERTEXPROCESSING, &m_present, &m_pID3DDevice);
 
                 if (FAILED(hr))
-                    hr = pID3D->CreateDevice(adapter, devtype, hwnd,
-                            fpuPrecision | multithreaded | D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present, &pID3DDevice);
+                    hr = m_pID3D->CreateDevice(adapter, devtype, hwnd,
+                            fpuPrecision | multithreaded | D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_present, &m_pID3DDevice);
 
                 if (FAILED(hr))
                     os::Printer::log("Was not able to create Direct3D9 device.", ELL_ERROR);
             }
 
-            if (!pID3DDevice)
+            if (!m_pID3DDevice)
             {
                 os::Printer::log("Was not able to create DIRECT3D9 device.", ELL_ERROR);
                 return false;
             }
 
             // get caps
-            pID3DDevice->GetDeviceCaps(&Caps);
+            m_pID3DDevice->GetDeviceCaps(&m_Caps);
 
-            os::Printer::log("Currently available Video Memory (kB)", core::stringc(pID3DDevice->GetAvailableTextureMem() / 1024).c_str());
+            os::Printer::log("Currently available Video Memory (kB)", core::stringc(m_pID3DDevice->GetAvailableTextureMem() / 1024).c_str());
 
             // disable stencilbuffer if necessary
-            if (Params.Stencilbuffer &&
-                (!(Caps.StencilCaps & D3DSTENCILCAPS_DECRSAT) ||
-                !(Caps.StencilCaps & D3DSTENCILCAPS_INCRSAT) ||
-                !(Caps.StencilCaps & D3DSTENCILCAPS_KEEP)))
+            if (m_Params.Stencilbuffer &&
+                (!(m_Caps.StencilCaps & D3DSTENCILCAPS_DECRSAT) ||
+                !(m_Caps.StencilCaps & D3DSTENCILCAPS_INCRSAT) ||
+                !(m_Caps.StencilCaps & D3DSTENCILCAPS_KEEP)))
             {
                 os::Printer::log("Device not able to use stencil buffer, disabling stencil buffer.", ELL_WARNING);
-                Params.Stencilbuffer = false;
+                m_Params.Stencilbuffer = false;
             }
 
             // set default vertex shader
@@ -446,56 +446,56 @@ namespace irr
             setFog(FogColor, FogType, FogStart, FogEnd, FogDensity, PixelFog, RangeFog);
 
             // set exposed data
-            ExposedData.D3D9.D3D9    = pID3D;
-            ExposedData.D3D9.D3DDev9 = pID3DDevice;
+            ExposedData.D3D9.D3D9    = m_pID3D;
+            ExposedData.D3D9.D3DDev9 = m_pID3DDevice;
             ExposedData.D3D9.HWnd    = hwnd;
 
-            ResetRenderStates = true;
+            m_ResetRenderStates = true;
 
             // create materials
             createMaterialRenderers();
 
-            MaxTextureUnits       = core::min_((u32)Caps.MaxSimultaneousTextures, MATERIAL_MAX_TEXTURES);
-            MaxUserClipPlanes     = (u32)Caps.MaxUserClipPlanes;
-            MaxMRTs               = (s32)Caps.NumSimultaneousRTs;
-            OcclusionQuerySupport = (pID3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, NULL) == S_OK);
+            m_MaxTextureUnits       = core::min_((u32)m_Caps.MaxSimultaneousTextures, MATERIAL_MAX_TEXTURES);
+            m_MaxUserClipPlanes     = (u32)m_Caps.MaxUserClipPlanes;
+            m_MaxMRTs               = (s32)m_Caps.NumSimultaneousRTs;
+            m_OcclusionQuerySupport = (m_pID3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, NULL) == S_OK);
 
-            if (VendorID == 0x10DE) // NVidia
-                AlphaToCoverageSupport = (pID3D->CheckDeviceFormat(adapter, D3DDEVTYPE_HAL,
+            if (m_VendorID == 0x10DE) // NVidia
+                m_AlphaToCoverageSupport = (m_pID3D->CheckDeviceFormat(adapter, D3DDEVTYPE_HAL,
                     D3DFMT_X8R8G8B8, 0, D3DRTYPE_SURFACE,
                     (D3DFORMAT)MAKEFOURCC('A', 'T', 'O', 'C')) == S_OK);
-            else if (VendorID == 0x1002) // ATI
-                AlphaToCoverageSupport = true; // TODO: Check unknown
+            else if (m_VendorID == 0x1002) // ATI
+                m_AlphaToCoverageSupport = true; // TODO: Check unknown
 
 #if 0
-            AlphaToCoverageSupport = (pID3D->CheckDeviceFormat(adapter, D3DDEVTYPE_HAL,
+            m_AlphaToCoverageSupport = (m_pID3D->CheckDeviceFormat(adapter, D3DDEVTYPE_HAL,
                 D3DFMT_X8R8G8B8, 0, D3DRTYPE_SURFACE,
                 (D3DFORMAT)MAKEFOURCC('A', '2', 'M', '1')) == S_OK);
 #endif
 
-            DriverAttributes->setAttribute("MaxTextures", (s32)MaxTextureUnits);
-            DriverAttributes->setAttribute("MaxSupportedTextures", (s32)Caps.MaxSimultaneousTextures);
-            DriverAttributes->setAttribute("MaxLights", (s32)Caps.MaxActiveLights);
-            DriverAttributes->setAttribute("MaxAnisotropy", (s32)Caps.MaxAnisotropy);
-            DriverAttributes->setAttribute("MaxUserClipPlanes", (s32)Caps.MaxUserClipPlanes);
-            DriverAttributes->setAttribute("MaxMultipleRenderTargets", (s32)Caps.NumSimultaneousRTs);
-            DriverAttributes->setAttribute("MaxIndices", (s32)Caps.MaxVertexIndex);
-            DriverAttributes->setAttribute("MaxTextureSize", (s32)core::min_(Caps.MaxTextureHeight, Caps.MaxTextureWidth));
+            DriverAttributes->setAttribute("MaxTextures", (s32)m_MaxTextureUnits);
+            DriverAttributes->setAttribute("MaxSupportedTextures", (s32)m_Caps.MaxSimultaneousTextures);
+            DriverAttributes->setAttribute("MaxLights", (s32)m_Caps.MaxActiveLights);
+            DriverAttributes->setAttribute("MaxAnisotropy", (s32)m_Caps.MaxAnisotropy);
+            DriverAttributes->setAttribute("MaxUserClipPlanes", (s32)m_Caps.MaxUserClipPlanes);
+            DriverAttributes->setAttribute("MaxMultipleRenderTargets", (s32)m_Caps.NumSimultaneousRTs);
+            DriverAttributes->setAttribute("MaxIndices", (s32)m_Caps.MaxVertexIndex);
+            DriverAttributes->setAttribute("MaxTextureSize", (s32)core::min_(m_Caps.MaxTextureHeight, m_Caps.MaxTextureWidth));
             DriverAttributes->setAttribute("MaxTextureLODBias", 16);
             DriverAttributes->setAttribute("Version", 901);
-            DriverAttributes->setAttribute("ShaderLanguageVersion", (s32)(((0x00ff00 & Caps.VertexShaderVersion) >> 8) * 100 + (Caps.VertexShaderVersion & 0xff)));
-            DriverAttributes->setAttribute("AntiAlias", Params.AntiAlias);
+            DriverAttributes->setAttribute("ShaderLanguageVersion", (s32)(((0x00ff00 & m_Caps.VertexShaderVersion) >> 8) * 100 + (m_Caps.VertexShaderVersion & 0xff)));
+            DriverAttributes->setAttribute("AntiAlias", m_Params.AntiAlias);
 
             // set the renderstates
             setRenderStates3DMode();
 
             // store the screen's depth buffer
-            DepthBuffers.push_back(new SDepthSurface());
-            if (SUCCEEDED(pID3DDevice->GetDepthStencilSurface(&(DepthBuffers[0]->Surface))))
+            m_DepthBuffers.push_back(new SDepthSurface());
+            if (SUCCEEDED(m_pID3DDevice->GetDepthStencilSurface(&(m_DepthBuffers[0]->Surface))))
             {
                 D3DSURFACE_DESC desc;
-                DepthBuffers[0]->Surface->GetDesc(&desc);
-                DepthBuffers[0]->Size.set(desc.Width, desc.Height);
+                m_DepthBuffers[0]->Surface->GetDesc(&desc);
+                m_DepthBuffers[0]->Size.set(desc.Width, desc.Height);
             }
             else
             {
@@ -503,25 +503,25 @@ namespace irr
                 return false;
             }
 
-            D3DColorFormat = D3DFMT_A8R8G8B8;
+            D3Dm_ColorFormat = D3DFMT_A8R8G8B8;
             IDirect3DSurface9 *bb = 0;
-            if (SUCCEEDED(pID3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &bb)))
+            if (SUCCEEDED(m_pID3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &bb)))
             {
                 D3DSURFACE_DESC desc;
                 bb->GetDesc(&desc);
-                D3DColorFormat = desc.Format;
+                D3Dm_ColorFormat = desc.Format;
 
-                if (D3DColorFormat == D3DFMT_X8R8G8B8)
-                    D3DColorFormat = D3DFMT_A8R8G8B8;
+                if (D3Dm_ColorFormat == D3DFMT_X8R8G8B8)
+                    D3Dm_ColorFormat = D3DFMT_A8R8G8B8;
 
                 bb->Release();
             }
 
-            ColorFormat = getColorFormatFromD3DFormat(D3DColorFormat);
+            m_ColorFormat = getColorFormatFromD3DFormat(m_D3DColorFormat);
 
     #ifdef _IRR_COMPILE_WITH_CG_
-            CgContext = cgCreateContext();
-            cgD3D9SetDevice(pID3DDevice);
+            m_CgContext = cgCreateContext();
+            cgD3D9SetDevice(m_pID3DDevice);
     #endif
 
             // so far so good.
@@ -535,21 +535,21 @@ namespace irr
         {
             CNullDriver::beginScene(backBuffer, zBuffer, color, videoData, sourceRect);
 
-            WindowId        = (HWND)videoData.D3D9.HWnd;
-            SceneSourceRect = sourceRect;
+            m_WindowId        = (HWND)videoData.D3D9.HWnd;
+            m_SceneSourceRect = sourceRect;
 
-            if (!pID3DDevice)
+            if (!m_pID3DDevice)
                 return false;
 
             HRESULT hr;
-            if (DeviceLost)
+            if (m_DeviceLost)
             {
-                if (FAILED(hr = pID3DDevice->TestCooperativeLevel()))
+                if (FAILED(hr = m_pID3DDevice->TestCooperativeLevel()))
                 {
                     if (hr == D3DERR_DEVICELOST)
                     {
                         Sleep(100);
-                        hr = pID3DDevice->TestCooperativeLevel();
+                        hr = m_pID3DDevice->TestCooperativeLevel();
                         if (hr == D3DERR_DEVICELOST)
                             return false;
                     }
@@ -567,17 +567,17 @@ namespace irr
             if (zBuffer)
                 flags |= D3DCLEAR_ZBUFFER;
 
-            if (Params.Stencilbuffer)
+            if (m_Params.Stencilbuffer)
                 flags |= D3DCLEAR_STENCIL;
 
             if (flags)
             {
-                hr = pID3DDevice->Clear(0, NULL, flags, color.color, 1.0, 0);
+                hr = m_pID3DDevice->Clear(0, NULL, flags, color.color, 1.0, 0);
                 if (FAILED(hr))
                     os::Printer::log("DIRECT3D9 clear failed.", ELL_WARNING);
             }
 
-            hr = pID3DDevice->BeginScene();
+            hr = m_pID3DDevice->BeginScene();
             if (FAILED(hr))
             {
                 os::Printer::log("DIRECT3D9 begin scene failed.", ELL_WARNING);
@@ -593,9 +593,9 @@ namespace irr
         {
             CNullDriver::endScene();
 
-            DriverWasReset = false;
+            m_DriverWasReset = false;
 
-            HRESULT hr = pID3DDevice->EndScene();
+            HRESULT hr = m_pID3DDevice->EndScene();
             if (FAILED(hr))
             {
                 os::Printer::log("DIRECT3D9 end scene failed.", ELL_WARNING);
@@ -604,19 +604,19 @@ namespace irr
 
             RECT *srcRct = 0;
             RECT sourceRectData;
-            if (SceneSourceRect)
+            if (m_SceneSourceRect)
             {
                 srcRct                = &sourceRectData;
-                sourceRectData.left   = SceneSourceRect->UpperLeftCorner.X;
-                sourceRectData.top    = SceneSourceRect->UpperLeftCorner.Y;
-                sourceRectData.right  = SceneSourceRect->LowerRightCorner.X;
-                sourceRectData.bottom = SceneSourceRect->LowerRightCorner.Y;
+                sourceRectData.left   = m_SceneSourceRect->UpperLeftCorner.X;
+                sourceRectData.top    = m_SceneSourceRect->UpperLeftCorner.Y;
+                sourceRectData.right  = m_SceneSourceRect->LowerRightCorner.X;
+                sourceRectData.bottom = m_SceneSourceRect->LowerRightCorner.Y;
             }
 
             IDirect3DSwapChain9 *swChain;
-            hr = pID3DDevice->GetSwapChain(0, &swChain);
-            DWORD flags = (Params.HandleSRGB && (Caps.Caps3 & D3DCAPS3_LINEAR_TO_SRGB_PRESENTATION)) ? D3DPRESENT_LINEAR_CONTENT : 0;
-            hr = swChain->Present(srcRct, NULL, WindowId, NULL, flags);
+            hr = m_pID3DDevice->GetSwapChain(0, &swChain);
+            DWORD flags = (m_Params.HandleSRGB && (m_Caps.m_Caps3 & D3DCAPS3_LINEAR_TO_SRGB_PRESENTATION)) ? D3DPRESENT_LINEAR_CONTENT : 0;
+            hr = swChain->Present(srcRct, NULL, m_WindowId, NULL, flags);
             swChain->Release();
 
             if (SUCCEEDED(hr))
@@ -624,7 +624,7 @@ namespace irr
 
             if (hr == D3DERR_DEVICELOST)
             {
-                DeviceLost = true;
+                m_DeviceLost = true;
                 os::Printer::log("Present failed", "DIRECT3D9 device lost.", ELL_WARNING);
             }
 
@@ -639,7 +639,7 @@ namespace irr
                 os::Printer::log("Present failed", "Invalid Call", ELL_WARNING);
             }
             else
-                os::Printer::log("DIRECT3D9 present failed.", ELL_WARNING);
+                os::Printer::log("DIRECT3D9 m_present failed.", ELL_WARNING);
             return false;
         }
 
@@ -657,80 +657,80 @@ namespace irr
                     return true;
 
                 case EVDF_RENDER_TO_TARGET:
-                    return Caps.NumSimultaneousRTs > 0;
+                    return m_Caps.NumSimultaneousRTs > 0;
 
                 case EVDF_HARDWARE_TL:
-                    return (Caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) != 0;
+                    return (m_Caps.Devm_Caps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) != 0;
 
                 case EVDF_MIP_MAP:
-                    return (Caps.TextureCaps & D3DPTEXTURECAPS_MIPMAP) != 0;
+                    return (m_Caps.Texturem_Caps & D3DPTEXTURECAPS_MIPMAP) != 0;
 
                 case EVDF_MIP_MAP_AUTO_UPDATE:
                     // always return false because a lot of drivers claim they do
                     // this but actually don't do this at all.
-                    return false; // (Caps.Caps2 & D3DCAPS2_CANAUTOGENMIPMAP) != 0;
+                    return false; // (m_Caps.m_Caps2 & D3DCAPS2_CANAUTOGENMIPMAP) != 0;
 
                 case EVDF_STENCIL_BUFFER:
-                    return Params.Stencilbuffer && Caps.StencilCaps;
+                    return m_Params.Stencilbuffer && m_Caps.StencilCaps;
 
                 case EVDF_VERTEX_SHADER_1_1:
-                    return Caps.VertexShaderVersion >= D3DVS_VERSION(1, 1);
+                    return m_Caps.VertexShaderVersion >= D3DVS_VERSION(1, 1);
 
                 case EVDF_VERTEX_SHADER_2_0:
-                    return Caps.VertexShaderVersion >= D3DVS_VERSION(2, 0);
+                    return m_Caps.VertexShaderVersion >= D3DVS_VERSION(2, 0);
 
                 case EVDF_VERTEX_SHADER_3_0:
-                    return Caps.VertexShaderVersion >= D3DVS_VERSION(3, 0);
+                    return m_Caps.VertexShaderVersion >= D3DVS_VERSION(3, 0);
 
                 case EVDF_PIXEL_SHADER_1_1:
-                    return Caps.PixelShaderVersion >= D3DPS_VERSION(1, 1);
+                    return m_Caps.PixelShaderVersion >= D3DPS_VERSION(1, 1);
 
                 case EVDF_PIXEL_SHADER_1_2:
-                    return Caps.PixelShaderVersion >= D3DPS_VERSION(1, 2);
+                    return m_Caps.PixelShaderVersion >= D3DPS_VERSION(1, 2);
 
                 case EVDF_PIXEL_SHADER_1_3:
-                    return Caps.PixelShaderVersion >= D3DPS_VERSION(1, 3);
+                    return m_Caps.PixelShaderVersion >= D3DPS_VERSION(1, 3);
 
                 case EVDF_PIXEL_SHADER_1_4:
-                    return Caps.PixelShaderVersion >= D3DPS_VERSION(1, 4);
+                    return m_Caps.PixelShaderVersion >= D3DPS_VERSION(1, 4);
 
                 case EVDF_PIXEL_SHADER_2_0:
-                    return Caps.PixelShaderVersion >= D3DPS_VERSION(2, 0);
+                    return m_Caps.PixelShaderVersion >= D3DPS_VERSION(2, 0);
 
                 case EVDF_PIXEL_SHADER_3_0:
-                    return Caps.PixelShaderVersion >= D3DPS_VERSION(3, 0);
+                    return m_Caps.PixelShaderVersion >= D3DPS_VERSION(3, 0);
 
                 case EVDF_HLSL:
-                    return Caps.VertexShaderVersion >= D3DVS_VERSION(1, 1);
+                    return m_Caps.VertexShaderVersion >= D3DVS_VERSION(1, 1);
 
                 case EVDF_TEXTURE_NSQUARE:
-                    return (Caps.TextureCaps & D3DPTEXTURECAPS_SQUAREONLY) == 0;
+                    return (m_Caps.Texturem_Caps & D3DPTEXTURECAPS_SQUAREONLY) == 0;
 
                 case EVDF_TEXTURE_NPOT:
-                    return (Caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0;
+                    return (m_Caps.Texturem_Caps & D3DPTEXTURECAPS_POW2) == 0;
 
                 case EVDF_COLOR_MASK:
-                    return (Caps.PrimitiveMiscCaps & D3DPMISCCAPS_COLORWRITEENABLE) != 0;
+                    return (m_Caps.PrimitiveMiscm_Caps & D3DPMISCCAPS_COLORWRITEENABLE) != 0;
 
                 case EVDF_MULTIPLE_RENDER_TARGETS:
-                    return Caps.NumSimultaneousRTs > 1;
+                    return m_Caps.NumSimultaneousRTs > 1;
 
                 case EVDF_MRT_COLOR_MASK:
-                    return (Caps.PrimitiveMiscCaps & D3DPMISCCAPS_INDEPENDENTWRITEMASKS) != 0;
+                    return (m_Caps.PrimitiveMiscm_Caps & D3DPMISCCAPS_INDEPENDENTWRITEMASKS) != 0;
 
                 case EVDF_MRT_BLEND:
-                    return (Caps.PrimitiveMiscCaps & D3DPMISCCAPS_MRTPOSTPIXELSHADERBLENDING) != 0;
+                    return (m_Caps.PrimitiveMiscm_Caps & D3DPMISCCAPS_MRTPOSTPIXELSHADERBLENDING) != 0;
 
                 case EVDF_OCCLUSION_QUERY:
-                    return OcclusionQuerySupport;
+                    return m_OcclusionQuerySupport;
 
                 case EVDF_POLYGON_OFFSET:
-                    return (Caps.RasterCaps & (D3DPRASTERCAPS_DEPTHBIAS | D3DPRASTERCAPS_SLOPESCALEDEPTHBIAS)) != 0;
+                    return (m_Caps.Rasterm_Caps & (D3DPRASTERCAPS_DEPTHBIAS | D3DPRASTERCAPS_SLOPESCALEDEPTHBIAS)) != 0;
 
                 case EVDF_BLEND_OPERATIONS:
                 case EVDF_TEXTURE_MATRIX:
 #ifdef _IRR_COMPILE_WITH_CG_
-                // available iff. define is present
+                // available iff. define is m_present
                 case EVDF_CG:
 #endif
                     return true;
@@ -747,20 +747,20 @@ namespace irr
         void CD3D9Driver::setTransform(E_TRANSFORMATION_STATE state,
             const core::matrix4 &mat)
         {
-            Transformation3DChanged = true;
+            m_Transformation3DChanged = true;
 
             switch (state)
             {
                 case ETS_VIEW:
-                    pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)mat.pointer()));
+                    m_pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)mat.pointer()));
                     break;
 
                 case ETS_WORLD:
-                    pID3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)((void*)mat.pointer()));
+                    m_pID3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)((void*)mat.pointer()));
                     break;
 
                 case ETS_PROJECTION:
-                    pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)mat.pointer()));
+                    m_pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)mat.pointer()));
                     break;
 
                 case ETS_COUNT:
@@ -770,11 +770,11 @@ namespace irr
                     if (state - ETS_TEXTURE_0 < MATERIAL_MAX_TEXTURES)
                     {
                         if (mat.isIdentity())
-                            pID3DDevice->SetTextureStageState(state - ETS_TEXTURE_0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
+                            m_pID3DDevice->SetTextureStageState(state - ETS_TEXTURE_0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
                         else
                         {
-                            pID3DDevice->SetTextureStageState(state - ETS_TEXTURE_0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
-                            pID3DDevice->SetTransform((D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE0 + (state - ETS_TEXTURE_0)),
+                            m_pID3DDevice->SetTextureStageState(state - ETS_TEXTURE_0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
+                            m_pID3DDevice->SetTransform((D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE0 + (state - ETS_TEXTURE_0)),
                                 (D3DMATRIX*)((void*)mat.pointer()));
                         }
                     }
@@ -782,7 +782,7 @@ namespace irr
                     break;
             }
 
-            Matrices[state] = mat;
+            m_Matrices[state] = mat;
         }
 
 
@@ -802,12 +802,12 @@ namespace irr
 
             if (!texture)
             {
-                pID3DDevice->SetTexture(stage, 0);
-                pID3DDevice->SetTextureStageState(stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
+                m_pID3DDevice->SetTexture(stage, 0);
+                m_pID3DDevice->SetTextureStageState(stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
             }
             else
             {
-                pID3DDevice->SetTexture(stage, ((const CD3D9Texture*)texture)->getDX9Texture());
+                m_pID3DDevice->SetTexture(stage, ((const CD3D9Texture*)texture)->getDX9Texture());
             }
 
             return true;
@@ -817,12 +817,12 @@ namespace irr
         //! sets a material
         void CD3D9Driver::setMaterial(const SMaterial &material)
         {
-            Material = material;
-            OverrideMaterial.apply(Material);
+            m_Material = material;
+            OverrideMaterial.apply(m_Material);
 
-            for (u32 i = 0; i < MaxTextureUnits; ++i)
+            for (u32 i = 0; i < m_MaxTextureUnits; ++i)
             {
-                setActiveTexture(i, Material.getTexture(i));
+                setActiveTexture(i, m_Material.getTexture(i));
                 setTransform((E_TRANSFORMATION_STATE) (ETS_TEXTURE_0 + i),
                     material.getTextureMatrix(i));
             }
@@ -873,30 +873,30 @@ namespace irr
 
             bool ret = true;
 
-            for (u32 i = 1; i < NumSetMRTs; i++)
+            for (u32 i = 1; i < m_NumSetMRTs; i++)
             {
                 // First texture handled elsewhere
-                pID3DDevice->SetRenderTarget(i, NULL);
+                m_pID3DDevice->SetRenderTarget(i, NULL);
             }
 
             if (tex == 0)
             {
-                if (PrevRenderTarget)
+                if (m_PrevRenderTarget)
                 {
-                    if (FAILED(pID3DDevice->SetRenderTarget(0, PrevRenderTarget)))
+                    if (FAILED(m_pID3DDevice->SetRenderTarget(0, m_PrevRenderTarget)))
                     {
                         os::Printer::log("Error: Could not set back to previous render target.", ELL_ERROR);
                         ret = false;
                     }
 
-                    if (FAILED(pID3DDevice->SetDepthStencilSurface(DepthBuffers[0]->Surface)))
+                    if (FAILED(m_pID3DDevice->SetDepthStencilSurface(m_DepthBuffers[0]->Surface)))
                     {
                         os::Printer::log("Error: Could not set main depth buffer.", ELL_ERROR);
                     }
 
-                    CurrentRendertargetSize = core::dimension2d<u32>(0, 0);
-                    PrevRenderTarget->Release();
-                    PrevRenderTarget = 0;
+                    m_CurrentRendertargetSize = core::dimension2d<u32>(0, 0);
+                    m_PrevRenderTarget->Release();
+                    m_PrevRenderTarget = 0;
                 }
             }
             else
@@ -905,9 +905,9 @@ namespace irr
 
                 // store previous target
 
-                if (!PrevRenderTarget)
+                if (!m_PrevRenderTarget)
                 {
-                    if (FAILED(pID3DDevice->GetRenderTarget(0, &PrevRenderTarget)))
+                    if (FAILED(m_pID3DDevice->GetRenderTarget(0, &m_PrevRenderTarget)))
                     {
                         os::Printer::log("Could not get previous render target.", ELL_ERROR);
                         return false;
@@ -916,21 +916,21 @@ namespace irr
 
                 // set new render target
 
-                if (FAILED(pID3DDevice->SetRenderTarget(0, tex->getRenderTargetSurface())))
+                if (FAILED(m_pID3DDevice->SetRenderTarget(0, tex->getRenderTargetSurface())))
                 {
                     os::Printer::log("Error: Could not set render target.", ELL_ERROR);
                     return false;
                 }
 
-                CurrentRendertargetSize = tex->getSize();
+                m_CurrentRendertargetSize = tex->getSize();
 
-                if (FAILED(pID3DDevice->SetDepthStencilSurface(tex->DepthSurface->Surface)))
+                if (FAILED(m_pID3DDevice->SetDepthStencilSurface(tex->DepthSurface->Surface)))
                 {
                     os::Printer::log("Error: Could not set new depth buffer.", ELL_ERROR);
                 }
             }
 
-            Transformation3DChanged = true;
+            m_Transformation3DChanged = true;
 
             if (clearBackBuffer || clearZBuffer)
             {
@@ -942,7 +942,7 @@ namespace irr
                 if (clearZBuffer)
                     flags |= D3DCLEAR_ZBUFFER;
 
-                pID3DDevice->Clear(0, NULL, flags, color.color, 1.0f, 0);
+                m_pID3DDevice->Clear(0, NULL, flags, color.color, 1.0f, 0);
             }
 
             return ret;
@@ -956,7 +956,7 @@ namespace irr
             if (targets.size() == 0)
                 return setRenderTarget(0, clearBackBuffer, clearZBuffer, color);
 
-            u32 maxMultipleRTTs = core::min_(MaxMRTs, targets.size());
+            u32 maxMultipleRTTs = core::min_(m_MaxMRTs, targets.size());
 
             for (u32 i = 0; i < maxMultipleRTTs; ++i)
             {
@@ -1010,9 +1010,9 @@ namespace irr
             // we want to set a new target. so do this.
             // store previous target
 
-            if (!PrevRenderTarget)
+            if (!m_PrevRenderTarget)
             {
-                if (FAILED(pID3DDevice->GetRenderTarget(0, &PrevRenderTarget)))
+                if (FAILED(m_pID3DDevice->GetRenderTarget(0, &m_PrevRenderTarget)))
                 {
                     os::Printer::log("Could not get previous render target.", ELL_ERROR);
                     return false;
@@ -1026,7 +1026,7 @@ namespace irr
 
             for (u32 i = 0; i < maxMultipleRTTs; ++i)
             {
-                if (FAILED(pID3DDevice->SetRenderTarget(i, static_cast<CD3D9Texture*>(targets[i].RenderTexture)->getRenderTargetSurface())))
+                if (FAILED(m_pID3DDevice->SetRenderTarget(i, static_cast<CD3D9Texture*>(targets[i].RenderTexture)->getRenderTargetSurface())))
                 {
                     os::Printer::log("Error: Could not set render target.", ELL_ERROR);
                     return false;
@@ -1039,20 +1039,20 @@ namespace irr
                         ((targets[i].ColorMask & ECP_GREEN) ? D3DCOLORWRITEENABLE_GREEN : 0) |
                         ((targets[i].ColorMask & ECP_BLUE) ? D3DCOLORWRITEENABLE_BLUE : 0) |
                         ((targets[i].ColorMask & ECP_ALPHA) ? D3DCOLORWRITEENABLE_ALPHA : 0);
-                    pID3DDevice->SetRenderState(colorWrite[i], flag);
+                    m_pID3DDevice->SetRenderState(colorWrite[i], flag);
                 }
             }
 
-            for (u32 i = maxMultipleRTTs; i < NumSetMRTs; i++)
+            for (u32 i = maxMultipleRTTs; i < m_NumSetMRTs; i++)
             {
-                pID3DDevice->SetRenderTarget(i, NULL);
+                m_pID3DDevice->SetRenderTarget(i, NULL);
             }
 
-            NumSetMRTs = maxMultipleRTTs;
+            m_NumSetMRTs = maxMultipleRTTs;
 
-            CurrentRendertargetSize = tex->getSize();
+            m_CurrentRendertargetSize = tex->getSize();
 
-            if (FAILED(pID3DDevice->SetDepthStencilSurface(tex->DepthSurface->Surface)))
+            if (FAILED(m_pID3DDevice->SetDepthStencilSurface(tex->DepthSurface->Surface)))
             {
                 os::Printer::log("Error: Could not set new depth buffer.", ELL_ERROR);
             }
@@ -1067,7 +1067,7 @@ namespace irr
                 if (clearZBuffer)
                     flags |= D3DCLEAR_ZBUFFER;
 
-                pID3DDevice->Clear(0, NULL, flags, color.color, 1.0f, 0);
+                m_pID3DDevice->Clear(0, NULL, flags, color.color, 1.0f, 0);
             }
 
             return ret;
@@ -1091,7 +1091,7 @@ namespace irr
                 viewPort.MinZ   = 0.0f;
                 viewPort.MaxZ   = 1.0f;
 
-                HRESULT hr = pID3DDevice->SetViewport(&viewPort);
+                HRESULT hr = m_pID3DDevice->SetViewport(&viewPort);
                 if (FAILED(hr))
                     os::Printer::log("Failed setting the viewport.", ELL_WARNING);
                 else
@@ -1152,7 +1152,7 @@ namespace irr
                 if (hwBuffer->Mapped_Vertex != scene::EHM_STATIC)
                     flags |= D3DUSAGE_DYNAMIC;
 
-                if (FAILED(pID3DDevice->CreateVertexBuffer(bufSize, flags, FVF, D3DPOOL_DEFAULT, &hwBuffer->vertexBuffer, NULL)))
+                if (FAILED(m_pID3DDevice->CreateVertexBuffer(bufSize, flags, FVF, D3DPOOL_DEFAULT, &hwBuffer->vertexBuffer, NULL)))
                     return false;
 
                 hwBuffer->vertexBufferSize = bufSize;
@@ -1219,7 +1219,7 @@ namespace irr
                 if (hwBuffer->Mapped_Index != scene::EHM_STATIC)
                     flags |= D3DUSAGE_DYNAMIC; // SIO2: Add DYNAMIC flag for dynamic buffer data
 
-                if (FAILED(pID3DDevice->CreateIndexBuffer(bufSize, flags, indexType, D3DPOOL_DEFAULT, &hwBuffer->indexBuffer, NULL)))
+                if (FAILED(m_pID3DDevice->CreateIndexBuffer(bufSize, flags, indexType, D3DPOOL_DEFAULT, &hwBuffer->indexBuffer, NULL)))
                     return false;
 
                 flags = 0; // SIO2: Reset flags before Lock
@@ -1357,23 +1357,23 @@ namespace irr
             const void               *iPtr  = mb->getIndices();
             if (HWBuffer->vertexBuffer)
             {
-                pID3DDevice->SetStreamSource(0, HWBuffer->vertexBuffer, 0, stride);
+                m_pID3DDevice->SetStreamSource(0, HWBuffer->vertexBuffer, 0, stride);
                 vPtr = 0;
             }
 
             if (HWBuffer->indexBuffer)
             {
-                pID3DDevice->SetIndices(HWBuffer->indexBuffer);
+                m_pID3DDevice->SetIndices(HWBuffer->indexBuffer);
                 iPtr = 0;
             }
 
             drawVertexPrimitiveList(vPtr, mb->getVertexCount(), iPtr, mb->getIndexCount() / 3, mb->getVertexType(), scene::EPT_TRIANGLES, mb->getIndexType());
 
             if (HWBuffer->vertexBuffer)
-                pID3DDevice->SetStreamSource(0, 0, 0, 0);
+                m_pID3DDevice->SetStreamSource(0, 0, 0, 0);
 
             if (HWBuffer->indexBuffer)
-                pID3DDevice->SetIndices(0);
+                m_pID3DDevice->SetIndices(0);
         }
 
 
@@ -1388,7 +1388,7 @@ namespace irr
             CNullDriver::addOcclusionQuery(node, mesh);
             const s32 index = OcclusionQueries.linear_search(SOccQuery(node));
             if ((index != -1) && (OcclusionQueries[index].PID == 0))
-                pID3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, reinterpret_cast<IDirect3DQuery9**>(&OcclusionQueries[index].PID));
+                m_pID3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, reinterpret_cast<IDirect3DQuery9**>(&OcclusionQueries[index].PID));
         }
 
 
@@ -1409,7 +1409,7 @@ namespace irr
 
         //! Run occlusion query. Draws mesh stored in query.
         /** If the mesh shall not be rendered visible, use
-         * overrideMaterial to disable the color and depth buffer. */
+         * overridem_Material to disable the color and depth buffer. */
         void CD3D9Driver::runOcclusionQuery(scene::ISceneNode *node, bool visible)
         {
             if (!node)
@@ -1549,17 +1549,17 @@ namespace irr
             }
             else
             {
-                if (Material.MaterialType == EMT_ONETEXTURE_BLEND)
+                if (m_Material.m_MaterialType == EMT_ONETEXTURE_BLEND)
                 {
                     E_BLEND_FACTOR  srcFact;
                     E_BLEND_FACTOR  dstFact;
                     E_MODULATE_FUNC modulo;
                     u32             alphaSource;
-                    unpack_textureBlendFunc (srcFact, dstFact, modulo, alphaSource, Material.MaterialTypeParam);
-                    setRenderStates2DMode(alphaSource & video::EAS_VERTEX_COLOR, (Material.getTexture(0) != 0), (alphaSource&video::EAS_TEXTURE) != 0);
+                    unpack_textureBlendFunc (srcFact, dstFact, modulo, alphaSource, m_Material.m_MaterialTypeParam);
+                    setRenderStates2DMode(alphaSource & video::EAS_VERTEX_COLOR, (m_Material.getTexture(0) != 0), (alphaSource&video::EAS_TEXTURE) != 0);
                 }
                 else
-                    setRenderStates2DMode(Material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA, (Material.getTexture(0) != 0), Material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL);
+                    setRenderStates2DMode(m_Material.m_MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA, (m_Material.getTexture(0) != 0), m_Material.m_MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL);
             }
 
             switch (pType)
@@ -1567,40 +1567,40 @@ namespace irr
                 case scene::EPT_POINT_SPRITES:
                 case scene::EPT_POINTS:
                 {
-                    f32 tmp = Material.Thickness / getScreenSize().Height;
+                    f32 tmp = m_Material.Thickness / getScreenSize().Height;
                     if (pType == scene::EPT_POINT_SPRITES)
-                        pID3DDevice->SetRenderState(D3DRS_POINTSPRITEENABLE, TRUE);
+                        m_pID3DDevice->SetRenderState(D3DRS_POINTSPRITEENABLE, TRUE);
 
-                    pID3DDevice->SetRenderState(D3DRS_POINTSCALEENABLE, TRUE);
-                    pID3DDevice->SetRenderState(D3DRS_POINTSIZE, F2DW(tmp));
+                    m_pID3DDevice->SetRenderState(D3DRS_POINTSCALEENABLE, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_POINTSIZE, F2DW(tmp));
                     tmp = 1.0f;
-                    pID3DDevice->SetRenderState(D3DRS_POINTSCALE_A, F2DW(tmp));
-                    pID3DDevice->SetRenderState(D3DRS_POINTSCALE_B, F2DW(tmp));
-                    pID3DDevice->SetRenderState(D3DRS_POINTSIZE_MIN, F2DW(tmp));
+                    m_pID3DDevice->SetRenderState(D3DRS_POINTSCALE_A, F2DW(tmp));
+                    m_pID3DDevice->SetRenderState(D3DRS_POINTSCALE_B, F2DW(tmp));
+                    m_pID3DDevice->SetRenderState(D3DRS_POINTSIZE_MIN, F2DW(tmp));
                     tmp = 0.0f;
-                    pID3DDevice->SetRenderState(D3DRS_POINTSCALE_C, F2DW(tmp));
+                    m_pID3DDevice->SetRenderState(D3DRS_POINTSCALE_C, F2DW(tmp));
 
                     if (!vertices)
                     {
-                        pID3DDevice->DrawIndexedPrimitive(D3DPT_POINTLIST, 0, 0, vertexCount, 0, primitiveCount);
+                        m_pID3DDevice->DrawIndexedPrimitive(D3DPT_POINTLIST, 0, 0, vertexCount, 0, primitiveCount);
                     }
                     else
                     {
-                        pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_POINTLIST, 0, vertexCount,
+                        m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_POINTLIST, 0, vertexCount,
                             primitiveCount, indexList, indexType, vertices, stride);
                     }
 
-                    pID3DDevice->SetRenderState(D3DRS_POINTSCALEENABLE, FALSE);
+                    m_pID3DDevice->SetRenderState(D3DRS_POINTSCALEENABLE, FALSE);
                     if (pType == scene::EPT_POINT_SPRITES)
-                        pID3DDevice->SetRenderState(D3DRS_POINTSPRITEENABLE, FALSE);
+                        m_pID3DDevice->SetRenderState(D3DRS_POINTSPRITEENABLE, FALSE);
                 }
                 break;
 
                 case scene::EPT_LINE_STRIP:
                     if (!vertices)
-                        pID3DDevice->DrawIndexedPrimitive(D3DPT_LINESTRIP, 0, 0, vertexCount, 0, primitiveCount);
+                        m_pID3DDevice->DrawIndexedPrimitive(D3DPT_LINESTRIP, 0, 0, vertexCount, 0, primitiveCount);
                     else
-                        pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_LINESTRIP, 0, vertexCount,
+                        m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_LINESTRIP, 0, vertexCount,
                             primitiveCount, indexList, indexType, vertices, stride);
 
                     break;
@@ -1613,16 +1613,16 @@ namespace irr
                         // draw the hardware buffer with a custom set of indices. We may even
                         // need to create a new mini index buffer specifically for this
                         // primitive type.)
-                        pID3DDevice->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, vertexCount, 0, primitiveCount);
+                        m_pID3DDevice->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, vertexCount, 0, primitiveCount);
                     }
                     else
                     {
-                        pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_LINESTRIP, 0, vertexCount,
+                        m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_LINESTRIP, 0, vertexCount,
                             primitiveCount - 1, indexList, indexType, vertices, stride);
 
                         const u32 tmpIndices[] = {primitiveCount - 1, 0};
 
-                        pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_LINELIST, 0, vertexCount,
+                        m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_LINELIST, 0, vertexCount,
                             1, (const void*)tmpIndices, indexType, vertices, stride);
                     }
 
@@ -1630,27 +1630,27 @@ namespace irr
 
                 case scene::EPT_LINES:
                     if (!vertices)
-                        pID3DDevice->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, vertexCount, 0, primitiveCount);
+                        m_pID3DDevice->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, vertexCount, 0, primitiveCount);
                     else
-                        pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_LINELIST, 0, vertexCount,
+                        m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_LINELIST, 0, vertexCount,
                             primitiveCount, indexList, indexType, vertices, stride);
 
                     break;
 
                 case scene::EPT_TRIANGLE_STRIP:
                     if (!vertices)
-                        pID3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, vertexCount, 0, primitiveCount);
+                        m_pID3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, vertexCount, 0, primitiveCount);
                     else
-                        pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLESTRIP, 0, vertexCount, primitiveCount,
+                        m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLESTRIP, 0, vertexCount, primitiveCount,
                             indexList, indexType, vertices, stride);
 
                     break;
 
                 case scene::EPT_TRIANGLE_FAN:
                     if (!vertices)
-                        pID3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLEFAN, 0, 0, vertexCount, 0, primitiveCount);
+                        m_pID3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLEFAN, 0, 0, vertexCount, 0, primitiveCount);
                     else
-                        pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLEFAN, 0, vertexCount, primitiveCount,
+                        m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLEFAN, 0, vertexCount, primitiveCount,
                             indexList, indexType, vertices, stride);
 
                     break;
@@ -1658,11 +1658,11 @@ namespace irr
                 case scene::EPT_TRIANGLES:
                     if (!vertices)
                     {
-                        pID3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, vertexCount, 0, primitiveCount);
+                        m_pID3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, vertexCount, 0, primitiveCount);
                     }
                     else
                     {
-                        pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, vertexCount,
+                        m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, vertexCount,
                             primitiveCount, indexList, indexType, vertices, stride);
                     }
 
@@ -1726,20 +1726,20 @@ namespace irr
 
             if (clipRect)
             {
-                pID3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
+                m_pID3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
                 RECT scissor;
                 scissor.left   = clipRect->UpperLeftCorner.X;
                 scissor.top    = clipRect->UpperLeftCorner.Y;
                 scissor.right  = clipRect->LowerRightCorner.X;
                 scissor.bottom = clipRect->LowerRightCorner.Y;
-                pID3DDevice->SetScissorRect(&scissor);
+                m_pID3DDevice->SetScissorRect(&scissor);
             }
 
-            pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, &indices[0],
+            m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, &indices[0],
                 D3DFMT_INDEX16, &vtx[0], sizeof(S3DVertex));
 
             if (clipRect)
-                pID3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+                m_pID3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
         }
 
 
@@ -1883,7 +1883,7 @@ namespace irr
             {
                 setVertexShader(EVT_STANDARD);
 
-                pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, vtx.size(), indices.size() / 3, indices.pointer(),
+                m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, vtx.size(), indices.size() / 3, indices.pointer(),
                     D3DFMT_INDEX16, vtx.pointer(), sizeof(S3DVertex));
             }
         }
@@ -2017,7 +2017,7 @@ namespace irr
 
             setVertexShader(EVT_STANDARD);
 
-            pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, &indices[0],
+            m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, &indices[0],
                 D3DFMT_INDEX16, &vtx[0],    sizeof(S3DVertex));
         }
 
@@ -2057,7 +2057,7 @@ namespace irr
 
             setVertexShader(EVT_STANDARD);
 
-            pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, &indices[0],
+            m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, &indices[0],
                 D3DFMT_INDEX16, &vtx[0], sizeof(S3DVertex));
         }
 
@@ -2086,7 +2086,7 @@ namespace irr
 
                 setVertexShader(EVT_STANDARD);
 
-                pID3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, 1,
+                m_pID3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, 1,
                     &vtx[0], sizeof(S3DVertex));
             }
         }
@@ -2107,30 +2107,30 @@ namespace irr
 
             S3DVertex vertex((f32)x + 0.375f, (f32)y + 0.375f, 0.f, 0.f, 0.f, 0.f, color, 0.f, 0.f);
 
-            pID3DDevice->DrawPrimitiveUP(D3DPT_POINTLIST, 1, &vertex, sizeof(vertex));
+            m_pID3DDevice->DrawPrimitiveUP(D3DPT_POINTLIST, 1, &vertex, sizeof(vertex));
         }
 
 
         //! sets right vertex shader
         void CD3D9Driver::setVertexShader(E_VERTEX_TYPE newType)
         {
-            if (newType != LastVertexType)
+            if (newType != m_LastVertexType)
             {
-                LastVertexType = newType;
+                m_LastVertexType = newType;
                 HRESULT hr = 0;
 
                 switch (newType)
                 {
                     case EVT_STANDARD:
-                        hr = pID3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+                        hr = m_pID3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1);
                         break;
 
                     case EVT_2TCOORDS:
-                        hr = pID3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX2);
+                        hr = m_pID3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX2);
                         break;
 
                     case EVT_TANGENTS:
-                        hr = pID3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX3 |
+                        hr = m_pID3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX3 |
                                 D3DFVF_TEXCOORDSIZE2(0) |                  // real texture coord
                                 D3DFVF_TEXCOORDSIZE3(1) |                  // misuse texture coord 2 for tangent
                                 D3DFVF_TEXCOORDSIZE3(2)                  // misuse texture coord 3 for binormal
@@ -2150,47 +2150,47 @@ namespace irr
         //! sets the needed renderstates
         bool CD3D9Driver::setRenderStates3DMode()
         {
-            if (!pID3DDevice)
+            if (!m_pID3DDevice)
                 return false;
 
-            if (CurrentRenderMode != ERM_3D)
+            if (m_CurrentRenderMode != ERM_3D)
             {
                 // switch back the matrices
-                pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)&Matrices[ETS_VIEW]));
-                pID3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)((void*)&Matrices[ETS_WORLD]));
-                pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)&Matrices[ETS_PROJECTION]));
+                m_pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)&m_Matrices[ETS_VIEW]));
+                m_pID3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)((void*)&m_Matrices[ETS_WORLD]));
+                m_pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)&m_Matrices[ETS_PROJECTION]));
 
-                pID3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
-                pID3DDevice->SetRenderState(D3DRS_CLIPPING, TRUE);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
+                m_pID3DDevice->SetRenderState(D3DRS_CLIPPING, TRUE);
 
-                ResetRenderStates = true;
+                m_ResetRenderStates = true;
             }
 
-            if (ResetRenderStates || LastMaterial != Material)
+            if (m_ResetRenderStates || LastMaterial != m_Material)
             {
                 // unset old material
 
-                if (CurrentRenderMode == ERM_3D &&
-                    LastMaterial.MaterialType != Material.MaterialType &&
-                    LastMaterial.MaterialType >= 0 && LastMaterial.MaterialType < (s32)MaterialRenderers.size())
-                    MaterialRenderers[LastMaterial.MaterialType].Renderer->OnUnsetMaterial();
+                if (m_CurrentRenderMode == ERM_3D &&
+                    LastMaterial.m_MaterialType != m_Material.m_MaterialType &&
+                    LastMaterial.m_MaterialType >= 0 && LastMaterial.m_MaterialType < (s32)m_MaterialRenderers.size())
+                    m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
 
                 // set new material.
 
-                if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
-                    MaterialRenderers[Material.MaterialType].Renderer->OnSetMaterial(
-                        Material, LastMaterial, ResetRenderStates, this);
+                if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
+                    m_MaterialRenderers[m_Material.m_MaterialType].Renderer->OnSetMaterial(
+                        m_Material, LastMaterial, m_ResetRenderStates, this);
             }
 
             bool shaderOK = true;
-            if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
-                shaderOK = MaterialRenderers[Material.MaterialType].Renderer->OnRender(this, LastVertexType);
+            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
+                shaderOK = m_MaterialRenderers[m_Material.m_MaterialType].Renderer->OnRender(this, m_LastVertexType);
 
-            LastMaterial = Material;
+            LastMaterial = m_Material;
 
-            ResetRenderStates = false;
+            m_ResetRenderStates = false;
 
-            CurrentRenderMode = ERM_3D;
+            m_CurrentRenderMode = ERM_3D;
 
             return shaderOK;
         }
@@ -2202,20 +2202,20 @@ namespace irr
             switch (clamp)
             {
                 case ETC_REPEAT:
-                    if (Caps.TextureAddressCaps & D3DPTADDRESSCAPS_WRAP)
+                    if (m_Caps.TextureAddressm_Caps & D3DPTADDRESSCAPS_WRAP)
                         return D3DTADDRESS_WRAP;
 
                 case ETC_CLAMP:
                 case ETC_CLAMP_TO_EDGE:
-                    if (Caps.TextureAddressCaps & D3DPTADDRESSCAPS_CLAMP)
+                    if (m_Caps.TextureAddressm_Caps & D3DPTADDRESSCAPS_CLAMP)
                         return D3DTADDRESS_CLAMP;
 
                 case ETC_MIRROR:
-                    if (Caps.TextureAddressCaps & D3DPTADDRESSCAPS_MIRROR)
+                    if (m_Caps.TextureAddressm_Caps & D3DPTADDRESSCAPS_MIRROR)
                         return D3DTADDRESS_MIRROR;
 
                 case ETC_CLAMP_TO_BORDER:
-                    if (Caps.TextureAddressCaps & D3DPTADDRESSCAPS_BORDER)
+                    if (m_Caps.TextureAddressm_Caps & D3DPTADDRESSCAPS_BORDER)
                         return D3DTADDRESS_BORDER;
                     else
                         return D3DTADDRESS_CLAMP;
@@ -2223,7 +2223,7 @@ namespace irr
                 case ETC_MIRROR_CLAMP:
                 case ETC_MIRROR_CLAMP_TO_EDGE:
                 case ETC_MIRROR_CLAMP_TO_BORDER:
-                    if (Caps.TextureAddressCaps & D3DPTADDRESSCAPS_MIRRORONCE)
+                    if (m_Caps.TextureAddressm_Caps & D3DPTADDRESSCAPS_MIRRORONCE)
                         return D3DTADDRESS_MIRRORONCE;
                     else
                         return D3DTADDRESS_CLAMP;
@@ -2234,13 +2234,13 @@ namespace irr
         }
 
 
-        //! Can be called by an IMaterialRenderer to make its work easier.
-        void CD3D9Driver::setBasicRenderStates(const SMaterial &material, const SMaterial &lastmaterial,
+        //! Can be called by an Im_MaterialRenderer to make its work easier.
+        void CD3D9Driver::setBasicRenderStates(const Sm_Material &material, const Sm_Material &lastmaterial,
             bool resetAllRenderstates)
         {
             // This needs only to be updated onresets
-            if (Params.HandleSRGB && resetAllRenderstates)
-                pID3DDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, TRUE);
+            if (m_Params.HandleSRGB && resetAllRenderstates)
+                m_pID3DDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, TRUE);
 
             if (resetAllRenderstates ||
                 lastmaterial.AmbientColor != material.AmbientColor ||
@@ -2255,33 +2255,33 @@ namespace irr
                 mat.Specular = colorToD3D(material.SpecularColor);
                 mat.Emissive = colorToD3D(material.EmissiveColor);
                 mat.Power    = material.Shininess;
-                pID3DDevice->SetMaterial(&mat);
+                m_pID3DDevice->SetMaterial(&mat);
             }
 
-            if (lastmaterial.ColorMaterial != material.ColorMaterial)
+            if (lastmaterial.Colorm_Material != material.Colorm_Material)
             {
-                pID3DDevice->SetRenderState(D3DRS_COLORVERTEX, (material.ColorMaterial != ECM_NONE));
-                pID3DDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE,
-                    ((material.ColorMaterial == ECM_DIFFUSE) ||
-                    (material.ColorMaterial == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
-                pID3DDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE,
-                    ((material.ColorMaterial == ECM_AMBIENT) ||
-                    (material.ColorMaterial == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
-                pID3DDevice->SetRenderState(D3DRS_EMISSIVEMATERIALSOURCE,
-                    (material.ColorMaterial == ECM_EMISSIVE) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
-                pID3DDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE,
-                    (material.ColorMaterial == ECM_SPECULAR) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_COLORVERTEX, (material.Colorm_Material != ECM_NONE));
+                m_pID3DDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE,
+                    ((material.Colorm_Material == ECM_DIFFUSE) ||
+                    (material.Colorm_Material == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE,
+                    ((material.Colorm_Material == ECM_AMBIENT) ||
+                    (material.Colorm_Material == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_EMISSIVEMATERIALSOURCE,
+                    (material.Colorm_Material == ECM_EMISSIVE) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE,
+                    (material.Colorm_Material == ECM_SPECULAR) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
             }
 
             // fillmode
             if (resetAllRenderstates || lastmaterial.Wireframe != material.Wireframe || lastmaterial.PointCloud != material.PointCloud)
             {
                 if (material.Wireframe)
-                    pID3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+                    m_pID3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
                 else if (material.PointCloud)
-                    pID3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_POINT);
+                    m_pID3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_POINT);
                 else
-                    pID3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+                    m_pID3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
             }
 
             // shademode
@@ -2289,9 +2289,9 @@ namespace irr
             if (resetAllRenderstates || lastmaterial.GouraudShading != material.GouraudShading)
             {
                 if (material.GouraudShading)
-                    pID3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+                    m_pID3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
                 else
-                    pID3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);
+                    m_pID3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);
             }
 
             // lighting
@@ -2299,9 +2299,9 @@ namespace irr
             if (resetAllRenderstates || lastmaterial.Lighting != material.Lighting)
             {
                 if (material.Lighting)
-                    pID3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
                 else
-                    pID3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+                    m_pID3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
             }
 
             // zbuffer
@@ -2311,42 +2311,42 @@ namespace irr
                 switch (material.ZBuffer)
                 {
                     case ECFN_NEVER:
-                        pID3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
                         break;
 
                     case ECFN_LESSEQUAL:
-                        pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-                        pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
                         break;
 
                     case ECFN_EQUAL:
-                        pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-                        pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL);
                         break;
 
                     case ECFN_LESS:
-                        pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-                        pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
                         break;
 
                     case ECFN_NOTEQUAL:
-                        pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-                        pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_NOTEQUAL);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_NOTEQUAL);
                         break;
 
                     case ECFN_GREATEREQUAL:
-                        pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-                        pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_GREATEREQUAL);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_GREATEREQUAL);
                         break;
 
                     case ECFN_GREATER:
-                        pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-                        pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_GREATER);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_GREATER);
                         break;
 
                     case ECFN_ALWAYS:
-                        pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-                        pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+                        m_pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
                         break;
 
                     default:
@@ -2358,9 +2358,9 @@ namespace irr
             //    if (resetAllRenderstates || (lastmaterial.ZWriteEnable != material.ZWriteEnable))
             {
                 if (material.ZWriteEnable && (AllowZWriteOnTransparent || !material.isTransparent()))
-                    pID3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
                 else
-                    pID3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
             }
 
             // back face culling
@@ -2368,34 +2368,34 @@ namespace irr
             if (resetAllRenderstates || (lastmaterial.FrontfaceCulling != material.FrontfaceCulling) || (lastmaterial.BackfaceCulling != material.BackfaceCulling))
             {
                 //        if (material.FrontfaceCulling && material.BackfaceCulling)
-                //            pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW|D3DCULL_CCW);
+                //            m_pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW|D3DCULL_CCW);
                 //        else
                 if (material.FrontfaceCulling)
-                    pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+                    m_pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
                 else if (material.BackfaceCulling)
-                    pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+                    m_pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
                 else
-                    pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+                    m_pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
             }
 
             // fog
             if (resetAllRenderstates || lastmaterial.FogEnable != material.FogEnable)
             {
-                pID3DDevice->SetRenderState(D3DRS_FOGENABLE, material.FogEnable);
+                m_pID3DDevice->SetRenderState(D3DRS_FOGENABLE, material.FogEnable);
             }
 
             // specular highlights
             if (resetAllRenderstates || !core::equals(lastmaterial.Shininess, material.Shininess))
             {
                 const bool enable = (material.Shininess != 0.0f);
-                pID3DDevice->SetRenderState(D3DRS_SPECULARENABLE, enable);
-                pID3DDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_SPECULARENABLE, enable);
+                m_pID3DDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
             }
 
             // normalization
             if (resetAllRenderstates || lastmaterial.NormalizeNormals != material.NormalizeNormals)
             {
-                pID3DDevice->SetRenderState(D3DRS_NORMALIZENORMALS, material.NormalizeNormals);
+                m_pID3DDevice->SetRenderState(D3DRS_NORMALIZENORMALS, material.NormalizeNormals);
             }
 
             // Color Mask
@@ -2407,42 +2407,42 @@ namespace irr
                     ((material.ColorMask & ECP_GREEN) ? D3DCOLORWRITEENABLE_GREEN : 0) |
                     ((material.ColorMask & ECP_BLUE) ? D3DCOLORWRITEENABLE_BLUE : 0) |
                     ((material.ColorMask & ECP_ALPHA) ? D3DCOLORWRITEENABLE_ALPHA : 0);
-                pID3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, flag);
+                m_pID3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, flag);
             }
 
             if (queryFeature(EVDF_BLEND_OPERATIONS) &&
                 (resetAllRenderstates || lastmaterial.BlendOperation != material.BlendOperation))
             {
                 if (material.BlendOperation == EBO_NONE)
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
                 else
                 {
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
                     switch (material.BlendOperation)
                     {
                         case EBO_SUBTRACT:
-                            pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_SUBTRACT);
+                            m_pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_SUBTRACT);
                             break;
 
                         case EBO_REVSUBTRACT:
-                            pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
+                            m_pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
                             break;
 
                         case EBO_MIN:
                         case EBO_MIN_FACTOR:
                         case EBO_MIN_ALPHA:
-                            pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_MIN);
+                            m_pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_MIN);
                             break;
 
                         case EBO_MAX:
                         case EBO_MAX_FACTOR:
                         case EBO_MAX_ALPHA:
-                            pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_MAX);
+                            m_pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_MAX);
                             break;
 
                         default:
-                            pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+                            m_pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
                             break;
                     }
                 }
@@ -2457,82 +2457,82 @@ namespace irr
                 {
                     if (material.PolygonOffsetDirection == EPO_BACK)
                     {
-                        pID3DDevice->SetRenderState(D3DRS_SLOPESCALEDEPTHBIAS, F2DW(1.f));
-                        pID3DDevice->SetRenderState(D3DRS_DEPTHBIAS, F2DW((FLOAT)material.PolygonOffsetFactor));
+                        m_pID3DDevice->SetRenderState(D3DRS_SLOPESCALEDEPTHBIAS, F2DW(1.f));
+                        m_pID3DDevice->SetRenderState(D3DRS_DEPTHBIAS, F2DW((FLOAT)material.PolygonOffsetFactor));
                     }
                     else
                     {
-                        pID3DDevice->SetRenderState(D3DRS_SLOPESCALEDEPTHBIAS, F2DW(-1.f));
-                        pID3DDevice->SetRenderState(D3DRS_DEPTHBIAS, F2DW((FLOAT)-material.PolygonOffsetFactor));
+                        m_pID3DDevice->SetRenderState(D3DRS_SLOPESCALEDEPTHBIAS, F2DW(-1.f));
+                        m_pID3DDevice->SetRenderState(D3DRS_DEPTHBIAS, F2DW((FLOAT)-material.PolygonOffsetFactor));
                     }
                 }
                 else
                 {
-                    pID3DDevice->SetRenderState(D3DRS_SLOPESCALEDEPTHBIAS, 0);
-                    pID3DDevice->SetRenderState(D3DRS_DEPTHBIAS, 0);
+                    m_pID3DDevice->SetRenderState(D3DRS_SLOPESCALEDEPTHBIAS, 0);
+                    m_pID3DDevice->SetRenderState(D3DRS_DEPTHBIAS, 0);
                 }
             }
 
             // Anti Aliasing
             if (resetAllRenderstates || lastmaterial.AntiAliasing != material.AntiAliasing)
             {
-                if (AlphaToCoverageSupport && (material.AntiAliasing & EAAM_ALPHA_TO_COVERAGE))
+                if (m_AlphaToCoverageSupport && (material.AntiAliasing & EAAM_ALPHA_TO_COVERAGE))
                 {
-                    if (VendorID == 0x10DE) // NVidia
-                        pID3DDevice->SetRenderState(D3DRS_ADAPTIVETESS_Y, MAKEFOURCC('A', 'T', 'O', 'C'));
+                    if (m_VendorID == 0x10DE) // NVidia
+                        m_pID3DDevice->SetRenderState(D3DRS_ADAPTIVETESS_Y, MAKEFOURCC('A', 'T', 'O', 'C'));
                     // SSAA could give better results on NVidia cards
-                    else if (VendorID == 0x1002) // ATI
-                        pID3DDevice->SetRenderState(D3DRS_POINTSIZE, MAKEFOURCC('A', '2', 'M', '1'));
+                    else if (m_VendorID == 0x1002) // ATI
+                        m_pID3DDevice->SetRenderState(D3DRS_POINTSIZE, MAKEFOURCC('A', '2', 'M', '1'));
                 }
-                else if (AlphaToCoverageSupport && (lastmaterial.AntiAliasing & EAAM_ALPHA_TO_COVERAGE))
+                else if (m_AlphaToCoverageSupport && (lastmaterial.AntiAliasing & EAAM_ALPHA_TO_COVERAGE))
                 {
-                    if (VendorID == 0x10DE)
-                        pID3DDevice->SetRenderState(D3DRS_ADAPTIVETESS_Y, D3DFMT_UNKNOWN);
-                    else if (VendorID == 0x1002)
-                        pID3DDevice->SetRenderState(D3DRS_POINTSIZE, MAKEFOURCC('A', '2', 'M', '0'));
+                    if (m_VendorID == 0x10DE)
+                        m_pID3DDevice->SetRenderState(D3DRS_ADAPTIVETESS_Y, D3DFMT_UNKNOWN);
+                    else if (m_VendorID == 0x1002)
+                        m_pID3DDevice->SetRenderState(D3DRS_POINTSIZE, MAKEFOURCC('A', '2', 'M', '0'));
                 }
 
                 // enable antialiasing
-                if (Params.AntiAlias)
+                if (m_Params.AntiAlias)
                 {
                     if (material.AntiAliasing & (EAAM_SIMPLE | EAAM_QUALITY))
-                        pID3DDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, TRUE);
+                        m_pID3DDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, TRUE);
                     else if (lastmaterial.AntiAliasing & (EAAM_SIMPLE | EAAM_QUALITY))
-                        pID3DDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, FALSE);
+                        m_pID3DDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, FALSE);
 
                     if (material.AntiAliasing & (EAAM_LINE_SMOOTH))
-                        pID3DDevice->SetRenderState(D3DRS_ANTIALIASEDLINEENABLE, TRUE);
+                        m_pID3DDevice->SetRenderState(D3DRS_ANTIALIASEDLINEENABLE, TRUE);
                     else if (lastmaterial.AntiAliasing & (EAAM_LINE_SMOOTH))
-                        pID3DDevice->SetRenderState(D3DRS_ANTIALIASEDLINEENABLE, FALSE);
+                        m_pID3DDevice->SetRenderState(D3DRS_ANTIALIASEDLINEENABLE, FALSE);
                 }
             }
 
             // thickness
             if (resetAllRenderstates || lastmaterial.Thickness != material.Thickness)
             {
-                pID3DDevice->SetRenderState(D3DRS_POINTSIZE, F2DW(material.Thickness));
+                m_pID3DDevice->SetRenderState(D3DRS_POINTSIZE, F2DW(material.Thickness));
             }
 
             // texture address mode
-            for (u32 st = 0; st < MaxTextureUnits; ++st)
+            for (u32 st = 0; st < m_MaxTextureUnits; ++st)
             {
-                if (resetAllRenderstates && Params.HandleSRGB)
-                    pID3DDevice->SetSamplerState(st, D3DSAMP_SRGBTEXTURE, TRUE);
+                if (resetAllRenderstates && m_Params.HandleSRGB)
+                    m_pID3DDevice->SetSamplerState(st, D3DSAMP_SRGBTEXTURE, TRUE);
 
                 if (resetAllRenderstates || lastmaterial.TextureLayer[st].LODBias != material.TextureLayer[st].LODBias)
                 {
                     const float tmp = material.TextureLayer[st].LODBias * 0.125f;
-                    pID3DDevice->SetSamplerState(st, D3DSAMP_MIPMAPLODBIAS, F2DW(tmp));
+                    m_pID3DDevice->SetSamplerState(st, D3DSAMP_MIPMAPLODBIAS, F2DW(tmp));
                 }
 
                 if (resetAllRenderstates || lastmaterial.TextureLayer[st].TextureWrapU != material.TextureLayer[st].TextureWrapU)
-                    pID3DDevice->SetSamplerState(st, D3DSAMP_ADDRESSU, getTextureWrapMode(material.TextureLayer[st].TextureWrapU));
+                    m_pID3DDevice->SetSamplerState(st, D3DSAMP_ADDRESSU, getTextureWrapMode(material.TextureLayer[st].TextureWrapU));
 
                 // If separate UV not supported reuse U for V
-                if (!(Caps.TextureAddressCaps & D3DPTADDRESSCAPS_INDEPENDENTUV))
-                    pID3DDevice->SetSamplerState(st, D3DSAMP_ADDRESSV, getTextureWrapMode(material.TextureLayer[st].TextureWrapU));
+                if (!(m_Caps.TextureAddressm_Caps & D3DPTADDRESSCAPS_INDEPENDENTUV))
+                    m_pID3DDevice->SetSamplerState(st, D3DSAMP_ADDRESSV, getTextureWrapMode(material.TextureLayer[st].TextureWrapU));
                 else if (resetAllRenderstates || lastmaterial.TextureLayer[st].TextureWrapV != material.TextureLayer[st].TextureWrapV)
-                    pID3DDevice->SetSamplerState(st, D3DSAMP_ADDRESSV, getTextureWrapMode(material.TextureLayer[st].TextureWrapV));
+                    m_pID3DDevice->SetSamplerState(st, D3DSAMP_ADDRESSV, getTextureWrapMode(material.TextureLayer[st].TextureWrapV));
 
                 // Bilinear, trilinear, and anisotropic filter
                 if (resetAllRenderstates ||
@@ -2543,24 +2543,24 @@ namespace irr
                 {
                     if (material.TextureLayer[st].BilinearFilter || material.TextureLayer[st].TrilinearFilter || material.TextureLayer[st].AnisotropicFilter)
                     {
-                        D3DTEXTUREFILTERTYPE tftMag = ((Caps.TextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC) &&
+                        D3DTEXTUREFILTERTYPE tftMag = ((m_Caps.TextureFilterm_Caps & D3DPTFILTERCAPS_MAGFANISOTROPIC) &&
                             material.TextureLayer[st].AnisotropicFilter) ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;
-                        D3DTEXTUREFILTERTYPE tftMin = ((Caps.TextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC) &&
+                        D3DTEXTUREFILTERTYPE tftMin = ((m_Caps.TextureFilterm_Caps & D3DPTFILTERCAPS_MINFANISOTROPIC) &&
                             material.TextureLayer[st].AnisotropicFilter) ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;
                         D3DTEXTUREFILTERTYPE tftMip = material.UseMipMaps ? (material.TextureLayer[st].TrilinearFilter ? D3DTEXF_LINEAR : D3DTEXF_POINT) : D3DTEXF_NONE;
 
                         if (tftMag == D3DTEXF_ANISOTROPIC || tftMin == D3DTEXF_ANISOTROPIC)
-                            pID3DDevice->SetSamplerState(st, D3DSAMP_MAXANISOTROPY, core::min_((DWORD)material.TextureLayer[st].AnisotropicFilter, Caps.MaxAnisotropy));
+                            m_pID3DDevice->SetSamplerState(st, D3DSAMP_MAXANISOTROPY, core::min_((DWORD)material.TextureLayer[st].AnisotropicFilter, m_Caps.MaxAnisotropy));
 
-                        pID3DDevice->SetSamplerState(st, D3DSAMP_MAGFILTER, tftMag);
-                        pID3DDevice->SetSamplerState(st, D3DSAMP_MINFILTER, tftMin);
-                        pID3DDevice->SetSamplerState(st, D3DSAMP_MIPFILTER, tftMip);
+                        m_pID3DDevice->SetSamplerState(st, D3DSAMP_MAGFILTER, tftMag);
+                        m_pID3DDevice->SetSamplerState(st, D3DSAMP_MINFILTER, tftMin);
+                        m_pID3DDevice->SetSamplerState(st, D3DSAMP_MIPFILTER, tftMip);
                     }
                     else
                     {
-                        pID3DDevice->SetSamplerState(st, D3DSAMP_MINFILTER, D3DTEXF_POINT);
-                        pID3DDevice->SetSamplerState(st, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
-                        pID3DDevice->SetSamplerState(st, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
+                        m_pID3DDevice->SetSamplerState(st, D3DSAMP_MINFILTER, D3DTEXF_POINT);
+                        m_pID3DDevice->SetSamplerState(st, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
+                        m_pID3DDevice->SetSamplerState(st, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
                     }
                 }
             }
@@ -2570,151 +2570,151 @@ namespace irr
         //! sets the needed renderstates
         void CD3D9Driver::setRenderStatesStencilShadowMode(bool zfail, u32 debugDataVisible)
         {
-            if ((CurrentRenderMode != ERM_SHADOW_VOLUME_ZFAIL &&
-                CurrentRenderMode != ERM_SHADOW_VOLUME_ZPASS) ||
-                Transformation3DChanged)
+            if ((m_CurrentRenderMode != ERM_SHADOW_VOLUME_ZFAIL &&
+                m_CurrentRenderMode != ERM_SHADOW_VOLUME_ZPASS) ||
+                m_Transformation3DChanged)
             {
                 // unset last 3d material
-                if (CurrentRenderMode == ERM_3D &&
-                    static_cast<u32>(Material.MaterialType) < MaterialRenderers.size())
+                if (m_CurrentRenderMode == ERM_3D &&
+                    static_cast<u32>(m_Material.m_MaterialType) < m_MaterialRenderers.size())
                 {
-                    MaterialRenderers[Material.MaterialType].Renderer->OnUnsetMaterial();
-                    ResetRenderStates = true;
+                    m_MaterialRenderers[m_Material.m_MaterialType].Renderer->OnUnsetMaterial();
+                    m_ResetRenderStates = true;
                 }
 
                 // switch back the matrices
-                pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)&Matrices[ETS_VIEW]));
-                pID3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)((void*)&Matrices[ETS_WORLD]));
-                pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)&Matrices[ETS_PROJECTION]));
+                m_pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)&m_Matrices[ETS_VIEW]));
+                m_pID3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)((void*)&m_Matrices[ETS_WORLD]));
+                m_pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)&m_Matrices[ETS_PROJECTION]));
 
-                Transformation3DChanged = false;
+                m_Transformation3DChanged = false;
 
                 setActiveTexture(0, 0);
                 setActiveTexture(1, 0);
                 setActiveTexture(2, 0);
                 setActiveTexture(3, 0);
 
-                pID3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_DISABLE);
+                m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_DISABLE);
 
-                pID3DDevice->SetFVF(D3DFVF_XYZ);
-                LastVertexType = (video::E_VERTEX_TYPE)(-1);
+                m_pID3DDevice->SetFVF(D3DFVF_XYZ);
+                m_LastVertexType = (video::E_VERTEX_TYPE)(-1);
 
-                pID3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-                pID3DDevice->SetRenderState(D3DRS_STENCILENABLE, TRUE);
-                pID3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);
-                // pID3DDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
-                // pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+                m_pID3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILENABLE, TRUE);
+                m_pID3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);
+                // m_pID3DDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
+                // m_pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
-                pID3DDevice->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_ALWAYS);
-                pID3DDevice->SetRenderState(D3DRS_STENCILREF, 0x0);
-                pID3DDevice->SetRenderState(D3DRS_STENCILMASK, 0xffffffff);
-                pID3DDevice->SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_ALWAYS);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILREF, 0x0);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILMASK, 0xffffffff);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
 
-                pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-                pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
-                pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+                m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+                m_pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ZERO);
+                m_pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
-                pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-                pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
+                m_pID3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+                m_pID3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
 
                 // if (!(debugDataVisible & (scene::EDS_SKELETON|scene::EDS_MESH_WIRE_OVERLAY)))
-                //    pID3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0);
+                //    m_pID3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0);
                 if ((debugDataVisible & scene::EDS_MESH_WIRE_OVERLAY))
-                    pID3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+                    m_pID3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
             }
 
-            if (CurrentRenderMode != ERM_SHADOW_VOLUME_ZPASS && !zfail)
+            if (m_CurrentRenderMode != ERM_SHADOW_VOLUME_ZPASS && !zfail)
             {
                 // USE THE ZPASS METHOD
-                pID3DDevice->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
-                pID3DDevice->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
-                // pID3DDevice->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_INCR);    // does not matter, will be set later
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
+                // m_pID3DDevice->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_INCR);    // does not matter, will be set later
             }
-            else if (CurrentRenderMode != ERM_SHADOW_VOLUME_ZFAIL && zfail)
+            else if (m_CurrentRenderMode != ERM_SHADOW_VOLUME_ZFAIL && zfail)
             {
                 // USE THE ZFAIL METHOD
-                pID3DDevice->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
-                // pID3DDevice->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_INCR);    // does not matter, will be set later
-                pID3DDevice->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_KEEP);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
+                // m_pID3DDevice->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_INCR);    // does not matter, will be set later
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_KEEP);
             }
 
-            CurrentRenderMode = zfail ? ERM_SHADOW_VOLUME_ZFAIL : ERM_SHADOW_VOLUME_ZPASS;
+            m_CurrentRenderMode = zfail ? ERM_SHADOW_VOLUME_ZFAIL : ERM_SHADOW_VOLUME_ZPASS;
         }
 
 
         //! sets the needed renderstates
         void CD3D9Driver::setRenderStatesStencilFillMode(bool alpha)
         {
-            if (CurrentRenderMode != ERM_STENCIL_FILL || Transformation3DChanged)
+            if (m_CurrentRenderMode != ERM_STENCIL_FILL || m_Transformation3DChanged)
             {
                 core::matrix4 mat;
-                pID3DDevice->SetTransform(D3DTS_VIEW, &UnitMatrixD3D9);
-                pID3DDevice->SetTransform(D3DTS_WORLD, &UnitMatrixD3D9);
-                pID3DDevice->SetTransform(D3DTS_PROJECTION, &UnitMatrixD3D9);
+                m_pID3DDevice->SetTransform(D3DTS_VIEW, &UnitMatrixD3D9);
+                m_pID3DDevice->SetTransform(D3DTS_WORLD, &UnitMatrixD3D9);
+                m_pID3DDevice->SetTransform(D3DTS_PROJECTION, &UnitMatrixD3D9);
 
-                pID3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
-                pID3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-                pID3DDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
+                m_pID3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+                m_pID3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+                m_pID3DDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
 
-                pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+                m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
 
-                pID3DDevice->SetRenderState(D3DRS_STENCILREF, 0x1);
-                pID3DDevice->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_LESSEQUAL);
-                // pID3DDevice->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_GREATEREQUAL);
-                pID3DDevice->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
-                pID3DDevice->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
-                pID3DDevice->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_KEEP);
-                pID3DDevice->SetRenderState(D3DRS_STENCILMASK, 0xffffffff);
-                pID3DDevice->SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILREF, 0x1);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_LESSEQUAL);
+                // m_pID3DDevice->SetRenderState(D3DRS_STENCILFUNC, D3DCMP_GREATEREQUAL);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILFAIL, D3DSTENCILOP_KEEP);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_KEEP);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_KEEP);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILMASK, 0xffffffff);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
 
-                pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+                m_pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
-                Transformation3DChanged = false;
+                m_Transformation3DChanged = false;
 
-                pID3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-                pID3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-                pID3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-                pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-                pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
+                m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+                m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+                m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+                m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+                m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
                 if (alpha)
                 {
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-                    pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-                    pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+                    m_pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
                 }
                 else
                 {
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
                 }
             }
 
-            CurrentRenderMode = ERM_STENCIL_FILL;
+            m_CurrentRenderMode = ERM_STENCIL_FILL;
         }
 
 
         //! Enable the 2d override material
-        void CD3D9Driver::enableMaterial2D(bool enable)
+        void CD3D9Driver::enablem_Material2D(bool enable)
         {
             if (!enable)
-                CurrentRenderMode = ERM_NONE;
+                m_CurrentRenderMode = ERM_NONE;
 
-            CNullDriver::enableMaterial2D(enable);
+            CNullDriver::enablem_Material2D(enable);
         }
 
 
         //! sets the needed renderstates
         void CD3D9Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel)
         {
-            if (!pID3DDevice)
+            if (!m_pID3DDevice)
                 return;
 
-            if (CurrentRenderMode != ERM_2D || Transformation3DChanged)
+            if (m_CurrentRenderMode != ERM_2D || m_Transformation3DChanged)
             {
                 // unset last 3d material
-                if (CurrentRenderMode == ERM_3D)
+                if (m_CurrentRenderMode == ERM_3D)
                 {
-                    if (static_cast<u32>(LastMaterial.MaterialType) < MaterialRenderers.size())
-                        MaterialRenderers[LastMaterial.MaterialType].Renderer->OnUnsetMaterial();
+if (static_cast<u32>(LastMaterial.m_MaterialType) < m_MaterialRenderers.size())
+m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
                 }
 
                 if (!OverrideMaterial2DEnabled)
@@ -2722,10 +2722,10 @@ namespace irr
                     setBasicRenderStates(InitMaterial2D, LastMaterial, true);
                     LastMaterial = InitMaterial2D;
 
-                    // fix everything that is wrongly set by InitMaterial2D default
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+                    // fix everything that is wrongly set by Initm_Material2D default
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
 
-                    pID3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
+                    m_pID3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
                 }
 
                 core::matrix4 m;
@@ -2733,22 +2733,22 @@ namespace irr
                 // moreover, it would have to be tested in each call, as the texture flag can change each time
                 //        if (!texture)
                 //            m.setTranslation(core::vector3df(0.5f,0.5f,0));
-                pID3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)((void*)m.pointer()));
+                m_pID3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)((void*)m.pointer()));
 
                 // adjust the view such that pixel center aligns with texels
                 // Otherwise, subpixel artifacts will occur
                 m.setTranslation(core::vector3df(-0.5f, -0.5f, 0));
-                pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)m.pointer()));
+                m_pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)m.pointer()));
 
                 const core::dimension2d<u32> &renderTargetSize = getCurrentRenderTargetSize();
                 m.buildProjectionMatrixOrthoLH(f32(renderTargetSize.Width), f32(-(s32)(renderTargetSize.Height)), -1.0, 1.0);
                 m.setTranslation(core::vector3df(-1, 1, 0));
-                pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)m.pointer()));
+                m_pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)m.pointer()));
 
                 // 2d elements are clipped in software
-                pID3DDevice->SetRenderState(D3DRS_CLIPPING, FALSE);
+                m_pID3DDevice->SetRenderState(D3DRS_CLIPPING, FALSE);
 
-                Transformation3DChanged = false;
+                m_Transformation3DChanged = false;
             }
 
             if (OverrideMaterial2DEnabled)
@@ -2763,63 +2763,63 @@ namespace irr
 
             if (alpha || alphaChannel)
             {
-                pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-                pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-                pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+                m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+                m_pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+                m_pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
             }
             else
-                pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+                m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
-            pID3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-            pID3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-            pID3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+            m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+            m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+            m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
             if (texture)
             {
                 setTransform(ETS_TEXTURE_0, core::IdentityMatrix);
                 // Due to the transformation change, the previous line would call a reset each frame
                 // but we can safely reset the variable as it was false before
-                Transformation3DChanged = false;
+                m_Transformation3DChanged = false;
             }
 
             if (alphaChannel)
             {
-                pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+                m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 
                 if (alpha)
                 {
-                    pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-                    pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+                    m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+                    m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
                 }
                 else
                 {
-                    pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+                    m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
                 }
             }
             else
             {
-                pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+                m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
                 if (alpha)
                 {
-                    pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG2);
+                    m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG2);
                 }
                 else
                 {
-                    pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-                    pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+                    m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+                    m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
                 }
             }
 
-            CurrentRenderMode = ERM_2D;
+            m_CurrentRenderMode = ERM_2D;
         }
 
 
         //! deletes all dynamic lights there are
         void CD3D9Driver::deleteAllDynamicLights()
         {
-            for (s32 i = 0; i < LastSetLight + 1; ++i)
-                pID3DDevice->LightEnable(i, false);
+            for (s32 i = 0; i < m_LastSetLight + 1; ++i)
+                m_pID3DDevice->LightEnable(i, false);
 
-            LastSetLight = -1;
+            m_LastSetLight = -1;
 
             CNullDriver::deleteAllDynamicLights();
         }
@@ -2850,7 +2850,7 @@ namespace irr
             light.Position  = *(D3DVECTOR*)((void*)(&dl.Position));
             light.Direction = *(D3DVECTOR*)((void*)(&dl.Direction));
 
-            light.Range   = core::min_(dl.Radius, MaxLightDistance);
+            light.Range   = core::min_(dl.Radius, m_MaxLightDistance);
             light.Falloff = dl.Falloff;
 
             light.Diffuse  = *(D3DCOLORVALUE*)((void*)(&dl.DiffuseColor));
@@ -2864,13 +2864,13 @@ namespace irr
             light.Theta = dl.InnerCone * 2.0f * core::DEGTORAD;
             light.Phi   = dl.OuterCone * 2.0f * core::DEGTORAD;
 
-            ++LastSetLight;
+            ++m_LastSetLight;
 
-            if (D3D_OK == pID3DDevice->SetLight(LastSetLight, &light))
+            if (D3D_OK == m_pID3DDevice->SetLight(m_LastSetLight, &light))
             {
                 // I don't care if this succeeds
-                (void)pID3DDevice->LightEnable(LastSetLight, true);
-                return LastSetLight;
+                (void)m_pID3DDevice->LightEnable(m_LastSetLight, true);
+                return m_LastSetLight;
             }
 
             return -1;
@@ -2881,17 +2881,17 @@ namespace irr
         //! \param turnOn: true to turn the light on, false to turn it off
         void CD3D9Driver::turnLightOn(s32 lightIndex, bool turnOn)
         {
-            if (lightIndex < 0 || lightIndex > LastSetLight)
+            if (lightIndex < 0 || lightIndex > m_LastSetLight)
                 return;
 
-            (void)pID3DDevice->LightEnable(lightIndex, turnOn);
+            (void)m_pID3DDevice->LightEnable(lightIndex, turnOn);
         }
 
 
         //! returns the maximal amount of dynamic lights the device can handle
         u32 CD3D9Driver::getMaximalDynamicLightAmount() const
         {
-            return Caps.MaxActiveLights;
+            return m_Caps.MaxActiveLights;
         }
 
 
@@ -2900,12 +2900,12 @@ namespace irr
         //! \param color: New color of the ambient light.
         void CD3D9Driver::setAmbientLight(const SColorf &color)
         {
-            if (!pID3DDevice)
+            if (!m_pID3DDevice)
                 return;
 
-            AmbientLight = color;
+            m_AmbientLight = color;
             D3DCOLOR col = color.toSColor().color;
-            pID3DDevice->SetRenderState(D3DRS_AMBIENT, col);
+            m_pID3DDevice->SetRenderState(D3DRS_AMBIENT, col);
         }
 
 
@@ -2922,7 +2922,7 @@ namespace irr
         //! volume. Then, use IVideoDriver::drawStencilShadow() to visualize the shadow.
         void CD3D9Driver::drawStencilShadowVolume(const core::array<core::vector3df> &triangles, bool zfail, u32 debugDataVisible)
         {
-            if (!Params.Stencilbuffer)
+            if (!m_Params.Stencilbuffer)
                 return;
 
             setRenderStatesStencilShadowMode(zfail, debugDataVisible);
@@ -2936,28 +2936,28 @@ namespace irr
                 // ZPASS Method
 
                 // Draw front-side of shadow volume in stencil only
-                pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-                pID3DDevice->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_INCR);
-                pID3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, count / 3, triangles.const_pointer(), sizeof(core::vector3df));
+                m_pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_INCR);
+                m_pID3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, count / 3, triangles.const_pointer(), sizeof(core::vector3df));
 
                 // Now reverse cull order so front sides of shadow volume are written.
-                pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-                pID3DDevice->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_DECR);
-                pID3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, count / 3, triangles.const_pointer(), sizeof(core::vector3df));
+                m_pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP_DECR);
+                m_pID3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, count / 3, triangles.const_pointer(), sizeof(core::vector3df));
             }
             else
             {
                 // ZFAIL Method
 
                 // Draw front-side of shadow volume in stencil only
-                pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-                pID3DDevice->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_INCR);
-                pID3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, count / 3, triangles.const_pointer(), sizeof(core::vector3df));
+                m_pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_INCR);
+                m_pID3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, count / 3, triangles.const_pointer(), sizeof(core::vector3df));
 
                 // Now reverse cull order so front sides of shadow volume are written.
-                pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-                pID3DDevice->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_DECR);
-                pID3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, count / 3, triangles.const_pointer(), sizeof(core::vector3df));
+                m_pID3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+                m_pID3DDevice->SetRenderState(D3DRS_STENCILZFAIL, D3DSTENCILOP_DECR);
+                m_pID3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, count / 3, triangles.const_pointer(), sizeof(core::vector3df));
             }
         }
 
@@ -2968,7 +2968,7 @@ namespace irr
         void CD3D9Driver::drawStencilShadow(bool clearStencilBuffer, video::SColor leftUpEdge,
             video::SColor rightUpEdge, video::SColor leftDownEdge, video::SColor rightDownEdge)
         {
-            if (!Params.Stencilbuffer)
+            if (!m_Params.Stencilbuffer)
                 return;
 
             S3DVertex vtx[4];
@@ -2989,11 +2989,11 @@ namespace irr
 
             setVertexShader(EVT_STANDARD);
 
-            pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, &indices[0],
+            m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, &indices[0],
                 D3DFMT_INDEX16, &vtx[0], sizeof(S3DVertex));
 
             if (clearStencilBuffer)
-                pID3DDevice->Clear(0, NULL, D3DCLEAR_STENCIL, 0, 1.0, 0);
+                m_pID3DDevice->Clear(0, NULL, D3DCLEAR_STENCIL, 0, 1.0, 0);
         }
 
 
@@ -3002,7 +3002,7 @@ namespace irr
         //! call.
         u32 CD3D9Driver::getMaximalPrimitiveCount() const
         {
-            return Caps.MaxPrimitiveCount;
+            return m_Caps.MaxPrimitiveCount;
         }
 
 
@@ -3012,25 +3012,25 @@ namespace irr
         {
             CNullDriver::setFog(color, fogType, start, end, density, pixelFog, rangeFog);
 
-            if (!pID3DDevice)
+            if (!m_pID3DDevice)
                 return;
 
-            pID3DDevice->SetRenderState(D3DRS_FOGCOLOR, color.color);
+            m_pID3DDevice->SetRenderState(D3DRS_FOGCOLOR, color.color);
 
-            pID3DDevice->SetRenderState(
+            m_pID3DDevice->SetRenderState(
                 pixelFog ? D3DRS_FOGTABLEMODE : D3DRS_FOGVERTEXMODE,
                 (fogType == EFT_FOG_LINEAR) ? D3DFOG_LINEAR : (fogType == EFT_FOG_EXP) ? D3DFOG_EXP : D3DFOG_EXP2);
 
             if (fogType == EFT_FOG_LINEAR)
             {
-                pID3DDevice->SetRenderState(D3DRS_FOGSTART, F2DW(start));
-                pID3DDevice->SetRenderState(D3DRS_FOGEND, F2DW(end));
+                m_pID3DDevice->SetRenderState(D3DRS_FOGSTART, F2DW(start));
+                m_pID3DDevice->SetRenderState(D3DRS_FOGEND, F2DW(end));
             }
             else
-                pID3DDevice->SetRenderState(D3DRS_FOGDENSITY, F2DW(density));
+                m_pID3DDevice->SetRenderState(D3DRS_FOGDENSITY, F2DW(density));
 
             if (!pixelFog)
-                pID3DDevice->SetRenderState(D3DRS_RANGEFOGENABLE, rangeFog);
+                m_pID3DDevice->SetRenderState(D3DRS_RANGEFOGENABLE, rangeFog);
         }
 
 
@@ -3046,7 +3046,7 @@ namespace irr
             v[0].Pos   = start;
             v[1].Pos   = end;
 
-            pID3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, 1, v, sizeof(S3DVertex));
+            m_pID3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, 1, v, sizeof(S3DVertex));
         }
 
 
@@ -3066,10 +3066,10 @@ namespace irr
                 }
             }
 
-            for (i = 0; i < DepthBuffers.size(); ++i)
+            for (i = 0; i < m_DepthBuffers.size(); ++i)
             {
-                if (DepthBuffers[i]->Surface)
-                    DepthBuffers[i]->Surface->Release();
+                if (m_DepthBuffers[i]->Surface)
+                    m_DepthBuffers[i]->Surface->Release();
             }
 
             for (i = 0; i < OcclusionQueries.size(); ++i)
@@ -3085,9 +3085,9 @@ namespace irr
             // automatically in the next render cycle.
             removeAllHardwareBuffers();
 
-            DriverWasReset = true;
+            m_DriverWasReset = true;
 
-            HRESULT hr = pID3DDevice->Reset(&present);
+            HRESULT hr = m_pID3DDevice->Reset(&m_present);
 
             // restore RTTs
             for (i = 0; i < Textures.size(); ++i)
@@ -3097,47 +3097,47 @@ namespace irr
             }
 
             // restore screen depthbuffer
-            pID3DDevice->GetDepthStencilSurface(&(DepthBuffers[0]->Surface));
+            m_pID3DDevice->GetDepthStencilSurface(&(m_DepthBuffers[0]->Surface));
             D3DSURFACE_DESC desc;
             // restore other depth buffers
             // depth format is taken from main depth buffer
-            DepthBuffers[0]->Surface->GetDesc(&desc);
+            m_DepthBuffers[0]->Surface->GetDesc(&desc);
             // multisampling is taken from rendertarget
             D3DSURFACE_DESC desc2 = {};
 
-            for (i = 1; i < DepthBuffers.size(); ++i)
+            for (i = 1; i < m_DepthBuffers.size(); ++i)
             {
                 for (u32 j = 0; j < Textures.size(); ++j)
                 {
                     // all textures sharing this depth buffer must have the same setting
                     // so take first one
-                    if (((CD3D9Texture*)(Textures[j].Surface))->DepthSurface == DepthBuffers[i])
+                    if (((CD3D9Texture*)(Textures[j].Surface))->DepthSurface == m_DepthBuffers[i])
                     {
-                        ((CD3D9Texture*)(Textures[j].Surface))->Texture->GetLevelDesc(0, &desc2);
+                        ((CD3D9Texture*)(Textures[j].Surface))->m_Texture->GetLevelDesc(0, &desc2);
                         break;
                     }
                 }
 
-                pID3DDevice->CreateDepthStencilSurface(DepthBuffers[i]->Size.Width,
-                    DepthBuffers[i]->Size.Height,
+                m_pID3DDevice->CreateDepthStencilSurface(m_DepthBuffers[i]->Size.Width,
+                    m_DepthBuffers[i]->Size.Height,
                     desc.Format,
                     desc2.MultiSampleType,
                     desc2.MultiSampleQuality,
                     TRUE,
-                    &(DepthBuffers[i]->Surface),
+                    &(m_DepthBuffers[i]->Surface),
                     NULL);
             }
 
             for (i = 0; i < OcclusionQueries.size(); ++i)
             {
-                pID3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, reinterpret_cast<IDirect3DQuery9**>(&OcclusionQueries[i].PID));
+                m_pID3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, reinterpret_cast<IDirect3DQuery9**>(&OcclusionQueries[i].PID));
             }
 
             if (FAILED(hr))
             {
                 if (hr == D3DERR_DEVICELOST)
                 {
-                    DeviceLost = true;
+                    m_DeviceLost = true;
                     os::Printer::log("Resetting failed due to device lost.", ELL_WARNING);
                 }
 
@@ -3170,9 +3170,9 @@ namespace irr
                 return false;
             }
 
-            DeviceLost        = false;
-            ResetRenderStates = true;
-            LastVertexType    = (E_VERTEX_TYPE)-1;
+            m_DeviceLost        = false;
+            m_ResetRenderStates = true;
+            m_LastVertexType    = (E_VERTEX_TYPE)-1;
 
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 CurrentTexture[i] = 0;
@@ -3180,7 +3180,7 @@ namespace irr
             setVertexShader(EVT_STANDARD);
             setRenderStates3DMode();
             setFog(FogColor, FogType, FogStart, FogEnd, FogDensity, PixelFog, RangeFog);
-            setAmbientLight(AmbientLight);
+            setAmbientLight(m_AmbientLight);
 
             return true;
         }
@@ -3188,12 +3188,12 @@ namespace irr
 
         void CD3D9Driver::OnResize(const core::dimension2d<u32> &size)
         {
-            if (!pID3DDevice)
+            if (!m_pID3DDevice)
                 return;
 
             CNullDriver::OnResize(size);
-            present.BackBufferWidth  = size.Width;
-            present.BackBufferHeight = size.Height;
+            m_present.BackBufferWidth  = size.Width;
+            m_present.BackBufferHeight = size.Height;
 
             reset();
         }
@@ -3209,7 +3209,7 @@ namespace irr
         //! Returns the transformation set by setTransform
         const core::matrix4&CD3D9Driver::getTransform(E_TRANSFORMATION_STATE state) const
         {
-            return Matrices[state];
+            return m_Matrices[state];
         }
 
 
@@ -3217,7 +3217,7 @@ namespace irr
         void CD3D9Driver::setVertexShaderConstant(const f32 *data, s32 startRegister, s32 constantAmount)
         {
             if (data)
-                pID3DDevice->SetVertexShaderConstantF(startRegister, data, constantAmount);
+                m_pID3DDevice->SetVertexShaderConstantF(startRegister, data, constantAmount);
         }
 
 
@@ -3225,16 +3225,16 @@ namespace irr
         void CD3D9Driver::setPixelShaderConstant(const f32 *data, s32 startRegister, s32 constantAmount)
         {
             if (data)
-                pID3DDevice->SetPixelShaderConstantF(startRegister, data, constantAmount);
+                m_pID3DDevice->SetPixelShaderConstantF(startRegister, data, constantAmount);
         }
 
 
         //! Sets a constant for the vertex shader based on a name.
         bool CD3D9Driver::setVertexShaderConstant(const c8 *name, const f32 *floats, int count)
         {
-            if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
+            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
             {
-                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
+                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)m_MaterialRenderers[m_Material.m_MaterialType].Renderer;
                 return r->setVariable(true, name, floats, count);
             }
 
@@ -3245,9 +3245,9 @@ namespace irr
         //! Bool interface for the above.
         bool CD3D9Driver::setVertexShaderConstant(const c8 *name, const bool *bools, int count)
         {
-            if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
+            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
             {
-                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
+                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)m_MaterialRenderers[m_Material.m_MaterialType].Renderer;
                 return r->setVariable(true, name, bools, count);
             }
 
@@ -3258,9 +3258,9 @@ namespace irr
         //! Int interface for the above.
         bool CD3D9Driver::setVertexShaderConstant(const c8 *name, const s32 *ints, int count)
         {
-            if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
+            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
             {
-                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
+                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)m_MaterialRenderers[m_Material.m_MaterialType].Renderer;
                 return r->setVariable(true, name, ints, count);
             }
 
@@ -3271,9 +3271,9 @@ namespace irr
         //! Sets a constant for the pixel shader based on a name.
         bool CD3D9Driver::setPixelShaderConstant(const c8 *name, const f32 *floats, int count)
         {
-            if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
+            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
             {
-                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
+                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)m_MaterialRenderers[m_Material.m_MaterialType].Renderer;
                 return r->setVariable(false, name, floats, count);
             }
 
@@ -3284,9 +3284,9 @@ namespace irr
         //! Bool interface for the above.
         bool CD3D9Driver::setPixelShaderConstant(const c8 *name, const bool *bools, int count)
         {
-            if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
+            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
             {
-                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
+                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)m_MaterialRenderers[m_Material.m_MaterialType].Renderer;
                 return r->setVariable(false, name, bools, count);
             }
 
@@ -3297,9 +3297,9 @@ namespace irr
         //! Int interface for the above.
         bool CD3D9Driver::setPixelShaderConstant(const c8 *name, const s32 *ints, int count)
         {
-            if (Material.MaterialType >= 0 && Material.MaterialType < (s32)MaterialRenderers.size())
+            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
             {
-                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)MaterialRenderers[Material.MaterialType].Renderer;
+                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)m_MaterialRenderers[m_Material.m_MaterialType].Renderer;
                 return r->setVariable(false, name, ints, count);
             }
 
@@ -3316,7 +3316,7 @@ namespace irr
         {
             s32                         nr = -1;
             CD3D9ShaderMaterialRenderer *r = new CD3D9ShaderMaterialRenderer(
-                pID3DDevice, this, nr, vertexShaderProgram, pixelShaderProgram,
+                m_pID3DDevice, this, nr, vertexShaderProgram, pixelShaderProgram,
                 callback, getMaterialRenderer(baseMaterial), userData);
 
             r->drop();
@@ -3360,7 +3360,7 @@ namespace irr
     #endif
             {
                 CD3D9HLSLMaterialRenderer *r = new CD3D9HLSLMaterialRenderer(
-                    pID3DDevice, this, nr,
+                    m_pID3DDevice, this, nr,
                     vertexShaderProgram,
                     vertexShaderEntryPointName,
                     vsCompileTarget,
@@ -3379,7 +3379,7 @@ namespace irr
 
 
         //! Returns a pointer to the IVideoDriver interface. (Implementation for
-        //! IMaterialRendererServices)
+        //! Im_MaterialRendererServices)
         IVideoDriver* CD3D9Driver::getVideoDriver()
         {
             return this;
@@ -3395,7 +3395,7 @@ namespace irr
 
             if (tex)
             {
-                if (!tex->Texture)
+                if (!tex->m_Texture)
                 {
                     tex->drop();
                     return 0;
@@ -3413,7 +3413,7 @@ namespace irr
         //! Clears the ZBuffer.
         void CD3D9Driver::clearZBuffer()
         {
-            HRESULT hr = pID3DDevice->Clear(0, NULL, D3DCLEAR_ZBUFFER, 0, 1.0, 0);
+            HRESULT hr = m_pID3DDevice->Clear(0, NULL, D3DCLEAR_ZBUFFER, 0, 1.0, 0);
 
             if (FAILED(hr))
                 os::Printer::log("CD3D9Driver clearZBuffer() failed.", ELL_WARNING);
@@ -3428,7 +3428,7 @@ namespace irr
 
             // query the screen dimensions of the current adapter
             D3DDISPLAYMODE displayMode;
-            pID3DDevice->GetDisplayMode(0, &displayMode);
+            m_pID3DDevice->GetDisplayMode(0, &displayMode);
 
             if (format == video::ECOLOR_FORMAT::ECF_UNKNOWN)
                 format = video::ECOLOR_FORMAT::ECF_A8R8G8B8;
@@ -3436,11 +3436,11 @@ namespace irr
             // create the image surface to store the front buffer image [always A8R8G8B8]
             HRESULT            hr;
             LPDIRECT3DSURFACE9 lpSurface;
-            if (FAILED(hr = pID3DDevice->CreateOffscreenPlainSurface(displayMode.Width, displayMode.Height, D3DFMT_A8R8G8B8, D3DPOOL_SCRATCH, &lpSurface, 0)))
+            if (FAILED(hr = m_pID3DDevice->CreateOffscreenPlainSurface(displayMode.Width, displayMode.Height, D3DFMT_A8R8G8B8, D3DPOOL_SCRATCH, &lpSurface, 0)))
                 return 0;
 
             // read the front buffer into the image surface
-            if (FAILED(hr = pID3DDevice->GetFrontBufferData(0, lpSurface)))
+            if (FAILED(hr = m_pID3DDevice->GetFrontBufferData(0, lpSurface)))
             {
                 lpSurface->Release();
                 return 0;
@@ -3488,7 +3488,7 @@ namespace irr
                 u8  *sP = (u8*)lockedRect.pBits;
 
                 // If the display mode format doesn't promise anything about the Alpha value
-                // and it appears that it's not presenting 255, then we should manually
+                // and it appears that it's not m_presenting 255, then we should manually
                 // set each pixel alpha value to 255.
                 if (D3DFMT_X8R8G8B8 == displayMode.Format && (0xFF000000 != (*dP & 0xFF000000)))
                 {
@@ -3530,34 +3530,34 @@ namespace irr
         //! returns color format
         ECOLOR_FORMAT CD3D9Driver::getColorFormat() const
         {
-            return ColorFormat;
+            return m_ColorFormat;
         }
 
 
         //! returns color format
-        D3DFORMAT CD3D9Driver::getD3DColorFormat() const
+        D3DFORMAT CD3D9Driver::getD3Dm_ColorFormat() const
         {
-            return D3DColorFormat;
+            return D3Dm_ColorFormat;
         }
 
 
         // returns the current size of the screen or rendertarget
         const core::dimension2d<u32>&CD3D9Driver::getCurrentRenderTargetSize() const
         {
-            if (CurrentRendertargetSize.Width == 0)
+            if (m_CurrentRendertargetSize.Width == 0)
                 return ScreenSize;
             else
-                return CurrentRendertargetSize;
+                return m_CurrentRendertargetSize;
         }
 
 
         // Set/unset a clipping plane.
         bool CD3D9Driver::setClipPlane(u32 index, const core::plane3df &plane, bool enable)
         {
-            if (index >= MaxUserClipPlanes)
+            if (index >= m_MaxUserClipPlanes)
                 return false;
 
-            HRESULT ok = pID3DDevice->SetClipPlane(index, (const float*)&(plane.Normal.X));
+            HRESULT ok = m_pID3DDevice->SetClipPlane(index, (const float*)&(plane.Normal.X));
             if (D3D_OK == ok)
                 enableClipPlane(index, enable);
 
@@ -3568,11 +3568,11 @@ namespace irr
         // Enable/disable a clipping plane.
         void CD3D9Driver::enableClipPlane(u32 index, bool enable)
         {
-            if (index >= MaxUserClipPlanes)
+            if (index >= m_MaxUserClipPlanes)
                 return;
 
             DWORD   renderstate;
-            HRESULT ok = pID3DDevice->GetRenderState(D3DRS_CLIPPLANEENABLE, &renderstate);
+            HRESULT ok = m_pID3DDevice->GetRenderState(D3DRS_CLIPPLANEENABLE, &renderstate);
             if (S_OK == ok)
             {
                 if (enable)
@@ -3580,12 +3580,12 @@ namespace irr
                 else
                     renderstate &= ~(1 << index);
 
-                ok = pID3DDevice->SetRenderState(D3DRS_CLIPPLANEENABLE, renderstate);
+                ok = m_pID3DDevice->SetRenderState(D3DRS_CLIPPLANEENABLE, renderstate);
             }
         }
 
 
-        D3DFORMAT CD3D9Driver::getD3DFormatFromColorFormat(ECOLOR_FORMAT format) const
+        D3DFORMAT CD3D9Driver::getD3DFormatFromm_ColorFormat(ECOLOR_FORMAT format) const
         {
             switch (format)
             {
@@ -3683,16 +3683,16 @@ namespace irr
             SDepthSurface      *depth = 0;
             core::dimension2du destSize(0x7fffffff, 0x7fffffff);
 
-            for (u32 i = 0; i < DepthBuffers.size(); ++i)
+            for (u32 i = 0; i < m_DepthBuffers.size(); ++i)
             {
-                if ((DepthBuffers[i]->Size.Width >= optSize.Width) &&
-                    (DepthBuffers[i]->Size.Height >= optSize.Height))
+                if ((m_DepthBuffers[i]->Size.Width >= optSize.Width) &&
+                    (m_DepthBuffers[i]->Size.Height >= optSize.Height))
                 {
-                    if ((DepthBuffers[i]->Size.Width < destSize.Width) &&
-                        (DepthBuffers[i]->Size.Height < destSize.Height))
+                    if ((m_DepthBuffers[i]->Size.Width < destSize.Width) &&
+                        (m_DepthBuffers[i]->Size.Height < destSize.Height))
                     {
-                        depth    = DepthBuffers[i];
-                        destSize = DepthBuffers[i]->Size;
+                        depth    = m_DepthBuffers[i];
+                        destSize = m_DepthBuffers[i]->Size;
                     }
                 }
             }
@@ -3700,22 +3700,22 @@ namespace irr
             if (!depth)
             {
                 D3DSURFACE_DESC desc;
-                DepthBuffers[0]->Surface->GetDesc(&desc);
+                m_DepthBuffers[0]->Surface->GetDesc(&desc);
                 // the multisampling needs to match the RTT
                 D3DSURFACE_DESC desc2;
-                ((CD3D9Texture*)tex)->Texture->GetLevelDesc(0, &desc2);
-                DepthBuffers.push_back(new SDepthSurface());
-                HRESULT hr = pID3DDevice->CreateDepthStencilSurface(optSize.Width,
+                ((CD3D9Texture*)tex)->m_Texture->GetLevelDesc(0, &desc2);
+                m_DepthBuffers.push_back(new SDepthSurface());
+                HRESULT hr = m_pID3DDevice->CreateDepthStencilSurface(optSize.Width,
                         optSize.Height,
                         desc.Format,
                         desc2.MultiSampleType,
                         desc2.MultiSampleQuality,
                         TRUE,
-                        &(DepthBuffers.getLast()->Surface),
+                        &(m_DepthBuffers.getLast()->Surface),
                         NULL);
                 if (SUCCEEDED(hr))
                 {
-                    depth = DepthBuffers.getLast();
+                    depth = m_DepthBuffers.getLast();
                     depth->Surface->GetDesc(&desc);
                     depth->Size.set(desc.Width, desc.Height);
                 }
@@ -3732,7 +3732,7 @@ namespace irr
                         os::Printer::log(buffer, ELL_ERROR);
                     }
 
-                    DepthBuffers.erase(DepthBuffers.size() - 1);
+                    m_DepthBuffers.erase(m_DepthBuffers.size() - 1);
                 }
             }
             else
@@ -3744,11 +3744,11 @@ namespace irr
 
         void CD3D9Driver::removeDepthSurface(SDepthSurface *depth)
         {
-            for (u32 i = 0; i < DepthBuffers.size(); ++i)
+            for (u32 i = 0; i < m_DepthBuffers.size(); ++i)
             {
-                if (DepthBuffers[i] == depth)
+                if (m_DepthBuffers[i] == depth)
                 {
-                    DepthBuffers.erase(i);
+                    m_DepthBuffers.erase(i);
                     return;
                 }
             }
@@ -3757,13 +3757,13 @@ namespace irr
 
         core::dimension2du CD3D9Driver::getMaxTextureSize() const
         {
-            return core::dimension2du(Caps.MaxTextureWidth, Caps.MaxTextureHeight);
+            return core::dimension2du(m_Caps.MaxTextureWidth, m_Caps.MaxTextureHeight);
         }
 
 #ifdef _IRR_COMPILE_WITH_CG_
         const CGcontext&CD3D9Driver::getCgContext()
         {
-            return CgContext;
+            return m_CgContext;
         }
 #endif
     } // end namespace video

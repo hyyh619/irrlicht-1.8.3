@@ -7,7 +7,7 @@
 
 #include "CD3D9ParallaxMapRenderer.h"
 #include "IMaterialRendererServices.h"
-#include "IVideoDriver.h"
+#include "IVideom_Driver.h"
 #include "os.h"
 #include "SLight.h"
 
@@ -222,10 +222,10 @@ namespace irr
             "\n";
 
         CD3D9ParallaxMapRenderer::CD3D9ParallaxMapRenderer(
-            IDirect3DDevice9 *d3ddev, video::IVideoDriver *driver,
+            IDirect3DDevice9 *d3ddev, video::IVideom_Driver *driver,
             s32 &outMaterialTypeNr, IMaterialRenderer *baseMaterial)
             : CD3D9ShaderMaterialRenderer(d3ddev, driver, 0, baseMaterial),
-            CurrentScale(0.0f)
+            m_CurrentScale(0.0f)
         {
         #ifdef _DEBUG
             setDebugName("CD3D9ParallaxMapRenderer");
@@ -255,13 +255,13 @@ namespace irr
             {
                 // use the already compiled shaders
                 video::CD3D9ParallaxMapRenderer *nmr = (video::CD3D9ParallaxMapRenderer*)renderer;
-                VertexShader = nmr->VertexShader;
-                if (VertexShader)
-                    VertexShader->AddRef();
+                m_VertexShader = nmr->m_VertexShader;
+                if (m_VertexShader)
+                    m_VertexShader->AddRef();
 
-                PixelShader = nmr->PixelShader;
-                if (PixelShader)
-                    PixelShader->AddRef();
+                m_PixelShader = nmr->m_PixelShader;
+                if (m_PixelShader)
+                    m_PixelShader->AddRef();
 
                 outMaterialTypeNr = driver->addMaterialRenderer(this);
             }
@@ -317,15 +317,15 @@ namespace irr
             CD3D9ShaderMaterialRenderer::OnSetMaterial(material, lastMaterial,
                 resetAllRenderstates, services);
 
-            CurrentScale = material.MaterialTypeParam;
+            m_CurrentScale = material.MaterialTypeParam;
         }
 
 
         //! Returns the render capability of the material.
         s32 CD3D9ParallaxMapRenderer::getRenderCapability() const
         {
-            if (Driver->queryFeature(video::EVDF_PIXEL_SHADER_1_4) &&
-                Driver->queryFeature(video::EVDF_VERTEX_SHADER_1_1))
+            if (m_Driver->queryFeature(video::EVDF_PIXEL_SHADER_1_4) &&
+                m_Driver->queryFeature(video::EVDF_VERTEX_SHADER_1_1))
                 return 0;
 
             return 1;
@@ -336,7 +336,7 @@ namespace irr
         //! for an material renderer should be set.
         void CD3D9ParallaxMapRenderer::OnSetConstants(IMaterialRendererServices *services, s32 userData)
         {
-            video::IVideoDriver *driver = services->getVideoDriver();
+            video::IVideom_Driver *driver = services->getVideom_Driver();
 
             // set transposed world matrix
             services->setVertexShaderConstant(driver->getTransform(video::ETS_WORLD).getTransposed().pointer(), 0, 4);
@@ -392,8 +392,8 @@ namespace irr
 
             // set scale factor
             f32 factor = 0.02f; // default value
-            if (CurrentScale != 0)
-                factor = CurrentScale;
+            if (m_CurrentScale != 0)
+                factor = m_CurrentScale;
 
             f32 c6[] = {factor, factor, factor, 0};
             services->setPixelShaderConstant(c6, 6, 1);
