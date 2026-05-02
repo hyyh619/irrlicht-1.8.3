@@ -25,3 +25,24 @@ Shader name (first 64 chars):
 C:\Development\Graphics\irrlicht-1.8.3\examples\01.HelloWorld\Shader@0x00007FF93DA17DA0(1,2-9): error X3000: unrecognized identifier 'Irrlicht'
 看起来似乎是HLSL定义的comment使用了;开头的行不被认为是注释行。
 修复上述问题
+
+# 6
+CD3D11Texture::createTexture下面部分的代码请参照CD3D9Texture::createTexture的实现
+                case ETCF_OPTIMIZED_FOR_QUALITY:
+                    break;
+
+继续实现下列函数
+        bool CD3D11Texture::createMipMaps(u32 level)
+        {
+            return false;
+        }
+
+
+        void CD3D11Texture::copy16BitMipMap(char *src, char *tgt,
+                                            s32 width, s32 height, s32 pitchsrc, s32 pitchtgt) const
+        {}
+
+
+        void CD3D11Texture::copy32BitMipMap(char *src, char *tgt,
+                                            s32 width, s32 height, s32 pitchsrc, s32 pitchtgt) const
+        {}
