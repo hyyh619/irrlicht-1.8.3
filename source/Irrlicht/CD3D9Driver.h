@@ -306,7 +306,7 @@ public:
             //! Returns the graphics card vendor name.
             virtual core::stringc getVendorInfo()
             {
-                return VendorName;
+                return m_VendorName;
             }
 
             //! Enable the 2d override material
@@ -315,7 +315,7 @@ public:
             //! Check if the driver was recently reset.
             virtual bool checkDriverReset()
             {
-                return DriverWasReset;
+                return m_DriverWasReset;
             }
 
             // removes the depth struct from the DepthSurface array

@@ -7,7 +7,7 @@
 
 #include "CD3D9HLSLMaterialRenderer.h"
 #include "IShaderConstantSetCallBack.h"
-#include "IVideom_Driver.h"
+#include "IVideoDriver.h"
 #include "os.h"
 #include "irrString.h"
 
@@ -22,7 +22,7 @@ namespace irr
     {
         //! Public constructor
         CD3D9HLSLMaterialRenderer::CD3D9HLSLMaterialRenderer(IDirect3DDevice9 *d3ddev,
-            video::IVideom_Driver *driver, s32 &outMaterialTypeNr,
+            video::IVideoDriver *driver, s32 &outMaterialTypeNr,
             const c8 *vertexShaderProgram,
             const c8 *vertexShaderEntryPointName,
             E_VERTEX_SHADER_TYPE vsCompileTarget,
@@ -49,11 +49,11 @@ namespace irr
                 return;
             }
 
-            if (!createHLSLm_VertexShader(vertexShaderProgram,
+            if (!createHLSLVertexShader(vertexShaderProgram,
                 vertexShaderEntryPointName, VERTEX_SHADER_TYPE_NAMES[vsCompileTarget]))
                 return;
 
-            if (!createHLSLm_PixelShader(pixelShaderProgram,
+            if (!createHLSLPixelShader(pixelShaderProgram,
                 pixelShaderEntryPointName, PIXEL_SHADER_TYPE_NAMES[psCompileTarget]))
                 return;
 
@@ -73,7 +73,7 @@ namespace irr
         }
 
 
-        bool CD3D9HLSLMaterialRenderer::createHLSLm_VertexShader(const char *vertexShaderProgram,
+        bool CD3D9HLSLMaterialRenderer::createHLSLVertexShader(const char *vertexShaderProgram,
             const char *shaderEntryPointName,
             const char *shaderTargetName)
         {
@@ -158,7 +158,7 @@ namespace irr
         }
 
 
-        bool CD3D9HLSLMaterialRenderer::createHLSLm_PixelShader(const char *pixelShaderProgram,
+        bool CD3D9HLSLMaterialRenderer::createHLSLPixelShader(const char *pixelShaderProgram,
             const char *shaderEntryPointName,
             const char *shaderTargetName)
         {

@@ -6,7 +6,7 @@
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
 
 #include "CD3D9ShaderMaterialRenderer.h"
-#include "IShaderConstantSetCallback.h"
+#include "IShaderConstantSetCallBack.h"
 #include "IMaterialRendererServices.h"
 #include "IVideoDriver.h"
 #include "os.h"
@@ -24,7 +24,7 @@ namespace irr
         //! Public constructor
         CD3D9ShaderMaterialRenderer::CD3D9ShaderMaterialRenderer(IDirect3DDevice9 *d3ddev, video::IVideoDriver *driver,
             s32 &outMaterialTypeNr, const c8 *vertexShaderProgram, const c8 *pixelShaderProgram,
-            IShaderConstantSetCallback *callback, IMaterialRenderer *baseMaterial, s32 userData)
+            IShaderConstantSetCallBack *callback, IMaterialRenderer *baseMaterial, s32 userData)
             : m_pID3DDevice(d3ddev), m_Driver(driver), m_CallBack(callback), m_BaseMaterial(baseMaterial),
             m_VertexShader(0), m_OldVertexShader(0), m_PixelShader(0), m_UserData(userData)
         {
@@ -46,7 +46,7 @@ namespace irr
         //! create a fall back material for example.
         CD3D9ShaderMaterialRenderer::CD3D9ShaderMaterialRenderer(IDirect3DDevice9 *d3ddev,
             video::IVideoDriver *driver,
-            IShaderConstantSetCallback *callback,
+            IShaderConstantSetCallBack *callback,
             IMaterialRenderer *baseMaterial, s32 userData)
             : m_pID3DDevice(d3ddev), m_Driver(driver), m_CallBack(callback), m_BaseMaterial(baseMaterial),
             m_VertexShader(0), m_OldVertexShader(0), m_PixelShader(0), m_UserData(userData)

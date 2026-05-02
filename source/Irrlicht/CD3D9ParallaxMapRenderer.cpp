@@ -7,7 +7,7 @@
 
 #include "CD3D9ParallaxMapRenderer.h"
 #include "IMaterialRendererServices.h"
-#include "IVideom_Driver.h"
+#include "IVideoDriver.h"
 #include "os.h"
 #include "SLight.h"
 

@@ -195,3 +195,95 @@ bool CD3D11Driver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const没有检�
    A. 该成员变量名字如果不是以'm_'开头,就给成员变量的名字增加一个'm_'
    B. 更改所有该成员变量被引用的地方
    C. 注意不要更改成员函数名字，调用函数名字，数据结构名字
+
+# 15
+修复下列问题，
+错误(活动)	E1696	无法打开 源 文件 "CD3D9m_MaterialRenderer.h"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	13		
+错误(活动)	E1696	无法打开 源 文件 "CD3D9Shaderm_MaterialRenderer.h"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	14		
+错误(活动)	E1696	无法打开 源 文件 "CD3D9HLSLm_MaterialRenderer.h"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	17		
+错误(活动)	E1696	无法打开 源 文件 "CD3D9Cgm_MaterialRenderer.h"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	18		
+
+修复下列问题，
+错误(活动)	E0020	未定义标识符 "deletem_MaterialRenders"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	84		
+错误(活动)	E0020	未定义标识符 "addm_MaterialRenderer"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	125		
+错误(活动)	E0135	命名空间 "irr::video" 没有成员 "Im_MaterialRenderer"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	148		
+错误(活动)	E0020	未定义标识符 "renderer"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	148		
+错误(活动)	E0020	未定义标识符 "m_MaterialRenderers"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	151		
+错误(活动)	E0020	未定义标识符 "D3Dm_ColorFormat"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	506		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "m_Caps3"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	618		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "Devm_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	663		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "Texturem_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	666		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "Texturem_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	707		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "Texturem_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	710		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "PrimitiveMiscm_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	713		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "PrimitiveMiscm_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	719		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "PrimitiveMiscm_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	722		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "Rasterm_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	728		
+错误(活动)	E0020	未定义标识符 "CurrentTexture"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	792		
+错误(活动)	E0135	类 "irr::video::CD3D9Texture" 没有成员 "DepthSurface"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	927		
+错误(活动)	E0135	类 "irr::video::CD3D9Texture" 没有成员 "DepthSurface"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	1055		
+错误(活动)	E0135	类 "irr::video::SMaterial" 没有成员 "m_MaterialType"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	1552		
+错误(活动)	E0135	类 "irr::video::SMaterial" 没有成员 "m_MaterialTypeParam"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	1558		
+错误(活动)	E0135	类 "irr::video::SMaterial" 没有成员 "m_MaterialType"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	1562		
+错误(活动)	E0135	类 "irr::video::SMaterial" 没有成员 "m_MaterialType"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	1562		
+错误(活动)	E0020	未定义标识符 "LastMaterial"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2169		
+错误(活动)	E0135	类 "irr::video::SMaterial" 没有成员 "m_MaterialType"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2174		
+错误(活动)	E0020	未定义标识符 "m_MaterialRenderers"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2175		
+错误(活动)	E0135	类 "irr::video::SMaterial" 没有成员 "m_MaterialType"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2180		
+错误(活动)	E0135	类 "irr::video::SMaterial" 没有成员 "m_MaterialType"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2180		
+错误(活动)	E0135	类 "irr::video::SMaterial" 没有成员 "m_MaterialType"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2181		
+错误(活动)	E0135	类 "irr::video::SMaterial" 没有成员 "m_MaterialType"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2186		
+错误(活动)	E0135	类 "irr::video::SMaterial" 没有成员 "m_MaterialType"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2186		
+错误(活动)	E0020	未定义标识符 "m_MaterialRenderers"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2186		
+错误(活动)	E0135	类 "irr::video::SMaterial" 没有成员 "m_MaterialType"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2187		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "TextureAddressm_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2205		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "TextureAddressm_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2210		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "TextureAddressm_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2214		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "TextureAddressm_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2218		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "TextureAddressm_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2226		
+
+
+修复下列问题，
+错误(活动)	E0020	未定义标识符 "m_m_CurrentTexture"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	54		
+错误(活动)	E0020	未定义标识符 "deleteMaterialRenderers"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	84		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "Texturem_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	666		
+错误(活动)	E0147	声明与 "void irr::video::CD3D9Driver::setBasicRenderStates(const irr::video::SMaterial &material, const irr::video::SMaterial &lastMaterial, bool resetAllRenderstates)" (已声明 所在行数:253，所属文件:"C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.h") 不兼容	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2238		
+错误(活动)	E0020	未定义标识符 "Sm_Material"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2238		
+错误(活动)	E0020	未定义标识符 "Sm_Material"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2238		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "TextureFilterm_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2546		
+错误(活动)	E0135	类 "_D3DCAPS9" 没有成员 "TextureFilterm_Caps"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2548		
+错误(活动)	E0304	没有与参数列表匹配的 重载函数 "irr::core::min_" 实例	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2553		
+错误(活动)	E0135	类 "irr::video::CD3D9Driver" 没有成员 "enablem_Material2D"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2696		
+错误(活动)	E0020	未定义标识符 "m_CurrentRenderMode"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2699		
+错误(活动)	E0020	未定义标识符 "ERM_NONE"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2699		
+错误(活动)	E0135	类 "irr::video::CNullDriver" 没有成员 "enablem_Material2D"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	2701		
+错误(活动)	E0135	类 "irr::video::CD3D9Texture" 没有成员 "DepthSurface"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	3114		
+错误(活动)	E0135	类 "irr::video::CD3D9Driver" 没有成员 "getm_D3DColorFormat"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	3538		
+错误(活动)	E1670	非成员函数上不允许使用类型限定符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	3538		
+错误(活动)	E0020	未定义标识符 "m_D3DColorFormat"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	3540		
+错误(活动)	E0135	类 "irr::video::CD3D9Driver" 没有成员 "getD3DFormatFromm_ColorFormat"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	3588		
+错误(活动)	E1670	非成员函数上不允许使用类型限定符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	3588		
+错误(活动)	E0135	类 "irr::video::CD3D9Texture" 没有成员 "DepthSurface"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.cpp	3741		
+错误	C2065	“VendorName”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.h	309		
+错误	C2065	“DriverWasReset”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9Driver.h	318		
+错误	C2614	“irr::video::CD3D9MaterialRenderer”: 非法的成员初始化:“pID3DDevice”不是基或成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	61		
+错误	C2614	“irr::video::CD3D9MaterialRenderer”: 非法的成员初始化:“Driver”不是基或成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	61		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	115		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	119		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	120		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	148		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	152		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	153		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	154		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	157		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	164		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	168		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	172		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	177		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	261		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	263		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	264		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	266		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	287		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	290		
+错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	291		

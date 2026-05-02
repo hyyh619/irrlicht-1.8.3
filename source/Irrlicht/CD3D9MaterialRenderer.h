@@ -58,7 +58,7 @@ public:
 
             //! Constructor
             CD3D9MaterialRenderer(IDirect3DDevice9 *d3ddev, video::IVideoDriver *driver)
-                : pID3DDevice(d3ddev), Driver(driver)
+                : m_pID3DDevice(d3ddev), m_Driver(driver)
             {}
 
             //! sets a variable in the shader.
@@ -112,12 +112,12 @@ public:
 
                 if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
                 {
-                    setTextureColorStage(pID3DDevice, 0,
+                    setTextureColorStage(m_pID3DDevice, 0,
                         D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_DIFFUSE);
                 }
 
-                pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-                pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+                m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+                m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
             }
         };
 
@@ -145,36 +145,36 @@ public:
 
                     if (srcFact == EBF_SRC_COLOR && dstFact == EBF_ZERO)
                     {
-                        pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+                        m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
                     }
                     else
                     {
-                        pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-                        pID3DDevice->SetRenderState(D3DRS_SRCBLEND, getD3DBlend (srcFact));
-                        pID3DDevice->SetRenderState(D3DRS_DESTBLEND, getD3DBlend (dstFact));
+                        m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+                        m_pID3DDevice->SetRenderState(D3DRS_SRCBLEND, getD3DBlend (srcFact));
+                        m_pID3DDevice->SetRenderState(D3DRS_DESTBLEND, getD3DBlend (dstFact));
                     }
 
-                    setTextureColorStage(pID3DDevice, 0,
+                    setTextureColorStage(m_pID3DDevice, 0,
                         D3DTA_TEXTURE, getD3DModulate(modulate), D3DTA_DIFFUSE);
 
                     if (textureBlendFunc_hasAlpha (srcFact) || textureBlendFunc_hasAlpha (dstFact))
                     {
                         if (alphaSource == EAS_VERTEX_COLOR)
                         {
-                            setTextureAlphaStage(pID3DDevice, 0, D3DTA_DIFFUSE);
+                            setTextureAlphaStage(m_pID3DDevice, 0, D3DTA_DIFFUSE);
                         }
                         else if (alphaSource == EAS_TEXTURE)
                         {
-                            setTextureAlphaStage(pID3DDevice, 0, D3DTA_TEXTURE);
+                            setTextureAlphaStage(m_pID3DDevice, 0, D3DTA_TEXTURE);
                         }
                         else
                         {
-                            setTextureAlphaStage(pID3DDevice, 0,
+                            setTextureAlphaStage(m_pID3DDevice, 0,
                                 D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_DIFFUSE);
                         }
                     }
 
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
                 }
             }
 
@@ -258,12 +258,12 @@ public:
 
                 if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
                 {
-                    setTextureColorStage(pID3DDevice, 0, D3DTA_TEXTURE);
+                    setTextureColorStage(m_pID3DDevice, 0, D3DTA_TEXTURE);
 
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 0);
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_BLENDDIFFUSEALPHA);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 0);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_BLENDDIFFUSEALPHA);
 
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
                 }
             }
         };
@@ -284,13 +284,13 @@ public:
 
                 if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
                 {
-                    setTextureColorStage(pID3DDevice, 0,
+                    setTextureColorStage(m_pID3DDevice, 0,
                         D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_DIFFUSE);
 
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-                    pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-                    pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+                    m_pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCCOLOR);
                 }
             }
 
@@ -318,14 +318,14 @@ public:
 
                 if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
                 {
-                    setTextureColorStage(pID3DDevice, 0,
+                    setTextureColorStage(m_pID3DDevice, 0,
                         D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_DIFFUSE);
-                    setTextureAlphaStage(pID3DDevice, 0, D3DTA_DIFFUSE);
+                    setTextureAlphaStage(m_pID3DDevice, 0, D3DTA_DIFFUSE);
 
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-                    pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-                    pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+                    m_pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
                 }
             }
 
@@ -354,24 +354,24 @@ public:
                 if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates
                     || material.MaterialTypeParam != lastMaterial.MaterialTypeParam)
                 {
-                    setTextureColorStage(pID3DDevice, 0,
+                    setTextureColorStage(m_pID3DDevice, 0,
                         D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_CURRENT);
-                    setTextureAlphaStage(pID3DDevice, 0, D3DTA_TEXTURE);
+                    setTextureAlphaStage(m_pID3DDevice, 0, D3DTA_TEXTURE);
 
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-                    pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-                    pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+                    m_pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-                    pID3DDevice->SetRenderState(D3DRS_ALPHAREF, core::floor32(material.MaterialTypeParam * 255.f));
-                    pID3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-                    pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHAREF, core::floor32(material.MaterialTypeParam * 255.f));
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
                 }
             }
 
             virtual void OnUnsetMaterial()
             {
-                pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+                m_pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
             }
 
             //! Returns if the material is transparent. The scene managment needs to know this
@@ -399,24 +399,24 @@ public:
 
                 if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
                 {
-                    setTextureColorStage(pID3DDevice, 0,
+                    setTextureColorStage(m_pID3DDevice, 0,
                         D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_CURRENT);
-                    setTextureAlphaStage(pID3DDevice, 0, D3DTA_TEXTURE);
+                    setTextureAlphaStage(m_pID3DDevice, 0, D3DTA_TEXTURE);
 
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
 
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
                     // 127 is required by EMT_TRANSPARENT_ALPHA_CHANNEL_REF
-                    pID3DDevice->SetRenderState(D3DRS_ALPHAREF, 127);
-                    pID3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-                    pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHAREF, 127);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
                 }
             }
 
             virtual void OnUnsetMaterial()
             {
-                pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+                m_pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
             }
 
             //! Returns if the material is transparent. The scene managment needs to know this
@@ -446,17 +446,17 @@ public:
                     if (material.MaterialType >= EMT_LIGHTMAP_LIGHTING)
                     {
                         // with lighting
-                        setTextureColorStage(pID3DDevice, 0,
+                        setTextureColorStage(m_pID3DDevice, 0,
                             D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_DIFFUSE);
                     }
                     else
                     {
-                        setTextureColorStage(pID3DDevice, 0, D3DTA_TEXTURE);
+                        setTextureColorStage(m_pID3DDevice, 0, D3DTA_TEXTURE);
                     }
 
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
 
-                    setTextureColorStage(pID3DDevice, 1,
+                    setTextureColorStage(m_pID3DDevice, 1,
                         D3DTA_TEXTURE,
                         (material.MaterialType == EMT_LIGHTMAP_ADD) ?
                         D3DTOP_ADD :
@@ -467,7 +467,7 @@ public:
                         D3DTOP_MODULATE,
                         D3DTA_CURRENT);
 
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
                 }
             }
         };
@@ -489,12 +489,12 @@ public:
 
                 if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
                 {
-                    setTextureColorStage(pID3DDevice, 0,
+                    setTextureColorStage(m_pID3DDevice, 0,
                         D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_DIFFUSE);
-                    setTextureColorStage(pID3DDevice, 1,
+                    setTextureColorStage(m_pID3DDevice, 1,
                         D3DTA_TEXTURE, D3DTOP_ADDSIGNED, D3DTA_CURRENT);
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
                 }
             }
         };
@@ -515,23 +515,23 @@ public:
 
                 if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
                 {
-                    setTextureColorStage(pID3DDevice, 0,
+                    setTextureColorStage(m_pID3DDevice, 0,
                         D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_DIFFUSE);
 
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
-                    pID3DDevice->SetTransform(D3DTS_TEXTURE0, &SphereMapMatrixD3D9);
-                    pID3DDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
-                    pID3DDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACENORMAL);
+                    m_pID3DDevice->SetTransform(D3DTS_TEXTURE0, &SphereMapMatrixD3D9);
+                    m_pID3DDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
+                    m_pID3DDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACENORMAL);
                 }
             }
 
             virtual void OnUnsetMaterial()
             {
-                pID3DDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
-                pID3DDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
-                pID3DDevice->SetTransform(D3DTS_TEXTURE0, &UnitMatrixD3D9);
+                m_pID3DDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
+                m_pID3DDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
+                m_pID3DDevice->SetTransform(D3DTS_TEXTURE0, &UnitMatrixD3D9);
             }
         };
 
@@ -551,24 +551,24 @@ public:
 
                 if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
                 {
-                    setTextureColorStage(pID3DDevice, 0,
+                    setTextureColorStage(m_pID3DDevice, 0,
                         D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_DIFFUSE);
 
-                    setTextureColorStage(pID3DDevice, 1,
+                    setTextureColorStage(m_pID3DDevice, 1,
                         D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_CURRENT);
 
-                    pID3DDevice->SetTransform(D3DTS_TEXTURE1, &SphereMapMatrixD3D9);
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACEREFLECTIONVECTOR);
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+                    m_pID3DDevice->SetTransform(D3DTS_TEXTURE1, &SphereMapMatrixD3D9);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACEREFLECTIONVECTOR);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
                 }
             }
 
             virtual void OnUnsetMaterial()
             {
-                pID3DDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
-                pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
-                pID3DDevice->SetTransform(D3DTS_TEXTURE1, &UnitMatrixD3D9);
+                m_pID3DDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
+                m_pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+                m_pID3DDevice->SetTransform(D3DTS_TEXTURE1, &UnitMatrixD3D9);
             }
         };
 
@@ -588,28 +588,28 @@ public:
 
                 if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
                 {
-                    setTextureColorStage(pID3DDevice, 0,
+                    setTextureColorStage(m_pID3DDevice, 0,
                         D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_DIFFUSE);
-                    setTextureAlphaStage(pID3DDevice, 0, D3DTA_DIFFUSE);
-                    setTextureColorStage(pID3DDevice, 1,
+                    setTextureAlphaStage(m_pID3DDevice, 0, D3DTA_DIFFUSE);
+                    setTextureColorStage(m_pID3DDevice, 1,
                         D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_CURRENT);
-                    setTextureAlphaStage(pID3DDevice, 1, D3DTA_CURRENT);
+                    setTextureAlphaStage(m_pID3DDevice, 1, D3DTA_CURRENT);
 
-                    pID3DDevice->SetTransform(D3DTS_TEXTURE1, &SphereMapMatrixD3D9);
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
-                    pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACEREFLECTIONVECTOR);
+                    m_pID3DDevice->SetTransform(D3DTS_TEXTURE1, &SphereMapMatrixD3D9);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACEREFLECTIONVECTOR);
 
-                    pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-                    pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-                    pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+                    m_pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
                 }
             }
 
             virtual void OnUnsetMaterial()
             {
-                pID3DDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
-                pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
-                pID3DDevice->SetTransform(D3DTS_TEXTURE1, &UnitMatrixD3D9);
+                m_pID3DDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
+                m_pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+                m_pID3DDevice->SetTransform(D3DTS_TEXTURE1, &UnitMatrixD3D9);
             }
 
             //! Returns if the material is transparent. The scene managment needs to know this

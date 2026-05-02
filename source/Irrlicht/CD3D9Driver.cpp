@@ -10,12 +10,12 @@
 #include "os.h"
 #include "S3DVertex.h"
 #include "CD3D9Texture.h"
-#include "CD3D9m_MaterialRenderer.h"
-#include "CD3D9Shaderm_MaterialRenderer.h"
+#include "CD3D9MaterialRenderer.h"
+#include "CD3D9ShaderMaterialRenderer.h"
 #include "CD3D9NormalMapRenderer.h"
 #include "CD3D9ParallaxMapRenderer.h"
-#include "CD3D9HLSLm_MaterialRenderer.h"
-#include "CD3D9Cgm_MaterialRenderer.h"
+#include "CD3D9HLSLMaterialRenderer.h"
+#include "CD3D9CgMaterialRenderer.h"
 #include "SIrrCreationParameters.h"
 
 namespace irr
@@ -81,7 +81,7 @@ namespace irr
         //! destructor
         CD3D9Driver::~CD3D9Driver()
         {
-            deletem_MaterialRenders();
+            deleteMaterialRenders();
             deleteAllTextures();
             removeAllOcclusionQueries();
             removeAllHardwareBuffers();
@@ -122,13 +122,13 @@ namespace irr
             // add the same renderer for all lightmap types
 
             CD3D9MaterialRenderer_LIGHTMAP *lmr = new CD3D9MaterialRenderer_LIGHTMAP(m_pID3DDevice, this);
-            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP:
-            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP_ADD:
-            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP_M2:
-            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP_M4:
-            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP_LIGHTING:
-            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP_LIGHTING_M2:
-            addm_MaterialRenderer(lmr); // for EMT_LIGHTMAP_LIGHTING_M4:
+            addMaterialRenderer(lmr); // for EMT_LIGHTMAP:
+            addMaterialRenderer(lmr); // for EMT_LIGHTMAP_ADD:
+            addMaterialRenderer(lmr); // for EMT_LIGHTMAP_M2:
+            addMaterialRenderer(lmr); // for EMT_LIGHTMAP_M4:
+            addMaterialRenderer(lmr); // for EMT_LIGHTMAP_LIGHTING:
+            addMaterialRenderer(lmr); // for EMT_LIGHTMAP_LIGHTING_M2:
+            addMaterialRenderer(lmr); // for EMT_LIGHTMAP_LIGHTING_M4:
             lmr->drop();
 
             // add remaining fixed function pipeline material renderers
@@ -145,32 +145,32 @@ namespace irr
             // add normal map renderers
 
             s32                      tmp       = 0;
-            video::Im_MaterialRenderer *renderer = 0;
+            video::IMaterialRenderer *renderer = 0;
 
             renderer = new CD3D9NormalMapRenderer(m_pID3DDevice, this, tmp,
-                    m_MaterialRenderers[EMT_SOLID].Renderer);
+                    MaterialRenderers[EMT_SOLID].Renderer);
             renderer->drop();
 
             renderer = new CD3D9NormalMapRenderer(m_pID3DDevice, this, tmp,
-                    m_MaterialRenderers[EMT_TRANSPARENT_ADD_COLOR].Renderer);
+                    MaterialRenderers[EMT_TRANSPARENT_ADD_COLOR].Renderer);
             renderer->drop();
 
             renderer = new CD3D9NormalMapRenderer(m_pID3DDevice, this, tmp,
-                    m_MaterialRenderers[EMT_TRANSPARENT_VERTEX_ALPHA].Renderer);
+                    MaterialRenderers[EMT_TRANSPARENT_VERTEX_ALPHA].Renderer);
             renderer->drop();
 
             // add parallax map renderers
 
             renderer = new CD3D9ParallaxMapRenderer(m_pID3DDevice, this, tmp,
-                    m_MaterialRenderers[EMT_SOLID].Renderer);
+                    MaterialRenderers[EMT_SOLID].Renderer);
             renderer->drop();
 
             renderer = new CD3D9ParallaxMapRenderer(m_pID3DDevice, this, tmp,
-                    m_MaterialRenderers[EMT_TRANSPARENT_ADD_COLOR].Renderer);
+                    MaterialRenderers[EMT_TRANSPARENT_ADD_COLOR].Renderer);
             renderer->drop();
 
             renderer = new CD3D9ParallaxMapRenderer(m_pID3DDevice, this, tmp,
-                    m_MaterialRenderers[EMT_TRANSPARENT_VERTEX_ALPHA].Renderer);
+                    MaterialRenderers[EMT_TRANSPARENT_VERTEX_ALPHA].Renderer);
             renderer->drop();
 
             // add basic 1 texture blending
@@ -503,16 +503,16 @@ namespace irr
                 return false;
             }
 
-            D3Dm_ColorFormat = D3DFMT_A8R8G8B8;
+            m_D3DColorFormat = D3DFMT_A8R8G8B8;
             IDirect3DSurface9 *bb = 0;
             if (SUCCEEDED(m_pID3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &bb)))
             {
                 D3DSURFACE_DESC desc;
                 bb->GetDesc(&desc);
-                D3Dm_ColorFormat = desc.Format;
+                m_D3DColorFormat = desc.Format;
 
-                if (D3Dm_ColorFormat == D3DFMT_X8R8G8B8)
-                    D3Dm_ColorFormat = D3DFMT_A8R8G8B8;
+                if (m_D3DColorFormat == D3DFMT_X8R8G8B8)
+                    m_D3DColorFormat = D3DFMT_A8R8G8B8;
 
                 bb->Release();
             }
@@ -615,7 +615,7 @@ namespace irr
 
             IDirect3DSwapChain9 *swChain;
             hr = m_pID3DDevice->GetSwapChain(0, &swChain);
-            DWORD flags = (m_Params.HandleSRGB && (m_Caps.m_Caps3 & D3DCAPS3_LINEAR_TO_SRGB_PRESENTATION)) ? D3DPRESENT_LINEAR_CONTENT : 0;
+            DWORD flags = (m_Params.HandleSRGB && (m_Caps.Caps3 & D3DCAPS3_LINEAR_TO_SRGB_PRESENTATION)) ? D3DPRESENT_LINEAR_CONTENT : 0;
             hr = swChain->Present(srcRct, NULL, m_WindowId, NULL, flags);
             swChain->Release();
 
@@ -660,10 +660,10 @@ namespace irr
                     return m_Caps.NumSimultaneousRTs > 0;
 
                 case EVDF_HARDWARE_TL:
-                    return (m_Caps.Devm_Caps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) != 0;
+                    return (m_Caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) != 0;
 
                 case EVDF_MIP_MAP:
-                    return (m_Caps.Texturem_Caps & D3DPTEXTURECAPS_MIPMAP) != 0;
+                    return (m_Caps.TextureCaps & D3DPTEXTURECAPS_MIPMAP) != 0;
 
                 case EVDF_MIP_MAP_AUTO_UPDATE:
                     // always return false because a lot of drivers claim they do
@@ -704,28 +704,28 @@ namespace irr
                     return m_Caps.VertexShaderVersion >= D3DVS_VERSION(1, 1);
 
                 case EVDF_TEXTURE_NSQUARE:
-                    return (m_Caps.Texturem_Caps & D3DPTEXTURECAPS_SQUAREONLY) == 0;
+                    return (m_Caps.TextureCaps & D3DPTEXTURECAPS_SQUAREONLY) == 0;
 
                 case EVDF_TEXTURE_NPOT:
-                    return (m_Caps.Texturem_Caps & D3DPTEXTURECAPS_POW2) == 0;
+                    return (m_Caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0;
 
                 case EVDF_COLOR_MASK:
-                    return (m_Caps.PrimitiveMiscm_Caps & D3DPMISCCAPS_COLORWRITEENABLE) != 0;
+                    return (m_Caps.PrimitiveMiscCaps & D3DPMISCCAPS_COLORWRITEENABLE) != 0;
 
                 case EVDF_MULTIPLE_RENDER_TARGETS:
                     return m_Caps.NumSimultaneousRTs > 1;
 
                 case EVDF_MRT_COLOR_MASK:
-                    return (m_Caps.PrimitiveMiscm_Caps & D3DPMISCCAPS_INDEPENDENTWRITEMASKS) != 0;
+                    return (m_Caps.PrimitiveMiscCaps & D3DPMISCCAPS_INDEPENDENTWRITEMASKS) != 0;
 
                 case EVDF_MRT_BLEND:
-                    return (m_Caps.PrimitiveMiscm_Caps & D3DPMISCCAPS_MRTPOSTPIXELSHADERBLENDING) != 0;
+                    return (m_Caps.PrimitiveMiscCaps & D3DPMISCCAPS_MRTPOSTPIXELSHADERBLENDING) != 0;
 
                 case EVDF_OCCLUSION_QUERY:
                     return m_OcclusionQuerySupport;
 
                 case EVDF_POLYGON_OFFSET:
-                    return (m_Caps.Rasterm_Caps & (D3DPRASTERCAPS_DEPTHBIAS | D3DPRASTERCAPS_SLOPESCALEDEPTHBIAS)) != 0;
+                    return (m_Caps.RasterCaps & (D3DPRASTERCAPS_DEPTHBIAS | D3DPRASTERCAPS_SLOPESCALEDEPTHBIAS)) != 0;
 
                 case EVDF_BLEND_OPERATIONS:
                 case EVDF_TEXTURE_MATRIX:
@@ -789,7 +789,7 @@ namespace irr
         //! sets the current Texture
         bool CD3D9Driver::setActiveTexture(u32 stage, const video::ITexture *texture)
         {
-            if (CurrentTexture[stage] == texture)
+            if (m_CurrentTexture[stage] == texture)
                 return true;
 
             if (texture && texture->getDriverType() != EDT_DIRECT3D9)
@@ -798,7 +798,7 @@ namespace irr
                 return false;
             }
 
-            CurrentTexture[stage] = texture;
+            m_CurrentTexture[stage] = texture;
 
             if (!texture)
             {
@@ -924,7 +924,7 @@ namespace irr
 
                 m_CurrentRendertargetSize = tex->getSize();
 
-                if (FAILED(m_pID3DDevice->SetDepthStencilSurface(tex->DepthSurface->Surface)))
+                if (FAILED(m_pID3DDevice->SetDepthStencilSurface(tex->m_DepthSurface->Surface)))
                 {
                     os::Printer::log("Error: Could not set new depth buffer.", ELL_ERROR);
                 }
@@ -1052,7 +1052,7 @@ namespace irr
 
             m_CurrentRendertargetSize = tex->getSize();
 
-            if (FAILED(m_pID3DDevice->SetDepthStencilSurface(tex->DepthSurface->Surface)))
+            if (FAILED(m_pID3DDevice->SetDepthStencilSurface(tex->m_DepthSurface->Surface)))
             {
                 os::Printer::log("Error: Could not set new depth buffer.", ELL_ERROR);
             }
@@ -1549,17 +1549,17 @@ namespace irr
             }
             else
             {
-                if (m_Material.m_MaterialType == EMT_ONETEXTURE_BLEND)
+                if (m_Material.MaterialType == EMT_ONETEXTURE_BLEND)
                 {
                     E_BLEND_FACTOR  srcFact;
                     E_BLEND_FACTOR  dstFact;
                     E_MODULATE_FUNC modulo;
                     u32             alphaSource;
-                    unpack_textureBlendFunc (srcFact, dstFact, modulo, alphaSource, m_Material.m_MaterialTypeParam);
+                    unpack_textureBlendFunc (srcFact, dstFact, modulo, alphaSource, m_Material.MaterialTypeParam);
                     setRenderStates2DMode(alphaSource & video::EAS_VERTEX_COLOR, (m_Material.getTexture(0) != 0), (alphaSource&video::EAS_TEXTURE) != 0);
                 }
                 else
-                    setRenderStates2DMode(m_Material.m_MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA, (m_Material.getTexture(0) != 0), m_Material.m_MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL);
+                    setRenderStates2DMode(m_Material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA, (m_Material.getTexture(0) != 0), m_Material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL);
             }
 
             switch (pType)
@@ -2166,27 +2166,27 @@ namespace irr
                 m_ResetRenderStates = true;
             }
 
-            if (m_ResetRenderStates || LastMaterial != m_Material)
+            if (m_ResetRenderStates || m_LastMaterial != m_Material)
             {
                 // unset old material
 
                 if (m_CurrentRenderMode == ERM_3D &&
-                    LastMaterial.m_MaterialType != m_Material.m_MaterialType &&
-                    LastMaterial.m_MaterialType >= 0 && LastMaterial.m_MaterialType < (s32)m_MaterialRenderers.size())
-                    m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
+                    m_LastMaterial.MaterialType != m_Material.MaterialType &&
+                    m_LastMaterial.MaterialType >= 0 && m_LastMaterial.MaterialType < (s32)MaterialRenderers.size())
+                    MaterialRenderers[m_LastMaterial.MaterialType].Renderer->OnUnsetMaterial();
 
                 // set new material.
 
-                if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
-                    m_MaterialRenderers[m_Material.m_MaterialType].Renderer->OnSetMaterial(
-                        m_Material, LastMaterial, m_ResetRenderStates, this);
+                if (m_Material.MaterialType >= 0 && m_Material.MaterialType < (s32)MaterialRenderers.size())
+                    MaterialRenderers[m_Material.MaterialType].Renderer->OnSetMaterial(
+                        m_Material, m_LastMaterial, m_ResetRenderStates, this);
             }
 
             bool shaderOK = true;
-            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
-                shaderOK = m_MaterialRenderers[m_Material.m_MaterialType].Renderer->OnRender(this, m_LastVertexType);
+            if (m_Material.MaterialType >= 0 && m_Material.MaterialType < (s32)MaterialRenderers.size())
+                shaderOK = MaterialRenderers[m_Material.MaterialType].Renderer->OnRender(this, m_LastVertexType);
 
-            LastMaterial = m_Material;
+            m_LastMaterial = m_Material;
 
             m_ResetRenderStates = false;
 
@@ -2202,20 +2202,20 @@ namespace irr
             switch (clamp)
             {
                 case ETC_REPEAT:
-                    if (m_Caps.TextureAddressm_Caps & D3DPTADDRESSCAPS_WRAP)
+                    if (m_Caps.TextureAddressCaps & D3DPTADDRESSCAPS_WRAP)
                         return D3DTADDRESS_WRAP;
 
                 case ETC_CLAMP:
                 case ETC_CLAMP_TO_EDGE:
-                    if (m_Caps.TextureAddressm_Caps & D3DPTADDRESSCAPS_CLAMP)
+                    if (m_Caps.TextureAddressCaps & D3DPTADDRESSCAPS_CLAMP)
                         return D3DTADDRESS_CLAMP;
 
                 case ETC_MIRROR:
-                    if (m_Caps.TextureAddressm_Caps & D3DPTADDRESSCAPS_MIRROR)
+                    if (m_Caps.TextureAddressCaps & D3DPTADDRESSCAPS_MIRROR)
                         return D3DTADDRESS_MIRROR;
 
                 case ETC_CLAMP_TO_BORDER:
-                    if (m_Caps.TextureAddressm_Caps & D3DPTADDRESSCAPS_BORDER)
+                    if (m_Caps.TextureAddressCaps & D3DPTADDRESSCAPS_BORDER)
                         return D3DTADDRESS_BORDER;
                     else
                         return D3DTADDRESS_CLAMP;
@@ -2223,7 +2223,7 @@ namespace irr
                 case ETC_MIRROR_CLAMP:
                 case ETC_MIRROR_CLAMP_TO_EDGE:
                 case ETC_MIRROR_CLAMP_TO_BORDER:
-                    if (m_Caps.TextureAddressm_Caps & D3DPTADDRESSCAPS_MIRRORONCE)
+                    if (m_Caps.TextureAddressCaps & D3DPTADDRESSCAPS_MIRRORONCE)
                         return D3DTADDRESS_MIRRORONCE;
                     else
                         return D3DTADDRESS_CLAMP;
@@ -2235,7 +2235,7 @@ namespace irr
 
 
         //! Can be called by an Im_MaterialRenderer to make its work easier.
-        void CD3D9Driver::setBasicRenderStates(const Sm_Material &material, const Sm_Material &lastmaterial,
+        void CD3D9Driver::setBasicRenderStates(const SMaterial &material, const SMaterial &lastmaterial,
             bool resetAllRenderstates)
         {
             // This needs only to be updated onresets
@@ -2258,19 +2258,19 @@ namespace irr
                 m_pID3DDevice->SetMaterial(&mat);
             }
 
-            if (lastmaterial.Colorm_Material != material.Colorm_Material)
+            if (lastmaterial.ColorMaterial != material.ColorMaterial)
             {
-                m_pID3DDevice->SetRenderState(D3DRS_COLORVERTEX, (material.Colorm_Material != ECM_NONE));
+                m_pID3DDevice->SetRenderState(D3DRS_COLORVERTEX, (material.ColorMaterial != ECM_NONE));
                 m_pID3DDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE,
-                    ((material.Colorm_Material == ECM_DIFFUSE) ||
-                    (material.Colorm_Material == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                    ((material.ColorMaterial == ECM_DIFFUSE) ||
+                    (material.ColorMaterial == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
                 m_pID3DDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE,
-                    ((material.Colorm_Material == ECM_AMBIENT) ||
-                    (material.Colorm_Material == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                    ((material.ColorMaterial == ECM_AMBIENT) ||
+                    (material.ColorMaterial == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
                 m_pID3DDevice->SetRenderState(D3DRS_EMISSIVEMATERIALSOURCE,
-                    (material.Colorm_Material == ECM_EMISSIVE) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                    (material.ColorMaterial == ECM_EMISSIVE) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
                 m_pID3DDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE,
-                    (material.Colorm_Material == ECM_SPECULAR) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                    (material.ColorMaterial == ECM_SPECULAR) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
             }
 
             // fillmode
@@ -2529,7 +2529,7 @@ namespace irr
                     m_pID3DDevice->SetSamplerState(st, D3DSAMP_ADDRESSU, getTextureWrapMode(material.TextureLayer[st].TextureWrapU));
 
                 // If separate UV not supported reuse U for V
-                if (!(m_Caps.TextureAddressm_Caps & D3DPTADDRESSCAPS_INDEPENDENTUV))
+                if (!(m_Caps.TextureAddressCaps & D3DPTADDRESSCAPS_INDEPENDENTUV))
                     m_pID3DDevice->SetSamplerState(st, D3DSAMP_ADDRESSV, getTextureWrapMode(material.TextureLayer[st].TextureWrapU));
                 else if (resetAllRenderstates || lastmaterial.TextureLayer[st].TextureWrapV != material.TextureLayer[st].TextureWrapV)
                     m_pID3DDevice->SetSamplerState(st, D3DSAMP_ADDRESSV, getTextureWrapMode(material.TextureLayer[st].TextureWrapV));
@@ -2543,9 +2543,9 @@ namespace irr
                 {
                     if (material.TextureLayer[st].BilinearFilter || material.TextureLayer[st].TrilinearFilter || material.TextureLayer[st].AnisotropicFilter)
                     {
-                        D3DTEXTUREFILTERTYPE tftMag = ((m_Caps.TextureFilterm_Caps & D3DPTFILTERCAPS_MAGFANISOTROPIC) &&
+                        D3DTEXTUREFILTERTYPE tftMag = ((m_Caps.TextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC) &&
                             material.TextureLayer[st].AnisotropicFilter) ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;
-                        D3DTEXTUREFILTERTYPE tftMin = ((m_Caps.TextureFilterm_Caps & D3DPTFILTERCAPS_MINFANISOTROPIC) &&
+                        D3DTEXTUREFILTERTYPE tftMin = ((m_Caps.TextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC) &&
                             material.TextureLayer[st].AnisotropicFilter) ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;
                         D3DTEXTUREFILTERTYPE tftMip = material.UseMipMaps ? (material.TextureLayer[st].TrilinearFilter ? D3DTEXF_LINEAR : D3DTEXF_POINT) : D3DTEXF_NONE;
 
@@ -2576,9 +2576,9 @@ namespace irr
             {
                 // unset last 3d material
                 if (m_CurrentRenderMode == ERM_3D &&
-                    static_cast<u32>(m_Material.m_MaterialType) < m_MaterialRenderers.size())
+                    static_cast<u32>(m_Material.MaterialType) < MaterialRenderers.size())
                 {
-                    m_MaterialRenderers[m_Material.m_MaterialType].Renderer->OnUnsetMaterial();
+                    MaterialRenderers[m_Material.MaterialType].Renderer->OnUnsetMaterial();
                     m_ResetRenderStates = true;
                 }
 
@@ -2693,12 +2693,12 @@ namespace irr
 
 
         //! Enable the 2d override material
-        void CD3D9Driver::enablem_Material2D(bool enable)
+        void CD3D9Driver::enableMaterial2D(bool enable)
         {
             if (!enable)
                 m_CurrentRenderMode = ERM_NONE;
 
-            CNullDriver::enablem_Material2D(enable);
+            CNullDriver::enableMaterial2D(enable);
         }
 
 
@@ -2713,14 +2713,14 @@ namespace irr
                 // unset last 3d material
                 if (m_CurrentRenderMode == ERM_3D)
                 {
-if (static_cast<u32>(LastMaterial.m_MaterialType) < m_MaterialRenderers.size())
-m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
+if (static_cast<u32>(m_LastMaterial.MaterialType) < MaterialRenderers.size())
+MaterialRenderers[m_LastMaterial.MaterialType].Renderer->OnUnsetMaterial();
                 }
 
                 if (!OverrideMaterial2DEnabled)
                 {
-                    setBasicRenderStates(InitMaterial2D, LastMaterial, true);
-                    LastMaterial = InitMaterial2D;
+                    setBasicRenderStates(InitMaterial2D, m_LastMaterial, true);
+                    m_LastMaterial = InitMaterial2D;
 
                     // fix everything that is wrongly set by Initm_Material2D default
                     m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
@@ -2754,8 +2754,8 @@ m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
             if (OverrideMaterial2DEnabled)
             {
                 OverrideMaterial2D.Lighting = false;
-                setBasicRenderStates(OverrideMaterial2D, LastMaterial, false);
-                LastMaterial = OverrideMaterial2D;
+                setBasicRenderStates(OverrideMaterial2D, m_LastMaterial, false);
+                m_LastMaterial = OverrideMaterial2D;
             }
 
             // no alphaChannel without texture
@@ -3111,7 +3111,7 @@ m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
                 {
                     // all textures sharing this depth buffer must have the same setting
                     // so take first one
-                    if (((CD3D9Texture*)(Textures[j].Surface))->DepthSurface == m_DepthBuffers[i])
+                    if (((CD3D9Texture*)(Textures[j].Surface))->m_DepthSurface == m_DepthBuffers[i])
                     {
                         ((CD3D9Texture*)(Textures[j].Surface))->m_Texture->GetLevelDesc(0, &desc2);
                         break;
@@ -3175,7 +3175,7 @@ m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
             m_LastVertexType    = (E_VERTEX_TYPE)-1;
 
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
-                CurrentTexture[i] = 0;
+                m_CurrentTexture[i] = 0;
 
             setVertexShader(EVT_STANDARD);
             setRenderStates3DMode();
@@ -3232,9 +3232,9 @@ m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
         //! Sets a constant for the vertex shader based on a name.
         bool CD3D9Driver::setVertexShaderConstant(const c8 *name, const f32 *floats, int count)
         {
-            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
+            if (m_Material.MaterialType >= 0 && m_Material.MaterialType < (s32)MaterialRenderers.size())
             {
-                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)m_MaterialRenderers[m_Material.m_MaterialType].Renderer;
+                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)MaterialRenderers[m_Material.MaterialType].Renderer;
                 return r->setVariable(true, name, floats, count);
             }
 
@@ -3245,9 +3245,9 @@ m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
         //! Bool interface for the above.
         bool CD3D9Driver::setVertexShaderConstant(const c8 *name, const bool *bools, int count)
         {
-            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
+            if (m_Material.MaterialType >= 0 && m_Material.MaterialType < (s32)MaterialRenderers.size())
             {
-                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)m_MaterialRenderers[m_Material.m_MaterialType].Renderer;
+                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)MaterialRenderers[m_Material.MaterialType].Renderer;
                 return r->setVariable(true, name, bools, count);
             }
 
@@ -3258,9 +3258,9 @@ m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
         //! Int interface for the above.
         bool CD3D9Driver::setVertexShaderConstant(const c8 *name, const s32 *ints, int count)
         {
-            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
+            if (m_Material.MaterialType >= 0 && m_Material.MaterialType < (s32)MaterialRenderers.size())
             {
-                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)m_MaterialRenderers[m_Material.m_MaterialType].Renderer;
+                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)MaterialRenderers[m_Material.MaterialType].Renderer;
                 return r->setVariable(true, name, ints, count);
             }
 
@@ -3271,9 +3271,9 @@ m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
         //! Sets a constant for the pixel shader based on a name.
         bool CD3D9Driver::setPixelShaderConstant(const c8 *name, const f32 *floats, int count)
         {
-            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
+            if (m_Material.MaterialType >= 0 && m_Material.MaterialType < (s32)MaterialRenderers.size())
             {
-                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)m_MaterialRenderers[m_Material.m_MaterialType].Renderer;
+                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)MaterialRenderers[m_Material.MaterialType].Renderer;
                 return r->setVariable(false, name, floats, count);
             }
 
@@ -3284,9 +3284,9 @@ m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
         //! Bool interface for the above.
         bool CD3D9Driver::setPixelShaderConstant(const c8 *name, const bool *bools, int count)
         {
-            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
+            if (m_Material.MaterialType >= 0 && m_Material.MaterialType < (s32)MaterialRenderers.size())
             {
-                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)m_MaterialRenderers[m_Material.m_MaterialType].Renderer;
+                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)MaterialRenderers[m_Material.MaterialType].Renderer;
                 return r->setVariable(false, name, bools, count);
             }
 
@@ -3297,9 +3297,9 @@ m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
         //! Int interface for the above.
         bool CD3D9Driver::setPixelShaderConstant(const c8 *name, const s32 *ints, int count)
         {
-            if (m_Material.m_MaterialType >= 0 && m_Material.m_MaterialType < (s32)m_MaterialRenderers.size())
+            if (m_Material.MaterialType >= 0 && m_Material.MaterialType < (s32)MaterialRenderers.size())
             {
-                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)m_MaterialRenderers[m_Material.m_MaterialType].Renderer;
+                CD3D9MaterialRenderer *r = (CD3D9MaterialRenderer*)MaterialRenderers[m_Material.MaterialType].Renderer;
                 return r->setVariable(false, name, ints, count);
             }
 
@@ -3535,9 +3535,9 @@ m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
 
 
         //! returns color format
-        D3DFORMAT CD3D9Driver::getD3Dm_ColorFormat() const
+        D3DFORMAT CD3D9Driver::getD3DColorFormat() const
         {
-            return D3Dm_ColorFormat;
+            return m_D3DColorFormat;
         }
 
 
@@ -3585,7 +3585,7 @@ m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
         }
 
 
-        D3DFORMAT CD3D9Driver::getD3DFormatFromm_ColorFormat(ECOLOR_FORMAT format) const
+        D3DFORMAT CD3D9Driver::getD3DFormatFromColorFormat(ECOLOR_FORMAT format) const
         {
             switch (format)
             {
@@ -3738,7 +3738,7 @@ m_MaterialRenderers[LastMaterial.m_MaterialType].Renderer->OnUnsetMaterial();
             else
                 depth->grab();
 
-            dynamic_cast<CD3D9Texture*>(tex)->DepthSurface = depth;
+            dynamic_cast<CD3D9Texture*>(tex)->m_DepthSurface = depth;
         }
 
 
