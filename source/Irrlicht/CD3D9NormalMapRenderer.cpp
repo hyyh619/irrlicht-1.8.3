@@ -163,7 +163,7 @@ namespace irr
             "";
 
         CD3D9NormalMapRenderer::CD3D9NormalMapRenderer(
-            IDirect3DDevice9 *d3ddev, video::IVideom_Driver *driver,
+            IDirect3DDevice9 *d3ddev, video::IVideoDriver *driver,
             s32 &outMaterialTypeNr, IMaterialRenderer *baseMaterial)
             : CD3D9ShaderMaterialRenderer(d3ddev, driver, 0, baseMaterial)
         {
@@ -259,16 +259,16 @@ namespace irr
         //! for an material renderer should be set.
         void CD3D9NormalMapRenderer::OnSetConstants(IMaterialRendererServices *services, s32 userData)
         {
-            video::IVideom_Driver *driver = services->getVideom_Driver();
+            video::IVideoDriver *driver = services->getVideoDriver();
 
             // set transposed world matrix
-            services->setm_VertexShaderConstant(driver->getTransform(video::ETS_WORLD).getTransposed().pointer(), 0, 4);
+            services->setVertexShaderConstant(driver->getTransform(video::ETS_WORLD).getTransposed().pointer(), 0, 4);
 
             // set transposed worldViewProj matrix
             core::matrix4 worldViewProj(driver->getTransform(video::ETS_PROJECTION));
             worldViewProj *= driver->getTransform(video::ETS_VIEW);
             worldViewProj *= driver->getTransform(video::ETS_WORLD);
-            services->setm_VertexShaderConstant(worldViewProj.getTransposed().pointer(), 8, 4);
+            services->setVertexShaderConstant(worldViewProj.getTransposed().pointer(), 8, 4);
 
             // here we've got to fetch the fixed function lights from the
             // driver and set them as constants
@@ -289,13 +289,13 @@ namespace irr
 
                 light.DiffuseColor.a = 1.0f / (light.Radius * light.Radius); // set attenuation
 
-                services->setm_VertexShaderConstant(reinterpret_cast<const f32*>(&light.Position), 12 + (i * 2), 1);
-                services->setm_VertexShaderConstant(reinterpret_cast<const f32*>(&light.DiffuseColor), 13 + (i * 2), 1);
+                services->setVertexShaderConstant(reinterpret_cast<const f32*>(&light.Position), 12 + (i * 2), 1);
+                services->setVertexShaderConstant(reinterpret_cast<const f32*>(&light.DiffuseColor), 13 + (i * 2), 1);
             }
 
             // this is not really necessary in d3d9 (used a def instruction), but to be sure:
             f32 c95[] = {0.5f, 0.5f, 0.5f, 0.5f};
-            services->setm_VertexShaderConstant(c95, 95, 1);
+            services->setVertexShaderConstant(c95, 95, 1);
         }
     } // end namespace video
 } // end namespace irr

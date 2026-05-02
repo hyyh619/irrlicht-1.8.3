@@ -222,7 +222,7 @@ namespace irr
             "\n";
 
         CD3D9ParallaxMapRenderer::CD3D9ParallaxMapRenderer(
-            IDirect3DDevice9 *d3ddev, video::IVideom_Driver *driver,
+            IDirect3DDevice9 *d3ddev, video::IVideoDriver *driver,
             s32 &outMaterialTypeNr, IMaterialRenderer *baseMaterial)
             : CD3D9ShaderMaterialRenderer(d3ddev, driver, 0, baseMaterial),
             m_CurrentScale(0.0f)
@@ -234,7 +234,7 @@ namespace irr
             // set this as callback. We could have done this in
             // the initialization list, but some compilers don't like it.
 
-            CallBack = this;
+            m_CallBack = this;
 
             // basicly, this thing simply compiles these hardcoded shaders if the
             // hardware is able to do them, otherwise it maps to the base material
@@ -294,8 +294,8 @@ namespace irr
 
         CD3D9ParallaxMapRenderer::~CD3D9ParallaxMapRenderer()
         {
-            if (CallBack == this)
-                CallBack = 0;
+            if (m_CallBack == this)
+                m_CallBack = 0;
         }
 
         bool CD3D9ParallaxMapRenderer::OnRender(IMaterialRendererServices *service, E_VERTEX_TYPE vtxtype)
@@ -336,7 +336,7 @@ namespace irr
         //! for an material renderer should be set.
         void CD3D9ParallaxMapRenderer::OnSetConstants(IMaterialRendererServices *services, s32 userData)
         {
-            video::IVideom_Driver *driver = services->getVideom_Driver();
+            video::IVideoDriver *driver = services->getVideoDriver();
 
             // set transposed world matrix
             services->setVertexShaderConstant(driver->getTransform(video::ETS_WORLD).getTransposed().pointer(), 0, 4);

@@ -111,7 +111,7 @@ namespace irr
                     os::Printer::log("RenderTarget size has to be a power of two", ELL_INFORMATION);
             }
 
-            m_TextureSize = m_TextureSize.getOptimalSize(!m_Driver->queryFeature(EVDF_TEXTURE_NPOT), !m_Driver->queryFeature(EVDF_TEXTURE_NSQUARE), true, m_Driver->Caps.MaxTextureWidth);
+            m_TextureSize = m_TextureSize.getOptimalSize(!m_Driver->queryFeature(EVDF_TEXTURE_NPOT), !m_Driver->queryFeature(EVDF_TEXTURE_NSQUARE), true, m_Driver->m_Caps.MaxTextureWidth);
 
             D3DFORMAT d3dformat = m_Driver->getD3DColorFormat();
 
@@ -230,11 +230,11 @@ namespace irr
                 if ((upperDesc.Format == D3DFMT_A1R5G5B5) || (upperDesc.Format == D3DFMT_R5G6B5))
                     copy16BitMipMap((char*)upperlr.pBits, (char*)lowerlr.pBits,
                         lowerDesc.Width, lowerDesc.Height,
-                        upperlr.m_Pitch, lowerlr.m_Pitch);
+                        upperlr.Pitch, lowerlr.Pitch);
                 else if (upperDesc.Format == D3DFMT_A8R8G8B8)
                     copy32BitMipMap((char*)upperlr.pBits, (char*)lowerlr.pBits,
                         lowerDesc.Width, lowerDesc.Height,
-                        upperlr.m_Pitch, lowerlr.m_Pitch);
+                        upperlr.Pitch, lowerlr.Pitch);
                 else
                     os::Printer::log("Unsupported mipmap format, cannot copy.", ELL_WARNING);
             }
@@ -264,7 +264,7 @@ namespace irr
         {
             m_ImageSize = image->getDimension();
 
-            core::dimension2d<u32> optSize = m_ImageSize.getOptimalSize(!m_Driver->queryFeature(EVDF_TEXTURE_NPOT), !m_Driver->queryFeature(EVDF_TEXTURE_NSQUARE), true, m_Driver->Caps.MaxTextureWidth);
+            core::dimension2d<u32> optSize = m_ImageSize.getOptimalSize(!m_Driver->queryFeature(EVDF_TEXTURE_NPOT), !m_Driver->queryFeature(EVDF_TEXTURE_NSQUARE), true, m_Driver->m_Caps.MaxTextureWidth);
 
             D3DFORMAT format = D3DFMT_A1R5G5B5;
 
@@ -316,9 +316,9 @@ namespace irr
             {
                 LPDIRECT3D9    intf = m_Driver->getExposedVideoData().D3D9.D3D9;
                 D3DDISPLAYMODE d3ddm;
-                intf->GetAdapterDisplayMode(m_Driver->Params.DisplayAdapter, &d3ddm);
+                intf->GetAdapterDisplayMode(m_Driver->m_Params.DisplayAdapter, &d3ddm);
 
-                if (D3D_OK == intf->Checkm_DeviceFormat(m_Driver->Params.DisplayAdapter, D3DDEVTYPE_HAL, d3ddm.Format, D3DUSAGE_AUTOGENMIPMAP, D3DRTYPE_TEXTURE, format))
+                if (D3D_OK == intf->CheckDeviceFormat(m_Driver->m_Params.DisplayAdapter, D3DDEVTYPE_HAL, d3ddm.Format, D3DUSAGE_AUTOGENMIPMAP, D3DRTYPE_TEXTURE, format))
                 {
                     usage           = D3DUSAGE_AUTOGENMIPMAP;
                     m_HardwareMipMaps = true;
@@ -371,7 +371,7 @@ namespace irr
                     return false;
                 }
 
-                m_Pitch = rect.m_Pitch;
+                m_Pitch = rect.Pitch;
                 image->copyToScaling(rect.pBits, m_TextureSize.Width, m_TextureSize.Height, m_ColorFormat, m_Pitch);
 
                 hr = m_Texture->UnlockRect(0);
@@ -496,7 +496,7 @@ namespace irr
 
 
         //! returns the DIRECT3D9 m_Texture
-        IDirect3DBasem_Texture9* CD3D9Texture::getDX9m_Texture() const
+        IDirect3DBaseTexture9* CD3D9Texture::getDX9Texture() const
         {
             return m_Texture;
         }
