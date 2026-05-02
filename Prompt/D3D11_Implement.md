@@ -46,3 +46,6 @@ CD3D11Texture::createTexture下面部分的代码请参照CD3D9Texture::createTe
         void CD3D11Texture::copy32BitMipMap(char *src, char *tgt,
                                             s32 width, s32 height, s32 pitchsrc, s32 pitchtgt) const
         {}
+
+# 7
+
