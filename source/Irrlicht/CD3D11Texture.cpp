@@ -305,12 +305,12 @@ namespace irr
             desc.Format             = DXGIFormat;
             desc.SampleDesc.Count   = 1;
             desc.SampleDesc.Quality = 0;
-            desc.Usage              = D3D11_USAGE_DEFAULT;
+            desc.Usage              = D3D11_USAGE_DYNAMIC;
             desc.BindFlags          = D3D11_BIND_SHADER_RESOURCE;
             if (mipmaps)
                 desc.BindFlags |= D3D11_BIND_RENDER_TARGET;
 
-            desc.CPUAccessFlags = 0;
+            desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
             desc.MiscFlags      = mipmaps ? D3D11_RESOURCE_MISC_GENERATE_MIPS : 0;
 
             HRESULT    hr = Device->CreateTexture2D(&desc, 0, &Texture);

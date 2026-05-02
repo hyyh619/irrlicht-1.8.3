@@ -49,3 +49,10 @@ CD3D11Texture::createTexture下面部分的代码请参照CD3D9Texture::createTe
 
 # 7
 
+修复下面的问题，copyTexture返回下面的错误
+Could not map DIRECT3D11 Texture.
+
+调用栈如下。
+>	Irrlicht.dll!irr::video::CD2D11Texture::copyTexture(irr::video::IImage * image) 行 359	C++
+ 	Irrlicht.dll!irr::video::CD2D11Texture::CD3D11Texture(irr::video::IImage * image, irr::video::CD3D11Driver * driver, unsigned int flags, const irr::core::string<char,irr::core::irrAllocator<char>> & name, void * mipmapData) 行 60	C++
+
