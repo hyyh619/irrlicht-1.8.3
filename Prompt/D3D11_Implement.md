@@ -159,3 +159,32 @@ bool CD3D11Driver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const没有检�
    A. 该成员变量名字如果不是以'm_'开头,就给成员变量的名字增加一个'm_'
    B. 更改所有该成员变量被引用的地方
    C. 注意不要更改成员函数名字，调用函数名字，数据结构名字
+
+# 13
+修复下列问题，
+错误(活动)	E0020	未定义标识符 "VendorName"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	242		
+错误(活动)	E0020	未定义标识符 "DriverWasReset"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	249		
+警告	C26457	(void)不得用于忽略返回值，请使用 "std::ignore" 而不是 (es.48)。	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\include\irrAllocator.h	52		
+警告	C6246	“tmp”的局部声明遮蔽了外部作用域中具有相同名称的声明。有关其他信息，请参见此前位于“90”行(“c:\development\graphics\irrlicht-1.8.3\source\irrlicht\cd3d11driver.cpp”中)的声明。	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	140		
+警告	C26461	指针参数 depth (针对函数 irr::video::CD3D11Driver::removeDepthSurface)可被标记为 const 指针(con.3)。	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1017		
+警告	C26814	可在编译时计算常量变量“pureSoftware”。请考虑使用 constexpr (con.5)。	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	1212		
+警告	C26461	指针参数 p (针对函数 irr::video::CNullDriver::nml32)可被标记为 const 指针(con.3)。	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CNullDriver.h	709		
+警告	C26461	指针参数 p (针对函数 irr::video::CNullDriver::nml16)可被标记为 const 指针(con.3)。	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CNullDriver.h	727		
+错误	C2065	“VendorName”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	242		
+错误	C2065	“DriverWasReset”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	249		
+错误	C2065	“pID3DDeviceContext”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.cpp	706		
+错误	C2065	“VendorName”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	242		
+错误	C2065	“DriverWasReset”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	249		
+错误	C2065	“VendorName”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	242		
+错误	C2065	“DriverWasReset”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Driver.h	249		
+错误	C2039	"pID3DDevice": 不是 "irr::video::CD3D11Driver" 的成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	30		
+错误	C2039	"pID3DDevice": 不是 "irr::video::CD3D11Driver" 的成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	52		
+错误	C2039	"pID3DDeviceContext": 不是 "irr::video::CD3D11Driver" 的成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	147		
+错误	C2039	"pID3DDeviceContext": 不是 "irr::video::CD3D11Driver" 的成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	152		
+错误	C2039	"pID3DDeviceContext": 不是 "irr::video::CD3D11Driver" 的成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	352		
+错误	C2039	"pID3DDeviceContext": 不是 "irr::video::CD3D11Driver" 的成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	373		
+错误	C2039	"pID3DDeviceContext": 不是 "irr::video::CD3D11Driver" 的成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	378		
+错误	C2039	"pID3DDeviceContext": 不是 "irr::video::CD3D11Driver" 的成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	385		
+错误	C2065	“CallBack”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11NormalMapRenderer.cpp	119		
+错误	C2065	“CallBack”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11NormalMapRenderer.cpp	139		
+错误	C2065	“CallBack”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11NormalMapRenderer.cpp	140		

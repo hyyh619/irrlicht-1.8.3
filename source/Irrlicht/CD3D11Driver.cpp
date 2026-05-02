@@ -703,7 +703,7 @@ namespace irr
         void CD3D11Driver::draw2DLine(const core::position2d<s32> &start,
                                       const core::position2d<s32> &end, SColor color)
         {
-            pID3DDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+            m_pID3DDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
             s32     xdiff   = (end.X - start.X);
             s32     ydiff   = (end.Y - start.Y);

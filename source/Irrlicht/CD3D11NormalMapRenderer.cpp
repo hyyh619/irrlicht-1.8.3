@@ -116,7 +116,7 @@ namespace irr
             setDebugName("CD3D11NormalMapRenderer");
 #endif
 
-            CallBack = this;
+            m_CallBack = this;
 
             if (!createVertexShader(D3D11_NORMAL_MAP_VSH))
             {
@@ -136,8 +136,8 @@ namespace irr
 
         CD3D11NormalMapRenderer::~CD3D11NormalMapRenderer()
         {
-            if (CallBack == this)
-                CallBack = 0;
+            if (m_CallBack == this)
+                m_CallBack = 0;
         }
 
 

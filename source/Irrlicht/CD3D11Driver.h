@@ -239,14 +239,14 @@ public:
 
             virtual core::stringc getVendorInfo()
             {
-                return VendorName;
+                return m_VendorName;
             }
 
             virtual void enableMaterial2D(bool enable = true);
 
             virtual bool checkDriverReset()
             {
-                return DriverWasReset;
+                return m_DriverWasReset;
             }
 
             virtual ECOLOR_FORMAT getColorFormat() const;

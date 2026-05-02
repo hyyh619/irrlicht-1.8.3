@@ -27,7 +27,7 @@ namespace irr
             setDebugName("CD3D11Texture");
 #endif
 
-            m_Device = driver->pID3DDevice;
+            m_Device = driver->m_pID3DDevice;
             if (m_Device)
                 m_Device->AddRef();
 
@@ -49,7 +49,7 @@ namespace irr
 
             m_HasMipMaps = m_Driver->getTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS);
 
-            m_Device = driver->pID3DDevice;
+            m_Device = driver->m_pID3DDevice;
             if (m_Device)
                 m_Device->AddRef();
 
@@ -144,12 +144,12 @@ namespace irr
 
         void CD3D11Texture::regenerateMipMapLevels(void *mipmapData)
         {
-            if (!m_Texture || !m_Driver->pID3DDeviceContext)
+            if (!m_Texture || !m_Driver->m_pID3DDeviceContext)
                 return;
 
             if (m_HasMipMaps)
             {
-                m_Driver->pID3DDeviceContext->GenerateMips(m_ShaderResourceView);
+                m_Driver->m_pID3DDeviceContext->GenerateMips(m_ShaderResourceView);
             }
         }
 
@@ -349,7 +349,7 @@ namespace irr
             if (!m_Texture || !image)
                 return false;
 
-            ID3D11DeviceContext    *context = m_Driver->pID3DDeviceContext;
+            ID3D11DeviceContext    *context = m_Driver->m_pID3DDeviceContext;
 
             D3D11_BOX    destBox;
             destBox.left    = 0;
@@ -370,19 +370,19 @@ namespace irr
 
         bool CD3D11Texture::createMipMaps(u32 level)
         {
-            if (!m_Texture || !m_Driver->pID3DDeviceContext)
+            if (!m_Texture || !m_Driver->m_pID3DDeviceContext)
                 return false;
 
             if (m_HardwareMipMaps)
             {
-                m_Driver->pID3DDeviceContext->GenerateMips(m_ShaderResourceView);
+                m_Driver->m_pID3DDeviceContext->GenerateMips(m_ShaderResourceView);
                 return true;
             }
 
             if (level == 0)
                 return true;
 
-            ID3D11DeviceContext    *context = m_Driver->pID3DDeviceContext;
+            ID3D11DeviceContext    *context = m_Driver->m_pID3DDeviceContext;
 
             const u32       width   = m_TextureSize.Width >> level;
             const u32       height  = m_TextureSize.Height >> level;
