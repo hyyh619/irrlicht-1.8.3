@@ -430,6 +430,7 @@ namespace irr
         void CD3D11Driver::setMaterial(const SMaterial &material)
         {
             m_Material = material;
+            OverrideMaterial.apply(m_Material);
 
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
