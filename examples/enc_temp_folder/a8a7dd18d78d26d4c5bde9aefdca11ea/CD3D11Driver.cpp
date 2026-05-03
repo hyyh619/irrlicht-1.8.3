@@ -312,6 +312,9 @@ namespace irr
 
             UINT    flags = 0;
 
+            if (backBuffer)
+                flags |= D3D11_CLEAR_TARGET;
+
             if (zBuffer)
                 flags |= D3D11_CLEAR_DEPTH;
 

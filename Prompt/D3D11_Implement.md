@@ -287,3 +287,9 @@ bool CD3D11Driver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const没有检�
 错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	287		
 错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	290		
 错误	C2065	“pID3DDevice”: 未声明的标识符	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D9MaterialRenderer.h	291		
+
+# 16
+参考CD3D9Driver::beginScene实现，修复CD3D11Driver::beginScene的问题，
+目前我已经看到两个问题
+1. 未调用CNullDriver::beginScene
+2. backBuffer, zBuffer的判断错误
