@@ -297,3 +297,14 @@ bool CD3D11Driver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const没有检�
 # 17
 d3d11最大可以支持8个纹理,其它video driver支持4个,改一下下面的定义
 #define _IRR_MATERIAL_MAX_TEXTURES_ 4
+
+# 18
+根据CD3D9Driver::setVertexShader的代码，实现CD3D11Driver::setVertexShader
+
+# 19
+1. 参考CD3D9Driver的代码，实现CD3D11Driver 的硬件缓冲区管理，包括drawHardwareBuffer 和 updateVertexHardwareBuffer的实现像 D3D9 那样设置 vertex shader/FVF。
+2. D3D11 需要通过 Input Layout 来定义顶点格式，实现 input layout 管理机制。你需要实现：
+   A. 为每种 E_VERTEX_TYPE 创建/缓存 ID3D11InputLayout
+   B. 在 setVertexShader 中调用 IASetInputLayout
+   C. 可能需要内置的 simple vertex shader 来处理基本渲染
+我没有内置 vertex shader 代码（如 EVT_STANDARD、EVT_2TCOORDS、EVT_TANGENTS 对应的 shader），帮我实现完整的版本。

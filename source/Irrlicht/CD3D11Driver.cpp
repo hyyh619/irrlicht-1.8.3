@@ -1194,7 +1194,10 @@ namespace irr
 
         void CD3D11Driver::setVertexShader(video::E_VERTEX_TYPE newType)
         {
-            m_LastVertexType = newType;
+            if (newType != m_LastVertexType)
+            {
+                m_LastVertexType = newType;
+            }
         }
 
 
