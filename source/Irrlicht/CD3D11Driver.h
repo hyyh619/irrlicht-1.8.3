@@ -294,9 +294,6 @@ private:
 
             void setVertexShader(video::E_VERTEX_TYPE newType);
 
-            bool createBuiltInVertexShader(E_VERTEX_TYPE type);
-            bool createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob);
-
             bool setRenderStates3DMode();
 
             void setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel);
@@ -336,6 +333,9 @@ private:
                 E_MATERIAL_TYPE baseMaterial = video::EMT_SOLID,
                 s32 userData = 0,
                 E_GPU_SHADING_LANGUAGE shadingLang = EGSL_DEFAULT);
+
+            bool createBuiltInVertexShader(E_VERTEX_TYPE type);
+            bool createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob);
 
             core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
 

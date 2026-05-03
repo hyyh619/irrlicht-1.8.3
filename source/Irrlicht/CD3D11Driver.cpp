@@ -834,38 +834,9 @@ namespace irr
                 iPtr = 0;
             }
 
-            D3D11_PRIMITIVE_TOPOLOGY    topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+            m_pID3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-            switch (mb->getPrimitiveType())
-            {
-                case scene::EPT_TRIANGLES:
-                    topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-                    break;
-
-                case scene::EPT_TRIANGLE_STRIP:
-                    topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
-                    break;
-
-                case scene::EPT_TRIANGLE_FAN:
-                    topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-                    break;
-
-                case scene::EPT_LINES:
-                    topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
-                    break;
-
-                case scene::EPT_LINE_STRIP:
-                    topology = D3D_PRIMITIVE_TOPOLOGY_LINESTRIP;
-                    break;
-
-                case scene::EPT_POINTS:
-                    topology = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
-                    break;
-            }
-
-            m_pID3DDeviceContext->IASetPrimitiveTopology(topology);
-
-            if (iPtr)
+            if (hwBufferD3D->indexBuffer)
             {
                 m_pID3DDeviceContext->DrawIndexed(mb->getIndexCount(), 0, 0);
             }
