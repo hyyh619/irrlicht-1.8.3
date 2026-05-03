@@ -53,9 +53,9 @@ namespace irr
         //! MaterialTypeParam: e.g. DirectX: D3DTOP_MODULATE, D3DTOP_MODULATE2X, D3DTOP_MODULATE4X
         enum E_MODULATE_FUNC
         {
-            EMFN_MODULATE_1X = 1,
-            EMFN_MODULATE_2X = 2,
-            EMFN_MODULATE_4X = 4
+            EMFN_MODULATE_1X    = 1,
+            EMFN_MODULATE_2X    = 2,
+            EMFN_MODULATE_4X    = 4
         };
 
         //! Comparison function, e.g. for depth buffer test
@@ -115,7 +115,7 @@ namespace irr
         /** alpha source can be an OR'ed combination of E_ALPHA_SOURCE values. */
         inline f32 pack_textureBlendFunc(const E_BLEND_FACTOR srcFact, const E_BLEND_FACTOR dstFact, const E_MODULATE_FUNC modulate = EMFN_MODULATE_1X, const u32 alphaSource = EAS_TEXTURE)
         {
-            const u32 tmp = (alphaSource << 12) | (modulate << 8) | (srcFact << 4) | dstFact;
+            const u32    tmp = (alphaSource << 12) | (modulate << 8) | (srcFact << 4) | dstFact;
 
             return FR(tmp);
         }
@@ -123,9 +123,9 @@ namespace irr
         //! EMT_ONETEXTURE_BLEND: unpack srcFact & dstFact and Modulo to MaterialTypeParam
         /** The fields don't use the full byte range, so we could pack even more... */
         inline void unpack_textureBlendFunc(E_BLEND_FACTOR &srcFact, E_BLEND_FACTOR &dstFact,
-            E_MODULATE_FUNC &modulo, u32 &alphaSource, const f32 param)
+                                            E_MODULATE_FUNC &modulo, u32 &alphaSource, const f32 param)
         {
-            const u32 state = IR(param);
+            const u32    state = IR(param);
 
             alphaSource = (state & 0x0000F000) >> 12;
             modulo      = E_MODULATE_FUNC((state & 0x00000F00) >> 8);
@@ -214,7 +214,7 @@ namespace irr
         };
 
         //! Names for polygon offset direction
-        const c8* const PolygonOffsetDirectionNames[] =
+        const c8* const    PolygonOffsetDirectionNames[] =
         {
             "Back",
             "Front",
@@ -223,7 +223,7 @@ namespace irr
 
 
         //! Maximum number of texture an SMaterial can have.
-        constexpr u32 MATERIAL_MAX_TEXTURES = _IRR_MATERIAL_MAX_TEXTURES_;
+        constexpr u32    MATERIAL_MAX_TEXTURES = _IRR_MATERIAL_MAX_TEXTURES_;
 
         //! Struct for holding parameters for a material renderer
         class SMaterial
@@ -263,64 +263,64 @@ public:
 
                 MaterialType = other.MaterialType;
 
-                AmbientColor       = other.AmbientColor;
-                DiffuseColor       = other.DiffuseColor;
-                EmissiveColor      = other.EmissiveColor;
-                SpecularColor      = other.SpecularColor;
-                Shininess          = other.Shininess;
-                MaterialTypeParam  = other.MaterialTypeParam;
-                MaterialTypeParam2 = other.MaterialTypeParam2;
-                Thickness          = other.Thickness;
+                AmbientColor        = other.AmbientColor;
+                DiffuseColor        = other.DiffuseColor;
+                EmissiveColor       = other.EmissiveColor;
+                SpecularColor       = other.SpecularColor;
+                Shininess           = other.Shininess;
+                MaterialTypeParam   = other.MaterialTypeParam;
+                MaterialTypeParam2  = other.MaterialTypeParam2;
+                Thickness           = other.Thickness;
 
                 for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 {
                     TextureLayer[i] = other.TextureLayer[i];
                 }
 
-                Wireframe              = other.Wireframe;
-                PointCloud             = other.PointCloud;
-                GouraudShading         = other.GouraudShading;
-                Lighting               = other.Lighting;
-                ZWriteEnable           = other.ZWriteEnable;
-                BackfaceCulling        = other.BackfaceCulling;
-                FrontfaceCulling       = other.FrontfaceCulling;
-                FogEnable              = other.FogEnable;
-                NormalizeNormals       = other.NormalizeNormals;
-                ZBuffer                = other.ZBuffer;
-                AntiAliasing           = other.AntiAliasing;
-                ColorMask              = other.ColorMask;
-                ColorMaterial          = other.ColorMaterial;
-                BlendOperation         = other.BlendOperation;
-                PolygonOffsetFactor    = other.PolygonOffsetFactor;
-                PolygonOffsetDirection = other.PolygonOffsetDirection;
-                UseMipMaps             = other.UseMipMaps;
+                Wireframe               = other.Wireframe;
+                PointCloud              = other.PointCloud;
+                GouraudShading          = other.GouraudShading;
+                Lighting                = other.Lighting;
+                ZWriteEnable            = other.ZWriteEnable;
+                BackfaceCulling         = other.BackfaceCulling;
+                FrontfaceCulling        = other.FrontfaceCulling;
+                FogEnable               = other.FogEnable;
+                NormalizeNormals        = other.NormalizeNormals;
+                ZBuffer                 = other.ZBuffer;
+                AntiAliasing            = other.AntiAliasing;
+                ColorMask               = other.ColorMask;
+                ColorMaterial           = other.ColorMaterial;
+                BlendOperation          = other.BlendOperation;
+                PolygonOffsetFactor     = other.PolygonOffsetFactor;
+                PolygonOffsetDirection  = other.PolygonOffsetDirection;
+                UseMipMaps              = other.UseMipMaps;
 
                 return *this;
             }
 
             //! Texture layer array.
-            SMaterialLayer TextureLayer[MATERIAL_MAX_TEXTURES];
+            SMaterialLayer    TextureLayer[MATERIAL_MAX_TEXTURES];
 
             //! Type of the material. Specifies how everything is blended together
-            E_MATERIAL_TYPE MaterialType;
+            E_MATERIAL_TYPE    MaterialType;
 
             //! How much ambient light (a global light) is reflected by this material.
             /** The default is full white, meaning objects are completely
              * globally illuminated. Reduce this if you want to see diffuse
              * or specular light effects. */
-            SColor AmbientColor;
+            SColor    AmbientColor;
 
             //! How much diffuse light coming from a light source is reflected by this material.
             /** The default is full white. */
-            SColor DiffuseColor;
+            SColor    DiffuseColor;
 
             //! Light emitted by this material. Default is to emit no light.
-            SColor EmissiveColor;
+            SColor    EmissiveColor;
 
             //! How much specular light (highlights from a light) is reflected.
             /** The default is to reflect white specular light. See
              * SMaterial::Shininess on how to enable specular lights. */
-            SColor SpecularColor;
+            SColor    SpecularColor;
 
             //! Value affecting the size of specular highlights.
             /** A value of 20 is common. If set to 0, no specular
@@ -352,36 +352,36 @@ public:
              * scene::ILightSceneNode* light = smgr->addLightSceneNode(0,
              *  core::vector3df(5,5,5), video::SColorf(1.0f, 1.0f, 1.0f));
              * \endcode */
-            f32 Shininess;
+            f32    Shininess;
 
             //! Free parameter, dependent on the material type.
             /** Mostly ignored, used for example in EMT_PARALLAX_MAP_SOLID
              * and EMT_TRANSPARENT_ALPHA_CHANNEL. */
-            f32 MaterialTypeParam;
+            f32    MaterialTypeParam;
 
             //! Second free parameter, dependent on the material type.
             /** Mostly ignored. */
-            f32 MaterialTypeParam2;
+            f32    MaterialTypeParam2;
 
             //! Thickness of non-3dimensional elements such as lines and points.
-            f32 Thickness;
+            f32    Thickness;
 
             //! Is the ZBuffer enabled? Default: ECFN_LESSEQUAL
             /** Values are from E_COMPARISON_FUNC. */
-            u8 ZBuffer;
+            u8    ZBuffer;
 
             //! Sets the antialiasing mode
             /** Values are chosen from E_ANTI_ALIASING_MODE. Default is
              * EAAM_SIMPLE|EAAM_LINE_SMOOTH, i.e. simple multi-sample
              * anti-aliasing and lime smoothing is enabled. */
-            u8 AntiAliasing;
+            u8    AntiAliasing;
 
             //! Defines the enabled color planes
             /** Values are defined as or'ed values of the E_COLOR_PLANE enum.
              * Only enabled color planes will be rendered to the current render
              * target. Typical use is to disable all colors when rendering only to
              * depth or stencil buffer, or using Red and Green for Stereo rendering. */
-            u8 ColorMask : 4;
+            u8    ColorMask : 4;
 
             //! Defines the interpretation of vertex color in the lighting equation
             /** Values should be chosen from E_COLOR_MATERIAL.
@@ -389,59 +389,59 @@ public:
              * material values for light modulation. This allows to easily change e.g. the
              * diffuse light behavior of each face. The default, ECM_DIFFUSE, will result in
              * a very similar rendering as with lighting turned off, just with light shading. */
-            u8 ColorMaterial : 3;
+            u8    ColorMaterial : 3;
 
             //! Store the blend operation of choice
             /** Values to be chosen from E_BLEND_OPERATION. The actual way to use this value
              * is not yet determined, so ignore it for now. */
-            E_BLEND_OPERATION BlendOperation : 4;
+            E_BLEND_OPERATION    BlendOperation : 4;
 
             //! Factor specifying how far the polygon offset should be made
             /** Specifying 0 disables the polygon offset. The direction is specified spearately.
              * The factor can be from 0 to 7.*/
-            u8 PolygonOffsetFactor : 3;
+            u8    PolygonOffsetFactor : 3;
 
             //! Flag defining the direction the polygon offset is applied to.
             /** Can be to front or to back, specififed by values from E_POLYGON_OFFSET. */
-            E_POLYGON_OFFSET PolygonOffsetDirection : 1;
+            E_POLYGON_OFFSET    PolygonOffsetDirection : 1;
 
             //! Draw as wireframe or filled triangles? Default: false
             /** The user can access a material flag using
              * \code material.Wireframe=true \endcode
              * or \code material.setFlag(EMF_WIREFRAME, true); \endcode */
-            bool Wireframe : 1;
+            bool    Wireframe : 1;
 
             //! Draw as point cloud or filled triangles? Default: false
-            bool PointCloud : 1;
+            bool    PointCloud : 1;
 
             //! Flat or Gouraud shading? Default: true
-            bool GouraudShading : 1;
+            bool    GouraudShading : 1;
 
             //! Will this material be lighted? Default: true
-            bool Lighting : 1;
+            bool    Lighting : 1;
 
             //! Is the zbuffer writeable or is it read-only. Default: true.
             /** This flag is forced to false if the MaterialType is a
              * transparent type and the scene parameter
              * ALLOW_ZWRITE_ON_TRANSPARENT is not set. */
-            bool ZWriteEnable : 1;
+            bool    ZWriteEnable : 1;
 
             //! Is backface culling enabled? Default: true
-            bool BackfaceCulling : 1;
+            bool    BackfaceCulling : 1;
 
             //! Is frontface culling enabled? Default: false
-            bool FrontfaceCulling : 1;
+            bool    FrontfaceCulling : 1;
 
             //! Is fog enabled? Default: false
-            bool FogEnable : 1;
+            bool    FogEnable : 1;
 
             //! Should normals be normalized?
             /** Always use this if the mesh lit and scaled. Default: false */
-            bool NormalizeNormals : 1;
+            bool    NormalizeNormals : 1;
 
             //! Shall mipmaps be used if available
             /** Sometimes, disabling mipmap usage can be useful. Default: true */
-            bool UseMipMaps : 1;
+            bool    UseMipMaps : 1;
 
             //! Gets the texture transformation matrix for level i
             /** \param i The desired level. Must not be larger than MATERIAL_MAX_TEXTURES.
@@ -560,8 +560,8 @@ public:
                     {
                         for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                         {
-                            TextureLayer[i].TextureWrapU = (E_TEXTURE_CLAMP)value;
-                            TextureLayer[i].TextureWrapV = (E_TEXTURE_CLAMP)value;
+                            TextureLayer[i].TextureWrapU    = (E_TEXTURE_CLAMP)value;
+                            TextureLayer[i].TextureWrapV    = (E_TEXTURE_CLAMP)value;
                         }
                     }
                     break;
@@ -582,8 +582,8 @@ public:
                         BlendOperation = value ? EBO_ADD : EBO_NONE; break;
 
                     case EMF_POLYGON_OFFSET:
-                        PolygonOffsetFactor    = value ? 1 : 0;
-                        PolygonOffsetDirection = EPO_BACK;
+                        PolygonOffsetFactor     = value ? 1 : 0;
+                        PolygonOffsetDirection  = EPO_BACK;
                         break;
 
                     default:
@@ -639,13 +639,13 @@ public:
 
                     case EMF_TEXTURE_WRAP:
                         return !(TextureLayer[0].TextureWrapU ||
-                               TextureLayer[0].TextureWrapV ||
-                               TextureLayer[1].TextureWrapU ||
-                               TextureLayer[1].TextureWrapV ||
-                               TextureLayer[2].TextureWrapU ||
-                               TextureLayer[2].TextureWrapV ||
-                               TextureLayer[3].TextureWrapU ||
-                               TextureLayer[3].TextureWrapV);
+                                 TextureLayer[0].TextureWrapV ||
+                                 TextureLayer[1].TextureWrapU ||
+                                 TextureLayer[1].TextureWrapV ||
+                                 TextureLayer[2].TextureWrapU ||
+                                 TextureLayer[2].TextureWrapV ||
+                                 TextureLayer[3].TextureWrapU ||
+                                 TextureLayer[3].TextureWrapV);
 
                     case EMF_ANTI_ALIASING:
                         return (AntiAliasing == 1);
@@ -674,7 +674,7 @@ public:
              * \return True if the materials differ, else false. */
             inline bool operator!=(const SMaterial &b) const
             {
-                bool different =
+                bool    different =
                     MaterialType != b.MaterialType ||
                     AmbientColor != b.AmbientColor ||
                     DiffuseColor != b.DiffuseColor ||
@@ -728,7 +728,7 @@ public:
         };
 
         //! global const identity Material
-        IRRLICHT_API extern SMaterial IdentityMaterial;
+        IRRLICHT_API extern SMaterial    IdentityMaterial;
     } // end namespace video
 } // end namespace irr
 #endif
