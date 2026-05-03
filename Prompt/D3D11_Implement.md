@@ -314,3 +314,9 @@ d3d11最大可以支持8个纹理,其它video driver支持4个,改一下下面�
 
 # 21
 每次调用CD3D11Driver::draw2D3DVertexPrimitiveList都需要创建vertex buffer和index buffer。我们没必要每次都创建一个临时buffer，绘制完成后就立马释放。优化这部分代码。
+
+# 22
+在d3d11中设置的model/view/project矩阵没有被设置给渲染管线。
+1. 请在draw前，通过model/view/project matrics计算出mvp matrix
+2. mvp matrix作为constant传递给vertex shader
+3. vertex shader的顶点计算增加mvp矩阵转换。

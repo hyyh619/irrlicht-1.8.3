@@ -113,7 +113,7 @@ namespace irr
             m_WindowId(0), m_SceneSourceRect(0),
             m_LastVertexType((video::E_VERTEX_TYPE)-1), m_VendorID(0),
             m_BuiltInShadersInitialized(false),
-            m_TempVertexBuffer(0), m_TempIndexBuffer(0),
+            m_TempVertexBuffer(0), m_TempIndexBuffer(0), m_MatrixConstantBuffer(0),
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
             m_MaxTextureUnits(0), m_MaxUserClipPlanes(0), m_MaxMRTs(1), m_NumSetMRTs(1),
@@ -172,6 +172,9 @@ namespace irr
 
             if (m_TempIndexBuffer)
                 m_TempIndexBuffer->Release();
+
+            if (m_MatrixConstantBuffer)
+                m_MatrixConstantBuffer->Release();
 
             if (m_pID3DDeviceContext)
                 m_pID3DDeviceContext->Release();
@@ -388,6 +391,20 @@ namespace irr
             m_CurrentRendertargetSize = currentDim;
             core::rect<s32>    driverInitArea(0, 0, currentDim.Width, currentDim.Height);
             setViewPort(driverInitArea);
+
+            D3D11_BUFFER_DESC    matrixBufferDesc;
+            matrixBufferDesc.ByteWidth            = sizeof(core::matrix4);
+            matrixBufferDesc.Usage                = D3D11_USAGE_DYNAMIC;
+            matrixBufferDesc.BindFlags            = D3D11_BIND_CONSTANT_BUFFER;
+            matrixBufferDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+            matrixBufferDesc.MiscFlags            = 0;
+            matrixBufferDesc.StructureByteStride  = 0;
+            hr = m_pID3DDevice->CreateBuffer(&matrixBufferDesc, 0, &m_MatrixConstantBuffer);
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create matrix constant buffer.", ELL_ERROR);
+                return false;
+            }
 
             setTransform(ETS_VIEW, core::IdentityMatrix);
             setTransform(ETS_PROJECTION, core::IdentityMatrix);
@@ -845,6 +862,8 @@ namespace irr
 
             m_pID3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+            updateMatrixConstantBuffer();
+
             if (hwBufferD3D->indexBuffer)
             {
                 m_pID3DDeviceContext->DrawIndexed(mb->getIndexCount(), 0, 0);
@@ -1041,6 +1060,9 @@ namespace irr
             }
 
             m_pID3DDeviceContext->IASetPrimitiveTopology(topology);
+
+            if (is3D)
+                updateMatrixConstantBuffer();
 
             if (indexBuffer)
                 m_pID3DDeviceContext->DrawIndexed(primitiveCount * 3, 0, 0);
@@ -1731,6 +1753,21 @@ namespace irr
                                                              shaderBlob->GetBufferSize(),
                                                              &m_InputLayout[type]);
             return SUCCEEDED(hr);
+        }
+
+
+        void CD3D11Driver::updateMatrixConstantBuffer()
+        {
+            core::matrix4    mvp = m_Matrices[ETS_WORLD] * m_Matrices[ETS_VIEW] * m_Matrices[ETS_PROJECTION];
+
+            D3D11_MAPPED_SUBRESOURCE    mapped;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_MatrixConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+            {
+                memcpy(mapped.pData, mvp.pointer(), sizeof(core::matrix4));
+                m_pID3DDeviceContext->Unmap(m_MatrixConstantBuffer, 0);
+            }
+
+            m_pID3DDeviceContext->VSSetConstantBuffers(0, 1, &m_MatrixConstantBuffer);
         }
 
 

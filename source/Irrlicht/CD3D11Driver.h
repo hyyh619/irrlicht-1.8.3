@@ -336,6 +336,7 @@ private:
 
             bool createBuiltInVertexShader(E_VERTEX_TYPE type);
             bool createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob);
+            void updateMatrixConstantBuffer();
 
             core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
 
@@ -385,6 +386,7 @@ private:
 
             ID3D11Buffer            *m_TempVertexBuffer;
             ID3D11Buffer            *m_TempIndexBuffer;
+            ID3D11Buffer            *m_MatrixConstantBuffer;
             u32                     m_TempVertexBufferSize;
             u32                     m_TempIndexBufferSize;
             E_INDEX_TYPE            m_TempIndexType;
