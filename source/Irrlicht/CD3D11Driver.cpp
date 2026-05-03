@@ -105,6 +105,58 @@ namespace irr
             "    output.Binormal = input.Binormal;"
             "    return output;"
             "}";
+
+        static const char    PIXEL_SHADER_STANDARD[] =
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
+            "struct PS_INPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Normal : TEXCOORD1;"
+            "};"
+            "float4 main(PS_INPUT input) : SV_TARGET {"
+            "    return input.Color;"
+            "}";
+
+        static const char    PIXEL_SHADER_2TCOORDS[] =
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
+            "struct PS_INPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float2 TexCoord2 : TEXCOORD1;"
+            "    float3 Normal : TEXCOORD2;"
+            "};"
+            "Texture2D DiffuseTexture : register(t0);"
+            "SamplerState LinearSampler : register(s0);"
+            "float4 main(PS_INPUT input) : SV_TARGET {"
+            "    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);"
+            "    return input.Color * texColor;"
+            "}";
+
+        static const char    PIXEL_SHADER_TANGENTS[] =
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
+            "struct PS_INPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Normal : TEXCOORD1;"
+            "    float3 Tangent : TEXCOORD2;"
+            "    float3 Binormal : TEXCOORD3;"
+            "};"
+            "Texture2D DiffuseTexture : register(t0);"
+            "SamplerState LinearSampler : register(s0);"
+            "float4 main(PS_INPUT input) : SV_TARGET {"
+            "    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);"
+            "    return input.Color * texColor;"
+            "}";
+
         CD3D11Driver::CD3D11Driver(const SIrrlichtCreationParameters &params, io::IFileSystem *io)
             : CNullDriver(io, params.WindowSize), m_CurrentRenderMode(ERM_NONE),
             m_ResetRenderStates(true), m_Transformation3DChanged(false),
@@ -140,6 +192,7 @@ namespace irr
             {
                 m_InputLayout[i]            = 0;
                 m_BuiltInVertexShader[i]    = 0;
+                m_BuiltInPixelShader[i]     = 0;
             }
         }
 
@@ -165,6 +218,9 @@ namespace irr
 
                 if (m_BuiltInVertexShader[i])
                     m_BuiltInVertexShader[i]->Release();
+
+                if (m_BuiltInPixelShader[i])
+                    m_BuiltInPixelShader[i]->Release();
             }
 
             if (m_TempVertexBuffer)
@@ -846,7 +902,7 @@ namespace irr
             const void                  *vPtr   = mb->getVertices();
             const void                  *iPtr   = mb->getIndices();
 
-            setVertexShader(vType);
+            setShadersByType(vType);
 
             if (hwBufferD3D->vertexBuffer)
             {
@@ -924,7 +980,7 @@ namespace irr
                                                        E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
                                                        E_INDEX_TYPE iType, bool is3D)
         {
-            setVertexShader(vType);
+            setShadersByType(vType);
 
             const u32       stride              = getVertexPitchFromType(vType);
             const u32       vertexBufferSize    = stride * vertexCount;
@@ -1610,7 +1666,7 @@ namespace irr
         }
 
 
-        void CD3D11Driver::setVertexShader(video::E_VERTEX_TYPE newType)
+        void CD3D11Driver::setShadersByType(video::E_VERTEX_TYPE newType)
         {
             if (newType != m_LastVertexType || !m_BuiltInShadersInitialized)
             {
@@ -1619,6 +1675,7 @@ namespace irr
                     for (u32 i = 0; i < 3; ++i)
                     {
                         createBuiltInVertexShader((E_VERTEX_TYPE)i);
+                        createBuiltInPixelShader((E_VERTEX_TYPE)i);
                     }
 
                     m_BuiltInShadersInitialized = true;
@@ -1627,6 +1684,10 @@ namespace irr
                 if (newType >= 0 && newType < 3 && m_BuiltInVertexShader[newType])
                 {
                     m_pID3DDeviceContext->VSSetShader(m_BuiltInVertexShader[newType], 0, 0);
+                    if (m_BuiltInPixelShader[newType])
+                    {
+                        m_pID3DDeviceContext->PSSetShader(m_BuiltInPixelShader[newType], 0, 0);
+                    }
                     if (m_InputLayout[newType])
                     {
                         m_pID3DDeviceContext->IASetInputLayout(m_InputLayout[newType]);
@@ -1693,6 +1754,59 @@ namespace irr
             }
 
             return true;
+        }
+
+
+        bool CD3D11Driver::createBuiltInPixelShader(E_VERTEX_TYPE type)
+        {
+            const char    *shaderSource = 0;
+
+            switch (type)
+            {
+                case EVT_STANDARD:
+                    shaderSource = PIXEL_SHADER_STANDARD;
+                    break;
+
+                case EVT_2TCOORDS:
+                    shaderSource = PIXEL_SHADER_2TCOORDS;
+                    break;
+
+                case EVT_TANGENTS:
+                    shaderSource = PIXEL_SHADER_TANGENTS;
+                    break;
+
+                default:
+                    return false;
+            }
+
+            ID3DBlob    *shaderBlob = 0;
+            ID3DBlob    *errorBlob  = 0;
+
+            HRESULT    hr = D3DCompile(shaderSource, strlen(shaderSource), 0, 0, 0, "main",
+                                       "ps_4_0", D3DCOMPILE_SKIP_VALIDATION, 0, &shaderBlob, &errorBlob);
+
+            if (FAILED(hr))
+            {
+                if (errorBlob)
+                {
+                    os::Printer::log("Pixel shader compilation failed:", ELL_ERROR);
+                    os::Printer::log((const c8*)errorBlob->GetBufferPointer(), ELL_ERROR);
+                    errorBlob->Release();
+                }
+
+                return false;
+            }
+
+            if (shaderBlob)
+            {
+                hr = m_pID3DDevice->CreatePixelShader(shaderBlob->GetBufferPointer(),
+                                                      shaderBlob->GetBufferSize(),
+                                                      nullptr,
+                                                      &m_BuiltInPixelShader[type]);
+                shaderBlob->Release();
+            }
+
+            return SUCCEEDED(hr);
         }
 
 

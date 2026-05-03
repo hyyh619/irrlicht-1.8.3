@@ -292,7 +292,7 @@ private:
                 ERM_SHADOW_VOLUME_ZPASS
             };
 
-            void setVertexShader(video::E_VERTEX_TYPE newType);
+            void setShadersByType(video::E_VERTEX_TYPE newType);
 
             bool setRenderStates3DMode();
 
@@ -335,6 +335,7 @@ private:
                 E_GPU_SHADING_LANGUAGE shadingLang = EGSL_DEFAULT);
 
             bool createBuiltInVertexShader(E_VERTEX_TYPE type);
+            bool createBuiltInPixelShader(E_VERTEX_TYPE type);
             bool createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob);
             void updateMatrixConstantBuffer();
 
@@ -364,6 +365,7 @@ private:
             E_VERTEX_TYPE                   m_LastVertexType;
             ID3D11InputLayout               *m_InputLayout[3];
             ID3D11VertexShader              *m_BuiltInVertexShader[3];
+            ID3D11PixelShader               *m_BuiltInPixelShader[3];
             bool                            m_BuiltInShadersInitialized;
 
             SColorf             m_AmbientLight;
