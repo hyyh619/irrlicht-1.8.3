@@ -38,9 +38,9 @@ namespace irr
             PasswordChar(L'*'), HAlign(EGUIA_UPPERLEFT), VAlign(EGUIA_CENTER),
             CurrentTextRect(0, 0, 1, 1), FrameRect(rectangle)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIEditBox");
-    #endif
+#endif
 
             Text = text;
 

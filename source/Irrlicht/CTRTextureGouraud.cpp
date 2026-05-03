@@ -17,9 +17,9 @@ namespace irr
             lockedSurface(0), lockedTexture(0), lockedTextureWidth(0),
             textureXMask(0), textureYMask(0), Texture(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CTRTextureGouraud");
-    #endif
+#endif
 
             if (ZBuffer)
                 zbuffer->grab();
@@ -460,7 +460,7 @@ namespace irr
             return new CTRTextureGouraud(zbuffer);
     #else
             return 0;
-    #endif  // _IRR_COMPILE_WITH_SOFTWARE_
+#endif  // _IRR_COMPILE_WITH_SOFTWARE_
         }
     } // end namespace video
 } // end namespace irr

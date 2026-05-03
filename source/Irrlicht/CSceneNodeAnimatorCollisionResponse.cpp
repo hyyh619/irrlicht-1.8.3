@@ -26,9 +26,9 @@ namespace irr
             Falling(false), IsCamera(false), AnimateCameraTarget(true), CollisionOccurred(false),
             FirstUpdate(true)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSceneNodeAnimatorCollisionResponse");
-    #endif
+#endif
 
             if (World)
                 World->grab();

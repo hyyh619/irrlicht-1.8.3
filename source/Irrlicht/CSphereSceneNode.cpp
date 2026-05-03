@@ -19,9 +19,9 @@ namespace irr
             : IMeshSceneNode(parent, mgr, id, position, rotation, scale), Mesh(0), Shadow(0),
             Radius(radius), PolyCountX(polyCountX), PolyCountY(polyCountY)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSphereSceneNode");
-    #endif
+#endif
 
             Mesh = SceneManager->getGeometryCreator()->createSphereMesh(radius, polyCountX, polyCountY);
         }

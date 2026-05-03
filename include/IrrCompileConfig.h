@@ -673,7 +673,7 @@
 //#define IRRLICHT_FAST_MATH
     #ifdef NO_IRRLICHT_FAST_MATH
     #undef IRRLICHT_FAST_MATH
-    #endif
+#endif
 #endif
 
 // Some cleanup and standard stuff
@@ -811,7 +811,7 @@
         #define _tfindfirst  __tfindfirst
         #define _tfindnext   __tfindnext
 typedef long intptr_t;
-    #endif
+#endif
 #endif
 
 #ifdef _DEBUG
@@ -825,6 +825,6 @@ typedef long intptr_t;
     #define _IRR_SCENEMANAGER_DEBUG
     #ifdef NO_IRR_SCENEMANAGER_DEBUG
         #undef _IRR_SCENEMANAGER_DEBUG
-    #endif
+#endif
 #endif
 #endif // __IRR_COMPILE_CONFIG_H_INCLUDED__

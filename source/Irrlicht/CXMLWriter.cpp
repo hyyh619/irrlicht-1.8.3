@@ -15,9 +15,9 @@ namespace irr
         CXMLWriter::CXMLWriter(IWriteFile *file)
             : File(file), Tabs(0), TextWrittenLast(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CXMLWriter");
-    #endif
+#endif
 
             if (File)
                 File->grab();

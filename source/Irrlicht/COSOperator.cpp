@@ -36,9 +36,9 @@ namespace irr
     // constructor
     COSOperator::COSOperator(const core::stringc &osVersion) : OperatingSystem(osVersion)
     {
-    #ifdef _DEBUG
+#ifdef _DEBUG
         setDebugName("COSOperator");
-    #endif
+#endif
     }
 
 

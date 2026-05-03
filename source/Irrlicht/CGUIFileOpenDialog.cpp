@@ -36,9 +36,9 @@ namespace irr
                 (parent->getAbsolutePosition().getHeight() - FOD_HEIGHT) / 2 + FOD_HEIGHT)),
             FileNameText(0), FileList(0), Dragging(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             IGUIElement::setDebugName("CGUIFileOpenDialog");
-    #endif
+#endif
 
             Text = title;
 
@@ -414,7 +414,7 @@ namespace irr
                     delete[] ws;
             #else
                     s = FileList->getFileName(i).c_str();
-            #endif
+#endif
                     FileBox->addItem(s.c_str(), skin->getIcon(FileList->isDirectory(i) ? EGDI_DIRECTORY : EGDI_FILE));
                 }
             }
@@ -430,7 +430,7 @@ namespace irr
                 delete[] ws;
         #else
                 s = FileSystem->getWorkingDirectory();
-        #endif
+    #endif
 
                 FileDirectory = s;
                 FileNameText->setText(s.c_str());

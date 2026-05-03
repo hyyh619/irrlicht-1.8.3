@@ -29,9 +29,9 @@ namespace irr
             Radius(radius), Length(length), Time(0), Emitted(0),
             MaxAngleDegrees(maxAngleDegrees), OutlineOnly(outlineOnly)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CParticleCylinderEmitter");
-    #endif
+#endif
         }
 
 

@@ -18,9 +18,9 @@ namespace irr
             video::ITexture *right, video::ITexture *front, video::ITexture *back, ISceneNode *parent, ISceneManager *mgr, s32 id)
             : ISceneNode(parent, mgr, id)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSkyBoxSceneNode");
-    #endif
+#endif
 
             setAutomaticCulling(scene::EAC_OFF);
             Box.MaxEdge.set(0, 0, 0);

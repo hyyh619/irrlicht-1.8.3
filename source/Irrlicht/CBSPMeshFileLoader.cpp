@@ -17,9 +17,9 @@ namespace irr
             io::IFileSystem *fs)
             : FileSystem(fs), SceneManager(smgr)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CBSPMeshFileLoader");
-    #endif
+#endif
 
             if (FileSystem)
                 FileSystem->grab();

@@ -18,9 +18,9 @@ namespace irr
         CFileList::CFileList(const io::path &path, bool ignoreCase, bool ignorePaths)
             : IgnorePaths(ignorePaths), IgnoreCase(ignoreCase), Path(path)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CFileList");
-    #endif
+#endif
 
             Path.replace('\\', '/');
         }

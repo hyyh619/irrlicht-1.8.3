@@ -26,9 +26,9 @@ namespace irr
             IsRenderTarget(false), AutomaticMipmapUpdate(false),
             ReadOnlyLock(false), KeepImage(true)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COpenGLTexture");
-    #endif
+#endif
 
             HasMipMaps = Driver->getTextureCreationFlag(ETCF_CREATE_MIP_MAPS);
             getImageValues(origImage);
@@ -64,9 +64,9 @@ namespace irr
             MipmapLegacyMode(true), IsRenderTarget(false), AutomaticMipmapUpdate(false),
             ReadOnlyLock(false), KeepImage(true)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COpenGLTexture");
-    #endif
+#endif
         }
 
 
@@ -718,9 +718,9 @@ namespace irr
             ECOLOR_FORMAT format)
             : COpenGLTexture(name, driver), DepthTexture(0), ColorFrameBuffer(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COpenGLTexture_FBO");
-    #endif
+#endif
 
             ImageSize   = size;
             TextureSize = size;

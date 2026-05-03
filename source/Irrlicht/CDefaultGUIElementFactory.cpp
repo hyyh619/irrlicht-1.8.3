@@ -35,9 +35,9 @@ namespace irr
         CDefaultGUIElementFactory::CDefaultGUIElementFactory(IGUIEnvironment *env)
             : Environment(env)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CDefaultGUIElementFactory");
-    #endif
+#endif
 
             // don't grab the gui environment here to prevent cyclic references
         }

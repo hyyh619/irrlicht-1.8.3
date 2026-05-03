@@ -21,9 +21,9 @@ namespace irr
         CDefaultSceneNodeFactory::CDefaultSceneNodeFactory(ISceneManager *mgr)
             : Manager(mgr)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CDefaultSceneNodeFactory");
-    #endif
+#endif
 
             // don't grab the scene manager here to prevent cyclic references
 

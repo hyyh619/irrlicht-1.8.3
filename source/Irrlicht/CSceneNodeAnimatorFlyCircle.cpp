@@ -15,9 +15,9 @@ namespace irr
             : Center(center), Direction(direction), Radius(radius),
             RadiusEllipsoid(radiusEllipsoid), Speed(speed), StartTime(time)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSceneNodeAnimatorFlyCircle");
-    #endif
+#endif
             init();
         }
 

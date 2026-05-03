@@ -52,7 +52,7 @@ namespace irr
                     swapHeader (1)
     #else
                     swapHeader (0)
-    #endif
+#endif
                 {
                     memcpy (scriptDir, "scripts\x0", 8);
                 }

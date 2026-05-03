@@ -27,9 +27,9 @@ namespace irr
             DrawHeight(0), Min(0), Max(100), SmallStep(10), LargeStep(50), DesiredPos(0),
             LastChange(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIScrollBar");
-    #endif
+#endif
 
             refreshControls();
 

@@ -24,9 +24,9 @@ namespace irr
         COBJMeshWriter::COBJMeshWriter(scene::ISceneManager *smgr, io::IFileSystem *fs)
             : SceneManager(smgr), FileSystem(fs)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COBJMeshWriter");
-    #endif
+#endif
 
             if (SceneManager)
                 SceneManager->grab();

@@ -24,9 +24,9 @@ namespace irr
             : IMeshSceneNode(parent, mgr, id, position, rotation, scale), Mesh(0), Shadow(0),
             PassCount(0), ReadOnlyMaterials(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CMeshSceneNode");
-    #endif
+#endif
 
             setMesh(mesh);
         }

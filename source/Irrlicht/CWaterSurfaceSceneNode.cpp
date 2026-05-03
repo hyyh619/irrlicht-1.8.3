@@ -23,9 +23,9 @@ namespace irr
             WaveLength(waveLength), WaveSpeed(waveSpeed), WaveHeight(waveHeight),
             OriginalMesh(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CWaterSurfaceSceneNode");
-    #endif
+#endif
 
             setMesh(mesh);
         }

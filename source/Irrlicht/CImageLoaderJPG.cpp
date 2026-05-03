@@ -23,9 +23,9 @@ namespace irr
         //! constructor
         CImageLoaderJPG::CImageLoaderJPG()
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CImageLoaderJPG");
-    #endif
+#endif
         }
 
 
@@ -130,7 +130,7 @@ namespace irr
             file->seek(6);
             file->read(&jfif, sizeof(s32));
             return (jfif == 0x4a464946 || jfif == 0x4649464a);
-    #endif
+#endif
         }
 
         //! creates a surface from the file
@@ -287,7 +287,7 @@ namespace irr
             delete[] input;
 
             return image;
-    #endif
+#endif
         }
 
 

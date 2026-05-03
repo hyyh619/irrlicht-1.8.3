@@ -25,9 +25,9 @@ namespace irr
             ListButton(0), SelectedText(0), ListBox(0), LastFocus(0),
             Selected(-1), HAlign(EGUIA_UPPERLEFT), VAlign(EGUIA_CENTER), MaxSelectionRows(5), HasFocus(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIComboBox");
-    #endif
+#endif
 
             IGUISkin *skin = Environment->getSkin();
 

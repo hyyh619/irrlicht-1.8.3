@@ -53,18 +53,18 @@
 #if !defined (SOFTWARE_DRIVER_2_USE_WBUFFER) && defined (USE_ZBUFFER)
     #ifndef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
         #undef IPOL_W
-    #endif
+#endif
     #define IPOL_Z
 
     #ifdef CMP_W
         #undef CMP_W
         #define CMP_Z
-    #endif
+#endif
 
     #ifdef WRITE_W
         #undef WRITE_W
         #define WRITE_Z
-    #endif
+#endif
 #endif
 
 
@@ -99,9 +99,9 @@ private:
         CTRTextureGouraudAlpha2::CTRTextureGouraudAlpha2(CBurningVideoDriver *driver)
             : IBurningShader(driver)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CTRTextureGouraudAlpha2");
-    #endif
+#endif
 
             AlphaRef = 0;
         }
@@ -715,7 +715,7 @@ namespace irr
             return new CTRTextureGouraudAlpha2(driver);
     #else
             return 0;
-    #endif  // _IRR_COMPILE_WITH_BURNINGSVIDEO_
+#endif  // _IRR_COMPILE_WITH_BURNINGSVIDEO_
         }
     } // end namespace video
 } // end namespace irr

@@ -17,9 +17,9 @@ namespace irr
             : CTriangleSelector(mesh, node), Root(0), NodeCount(0),
             MinimalPolysPerNode(minimalPolysPerNode)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COctreeTriangleSelector");
-    #endif
+#endif
 
             if (!Triangles.empty())
             {

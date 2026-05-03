@@ -20,9 +20,9 @@ namespace irr
         CGUIMeshViewer::CGUIMeshViewer(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
             : IGUIMeshViewer(environment, parent, id, rectangle), Mesh(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIMeshViewer");
-    #endif
+#endif
         }
 
 

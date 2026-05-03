@@ -166,7 +166,7 @@ public:
             {
             #ifdef COLLADA_READER_DEBUG
                 os::Printer::log("COLLADA: loaded light prefab", Id.c_str(), ELL_DEBUG);
-            #endif
+#endif
             }
 
             video::SLight LightData; // publically accessible
@@ -177,7 +177,7 @@ public:
             {
             #ifdef COLLADA_READER_DEBUG
                 os::Printer::log("COLLADA: Constructing light instance", Id.c_str(), ELL_DEBUG);
-            #endif
+#endif
 
                 if (LightData.Type == ELT_AMBIENT)
                 {
@@ -213,7 +213,7 @@ public:
             {
             #ifdef COLLADA_READER_DEBUG
                 os::Printer::log("COLLADA: Constructing mesh instance", Id.c_str(), ELL_DEBUG);
-            #endif
+#endif
 
                 scene::ISceneNode *m = mgr->addMeshSceneNode(Mesh, parent);
                 if (m)
@@ -238,7 +238,7 @@ public:
             {
             #ifdef COLLADA_READER_DEBUG
                 os::Printer::log("COLLADA: loaded camera prefab", Id.c_str(), ELL_DEBUG);
-            #endif
+#endif
             }
 
             // publicly accessible data
@@ -252,7 +252,7 @@ public:
             {
             #ifdef COLLADA_READER_DEBUG
                 os::Printer::log("COLLADA: Constructing camera instance", Id.c_str(), ELL_DEBUG);
-            #endif
+#endif
 
                 scene::ICameraSceneNode *c = mgr->addCameraSceneNode(parent);
                 if (c)
@@ -278,7 +278,7 @@ public:
             {
             #ifdef COLLADA_READER_DEBUG
                 os::Printer::log("COLLADA: loaded scene prefab", Id.c_str(), ELL_DEBUG);
-            #endif
+#endif
             }
 
             //! creates an instance of this prefab
@@ -287,7 +287,7 @@ public:
             {
             #ifdef COLLADA_READER_DEBUG
                 os::Printer::log("COLLADA: Constructing scene instance", Id.c_str(), ELL_DEBUG);
-            #endif
+#endif
 
                 if (Children.size() == 0)
                     return 0;
@@ -308,7 +308,7 @@ public:
 
             #ifdef COLLADA_READER_DEBUG
                     os::Printer::log("COLLADA: Transformation", t.c_str(), ELL_DEBUG);
-            #endif
+#endif
 
                     for (u32 i = 0; i < Children.size(); ++i)
                         Children[i]->addInstance(s, mgr);
@@ -328,9 +328,9 @@ public:
             : SceneManager(smgr), FileSystem(fs), DummyMesh(0),
             FirstLoadedMesh(0), LoadedMeshCount(0), CreateInstances(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CColladaFileLoader");
-    #endif
+#endif
         }
 
 
@@ -429,7 +429,7 @@ public:
         {
     #ifndef COLLADA_READER_DEBUG
             if (reportSkipping) // always report in COLLADA_READER_DEBUG mode
-    #endif
+#endif
             os::Printer::log("COLLADA skipping section", core::stringc(reader->getNodeName()).c_str(), ELL_DEBUG);
 
             // skip if this element is empty anyway.
@@ -447,7 +447,7 @@ public:
             #ifdef COLLADA_READER_DEBUG
                     if (reportSkipping)
                         os::Printer::log("Skipping COLLADA unknown element", core::stringc(reader->getNodeName()).c_str(), ELL_DEBUG);
-            #endif
+#endif
 
                     ++tagCounter;
                 }
@@ -509,7 +509,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading library", ELL_DEBUG);
-    #endif
+#endif
 
             if (reader->isEmptyElement())
                 return;
@@ -619,7 +619,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading scene", ELL_DEBUG);
-    #endif
+#endif
 
             if (reader->isEmptyElement())
                 return;
@@ -683,7 +683,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading asset", ELL_DEBUG);
-    #endif
+#endif
 
             if (reader->isEmptyElement())
                 return;
@@ -713,13 +713,13 @@ public:
                 return;
         #ifdef COLLADA_READER_DEBUG
                 os::Printer::log("COLLADA reading empty node", ELL_DEBUG);
-        #endif
+    #endif
             }
 
             core::stringc name = readId(reader);
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading node", name, ELL_DEBUG);
-    #endif
+#endif
 
             core::matrix4     transform; // transformation of this node
             core::aabbox3df   bbox;
@@ -831,7 +831,7 @@ public:
 
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading look at node", ELL_DEBUG);
-    #endif
+#endif
 
             f32 floats[9];
             readFloatsInsideElement(reader, floats, 9);
@@ -850,7 +850,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading skew node", ELL_DEBUG);
-    #endif
+#endif
 
             core::matrix4 mat;
             if (reader->isEmptyElement())
@@ -896,7 +896,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading boundingbox node", ELL_DEBUG);
-    #endif
+#endif
 
             bbox.reset(core::aabbox3df());
 
@@ -936,7 +936,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading matrix node", ELL_DEBUG);
-    #endif
+#endif
 
             core::matrix4 mat;
             if (reader->isEmptyElement())
@@ -970,7 +970,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading perspective node", ELL_DEBUG);
-    #endif
+#endif
 
             core::matrix4 mat;
             if (reader->isEmptyElement())
@@ -992,7 +992,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading rotate node", ELL_DEBUG);
-    #endif
+#endif
 
             core::matrix4 mat;
             if (reader->isEmptyElement())
@@ -1021,7 +1021,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading scale node", ELL_DEBUG);
-    #endif
+#endif
 
             core::matrix4 mat;
             if (reader->isEmptyElement())
@@ -1044,7 +1044,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading translate node", ELL_DEBUG);
-    #endif
+#endif
 
             core::matrix4 mat;
             if (reader->isEmptyElement())
@@ -1074,7 +1074,7 @@ public:
 
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading instance", url, ELL_DEBUG);
-    #endif
+#endif
 
             if (!reader->isEmptyElement())
             {
@@ -1102,7 +1102,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA instantiate node", ELL_DEBUG);
-    #endif
+#endif
 
             for (u32 i = 0; i < Prefabs.size(); ++i)
             {
@@ -1142,7 +1142,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading camera prefab", ELL_DEBUG);
-    #endif
+#endif
 
             CCameraPrefab *prefab = new CCameraPrefab(readId(reader));
 
@@ -1183,7 +1183,7 @@ public:
             image.Id = readId(reader);
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading image", core::stringc(image.Id), ELL_DEBUG);
-    #endif
+#endif
             image.Dimension.Height = (u32)reader->getAttributeValueAsInt("height");
             image.Dimension.Width  = (u32)reader->getAttributeValueAsInt("width");
 
@@ -1238,7 +1238,7 @@ public:
             texture.Id = readId(reader);
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading texture", core::stringc(texture.Id), ELL_DEBUG);
-    #endif
+#endif
 
             if (!reader->isEmptyElement())
             {
@@ -1263,7 +1263,7 @@ public:
             material.Id = readId(reader);
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading material", core::stringc(material.Id), ELL_DEBUG);
-    #endif
+#endif
 
             if (Version >= 10400)
             {
@@ -1355,7 +1355,7 @@ public:
                 effect->Mat.NormalizeNormals = true;
         #ifdef COLLADA_READER_DEBUG
                 os::Printer::log("COLLADA reading effect", core::stringc(effect->Id), ELL_DEBUG);
-        #endif
+    #endif
             }
 
             while (reader->read())
@@ -1377,7 +1377,7 @@ public:
                     {
                 #ifdef COLLADA_READER_DEBUG
                         os::Printer::log("COLLADA reading effect part", reader->getNodeName(), ELL_DEBUG);
-                #endif
+    #endif
                         effect->Mat.setFlag(irr::video::EMF_GOURAUD_SHADING,
                             phongNode == reader->getNodeName() ||
                             blinnNode == reader->getNodeName());
@@ -1468,7 +1468,7 @@ public:
                         {
                     #ifdef COLLADA_READER_DEBUG
                             os::Printer::log("Setting double sided flag for effect.", ELL_DEBUG);
-                    #endif
+        #endif
 
                             effect->Mat.setFlag(irr::video::EMF_BACK_FACE_CULLING, false);
                         }
@@ -1529,7 +1529,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA find material", materialName, ELL_DEBUG);
-    #endif
+#endif
 
             // do a quick lookup in the materials
             SColladaMaterial matToFind;
@@ -1568,7 +1568,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading bind material", ELL_DEBUG);
-    #endif
+#endif
 
             while (reader->read())
             {
@@ -1622,7 +1622,7 @@ public:
                             {
                         #ifdef COLLADA_READER_DEBUG
                                 os::Printer::log("COLLADA found transparency material", core::stringc(material->Transparency).c_str(), ELL_DEBUG);
-                        #endif
+            #endif
                                 SceneManager->getMeshManipulator()->setVertexColorAlpha(&tmpmesh, core::floor32(material->Transparency * 255.0f));
                             }
                         }
@@ -1642,7 +1642,7 @@ public:
 
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading geometry", id, ELL_DEBUG);
-    #endif
+#endif
 
             SAnimatedMesh *amesh = new SAnimatedMesh();
             scene::SMesh  *mesh  = new SMesh();
@@ -1670,7 +1670,7 @@ public:
 
                 #ifdef COLLADA_READER_DEBUG
                             os::Printer::log("Reading source", sources.getLast().Id.c_str(), ELL_DEBUG);
-                #endif
+    #endif
                         }
                         else if (arraySectionName == nodeName || floatArraySectionName == nodeName || intArraySectionName == nodeName)
                         {
@@ -1688,20 +1688,20 @@ public:
 
                     #ifdef COLLADA_READER_DEBUG
                                 os::Printer::log("Read array", sources.getLast().Array.Name.c_str(), ELL_DEBUG);
-                    #endif
+        #endif
                             }
 
                 #ifdef COLLADA_READER_DEBUG
                             else
                                 os::Printer::log("Warning, array outside source found",
                                     readId(reader).c_str(), ELL_DEBUG);
-                #endif
+    #endif
                         }
                         else if (accessorSectionName == nodeName) // child of source (below a technique tag)
                         {
                 #ifdef COLLADA_READER_DEBUG
                             os::Printer::log("Reading accessor", ELL_DEBUG);
-                #endif
+    #endif
                             SAccessor accessor;
                             accessor.Count  = reader->getAttributeValueAsInt("count");
                             accessor.Offset = reader->getAttributeValueAsInt("offset");
@@ -1722,7 +1722,7 @@ public:
                         {
                 #ifdef COLLADA_READER_DEBUG
                             os::Printer::log("Reading vertices", ELL_DEBUG);
-                #endif
+    #endif
                             // read vertex input position source
                             readColladaInputs(reader, verticesSectionName);
                         }
@@ -1746,7 +1746,7 @@ public:
                             {
                     #ifdef COLLADA_READER_DEBUG
                                 os::Printer::log("Setting double sided flag for mesh.", ELL_DEBUG);
-                    #endif
+        #endif
                                 amesh->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
                             }
                         }
@@ -1861,7 +1861,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading polygon section", ELL_DEBUG);
-    #endif
+#endif
 
             core::stringc materialName = reader->getAttributeValue("material");
 
@@ -2044,7 +2044,7 @@ public:
                     tmp += " sourceArray:";
                     tmp += inp.Source;
                     os::Printer::log(tmp.c_str(), ELL_DEBUG);
-            #endif
+#endif
                 }
             }
 
@@ -2344,7 +2344,7 @@ public:
             mesh->addMeshBuffer(buffer);
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA added meshbuffer", core::stringc(buffer->getVertexCount()) + " vertices, " + core::stringc(buffer->getIndexCount()) + " indices.", ELL_DEBUG);
-    #endif
+#endif
 
             buffer->drop();
         }
@@ -2355,7 +2355,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading light prefab", ELL_DEBUG);
-    #endif
+#endif
 
             CLightPrefab *prefab = new CLightPrefab(readId(reader));
 
@@ -2672,7 +2672,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading <float>", ELL_DEBUG);
-    #endif
+#endif
 
             f32 result = 0.0f;
             if (reader->getNodeType() == io::EXN_ELEMENT &&
@@ -2752,7 +2752,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA searching texture", uri, ELL_DEBUG);
-    #endif
+#endif
             video::IVideoDriver *driver = SceneManager->getVideoDriver();
 
             for (;;)
@@ -2815,7 +2815,7 @@ public:
         {
     #ifdef COLLADA_READER_DEBUG
             os::Printer::log("COLLADA reading parameter", ELL_DEBUG);
-    #endif
+#endif
 
             if (!parameters)
                 return;

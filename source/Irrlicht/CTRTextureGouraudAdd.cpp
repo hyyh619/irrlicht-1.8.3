@@ -28,9 +28,9 @@ protected:
         CTRTextureGouraudAdd::CTRTextureGouraudAdd(IZBuffer *zbuffer)
             : CTRTextureGouraud(zbuffer)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CTRTextureGouraudAdd");
-    #endif
+#endif
         }
 
 
@@ -416,7 +416,7 @@ namespace irr
             return new CTRTextureGouraudAdd(zbuffer);
     #else
             return 0;
-    #endif  // _IRR_COMPILE_WITH_SOFTWARE_
+#endif  // _IRR_COMPILE_WITH_SOFTWARE_
         }
     } // end namespace video
 } // end namespace irr

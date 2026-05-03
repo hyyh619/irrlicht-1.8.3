@@ -18,9 +18,9 @@ public:
             CTRFlat(IZBuffer *zbuffer)
                 : CTRTextureGouraud(zbuffer)
             {
-        #ifdef _DEBUG
+    #ifdef _DEBUG
                 setDebugName("CTRFlat");
-        #endif
+    #endif
             }
 
             //! draws an indexed triangle list
@@ -293,7 +293,7 @@ namespace irr
             return new CTRFlat(zbuffer);
     #else
             return 0;
-    #endif  // _IRR_COMPILE_WITH_SOFTWARE_
+#endif  // _IRR_COMPILE_WITH_SOFTWARE_
         }
     } // end namespace video
 } // end namespace irr

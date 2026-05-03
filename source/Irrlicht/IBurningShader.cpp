@@ -23,9 +23,9 @@ namespace irr
 
         IBurningShader::IBurningShader(CBurningVideoDriver *driver)
         {
-        #ifdef _DEBUG
+    #ifdef _DEBUG
             setDebugName("IBurningShader");
-        #endif
+    #endif
 
             for (u32 i = 0; i != BURNING_MATERIAL_MAX_TEXTURES; ++i)
             {

@@ -20,9 +20,9 @@ namespace irr
         //! constructor
         CImageLoaderBMP::CImageLoaderBMP()
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CImageLoaderBMP");
-    #endif
+#endif
         }
 
 

@@ -53,18 +53,18 @@
 #if !defined (SOFTWARE_DRIVER_2_USE_WBUFFER) && defined (USE_ZBUFFER)
     #ifndef SOFTWARE_DRIVER_2_PERSPECTIVE_CORRECT
         #undef IPOL_W
-    #endif
+#endif
     #define IPOL_Z
 
     #ifdef CMP_W
         #undef CMP_W
         #define CMP_Z
-    #endif
+#endif
 
     #ifdef WRITE_W
         #undef WRITE_W
         #define WRITE_Z
-    #endif
+#endif
 #endif
 
 namespace irr
@@ -93,9 +93,9 @@ private:
         CTRTextureLightMap2_Add::CTRTextureLightMap2_Add(CBurningVideoDriver *driver)
             : IBurningShader(driver)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CTRTextureLightMap2_Add");
-    #endif
+#endif
         }
 
 
@@ -644,7 +644,7 @@ namespace irr
             return new CTRTextureLightMap2_Add(driver);
     #else
             return 0;
-    #endif  // _IRR_COMPILE_WITH_BURNINGSVIDEO_
+#endif  // _IRR_COMPILE_WITH_BURNINGSVIDEO_
         }
     } // end namespace video
 } // end namespace irr

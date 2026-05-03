@@ -20,9 +20,9 @@ namespace irr
             //! constructor
             SMesh()
             {
-            #ifdef _DEBUG
+#ifdef _DEBUG
                 setDebugName("SMesh");
-            #endif
+#endif
             }
 
             //! destructor

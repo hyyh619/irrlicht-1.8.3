@@ -162,9 +162,9 @@ namespace irr
             VertexProgram(0), FragmentProgram(0), GeometryProgram(0), VertexProfile(CG_PROFILE_UNKNOWN), FragmentProfile(CG_PROFILE_UNKNOWN), GeometryProfile(CG_PROFILE_UNKNOWN),
             Material(IdentityMaterial), Error(CG_NO_ERROR)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CCgMaterialRenderer");
-    #endif
+#endif
 
             if (BaseMaterial)
                 BaseMaterial->grab();

@@ -18,7 +18,7 @@ extern "C" {
     #include <jpeglib.h> // use system lib
     #else
     #include "jpeglib/jpeglib.h" // use irrlicht jpeglib
-    #endif
+#endif
     #include <setjmp.h>
 }
 #endif // _IRR_COMPILE_WITH_LIBJPEG_
@@ -100,7 +100,7 @@ private:
 
             // Copy filename to have it around for error-messages
             static io::path Filename;
-    #endif  // _IRR_COMPILE_WITH_LIBJPEG_
+#endif  // _IRR_COMPILE_WITH_LIBJPEG_
         };
     } // end namespace video
 } // end namespace irr

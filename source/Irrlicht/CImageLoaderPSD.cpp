@@ -19,9 +19,9 @@ namespace irr
         //! constructor
         CImageLoaderPSD::CImageLoaderPSD()
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CImageLoaderPSD");
-    #endif
+#endif
         }
 
 

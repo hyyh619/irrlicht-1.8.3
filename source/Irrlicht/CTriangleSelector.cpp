@@ -15,9 +15,9 @@ namespace irr
         CTriangleSelector::CTriangleSelector(ISceneNode *node)
             : SceneNode(node), AnimatedNode(0), LastMeshFrame(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CTriangleSelector");
-    #endif
+#endif
 
             BoundingBox.reset(0.f, 0.f, 0.f);
         }
@@ -27,9 +27,9 @@ namespace irr
         CTriangleSelector::CTriangleSelector(const core::aabbox3d<f32> &box, ISceneNode *node)
             : SceneNode(node), AnimatedNode(0), LastMeshFrame(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CTriangleSelector");
-    #endif
+#endif
 
             BoundingBox = box;
             // TODO
@@ -40,9 +40,9 @@ namespace irr
         CTriangleSelector::CTriangleSelector(const IMesh *mesh, ISceneNode *node)
             : SceneNode(node), AnimatedNode(0), LastMeshFrame(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CTriangleSelector");
-    #endif
+#endif
 
             createFromMesh(mesh);
         }
@@ -51,9 +51,9 @@ namespace irr
         CTriangleSelector::CTriangleSelector(IAnimatedMeshSceneNode *node)
             : SceneNode(node), AnimatedNode(node), LastMeshFrame(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CTriangleSelector");
-    #endif
+#endif
 
             if (!AnimatedNode)
                 return;

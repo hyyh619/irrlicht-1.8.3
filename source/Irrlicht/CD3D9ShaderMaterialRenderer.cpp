@@ -28,9 +28,9 @@ namespace irr
             : m_pID3DDevice(d3ddev), m_Driver(driver), m_CallBack(callback), m_BaseMaterial(baseMaterial),
             m_VertexShader(0), m_OldVertexShader(0), m_PixelShader(0), m_UserData(userData)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CD3D9ShaderMaterialRenderer");
-    #endif
+#endif
 
             if (m_BaseMaterial)
                 m_BaseMaterial->grab();
@@ -51,9 +51,9 @@ namespace irr
             : m_pID3DDevice(d3ddev), m_Driver(driver), m_CallBack(callback), m_BaseMaterial(baseMaterial),
             m_VertexShader(0), m_OldVertexShader(0), m_PixelShader(0), m_UserData(userData)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CD3D9ShaderMaterialRenderer");
-    #endif
+#endif
 
             if (m_BaseMaterial)
                 m_BaseMaterial->grab();
@@ -191,7 +191,7 @@ namespace irr
             fclose(f);
 
             stubD3DXAssembleShaderFromFile(tmp, 0, 0, D3DXSHADER_DEBUG, &code, &errors);
-    #endif
+#endif
 
 
             if (errors)
@@ -248,7 +248,7 @@ namespace irr
             fclose(f);
 
             stubD3DXAssembleShaderFromFile(tmp, 0, 0, D3DXSHADER_DEBUG, &code, &errors);
-    #endif
+#endif
 
             if (errors)
             {
@@ -298,7 +298,7 @@ namespace irr
             // when linking to the d3dx9.lib
         #ifdef _MSC_VER
         #pragma comment (lib, "d3dx9.lib")
-        #endif
+    #endif
 
             // invoke static linked function
             return D3DXAssembleShader(pSrcData, SrcDataLen, pDefines, pInclude,
@@ -341,7 +341,7 @@ namespace irr
                     return (*pFn)(pSrcData, SrcDataLen, pDefines, pInclude, Flags, ppShader, ppErrorMsgs);
                 }
             }
-    #endif  // D3DX_SDK_VERSION < 24
+#endif  // D3DX_SDK_VERSION < 24
 
             return 0;
         }
@@ -359,7 +359,7 @@ namespace irr
             // when linking to the d3dx9.lib
         #ifdef _MSC_VER
         #pragma comment (lib, "d3dx9.lib")
-        #endif
+    #endif
 
             // invoke static linked function
             return D3DXAssembleShaderFromFileA(pSrcFile, pDefines, pInclude, Flags,
@@ -401,7 +401,7 @@ namespace irr
                     return (*pFn)(pSrcFile, pDefines, pInclude, Flags, ppShader, ppErrorMsgs);
                 }
             }
-    #endif  // D3DX_SDK_VERSION < 24
+#endif  // D3DX_SDK_VERSION < 24
 
             return 0;
         }
@@ -420,7 +420,7 @@ namespace irr
             // when linking to the d3dx9.lib
         #ifdef _MSC_VER
         #pragma comment (lib, "d3dx9.lib")
-        #endif
+    #endif
 
             // invoke static linked function
             return D3DXCompileShader(pSrcData, SrcDataLen, pDefines, pInclude, pFunctionName, pProfile, Flags, ppShader, ppErrorMsgs, ppConstantTable);
@@ -462,7 +462,7 @@ namespace irr
                     return (*pFn)(pSrcData, SrcDataLen, pDefines, pInclude, pFunctionName, pProfile, Flags, ppShader, ppErrorMsgs, ppConstantTable);
                 }
             }
-    #endif  // D3DX_SDK_VERSION < 24
+#endif  // D3DX_SDK_VERSION < 24
 
             return 0;
         }
@@ -480,7 +480,7 @@ namespace irr
             // when linking to the d3dx9.lib
         #ifdef _MSC_VER
         #pragma comment (lib, "d3dx9.lib")
-        #endif
+    #endif
 
             // invoke static linked function
             return D3DXCompileShaderFromFileA(pSrcFile, pDefines, pInclude, pFunctionName, pProfile, Flags, ppShader, ppErrorMsgs, ppConstantTable);
@@ -522,7 +522,7 @@ namespace irr
                     return (*pFn)(pSrcFile, pDefines, pInclude, pFunctionName, pProfile, Flags, ppShader, ppErrorMsgs, ppConstantTable);
                 }
             }
-    #endif  // D3DX_SDK_VERSION < 24
+#endif  // D3DX_SDK_VERSION < 24
 
             return 0;
         }

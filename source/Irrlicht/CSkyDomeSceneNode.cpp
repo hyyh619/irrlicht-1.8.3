@@ -37,9 +37,9 @@ namespace irr
             TexturePercentage(texturePercentage),
             SpherePercentage(spherePercentage), Radius(radius)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSkyDomeSceneNode");
-    #endif
+#endif
 
             setAutomaticCulling(scene::EAC_OFF);
 

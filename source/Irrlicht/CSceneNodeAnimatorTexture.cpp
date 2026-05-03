@@ -15,9 +15,9 @@ namespace irr
             : ISceneNodeAnimatorFinishing(0),
             TimePerFrame(timePerFrame), StartTime(now), Loop(loop)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSceneNodeAnimatorTexture");
-    #endif
+#endif
 
             for (u32 i = 0; i < textures.size(); ++i)
             {

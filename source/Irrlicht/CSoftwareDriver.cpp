@@ -22,9 +22,9 @@ namespace irr
             SceneSourceRect(0), RenderTargetTexture(0), RenderTargetSurface(0),
             CurrentTriangleRenderer(0), ZBuffer(0), Texture(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSoftwareDriver");
-    #endif
+#endif
 
             // create backbuffer
 
@@ -982,7 +982,7 @@ namespace irr
             return new CSoftwareDriver(windowSize, fullscreen, io, presenter);
     #else
             return 0;
-    #endif
+#endif
         }
     } // end namespace video
 } // end namespace irr

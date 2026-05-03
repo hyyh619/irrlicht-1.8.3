@@ -12,9 +12,9 @@ namespace irr
         //! constructor
         CVideoModeList::CVideoModeList()
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CVideoModeList");
-    #endif
+#endif
 
             Desktop.depth = 0;
             Desktop.size  = core::dimension2d<u32>(0, 0);

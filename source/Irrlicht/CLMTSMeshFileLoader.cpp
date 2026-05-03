@@ -87,9 +87,9 @@ namespace irr
             : Textures(0), Subsets(0), Triangles(0),
             Parameters(parameters), Driver(driver), FileSystem(fs), FlipEndianess(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CLMTSMeshFileLoader");
-    #endif
+#endif
 
             if (Driver)
                 Driver->grab();

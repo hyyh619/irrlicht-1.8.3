@@ -24,9 +24,9 @@ namespace irr
             Font(font), Coll(coll)
 
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CTextSceneNode");
-    #endif
+#endif
 
             if (Font)
                 Font->grab();
@@ -94,9 +94,9 @@ namespace irr
             : IBillboardTextSceneNode(parent, mgr, id, position),
             Font(0), ColorTop(colorTop), ColorBottom(shade_bottom), Mesh(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CBillboardTextSceneNode");
-    #endif
+#endif
 
             Material.MaterialType      = video::EMT_TRANSPARENT_ALPHA_CHANNEL;
             Material.MaterialTypeParam = 1.f / 255.f;

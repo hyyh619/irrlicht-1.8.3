@@ -20,9 +20,9 @@ namespace irr
             CurrentZoom(distance), RotX(0.0f), RotY(0.0f),
             Zooming(false), Rotating(false), Moving(false), Translating(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSceneNodeAnimatorCameraMaya");
-    #endif
+#endif
 
             if (CursorControl)
             {

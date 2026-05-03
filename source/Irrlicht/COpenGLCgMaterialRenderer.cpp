@@ -40,9 +40,9 @@ namespace irr
             IShaderConstantSetCallBack *callback, IMaterialRenderer *baseMaterial, s32 userData) :
             Driver(driver), CCgMaterialRenderer(callback, baseMaterial, userData)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COpenGLCgMaterialRenderer");
-    #endif
+#endif
 
             init(materialType, vertexProgram, vertexEntry, vertexProfile, fragmentProgram, fragmentEntry, fragmentProfile,
                 geometryProgram, geometryEntry, geometryProfile, inType, outType, vertices);

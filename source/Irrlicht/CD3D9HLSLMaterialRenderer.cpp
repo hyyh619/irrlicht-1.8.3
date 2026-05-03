@@ -35,9 +35,9 @@ namespace irr
             : CD3D9ShaderMaterialRenderer(d3ddev, driver, callback, baseMaterial, userData),
             m_VSConstantsTable(0), m_PSConstantsTable(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CD3D9HLSLMaterialRenderer");
-    #endif
+#endif
 
             outMaterialTypeNr = -1;
 

@@ -34,9 +34,9 @@ namespace irr
             : IMeshSceneNode(parent, mgr, id, position, rotation, scale),
             Mesh(0), Shadow(0), Size(size)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CCubeSceneNode");
-    #endif
+#endif
 
             setSize();
         }

@@ -221,10 +221,10 @@ namespace irr
         CAnimatedMeshMD2::CAnimatedMeshMD2()
             : InterpolationBuffer(0), FrameList(0), FrameCount(0), FramesPerSecond((f32)(MD2AnimationTypeList[0].fps << MD2_FRAME_SHIFT))
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             IAnimatedMesh::setDebugName("CAnimatedMeshMD2 IAnimatedMesh");
             IMesh::setDebugName("CAnimatedMeshMD2 IMesh");
-    #endif
+#endif
             InterpolationBuffer = new SMeshBuffer;
         }
 

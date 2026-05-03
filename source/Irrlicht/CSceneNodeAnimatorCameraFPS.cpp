@@ -23,9 +23,9 @@ namespace irr
             MouseYDirection(invertY ? -1.0f : 1.0f),
             LastAnimationTime(0), firstUpdate(true), firstInput(true), NoVerticalMovement(noVerticalMovement)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CCameraSceneNodeAnimatorFPS");
-    #endif
+#endif
 
             if (CursorControl)
                 CursorControl->grab();

@@ -14,9 +14,9 @@ namespace irr
             : Filename(name), AreaStart(0), AreaEnd(0), Pos(0),
             File(alreadyOpenedFile)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CLimitReadFile");
-    #endif
+#endif
 
             if (File)
             {

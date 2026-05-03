@@ -31,9 +31,9 @@ namespace irr
         COBJMeshFileLoader::COBJMeshFileLoader(scene::ISceneManager *smgr, io::IFileSystem *fs)
             : SceneManager(smgr), FileSystem(fs)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COBJMeshFileLoader");
-    #endif
+#endif
 
             if (FileSystem)
                 FileSystem->grab();

@@ -18,9 +18,9 @@ namespace irr
             ImagesPerRow(0),
             UseAlphaChannel(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIImageList");
-    #endif
+#endif
 
             if (Driver)
             {

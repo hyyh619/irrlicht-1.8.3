@@ -467,7 +467,7 @@ namespace irr
                                 v->Normal.X = av[0];
                                 v->Normal.Z = av[1];
                                 v->Normal.Y = av[2];
-    #endif
+#endif
                                 v->Normal.X = 0.f;
                                 v->Normal.Z = 0.f;
                                 v->Normal.Y = 1.f;

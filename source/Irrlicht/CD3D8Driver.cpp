@@ -33,9 +33,9 @@ namespace irr
             MaxLightDistance(0), LastSetLight(-1), DeviceLost(false),
             DriverWasReset(true), Params(params)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CD3D8Driver");
-    #endif
+#endif
 
             printVersion();
 
@@ -227,7 +227,7 @@ namespace irr
             D3DDEVTYPE devtype = D3DDEVTYPE_HAL;
     #ifndef _IRR_D3D_NO_SHADER_DEBUGGING
             devtype = D3DDEVTYPE_REF;
-    #endif
+#endif
 
             // enable anti alias if possible and whished
             if (Params.AntiAlias > 0)

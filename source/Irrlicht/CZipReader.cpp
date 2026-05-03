@@ -24,21 +24,21 @@ extern "C" void bz_internal_error(int errorCode)
     #include <zlib.h> // use system lib
     #else
     #include "zlib/zlib.h"
-    #endif
+#endif
 
     #ifdef _IRR_COMPILE_WITH_ZIP_ENCRYPTION_
     #include "aesGladman/fileenc.h"
-    #endif
+#endif
     #ifdef _IRR_COMPILE_WITH_BZIP2_
     #ifndef _IRR_USE_NON_SYSTEM_BZLIB_
     #include <bzlib.h>
     #else
     #include "bzip2/bzlib.h"
-    #endif
-    #endif
+#endif
+#endif
     #ifdef _IRR_COMPILE_WITH_LZMA_
     #include "lzma/LzmaDec.h"
-    #endif
+#endif
 #endif
 
 
@@ -54,9 +54,9 @@ namespace irr
         CArchiveLoaderZIP::CArchiveLoaderZIP(io::IFileSystem *fs)
             : FileSystem(fs)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CArchiveLoaderZIP");
-    #endif
+#endif
         }
 
         //! returns true if the file maybe is able to be loaded by this class
@@ -141,9 +141,9 @@ namespace irr
         CZipReader::CZipReader(IReadFile *file, bool ignoreCase, bool ignorePaths, bool isGZip)
             : CFileList((file ? file->getFileName() : io::path("")), ignoreCase, ignorePaths), File(file), IsGZip(isGZip)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CZipReader");
-    #endif
+#endif
 
             if (File)
             {
@@ -443,9 +443,9 @@ namespace irr
             // move forward length of data
             File->seek(entry.header.DataDescriptor.CompressedSize, true);
 
-    #ifdef _DEBUG
+#ifdef _DEBUG
             // os::Debuginfo::print("added file from archive", ZipFileName.c_str());
-    #endif
+#endif
 
             addItem(ZipFileName, entry.Offset, entry.header.DataDescriptor.UncompressedSize, ZipFileName.lastChar() == '/', FileInfo.size());
             FileInfo.push_back(entry);
@@ -717,7 +717,7 @@ namespace irr
 
             #else
                     return 0; // zlib not compiled, we cannot decompress the data.
-            #endif
+#endif
                 }
 
                 case 12:
@@ -791,7 +791,7 @@ namespace irr
             #else
                     os::Printer::log("bzip2 decompression not supported. File cannot be read.", ELL_ERROR);
                     return 0;
-            #endif
+#endif
                 }
 
                 case 14:
@@ -855,7 +855,7 @@ namespace irr
             #else
                     os::Printer::log("lzma decompression not supported. File cannot be read.", ELL_ERROR);
                     return 0;
-            #endif
+#endif
                 }
 
                 case 99:

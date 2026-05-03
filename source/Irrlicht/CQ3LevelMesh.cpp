@@ -33,9 +33,9 @@ namespace irr
             Brushes(0), NumBrushes(0), BrushEntities(0), FileSystem(fs),
             SceneManager(smgr), FramesPerSecond(25.f)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             IReferenceCounted::setDebugName("CQ3LevelMesh");
-    #endif
+#endif
 
             for (s32 i = 0; i != E_Q3_MESH_SIZE; ++i)
             {
@@ -101,7 +101,7 @@ namespace irr
     #ifdef __BIG_ENDIAN__
             header.strID   = os::Byteswap::byteswap(header.strID);
             header.version = os::Byteswap::byteswap(header.version);
-    #endif
+#endif
 
             if ((header.strID != 0x50534249 ||        // IBSP
                 (header.version != 0x2e                // quake3

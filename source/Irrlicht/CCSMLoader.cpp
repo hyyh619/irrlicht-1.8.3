@@ -584,9 +584,9 @@ private:
         CCSMLoader::CCSMLoader(scene::ISceneManager *manager, io::IFileSystem *fs)
             : FileSystem(fs), SceneManager(manager)
         {
-        #ifdef _DEBUG
+    #ifdef _DEBUG
             setDebugName("CCSMLoader");
-        #endif
+    #endif
         }
 
 

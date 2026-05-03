@@ -17,9 +17,9 @@ namespace irr
         CGUIInOutFader::CGUIInOutFader(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
             : IGUIInOutFader(environment, parent, id, rectangle)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIInOutFader");
-    #endif
+#endif
 
             Action    = EFA_NOTHING;
             StartTime = 0;

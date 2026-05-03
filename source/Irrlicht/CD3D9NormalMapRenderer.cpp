@@ -167,9 +167,9 @@ namespace irr
             s32 &outMaterialTypeNr, IMaterialRenderer *baseMaterial)
             : CD3D9ShaderMaterialRenderer(d3ddev, driver, 0, baseMaterial)
         {
-        #ifdef _DEBUG
+    #ifdef _DEBUG
             setDebugName("CD3D9NormalMapRenderer");
-        #endif
+    #endif
 
             // set this as callback. We could have done this in
             // the initialization list, but some compilers don't like it.

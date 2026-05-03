@@ -18,9 +18,9 @@ namespace irr
             : IGUIImage(environment, parent, id, rectangle), Texture(0), Color(255, 255, 255, 255),
             UseAlphaChannel(false), ScaleImage(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIImage");
-    #endif
+#endif
         }
 
 

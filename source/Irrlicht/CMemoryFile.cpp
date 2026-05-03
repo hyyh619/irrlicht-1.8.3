@@ -12,9 +12,9 @@ namespace irr
         CMemoryFile::CMemoryFile(void *memory, long len, const io::path &fileName, bool d)
             : Buffer(memory), Len(len), Pos(0), Filename(fileName), deleteMemoryWhenDropped(d)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CMemoryFile");
-    #endif
+#endif
         }
 
 

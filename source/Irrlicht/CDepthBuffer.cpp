@@ -16,9 +16,9 @@ namespace irr
         CDepthBuffer::CDepthBuffer(const core::dimension2d<u32> &size)
             : Buffer(0), Size(0, 0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CDepthBuffer");
-    #endif
+#endif
 
             setSize(size);
         }
@@ -82,9 +82,9 @@ namespace irr
         CStencilBuffer::CStencilBuffer(const core::dimension2d<u32> &size)
             : Buffer(0), Size(0, 0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CDepthBuffer");
-    #endif
+#endif
 
             setSize(size);
         }
@@ -147,7 +147,7 @@ namespace irr
             return new CDepthBuffer(size);
     #else
             return 0;
-    #endif  // _IRR_COMPILE_WITH_BURNINGSVIDEO_
+#endif  // _IRR_COMPILE_WITH_BURNINGSVIDEO_
         }
 
 
@@ -158,7 +158,7 @@ namespace irr
             return new CStencilBuffer(size);
     #else
             return 0;
-    #endif  // _IRR_COMPILE_WITH_BURNINGSVIDEO_
+#endif  // _IRR_COMPILE_WITH_BURNINGSVIDEO_
         }
     } // end namespace video
 } // end namespace irr

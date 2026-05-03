@@ -140,9 +140,9 @@ namespace irr
         //! constructor
         CImageLoaderRGB::CImageLoaderRGB()
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CImageLoaderRGB");
-    #endif
+#endif
         }
 
 

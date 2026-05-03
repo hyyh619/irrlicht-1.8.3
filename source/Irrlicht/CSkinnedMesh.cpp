@@ -22,9 +22,9 @@ namespace irr
             HasAnimation(false), PreparedForSkinning(false),
             AnimateNormals(true), HardwareSkinning(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSkinnedMesh");
-    #endif
+#endif
 
             SkinningBuffers = &LocalBuffers;
         }

@@ -14,9 +14,9 @@ namespace irr
             ISceneNode *parent, ISceneManager *mgr, s32 id)
             : IDummyTransformationSceneNode(parent, mgr, id)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CDummyTransformationSceneNode");
-    #endif
+#endif
 
             setAutomaticCulling(scene::EAC_OFF);
         }

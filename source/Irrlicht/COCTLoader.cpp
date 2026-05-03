@@ -29,9 +29,9 @@ namespace irr
         COCTLoader::COCTLoader(ISceneManager *smgr, io::IFileSystem *fs)
             : SceneManager(smgr), FileSystem(fs)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COCTLoader");
-    #endif
+#endif
             if (FileSystem)
                 FileSystem->grab();
         }

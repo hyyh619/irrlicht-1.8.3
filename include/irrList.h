@@ -103,7 +103,7 @@ public:
 
         #if defined (_MSC_VER) && (_MSC_VER < 1300)
             #pragma warning(disable:4284) // infix notation problem when using iterator operator ->
-        #endif
+    #endif
 
                 T&operator *()
                 {

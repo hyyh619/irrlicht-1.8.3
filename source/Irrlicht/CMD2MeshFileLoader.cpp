@@ -81,9 +81,9 @@ namespace irr
         //! Constructor
         CMD2MeshFileLoader::CMD2MeshFileLoader()
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CMD2MeshFileLoader");
-    #endif
+#endif
         }
 
 

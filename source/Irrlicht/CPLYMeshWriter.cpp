@@ -18,9 +18,9 @@ namespace irr
     {
         CPLYMeshWriter::CPLYMeshWriter()
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CPLYMeshWriter");
-    #endif
+#endif
         }
 
 

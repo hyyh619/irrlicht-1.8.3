@@ -23,9 +23,9 @@ namespace irr
             : Driver(driver), CallBack(callback), BaseMaterial(baseMaterial),
             VertexShader(0), UserData(userData)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COpenGLShaderMaterialRenderer");
-    #endif
+#endif
 
             PixelShader.set_used(4);
 

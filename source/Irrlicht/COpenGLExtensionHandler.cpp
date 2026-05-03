@@ -418,12 +418,12 @@ namespace irr
             if ((major > 1) || (minor > 3))
                 IRR_OGL_LOAD_EXTENSION_FUNCP = glXGetProcAddress;
             else
-    #endif
+#endif
             IRR_OGL_LOAD_EXTENSION_FUNCP = glXGetProcAddressARB;
         #define IRR_OGL_LOAD_EXTENSION(X) IRR_OGL_LOAD_EXTENSION_FUNCP(reinterpret_cast<const GLubyte*>(X))
     #else
         #define IRR_OGL_LOAD_EXTENSION(X) glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(X))
-    #endif  // workaround
+#endif  // workaround
 #endif      // Windows, SDL, or Linux
 
             // get multitexturing function pointers
@@ -570,16 +570,16 @@ namespace irr
             // get vsync extension
     #if defined(WGL_EXT_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
             pWglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) IRR_OGL_LOAD_EXTENSION("wglSwapIntervalEXT");
-    #endif
+#endif
     #if defined(GLX_SGI_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
             pGlxSwapIntervalSGI = (PFNGLXSWAPINTERVALSGIPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalSGI");
-    #endif
+#endif
     #if defined(GLX_EXT_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
             pGlxSwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalEXT");
-    #endif
+#endif
     #if defined(GLX_MESA_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
             pGlxSwapIntervalMESA = (PFNGLXSWAPINTERVALMESAPROC)IRR_OGL_LOAD_EXTENSION("glXSwapIntervalMESA");
-    #endif
+#endif
 #endif      // use extension pointer
 
             GLint num = 0;

@@ -411,7 +411,7 @@ namespace irr
         #define REALINLINE __forceinline
     #else
         #define REALINLINE inline
-    #endif
+#endif
 #endif
 
 #if defined(__BORLANDC__) || defined (__BCPLUSPLUS__)
@@ -531,7 +531,7 @@ namespace irr
              */
     #else
             return 1.f / sqrtf(f);
-    #endif
+#endif
 #else       // no fast math
             return 1.f / sqrtf(f);
 #endif

@@ -17,9 +17,9 @@ namespace irr
             bool renderTarget, void *mipmapData)
             : ITexture(name), Texture(0), IsRenderTarget(renderTarget)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSoftwareTexture");
-    #endif
+#endif
 
             if (image)
             {

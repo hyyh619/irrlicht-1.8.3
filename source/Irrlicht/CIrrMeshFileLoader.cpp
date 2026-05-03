@@ -25,9 +25,9 @@ namespace irr
             io::IFileSystem *fs)
             : SceneManager(smgr), FileSystem(fs)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CIrrMeshFileLoader");
-    #endif
+#endif
         }
 
 
@@ -443,10 +443,10 @@ namespace irr
                 if (reader->getNodeType() == io::EXN_ELEMENT &&
                     !reader->isEmptyElement())
                 {
-            #ifdef _DEBUG
+#ifdef _DEBUG
                     if (reportSkipping)
                         os::Printer::log("irrMesh unknown element:", core::stringc(reader->getNodeName()).c_str());
-            #endif
+#endif
 
                     ++tagCounter;
                 }

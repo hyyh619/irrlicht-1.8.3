@@ -35,9 +35,9 @@ namespace irr
             m_TextureSize(size), m_ImageSize(size), m_Pitch(0), m_ColorFormat(ECOLOR_FORMAT::ECF_UNKNOWN),
             m_HasMipMaps(false), m_HardwareMipMaps(false), m_IsRenderTarget(true)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CD3D9Texture");
-    #endif
+#endif
 
             m_Device = driver->getExposedVideoData().D3D9.D3DDev9;
             if (m_Device)
@@ -54,9 +54,9 @@ namespace irr
             m_TextureSize(0, 0), m_ImageSize(0, 0), m_Pitch(0), m_ColorFormat(ECOLOR_FORMAT::ECF_UNKNOWN),
             m_HasMipMaps(false), m_HardwareMipMaps(false), m_IsRenderTarget(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CD3D9Texture");
-    #endif
+#endif
 
             m_HasMipMaps = m_Driver->getTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS);
 

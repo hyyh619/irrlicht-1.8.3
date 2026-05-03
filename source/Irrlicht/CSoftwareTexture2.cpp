@@ -19,13 +19,13 @@ namespace irr
             u32 flags, void *mipmapData)
             : ITexture(name), MipMapLOD(0), Flags (flags), OriginalFormat(video::ECOLOR_FORMAT::ECF_UNKNOWN)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSoftwareTexture2");
-    #endif
+#endif
 
     #ifndef SOFTWARE_DRIVER_2_MIPMAPPING
             Flags &= ~GEN_MIPMAP;
-    #endif
+#endif
 
             memset32 (MipMap, 0, sizeof(MipMap));
 

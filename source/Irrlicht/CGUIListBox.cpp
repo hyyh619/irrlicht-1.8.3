@@ -28,9 +28,9 @@ namespace irr
             ScrollBar(0), selectTime(0), LastKeyTime(0), Selecting(false), DrawBack(drawBack),
             MoveOverSelect(moveOverSelect), AutoScroll(true), HighlightWhenNotFocused(true)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIListBox");
-    #endif
+#endif
 
             IGUISkin  *skin = Environment->getSkin();
             const s32 s     = skin->getSize(EGDS_SCROLLBAR_SIZE);

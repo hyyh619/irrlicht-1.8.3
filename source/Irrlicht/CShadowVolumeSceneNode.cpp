@@ -22,9 +22,9 @@ namespace irr
             ShadowMesh(0), IndexCount(0), VertexCount(0), ShadowVolumesUsed(0),
             Infinity(infinity), UseZFailMethod(zfailmethod)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CShadowVolumeSceneNode");
-    #endif
+#endif
             setShadowMesh(shadowMesh);
             setAutomaticCulling(scene::EAC_OFF);
         }

@@ -65,9 +65,9 @@ namespace irr
         COgreMeshFileLoader::COgreMeshFileLoader(io::IFileSystem *fs, video::IVideoDriver *driver)
             : FileSystem(fs), Driver(driver), SwapEndian(false), Mesh(0), NumUV(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COgreMeshFileLoader");
-    #endif
+#endif
 
             if (FileSystem)
                 FileSystem->grab();

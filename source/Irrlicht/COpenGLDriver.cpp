@@ -44,13 +44,13 @@ namespace irr
             HDc(0), Window(static_cast<HWND>(params.WindowId)), Win32Device(device),
             DeviceType(EIDT_WIN32)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COpenGLDriver");
-    #endif
+#endif
 
     #ifdef _IRR_COMPILE_WITH_CG_
             CgContext = 0;
-    #endif
+#endif
         }
 
 
@@ -481,13 +481,13 @@ namespace irr
             CurrentTarget(ERT_FRAME_BUFFER), Params(params),
             OSXDevice(device), DeviceType(EIDT_OSX)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COpenGLDriver");
-    #endif
+#endif
 
     #ifdef _IRR_COMPILE_WITH_CG_
             CgContext = 0;
-    #endif
+#endif
 
             genericDriverInit();
         }
@@ -507,13 +507,13 @@ namespace irr
             CurrentTarget(ERT_FRAME_BUFFER), Params(params),
             X11Device(device), DeviceType(EIDT_X11)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COpenGLDriver");
-    #endif
+#endif
 
     #ifdef _IRR_COMPILE_WITH_CG_
             CgContext = 0;
-    #endif
+#endif
         }
 
 
@@ -600,13 +600,13 @@ namespace irr
             CurrentTarget(ERT_FRAME_BUFFER), Params(params),
             SDLDevice(device), DeviceType(EIDT_SDL)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COpenGLDriver");
-    #endif
+#endif
 
     #ifdef _IRR_COMPILE_WITH_CG_
             CgContext = 0;
-    #endif
+#endif
 
             genericDriverInit();
         }
@@ -619,7 +619,7 @@ namespace irr
     #ifdef _IRR_COMPILE_WITH_CG_
             if (CgContext)
                 cgDestroyContext(CgContext);
-    #endif
+#endif
 
             RequestedLights.clear();
 
@@ -768,7 +768,7 @@ namespace irr
 
     #ifdef _IRR_COMPILE_WITH_CG_
             CgContext = cgCreateContext();
-    #endif
+#endif
 
             return true;
         }
@@ -4115,7 +4115,7 @@ namespace irr
                 r->drop();
             }
             else
-    #endif
+#endif
             {
                 COpenGLSLMaterialRenderer *r = new COpenGLSLMaterialRenderer(
                     this, nr,

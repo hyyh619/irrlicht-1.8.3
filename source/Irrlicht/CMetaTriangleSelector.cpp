@@ -11,9 +11,9 @@ namespace irr
         //! constructor
         CMetaTriangleSelector::CMetaTriangleSelector()
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CMetaTriangleSelector");
-    #endif
+#endif
         }
 
 

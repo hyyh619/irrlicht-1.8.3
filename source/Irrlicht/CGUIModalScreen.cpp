@@ -19,9 +19,9 @@ namespace irr
             : IGUIElement(EGUIET_MODAL_SCREEN, environment, parent, id, core::recti(0, 0, parent->getAbsolutePosition().getWidth(), parent->getAbsolutePosition().getHeight())),
             MouseDownTime(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIModalScreen");
-    #endif
+#endif
             setAlignment(EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT, EGUIA_UPPERLEFT, EGUIA_LOWERRIGHT);
 
             // this element is a tab group

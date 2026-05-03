@@ -13,9 +13,9 @@ namespace irr
         CEmptySceneNode::CEmptySceneNode(ISceneNode *parent, ISceneManager *mgr, s32 id)
             : ISceneNode(parent, mgr, id)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CEmptySceneNode");
-    #endif
+#endif
 
             setAutomaticCulling(scene::EAC_OFF);
         }

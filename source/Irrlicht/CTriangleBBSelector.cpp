@@ -13,9 +13,9 @@ namespace irr
         CTriangleBBSelector::CTriangleBBSelector(ISceneNode *node)
             : CTriangleSelector(node)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CTriangleBBSelector");
-    #endif
+#endif
 
             Triangles.set_used(12); // a box has 12 triangles.
         }

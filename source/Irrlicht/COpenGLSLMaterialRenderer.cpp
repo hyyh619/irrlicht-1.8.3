@@ -44,9 +44,9 @@ namespace irr
             : Driver(driver), CallBack(callback), BaseMaterial(baseMaterial),
             Program(0), Program2(0), UserData(userData)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COpenGLSLMaterialRenderer");
-    #endif
+#endif
 
             // entry points must always be main, and the compile target isn't selectable
             // it is fine to ignore what has been asked for, as the compiler should spot anything wrong
@@ -440,7 +440,7 @@ namespace irr
                 GLint num = 0;
     #ifdef GL_ARB_shader_objects
                 Driver->extGlGetObjectParameteriv(Program, GL_OBJECT_ACTIVE_UNIFORMS_ARB, &num);
-    #endif
+#endif
 
                 if (num == 0)
                 {
@@ -451,7 +451,7 @@ namespace irr
                 GLint maxlen = 0;
     #ifdef GL_ARB_shader_objects
                 Driver->extGlGetObjectParameteriv(Program, GL_OBJECT_ACTIVE_UNIFORM_MAX_LENGTH_ARB, &maxlen);
-    #endif
+#endif
 
                 if (maxlen == 0)
                 {

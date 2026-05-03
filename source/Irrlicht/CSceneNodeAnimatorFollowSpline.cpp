@@ -15,9 +15,9 @@ namespace irr
             : ISceneNodeAnimatorFinishing(0), Points(points), Speed(speed), Tightness(tightness), StartTime(time)
             , Loop(loop), PingPong(pingpong)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSceneNodeAnimatorFollowSpline");
-    #endif
+#endif
         }
 
 

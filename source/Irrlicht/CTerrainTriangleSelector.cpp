@@ -14,9 +14,9 @@ namespace irr
         CTerrainTriangleSelector::CTerrainTriangleSelector (ITerrainSceneNode *node, s32 LOD)
             : SceneNode(node)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName ("CTerrainTriangleSelector");
-    #endif
+#endif
 
             setTriangleData(node, LOD);
         }

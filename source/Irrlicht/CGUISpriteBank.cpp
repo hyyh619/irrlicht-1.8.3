@@ -16,9 +16,9 @@ namespace irr
         CGUISpriteBank::CGUISpriteBank(IGUIEnvironment *env) :
             Environment(env), Driver(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUISpriteBank");
-    #endif
+#endif
 
             if (Environment)
             {

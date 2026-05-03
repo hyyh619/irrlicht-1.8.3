@@ -35,12 +35,12 @@ namespace irr
                 core::vector3df(1.f, 1.f, 1.f)),
             Shader(shader), Mesh(0), Shadow(0), Original(0), MeshBuffer(0), TimeAbs(0.f)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             core::stringc dName = "CQuake3ShaderSceneNode ";
             dName += Shader->name;
 
             setDebugName(dName.c_str());
-    #endif
+#endif
 
             // name the Scene Node
             this->Name = Shader->name;

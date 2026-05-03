@@ -398,9 +398,9 @@ namespace irr
             DepthBuffer(0), StencilBuffer (0),
             CurrentOut (12 * 2, 128), Temp (12 * 2, 128)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CBurningVideoDriver");
-    #endif
+#endif
 
             // create backbuffer
             BackBuffer = new CImage(BURNINGSHADER_COLOR_FORMAT, params.WindowSize);
@@ -1096,8 +1096,8 @@ namespace irr
                 dest[g].Color[0] = source[g].Color[0] * iw;
         #else
                 dest[g].Color[0] = source[g].Color[0];
-        #endif
     #endif
+#endif
                 dest[g].LightTangent[0] = source[g].LightTangent[0] * iw;
                 dest[g].Pos.w           = iw;
             }
@@ -1135,8 +1135,8 @@ namespace irr
                 a[1].Color[0] = a->Color[0] * iw;
         #else
                 a[1].Color[0] = a->Color[0];
-        #endif
     #endif
+#endif
 
                 a[1].LightTangent[0] = a[0].LightTangent[0] * iw;
                 a[1].Pos.w           = iw;
@@ -1321,7 +1321,7 @@ namespace irr
 
     #else
             dest->Color[0].setA8R8G8B8 (base->Color.color);
-    #endif
+#endif
 #endif
 
             // Texture Transform
@@ -1522,7 +1522,7 @@ namespace irr
                     l.x = (vp.x * tangent->Tangent.X + vp.y * tangent->Binormal.X + vp.z * tangent->Normal.X);
                     l.y = (vp.x * tangent->Tangent.Y + vp.y * tangent->Binormal.Y + vp.z * tangent->Normal.Y);
                     l.z = (vp.x * tangent->Tangent.Z + vp.y * tangent->Binormal.Z + vp.z * tangent->Normal.Z);
-    #endif
+#endif
 
 
                     /*
@@ -2821,7 +2821,7 @@ namespace irr
             return new CBurningVideoDriver(params, io, presenter);
     #else
             return 0;
-    #endif  // _IRR_COMPILE_WITH_BURNINGSVIDEO_
+#endif  // _IRR_COMPILE_WITH_BURNINGSVIDEO_
         }
     } // end namespace video
 } // end namespace irr

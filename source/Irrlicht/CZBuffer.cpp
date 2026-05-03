@@ -16,9 +16,9 @@ namespace irr
         CZBuffer::CZBuffer(const core::dimension2d<u32> &size)
             : Buffer(0), BufferEnd(0), Size(0, 0), TotalSize(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CZBuffer");
-    #endif
+#endif
 
             setSize(size);
         }
@@ -92,7 +92,7 @@ namespace irr
             return new CZBuffer(size);
     #else
             return 0;
-    #endif  // _IRR_COMPILE_WITH_SOFTWARE_
+#endif  // _IRR_COMPILE_WITH_SOFTWARE_
         }
     } // end namespace video
 } // end namespace irr

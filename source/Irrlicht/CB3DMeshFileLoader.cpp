@@ -28,9 +28,9 @@ namespace irr
             : SceneManager(smgr), AnimatedMesh(0), B3DFile(0), NormalsInFile(false),
             HasVertexColors(false), ShowWarning(true)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CB3DMeshFileLoader");
-    #endif
+#endif
         }
 
 
@@ -656,7 +656,7 @@ namespace irr
                 B3DFile->read(&frame, sizeof(frame));
         #ifdef __BIG_ENDIAN__
                 frame = os::Byteswap::byteswap(frame);
-        #endif
+    #endif
 
                 // Add key frames, frames in Irrlicht are zero-based
                 f32 data[4];
@@ -804,7 +804,7 @@ namespace irr
     #ifdef __BIG_ENDIAN__
             animFlags  = os::Byteswap::byteswap(animFlags);
             animFrames = os::Byteswap::byteswap(animFrames);
-    #endif
+#endif
 
             B3dStack.erase(B3dStack.size() - 1);
             return true;
@@ -1135,7 +1135,7 @@ namespace irr
     #ifdef __BIG_ENDIAN__
             for (u32 n = 0; n < count; ++n)
                 vec[n] = os::Byteswap::byteswap(vec[n]);
-    #endif
+#endif
         }
     } // end namespace scene
 } // end namespace irr

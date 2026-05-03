@@ -9,9 +9,9 @@ namespace irr
     CLogger::CLogger(IEventReceiver *r)
         : LogLevel(ELL_INFORMATION), Receiver(r)
     {
-        #ifdef _DEBUG
+    #ifdef _DEBUG
         setDebugName("CLogger");
-        #endif
+    #endif
     }
 
     //! Returns the current set log level.

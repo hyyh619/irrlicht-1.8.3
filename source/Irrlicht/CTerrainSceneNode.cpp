@@ -40,9 +40,9 @@ namespace irr
             CameraMovementDelta(10.0f), CameraRotationDelta(1.0f), CameraFOVDelta(0.1f),
             TCoordScale1(1.0f), TCoordScale2(1.0f), SmoothFactor(0), FileSystem(fs)
         {
-        #ifdef _DEBUG
+    #ifdef _DEBUG
             setDebugName("CTerrainSceneNode");
-        #endif
+    #endif
 
             Mesh         = new SMesh();
             RenderBuffer = new CDynamicMeshBuffer(video::EVT_2TCOORDS, video::EIT_16BIT);

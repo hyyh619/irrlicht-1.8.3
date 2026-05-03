@@ -22,9 +22,9 @@ namespace irr
         CSTLMeshWriter::CSTLMeshWriter(scene::ISceneManager *smgr)
             : SceneManager(smgr)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSTLMeshWriter");
-    #endif
+#endif
 
             if (SceneManager)
                 SceneManager->grab();

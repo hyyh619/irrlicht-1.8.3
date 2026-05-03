@@ -15,9 +15,9 @@ namespace irr
             const video::SColor &targetColor, u32 fadeOutTime)
             : IParticleFadeOutAffector(), TargetColor(targetColor)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CParticleFadeOutAffector");
-    #endif
+#endif
 
             FadeOutTime = fadeOutTime ? static_cast<f32>(fadeOutTime) : 1.0f;
         }

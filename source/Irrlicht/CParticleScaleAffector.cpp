@@ -12,9 +12,9 @@ namespace irr
         CParticleScaleAffector::CParticleScaleAffector(const core::dimension2df &scaleTo)
             : ScaleTo(scaleTo)
         {
-            #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CParticleScaleAffector");
-            #endif
+#endif
         }
 
 

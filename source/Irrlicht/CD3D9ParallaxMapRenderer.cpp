@@ -227,9 +227,9 @@ namespace irr
             : CD3D9ShaderMaterialRenderer(d3ddev, driver, 0, baseMaterial),
             m_CurrentScale(0.0f)
         {
-        #ifdef _DEBUG
+    #ifdef _DEBUG
             setDebugName("CD3D9ParallaxMapRenderer");
-        #endif
+    #endif
 
             // set this as callback. We could have done this in
             // the initialization list, but some compilers don't like it.
@@ -283,7 +283,7 @@ namespace irr
             #else
                 // compile shaders on our own
                 init(outMaterialTypeNr, D3D9_PARALLAX_MAP_VSH, D3D9_PARALLAX_MAP_PSH);
-            #endif // SHADER_EXTERNAL_DEBUG
+#endif // SHADER_EXTERNAL_DEBUG
             }
 
             // something failed, use base material

@@ -24,9 +24,9 @@ namespace irr
             IsPushButton(false), Pressed(false),
             UseAlphaChannel(false), DrawBorder(true), ScaleImage(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIButton");
-    #endif
+#endif
             setNotClipped(noclip);
 
             // Initialize the sprites.

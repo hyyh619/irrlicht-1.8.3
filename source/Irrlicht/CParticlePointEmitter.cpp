@@ -26,9 +26,9 @@ namespace irr
             MinLifeTime(lifeTimeMin), MaxLifeTime(lifeTimeMax),
             MaxAngleDegrees(maxAngleDegrees), Time(0), Emitted(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CParticlePointEmitter");
-    #endif
+#endif
         }
 
 

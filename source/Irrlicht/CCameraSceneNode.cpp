@@ -18,9 +18,9 @@ namespace irr
             Target(lookat), UpVector(0.0f, 1.0f, 0.0f), ZNear(1.0f), ZFar(3000.0f),
             InputReceiverEnabled(true), TargetAndRotationAreBound(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CCameraSceneNode");
-    #endif
+#endif
 
             // set default projection
             Fovy = core::PI / 2.5f; // Field of view, in radians.

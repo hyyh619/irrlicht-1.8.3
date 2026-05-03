@@ -119,9 +119,9 @@ namespace irr
             io::IFileSystem *fs)
             : SceneManager(smgr), FileSystem(fs), File(0), Mesh(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CLWOMeshFileLoader");
-    #endif
+#endif
         }
 
 
@@ -597,7 +597,7 @@ namespace irr
                             size -= readString(path, subsize);
     #ifdef LWO_READER_DEBUG
                             os::Printer::log("LWO loader: loaded clip", path.c_str());
-    #endif
+#endif
                             Images.push_back(path);
                         }
                     }

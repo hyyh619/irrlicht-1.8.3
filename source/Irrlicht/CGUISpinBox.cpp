@@ -24,9 +24,9 @@ namespace irr
             RangeMin(-FLT_MAX), RangeMax(FLT_MAX), FormatString(L"%f"),
             DecimalPlaces(-1)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUISpinBox");
-    #endif
+#endif
 
             CurrentIconColor = video::SColor(255, 255, 255, 255);
             s32 ButtonWidth = 16;

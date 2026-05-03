@@ -30,9 +30,9 @@ namespace irr
             : pID3DDevice(d3ddev), Driver(driver), CallBack(callback), BaseMaterial(baseMaterial),
             VertexShader(0), OldVertexShader(0), PixelShader(0), UserData(userData)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CD3D8ShaderMaterialRenderer");
-    #endif
+#endif
 
             if (BaseMaterial)
                 BaseMaterial->grab();
@@ -197,7 +197,7 @@ namespace irr
             fclose(f);
 
             D3DXAssembleShaderFromFile(tmp, D3DXASM_DEBUG, 0, &code, &errors);
-    #endif
+#endif
             if (errors)
             {
                 // print out compilation errors.
@@ -255,7 +255,7 @@ namespace irr
             fclose(f);
 
             D3DXAssembleShaderFromFile(tmp, D3DXASM_DEBUG, 0, &code, &errors);
-    #endif
+#endif
 
 
             if (errors)

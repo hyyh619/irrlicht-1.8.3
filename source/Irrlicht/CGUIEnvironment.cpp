@@ -68,9 +68,9 @@ namespace irr
             if (Operator)
                 Operator->grab();
 
-    #ifdef _DEBUG
+#ifdef _DEBUG
             IGUIEnvironment::setDebugName("CGUIEnvironment");
-    #endif
+#endif
 
             // gui factory
             IGUIElementFactory *factory = new CDefaultGUIElementFactory(this);

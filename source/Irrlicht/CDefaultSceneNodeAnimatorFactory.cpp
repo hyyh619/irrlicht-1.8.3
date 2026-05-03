@@ -32,9 +32,9 @@ namespace irr
         CDefaultSceneNodeAnimatorFactory::CDefaultSceneNodeAnimatorFactory(ISceneManager *mgr, gui::ICursorControl *crs)
             : Manager(mgr), CursorControl(crs)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CDefaultSceneNodeAnimatorFactory");
-    #endif
+#endif
 
             // don't grab the scene manager here to prevent cyclic references
             if (CursorControl)

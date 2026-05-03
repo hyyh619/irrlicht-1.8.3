@@ -25,9 +25,9 @@ namespace irr
             FootColor(foot), TailColor(tail),
             LightDimensions(core::vector3df(1.0f, 1.2f, 1.0f))
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CVolumeLightSceneNode");
-    #endif
+#endif
 
             constructLight();
         }

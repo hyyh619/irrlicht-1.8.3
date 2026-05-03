@@ -22,9 +22,9 @@ namespace irr
             s32 id, core::rect<s32> rectangle)
             : CGUIContextMenu(environment, parent, id, rectangle, false, true)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIMenu");
-    #endif
+#endif
 
             Type = EGUIET_MENU;
 

@@ -44,22 +44,22 @@ public:
             //! inits the windows specific parts of the open gl driver
             bool initDriver(CIrrDeviceWin32 *device);
             bool changeRenderContext(const SExposedVideoData &videoData, CIrrDeviceWin32 *device);
-        #endif
+    #endif
 
         #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
             COpenGLDriver(const SIrrlichtCreationParameters &params, io::IFileSystem *io, CIrrDeviceLinux *device);
             //! inits the GLX specific parts of the open gl driver
             bool initDriver(CIrrDeviceLinux *device);
             bool changeRenderContext(const SExposedVideoData &videoData, CIrrDeviceLinux *device);
-        #endif
+    #endif
 
         #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
             COpenGLDriver(const SIrrlichtCreationParameters &params, io::IFileSystem *io, CIrrDeviceSDL *device);
-        #endif
+    #endif
 
         #ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
             COpenGLDriver(const SIrrlichtCreationParameters &params, io::IFileSystem *io, CIrrDeviceMacOSX *device);
-        #endif
+    #endif
 
             //! generic version which overloads the unimplemented versions
             bool changeRenderContext(const SExposedVideoData &videoData, void *device)
@@ -413,7 +413,7 @@ public:
             //! Get Cg context
         #ifdef _IRR_COMPILE_WITH_CG_
             const CGcontext&getCgContext();
-        #endif
+    #endif
 
 private:
 
@@ -590,22 +590,22 @@ public:
             HWND Window;
         #ifdef _IRR_COMPILE_WITH_WINDOWS_DEVICE_
             CIrrDeviceWin32 *Win32Device;
-        #endif
-        #endif
+    #endif
+    #endif
         #ifdef _IRR_COMPILE_WITH_X11_DEVICE_
             GLXDrawable     Drawable;
             Display         *X11Display;
             CIrrDeviceLinux *X11Device;
-        #endif
+    #endif
         #ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
             CIrrDeviceMacOSX *OSXDevice;
-        #endif
+    #endif
         #ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
             CIrrDeviceSDL *SDLDevice;
-        #endif
+    #endif
         #ifdef _IRR_COMPILE_WITH_CG_
             CGcontext CgContext;
-        #endif
+    #endif
 
             E_DEVICE_TYPE DeviceType;
         };

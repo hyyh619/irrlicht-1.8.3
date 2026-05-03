@@ -35,9 +35,9 @@ namespace irr
             Emitter(0), ParticleSize(core::dimension2d<f32>(5.0f, 5.0f)), LastEmitTime(0),
             MaxParticles(0xffff), Buffer(0), ParticlesAreGlobal(true)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CParticleSystemSceneNode");
-    #endif
+#endif
 
             Buffer = new SMeshBuffer();
             if (createDefaultEmitter)
@@ -355,7 +355,7 @@ namespace irr
 
                 f = -0.5f * particle.size.Height;
                 const core::vector3df vertical (m[1] * f, m[5] * f, m[9] * f);
-        #endif
+    #endif
 
                 Buffer->Vertices[0 + idx].Pos    = particle.pos + horizontal + vertical;
                 Buffer->Vertices[0 + idx].Color  = particle.color;

@@ -33,9 +33,9 @@ namespace irr
             CellHeightPadding(2), CellWidthPadding(5), ActiveTab(-1),
             CurrentOrdering(EGOM_NONE), DrawFlags(EGTDF_ROWS | EGTDF_COLUMNS | EGTDF_ACTIVE_ROW)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUITable");
-    #endif
+#endif
 
             VerticalScrollBar = Environment->addScrollBar(false, core::rect<s32>(0, 0, 100, 100), this, -1);
             if (VerticalScrollBar)

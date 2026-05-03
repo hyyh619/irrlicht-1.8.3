@@ -18,9 +18,9 @@ namespace irr
             video::SColor colorTop, video::SColor colorBottom)
             : IBillboardSceneNode(parent, mgr, id, position)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CBillboardSceneNode");
-    #endif
+#endif
 
             setSize(size);
 

@@ -18,9 +18,9 @@ namespace irr
             const core::vector3df &position, video::SColorf color, f32 radius)
             : ILightSceneNode(parent, mgr, id, position), DriverLightIndex(-1), LightIsOn(true)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CLightSceneNode");
-    #endif
+#endif
 
             LightData.DiffuseColor = color;
             // set some useful specular color

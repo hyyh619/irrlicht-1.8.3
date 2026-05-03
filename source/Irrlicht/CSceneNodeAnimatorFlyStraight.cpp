@@ -16,9 +16,9 @@ namespace irr
             Start(startPoint), End(endPoint), TimeFactor(0.0f), StartTime(now),
             TimeForWay(timeForWay), Loop(loop), PingPong(pingpong)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSceneNodeAnimatorFlyStraight");
-    #endif
+#endif
 
             recalculateIntermediateValues();
         }

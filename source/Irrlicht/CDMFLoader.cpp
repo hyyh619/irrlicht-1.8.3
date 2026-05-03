@@ -38,9 +38,9 @@ namespace irr
         CDMFLoader::CDMFLoader(ISceneManager *smgr, io::IFileSystem *filesys)
             : SceneMgr(smgr), FileSystem(filesys)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             IReferenceCounted::setDebugName("CDMFLoader");
-    #endif
+#endif
         }
 
 

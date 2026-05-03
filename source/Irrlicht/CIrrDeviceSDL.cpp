@@ -31,17 +31,17 @@ namespace irr
         #ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
         IVideoDriver* createDirectX8Driver(const irr::SIrrlichtCreationParameters &params,
             io::IFileSystem *io, HWND window);
-        #endif
+    #endif
 
         #ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
         IVideoDriver* createDirectX9Driver(const irr::SIrrlichtCreationParameters &params,
             io::IFileSystem *io, HWND window);
-        #endif
+    #endif
 
         #ifdef _IRR_COMPILE_WITH_OPENGL_
         IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters &params,
             io::IFileSystem *io, CIrrDeviceSDL *device);
-        #endif
+    #endif
     } // end namespace video
 } // end namespace irr
 
@@ -56,9 +56,9 @@ namespace irr
         Width(param.WindowSize.Width), Height(param.WindowSize.Height),
         Resizable(false), WindowHasFocus(false), WindowMinimized(false)
     {
-    #ifdef _DEBUG
+#ifdef _DEBUG
         setDebugName("CIrrDeviceSDL");
-    #endif
+#endif
 
         // Initialize SDL... Timer for sleep, video for the obvious, and
         // noparachute prevents SDL from catching fatal errors.
@@ -236,7 +236,7 @@ namespace irr
 
         #else
                 os::Printer::log("DIRECT3D8 Driver was not compiled into this dll. Try another one.", ELL_ERROR);
-        #endif // _IRR_COMPILE_WITH_DIRECT3D_8_
+    #endif // _IRR_COMPILE_WITH_DIRECT3D_8_
 
                 break;
 
@@ -250,7 +250,7 @@ namespace irr
 
         #else
                 os::Printer::log("DIRECT3D9 Driver was not compiled into this dll. Try another one.", ELL_ERROR);
-        #endif // _IRR_COMPILE_WITH_DIRECT3D_9_
+    #endif // _IRR_COMPILE_WITH_DIRECT3D_9_
 
                 break;
 
@@ -259,7 +259,7 @@ namespace irr
                 VideoDriver = video::createSoftwareDriver(CreationParams.WindowSize, CreationParams.Fullscreen, FileSystem, this);
         #else
                 os::Printer::log("No Software driver support compiled in.", ELL_ERROR);
-        #endif
+    #endif
                 break;
 
             case video::EDT_BURNINGSVIDEO:
@@ -267,7 +267,7 @@ namespace irr
                 VideoDriver = video::createBurningVideoDriver(CreationParams, FileSystem, this);
         #else
                 os::Printer::log("Burning's video driver was not compiled in.", ELL_ERROR);
-        #endif
+    #endif
                 break;
 
             case video::EDT_OPENGL:
@@ -275,7 +275,7 @@ namespace irr
                 VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, this);
         #else
                 os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
-        #endif
+    #endif
                 break;
 
             case video::EDT_NULL:

@@ -18,25 +18,25 @@
     #include <windows.h>
     #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
         #define GL_GLEXT_LEGACY 1
-    #endif
+#endif
     #include <GL/gl.h>
     #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
         #include "glext.h"
-    #endif
+#endif
     #include "wglext.h"
 
     #ifdef _MSC_VER
         #pragma comment(lib, "OpenGL32.lib")
-    #endif
+#endif
 
 #elif defined(_IRR_COMPILE_WITH_OSX_DEVICE_)
     #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
         #define GL_GLEXT_LEGACY 1
-    #endif
+#endif
     #include <OpenGL/gl.h>
     #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
         #include "glext.h"
-    #endif
+#endif
 #elif defined(_IRR_COMPILE_WITH_SDL_DEVICE_) && !defined(_IRR_COMPILE_WITH_X11_DEVICE_)
     #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
         #define GL_GLEXT_LEGACY   1
@@ -44,7 +44,7 @@
     #else
         #define GL_GLEXT_PROTOTYPES   1
         #define GLX_GLXEXT_PROTOTYPES 1
-    #endif
+#endif
     #define NO_SDL_GLEXT
     #include <SDL/SDL_video.h>
     #include <SDL/SDL_opengl.h>
@@ -56,14 +56,14 @@
     #else
         #define GL_GLEXT_PROTOTYPES   1
         #define GLX_GLXEXT_PROTOTYPES 1
-    #endif
+#endif
     #include <GL/gl.h>
     #include <GL/glx.h>
     #if defined(_IRR_OPENGL_USE_EXTPOINTER_)
     #include "glext.h"
     #undef GLX_ARB_get_proc_address // avoid problems with local glxext.h
     #include "glxext.h"
-    #endif
+#endif
 #endif
 
 #ifndef GL_ARB_shader_objects
@@ -1236,17 +1236,17 @@ protected:
             PFNGLBLENDEQUATIONPROC              pGlBlendEquation;
         #if defined(WGL_EXT_swap_control)
             PFNWGLSWAPINTERVALEXTPROC pWglSwapIntervalEXT;
-        #endif
+    #endif
         #if defined(GLX_SGI_swap_control)
             PFNGLXSWAPINTERVALSGIPROC pGlxSwapIntervalSGI;
-        #endif
+    #endif
         #if defined(GLX_EXT_swap_control)
             PFNGLXSWAPINTERVALEXTPROC pGlxSwapIntervalEXT;
-        #endif
+    #endif
         #if defined(GLX_MESA_swap_control)
             PFNGLXSWAPINTERVALMESAPROC pGlxSwapIntervalMESA;
-        #endif
     #endif
+#endif
         };
 
         inline void COpenGLExtensionHandler::extGlActiveTexture(GLenum texture)

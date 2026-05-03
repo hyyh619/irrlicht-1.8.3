@@ -189,9 +189,9 @@ namespace irr
             s32 &outMaterialTypeNr, IMaterialRenderer *baseMaterial)
             : COpenGLShaderMaterialRenderer(driver, 0, baseMaterial), CompiledShaders(true)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("COpenGLParallaxMapRenderer");
-    #endif
+#endif
 
             // set this as callback. We could have done this in
             // the initialization list, but some compilers don't like it.

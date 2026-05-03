@@ -127,9 +127,9 @@ namespace irr
             : SceneManager(smgr), FileSystem(fs), Vertices(0), Indices(0), SmoothingGroups(0), TCoords(0),
             CountVertices(0), CountFaces(0), CountTCoords(0), Mesh(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("C3DSMeshFileLoader");
-    #endif
+#endif
 
             if (FileSystem)
                 FileSystem->grab();

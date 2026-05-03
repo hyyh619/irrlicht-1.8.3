@@ -149,9 +149,9 @@ namespace irr
             : CD3D8ShaderMaterialRenderer(d3ddev, driver, 0, baseMaterial),
             CompiledShaders(true), CurrentScale(0.0f)
         {
-        #ifdef _DEBUG
+    #ifdef _DEBUG
             setDebugName("CD3D8ParallaxMapRenderer");
-        #endif
+    #endif
 
             // set this as callback. We could have done this in
             // the initialization list, but some compilers don't like it.

@@ -245,9 +245,9 @@ namespace irr
             io::IFileSystem *fs)
             : FileSystem(fs), VideoDriver(driver), Writer(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CColladaMeshWriter");
-    #endif
+#endif
 
             if (VideoDriver)
                 VideoDriver->grab();

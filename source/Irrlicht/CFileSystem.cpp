@@ -28,7 +28,7 @@
         #include <direct.h> // for _chdir
         #include <io.h> // for _access
         #include <tchar.h>
-    #endif
+#endif
 #else
     #if (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_))
         #include <stdio.h>
@@ -39,7 +39,7 @@
         #include <dirent.h>
         #include <sys/stat.h>
         #include <unistd.h>
-    #endif
+#endif
 #endif
 
 namespace irr
@@ -49,9 +49,9 @@ namespace irr
         //! constructor
         CFileSystem::CFileSystem()
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CFileSystem");
-    #endif
+#endif
 
             setFileListSystem(FILESYSTEM_NATIVE);
             //! reset current working directory
@@ -533,8 +533,8 @@ namespace irr
                 _getcwd(tmp, _MAX_PATH);
                 WorkingDirectory[FILESYSTEM_NATIVE] = tmp;
                 WorkingDirectory[FILESYSTEM_NATIVE].replace('\\', '/');
-            #endif
-        #endif
+#endif
+    #endif
 
         #if (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_))
                 // getting the CWD is rather complex as we do not know the size
@@ -574,8 +574,8 @@ namespace irr
                     WorkingDirectory[FILESYSTEM_NATIVE] = tmpPath;
                     delete[] tmpPath;
                 }
-            #endif
-        #endif
+#endif
+    #endif
 
                 WorkingDirectory[type].validate();
             }
@@ -607,13 +607,13 @@ namespace irr
                 success = (_wchdir(newDirectory.c_str()) == 0);
     #else
                 success = (_chdir(newDirectory.c_str()) == 0);
-    #endif
+#endif
 #else
     #if defined(_IRR_WCHAR_FILESYSTEM)
                 success = (_wchdir(newDirectory.c_str()) == 0);
     #else
                 success = (chdir(newDirectory.c_str()) == 0);
-    #endif
+#endif
 #endif
             }
 
@@ -636,7 +636,7 @@ namespace irr
             p = _fullpath(fpath, filename.c_str(), _MAX_PATH);
             core::stringc tmp(p);
             tmp.replace('\\', '/');
-    #endif
+#endif
             return tmp;
 #elif (defined(_IRR_POSIX_API_) || defined(_IRR_OSX_PLATFORM_))
             c8 *p = 0;
@@ -802,7 +802,7 @@ namespace irr
             {
                 return filename;
             }
-    #endif
+#endif
 
 
             for (; i < list1.size() && i < list2.size()
@@ -886,13 +886,13 @@ namespace irr
 
                     _findclose(hFile);
                 }
-        #endif
+    #endif
 
                 // TODO add drives
                 // entry.Name = "E:\\";
                 // entry.isDirectory = true;
                 // Files.push_back(entry);
-        #endif
+    #endif
 
                 // --------------------------------------------
                 //! Linux version
@@ -931,14 +931,14 @@ namespace irr
                         {
                             isDirectory = dirEntry->d_type == DT_DIR;
                         }
-                #endif
+    #endif
 
                         r->addItem(Path + dirEntry->d_name, 0, size, isDirectory, 0);
                     }
 
                     closedir(dirHandle);
                 }
-        #endif
+    #endif
             }
             else
             {
@@ -1011,13 +1011,13 @@ namespace irr
             return (_waccess(filename.c_str(), 0) != -1);
     #else
             return (_access(filename.c_str(), 0) != -1);
-    #endif
+#endif
 #elif defined(F_OK)
     #if defined(_IRR_WCHAR_FILESYSTEM)
             return (_waccess(filename.c_str(), F_OK) != -1);
     #else
             return (access(filename.c_str(), F_OK) != -1);
-    #endif
+#endif
 #else
             return (access(filename.c_str(), 0) != -1);
 #endif

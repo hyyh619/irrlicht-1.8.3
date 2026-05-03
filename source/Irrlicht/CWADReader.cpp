@@ -19,9 +19,9 @@ namespace irr
         CArchiveLoaderWAD::CArchiveLoaderWAD(io::IFileSystem *fs)
             : FileSystem(fs)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CArchiveLoaderWAD");
-    #endif
+#endif
         }
 
 
@@ -95,9 +95,9 @@ namespace irr
         CWADReader::CWADReader(IReadFile *file, bool ignoreCase, bool ignorePaths)
             : CFileList((file ? file->getFileName() : io::path("")), ignoreCase, ignorePaths), File(file)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CWADReader");
-    #endif
+#endif
 
             if (File)
             {

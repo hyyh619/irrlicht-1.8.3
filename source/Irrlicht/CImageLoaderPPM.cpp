@@ -20,9 +20,9 @@ namespace irr
         //! constructor
         CImageLoaderPPM::CImageLoaderPPM()
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CImageLoaderPPM");
-    #endif
+#endif
         }
 
 

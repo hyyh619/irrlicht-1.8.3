@@ -85,9 +85,9 @@ namespace irr
             PrimitivesDrawn(0), MinVertexCountForVBO(500), TextureCreationFlags(0),
             OverrideMaterial2DEnabled(false), AllowZWriteOnTransparent(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CNullDriver");
-    #endif
+#endif
 
             DriverAttributes = new io::CAttributes();
             DriverAttributes->addInt("MaxTextures", _IRR_MATERIAL_MAX_TEXTURES_);

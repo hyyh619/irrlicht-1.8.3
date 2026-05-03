@@ -20,9 +20,9 @@ namespace irr
         CGUIToolBar::CGUIToolBar(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
             : IGUIToolBar(environment, parent, id, rectangle), ButtonX(5)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIToolBar");
-    #endif
+#endif
 
             // calculate position and find other menubars
             s32 y           = 0;

@@ -24,9 +24,9 @@ namespace irr
             : IGUIContextMenu(environment, parent, id, rectangle), EventParent(0), LastFont(0),
             CloseHandling(ECMC_REMOVE), HighLighted(-1), ChangeTime(0), AllowFocus(allowFocus)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIContextMenu");
-    #endif
+#endif
 
             Pos = rectangle.UpperLeftCorner;
             recalculateSize();

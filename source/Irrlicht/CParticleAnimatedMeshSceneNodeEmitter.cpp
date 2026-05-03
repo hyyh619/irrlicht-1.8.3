@@ -29,9 +29,9 @@ namespace irr
             Time(0), Emitted(0), MaxAngleDegrees(maxAngleDegrees),
             EveryMeshVertex(everyMeshVertex), UseNormalDirection(useNormalDirection)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CParticleAnimatedMeshSceneNodeEmitter");
-    #endif
+#endif
             setAnimatedMeshSceneNode(node);
         }
 

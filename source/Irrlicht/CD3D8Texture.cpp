@@ -35,9 +35,9 @@ namespace irr
             TextureSize(size), ImageSize(size), Pitch(0),
             HasMipMaps(false), IsRenderTarget(true)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CD3D8Texture");
-    #endif
+#endif
 
             Device = driver->getExposedVideoData().D3D8.D3DDev8;
             if (Device)
@@ -54,9 +54,9 @@ namespace irr
             TextureSize(0, 0), ImageSize(0, 0), Pitch(0),
             HasMipMaps(false), IsRenderTarget(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CD3D8Texture");
-    #endif
+#endif
 
             HasMipMaps = Driver->getTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS);
 

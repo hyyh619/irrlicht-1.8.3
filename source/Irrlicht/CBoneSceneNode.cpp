@@ -17,9 +17,9 @@ namespace irr
             : IBoneSceneNode(parent, mgr, id), BoneIndex(boneIndex),
             AnimationMode(EBAM_AUTOMATIC), SkinningSpace(EBSS_LOCAL)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CBoneSceneNode");
-    #endif
+#endif
             setName(boneName);
         }
 

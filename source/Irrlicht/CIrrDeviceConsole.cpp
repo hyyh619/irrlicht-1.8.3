@@ -127,7 +127,7 @@ namespace irr
                 VideoDriver = video::createSoftwareDriver(CreationParams.WindowSize, CreationParams.Fullscreen, FileSystem, this);
         #else
                 os::Printer::log("Software driver was not compiled in.", ELL_ERROR);
-        #endif
+    #endif
                 break;
 
             case video::EDT_BURNINGSVIDEO:
@@ -135,7 +135,7 @@ namespace irr
                 VideoDriver = video::createBurningVideoDriver(CreationParams, FileSystem, this);
         #else
                 os::Printer::log("Burning's Video driver was not compiled in.", ELL_ERROR);
-        #endif
+    #endif
                 break;
 
             case video::EDT_DIRECT3D8:

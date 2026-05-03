@@ -53,9 +53,9 @@ namespace irr
         CMY3DMeshFileLoader::CMY3DMeshFileLoader(ISceneManager *scmgr, io::IFileSystem *fs)
             : SceneManager(scmgr), FileSystem(fs)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CMY3DMeshFileLoader");
-    #endif
+#endif
 
             if (FileSystem)
                 FileSystem->grab();

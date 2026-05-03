@@ -85,7 +85,7 @@
     #else
         #define SOFTWARE_DRIVER_2_MIPMAPPING_MAX      8
         #define SOFTWARE_DRIVER_2_MIPMAPPING_LOD_BIAS 0
-    #endif
+#endif
 #else
     #define SOFTWARE_DRIVER_2_MIPMAPPING_MAX      1
     #define SOFTWARE_DRIVER_2_MIPMAPPING_LOD_BIAS 0
@@ -98,6 +98,6 @@
         #define REALINLINE __forceinline
     #else
         #define REALINLINE inline
-    #endif
+#endif
 #endif
 #endif

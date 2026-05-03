@@ -16,9 +16,9 @@ namespace irr
             : Point(point), Speed(speed), AffectX(affectX), AffectY(affectY),
             AffectZ(affectZ), Attract(attract), LastTime(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CParticleAttractionAffector");
-    #endif
+#endif
         }
 
 

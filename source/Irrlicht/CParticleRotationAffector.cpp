@@ -13,9 +13,9 @@ namespace irr
         CParticleRotationAffector::CParticleRotationAffector(const core::vector3df &speed, const core::vector3df &pivotPoint)
             : PivotPoint(pivotPoint), Speed(speed), LastTime(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CParticleRotationAffector");
-    #endif
+#endif
         }
 
 

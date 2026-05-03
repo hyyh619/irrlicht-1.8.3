@@ -39,22 +39,22 @@ namespace irr
         #ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
         IVideoDriver* createDirectX8Driver(const irr::SIrrlichtCreationParameters &params,
             io::IFileSystem *io, HWND window);
-        #endif
+    #endif
 
         #ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
         IVideoDriver* createDirectX9Driver(const irr::SIrrlichtCreationParameters &params,
             io::IFileSystem *io, HWND window);
-        #endif
+    #endif
 
         #ifdef _IRR_COMPILE_WITH_DIRECT3D_11_
         IVideoDriver* createDirectX11Driver(const irr::SIrrlichtCreationParameters &params,
             io::IFileSystem *io, HWND window);
-        #endif
+    #endif
 
         #ifdef _IRR_COMPILE_WITH_OPENGL_
         IVideoDriver* createOpenGLDriver(const irr::SIrrlichtCreationParameters &params,
             io::IFileSystem *io, CIrrDeviceWin32 *device);
-        #endif
+    #endif
     }
 } // end namespace irr
 
@@ -682,10 +682,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     #ifndef WM_MOUSEWHEEL
     #define WM_MOUSEWHEEL 0x020A
-    #endif
+#endif
     #ifndef WHEEL_DELTA
     #define WHEEL_DELTA 120
-    #endif
+#endif
 
     irr::CIrrDeviceWin32 *dev = 0;
     irr::SEvent          event;
@@ -970,9 +970,9 @@ namespace irr
         : CIrrDeviceStub(params), HWnd(0), ChangedToFullScreen(false), Resized(false),
         ExternalWindow(false), Win32CursorControl(0), JoyControl(0)
     {
-    #ifdef _DEBUG
+#ifdef _DEBUG
         setDebugName("CIrrDeviceWin32");
-    #endif
+#endif
 
         // get windows version and create OS operator
         core::stringc winversion;

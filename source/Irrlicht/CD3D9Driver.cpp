@@ -43,9 +43,9 @@ namespace irr
             m_DriverWasReset(true), m_OcclusionQuerySupport(false),
             m_AlphaToCoverageSupport(false), m_Params(params)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CD3D9Driver");
-    #endif
+#endif
 
             printVersion();
 
@@ -72,7 +72,7 @@ namespace irr
 
     #ifdef _IRR_COMPILE_WITH_CG_
             m_CgContext = 0;
-    #endif
+#endif
 
             // init direct 3d is done in the factory function
         }
@@ -108,7 +108,7 @@ namespace irr
             {
                 cgDestroyContext(m_CgContext);
             }
-    #endif
+#endif
         }
 
 
@@ -304,7 +304,7 @@ namespace irr
                     break;
                 }
             }
-    #endif
+#endif
 
             // enable anti alias if possible and desired
             if (m_Params.AntiAlias > 0)
@@ -522,7 +522,7 @@ namespace irr
     #ifdef _IRR_COMPILE_WITH_CG_
             m_CgContext = cgCreateContext();
             cgD3D9SetDevice(m_pID3DDevice);
-    #endif
+#endif
 
             // so far so good.
             return true;
@@ -3357,7 +3357,7 @@ MaterialRenderers[m_LastMaterial.MaterialType].Renderer->OnUnsetMaterial();
                 r->drop();
             }
             else
-    #endif
+#endif
             {
                 CD3D9HLSLMaterialRenderer *r = new CD3D9HLSLMaterialRenderer(
                     m_pID3DDevice, this, nr,

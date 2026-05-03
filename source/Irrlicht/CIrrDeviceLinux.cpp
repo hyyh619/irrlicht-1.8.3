@@ -83,9 +83,9 @@ namespace irr
         UseXVidMode(false), UseXRandR(false), UseGLXWindow(false),
         ExternalWindow(false), AutorepeatSupport(0)
     {
-    #ifdef _DEBUG
+#ifdef _DEBUG
         setDebugName("CIrrDeviceLinux");
-    #endif
+#endif
 
         // print version, distribution etc.
         // thx to LynxLuna for pointing me to the uname function
@@ -181,7 +181,7 @@ namespace irr
                 if (glxWin)
                     glXDestroyWindow(display, glxWin);
             }
-        #endif // #ifdef _IRR_COMPILE_WITH_OPENGL_
+    #endif // #ifdef _IRR_COMPILE_WITH_OPENGL_
 
             // Reset fullscreen resolution change
             switchToFullscreen(true);
@@ -241,7 +241,7 @@ namespace irr
                 XF86VidModeSwitchToMode(display, screennr, &oldVideoMode);
                 XF86VidModeSetViewPort(display, screennr, 0, 0);
             }
-        #endif
+    #endif
         #ifdef _IRR_LINUX_X11_RANDR_
             if (UseXRandR && CreationParams.Fullscreen)
             {
@@ -249,7 +249,7 @@ namespace irr
                 XRRSetScreenConfig(display, config, DefaultRootWindow(display), oldRandrMode, oldRandrRotation, CurrentTime);
                 XRRFreeScreenConfigInfo(config);
             }
-        #endif
+    #endif
             return true;
         }
 
@@ -257,7 +257,7 @@ namespace irr
     #if defined(_IRR_LINUX_X11_VIDMODE_) || defined(_IRR_LINUX_X11_RANDR_)
         s32 eventbase, errorbase;
         s32 bestMode = -1;
-    #endif
+#endif
 
     #ifdef _IRR_LINUX_X11_VIDMODE_
         if (XF86VidModeQueryExtension(display, &eventbase, &errorbase))
@@ -300,7 +300,7 @@ namespace irr
             XFree(modes);
         }
         else
-    #endif
+#endif
     #ifdef _IRR_LINUX_X11_RANDR_
         if (XRRQueryExtension(display, &eventbase, &errorbase))
         {
@@ -333,7 +333,7 @@ namespace irr
             XRRFreeScreenConfigInfo(config);
         }
         else
-    #endif
+#endif
         {
             os::Printer::log("VidMode or RandR extension must be installed to allow Irrlicht "
                              "to switch to fullscreen mode. Running in windowed mode instead.", ELL_WARNING);
@@ -832,7 +832,7 @@ namespace irr
                 VideoDriver = video::createSoftwareDriver(CreationParams.WindowSize, CreationParams.Fullscreen, FileSystem, this);
         #else
                 os::Printer::log("No Software driver support compiled in.", ELL_ERROR);
-        #endif
+    #endif
                 break;
 
             case video::EDT_BURNINGSVIDEO:
@@ -840,7 +840,7 @@ namespace irr
                 VideoDriver = video::createBurningVideoDriver(CreationParams, FileSystem, this);
         #else
                 os::Printer::log("Burning's video driver was not compiled in.", ELL_ERROR);
-        #endif
+    #endif
                 break;
 
             case video::EDT_OPENGL:
@@ -850,7 +850,7 @@ namespace irr
 
         #else
                 os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
-        #endif
+    #endif
                 break;
 
             case video::EDT_DIRECT3D8:
@@ -1390,7 +1390,7 @@ namespace irr
             #if defined(_IRR_LINUX_X11_VIDMODE_) || defined(_IRR_LINUX_X11_RANDR_)
                 s32 eventbase, errorbase;
                 s32 defaultDepth = DefaultDepth(display, screennr);
-            #endif
+#endif
 
             #ifdef _IRR_LINUX_X11_VIDMODE_
                 if (XF86VidModeQueryExtension(display, &eventbase, &errorbase))
@@ -1418,7 +1418,7 @@ namespace irr
                     XFree(modes);
                 }
                 else
-            #endif
+#endif
             #ifdef _IRR_LINUX_X11_RANDR_
                 if (XRRQueryExtension(display, &eventbase, &errorbase))
                 {
@@ -1438,7 +1438,7 @@ namespace irr
                     XRRFreeScreenConfigInfo(config);
                 }
                 else
-            #endif
+#endif
                 {
                     os::Printer::log("VidMode or RandR X11 extension requireed for VideoModeList.", ELL_WARNING);
                 }
@@ -1837,10 +1837,10 @@ namespace irr
             XF86VidModeSetGamma(display, screennr, &gamma);
             return true;
         }
-    #endif
+#endif
     #if defined(_IRR_LINUX_X11_VIDMODE_) && defined(_IRR_LINUX_X11_RANDR_)
         else
-    #endif
+#endif
     #ifdef _IRR_LINUX_X11_RANDR_
         if (XRRQueryExtension(display, &eventbase, &errorbase))
         {
@@ -1858,11 +1858,11 @@ namespace irr
                     XRRFreeGamma(gamma);
                     return true;
                 }
-        #endif
+    #endif
             }
         }
-    #endif
-    #endif
+#endif
+#endif
         return false;
     }
 
@@ -1884,10 +1884,10 @@ namespace irr
             blue  = gamma.blue;
             return true;
         }
-    #endif
+#endif
     #if defined(_IRR_LINUX_X11_VIDMODE_) && defined(_IRR_LINUX_X11_RANDR_)
         else
-    #endif
+#endif
     #ifdef _IRR_LINUX_X11_RANDR_
         if (XRRQueryExtension(display, &eventbase, &errorbase))
         {
@@ -1904,11 +1904,11 @@ namespace irr
                     XRRFreeGamma(gamma);
                     return true;
                 }
-        #endif
+    #endif
             }
         }
-    #endif
-    #endif
+#endif
+#endif
         return false;
     }
 

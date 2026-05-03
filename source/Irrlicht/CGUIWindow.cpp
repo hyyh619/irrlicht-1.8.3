@@ -20,9 +20,9 @@ namespace irr
         CGUIWindow::CGUIWindow(IGUIEnvironment *environment, IGUIElement *parent, s32 id, core::rect<s32> rectangle)
             : IGUIWindow(environment, parent, id, rectangle), Dragging(false), IsDraggable(true), DrawBackground(true), DrawTitlebar(true), IsActive(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIWindow");
-    #endif
+#endif
 
             IGUISkin *skin = 0;
             if (environment)

@@ -18,9 +18,9 @@ namespace irr
         CGUISkin::CGUISkin(EGUI_SKIN_TYPE type, video::IVideoDriver *driver)
             : SpriteBank(0), Driver(driver), Type(type)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUISkin");
-    #endif
+#endif
 
             if ((Type == EGST_WINDOWS_CLASSIC) || (Type == EGST_WINDOWS_METALLIC))
             {
@@ -49,7 +49,6 @@ namespace irr
                 Colors[EGDC_EDITABLE]           = video::SColor(255, 255, 255, 255);
                 Colors[EGDC_GRAY_EDITABLE]      = video::SColor(255, 120, 120, 120);
                 Colors[EGDC_FOCUSED_EDITABLE]   = video::SColor(255, 240, 240, 255);
-
 
                 Sizes[EGDS_SCROLLBAR_SIZE]      = 14;
                 Sizes[EGDS_MENU_HEIGHT]         = 30;

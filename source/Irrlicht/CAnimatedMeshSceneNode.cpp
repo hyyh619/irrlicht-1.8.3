@@ -37,9 +37,9 @@ namespace irr
             Looping(true), ReadOnlyMaterials(false), RenderFromIdentity(false),
             LoopCallBack(0), PassCount(0), Shadow(0), MD3Special(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CAnimatedMeshSceneNode");
-    #endif
+#endif
 
             setMesh(mesh);
         }
@@ -281,9 +281,9 @@ namespace irr
             }
             else
             {
-        #ifdef _DEBUG
+    #ifdef _DEBUG
                 os::Printer::log("Animated Mesh returned no mesh to render.", Mesh->getDebugName(), ELL_WARNING);
-        #endif
+    #endif
             }
 
             driver->setTransform(video::ETS_WORLD, AbsoluteTransformation);

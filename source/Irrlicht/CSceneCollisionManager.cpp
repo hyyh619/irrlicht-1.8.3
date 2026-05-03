@@ -19,9 +19,9 @@ namespace irr
         CSceneCollisionManager::CSceneCollisionManager(ISceneManager *smanager, video::IVideoDriver *driver)
             : SceneManager(smanager), Driver(driver)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CSceneCollisionManager");
-    #endif
+#endif
 
             if (Driver)
                 Driver->grab();

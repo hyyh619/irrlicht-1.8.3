@@ -22,9 +22,9 @@ namespace irr
                 MappingHint_Vertex(EHM_NEVER), MappingHint_Index(EHM_NEVER),
                 BoundingBoxNeedsRecalculated(true)
             {
-        #ifdef _DEBUG
+    #ifdef _DEBUG
                 setDebugName("SSkinMeshBuffer");
-        #endif
+    #endif
             }
 
             //! Get Material of this buffer.

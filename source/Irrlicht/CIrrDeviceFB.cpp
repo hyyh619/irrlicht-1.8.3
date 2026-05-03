@@ -37,9 +37,9 @@ namespace irr
         : CIrrDeviceStub(params), Framebuffer(-1), EventDevice(-1), SoftwareImage(0),
         Pitch(0), FBColorFormat(video::ECF_A8R8G8B8), Close(false)
     {
-    #ifdef _DEBUG
+#ifdef _DEBUG
         setDebugName("CIrrDeviceFB");
-    #endif
+#endif
 
         // print version, distribution etc.
         // thx to LynxLuna for pointing me to the uname function
@@ -204,7 +204,7 @@ namespace irr
                 VideoDriver = video::createSoftwareDriver(CreationParams.WindowSize, CreationParams.Fullscreen, FileSystem, this);
         #else
                 os::Printer::log("No Software driver support compiled in.", ELL_WARNING);
-        #endif
+    #endif
                 break;
 
             case video::EDT_BURNINGSVIDEO:
@@ -212,7 +212,7 @@ namespace irr
                 VideoDriver = video::createBurningVideoDriver(CreationParams, FileSystem, this);
         #else
                 os::Printer::log("Burning's video driver was not compiled in.", ELL_WARNING);
-        #endif
+    #endif
                 break;
 
             case video::EDT_OPENGL:

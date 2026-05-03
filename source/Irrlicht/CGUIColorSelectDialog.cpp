@@ -56,9 +56,9 @@ namespace irr
                 (parent->getAbsolutePosition().getHeight() - CSD_HEIGHT) / 2 + CSD_HEIGHT)),
             Dragging(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             IGUIElement::setDebugName("CGUIColorSelectDialog");
-    #endif
+#endif
 
             Text = title;
 

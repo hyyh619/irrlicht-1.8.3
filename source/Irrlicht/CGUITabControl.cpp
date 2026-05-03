@@ -29,9 +29,9 @@ namespace irr
             BackColor(0, 0, 0, 0), OverrideTextColorEnabled(false), TextColor(255, 0, 0, 0),
             DrawBackground(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUITab");
-    #endif
+#endif
 
             const IGUISkin* const skin = environment->getSkin();
             if (skin)
@@ -168,9 +168,9 @@ namespace irr
             Border(border), FillBackground(fillbackground), ScrollControl(false), TabHeight(0), VerticalAlignment(EGUIA_UPPERLEFT),
             UpButton(0), DownButton(0), TabMaxWidth(0), CurrentScrollTabIndex(0), TabExtraWidth(20)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUITabControl");
-    #endif
+#endif
 
             IGUISkin       *skin    = Environment->getSkin();
             IGUISpriteBank *sprites = 0;

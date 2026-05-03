@@ -35,9 +35,9 @@ namespace irr
         {
             SDepthSurface() : Surface(0)
             {
-            #ifdef _DEBUG
+#ifdef _DEBUG
                 setDebugName("SDepthSurface");
-            #endif
+#endif
             }
             virtual ~SDepthSurface()
             {
@@ -341,7 +341,7 @@ public:
             //! Get Cg context
         #ifdef _IRR_COMPILE_WITH_CG_
             const CGcontext&getCgContext();
-        #endif
+    #endif
 
 private:
 
@@ -490,7 +490,7 @@ private:
 
         #ifdef _IRR_COMPILE_WITH_CG_
             CGcontext m_CgContext;
-        #endif
+    #endif
         };
     } // end namespace video
 } // end namespace irr

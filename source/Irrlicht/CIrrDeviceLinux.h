@@ -400,15 +400,15 @@ private:
         mutable core::stringc Clipboard;
         #ifdef _IRR_LINUX_X11_VIDMODE_
         XF86VidModeModeInfo oldVideoMode;
-        #endif
+    #endif
         #ifdef _IRR_LINUX_X11_RANDR_
         SizeID   oldRandrMode;
         Rotation oldRandrRotation;
-        #endif
+    #endif
         #ifdef _IRR_COMPILE_WITH_OPENGL_
         GLXWindow  glxWin;
         GLXContext Context;
-        #endif
+    #endif
 #endif
         u32  Width, Height;
         bool WindowHasFocus;

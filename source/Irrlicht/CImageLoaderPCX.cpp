@@ -21,9 +21,9 @@ namespace irr
         //! constructor
         CImageLoaderPCX::CImageLoaderPCX()
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CImageLoaderPCX");
-    #endif
+#endif
         }
 
 
@@ -64,7 +64,7 @@ namespace irr
             header.PaletteType  = os::Byteswap::byteswap(header.PaletteType);
             header.HScrSize     = os::Byteswap::byteswap(header.HScrSize);
             header.VScrSize     = os::Byteswap::byteswap(header.VScrSize);
-    #endif
+#endif
 
             //! return if the header is wrong
             if (header.Manufacturer != 0x0a && header.Encoding != 0x01)

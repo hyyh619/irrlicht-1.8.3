@@ -31,9 +31,9 @@ namespace irr
             Buffer(0), P(0), End(0), BinaryNumCount(0), Line(0),
             CurFrame(0), MajorVersion(0), MinorVersion(0), BinaryFormat(false), FloatSize(0)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CXMeshFileLoader");
-    #endif
+#endif
         }
 
 
@@ -400,7 +400,7 @@ namespace irr
                         weight.buffer_id = verticesLinkBuffer[id] + bufferOffset;
                     }
                 }
-        #endif
+    #endif
             }
 
             return true;

@@ -22,9 +22,9 @@ namespace irr
         CArchiveLoaderTAR::CArchiveLoaderTAR(io::IFileSystem *fs)
             : FileSystem(fs)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CArchiveLoaderTAR");
-    #endif
+#endif
         }
 
 
@@ -129,9 +129,9 @@ namespace irr
         CTarReader::CTarReader(IReadFile *file, bool ignoreCase, bool ignorePaths)
             : CFileList((file ? file->getFileName() : io::path("")), ignoreCase, ignorePaths), File(file)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CTarReader");
-    #endif
+#endif
 
             if (File)
             {

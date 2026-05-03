@@ -24,9 +24,9 @@ namespace irr
             Icon(0), IconTexture(image),
             Flags(flags), MessageText(text), Pressed(false)
         {
-    #ifdef _DEBUG
+#ifdef _DEBUG
             setDebugName("CGUIMessageBox");
-    #endif
+#endif
 
             // set element type
             Type = EGUIET_MESSAGE_BOX;
