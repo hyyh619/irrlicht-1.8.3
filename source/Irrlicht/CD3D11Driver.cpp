@@ -489,6 +489,9 @@ namespace irr
             if (stage >= MATERIAL_MAX_TEXTURES)
                 return false;
 
+            if (m_CurrentTexture[stage] == texture)
+                return true;
+
             if (texture)
             {
                 if (texture->getDriverType() != EDT_DIRECT3D11)

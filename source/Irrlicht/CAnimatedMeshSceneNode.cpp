@@ -267,7 +267,6 @@ namespace irr
             if (!Mesh || !driver)
                 return;
 
-
             bool isTransparentPass =
                 SceneManager->getSceneNodeRenderPass() == scene::ESNRP_TRANSPARENT;
 

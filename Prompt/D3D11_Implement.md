@@ -293,3 +293,7 @@ bool CD3D11Driver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const没有检�
 目前我已经看到两个问题
 1. 未调用CNullDriver::beginScene
 2. backBuffer, zBuffer的判断错误
+
+# 17
+d3d11最大可以支持8个纹理,其它video driver支持4个,改一下下面的定义
+#define _IRR_MATERIAL_MAX_TEXTURES_ 4
