@@ -12,20 +12,20 @@ namespace irr
 {
     namespace core
     {
-        // ! 2d vector template class with lots of operators and methods.
+        //! 2d vector template class with lots of operators and methods.
         /** As of Irrlicht 1.6, this class supercedes position2d, which should
          *  be considered deprecated. */
         template<class T>
         class vector2d
         {
 public:
-            // ! Default constructor (null vector)
+            //! Default constructor (null vector)
             vector2d() : X(0), Y(0) {}
-            // ! Constructor with two different values
+            //! Constructor with two different values
             vector2d(T nx, T ny) : X(nx), Y(ny) {}
-            // ! Constructor with the same value for both members
+            //! Constructor with the same value for both members
             explicit vector2d(T n) : X(n), Y(n) {}
-            // ! Copy constructor
+            //! Copy constructor
             vector2d(const vector2d<T> &other) : X(other.X), Y(other.Y) {}
 
             vector2d(const dimension2d<T> &other) : X(other.Width), Y(other.Height) {}
@@ -131,28 +131,28 @@ public:
                 X /= v; Y /= v; return *this;
             }
 
-            // ! sort in order X, Y. Equality with rounding tolerance.
+            //! sort in order X, Y. Equality with rounding tolerance.
             bool operator<=(const vector2d<T> &other) const
             {
                 return (X < other.X || core::equals(X, other.X)) ||
                        (core::equals(X, other.X) && (Y < other.Y || core::equals(Y, other.Y)));
             }
 
-            // ! sort in order X, Y. Equality with rounding tolerance.
+            //! sort in order X, Y. Equality with rounding tolerance.
             bool operator>=(const vector2d<T> &other) const
             {
                 return (X > other.X || core::equals(X, other.X)) ||
                        (core::equals(X, other.X) && (Y > other.Y || core::equals(Y, other.Y)));
             }
 
-            // ! sort in order X, Y. Difference must be above rounding tolerance.
+            //! sort in order X, Y. Difference must be above rounding tolerance.
             bool operator<(const vector2d<T> &other) const
             {
                 return (X < other.X && !core::equals(X, other.X)) ||
                        (core::equals(X, other.X) && Y < other.Y && !core::equals(Y, other.Y));
             }
 
-            // ! sort in order X, Y. Difference must be above rounding tolerance.
+            //! sort in order X, Y. Difference must be above rounding tolerance.
             bool operator>(const vector2d<T> &other) const
             {
                 return (X > other.X && !core::equals(X, other.X)) ||
@@ -170,7 +170,7 @@ public:
 
             // functions
 
-            // ! Checks if this vector equals the other one.
+            //! Checks if this vector equals the other one.
             /** Takes floating point rounding errors into account.
              * \param other Vector to compare with.
              * \return True if the two vector are (almost) equal, else false. */
@@ -188,14 +188,14 @@ public:
                 X = p.X; Y = p.Y; return *this;
             }
 
-            // ! Gets the length of the vector.
+            //! Gets the length of the vector.
             /** \return The length of the vector. */
             T getLength() const
             {
                 return core::squareroot(X * X + Y * Y);
             }
 
-            // ! Get the squared length of this vector
+            //! Get the squared length of this vector
             /** This is useful because it is much faster than getLength().
              * \return The squared length of the vector. */
             T getLengthSQ() const
@@ -203,7 +203,7 @@ public:
                 return X * X + Y * Y;
             }
 
-            // ! Get the dot product of this vector with another.
+            //! Get the dot product of this vector with another.
             /** \param other Other vector to take dot product with.
              * \return The dot product of the two vectors. */
             T dotProduct(const vector2d<T> &other) const
@@ -211,7 +211,7 @@ public:
                 return X * other.X + Y * other.Y;
             }
 
-            // ! Gets distance from another point.
+            //! Gets distance from another point.
             /** Here, the vector is interpreted as a point in 2-dimensional space.
              * \param other Other vector to measure from.
              * \return Distance from other point. */
@@ -220,7 +220,7 @@ public:
                 return vector2d<T>(X - other.X, Y - other.Y).getLength();
             }
 
-            // ! Returns squared distance from another point.
+            //! Returns squared distance from another point.
             /** Here, the vector is interpreted as a point in 2-dimensional space.
              * \param other Other vector to measure from.
              * \return Squared distance from other point. */
@@ -229,7 +229,7 @@ public:
                 return vector2d<T>(X - other.X, Y - other.Y).getLengthSQ();
             }
 
-            // ! rotates the point anticlockwise around a center by an amount of degrees.
+            //! rotates the point anticlockwise around a center by an amount of degrees.
             /** \param degrees Amount of degrees to rotate by, anticlockwise.
              * \param center Rotation center.
              * \return This vector after transformation. */
@@ -249,7 +249,7 @@ public:
                 return *this;
             }
 
-            // ! Normalize the vector.
+            //! Normalize the vector.
             /** The null vector is left untouched.
              * \return Reference to this vector, after normalization. */
             vector2d<T>&normalize()
@@ -265,7 +265,7 @@ public:
                 return *this;
             }
 
-            // ! Calculates the angle of this vector in degrees in the trigonometric sense.
+            //! Calculates the angle of this vector in degrees in the trigonometric sense.
             /** 0 is to the right (3 o'clock), values increase counter-clockwise.
              * This method has been suggested by Pr3t3nd3r.
              * \return Returns a value between 0 and 360. */
@@ -288,7 +288,7 @@ public:
                     return 180.0 + atan(-(irr::f64)Y / -(irr::f64)X) * RADTODEG64;
             }
 
-            // ! Calculates the angle of this vector in degrees in the counter trigonometric sense.
+            //! Calculates the angle of this vector in degrees in the counter trigonometric sense.
             /** 0 is to the right (3 o'clock), values increase clockwise.
              * \return Returns a value between 0 and 360. */
             inline f64 getAngle() const
@@ -315,7 +315,7 @@ public:
                 return angle;
             }
 
-            // ! Calculates the angle between this vector and another one in degree.
+            //! Calculates the angle between this vector and another one in degree.
             /** \param b Other vector to test with.
              * \return Returns a value between 0 and 90. */
             inline f64 getAngleWith(const vector2d<T> &b) const
@@ -335,7 +335,7 @@ public:
                 return atan(sqrt(1 - tmp * tmp) / tmp) * RADTODEG64;
             }
 
-            // ! Returns if this vector interpreted as a point is on a line between two other points.
+            //! Returns if this vector interpreted as a point is on a line between two other points.
             /** It is assumed that the point is on the line.
              * \param begin Beginning vector to compare between.
              * \param end Ending vector to compare between.
@@ -354,7 +354,7 @@ public:
                 }
             }
 
-            // ! Creates an interpolated vector between this vector and another vector.
+            //! Creates an interpolated vector between this vector and another vector.
             /** \param other The other vector to interpolate with.
              * \param d Interpolation value between 0.0f (all the other vector) and 1.0f (all this vector).
              * Note that this is the opposite direction of interpolation to getInterpolated_quadratic()
@@ -366,7 +366,7 @@ public:
                 return vector2d<T>((T)(other.X * inv + X * d), (T)(other.Y * inv + Y * d));
             }
 
-            // ! Creates a quadratically interpolated vector between this and two other vectors.
+            //! Creates a quadratically interpolated vector between this and two other vectors.
             /** \param v2 Second vector to interpolate with.
              * \param v3 Third vector to interpolate with (maximum at 1.0f)
              * \param d Interpolation value between 0.0f (all this vector) and 1.0f (all the 3rd vector).
@@ -384,7 +384,7 @@ public:
                            (T)(Y * mul0 + v2.Y * mul1 + v3.Y * mul2));
             }
 
-            // ! Sets this vector to the linearly interpolated vector between a and b.
+            //! Sets this vector to the linearly interpolated vector between a and b.
             /** \param a first vector to interpolate with, maximum at 1.0f
              * \param b second vector to interpolate with, maximum at 0.0f
              * \param d Interpolation value between 0.0f (all vector b) and 1.0f (all vector a)
@@ -397,17 +397,17 @@ public:
                 return *this;
             }
 
-            // ! X coordinate of vector.
+            //! X coordinate of vector.
             T X;
 
-            // ! Y coordinate of vector.
+            //! Y coordinate of vector.
             T Y;
         };
 
-        // ! Typedef for f32 2d vector.
+        //! Typedef for f32 2d vector.
         typedef vector2d<f32> vector2df;
 
-        // ! Typedef for integer 2d vector.
+        //! Typedef for integer 2d vector.
         typedef vector2d<s32> vector2di;
 
         template<class S, class T>

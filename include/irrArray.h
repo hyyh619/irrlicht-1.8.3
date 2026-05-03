@@ -14,7 +14,7 @@ namespace irr
 {
     namespace core
     {
-        // ! Self reallocating template array (like stl vector) with additional features.
+        //! Self reallocating template array (like stl vector) with additional features.
         /** Some features are: Heap sorting, binary search methods, easier debugging.
          */
         template<class T, typename TAlloc = irrAllocator<T>>
@@ -22,14 +22,14 @@ namespace irr
         {
 public:
 
-            // ! Default constructor for empty array.
+            //! Default constructor for empty array.
             array()
                 : data(0), allocated(0), used(0),
                 strategy(ALLOC_STRATEGY_DOUBLE), free_when_destroyed(true), is_sorted(true)
             {}
 
 
-            // ! Constructs an array and allocates an initial chunk of memory.
+            //! Constructs an array and allocates an initial chunk of memory.
             /** \param start_count Amount of elements to pre-allocate. */
             array(u32 start_count)
                 : data(0), allocated(0), used(0),
@@ -39,14 +39,14 @@ public:
             }
 
 
-            // ! Copy constructor
+            //! Copy constructor
             array(const array<T, TAlloc> &other) : data(0)
             {
                 *this = other;
             }
 
 
-            // ! Destructor.
+            //! Destructor.
             /** Frees allocated memory, if set_free_when_destroyed was not set to
              * false by the user before. */
             ~array()
@@ -55,7 +55,7 @@ public:
             }
 
 
-            // ! Reallocates the array, make it bigger or smaller.
+            //! Reallocates the array, make it bigger or smaller.
             /** \param new_size New size of array.
              * \param canShrink Specifies whether the array is reallocated even if
              * enough space is available. Setting this flag to false can speed up
@@ -94,7 +94,7 @@ public:
             }
 
 
-            // ! set a new allocation strategy
+            //! set a new allocation strategy
             /** if the maximum size of the array is unknown, you can define how big the
              * allocation should happen.
              * \param newStrategy New strategy to apply to this array. */
@@ -104,7 +104,7 @@ public:
             }
 
 
-            // ! Adds an element at back of array.
+            //! Adds an element at back of array.
             /** If the array is too small to add this new element it is made bigger.
              * \param element: Element to add at the back of the array. */
             void push_back(const T &element)
@@ -113,7 +113,7 @@ public:
             }
 
 
-            // ! Adds an element at the front of the array.
+            //! Adds an element at the front of the array.
             /** If the array is to small to add this new element, the array is
              * made bigger. Please note that this is slow, because the whole array
              * needs to be copied for this.
@@ -124,7 +124,7 @@ public:
             }
 
 
-            // ! Insert item into array at specified position.
+            //! Insert item into array at specified position.
             /** Please use this only if you know what you are doing (possible
              * performance loss). The preferred method of adding elements should be
              * push_back().
@@ -205,7 +205,7 @@ public:
             }
 
 
-            // ! Clears the array and deletes all allocated memory.
+            //! Clears the array and deletes all allocated memory.
             void clear()
             {
                 if (free_when_destroyed)
@@ -223,7 +223,7 @@ public:
             }
 
 
-            // ! Sets pointer to new array, using this as new workspace.
+            //! Sets pointer to new array, using this as new workspace.
             /** Make sure that set_free_when_destroyed is used properly.
              * \param newPointer: Pointer to new array of elements.
              * \param size: Size of the new array.
@@ -243,7 +243,7 @@ public:
             }
 
 
-            // ! Sets if the array should delete the memory it uses upon destruction.
+            //! Sets if the array should delete the memory it uses upon destruction.
             /** Also clear and set_pointer will only delete the (original) memory
              * area if this flag is set to true, which is also the default. The
              * methods reallocate, set_used, push_back, push_front, insert, and erase
@@ -257,7 +257,7 @@ public:
             }
 
 
-            // ! Sets the size of the array and allocates new elements if necessary.
+            //! Sets the size of the array and allocates new elements if necessary.
             /** Please note: This is only secure when using it with simple types,
              * because no default constructor will be called for the added elements.
              * \param usedNow Amount of elements now used. */
@@ -270,7 +270,7 @@ public:
             }
 
 
-            // ! Assignment operator
+            //! Assignment operator
             const array<T, TAlloc>&operator=(const array<T, TAlloc> &other)
             {
                 if (this == &other)
@@ -299,7 +299,7 @@ public:
             }
 
 
-            // ! Equality operator
+            //! Equality operator
             bool operator ==(const array<T, TAlloc> &other) const
             {
                 if (used != other.used)
@@ -313,14 +313,14 @@ public:
             }
 
 
-            // ! Inequality operator
+            //! Inequality operator
             bool operator !=(const array<T, TAlloc> &other) const
             {
                 return !(*this == other);
             }
 
 
-            // ! Direct access operator
+            //! Direct access operator
             T&operator [](u32 index)
             {
                 _IRR_DEBUG_BREAK_IF(index >= used) // access violation
@@ -329,7 +329,7 @@ public:
             }
 
 
-            // ! Direct const access operator
+            //! Direct const access operator
             const T&operator [](u32 index) const
             {
                 _IRR_DEBUG_BREAK_IF(index >= used) // access violation
@@ -338,7 +338,7 @@ public:
             }
 
 
-            // ! Gets last element.
+            //! Gets last element.
             T&getLast()
             {
                 _IRR_DEBUG_BREAK_IF(!used) // access violation
@@ -347,7 +347,7 @@ public:
             }
 
 
-            // ! Gets last element
+            //! Gets last element
             const T&getLast() const
             {
                 _IRR_DEBUG_BREAK_IF(!used) // access violation
@@ -356,7 +356,7 @@ public:
             }
 
 
-            // ! Gets a pointer to the array.
+            //! Gets a pointer to the array.
             /** \return Pointer to the array. */
             T* pointer()
             {
@@ -364,7 +364,7 @@ public:
             }
 
 
-            // ! Gets a const pointer to the array.
+            //! Gets a const pointer to the array.
             /** \return Pointer to the array. */
             const T* const_pointer() const
             {
@@ -372,7 +372,7 @@ public:
             }
 
 
-            // ! Get number of occupied elements of the array.
+            //! Get number of occupied elements of the array.
             /** \return Size of elements in the array which are actually occupied. */
             u32 size() const noexcept
             {
@@ -380,7 +380,7 @@ public:
             }
 
 
-            // ! Get amount of memory allocated.
+            //! Get amount of memory allocated.
             /** \return Amount of memory allocated. The amount of bytes
              * allocated would be allocated_size() * sizeof(ElementTypeUsed); */
             u32 allocated_size() const
@@ -389,7 +389,7 @@ public:
             }
 
 
-            // ! Check if array is empty.
+            //! Check if array is empty.
             /** \return True if the array is empty false if not. */
             bool empty() const
             {
@@ -397,7 +397,7 @@ public:
             }
 
 
-            // ! Sorts the array using heapsort.
+            //! Sorts the array using heapsort.
             /** There is no additional memory waste and the algorithm performs
              * O(n*log n) in worst case. */
             void sort()
@@ -409,7 +409,7 @@ public:
             }
 
 
-            // ! Performs a binary search for an element, returns -1 if not found.
+            //! Performs a binary search for an element, returns -1 if not found.
             /** The array will be sorted before the binary search if it is not
              * already sorted. Caution is advised! Be careful not to call this on
              * unsorted const arrays, or the slower method will be used.
@@ -423,7 +423,7 @@ public:
             }
 
 
-            // ! Performs a binary search for an element if possible, returns -1 if not found.
+            //! Performs a binary search for an element if possible, returns -1 if not found.
             /** This method is for const arrays and so cannot call sort(), if the array is
              * not sorted then linear_search will be used instead. Potentially very slow!
              * \param element Element to search for.
@@ -438,7 +438,7 @@ public:
             }
 
 
-            // ! Performs a binary search for an element, returns -1 if not found.
+            //! Performs a binary search for an element, returns -1 if not found.
             /** \param element: Element to search for.
              * \param left First left index
              * \param right Last right index.
@@ -475,8 +475,8 @@ public:
             }
 
 
-            // ! Performs a binary search for an element, returns -1 if not found.
-            // ! it is used for searching a multiset
+            //! Performs a binary search for an element, returns -1 if not found.
+            //! it is used for searching a multiset
             /** The array will be sorted before the binary search if it is not
              * already sorted.
              * \param element    Element to search for.
@@ -509,7 +509,7 @@ public:
             }
 
 
-            // ! Finds an element in linear time, which is very slow.
+            //! Finds an element in linear time, which is very slow.
             /** Use binary_search for faster finding. Only works if ==operator is
              * implemented.
              * \param element Element to search for.
@@ -525,7 +525,7 @@ public:
             }
 
 
-            // ! Finds an element in linear time, which is very slow.
+            //! Finds an element in linear time, which is very slow.
             /** Use binary_search for faster finding. Only works if ==operator is
              * implemented.
              * \param element: Element to search for.
@@ -541,7 +541,7 @@ public:
             }
 
 
-            // ! Erases an element from the array.
+            //! Erases an element from the array.
             /** May be slow, because all elements following after the erased
              * element have to be copied.
              * \param index: Index of element to be erased. */
@@ -561,7 +561,7 @@ public:
             }
 
 
-            // ! Erases some elements from the array.
+            //! Erases some elements from the array.
             /** May be slow, because all elements following after the erased
              * element have to be copied.
              * \param index: Index of the first element to be erased.
@@ -594,14 +594,14 @@ public:
             }
 
 
-            // ! Sets if the array is sorted
+            //! Sets if the array is sorted
             void set_sorted(bool _is_sorted)
             {
                 is_sorted = _is_sorted;
             }
 
 
-            // ! Swap the content of this array container with the content of another array
+            //! Swap the content of this array container with the content of another array
             /** Afterwards this object will contain the content of the other object and the other
              * object will contain the content of this object.
              * \param other Swap content with this object    */

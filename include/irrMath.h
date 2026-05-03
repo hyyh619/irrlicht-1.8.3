@@ -39,7 +39,7 @@ namespace irr
 {
     namespace core
     {
-        // ! Rounding error constant often used when comparing f32 values.
+        //! Rounding error constant often used when comparing f32 values.
 
         constexpr s32 ROUNDING_ERROR_S32 = 0;
 #ifdef __IRR_HAS_S64
@@ -51,37 +51,37 @@ namespace irr
 #ifdef PI // make sure we don't collide with a define
 #undef PI
 #endif
-        // ! Constant for PI.
+        //! Constant for PI.
         constexpr f32 PI = 3.14159265359f;
 
-        // ! Constant for reciprocal of PI.
+        //! Constant for reciprocal of PI.
         constexpr f32 RECIPROCAL_PI = 1.0f / PI;
 
-        // ! Constant for half of PI.
+        //! Constant for half of PI.
         constexpr f32 HALF_PI = PI / 2.0f;
 
 #ifdef PI64 // make sure we don't collide with a define
 #undef PI64
 #endif
-        // ! Constant for 64bit PI.
+        //! Constant for 64bit PI.
         constexpr f64 PI64 = 3.1415926535897932384626433832795028841971693993751;
 
-        // ! Constant for 64bit reciprocal of PI.
+        //! Constant for 64bit reciprocal of PI.
         constexpr f64 RECIPROCAL_PI64 = 1.0 / PI64;
 
-        // ! 32bit Constant for converting from degrees to radians
+        //! 32bit Constant for converting from degrees to radians
         constexpr f32 DEGTORAD = PI / 180.0f;
 
-        // ! 32bit constant for converting from radians to degrees (formally known as GRAD_PI)
+        //! 32bit constant for converting from radians to degrees (formally known as GRAD_PI)
         constexpr f32 RADTODEG = 180.0f / PI;
 
-        // ! 64bit constant for converting from degrees to radians (formally known as GRAD_PI2)
+        //! 64bit constant for converting from degrees to radians (formally known as GRAD_PI2)
         constexpr f64 DEGTORAD64 = PI64 / 180.0;
 
-        // ! 64bit constant for converting from radians to degrees
+        //! 64bit constant for converting from radians to degrees
         constexpr f64 RADTODEG64 = 180.0 / PI64;
 
-        // ! Utility function to convert a radian value to degrees
+        //! Utility function to convert a radian value to degrees
         /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
          * \param radians    The radians value to convert to degrees.
          */
@@ -90,7 +90,7 @@ namespace irr
             return RADTODEG * radians;
         }
 
-        // ! Utility function to convert a radian value to degrees
+        //! Utility function to convert a radian value to degrees
         /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
          * \param radians    The radians value to convert to degrees.
          */
@@ -99,7 +99,7 @@ namespace irr
             return RADTODEG64 * radians;
         }
 
-        // ! Utility function to convert a degrees value to radians
+        //! Utility function to convert a degrees value to radians
         /** Provided as it can be clearer to write degToRad(X) than DEGTORAD * X
          * \param degrees    The degrees value to convert to radians.
          */
@@ -108,7 +108,7 @@ namespace irr
             return DEGTORAD * degrees;
         }
 
-        // ! Utility function to convert a degrees value to radians
+        //! Utility function to convert a degrees value to radians
         /** Provided as it can be clearer to write degToRad(X) than DEGTORAD * X
          * \param degrees    The degrees value to convert to radians.
          */
@@ -117,57 +117,57 @@ namespace irr
             return DEGTORAD64 * degrees;
         }
 
-        // ! returns minimum of two values. Own implementation to get rid of the STL (VS6 problems)
+        //! returns minimum of two values. Own implementation to get rid of the STL (VS6 problems)
         template<class T>
         inline const T&min_(const T &a, const T &b)
         {
             return a < b ? a : b;
         }
 
-        // ! returns minimum of three values. Own implementation to get rid of the STL (VS6 problems)
+        //! returns minimum of three values. Own implementation to get rid of the STL (VS6 problems)
         template<class T>
         inline const T&min_(const T &a, const T &b, const T &c)
         {
             return a < b ? min_(a, c) : min_(b, c);
         }
 
-        // ! returns maximum of two values. Own implementation to get rid of the STL (VS6 problems)
+        //! returns maximum of two values. Own implementation to get rid of the STL (VS6 problems)
         template<class T>
         inline const T&max_(const T &a, const T &b)
         {
             return a < b ? b : a;
         }
 
-        // ! returns maximum of three values. Own implementation to get rid of the STL (VS6 problems)
+        //! returns maximum of three values. Own implementation to get rid of the STL (VS6 problems)
         template<class T>
         inline const T&max_(const T &a, const T &b, const T &c)
         {
             return a < b ? max_(b, c) : max_(a, c);
         }
 
-        // ! returns abs of two values. Own implementation to get rid of STL (VS6 problems)
+        //! returns abs of two values. Own implementation to get rid of STL (VS6 problems)
         template<class T>
         inline T abs_(const T &a) noexcept
         {
             return a < (T)0 ? -a : a;
         }
 
-        // ! returns linear interpolation of a and b with ratio t
-        // ! \return: a if t==0, b if t==1, and the linear interpolation else
+        //! returns linear interpolation of a and b with ratio t
+        //! \return: a if t==0, b if t==1, and the linear interpolation else
         template<class T>
         inline T lerp(const T &a, const T &b, const f32 t)
         {
             return (T)(a * (1.f - t)) + (b * t);
         }
 
-        // ! clamps a value between low and high
+        //! clamps a value between low and high
         template<class T>
         inline const T clamp(const T &value, const T &low, const T &high)
         {
             return min_ (max_(value, low), high);
         }
 
-        // ! swaps the content of the passed parameters
+        //! swaps the content of the passed parameters
         // Note: We use the same trick as boost and use two template arguments to
         // avoid ambiguity when swapping objects of an Irrlicht type that has not
         // it's own swap overload. Otherwise we get conflicts with some compilers
@@ -181,13 +181,13 @@ namespace irr
             b = c;
         }
 
-        // ! returns if a equals b, taking possible rounding errors into account
+        //! returns if a equals b, taking possible rounding errors into account
         inline constexpr bool equals(const f64 a, const f64 b, const f64 tolerance = ROUNDING_ERROR_f64) noexcept
         {
             return (a + tolerance >= b) && (a - tolerance <= b);
         }
 
-        // ! returns if a equals b, taking possible rounding errors into account
+        //! returns if a equals b, taking possible rounding errors into account
         inline constexpr bool equals(const f32 a, const f32 b, const f32 tolerance = ROUNDING_ERROR_f32) noexcept
         {
             return (a + tolerance >= b) && (a - tolerance <= b);
@@ -206,7 +206,7 @@ namespace irr
             irr::f32 f;
         };
 
-        // ! We compare the difference in ULP's (spacing between floating-point numbers, aka ULP=1 means there exists no float between).
+        //! We compare the difference in ULP's (spacing between floating-point numbers, aka ULP=1 means there exists no float between).
         // \result true when numbers have a ULP <= maxUlpDiff AND have the same sign.
         inline bool equalsByUlp(f32 a, f32 b, int maxUlpDiff) noexcept
         {
@@ -238,70 +238,70 @@ namespace irr
         }
 
 #if 0
-        // ! returns if a equals b, not using any rounding tolerance
+        //! returns if a equals b, not using any rounding tolerance
         inline bool equals(const s32 a, const s32 b)
         {
             return (a == b);
         }
 
-        // ! returns if a equals b, not using any rounding tolerance
+        //! returns if a equals b, not using any rounding tolerance
         inline bool equals(const u32 a, const u32 b)
         {
             return (a == b);
         }
 #endif
-        // ! returns if a equals b, taking an explicit rounding tolerance into account
+        //! returns if a equals b, taking an explicit rounding tolerance into account
         inline constexpr bool equals(const s32 a, const s32 b, const s32 tolerance = ROUNDING_ERROR_S32) noexcept
         {
             return (a + tolerance >= b) && (a - tolerance <= b);
         }
 
-        // ! returns if a equals b, taking an explicit rounding tolerance into account
+        //! returns if a equals b, taking an explicit rounding tolerance into account
         inline constexpr bool equals(const u32 a, const u32 b, const s32 tolerance = ROUNDING_ERROR_S32) noexcept
         {
             return (a + tolerance >= b) && (a - tolerance <= b);
         }
 
 #ifdef __IRR_HAS_S64
-        // ! returns if a equals b, taking an explicit rounding tolerance into account
+        //! returns if a equals b, taking an explicit rounding tolerance into account
         inline constexpr bool equals(const s64 a, const s64 b, const s64 tolerance = ROUNDING_ERROR_S64) noexcept
         {
             return (a + tolerance >= b) && (a - tolerance <= b);
         }
 #endif
 
-        // ! returns if a equals zero, taking rounding errors into account
+        //! returns if a equals zero, taking rounding errors into account
         inline bool iszero(const f64 a, const f64 tolerance = ROUNDING_ERROR_f64)
         {
             return fabs(a) <= tolerance;
         }
 
-        // ! returns if a equals zero, taking rounding errors into account
+        //! returns if a equals zero, taking rounding errors into account
         inline bool iszero(const f32 a, const f32 tolerance = ROUNDING_ERROR_f32)
         {
             return fabsf(a) <= tolerance;
         }
 
-        // ! returns if a equals not zero, taking rounding errors into account
+        //! returns if a equals not zero, taking rounding errors into account
         inline bool isnotzero(const f32 a, const f32 tolerance = ROUNDING_ERROR_f32)
         {
             return fabsf(a) > tolerance;
         }
 
-        // ! returns if a equals zero, taking rounding errors into account
+        //! returns if a equals zero, taking rounding errors into account
         inline constexpr bool iszero(const s32 a, const s32 tolerance = 0) noexcept
         {
             return (a & 0x7ffffff) <= tolerance;
         }
 
-        // ! returns if a equals zero, taking rounding errors into account
+        //! returns if a equals zero, taking rounding errors into account
         inline constexpr bool iszero(const u32 a, const u32 tolerance = 0) noexcept
         {
             return a <= tolerance;
         }
 
 #ifdef __IRR_HAS_S64
-        // ! returns if a equals zero, taking rounding errors into account
+        //! returns if a equals zero, taking rounding errors into account
         inline bool iszero(const s64 a, const s64 tolerance = 0) noexcept
         {
             return abs_(a) <= tolerance;
@@ -351,8 +351,8 @@ namespace irr
     #define F32_SIGN_BIT       0x80000000U
     #define F32_EXPON_MANTISSA 0x7FFFFFFFU
 
-        // ! code is taken from IceFPU
-        // ! Integer representation of a floating-point value.
+        //! code is taken from IceFPU
+        //! Integer representation of a floating-point value.
 #ifdef IRRLICHT_FAST_MATH
     #define IR(x) ((u32&)(x))
 #else
@@ -362,10 +362,10 @@ namespace irr
         }
 #endif
 
-        // ! Absolute integer representation of a floating-point value
+        //! Absolute integer representation of a floating-point value
     #define AIR(x) (IR(x) & 0x7fffffff)
 
-        // ! Floating-point representation of an integer value.
+        //! Floating-point representation of an integer value.
 #ifdef IRRLICHT_FAST_MATH
     #define FR(x) ((f32&)(x))
 #else
@@ -379,9 +379,9 @@ namespace irr
         }
 #endif
 
-        // ! integer representation of 1.0
+        //! integer representation of 1.0
     #define IEEE_1_0 0x3f800000
-        // ! integer representation of 255.0
+        //! integer representation of 255.0
     #define IEEE_255_0 0x437f0000
 
 #ifdef IRRLICHT_FAST_MATH
@@ -417,31 +417,31 @@ namespace irr
 #if defined(__BORLANDC__) || defined (__BCPLUSPLUS__)
         // 8-bit bools in borland builder
 
-        // ! conditional set based on mask and arithmetic shift
+        //! conditional set based on mask and arithmetic shift
         REALINLINE u32 if_c_a_else_b(const c8 condition, const u32 a, const u32 b)
         {
             return ((-condition >> 7) & (a ^ b)) ^ b;
         }
 
-        // ! conditional set based on mask and arithmetic shift
+        //! conditional set based on mask and arithmetic shift
         REALINLINE u32 if_c_a_else_0(const c8 condition, const u32 a)
         {
             return (-condition >> 31) & a;
         }
 #else
-        // ! conditional set based on mask and arithmetic shift
+        //! conditional set based on mask and arithmetic shift
         REALINLINE constexpr u32 if_c_a_else_b(const s32 condition, const u32 a, const u32 b) noexcept
         {
             return ((-condition >> 31) & (a ^ b)) ^ b;
         }
 
-        // ! conditional set based on mask and arithmetic shift
+        //! conditional set based on mask and arithmetic shift
         REALINLINE constexpr u16 if_c_a_else_b(const s16 condition, const u16 a, const u16 b) noexcept
         {
             return ((-condition >> 15) & (a ^ b)) ^ b;
         }
 
-        // ! conditional set based on mask and arithmetic shift
+        //! conditional set based on mask and arithmetic shift
         REALINLINE constexpr u32 if_c_a_else_0(const s32 condition, const u32 a) noexcept
         {
             return (-condition >> 31) & a;
@@ -563,7 +563,7 @@ namespace irr
             return rec;
 
 
-            // ! i do not divide through 0.. (fpu expection)
+            //! i do not divide through 0.. (fpu expection)
             // instead set f to a high value to get a return value near zero..
             // -1000000000000.f.. is use minus to stay negative..
             // must test's here (plane.normal dot anything ) checks on <= 0.f

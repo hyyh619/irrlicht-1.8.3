@@ -16,7 +16,7 @@ namespace irr
 {
     namespace video
     {
-        // ! Enumeration flags telling the video driver in which format textures should be created.
+        //! Enumeration flags telling the video driver in which format textures should be created.
         enum E_TEXTURE_CREATION_FLAG
         {
             /** Forces the driver to create 16 bit textures always, independent of
@@ -59,7 +59,7 @@ namespace irr
             /** Discard any alpha layer and use non-alpha color format. */
             ETCF_NO_ALPHA_CHANNEL = 0x00000020,
 
-            // ! Allow the Driver to use Non-Power-2-Textures
+            //! Allow the Driver to use Non-Power-2-Textures
             /** BurningVideo can handle Non-Power-2 Textures in 2D (GUI), but not in 3D. */
             ETCF_ALLOW_NON_POWER_2 = 0x00000040,
 
@@ -68,23 +68,23 @@ namespace irr
             ETCF_FORCE_32_BIT_DO_NOT_USE = 0x7fffffff
         };
 
-        // ! Enum for the mode for texture locking. Read-Only, write-only or read/write.
+        //! Enum for the mode for texture locking. Read-Only, write-only or read/write.
         enum E_TEXTURE_LOCK_MODE
         {
-            // ! The default mode. Texture can be read and written to.
+            //! The default mode. Texture can be read and written to.
             ETLM_READ_WRITE = 0,
 
-            // ! Read only. The texture is downloaded, but not uploaded again.
+            //! Read only. The texture is downloaded, but not uploaded again.
             /** Often used to read back shader generated textures. */
             ETLM_READ_ONLY,
 
-            // ! Write only. The texture is not downloaded and might be uninitialised.
+            //! Write only. The texture is not downloaded and might be uninitialised.
             /** The updated texture is uploaded to the GPU.
              * Used for initialising the shader from the CPU. */
             ETLM_WRITE_ONLY
         };
 
-        // ! Interface of a Video Driver dependent Texture.
+        //! Interface of a Video Driver dependent Texture.
         /** An ITexture is created by an IVideoDriver by using IVideoDriver::addTexture
          * or IVideoDriver::getTexture. After that, the texture may only be used by this
          * VideoDriver. As you can imagine, textures of the DirectX and the OpenGL device
@@ -97,11 +97,11 @@ namespace irr
         {
 public:
 
-            // ! constructor
+            //! constructor
             ITexture(const io::path &name) : NamedPath(name)
             {}
 
-            // ! Lock function.
+            //! Lock function.
             /** Locks the Texture and returns a pointer to access the
              * pixels. After lock() has been called and all operations on the pixels
              * are done, you must call unlock().
@@ -123,12 +123,12 @@ public:
              * the texture cannot be locked. */
             virtual void* lock(E_TEXTURE_LOCK_MODE mode = ETLM_READ_WRITE, u32 mipmapLevel = 0) = 0;
 
-            // ! Unlock function. Must be called after a lock() to the texture.
+            //! Unlock function. Must be called after a lock() to the texture.
             /** One should avoid to call unlock more than once before another lock.
              * The last locked mip level will be unlocked. */
             virtual void unlock() = 0;
 
-            // ! Get original size of the texture.
+            //! Get original size of the texture.
             /** The texture is usually scaled, if it was created with an unoptimal
              * size. For example if the size was not a power of two. This method
              * returns the size of the texture it had before it was scaled. Can be
@@ -138,41 +138,41 @@ public:
              * \return The original size of the texture. */
             virtual const core::dimension2d<u32>&getOriginalSize() const = 0;
 
-            // ! Get dimension (=size) of the texture.
+            //! Get dimension (=size) of the texture.
             /** \return The size of the texture. */
             virtual const core::dimension2d<u32>&getSize() const = 0;
 
-            // ! Get driver type of texture.
+            //! Get driver type of texture.
             /** This is the driver, which created the texture. This method is used
              * internally by the video devices, to check, if they may use a texture
              * because textures may be incompatible between different devices.
              * \return Driver type of texture. */
             virtual E_DRIVER_TYPE getDriverType() const = 0;
 
-            // ! Get the color format of texture.
+            //! Get the color format of texture.
             /** \return The color format of texture. */
             virtual ECOLOR_FORMAT getColorFormat() const = 0;
 
-            // ! Get pitch of the main texture (in bytes).
+            //! Get pitch of the main texture (in bytes).
             /** The pitch is the amount of bytes used for a row of pixels in a
              * texture.
              * \return Pitch of texture in bytes. */
             virtual u32 getPitch() const = 0;
 
-            // ! Check whether the texture has MipMaps
+            //! Check whether the texture has MipMaps
             /** \return True if texture has MipMaps, else false. */
             virtual bool hasMipMaps() const
             {
                 return false;
             }
 
-            // ! Returns if the texture has an alpha channel
+            //! Returns if the texture has an alpha channel
             virtual bool hasAlpha() const
             {
                 return getColorFormat () == video::ECOLOR_FORMAT::ECF_A8R8G8B8 || getColorFormat () == video::ECOLOR_FORMAT::ECF_A1R5G5B5;
             }
 
-            // ! Regenerates the mip map levels of the texture.
+            //! Regenerates the mip map levels of the texture.
             /** Required after modifying the texture, usually after calling unlock().
              * \param mipmapData Optional parameter to pass in image data which will be
              * used instead of the previously stored or automatically generated mipmap
@@ -181,7 +181,7 @@ public:
              * level. At least one pixel will be always kept.*/
             virtual void regenerateMipMapLevels(void *mipmapData = 0) = 0;
 
-            // ! Check whether the texture is a render target
+            //! Check whether the texture is a render target
             /** Render targets can be set as such in the video driver, in order to
              * render a scene into the texture. Once unbound as render target, they can
              * be used just as usual textures again.
@@ -191,7 +191,7 @@ public:
                 return false;
             }
 
-            // ! Get name of texture (in most cases this is the filename)
+            //! Get name of texture (in most cases this is the filename)
             const io::SNamedPath&getName() const
             {
                 return NamedPath;
@@ -199,7 +199,7 @@ public:
 
 protected:
 
-            // ! Helper function, helps to get the desired texture creation format from the flags.
+            //! Helper function, helps to get the desired texture creation format from the flags.
             /** \return Either ETCF_ALWAYS_32_BIT, ETCF_ALWAYS_16_BIT,
              * ETCF_OPTIMIZED_FOR_QUALITY, or ETCF_OPTIMIZED_FOR_SPEED. */
             inline E_TEXTURE_CREATION_FLAG getTextureFormatFromFlags(u32 flags)

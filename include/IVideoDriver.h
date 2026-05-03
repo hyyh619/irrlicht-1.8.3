@@ -48,88 +48,88 @@ namespace irr
         class IMaterialRenderer;
         class IGPUProgrammingServices;
 
-        // ! enumeration for geometry transformation states
+        //! enumeration for geometry transformation states
         enum E_TRANSFORMATION_STATE
         {
-            // ! View transformation
+            //! View transformation
             ETS_VIEW = 0,
-            // ! World transformation
+            //! World transformation
             ETS_WORLD,
-            // ! Projection transformation
+            //! Projection transformation
             ETS_PROJECTION,
-            // ! Texture transformation
+            //! Texture transformation
             ETS_TEXTURE_0,
-            // ! Texture transformation
+            //! Texture transformation
             ETS_TEXTURE_1,
-            // ! Texture transformation
+            //! Texture transformation
             ETS_TEXTURE_2,
-            // ! Texture transformation
+            //! Texture transformation
             ETS_TEXTURE_3,
 #if _IRR_MATERIAL_MAX_TEXTURES_ > 4
-            // ! Texture transformation
+            //! Texture transformation
             ETS_TEXTURE_4,
 #if _IRR_MATERIAL_MAX_TEXTURES_ > 5
-            // ! Texture transformation
+            //! Texture transformation
             ETS_TEXTURE_5,
 #if _IRR_MATERIAL_MAX_TEXTURES_ > 6
-            // ! Texture transformation
+            //! Texture transformation
             ETS_TEXTURE_6,
 #if _IRR_MATERIAL_MAX_TEXTURES_ > 7
-            // ! Texture transformation
+            //! Texture transformation
             ETS_TEXTURE_7,
 #endif
 #endif
 #endif
 #endif
-            // ! Not used
+            //! Not used
             ETS_COUNT
         };
 
-        // ! enumeration for signaling resources which were lost after the last render cycle
+        //! enumeration for signaling resources which were lost after the last render cycle
         /** These values can be signaled by the driver, telling the app that some resources
          * were lost and need to be recreated. Irrlicht will sometimes recreate the actual objects,
          * but the content needs to be recreated by the application. */
         enum E_LOST_RESOURCE
         {
-            // ! The whole device/driver is lost
+            //! The whole device/driver is lost
             ELR_DEVICE = 1,
-            // ! All texture are lost, rare problem
+            //! All texture are lost, rare problem
             ELR_TEXTURES = 2,
-            // ! The Render Target Textures are lost, typical problem for D3D
+            //! The Render Target Textures are lost, typical problem for D3D
             ELR_RTTS = 4,
-            // ! The HW buffers are lost, will be recreated automatically, but might require some more time this frame
+            //! The HW buffers are lost, will be recreated automatically, but might require some more time this frame
             ELR_HW_BUFFERS = 8
         };
 
-        // ! Special render targets, which usually map to dedicated hardware
+        //! Special render targets, which usually map to dedicated hardware
         /** These render targets (besides 0 and 1) need not be supported by gfx cards */
         enum E_RENDER_TARGET
         {
-            // ! Render target is the main color frame buffer
+            //! Render target is the main color frame buffer
             ERT_FRAME_BUFFER = 0,
-            // ! Render target is a render texture
+            //! Render target is a render texture
             ERT_RENDER_TEXTURE,
-            // ! Multi-Render target textures
+            //! Multi-Render target textures
             ERT_MULTI_RENDER_TEXTURES,
-            // ! Render target is the main color frame buffer
+            //! Render target is the main color frame buffer
             ERT_STEREO_LEFT_BUFFER,
-            // ! Render target is the right color buffer (left is the main buffer)
+            //! Render target is the right color buffer (left is the main buffer)
             ERT_STEREO_RIGHT_BUFFER,
-            // ! Render to both stereo buffers at once
+            //! Render to both stereo buffers at once
             ERT_STEREO_BOTH_BUFFERS,
-            // ! Auxiliary buffer 0
+            //! Auxiliary buffer 0
             ERT_AUX_BUFFER0,
-            // ! Auxiliary buffer 1
+            //! Auxiliary buffer 1
             ERT_AUX_BUFFER1,
-            // ! Auxiliary buffer 2
+            //! Auxiliary buffer 2
             ERT_AUX_BUFFER2,
-            // ! Auxiliary buffer 3
+            //! Auxiliary buffer 3
             ERT_AUX_BUFFER3,
-            // ! Auxiliary buffer 4
+            //! Auxiliary buffer 4
             ERT_AUX_BUFFER4
         };
 
-        // ! Enum for the types of fog distributions to choose from
+        //! Enum for the types of fog distributions to choose from
         enum E_FOG_TYPE
         {
             EFT_FOG_EXP = 0,
@@ -147,23 +147,23 @@ namespace irr
 
         struct SOverrideMaterial
         {
-            // ! The Material values
+            //! The Material values
             SMaterial Material;
-            // ! Which values are taken for override
+            //! Which values are taken for override
             /** OR'ed values from E_MATERIAL_FLAGS. */
             u32 EnableFlags;
-            // ! Set in which render passes the material override is active.
+            //! Set in which render passes the material override is active.
             /** OR'ed values from E_SCENE_NODE_RENDER_PASS. */
             u16 EnablePasses;
-            // ! Global enable flag, overwritten by the SceneManager in each pass
+            //! Global enable flag, overwritten by the SceneManager in each pass
             /** The Scenemanager uses the EnablePass array and sets Enabled to
              * true if the Override material is enabled in the current pass. */
             bool Enabled;
 
-            // ! Default constructor
+            //! Default constructor
             SOverrideMaterial() : EnableFlags(0), EnablePasses(0), Enabled(false) {}
 
-            // ! Apply the enabled overrides
+            //! Apply the enabled overrides
             void apply(SMaterial &material)
             {
                 if (Enabled)
@@ -265,7 +265,7 @@ namespace irr
             E_BLEND_OPERATION BlendOp : 4;
         };
 
-        // ! Interface to driver which is able to perform 2d and 3d graphics functions.
+        //! Interface to driver which is able to perform 2d and 3d graphics functions.
         /** This interface is one of the most important interfaces of
          * the Irrlicht Engine: All rendering and texture manipulation is done with
          * this interface. You are able to use the Irrlicht Engine by only
@@ -277,7 +277,7 @@ namespace irr
         {
 public:
 
-            // ! Applications must call this method before performing any rendering.
+            //! Applications must call this method before performing any rendering.
             /** This method can clear the back- and the z-buffer.
              * \param backBuffer Specifies if the back buffer should be
              * cleared, which means that the screen is filled with the color
@@ -300,26 +300,26 @@ public:
                 const SExposedVideoData &videoData = SExposedVideoData(),
                 core::rect<s32> *sourceRect = 0) = 0;
 
-            // ! Presents the rendered image to the screen.
+            //! Presents the rendered image to the screen.
             /** Applications must call this method after performing any
              * rendering.
              * \return False if failed and true if succeeded. */
             virtual bool endScene() = 0;
 
-            // ! Queries the features of the driver.
+            //! Queries the features of the driver.
             /** Returns true if a feature is available
              * \param feature Feature to query.
              * \return True if the feature is available, false if not. */
             virtual bool queryFeature(E_VIDEO_DRIVER_FEATURE feature) const = 0;
 
-            // ! Disable a feature of the driver.
+            //! Disable a feature of the driver.
             /** Can also be used to enable the features again. It is not
              * possible to enable unsupported features this way, though.
              * \param feature Feature to disable.
              * \param flag When true the feature is disabled, otherwise it is enabled. */
             virtual void disableFeature(E_VIDEO_DRIVER_FEATURE feature, bool flag = true) = 0;
 
-            // ! Get attributes of the actual video driver
+            //! Get attributes of the actual video driver
             /** The following names can be queried for the given types:
              * MaxTextures (int) The maximum number of simultaneous textures supported by the driver. This can be less than the supported number of textures of the driver. Use _IRR_MATERIAL_MAX_TEXTURES_ to adapt the number.
              * MaxSupportedTextures (int) The maximum number of simultaneous textures supported by the fixed function pipeline of the (hw) driver. The actual supported number of textures supported by the engine can be lower.
@@ -338,49 +338,49 @@ public:
              */
             virtual const io::IAttributes&getDriverAttributes() const = 0;
 
-            // ! Check if the driver was recently reset.
+            //! Check if the driver was recently reset.
             /** For d3d devices you will need to recreate the RTTs if the
              * driver was reset. Should be queried right after beginScene().
              */
             virtual bool checkDriverReset() = 0;
 
-            // ! Sets transformation matrices.
+            //! Sets transformation matrices.
             /** \param state Transformation type to be set, e.g. view,
              * world, or projection.
              * \param mat Matrix describing the transformation. */
             virtual void setTransform(E_TRANSFORMATION_STATE state, const core::matrix4 &mat) = 0;
 
-            // ! Returns the transformation set by setTransform
+            //! Returns the transformation set by setTransform
             /** \param state Transformation type to query
              * \return Matrix describing the transformation. */
             virtual const core::matrix4&getTransform(E_TRANSFORMATION_STATE state) const = 0;
 
-            // ! Retrieve the number of image loaders
+            //! Retrieve the number of image loaders
             /** \return Number of image loaders */
             virtual u32 getImageLoaderCount() const = 0;
 
-            // ! Retrieve the given image loader
+            //! Retrieve the given image loader
             /** \param n The index of the loader to retrieve. This parameter is an 0-based
              * array index.
              * \return A pointer to the specified loader, 0 if the index is incorrect. */
             virtual IImageLoader* getImageLoader(u32 n) = 0;
 
-            // ! Retrieve the number of image writers
+            //! Retrieve the number of image writers
             /** \return Number of image writers */
             virtual u32 getImageWriterCount() const = 0;
 
-            // ! Retrieve the given image writer
+            //! Retrieve the given image writer
             /** \param n The index of the writer to retrieve. This parameter is an 0-based
              * array index.
              * \return A pointer to the specified writer, 0 if the index is incorrect. */
             virtual IImageWriter* getImageWriter(u32 n) = 0;
 
-            // ! Sets a material.
+            //! Sets a material.
             /** All 3d drawing functions will draw geometry using this material thereafter.
              * \param material: Material to be used from now on. */
             virtual void setMaterial(const SMaterial &material) = 0;
 
-            // ! Get access to a named texture.
+            //! Get access to a named texture.
             /** Loads the texture from disk if it is not
              * already loaded and generates mipmap levels if desired.
              * Texture loading can be influenced using the
@@ -392,7 +392,7 @@ public:
              * IReferenceCounted::drop() for more information. */
             virtual ITexture* getTexture(const io::path &filename) = 0;
 
-            // ! Get access to a named texture.
+            //! Get access to a named texture.
             /** Loads the texture from disk if it is not
              * already loaded and generates mipmap levels if desired.
              * Texture loading can be influenced using the
@@ -404,7 +404,7 @@ public:
              * IReferenceCounted::drop() for more information. */
             virtual ITexture* getTexture(io::IReadFile *file) = 0;
 
-            // ! Returns a texture by index
+            //! Returns a texture by index
             /** \param index: Index of the texture, must be smaller than
              * getTextureCount() Please note that this index might change when
              * adding or removing textures
@@ -413,16 +413,16 @@ public:
              * dropped. See IReferenceCounted::drop() for more information. */
             virtual ITexture* getTextureByIndex(u32 index) = 0;
 
-            // ! Returns amount of textures currently loaded
+            //! Returns amount of textures currently loaded
             /** \return Amount of textures currently loaded */
             virtual u32 getTextureCount() const = 0;
 
-            // ! Renames a texture
+            //! Renames a texture
             /** \param texture Pointer to the texture to rename.
              * \param newName New name for the texture. This should be a unique name. */
             virtual void renameTexture(ITexture *texture, const io::path &newName) = 0;
 
-            // ! Creates an empty texture of specified size.
+            //! Creates an empty texture of specified size.
             /** \param size: Size of the texture.
              * \param name A name for the texture. Later calls to
              * getTexture() with this name will return this texture
@@ -435,7 +435,7 @@ public:
             virtual ITexture* addTexture(const core::dimension2d<u32> &size,
                 const io::path &name, ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_A8R8G8B8) = 0;
 
-            // ! Creates a texture from an IImage.
+            //! Creates a texture from an IImage.
             /** \param name A name for the texture. Later calls of
              * getTexture() with this name will return this texture
              * \param image Image the texture is created from.
@@ -448,7 +448,7 @@ public:
              * information. */
             virtual ITexture* addTexture(const io::path &name, IImage *image, void *mipmapData = 0) = 0;
 
-            // ! Adds a new render target texture to the texture cache.
+            //! Adds a new render target texture to the texture cache.
             /** \param size Size of the texture, in pixels. Width and
              * height should be a power of two (e.g. 64, 128, 256, 512, ...)
              * and it should not be bigger than the backbuffer, because it
@@ -461,7 +461,7 @@ public:
             virtual ITexture* addRenderTargetTexture(const core::dimension2d<u32> &size,
                 const io::path &name = "rt", const ECOLOR_FORMAT format = ECOLOR_FORMAT::ECF_UNKNOWN) = 0;
 
-            // ! Removes a texture from the texture cache and deletes it.
+            //! Removes a texture from the texture cache and deletes it.
             /** This method can free a lot of memory!
              * Please note that after calling this, the pointer to the
              * ITexture may no longer be valid, if it was not grabbed before
@@ -471,7 +471,7 @@ public:
              * \param texture Texture to delete from the engine cache. */
             virtual void removeTexture(ITexture *texture) = 0;
 
-            // ! Removes all textures from the texture cache and deletes them.
+            //! Removes all textures from the texture cache and deletes them.
             /** This method can free a lot of memory!
              * Please note that after calling this, the pointer to the
              * ITexture may no longer be valid, if it was not grabbed before
@@ -480,50 +480,50 @@ public:
              * 0 or another texture first. */
             virtual void removeAllTextures() = 0;
 
-            // ! Remove hardware buffer
+            //! Remove hardware buffer
             virtual void removeHardwareBuffer(const scene::IMeshBuffer *mb) = 0;
 
-            // ! Remove all hardware buffers
+            //! Remove all hardware buffers
             virtual void removeAllHardwareBuffers() = 0;
 
-            // ! Create occlusion query.
+            //! Create occlusion query.
             /** Use node for identification and mesh for occlusion test. */
             virtual void addOcclusionQuery(scene::ISceneNode *node,
                 const scene::IMesh *mesh = 0) = 0;
 
-            // ! Remove occlusion query.
+            //! Remove occlusion query.
             virtual void removeOcclusionQuery(scene::ISceneNode *node) = 0;
 
-            // ! Remove all occlusion queries.
+            //! Remove all occlusion queries.
             virtual void removeAllOcclusionQueries() = 0;
 
-            // ! Run occlusion query. Draws mesh stored in query.
+            //! Run occlusion query. Draws mesh stored in query.
             /** If the mesh shall not be rendered visible, use
              * overrideMaterial to disable the color and depth buffer. */
             virtual void runOcclusionQuery(scene::ISceneNode *node, bool visible = false) = 0;
 
-            // ! Run all occlusion queries. Draws all meshes stored in queries.
+            //! Run all occlusion queries. Draws all meshes stored in queries.
             /** If the meshes shall not be rendered visible, use
              * overrideMaterial to disable the color and depth buffer. */
             virtual void runAllOcclusionQueries(bool visible = false) = 0;
 
-            // ! Update occlusion query. Retrieves results from GPU.
+            //! Update occlusion query. Retrieves results from GPU.
             /** If the query shall not block, set the flag to false.
              * Update might not occur in this case, though */
             virtual void updateOcclusionQuery(scene::ISceneNode *node, bool block = true) = 0;
 
-            // ! Update all occlusion queries. Retrieves results from GPU.
+            //! Update all occlusion queries. Retrieves results from GPU.
             /** If the query shall not block, set the flag to false.
              * Update might not occur in this case, though */
             virtual void updateAllOcclusionQueries(bool block = true) = 0;
 
-            // ! Return query result.
+            //! Return query result.
             /** Return value is the number of visible pixels/fragments.
              * The value is a safe approximation, i.e. can be larger than the
              * actual value of pixels. */
             virtual u32 getOcclusionQueryResult(scene::ISceneNode *node) const = 0;
 
-            // ! Sets a boolean alpha channel on the texture based on a color key.
+            //! Sets a boolean alpha channel on the texture based on a color key.
             /** This makes the texture fully transparent at the texels where
              * this color key can be found when using for example draw2DImage
              * with useAlphachannel==true.  The alpha of other texels is not modified.
@@ -544,7 +544,7 @@ public:
                 video::SColor color,
                 bool zeroTexels = false) const = 0;
 
-            // ! Sets a boolean alpha channel on the texture based on the color at a position.
+            //! Sets a boolean alpha channel on the texture based on the color at a position.
             /** This makes the texture fully transparent at the texels where
              * the color key can be found when using for example draw2DImage
              * with useAlphachannel==true.  The alpha of other texels is not modified.
@@ -561,7 +561,7 @@ public:
                 core::position2d<s32> colorKeyPixelPos,
                 bool zeroTexels = false) const = 0;
 
-            // ! Creates a normal map from a height map texture.
+            //! Creates a normal map from a height map texture.
             /** If the target texture has 32 bit, the height value is
              * stored in the alpha component of the texture as addition. This
              * value is used by the video::EMT_PARALLAX_MAP_SOLID material and
@@ -571,7 +571,7 @@ public:
              * information is multiplied.*/
             virtual void makeNormalMapTexture(video::ITexture *texture, f32 amplitude = 1.0f) const = 0;
 
-            // ! Sets a new render target.
+            //! Sets a new render target.
             /** This will only work if the driver supports the
              * EVDF_RENDER_TO_TARGET feature, which can be queried with
              * queryFeature(). Usually, rendering to textures is done in this
@@ -607,7 +607,7 @@ public:
                 bool clearBackBuffer = true, bool clearZBuffer = true,
                 SColor color = video::SColor(0, 0, 0, 0)) = 0;
 
-            // ! set or reset special render targets
+            //! set or reset special render targets
             /** This method enables access to special color buffers such as
              * stereoscopic buffers or auxiliary buffers.
              * \param target Enum value for the render target
@@ -623,22 +623,22 @@ public:
                 bool clearZBuffer = true,
                 SColor color = video::SColor(0, 0, 0, 0)) = 0;
 
-            // ! Sets new multiple render targets.
+            //! Sets new multiple render targets.
             virtual bool setRenderTarget(const core::array<video::IRenderTarget> &texture,
                 bool clearBackBuffer = true, bool clearZBuffer = true,
                 SColor color = video::SColor(0, 0, 0, 0)) = 0;
 
-            // ! Sets a new viewport.
+            //! Sets a new viewport.
             /** Every rendering operation is done into this new area.
              * \param area: Rectangle defining the new area of rendering
              * operations. */
             virtual void setViewPort(const core::rect<s32> &area) = 0;
 
-            // ! Gets the area of the current viewport.
+            //! Gets the area of the current viewport.
             /** \return Rectangle of the current viewport. */
             virtual const core::rect<s32>&getViewPort() const = 0;
 
-            // ! Draws a vertex primitive list
+            //! Draws a vertex primitive list
             /** Note that, depending on the index type, some vertices might be not
              * accessible through the index list. The limit is at 65535 vertices for 16bit
              * indices. Please note that currently not all primitives are available for
@@ -659,7 +659,7 @@ public:
                 scene::E_PRIMITIVE_TYPE pType = scene::EPT_TRIANGLES,
                 E_INDEX_TYPE iType = EIT_16BIT) = 0;
 
-            // ! Draws a vertex primitive list in 2d
+            //! Draws a vertex primitive list in 2d
             /** Compared to the general (3d) version of this method, this
              * one sets up a 2d render mode, and uses only x and y of vectors.
              * Note that, depending on the index type, some vertices might be
@@ -685,7 +685,7 @@ public:
                 scene::E_PRIMITIVE_TYPE pType = scene::EPT_TRIANGLES,
                 E_INDEX_TYPE iType = EIT_16BIT) = 0;
 
-            // ! Draws an indexed triangle list.
+            //! Draws an indexed triangle list.
             /** Note that there may be at maximum 65536 vertices, because
              * the index list is an array of 16 bit values each with a maximum
              * value of 65536. If there are more than 65536 vertices in the
@@ -700,7 +700,7 @@ public:
                 drawVertexPrimitiveList(vertices, vertexCount, indexList, triangleCount, EVT_STANDARD, scene::EPT_TRIANGLES, EIT_16BIT);
             }
 
-            // ! Draws an indexed triangle list.
+            //! Draws an indexed triangle list.
             /** Note that there may be at maximum 65536 vertices, because
              * the index list is an array of 16 bit values each with a maximum
              * value of 65536. If there are more than 65536 vertices in the
@@ -715,7 +715,7 @@ public:
                 drawVertexPrimitiveList(vertices, vertexCount, indexList, triangleCount, EVT_2TCOORDS, scene::EPT_TRIANGLES, EIT_16BIT);
             }
 
-            // ! Draws an indexed triangle list.
+            //! Draws an indexed triangle list.
             /** Note that there may be at maximum 65536 vertices, because
              * the index list is an array of 16 bit values each with a maximum
              * value of 65536. If there are more than 65536 vertices in the
@@ -730,7 +730,7 @@ public:
                 drawVertexPrimitiveList(vertices, vertexCount, indexList, triangleCount, EVT_TANGENTS, scene::EPT_TRIANGLES, EIT_16BIT);
             }
 
-            // ! Draws an indexed triangle fan.
+            //! Draws an indexed triangle fan.
             /** Note that there may be at maximum 65536 vertices, because
              * the index list is an array of 16 bit values each with a maximum
              * value of 65536. If there are more than 65536 vertices in the
@@ -745,7 +745,7 @@ public:
                 drawVertexPrimitiveList(vertices, vertexCount, indexList, triangleCount, EVT_STANDARD, scene::EPT_TRIANGLE_FAN, EIT_16BIT);
             }
 
-            // ! Draws an indexed triangle fan.
+            //! Draws an indexed triangle fan.
             /** Note that there may be at maximum 65536 vertices, because
              * the index list is an array of 16 bit values each with a maximum
              * value of 65536. If there are more than 65536 vertices in the
@@ -760,7 +760,7 @@ public:
                 drawVertexPrimitiveList(vertices, vertexCount, indexList, triangleCount, EVT_2TCOORDS, scene::EPT_TRIANGLE_FAN, EIT_16BIT);
             }
 
-            // ! Draws an indexed triangle fan.
+            //! Draws an indexed triangle fan.
             /** Note that there may be at maximum 65536 vertices, because
              * the index list is an array of 16 bit values each with a maximum
              * value of 65536. If there are more than 65536 vertices in the
@@ -775,7 +775,7 @@ public:
                 drawVertexPrimitiveList(vertices, vertexCount, indexList, triangleCount, EVT_TANGENTS, scene::EPT_TRIANGLE_FAN, EIT_16BIT);
             }
 
-            // ! Draws a 3d line.
+            //! Draws a 3d line.
             /** For some implementations, this method simply calls
              * drawVertexPrimitiveList for some triangles.
              * Note that the line is drawn using the current transformation
@@ -793,7 +793,7 @@ public:
             virtual void draw3DLine(const core::vector3df &start,
                 const core::vector3df &end, SColor color = SColor(255, 255, 255, 255)) = 0;
 
-            // ! Draws a 3d triangle.
+            //! Draws a 3d triangle.
             /** This method calls drawVertexPrimitiveList for some triangles.
              * This method works with all drivers because it simply calls
              * drawVertexPrimitiveList, but it is hence not very fast.
@@ -810,7 +810,7 @@ public:
             virtual void draw3DTriangle(const core::triangle3df &triangle,
                 SColor color = SColor(255, 255, 255, 255)) = 0;
 
-            // ! Draws a 3d axis aligned box.
+            //! Draws a 3d axis aligned box.
             /** This method simply calls draw3DLine for the edges of the
              * box. Note that the box is drawn using the current transformation
              * matrix and material. So if you need to draw it independently of
@@ -825,14 +825,14 @@ public:
             virtual void draw3DBox(const core::aabbox3d<f32> &box,
                 SColor color = SColor(255, 255, 255, 255)) = 0;
 
-            // ! Draws a 2d image without any special effects
+            //! Draws a 2d image without any special effects
             /** \param texture Pointer to texture to use.
              * \param destPos Upper left 2d destination position where the
              * image will be drawn. */
             virtual void draw2DImage(const video::ITexture *texture,
                 const core::position2d<s32> &destPos) = 0;
 
-            // ! Draws a 2d image using a color
+            //! Draws a 2d image using a color
             /** (if color is other than
              * Color(255,255,255,255)) and the alpha channel of the texture.
              * \param texture Texture to be drawn.
@@ -852,7 +852,7 @@ public:
                 const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect = 0,
                 SColor color = SColor(255, 255, 255, 255), bool useAlphaChannelOfTexture = false) = 0;
 
-            // ! Draws a set of 2d images, using a color and the alpha channel of the texture.
+            //! Draws a set of 2d images, using a color and the alpha channel of the texture.
             /** The images are drawn beginning at pos and concatenated in
              * one line. All drawings are clipped against clipRect (if != 0).
              * The subtextures are defined by the array of sourceRects and are
@@ -881,7 +881,7 @@ public:
                 SColor color = SColor(255, 255, 255, 255),
                 bool useAlphaChannelOfTexture = false) = 0;
 
-            // ! Draws a set of 2d images, using a color and the alpha channel of the texture.
+            //! Draws a set of 2d images, using a color and the alpha channel of the texture.
             /** All drawings are clipped against clipRect (if != 0).
              * The subtextures are defined by the array of sourceRects and are
              * positioned using the array of positions.
@@ -904,7 +904,7 @@ public:
                 SColor color = SColor(255, 255, 255, 255),
                 bool useAlphaChannelOfTexture = false) = 0;
 
-            // ! Draws a part of the texture into the rectangle. Note that colors must be an array of 4 colors if used.
+            //! Draws a part of the texture into the rectangle. Note that colors must be an array of 4 colors if used.
             /** Suggested and first implemented by zola.
              * \param texture The texture to draw from
              * \param destRect The rectangle to draw into
@@ -918,7 +918,7 @@ public:
                 const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect = 0,
                 const video::SColor* const colors = 0, bool useAlphaChannelOfTexture = false) = 0;
 
-            // ! Draws a 2d rectangle.
+            //! Draws a 2d rectangle.
             /** \param color Color of the rectangle to draw. The alpha
              * component will not be ignored and specifies how transparent the
              * rectangle will be.
@@ -929,7 +929,7 @@ public:
             virtual void draw2DRectangle(SColor color, const core::rect<s32> &pos,
                 const core::rect<s32> *clip = 0) = 0;
 
-            // ! Draws a 2d rectangle with a gradient.
+            //! Draws a 2d rectangle with a gradient.
             /** \param colorLeftUp Color of the upper left corner to draw.
              * The alpha component will not be ignored and specifies how
              * transparent the rectangle will be.
@@ -951,14 +951,14 @@ public:
                 SColor colorLeftDown, SColor colorRightDown,
                 const core::rect<s32> *clip = 0) = 0;
 
-            // ! Draws the outline of a 2D rectangle.
+            //! Draws the outline of a 2D rectangle.
             /** \param pos Position of the rectangle.
              * \param color Color of the rectangle to draw. The alpha component
              * specifies how transparent the rectangle outline will be. */
             virtual void draw2DRectangleOutline(const core::recti &pos,
                 SColor color = SColor(255, 255, 255, 255)) = 0;
 
-            // ! Draws a 2d line. Both start and end will be included in coloring.
+            //! Draws a 2d line. Both start and end will be included in coloring.
             /** \param start Screen coordinates of the start of the line
              * in pixels.
              * \param end Screen coordinates of the start of the line in
@@ -968,13 +968,13 @@ public:
                 const core::position2d<s32> &end,
                 SColor color = SColor(255, 255, 255, 255)) = 0;
 
-            // ! Draws a pixel.
+            //! Draws a pixel.
             /** \param x The x-position of the pixel.
              * \param y The y-position of the pixel.
              * \param color Color of the pixel to draw. */
             virtual void drawPixel(u32 x, u32 y, const SColor &color) = 0;
 
-            // ! Draws a non filled concyclic regular 2d polyon.
+            //! Draws a non filled concyclic regular 2d polyon.
             /** This method can be used to draw circles, but also
              * triangles, tetragons, pentagons, hexagons, heptagons, octagons,
              * enneagons, decagons, hendecagons, dodecagon, triskaidecagons,
@@ -992,7 +992,7 @@ public:
                 video::SColor color = SColor(100, 255, 255, 255),
                 s32 vertexCount = 10) = 0;
 
-            // ! Draws a shadow volume into the stencil buffer.
+            //! Draws a shadow volume into the stencil buffer.
             /** To draw a stencil shadow, do this: First, draw all geometry.
              * Then use this method, to draw the shadow volume. Then, use
              * IVideoDriver::drawStencilShadow() to visualize the shadow.
@@ -1008,7 +1008,7 @@ public:
              */
             virtual void drawStencilShadowVolume(const core::array<core::vector3df> &triangles, bool zfail = true, u32 debugDataVisible = 0) = 0;
 
-            // ! Fills the stencil shadow with color.
+            //! Fills the stencil shadow with color.
             /** After the shadow volume has been drawn into the stencil
              * buffer using IVideoDriver::drawStencilShadowVolume(), use this
              * to draw the color of the shadow.
@@ -1034,18 +1034,18 @@ public:
                 video::SColor leftDownEdge = video::SColor(255, 0, 0, 0),
                 video::SColor rightDownEdge = video::SColor(255, 0, 0, 0)) = 0;
 
-            // ! Draws a mesh buffer
+            //! Draws a mesh buffer
             /** \param mb Buffer to draw */
             virtual void drawMeshBuffer(const scene::IMeshBuffer *mb) = 0;
 
-            // ! Draws normals of a mesh buffer
+            //! Draws normals of a mesh buffer
             /** \param mb Buffer to draw the normals of
              * \param length length scale factor of the normals
              * \param color Color the normals are rendered with
              */
             virtual void drawMeshBufferNormals(const scene::IMeshBuffer *mb, f32 length = 10.f, SColor color = 0xffffffff) = 0;
 
-            // ! Sets the fog mode.
+            //! Sets the fog mode.
             /** These are global values attached to each 3d object rendered,
              * which has the fog flag enabled in its material.
              * \param color Color of the fog
@@ -1067,27 +1067,27 @@ public:
                 f32 start = 50.0f, f32 end = 100.0f, f32 density = 0.01f,
                 bool pixelFog = false, bool rangeFog = false) = 0;
 
-            // ! Gets the fog mode.
+            //! Gets the fog mode.
             virtual void getFog(SColor &color, E_FOG_TYPE &fogType,
                 f32 &start, f32 &end, f32 &density,
                 bool &pixelFog, bool &rangeFog) = 0;
 
-            // ! Get the current color format of the color buffer
+            //! Get the current color format of the color buffer
             /** \return Color format of the color buffer. */
             virtual ECOLOR_FORMAT getColorFormat() const = 0;
 
-            // ! Get the size of the screen or render window.
+            //! Get the size of the screen or render window.
             /** \return Size of screen or render window. */
             virtual const core::dimension2d<u32>&getScreenSize() const = 0;
 
-            // ! Get the size of the current render target
+            //! Get the size of the current render target
             /** This method will return the screen size if the driver
              * doesn't support render to texture, or if the current render
              * target is the screen.
              * \return Size of render target or screen/window */
             virtual const core::dimension2d<u32>&getCurrentRenderTargetSize() const = 0;
 
-            // ! Returns current frames per second value.
+            //! Returns current frames per second value.
             /** This value is updated approximately every 1.5 seconds and
              * is only intended to provide a rough guide to the average frame
              * rate. It is not suitable for use in performing timing
@@ -1095,46 +1095,46 @@ public:
              * \return Approximate amount of frames per second drawn. */
             virtual s32 getFPS() const = 0;
 
-            // ! Returns amount of primitives (mostly triangles) which were drawn in the last frame.
+            //! Returns amount of primitives (mostly triangles) which were drawn in the last frame.
             /** Together with getFPS() very useful method for statistics.
              * \param mode Defines if the primitives drawn are accumulated or
              * counted per frame.
              * \return Amount of primitives drawn in the last frame. */
             virtual u32 getPrimitiveCountDrawn(u32 mode = 0) const = 0;
 
-            // ! Deletes all dynamic lights which were previously added with addDynamicLight().
+            //! Deletes all dynamic lights which were previously added with addDynamicLight().
             virtual void deleteAllDynamicLights() = 0;
 
-            // ! adds a dynamic light, returning an index to the light
-            // ! \param light: the light data to use to create the light
-            // ! \return An index to the light, or -1 if an error occurs
+            //! adds a dynamic light, returning an index to the light
+            //! \param light: the light data to use to create the light
+            //! \return An index to the light, or -1 if an error occurs
             virtual s32 addDynamicLight(const SLight &light) = 0;
 
-            // ! Returns the maximal amount of dynamic lights the device can handle
+            //! Returns the maximal amount of dynamic lights the device can handle
             /** \return Maximal amount of dynamic lights. */
             virtual u32 getMaximalDynamicLightAmount() const = 0;
 
-            // ! Returns amount of dynamic lights currently set
+            //! Returns amount of dynamic lights currently set
             /** \return Amount of dynamic lights currently set */
             virtual u32 getDynamicLightCount() const = 0;
 
-            // ! Returns light data which was previously set by IVideoDriver::addDynamicLight().
+            //! Returns light data which was previously set by IVideoDriver::addDynamicLight().
             /** \param idx Zero based index of the light. Must be 0 or
              * greater and smaller than IVideoDriver::getDynamicLightCount.
              * \return Light data. */
             virtual const SLight&getDynamicLight(u32 idx) const = 0;
 
-            // ! Turns a dynamic light on or off
-            // ! \param lightIndex: the index returned by addDynamicLight
-            // ! \param turnOn: true to turn the light on, false to turn it off
+            //! Turns a dynamic light on or off
+            //! \param lightIndex: the index returned by addDynamicLight
+            //! \param turnOn: true to turn the light on, false to turn it off
             virtual void turnLightOn(s32 lightIndex, bool turnOn) = 0;
 
-            // ! Gets name of this video driver.
+            //! Gets name of this video driver.
             /** \return Returns the name of the video driver, e.g. in case
              * of the Direct3D8 driver, it would return "Direct3D 8.1". */
             virtual const wchar_t* getName() const = 0;
 
-            // ! Adds an external image loader to the engine.
+            //! Adds an external image loader to the engine.
             /** This is useful if the Irrlicht Engine should be able to load
              * textures of currently unsupported file formats (e.g. gif). The
              * IImageLoader only needs to be implemented for loading this file
@@ -1143,7 +1143,7 @@ public:
              * \param loader Pointer to the external loader created. */
             virtual void addExternalImageLoader(IImageLoader *loader) = 0;
 
-            // ! Adds an external image writer to the engine.
+            //! Adds an external image writer to the engine.
             /** This is useful if the Irrlicht Engine should be able to
              * write textures of currently unsupported file formats (e.g
              * .gif). The IImageWriter only needs to be implemented for
@@ -1152,13 +1152,13 @@ public:
              * \param writer: Pointer to the external writer created. */
             virtual void addExternalImageWriter(IImageWriter *writer) = 0;
 
-            // ! Returns the maximum amount of primitives
+            //! Returns the maximum amount of primitives
             /** (mostly vertices) which the device is able to render with
              * one drawVertexPrimitiveList call.
              * \return Maximum amount of primitives. */
             virtual u32 getMaximalPrimitiveCount() const = 0;
 
-            // ! Enables or disables a texture creation flag.
+            //! Enables or disables a texture creation flag.
             /** These flags define how textures should be created. By
              * changing this value, you can influence for example the speed of
              * rendering a lot. But please note that the video drivers take
@@ -1170,13 +1170,13 @@ public:
              * disabled. */
             virtual void setTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag, bool enabled = true) = 0;
 
-            // ! Returns if a texture creation flag is enabled or disabled.
+            //! Returns if a texture creation flag is enabled or disabled.
             /** You can change this value using setTextureCreationFlag().
              * \param flag Texture creation flag.
              * \return The current texture creation flag enabled mode. */
             virtual bool getTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag) const = 0;
 
-            // ! Creates a software image from a file.
+            //! Creates a software image from a file.
             /** No hardware texture will be created for this image. This
              * method is useful for example if you want to read a heightmap
              * for a terrain renderer.
@@ -1187,7 +1187,7 @@ public:
              * See IReferenceCounted::drop() for more information. */
             virtual IImage* createImageFromFile(const io::path &filename) = 0;
 
-            // ! Creates a software image from a file.
+            //! Creates a software image from a file.
             /** No hardware texture will be created for this image. This
              * method is useful for example if you want to read a heightmap
              * for a terrain renderer.
@@ -1197,7 +1197,7 @@ public:
              * See IReferenceCounted::drop() for more information. */
             virtual IImage* createImageFromFile(io::IReadFile *file) = 0;
 
-            // ! Writes the provided image to a file.
+            //! Writes the provided image to a file.
             /** Requires that there is a suitable image writer registered
              * for writing the image.
              * \param image Image to write.
@@ -1207,7 +1207,7 @@ public:
              * \return True on successful write. */
             virtual bool writeImageToFile(IImage *image, const io::path &filename, u32 param = 0) = 0;
 
-            // ! Writes the provided image to a file.
+            //! Writes the provided image to a file.
             /** Requires that there is a suitable image writer registered
              * for writing the image.
              * \param image Image to write.
@@ -1218,7 +1218,7 @@ public:
              * \return True on successful write. */
             virtual bool writeImageToFile(IImage *image, io::IWriteFile *file, u32 param = 0) = 0;
 
-            // ! Creates a software image from a byte array.
+            //! Creates a software image from a byte array.
             /** No hardware texture will be created for this image. This
              * method is useful for example if you want to read a heightmap
              * for a terrain renderer.
@@ -1238,7 +1238,7 @@ public:
                 bool ownForeignMemory = false,
                 bool deleteMemory = true) = 0;
 
-            // ! Creates an empty software image.
+            //! Creates an empty software image.
             /**
              * \param format Desired color format of the image.
              * \param size Size of the image to create.
@@ -1247,7 +1247,7 @@ public:
              * See IReferenceCounted::drop() for more information. */
             virtual IImage* createImage(ECOLOR_FORMAT format, const core::dimension2d<u32> &size) = 0;
 
-            // ! Creates a software image by converting it to given format from another image.
+            //! Creates a software image by converting it to given format from another image.
             /** \deprecated Create an empty image and use copyTo(). This method may be removed by Irrlicht 1.9.
              * \param format Desired color format of the image.
              * \param imageToCopy Image to copy to the new image.
@@ -1256,7 +1256,7 @@ public:
              * See IReferenceCounted::drop() for more information. */
             _IRR_DEPRECATED_ virtual IImage* createImage(ECOLOR_FORMAT format, IImage *imageToCopy) = 0;
 
-            // ! Creates a software image from a part of another image.
+            //! Creates a software image from a part of another image.
             /** \deprecated Create an empty image and use copyTo(). This method may be removed by Irrlicht 1.9.
              * \param imageToCopy Image to copy to the new image in part.
              * \param pos Position of rectangle to copy.
@@ -1268,7 +1268,7 @@ public:
                 const core::position2d<s32> &pos,
                 const core::dimension2d<u32> &size) = 0;
 
-            // ! Creates a software image from a part of a texture.
+            //! Creates a software image from a part of a texture.
             /**
              * \param texture Texture to copy to the new image in part.
              * \param pos Position of rectangle to copy.
@@ -1280,12 +1280,12 @@ public:
                 const core::position2d<s32> &pos,
                 const core::dimension2d<u32> &size) = 0;
 
-            // ! Event handler for resize events. Only used by the engine internally.
+            //! Event handler for resize events. Only used by the engine internally.
             /** Used to notify the driver that the window was resized.
              * Usually, there is no need to call this method. */
             virtual void OnResize(const core::dimension2d<u32> &size) = 0;
 
-            // ! Adds a new material renderer to the video device.
+            //! Adds a new material renderer to the video device.
             /** Use this method to extend the VideoDriver with new material
              * types. To extend the engine using this method do the following:
              * Derive a class from IMaterialRenderer and override the methods
@@ -1308,18 +1308,18 @@ public:
              * not accept material renderers. */
             virtual s32 addMaterialRenderer(IMaterialRenderer *renderer, const c8 *name = 0) = 0;
 
-            // ! Get access to a material renderer by index.
+            //! Get access to a material renderer by index.
             /** \param idx Id of the material renderer. Can be a value of
              * the E_MATERIAL_TYPE enum or a value which was returned by
              * addMaterialRenderer().
              * \return Pointer to material renderer or null if not existing. */
             virtual IMaterialRenderer* getMaterialRenderer(u32 idx) = 0;
 
-            // ! Get amount of currently available material renderers.
+            //! Get amount of currently available material renderers.
             /** \return Amount of currently available material renderers. */
             virtual u32 getMaterialRendererCount() const = 0;
 
-            // ! Get name of a material renderer
+            //! Get name of a material renderer
             /** This string can, e.g., be used to test if a specific
              * renderer already has been registered/created, or use this
              * string to store data about materials: This returned name will
@@ -1331,7 +1331,7 @@ public:
              * exisiting */
             virtual const c8* getMaterialRendererName(u32 idx) const = 0;
 
-            // ! Sets the name of a material renderer.
+            //! Sets the name of a material renderer.
             /** Will have no effect on built-in material renderers.
              * \param idx: Id of the material renderer. Can be a value of the
              * E_MATERIAL_TYPE enum or a value which was returned by
@@ -1339,7 +1339,7 @@ public:
              * \param name: New name of the material renderer. */
             virtual void setMaterialRendererName(s32 idx, const c8 *name) = 0;
 
-            // ! Creates material attributes list from a material
+            //! Creates material attributes list from a material
             /** This method is useful for serialization and more.
              * Please note that the video driver will use the material
              * renderer names from getMaterialRendererName() to write out the
@@ -1352,7 +1352,7 @@ public:
             virtual io::IAttributes* createAttributesFromMaterial(const video::SMaterial &material,
                 io::SAttributeReadWriteOptions *options = 0) = 0;
 
-            // ! Fills an SMaterial structure from attributes.
+            //! Fills an SMaterial structure from attributes.
             /** Please note that for setting material types of the
              * material, the video driver will need to query the material
              * renderers for their names, so all non built-in materials must
@@ -1361,26 +1361,26 @@ public:
              * \param attributes The attributes to read from. */
             virtual void fillMaterialStructureFromAttributes(video::SMaterial &outMaterial, io::IAttributes *attributes) = 0;
 
-            // ! Returns driver and operating system specific data about the IVideoDriver.
+            //! Returns driver and operating system specific data about the IVideoDriver.
             /** This method should only be used if the engine should be
              * extended without having to modify the source of the engine.
              * \return Collection of device dependent pointers. */
             virtual const SExposedVideoData&getExposedVideoData() = 0;
 
-            // ! Get type of video driver
+            //! Get type of video driver
             /** \return Type of driver. */
             virtual E_DRIVER_TYPE getDriverType() const = 0;
 
-            // ! Gets the IGPUProgrammingServices interface.
+            //! Gets the IGPUProgrammingServices interface.
             /** \return Pointer to the IGPUProgrammingServices. Returns 0
              * if the video driver does not support this. For example the
              * Software driver and the Null driver will always return 0. */
             virtual IGPUProgrammingServices* getGPUProgrammingServices() = 0;
 
-            // ! Returns a pointer to the mesh manipulator.
+            //! Returns a pointer to the mesh manipulator.
             virtual scene::IMeshManipulator* getMeshManipulator() = 0;
 
-            // ! Clears the ZBuffer.
+            //! Clears the ZBuffer.
             /** Note that you usually need not to call this method, as it
              * is automatically done in IVideoDriver::beginScene() or
              * IVideoDriver::setRenderTarget() if you enable zBuffer. But if
@@ -1389,18 +1389,18 @@ public:
              */
             virtual void clearZBuffer() = 0;
 
-            // ! Make a screenshot of the last rendered frame.
+            //! Make a screenshot of the last rendered frame.
             /** \return An image created from the last rendered frame. */
             virtual IImage* createScreenShot(video::ECOLOR_FORMAT format = video::ECOLOR_FORMAT::ECF_UNKNOWN, video::E_RENDER_TARGET target = video::ERT_FRAME_BUFFER) = 0;
 
-            // ! Check if the image is already loaded.
+            //! Check if the image is already loaded.
             /** Works similar to getTexture(), but does not load the texture
              * if it is not currently loaded.
              * \param filename Name of the texture.
              * \return Pointer to loaded texture, or 0 if not found. */
             virtual video::ITexture* findTexture(const io::path &filename) = 0;
 
-            // ! Set or unset a clipping plane.
+            //! Set or unset a clipping plane.
             /** There are at least 6 clipping planes available for the user
              * to set at will.
              * \param index The plane index. Must be between 0 and
@@ -1411,7 +1411,7 @@ public:
              * \return True if the clipping plane is usable. */
             virtual bool setClipPlane(u32 index, const core::plane3df &plane, bool enable = false) = 0;
 
-            // ! Enable or disable a clipping plane.
+            //! Enable or disable a clipping plane.
             /** There are at least 6 clipping planes available for the user
              * to set at will.
              * \param index The plane index. Must be between 0 and
@@ -1420,18 +1420,18 @@ public:
              * it. */
             virtual void enableClipPlane(u32 index, bool enable) = 0;
 
-            // ! Set the minimum number of vertices for which a hw buffer will be created
+            //! Set the minimum number of vertices for which a hw buffer will be created
             /** \param count Number of vertices to set as minimum. */
             virtual void setMinHardwareBufferVertexCount(u32 count) = 0;
 
-            // ! Get the global Material, which might override local materials.
+            //! Get the global Material, which might override local materials.
             /** Depending on the enable flags, values from this Material
              * are used to override those of local materials of some
              * meshbuffer being rendered.
              * \return Reference to the Override Material. */
             virtual SOverrideMaterial&getOverrideMaterial() = 0;
 
-            // ! Get the 2d override material for altering its values
+            //! Get the 2d override material for altering its values
             /** The 2d override materual allows to alter certain render
              * states of the 2d methods. Not all members of SMaterial are
              * honored, especially not MaterialType and Textures. Moreover,
@@ -1447,30 +1447,30 @@ public:
              */
             virtual SMaterial&getMaterial2D() = 0;
 
-            // ! Enable the 2d override material
+            //! Enable the 2d override material
             /** \param enable Flag which tells whether the material shall be
              * enabled or disabled. */
             virtual void enableMaterial2D(bool enable = true) = 0;
 
-            // ! Get the graphics card vendor name.
+            //! Get the graphics card vendor name.
             virtual core::stringc getVendorInfo() = 0;
 
-            // ! Only used by the engine internally.
+            //! Only used by the engine internally.
             /** The ambient color is set in the scene manager, see
              * scene::ISceneManager::setAmbientLight().
              * \param color New color of the ambient light. */
             virtual void setAmbientLight(const SColorf &color) = 0;
 
-            // ! Only used by the engine internally.
+            //! Only used by the engine internally.
             /** Passes the global material flag AllowZWriteOnTransparent.
              * Use the SceneManager attribute to set this value from your app.
              * \param flag Default behavior is to disable ZWrite, i.e. false. */
             virtual void setAllowZWriteOnTransparent(bool flag) = 0;
 
-            // ! Get the maximum texture size supported.
+            //! Get the maximum texture size supported.
             virtual core::dimension2du getMaxTextureSize() const = 0;
 
-            // ! Color conversion convenience function
+            //! Color conversion convenience function
             /** Convert an image (as array of pixels) from source to destination
              * array, thereby converting the color format. The pixel size is
              * determined by the color formats.

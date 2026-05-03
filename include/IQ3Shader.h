@@ -19,7 +19,7 @@ namespace irr
         {
             static core::stringc irrEmptyStringc("");
 
-            // ! Hold the different Mesh Types used for getMesh
+            //! Hold the different Mesh Types used for getMesh
             enum eQ3MeshIndex
             {
                 E_Q3_MESH_GEOMETRY = 0,
@@ -115,7 +115,7 @@ namespace irr
                 return value;
             }
 
-            // ! get a quake3 vector translated to irrlicht position (x,-z,y )
+            //! get a quake3 vector translated to irrlicht position (x,-z,y )
             inline core::vector3df getAsVector3df(const core::stringc &string, u32 &pos)
             {
                 core::vector3df v;
@@ -156,7 +156,7 @@ namespace irr
                 while (!finish);
             }
 
-            // ! A blend function for a q3 shader.
+            //! A blend function for a q3 shader.
             struct SBlendFunc
             {
                 SBlendFunc (video::E_MODULATE_FUNC mod)
@@ -670,7 +670,7 @@ namespace irr
                 core::array<SVariable> Variable;
             };
 
-            // ! holding a group a variable
+            //! holding a group a variable
             struct SVarGroupList : public IReferenceCounted
             {
                 SVarGroupList ()
@@ -683,7 +683,7 @@ namespace irr
             };
 
 
-            // ! A Parsed Shader Holding Variables ordered in Groups
+            //! A Parsed Shader Holding Variables ordered in Groups
             struct IShader
             {
                 IShader ()
@@ -927,7 +927,7 @@ namespace irr
             }
 
 
-            // ! Manages various Quake3 Shader Styles
+            //! Manages various Quake3 Shader Styles
             class IShaderManager : public IReferenceCounted
             {};
         } // end namespace quake3

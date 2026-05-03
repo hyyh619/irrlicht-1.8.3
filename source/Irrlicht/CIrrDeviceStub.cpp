@@ -42,10 +42,10 @@ namespace irr
         os::Printer::Logger = Logger;
         Randomizer          = createDefaultRandomizer();
 
-        FileSystem    = io::createFileSystem();
-        VideoModeList = new video::CVideoModeList();
+        FileSystem      = io::createFileSystem();
+        VideoModeList   = new video::CVideoModeList();
 
-        core::stringc s = "Irrlicht Engine version ";
+        core::stringc    s = "Irrlicht Engine version ";
         s.append(getVersion());
         os::Printer::log(s.c_str(), ELL_INFORMATION);
 
@@ -110,7 +110,6 @@ namespace irr
     }
 
 
-
     //! return file system
     io::IFileSystem* CIrrDeviceStub::getFileSystem()
     {
@@ -118,13 +117,11 @@ namespace irr
     }
 
 
-
     //! returns the gui environment
     gui::IGUIEnvironment* CIrrDeviceStub::getGUIEnvironment()
     {
         return GUIEnvironment;
     }
-
 
 
     //! returns the scene manager
@@ -168,12 +165,12 @@ namespace irr
     {
         if (strcmp(getVersion(), version))
         {
-            core::stringc w;
-            w  = "Warning: The library version of the Irrlicht Engine (";
-            w += getVersion();
-            w += ") does not match the version the application was compiled with (";
-            w += version;
-            w += "). This may cause problems.";
+            core::stringc    w;
+            w   = "Warning: The library version of the Irrlicht Engine (";
+            w   += getVersion();
+            w   += ") does not match the version the application was compiled with (";
+            w   += version;
+            w   += "). This may cause problems.";
             os::Printer::log(w.c_str(), ELL_WARNING);
             _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
             return false;
@@ -186,9 +183,9 @@ namespace irr
     //! Compares to the last call of this function to return double and triple clicks.
     u32 CIrrDeviceStub::checkSuccessiveClicks(s32 mouseX, s32 mouseY, EMOUSE_INPUT_EVENT inputEvent)
     {
-        const s32 MAX_MOUSEMOVE = 3;
+        const s32    MAX_MOUSEMOVE = 3;
 
-        irr::u32 clickTime = getTimer()->getRealTime();
+        irr::u32    clickTime = getTimer()->getRealTime();
 
         if ((clickTime - MouseMultiClicks.LastClickTime) < MouseMultiClicks.DoubleClickTime
             && core::abs_(MouseMultiClicks.LastClick.X - mouseX) <= MAX_MOUSEMOVE
@@ -204,10 +201,10 @@ namespace irr
             MouseMultiClicks.CountSuccessiveClicks = 1;
         }
 
-        MouseMultiClicks.LastMouseInputEvent = inputEvent;
-        MouseMultiClicks.LastClickTime       = clickTime;
-        MouseMultiClicks.LastClick.X         = mouseX;
-        MouseMultiClicks.LastClick.Y         = mouseY;
+        MouseMultiClicks.LastMouseInputEvent    = inputEvent;
+        MouseMultiClicks.LastClickTime          = clickTime;
+        MouseMultiClicks.LastClick.X            = mouseX;
+        MouseMultiClicks.LastClick.Y            = mouseY;
 
         return MouseMultiClicks.CountSuccessiveClicks;
     }
@@ -216,7 +213,7 @@ namespace irr
     //! send the event to the right receiver
     bool CIrrDeviceStub::postEventFromUser(const SEvent &event)
     {
-        bool absorbed = false;
+        bool    absorbed = false;
 
         if (UserReceiver)
             absorbed = UserReceiver->OnEvent(event);
@@ -224,7 +221,7 @@ namespace irr
         if (!absorbed && GUIEnvironment)
             absorbed = GUIEnvironment->postEventFromUser(event);
 
-        scene::ISceneManager *inputReceiver = InputReceivingSceneManager;
+        scene::ISceneManager    *inputReceiver = InputReceivingSceneManager;
         if (!inputReceiver)
             inputReceiver = SceneManager;
 
@@ -316,7 +313,7 @@ namespace irr
     //! Creates a new default randomizer.
     IRandomizer* CIrrDeviceStub::createDefaultRandomizer() const
     {
-        IRandomizer *r = new SDefaultRandomizer();
+        IRandomizer    *r = new SDefaultRandomizer();
 
         if (r)
             r->reset();
@@ -361,10 +358,10 @@ namespace irr
      */
     void CIrrDeviceStub::calculateGammaRamp(u16 *ramp, f32 gamma, f32 relativebrightness, f32 relativecontrast)
     {
-        s32 i;
-        s32 value;
-        s32 rbright   = (s32) (relativebrightness * (65535.f / 4));
-        f32 rcontrast = 1.f / (255.f - (relativecontrast * 127.5f));
+        s32     i;
+        s32     value;
+        s32     rbright     = (s32) (relativebrightness * (65535.f / 4));
+        f32     rcontrast   = 1.f / (255.f - (relativecontrast * 127.5f));
 
         gamma = gamma > 0.f ? 1.0f / gamma : 0.f;
 
@@ -380,8 +377,9 @@ namespace irr
         /* The following is adapted from a post by Garrett Bass on OpenGL
          * Gamedev list, March 4, 2000.
          */
-        f32 sum = 0.0;
-        s32 i, count = 0;
+        f32     sum     = 0.0;
+        s32     i       = 0;
+        s32     count   = 0;
 
         gamma = 1.0;
 
@@ -389,8 +387,8 @@ namespace irr
         {
             if ((ramp[i] != 0) && (ramp[i] != 65535))
             {
-                f32 B = (f32)i / 256.f;
-                f32 A = ramp[i] / 65535.f;
+                f32     B   = (f32)i / 256.f;
+                f32     A   = ramp[i] / 65535.f;
                 sum += (f32) (logf(A) / logf(B));
                 count++;
             }

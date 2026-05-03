@@ -18,7 +18,7 @@ namespace irr
 
         // ----------- some basic quite often used string functions -----------------
 
-        // ! search if a filename has a proper extension
+        //! search if a filename has a proper extension
         inline s32 isFileExtension(const io::path &filename,
             const io::path &ext0,
             const io::path &ext1,
@@ -42,7 +42,7 @@ namespace irr
             return 0;
         }
 
-        // ! search if a filename has a proper extension
+        //! search if a filename has a proper extension
         inline bool hasFileExtension(const io::path &filename,
             const io::path &ext0,
             const io::path &ext1 = "",
@@ -51,7 +51,7 @@ namespace irr
             return isFileExtension (filename, ext0, ext1, ext2) > 0;
         }
 
-        // ! cut the filename extension from a source file path and store it in a dest file path
+        //! cut the filename extension from a source file path and store it in a dest file path
         inline io::path&cutFilenameExtension(io::path &dest, const io::path &source)
         {
             const s32 endPos = source.findLast ('.');
@@ -60,7 +60,7 @@ namespace irr
             return dest;
         }
 
-        // ! get the filename extension from a file path
+        //! get the filename extension from a file path
         inline io::path&getFileNameExtension(io::path &dest, const io::path &source)
         {
             const s32 endPos = source.findLast ('.');
@@ -73,7 +73,7 @@ namespace irr
             return dest;
         }
 
-        // ! delete path from filename
+        //! delete path from filename
         inline io::path&deletePathFromFilename(io::path &filename)
         {
             // delete path from filename
@@ -93,7 +93,7 @@ namespace irr
             return filename;
         }
 
-        // ! trim paths
+        //! trim paths
         inline io::path&deletePathFromPath(io::path &filename, s32 pathCount)
         {
             // delete path from filename
@@ -122,8 +122,8 @@ namespace irr
             return filename;
         }
 
-        // ! looks if file is in the same directory of path. returns offset of directory.
-        // ! 0 means in same directory. 1 means file is direct child of path
+        //! looks if file is in the same directory of path. returns offset of directory.
+        //! 0 means in same directory. 1 means file is direct child of path
         inline s32 isInSameDirectory(const io::path &path, const io::path &file)
         {
             s32 subA = 0;
@@ -190,7 +190,7 @@ namespace irr
         }
 
 
-        // ! some standard function ( to remove dependencies )
+        //! some standard function ( to remove dependencies )
 #undef isdigit
 #undef isspace
 #undef isupper

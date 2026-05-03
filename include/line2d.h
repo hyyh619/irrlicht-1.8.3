@@ -12,18 +12,18 @@ namespace irr
 {
     namespace core
     {
-        // ! 2D line between two points with intersection methods.
+        //! 2D line between two points with intersection methods.
         template<class T>
         class line2d
         {
 public:
-            // ! Default constructor for line going from (0,0) to (1,1).
+            //! Default constructor for line going from (0,0) to (1,1).
             line2d() : start(0, 0), end(1, 1) {}
-            // ! Constructor for line between the two points.
+            //! Constructor for line between the two points.
             line2d(T xa, T ya, T xb, T yb) : start(xa, ya), end(xb, yb) {}
-            // ! Constructor for line between the two points given as vectors.
+            //! Constructor for line between the two points given as vectors.
             line2d(const vector2d<T> &start, const vector2d<T> &end) : start(start), end(end) {}
-            // ! Copy constructor.
+            //! Copy constructor.
             line2d(const line2d<T> &other) : start(other.start), end(other.end) {}
 
             // operators
@@ -56,51 +56,51 @@ public:
             }
 
             // functions
-            // ! Set this line to new line going through the two points.
+            //! Set this line to new line going through the two points.
             void setLine(const T &xa, const T &ya, const T &xb, const T &yb)
             {
                 start.set(xa, ya); end.set(xb, yb);
             }
-            // ! Set this line to new line going through the two points.
+            //! Set this line to new line going through the two points.
             void setLine(const vector2d<T> &nstart, const vector2d<T> &nend)
             {
                 start.set(nstart); end.set(nend);
             }
-            // ! Set this line to new line given as parameter.
+            //! Set this line to new line given as parameter.
             void setLine(const line2d<T> &line)
             {
                 start.set(line.start); end.set(line.end);
             }
 
-            // ! Get length of line
+            //! Get length of line
             /** \return Length of the line. */
             T getLength() const
             {
                 return start.getDistanceFrom(end);
             }
 
-            // ! Get squared length of the line
+            //! Get squared length of the line
             /** \return Squared length of line. */
             T getLengthSQ() const
             {
                 return start.getDistanceFromSQ(end);
             }
 
-            // ! Get middle of the line
+            //! Get middle of the line
             /** \return center of the line. */
             vector2d<T> getMiddle() const
             {
                 return (start + end) / (T)2;
             }
 
-            // ! Get the vector of the line.
+            //! Get the vector of the line.
             /** \return The vector of the line. */
             vector2d<T> getVector() const
             {
                 return vector2d<T>(end.X - start.X, end.Y - start.Y);
             }
 
-            // ! Tests if this line intersects with another line.
+            //! Tests if this line intersects with another line.
             /** \param l: Other line to test intersection with.
              * \param checkOnlySegments: Default is to check intersection between the begin and endpoints.
              * When set to false the function will check for the first intersection point when extending the lines.
@@ -206,7 +206,7 @@ public:
                 return true;
             }
 
-            // ! Get unit vector of the line.
+            //! Get unit vector of the line.
             /** \return Unit vector of this line. */
             vector2d<T> getUnitVector() const
             {
@@ -215,7 +215,7 @@ public:
                 return vector2d<T>((end.X - start.X) * len, (end.Y - start.Y) * len);
             }
 
-            // ! Get angle between this line and given line.
+            //! Get angle between this line and given line.
             /** \param l Other line for test.
              * \return Angle in degrees. */
             f64 getAngleWith(const line2d<T> &l) const
@@ -225,7 +225,7 @@ public:
                 return vect.getAngleWith(vect2);
             }
 
-            // ! Tells us if the given point lies to the left, right, or on the line.
+            //! Tells us if the given point lies to the left, right, or on the line.
             /** \return 0 if the point is on the line
              * <0 if to the left, or >0 if to the right. */
             T getPointOrientation(const vector2d<T> &point) const
@@ -234,7 +234,7 @@ public:
                        (point.X - start.X) * (end.Y - start.Y));
             }
 
-            // ! Check if the given point is a member of the line
+            //! Check if the given point is a member of the line
             /** \return True if point is between start and end, else false. */
             bool isPointOnLine(const vector2d<T> &point) const
             {
@@ -243,14 +243,14 @@ public:
                 return (d == 0 && point.isBetweenPoints(start, end));
             }
 
-            // ! Check if the given point is between start and end of the line.
+            //! Check if the given point is between start and end of the line.
             /** Assumes that the point is already somewhere on the line. */
             bool isPointBetweenStartAndEnd(const vector2d<T> &point) const
             {
                 return point.isBetweenPoints(start, end);
             }
 
-            // ! Get the closest point on this line to a point
+            //! Get the closest point on this line to a point
             /** \param checkOnlySegments: Default (true) is to return a point on the line-segment (between begin and end) of the line.
              * When set to false the function will check for the first the closest point on the the line even when outside the segment. */
             vector2d<T> getClosestPoint(const vector2d<T> &point, bool checkOnlySegments = true) const
@@ -277,9 +277,9 @@ public:
                 return vector2d<T>((T)(start.X + v.X), (T)(start.Y + v.Y));
             }
 
-            // ! Start point of the line.
+            //! Start point of the line.
             vector2d<T> start;
-            // ! End point of the line.
+            //! End point of the line.
             vector2d<T> end;
         };
 
@@ -311,9 +311,9 @@ public:
         }
 
 
-        // ! Typedef for an f32 line.
+        //! Typedef for an f32 line.
         typedef line2d<f32> line2df;
-        // ! Typedef for an integer line.
+        //! Typedef for an integer line.
         typedef line2d<s32> line2di;
     } // end namespace core
 } // end namespace irr

@@ -16,7 +16,7 @@ namespace irr
 {
     namespace core
     {
-        // ! Very simple string class with some useful features.
+        //! Very simple string class with some useful features.
         /** string<c8> and string<wchar_t> both accept Unicode AND ASCII/Latin-1,
          * so you can assign Unicode to string<c8> and ASCII/Latin-1 to string<wchar_t>
          * (and the other way round) if you want to.
@@ -40,7 +40,7 @@ namespace irr
             locale_current = id;
         }
 
-        // ! Returns a character converted to lower case
+        //! Returns a character converted to lower case
         static inline u32 locale_lower(u32 x) noexcept
         {
             switch (locale_current)
@@ -54,7 +54,7 @@ namespace irr
             return x >= 'A' && x <= 'Z' ? x + 0x20 : x;
         }
 
-        // ! Returns a character converted to upper case
+        //! Returns a character converted to upper case
         static inline u32 locale_upper(u32 x) noexcept
         {
             switch (locale_current)
@@ -76,7 +76,7 @@ public:
 
             typedef T char_type;
 
-            // ! Default constructor
+            //! Default constructor
             string()
                 : array(0), allocated(1), used(1)
             {
@@ -85,14 +85,14 @@ public:
             }
 
 
-            // ! Constructor
+            //! Constructor
             string(const string<T, TAlloc> &other)
                 : array(0), allocated(0), used(0)
             {
                 *this = other;
             }
 
-            // ! Constructor from other string types
+            //! Constructor from other string types
             template<class B, class A>
             string(const string<B, A> &other)
                 : array(0), allocated(0), used(0)
@@ -101,7 +101,7 @@ public:
             }
 
 
-            // ! Constructs a string from a float
+            //! Constructs a string from a float
             explicit string(const double number)
                 : array(0), allocated(0), used(0)
             {
@@ -112,7 +112,7 @@ public:
             }
 
 
-            // ! Constructs a string from an int
+            //! Constructs a string from an int
             explicit string(int number)
                 : array(0), allocated(0), used(0)
             {
@@ -161,7 +161,7 @@ public:
             }
 
 
-            // ! Constructs a string from an unsigned int
+            //! Constructs a string from an unsigned int
             explicit string(unsigned int number)
                 : array(0), allocated(0), used(0)
             {
@@ -192,7 +192,7 @@ public:
             }
 
 
-            // ! Constructs a string from a long
+            //! Constructs a string from a long
             explicit string(long number)
                 : array(0), allocated(0), used(0)
             {
@@ -241,7 +241,7 @@ public:
             }
 
 
-            // ! Constructs a string from an unsigned long
+            //! Constructs a string from an unsigned long
             explicit string(unsigned long number)
                 : array(0), allocated(0), used(0)
             {
@@ -272,7 +272,7 @@ public:
             }
 
 
-            // ! Constructor for copying a string from a pointer with a given length
+            //! Constructor for copying a string from a pointer with a given length
             template<class B>
             string(const B* const c, u32 length)
                 : array(0), allocated(0), used(0)
@@ -294,7 +294,7 @@ public:
             }
 
 
-            // ! Constructor for unicode and ascii strings
+            //! Constructor for unicode and ascii strings
             template<class B>
             string(const B* const c)
                 : array(0), allocated(0), used(0)
@@ -303,14 +303,14 @@ public:
             }
 
 
-            // ! Destructor
+            //! Destructor
             ~string()
             {
                 allocator.deallocate(array); // delete [] array;
             }
 
 
-            // ! Assignment operator
+            //! Assignment operator
             string<T, TAlloc>&operator=(const string<T, TAlloc> &other)
             {
                 if (this == &other)
@@ -332,7 +332,7 @@ public:
                 return *this;
             }
 
-            // ! Assignment operator for other string types
+            //! Assignment operator for other string types
             template<class B, class A>
             string<T, TAlloc>&operator=(const string<B, A> &other)
             {
@@ -341,7 +341,7 @@ public:
             }
 
 
-            // ! Assignment operator for strings, ascii and unicode
+            //! Assignment operator for strings, ascii and unicode
             template<class B>
             string<T, TAlloc>&operator=(const B* const c)
             {
@@ -391,7 +391,7 @@ public:
             }
 
 
-            // ! Append operator for other strings
+            //! Append operator for other strings
             string<T, TAlloc> operator+(const string<T, TAlloc> &other) const
             {
                 string<T, TAlloc> str(*this);
@@ -401,7 +401,7 @@ public:
             }
 
 
-            // ! Append operator for strings, ascii and unicode
+            //! Append operator for strings, ascii and unicode
             template<class B>
             string<T, TAlloc> operator+(const B* const c) const
             {
@@ -412,7 +412,7 @@ public:
             }
 
 
-            // ! Direct access operator
+            //! Direct access operator
             T&operator [](const u32 index)
             {
                 _IRR_DEBUG_BREAK_IF(index >= used) // bad index
@@ -420,7 +420,7 @@ public:
             }
 
 
-            // ! Direct access operator
+            //! Direct access operator
             const T&operator [](const u32 index) const
             {
                 _IRR_DEBUG_BREAK_IF(index >= used) // bad index
@@ -428,7 +428,7 @@ public:
             }
 
 
-            // ! Equality operator
+            //! Equality operator
             bool operator==(const T* const str) const
             {
                 if (!str)
@@ -444,7 +444,7 @@ public:
             }
 
 
-            // ! Equality operator
+            //! Equality operator
             bool operator==(const string<T, TAlloc> &other) const
             {
                 for (u32 i = 0; array[i] && other.array[i]; ++i)
@@ -455,7 +455,7 @@ public:
             }
 
 
-            // ! Is smaller comparator
+            //! Is smaller comparator
             bool operator<(const string<T, TAlloc> &other) const
             {
                 for (u32 i = 0; array[i] && other.array[i]; ++i)
@@ -469,21 +469,21 @@ public:
             }
 
 
-            // ! Inequality operator
+            //! Inequality operator
             bool operator!=(const T* const str) const
             {
                 return !(*this == str);
             }
 
 
-            // ! Inequality operator
+            //! Inequality operator
             bool operator!=(const string<T, TAlloc> &other) const
             {
                 return !(*this == other);
             }
 
 
-            // ! Returns length of the string's content
+            //! Returns length of the string's content
             /** \return Length of the string's content in characters, excluding
              * the trailing NUL. */
             u32 size() const
@@ -491,14 +491,14 @@ public:
                 return used - 1;
             }
 
-            // ! Informs if the string is empty or not.
-            // ! \return True if the string is empty, false if not.
+            //! Informs if the string is empty or not.
+            //! \return True if the string is empty, false if not.
             bool empty() const
             {
                 return (size() == 0);
             }
 
-            // ! Returns character string
+            //! Returns character string
             /** \return pointer to C-style NUL terminated string. */
             const T* c_str() const
             {
@@ -506,7 +506,7 @@ public:
             }
 
 
-            // ! Makes the string lower case.
+            //! Makes the string lower case.
             string<T, TAlloc>&make_lower()
             {
                 for (u32 i = 0; array[i]; ++i)
@@ -516,7 +516,7 @@ public:
             }
 
 
-            // ! Makes the string upper case.
+            //! Makes the string upper case.
             string<T, TAlloc>&make_upper()
             {
                 for (u32 i = 0; array[i]; ++i)
@@ -526,7 +526,7 @@ public:
             }
 
 
-            // ! Compares the strings ignoring case.
+            //! Compares the strings ignoring case.
             /** \param other: Other string to compare.
              * \return True if the strings are equal ignoring case. */
             bool equals_ignore_case(const string<T, TAlloc> &other) const
@@ -538,7 +538,7 @@ public:
                 return used == other.used;
             }
 
-            // ! Compares the strings ignoring case.
+            //! Compares the strings ignoring case.
             /** \param other: Other string to compare.
              *  \param sourcePos: where to start to compare in the string
              * \return True if the strings are equal ignoring case. */
@@ -557,7 +557,7 @@ public:
             }
 
 
-            // ! Compares the strings ignoring case.
+            //! Compares the strings ignoring case.
             /** \param other: Other string to compare.
              * \return True if this string is smaller ignoring case. */
             bool lower_ignore_case(const string<T, TAlloc> &other) const
@@ -573,7 +573,7 @@ public:
             }
 
 
-            // ! compares the first n characters of the strings
+            //! compares the first n characters of the strings
             /** \param other Other string to compare.
              * \param n Number of characters to compare
              * \return True if the n first characters of both strings are equal. */
@@ -591,7 +591,7 @@ public:
             }
 
 
-            // ! compares the first n characters of the strings
+            //! compares the first n characters of the strings
             /** \param str Other string to compare.
              * \param n Number of characters to compare
              * \return True if the n first characters of both strings are equal. */
@@ -612,7 +612,7 @@ public:
             }
 
 
-            // ! Appends a character to this string
+            //! Appends a character to this string
             /** \param character: Character to append. */
             string<T, TAlloc>&append(T character)
             {
@@ -628,7 +628,7 @@ public:
             }
 
 
-            // ! Appends a char string to this string
+            //! Appends a char string to this string
             /** \param other: Char string to append. */
             /** \param length: The length of the string to append. */
             string<T, TAlloc>&append(const T* const other, u32 length = 0xffffffff)
@@ -663,7 +663,7 @@ public:
             }
 
 
-            // ! Appends a string to this string
+            //! Appends a string to this string
             /** \param other: String to append. */
             string<T, TAlloc>&append(const string<T, TAlloc> &other)
             {
@@ -685,7 +685,7 @@ public:
             }
 
 
-            // ! Appends a string of the length l to this string.
+            //! Appends a string of the length l to this string.
             /** \param other: other String to append to this string.
              * \param length: How much characters of the other string to add to this one. */
             string<T, TAlloc>&append(const string<T, TAlloc> &other, u32 length)
@@ -717,7 +717,7 @@ public:
             }
 
 
-            // ! Reserves some memory.
+            //! Reserves some memory.
             /** \param count: Amount of characters to reserve. */
             void reserve(u32 count)
             {
@@ -728,7 +728,7 @@ public:
             }
 
 
-            // ! finds first occurrence of character in string
+            //! finds first occurrence of character in string
             /** \param c: Character to search for.
              * \return Position where the character has been found,
              * or -1 if not found. */
@@ -741,7 +741,7 @@ public:
                 return -1;
             }
 
-            // ! finds first occurrence of a character of a list in string
+            //! finds first occurrence of a character of a list in string
             /** \param c: List of characters to find. For example if the method
              * should find the first occurrence of 'a' or 'b', this parameter should be "ab".
              * \param count: Amount of characters in the list. Usually,
@@ -762,7 +762,7 @@ public:
             }
 
 
-            // ! Finds first position of a character not in a given list.
+            //! Finds first position of a character not in a given list.
             /** \param c: List of characters not to find. For example if the method
              * should find the first occurrence of a character not 'a' or 'b', this parameter should be "ab".
              * \param count: Amount of characters in the list. Usually,
@@ -790,7 +790,7 @@ public:
                 return -1;
             }
 
-            // ! Finds last position of a character not in a given list.
+            //! Finds last position of a character not in a given list.
             /** \param c: List of characters not to find. For example if the method
              * should find the first occurrence of a character not 'a' or 'b', this parameter should be "ab".
              * \param count: Amount of characters in the list. Usually,
@@ -818,7 +818,7 @@ public:
                 return -1;
             }
 
-            // ! finds next occurrence of character in string
+            //! finds next occurrence of character in string
             /** \param c: Character to search for.
              * \param startPos: Position in string to start searching.
              * \return Position where the character has been found,
@@ -833,7 +833,7 @@ public:
             }
 
 
-            // ! finds last occurrence of character in string
+            //! finds last occurrence of character in string
             /** \param c: Character to search for.
              * \param start: start to search reverse ( default = -1, on end )
              * \return Position where the character has been found,
@@ -849,7 +849,7 @@ public:
                 return -1;
             }
 
-            // ! finds last occurrence of a character of a list in string
+            //! finds last occurrence of a character of a list in string
             /** \param c: List of strings to find. For example if the method
              * should find the last occurrence of 'a' or 'b', this parameter should be "ab".
              * \param count: Amount of characters in the list. Usually,
@@ -870,7 +870,7 @@ public:
             }
 
 
-            // ! finds another string in this string
+            //! finds another string in this string
             /** \param str: Another string
              * \param start: Start position of the search
              * \return Positions where the string has been found,
@@ -904,7 +904,7 @@ public:
             }
 
 
-            // ! Returns a substring
+            //! Returns a substring
             /** \param begin Start of substring.
              * \param length Length of substring.
              * \param make_lower copy only lower case */
@@ -941,7 +941,7 @@ public:
             }
 
 
-            // ! Appends a character to this string
+            //! Appends a character to this string
             /** \param c Character to append. */
             string<T, TAlloc>&operator +=(T c)
             {
@@ -950,7 +950,7 @@ public:
             }
 
 
-            // ! Appends a char string to this string
+            //! Appends a char string to this string
             /** \param c Char string to append. */
             string<T, TAlloc>&operator +=(const T* const c)
             {
@@ -959,7 +959,7 @@ public:
             }
 
 
-            // ! Appends a string to this string
+            //! Appends a string to this string
             /** \param other String to append. */
             string<T, TAlloc>&operator +=(const string<T, TAlloc> &other)
             {
@@ -968,7 +968,7 @@ public:
             }
 
 
-            // ! Appends a string representation of a number to this string
+            //! Appends a string representation of a number to this string
             /** \param i Number to append. */
             string<T, TAlloc>&operator +=(const int i)
             {
@@ -977,7 +977,7 @@ public:
             }
 
 
-            // ! Appends a string representation of a number to this string
+            //! Appends a string representation of a number to this string
             /** \param i Number to append. */
             string<T, TAlloc>&operator +=(const unsigned int i)
             {
@@ -986,7 +986,7 @@ public:
             }
 
 
-            // ! Appends a string representation of a number to this string
+            //! Appends a string representation of a number to this string
             /** \param i Number to append. */
             string<T, TAlloc>&operator +=(const long i)
             {
@@ -995,7 +995,7 @@ public:
             }
 
 
-            // ! Appends a string representation of a number to this string
+            //! Appends a string representation of a number to this string
             /** \param i Number to append. */
             string<T, TAlloc>&operator +=(const unsigned long i)
             {
@@ -1004,7 +1004,7 @@ public:
             }
 
 
-            // ! Appends a string representation of a number to this string
+            //! Appends a string representation of a number to this string
             /** \param i Number to append. */
             string<T, TAlloc>&operator +=(const double i)
             {
@@ -1013,7 +1013,7 @@ public:
             }
 
 
-            // ! Appends a string representation of a number to this string
+            //! Appends a string representation of a number to this string
             /** \param i Number to append. */
             string<T, TAlloc>&operator +=(const float i)
             {
@@ -1022,7 +1022,7 @@ public:
             }
 
 
-            // ! Replaces all characters of a special type with another one
+            //! Replaces all characters of a special type with another one
             /** \param toReplace Character to replace.
              * \param replaceWith Character replacing the old one. */
             string<T, TAlloc>&replace(T toReplace, T replaceWith)
@@ -1035,7 +1035,7 @@ public:
             }
 
 
-            // ! Replaces all instances of a string with another one.
+            //! Replaces all instances of a string with another one.
             /** \param toReplace The string to replace.
              * \param replaceWith The string replacing the old one. */
             string<T, TAlloc>&replace(const string<T, TAlloc> &toReplace, const string<T, TAlloc> &replaceWith)
@@ -1153,7 +1153,7 @@ public:
             }
 
 
-            // ! Removes characters from a string.
+            //! Removes characters from a string.
             /** \param c: Character to remove. */
             string<T, TAlloc>&remove(T c)
             {
@@ -1177,7 +1177,7 @@ public:
             }
 
 
-            // ! Removes a string from the string.
+            //! Removes a string from the string.
             /** \param toRemove: String to remove. */
             string<T, TAlloc>&remove(const string<T, TAlloc> &toRemove)
             {
@@ -1217,7 +1217,7 @@ public:
             }
 
 
-            // ! Removes characters from a string.
+            //! Removes characters from a string.
             /** \param characters: Characters to remove. */
             string<T, TAlloc>&removeChars(const string<T, TAlloc> &characters)
             {
@@ -1256,7 +1256,7 @@ public:
             }
 
 
-            // ! Trims the string.
+            //! Trims the string.
             /** Removes the specified characters (by default, Latin-1 whitespace)
              * from the begining and the end of the string. */
             string<T, TAlloc>&trim(const string<T, TAlloc> &whitespace = " \t\n\r")
@@ -1273,7 +1273,7 @@ public:
             }
 
 
-            // ! Erases a character from the string.
+            //! Erases a character from the string.
             /** May be slow, because all elements
              * following after the erased element have to be copied.
              * \param index: Index of element to be erased. */
@@ -1288,7 +1288,7 @@ public:
                 return *this;
             }
 
-            // ! verify the existing string.
+            //! verify the existing string.
             string<T, TAlloc>&validate()
             {
                 // terminate on existing null
@@ -1315,13 +1315,13 @@ public:
                 return *this;
             }
 
-            // ! gets the last char of a string or null
+            //! gets the last char of a string or null
             T lastChar() const
             {
                 return used > 1 ? array[used - 2] : 0;
             }
 
-            // ! split string into parts.
+            //! split string into parts.
             /** This method will split a string at certain delimiter characters
              * into the container passed in as reference. The type of the container
              * has to be given as template parameter. It must provide a push_back and
@@ -1378,7 +1378,7 @@ public:
 
 private:
 
-            // ! Reallocate the array, make it bigger or smaller
+            //! Reallocate the array, make it bigger or smaller
             void reallocate(u32 new_size)
             {
                 T *old_array = array;
@@ -1406,10 +1406,10 @@ private:
         };
 
 
-        // ! Typedef for character strings
+        //! Typedef for character strings
         typedef string<c8> stringc;
 
-        // ! Typedef for wide character strings
+        //! Typedef for wide character strings
         typedef string<wchar_t> stringw;
     } // end namespace core
 } // end namespace irr

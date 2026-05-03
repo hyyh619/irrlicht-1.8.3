@@ -12,52 +12,52 @@ namespace irr
 {
     namespace video
     {
-        // ! An enum for the color format of textures used by the Irrlicht Engine.
+        //! An enum for the color format of textures used by the Irrlicht Engine.
         /** A color format specifies how color information is stored. */
         enum class ECOLOR_FORMAT
         {
-            // ! 16 bit color format used by the software driver.
+            //! 16 bit color format used by the software driver.
             /** It is thus preferred by all other irrlicht engine video drivers.
              * There are 5 bits for every color component, and a single bit is left
              * for alpha information. */
             ECF_A1R5G5B5 = 0,
 
-            // ! Standard 16 bit color format.
+            //! Standard 16 bit color format.
             ECF_R5G6B5,
 
-            // ! 24 bit color, no alpha channel, but 8 bit for red, green and blue.
+            //! 24 bit color, no alpha channel, but 8 bit for red, green and blue.
             ECF_R8G8B8,
 
-            // ! Default 32 bit color format. 8 bits are used for every component: red, green, blue and alpha.
+            //! Default 32 bit color format. 8 bits are used for every component: red, green, blue and alpha.
             ECF_A8R8G8B8,
 
             /** Floating Point formats. The following formats may only be used for render target textures. */
 
-            // ! 16 bit floating point format using 16 bits for the red channel.
+            //! 16 bit floating point format using 16 bits for the red channel.
             ECF_R16F,
 
-            // ! 32 bit floating point format using 16 bits for the red channel and 16 bits for the green channel.
+            //! 32 bit floating point format using 16 bits for the red channel and 16 bits for the green channel.
             ECF_G16R16F,
 
-            // ! 64 bit floating point format 16 bits are used for the red, green, blue and alpha channels.
+            //! 64 bit floating point format 16 bits are used for the red, green, blue and alpha channels.
             ECF_A16B16G16R16F,
 
-            // ! 32 bit floating point format using 32 bits for the red channel.
+            //! 32 bit floating point format using 32 bits for the red channel.
             ECF_R32F,
 
-            // ! 64 bit floating point format using 32 bits for the red channel and 32 bits for the green channel.
+            //! 64 bit floating point format using 32 bits for the red channel and 32 bits for the green channel.
             ECF_G32R32F,
 
-            // ! 128 bit floating point format. 32 bits are used for the red, green, blue and alpha channels.
+            //! 128 bit floating point format. 32 bits are used for the red, green, blue and alpha channels.
             ECF_A32B32G32R32F,
 
-            // ! Unknown color format:
+            //! Unknown color format:
             ECF_UNKNOWN,
             ECF_UNKNOWN2
         };
 
 
-        // ! Creates a 16 bit A1R5G5B5 color
+        //! Creates a 16 bit A1R5G5B5 color
         inline u16 RGBA16(u32 r, u32 g, u32 b, u32 a = 0xFF)
         {
             return (u16)((a & 0x80) << 8 |
@@ -67,14 +67,14 @@ namespace irr
         }
 
 
-        // ! Creates a 16 bit A1R5G5B5 color
+        //! Creates a 16 bit A1R5G5B5 color
         inline u16 RGB16(u32 r, u32 g, u32 b)
         {
             return RGBA16(r, g, b);
         }
 
 
-        // ! Creates a 16bit A1R5G5B5 color, based on 16bit input values
+        //! Creates a 16bit A1R5G5B5 color, based on 16bit input values
         inline u16 RGB16from16(u16 r, u16 g, u16 b)
         {
             return (0x8000 |
@@ -84,7 +84,7 @@ namespace irr
         }
 
 
-        // ! Converts a 32bit (X8R8G8B8) color to a 16bit A1R5G5B5 color
+        //! Converts a 32bit (X8R8G8B8) color to a 16bit A1R5G5B5 color
         inline constexpr u16 X8R8G8B8toA1R5G5B5(u32 color)
         {
             return (u16)(0x8000 |
@@ -94,7 +94,7 @@ namespace irr
         }
 
 
-        // ! Converts a 32bit (A8R8G8B8) color to a 16bit A1R5G5B5 color
+        //! Converts a 32bit (A8R8G8B8) color to a 16bit A1R5G5B5 color
         inline constexpr u16 A8R8G8B8toA1R5G5B5(u32 color)
         {
             return (u16)((color & 0x80000000) >> 16 |
@@ -104,7 +104,7 @@ namespace irr
         }
 
 
-        // ! Converts a 32bit (A8R8G8B8) color to a 16bit R5G6B5 color
+        //! Converts a 32bit (A8R8G8B8) color to a 16bit R5G6B5 color
         inline constexpr u16 A8R8G8B8toR5G6B5(u32 color)
         {
             return (u16)((color & 0x00F80000) >> 8 |
@@ -113,7 +113,7 @@ namespace irr
         }
 
 
-        // ! Convert A8R8G8B8 Color from A1R5G5B5 color
+        //! Convert A8R8G8B8 Color from A1R5G5B5 color
         /** build a nicer 32bit Color by extending dest lower bits with source high bits. */
         inline u32 A1R5G5B5toA8R8G8B8(u16 color)
         {
@@ -125,7 +125,7 @@ namespace irr
         }
 
 
-        // ! Returns A8R8G8B8 Color from R5G6B5 color
+        //! Returns A8R8G8B8 Color from R5G6B5 color
         inline u32 R5G6B5toA8R8G8B8(u16 color)
         {
             return 0xFF000000 |
@@ -135,14 +135,14 @@ namespace irr
         }
 
 
-        // ! Returns A1R5G5B5 Color from R5G6B5 color
+        //! Returns A1R5G5B5 Color from R5G6B5 color
         inline constexpr u16 R5G6B5toA1R5G5B5(u16 color)
         {
             return 0x8000 | (((color & 0xFFC0) >> 1) | (color & 0x1F));
         }
 
 
-        // ! Returns R5G6B5 Color from A1R5G5B5 color
+        //! Returns R5G6B5 Color from A1R5G5B5 color
         inline u16 A1R5G5B5toR5G6B5(u16 color)
         {
             return (((color & 0x7FE0) << 1) | (color & 0x1F));
@@ -150,7 +150,7 @@ namespace irr
 
 
 
-        // ! Returns the alpha component from A1R5G5B5 color
+        //! Returns the alpha component from A1R5G5B5 color
         /** In Irrlicht, alpha refers to opacity.
          * \return The alpha value of the color. 0 is transparent, 1 is opaque. */
         inline constexpr u32 getAlpha(u16 color)
@@ -159,7 +159,7 @@ namespace irr
         }
 
 
-        // ! Returns the red component from A1R5G5B5 color.
+        //! Returns the red component from A1R5G5B5 color.
         /** Shift left by 3 to get 8 bit value. */
         inline constexpr u32 getRed(u16 color)
         {
@@ -167,7 +167,7 @@ namespace irr
         }
 
 
-        // ! Returns the green component from A1R5G5B5 color
+        //! Returns the green component from A1R5G5B5 color
         /** Shift left by 3 to get 8 bit value. */
         inline constexpr u32 getGreen(u16 color)
         {
@@ -175,7 +175,7 @@ namespace irr
         }
 
 
-        // ! Returns the blue component from A1R5G5B5 color
+        //! Returns the blue component from A1R5G5B5 color
         /** Shift left by 3 to get 8 bit value. */
         inline constexpr u32 getBlue(u16 color)
         {
@@ -183,14 +183,14 @@ namespace irr
         }
 
 
-        // ! Returns the average from a 16 bit A1R5G5B5 color
+        //! Returns the average from a 16 bit A1R5G5B5 color
         inline s32 getAverage(s16 color)
         {
             return ((getRed(color) << 3) + (getGreen(color) << 3) + (getBlue(color) << 3)) / 3;
         }
 
 
-        // ! Class representing a 32 bit ARGB color.
+        //! Class representing a 32 bit ARGB color.
         /** The color values for alpha, red, green, and blue are
          * stored in a single u32. So all four values may be between 0 and 255.
          * Alpha in Irrlicht is opacity, so 0 is fully transparent, 255 is fully opaque (solid).
@@ -203,20 +203,20 @@ namespace irr
         {
 public:
 
-            // ! Constructor of the Color. Does nothing.
+            //! Constructor of the Color. Does nothing.
             /** The color value is not initialized to save time. */
             SColor() {}
 
-            // ! Constructs the color from 4 values representing the alpha, red, green and blue component.
+            //! Constructs the color from 4 values representing the alpha, red, green and blue component.
             /** Must be values between 0 and 255. */
             SColor (u32 a, u32 r, u32 g, u32 b)
                 : color(((a & 0xff) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff)) {}
 
-            // ! Constructs the color from a 32 bit value. Could be another color.
+            //! Constructs the color from a 32 bit value. Could be another color.
             SColor(u32 clr)
                 : color(clr) {}
 
-            // ! Returns the alpha component of the color.
+            //! Returns the alpha component of the color.
             /** The alpha component defines how opaque a color is.
              * \return The alpha value of the color. 0 is fully transparent, 255 is fully opaque. */
             u32 getAlpha() const
@@ -224,7 +224,7 @@ public:
                 return color >> 24;
             }
 
-            // ! Returns the red component of the color.
+            //! Returns the red component of the color.
             /** \return Value between 0 and 255, specifying how red the color is.
              * 0 means no red, 255 means full red. */
             u32 getRed() const
@@ -232,7 +232,7 @@ public:
                 return (color >> 16) & 0xff;
             }
 
-            // ! Returns the green component of the color.
+            //! Returns the green component of the color.
             /** \return Value between 0 and 255, specifying how green the color is.
              * 0 means no green, 255 means full green. */
             u32 getGreen() const
@@ -240,7 +240,7 @@ public:
                 return (color >> 8) & 0xff;
             }
 
-            // ! Returns the blue component of the color.
+            //! Returns the blue component of the color.
             /** \return Value between 0 and 255, specifying how blue the color is.
              * 0 means no blue, 255 means full blue. */
             u32 getBlue() const
@@ -248,25 +248,25 @@ public:
                 return color & 0xff;
             }
 
-            // ! Get lightness of the color in the range [0,255]
+            //! Get lightness of the color in the range [0,255]
             f32 getLightness() const
             {
                 return 0.5f * (core::max_(core::max_(getRed(), getGreen()), getBlue()) + core::min_(core::min_(getRed(), getGreen()), getBlue()));
             }
 
-            // ! Get luminance of the color in the range [0,255].
+            //! Get luminance of the color in the range [0,255].
             f32 getLuminance() const
             {
                 return 0.3f * getRed() + 0.59f * getGreen() + 0.11f * getBlue();
             }
 
-            // ! Get average intensity of the color in the range [0,255].
+            //! Get average intensity of the color in the range [0,255].
             u32 getAverage() const
             {
                 return (getRed() + getGreen() + getBlue()) / 3;
             }
 
-            // ! Sets the alpha component of the Color.
+            //! Sets the alpha component of the Color.
             /** The alpha component defines how transparent a color should be.
              * \param a The alpha value of the color. 0 is fully transparent, 255 is fully opaque. */
             void setAlpha(u32 a)
@@ -274,7 +274,7 @@ public:
                 color = ((a & 0xff) << 24) | (color & 0x00ffffff);
             }
 
-            // ! Sets the red component of the Color.
+            //! Sets the red component of the Color.
             /** \param r: Has to be a value between 0 and 255.
              * 0 means no red, 255 means full red. */
             void setRed(u32 r)
@@ -282,7 +282,7 @@ public:
                 color = ((r & 0xff) << 16) | (color & 0xff00ffff);
             }
 
-            // ! Sets the green component of the Color.
+            //! Sets the green component of the Color.
             /** \param g: Has to be a value between 0 and 255.
              * 0 means no green, 255 means full green. */
             void setGreen(u32 g)
@@ -290,7 +290,7 @@ public:
                 color = ((g & 0xff) << 8) | (color & 0xffff00ff);
             }
 
-            // ! Sets the blue component of the Color.
+            //! Sets the blue component of the Color.
             /** \param b: Has to be a value between 0 and 255.
              * 0 means no blue, 255 means full blue. */
             void setBlue(u32 b)
@@ -298,14 +298,14 @@ public:
                 color = (b & 0xff) | (color & 0xffffff00);
             }
 
-            // ! Calculates a 16 bit A1R5G5B5 value of this color.
+            //! Calculates a 16 bit A1R5G5B5 value of this color.
             /** \return 16 bit A1R5G5B5 value of this color. */
             u16 toA1R5G5B5() const
             {
                 return A8R8G8B8toA1R5G5B5(color);
             }
 
-            // ! Converts color to OpenGL color format
+            //! Converts color to OpenGL color format
             /** From ARGB to RGBA in 4 byte components for endian aware
              * passing to OpenGL
              * \param dest: address where the 4x8 bit OpenGL color is stored. */
@@ -317,7 +317,7 @@ public:
                 *++dest = (u8)getAlpha();
             }
 
-            // ! Sets all four components of the color at once.
+            //! Sets all four components of the color at once.
             /** Constructs the color from 4 values representing the alpha,
              * red, green and blue components of the color. Must be values
              * between 0 and 255.
@@ -341,28 +341,28 @@ public:
                 color = col;
             }
 
-            // ! Compares the color to another color.
+            //! Compares the color to another color.
             /** \return True if the colors are the same, and false if not. */
             bool operator==(const SColor &other) const
             {
                 return other.color == color;
             }
 
-            // ! Compares the color to another color.
+            //! Compares the color to another color.
             /** \return True if the colors are different, and false if they are the same. */
             bool operator!=(const SColor &other) const
             {
                 return other.color != color;
             }
 
-            // ! comparison operator
+            //! comparison operator
             /** \return True if this color is smaller than the other one */
             bool operator<(const SColor &other) const
             {
                 return (color < other.color);
             }
 
-            // ! Adds two colors, result is clamped to 0..255 values
+            //! Adds two colors, result is clamped to 0..255 values
             /** \param other Color to add to this color
              * \return Addition of the two colors, clamped to 0..255 values */
             SColor operator+(const SColor &other) const
@@ -373,7 +373,7 @@ public:
                            core::min_(getBlue() + other.getBlue(), 255u));
             }
 
-            // ! Interpolates the color with a f32 value to another color
+            //! Interpolates the color with a f32 value to another color
             /** \param other: Other color
              * \param d: value between 0.0f and 1.0f
              * \return Interpolated color. */
@@ -387,7 +387,7 @@ public:
                            (u32)core::round32(other.getBlue() * inv + getBlue() * d));
             }
 
-            // ! Returns interpolated color. ( quadratic )
+            //! Returns interpolated color. ( quadratic )
             /** \param c1: first color to interpolate with
              * \param c2: second color to interpolate with
              * \param d: value between 0.0f and 1.0f. */
@@ -411,7 +411,7 @@ public:
                         getBlue() * mul0 + c1.getBlue() * mul1 + c2.getBlue() * mul2), 0, 255));
             }
 
-            // ! set the color by expecting data in the given format
+            //! set the color by expecting data in the given format
             /** \param data: must point to valid memory containing color information in the given format
              *  \param format: tells the format in which data is available
              */
@@ -444,7 +444,7 @@ public:
                 }
             }
 
-            // ! Write the color to data in the defined format
+            //! Write the color to data in the defined format
             /** \param data: target to write the color. Must contain sufficiently large memory to receive the number of bytes neede for format
              *  \param format: tells the format used to write the color into data
              */
@@ -487,12 +487,12 @@ public:
                 }
             }
 
-            // ! color in A8R8G8B8 Format
+            //! color in A8R8G8B8 Format
             u32 color;
         };
 
 
-        // ! Class representing a color with four floats.
+        //! Class representing a color with four floats.
         /** The color values for red, green, blue
          * and alpha are each stored in a 32 bit floating point variable.
          * So all four values may be between 0.0f and 1.0f.
@@ -502,11 +502,11 @@ public:
         class SColorf
         {
 public:
-            // ! Default constructor for SColorf.
+            //! Default constructor for SColorf.
             /** Sets red, green and blue to 0.0f and alpha to 1.0f. */
             SColorf() : r(0.0f), g(0.0f), b(0.0f), a(1.0f) {}
 
-            // ! Constructs a color from up to four color values: red, green, blue, and alpha.
+            //! Constructs a color from up to four color values: red, green, blue, and alpha.
             /** \param r: Red color component. Should be a value between
              * 0.0f meaning no red and 1.0f, meaning full red.
              * \param g: Green color component. Should be a value between 0.0f
@@ -519,7 +519,7 @@ public:
              * (opaque), 0.0f means fully transparent. */
             SColorf(f32 r, f32 g, f32 b, f32 a = 1.0f) : r(r), g(g), b(b), a(a) {}
 
-            // ! Constructs a color from 32 bit Color.
+            //! Constructs a color from 32 bit Color.
             /** \param c: 32 bit color from which this SColorf class is
              * constructed from. */
             SColorf(SColor c)
@@ -532,13 +532,13 @@ public:
                 a = c.getAlpha() * inv;
             }
 
-            // ! Converts this color to a SColor without floats.
+            //! Converts this color to a SColor without floats.
             SColor toSColor() const
             {
                 return SColor((u32)core::round32(a * 255.0f), (u32)core::round32(r * 255.0f), (u32)core::round32(g * 255.0f), (u32)core::round32(b * 255.0f));
             }
 
-            // ! Sets three color components to new values at once.
+            //! Sets three color components to new values at once.
             /** \param rr: Red color component. Should be a value between 0.0f meaning
              * no red (=black) and 1.0f, meaning full red.
              * \param gg: Green color component. Should be a value between 0.0f meaning
@@ -550,7 +550,7 @@ public:
                 r = rr; g = gg; b = bb;
             }
 
-            // ! Sets all four color components to new values at once.
+            //! Sets all four color components to new values at once.
             /** \param aa: Alpha component. Should be a value between 0.0f meaning
              * fully transparent and 1.0f, meaning opaque.
              * \param rr: Red color component. Should be a value between 0.0f meaning
@@ -564,7 +564,7 @@ public:
                 a = aa; r = rr; g = gg; b = bb;
             }
 
-            // ! Interpolates the color with a f32 value to another color
+            //! Interpolates the color with a f32 value to another color
             /** \param other: Other color
              * \param d: value between 0.0f and 1.0f
              * \return Interpolated color. */
@@ -576,7 +576,7 @@ public:
                            other.g * inv + g * d, other.b * inv + b * d, other.a * inv + a * d);
             }
 
-            // ! Returns interpolated color. ( quadratic )
+            //! Returns interpolated color. ( quadratic )
             /** \param c1: first color to interpolate with
              * \param c2: second color to interpolate with
              * \param d: value between 0.0f and 1.0f. */
@@ -597,7 +597,7 @@ public:
             }
 
 
-            // ! Sets a color component by index. R=0, G=1, B=2, A=3
+            //! Sets a color component by index. R=0, G=1, B=2, A=3
             void setColorComponentValue(s32 index, f32 value) noexcept
             {
                 switch (index)
@@ -614,45 +614,45 @@ public:
                 }
             }
 
-            // ! Returns the alpha component of the color in the range 0.0 (transparent) to 1.0 (opaque)
+            //! Returns the alpha component of the color in the range 0.0 (transparent) to 1.0 (opaque)
             f32 getAlpha() const
             {
                 return a;
             }
 
-            // ! Returns the red component of the color in the range 0.0 to 1.0
+            //! Returns the red component of the color in the range 0.0 to 1.0
             f32 getRed() const
             {
                 return r;
             }
 
-            // ! Returns the green component of the color in the range 0.0 to 1.0
+            //! Returns the green component of the color in the range 0.0 to 1.0
             f32 getGreen() const
             {
                 return g;
             }
 
-            // ! Returns the blue component of the color in the range 0.0 to 1.0
+            //! Returns the blue component of the color in the range 0.0 to 1.0
             f32 getBlue() const
             {
                 return b;
             }
 
-            // ! red color component
+            //! red color component
             f32 r;
 
-            // ! green color component
+            //! green color component
             f32 g;
 
-            // ! blue component
+            //! blue component
             f32 b;
 
-            // ! alpha color component
+            //! alpha color component
             f32 a;
         };
 
 
-        // ! Class representing a color in HSL format
+        //! Class representing a color in HSL format
         /** The color values for hue, saturation, luminance
          * are stored in 32bit floating point variables. Hue is in range [0,360],
          * Luminance and Saturation are in percent [0,100]

@@ -14,24 +14,24 @@ namespace irr
     {
         class ITexture;
 
-        // ! Texture coord clamp mode outside [0.0, 1.0]
+        //! Texture coord clamp mode outside [0.0, 1.0]
         enum E_TEXTURE_CLAMP
         {
-            // ! Texture repeats
+            //! Texture repeats
             ETC_REPEAT = 0,
-            // ! Texture is clamped to the last pixel
+            //! Texture is clamped to the last pixel
             ETC_CLAMP,
-            // ! Texture is clamped to the edge pixel
+            //! Texture is clamped to the edge pixel
             ETC_CLAMP_TO_EDGE,
-            // ! Texture is clamped to the border pixel (if exists)
+            //! Texture is clamped to the border pixel (if exists)
             ETC_CLAMP_TO_BORDER,
-            // ! Texture is alternatingly mirrored (0..1..0..1..0..)
+            //! Texture is alternatingly mirrored (0..1..0..1..0..)
             ETC_MIRROR,
-            // ! Texture is mirrored once and then clamped (0..1..0)
+            //! Texture is mirrored once and then clamped (0..1..0)
             ETC_MIRROR_CLAMP,
-            // ! Texture is mirrored once and then clamped to edge
+            //! Texture is mirrored once and then clamped to edge
             ETC_MIRROR_CLAMP_TO_EDGE,
-            // ! Texture is mirrored once and then clamped to border
+            //! Texture is mirrored once and then clamped to border
             ETC_MIRROR_CLAMP_TO_BORDER
         };
         static const char* const aTextureClampNames[] =
@@ -46,11 +46,11 @@ namespace irr
             "texture_clamp_mirror_clamp_to_border", 0
         };
 
-        // ! Struct for holding material parameters which exist per texture layer
+        //! Struct for holding material parameters which exist per texture layer
         class SMaterialLayer
         {
 public:
-            // ! Default constructor
+            //! Default constructor
             SMaterialLayer()
                 : Texture(0),
                 TextureWrapU(ETC_REPEAT),
@@ -62,7 +62,7 @@ public:
                 TextureMatrix(0)
             {}
 
-            // ! Copy constructor
+            //! Copy constructor
             /** \param other Material layer to copy from. */
             SMaterialLayer(const SMaterialLayer &other)
             {
@@ -71,14 +71,14 @@ public:
                 *this         = other;
             }
 
-            // ! Destructor
+            //! Destructor
             ~SMaterialLayer()
             {
                 MatrixAllocator.destruct(TextureMatrix);
                 MatrixAllocator.deallocate(TextureMatrix);
             }
 
-            // ! Assignment operator
+            //! Assignment operator
             /** \param other Material layer to copy from.
              * \return This material layer, updated. */
             SMaterialLayer&operator=(const SMaterialLayer &other)
@@ -120,7 +120,7 @@ public:
                 return *this;
             }
 
-            // ! Gets the texture transformation matrix
+            //! Gets the texture transformation matrix
             /** \return Texture matrix of this layer. */
             core::matrix4&getTextureMatrix()
             {
@@ -133,7 +133,7 @@ public:
                 return *TextureMatrix;
             }
 
-            // ! Gets the immutable texture transformation matrix
+            //! Gets the immutable texture transformation matrix
             /** \return Texture matrix of this layer. */
             const core::matrix4&getTextureMatrix() const
             {
@@ -143,7 +143,7 @@ public:
                     return core::IdentityMatrix;
             }
 
-            // ! Sets the texture transformation matrix to mat
+            //! Sets the texture transformation matrix to mat
             /** \param mat New texture matrix for this layer. */
             void setTextureMatrix(const core::matrix4 &mat)
             {
@@ -156,7 +156,7 @@ public:
                     *TextureMatrix = mat;
             }
 
-            // ! Inequality operator
+            //! Inequality operator
             /** \param b Layer to compare to.
              * \return True if layers are different, else false. */
             inline bool operator!=(const SMaterialLayer &b) const
@@ -180,7 +180,7 @@ public:
                 return different;
             }
 
-            // ! Equality operator
+            //! Equality operator
             /** \param b Layer to compare to.
              * \return True if layers are equal, else false. */
             inline bool operator==(const SMaterialLayer &b) const
@@ -188,23 +188,23 @@ public:
                 return !(b != *this);
             }
 
-            // ! Texture
+            //! Texture
             ITexture *Texture;
 
-            // ! Texture Clamp Mode
+            //! Texture Clamp Mode
             /** Values are taken from E_TEXTURE_CLAMP. */
             u8 TextureWrapU : 4;
             u8 TextureWrapV : 4;
 
-            // ! Is bilinear filtering enabled? Default: true
+            //! Is bilinear filtering enabled? Default: true
             bool BilinearFilter : 1;
 
-            // ! Is trilinear filtering enabled? Default: false
+            //! Is trilinear filtering enabled? Default: false
             /** If the trilinear filter flag is enabled,
              * the bilinear filtering flag is ignored. */
             bool TrilinearFilter : 1;
 
-            // ! Is anisotropic filtering enabled? Default: 0, disabled
+            //! Is anisotropic filtering enabled? Default: 0, disabled
             /** In Irrlicht you can use anisotropic texture filtering
              * in conjunction with bilinear or trilinear texture
              * filtering to improve rendering results. Primitives
@@ -213,7 +213,7 @@ public:
              * Value 1 is equivalent to 0, but should be avoided. */
             u8 AnisotropicFilter;
 
-            // ! Bias for the mipmap choosing decision.
+            //! Bias for the mipmap choosing decision.
             /** This value can make the textures more or less blurry than with the
              * default value of 0. The value (divided by 8.f) is added to the mipmap level
              * chosen initially, and thus takes a smaller mipmap for a region
@@ -224,7 +224,7 @@ private:
             friend class SMaterial;
             irr::core::irrAllocator<irr::core::matrix4> MatrixAllocator;
 
-            // ! Texture Matrix
+            //! Texture Matrix
             /** Do not access this element directly as the internal
              * ressource management has to cope with Null pointers etc. */
             core::matrix4 *TextureMatrix;

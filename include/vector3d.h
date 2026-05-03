@@ -11,7 +11,7 @@ namespace irr
 {
     namespace core
     {
-        // ! 3d vector template class with lots of operators and methods.
+        //! 3d vector template class with lots of operators and methods.
         /** The vector3d class is used in Irrlicht for three main purposes:
          *  1) As a direction vector (most of the methods assume this).
          *  2) As a position in 3d space (which is synonymous with a direction vector from the origin to this position).
@@ -21,13 +21,13 @@ namespace irr
         class vector3d
         {
 public:
-            // ! Default constructor (null vector).
+            //! Default constructor (null vector).
             vector3d() noexcept : X(0), Y(0), Z(0) {}
-            // ! Constructor with three different values
+            //! Constructor with three different values
             vector3d(T nx, T ny, T nz) : X(nx), Y(ny), Z(nz) {}
-            // ! Constructor with the same value for all elements
+            //! Constructor with the same value for all elements
             explicit vector3d(T n) : X(n), Y(n), Z(n) {}
-            // ! Copy constructor
+            //! Copy constructor
             vector3d(const vector3d<T> &other) : X(other.X), Y(other.Y), Z(other.Z) {}
 
             // operators
@@ -110,7 +110,7 @@ public:
                 T i = (T)1.0 / v; X *= i; Y *= i; Z *= i; return *this;
             }
 
-            // ! sort in order X, Y, Z. Equality with rounding tolerance.
+            //! sort in order X, Y, Z. Equality with rounding tolerance.
             bool operator<=(const vector3d<T> &other) const
             {
                 return (X < other.X || core::equals(X, other.X)) ||
@@ -118,7 +118,7 @@ public:
                        (core::equals(X, other.X) && core::equals(Y, other.Y) && (Z < other.Z || core::equals(Z, other.Z)));
             }
 
-            // ! sort in order X, Y, Z. Equality with rounding tolerance.
+            //! sort in order X, Y, Z. Equality with rounding tolerance.
             bool operator>=(const vector3d<T> &other) const
             {
                 return (X > other.X || core::equals(X, other.X)) ||
@@ -126,7 +126,7 @@ public:
                        (core::equals(X, other.X) && core::equals(Y, other.Y) && (Z > other.Z || core::equals(Z, other.Z)));
             }
 
-            // ! sort in order X, Y, Z. Difference must be above rounding tolerance.
+            //! sort in order X, Y, Z. Difference must be above rounding tolerance.
             bool operator<(const vector3d<T> &other) const
             {
                 return (X < other.X && !core::equals(X, other.X)) ||
@@ -134,7 +134,7 @@ public:
                        (core::equals(X, other.X) && core::equals(Y, other.Y) && Z < other.Z && !core::equals(Z, other.Z));
             }
 
-            // ! sort in order X, Y, Z. Difference must be above rounding tolerance.
+            //! sort in order X, Y, Z. Difference must be above rounding tolerance.
             bool operator>(const vector3d<T> &other) const
             {
                 return (X > other.X && !core::equals(X, other.X)) ||
@@ -142,7 +142,7 @@ public:
                        (core::equals(X, other.X) && core::equals(Y, other.Y) && Z > other.Z && !core::equals(Z, other.Z));
             }
 
-            // ! use weak float compare
+            //! use weak float compare
             bool operator==(const vector3d<T> &other) const
             {
                 return this->equals(other);
@@ -155,7 +155,7 @@ public:
 
             // functions
 
-            // ! returns if this vector equals the other one, taking floating point rounding errors into account
+            //! returns if this vector equals the other one, taking floating point rounding errors into account
             bool equals(const vector3d<T> &other, const T tolerance = (T)ROUNDING_ERROR_f32) const
             {
                 return core::equals(X, other.X, tolerance) &&
@@ -172,13 +172,13 @@ public:
                 X = p.X; Y = p.Y; Z = p.Z; return *this;
             }
 
-            // ! Get length of the vector.
+            //! Get length of the vector.
             T getLength() const
             {
                 return core::squareroot(X * X + Y * Y + Z * Z);
             }
 
-            // ! Get squared length of the vector.
+            //! Get squared length of the vector.
             /** This is useful because it is much faster than getLength().
              * \return Squared length of the vector. */
             T getLengthSQ() const
@@ -186,27 +186,27 @@ public:
                 return X * X + Y * Y + Z * Z;
             }
 
-            // ! Get the dot product with another vector.
+            //! Get the dot product with another vector.
             T dotProduct(const vector3d<T> &other) const
             {
                 return X * other.X + Y * other.Y + Z * other.Z;
             }
 
-            // ! Get distance from another point.
+            //! Get distance from another point.
             /** Here, the vector is interpreted as point in 3 dimensional space. */
             T getDistanceFrom(const vector3d<T> &other) const
             {
                 return vector3d<T>(X - other.X, Y - other.Y, Z - other.Z).getLength();
             }
 
-            // ! Returns squared distance from another point.
+            //! Returns squared distance from another point.
             /** Here, the vector is interpreted as point in 3 dimensional space. */
             T getDistanceFromSQ(const vector3d<T> &other) const
             {
                 return vector3d<T>(X - other.X, Y - other.Y, Z - other.Z).getLengthSQ();
             }
 
-            // ! Calculates the cross product with another vector.
+            //! Calculates the cross product with another vector.
             /** \param p Vector to multiply with.
              * \return Crossproduct of this vector with p. */
             vector3d<T> crossProduct(const vector3d<T> &p) const
@@ -214,7 +214,7 @@ public:
                 return vector3d<T>(Y * p.Z - Z * p.Y, Z * p.X - X * p.Z, X * p.Y - Y * p.X);
             }
 
-            // ! Returns if this vector interpreted as a point is on a line between two other points.
+            //! Returns if this vector interpreted as a point is on a line between two other points.
             /** It is assumed that the point is on the line.
              * \param begin Beginning vector to compare between.
              * \param end Ending vector to compare between.
@@ -227,7 +227,7 @@ public:
                        getDistanceFromSQ(end) <= f;
             }
 
-            // ! Normalizes the vector.
+            //! Normalizes the vector.
             /** In case of the 0 vector the result is still 0, otherwise
              * the length of the vector will be 1.
              * \return Reference to this vector after normalization. */
@@ -246,14 +246,14 @@ public:
                 return *this;
             }
 
-            // ! Sets the length of the vector to a new value
+            //! Sets the length of the vector to a new value
             vector3d<T>&setLength(T newlength)
             {
                 normalize();
                 return (*this *= newlength);
             }
 
-            // ! Inverts the vector.
+            //! Inverts the vector.
             vector3d<T>&invert()
             {
                 X *= -1;
@@ -262,7 +262,7 @@ public:
                 return *this;
             }
 
-            // ! Rotates the vector by a specified number of degrees around the Y axis and the specified center.
+            //! Rotates the vector by a specified number of degrees around the Y axis and the specified center.
             /** \param degrees Number of degrees to rotate around the Y axis.
              * \param center The center of the rotation. */
             void rotateXZBy(f64 degrees, const vector3d<T> &center = vector3d<T>())
@@ -277,7 +277,7 @@ public:
                 Z += center.Z;
             }
 
-            // ! Rotates the vector by a specified number of degrees around the Z axis and the specified center.
+            //! Rotates the vector by a specified number of degrees around the Z axis and the specified center.
             /** \param degrees: Number of degrees to rotate around the Z axis.
              * \param center: The center of the rotation. */
             void rotateXYBy(f64 degrees, const vector3d<T> &center = vector3d<T>())
@@ -292,7 +292,7 @@ public:
                 Y += center.Y;
             }
 
-            // ! Rotates the vector by a specified number of degrees around the X axis and the specified center.
+            //! Rotates the vector by a specified number of degrees around the X axis and the specified center.
             /** \param degrees: Number of degrees to rotate around the X axis.
              * \param center: The center of the rotation. */
             void rotateYZBy(f64 degrees, const vector3d<T> &center = vector3d<T>())
@@ -307,7 +307,7 @@ public:
                 Y += center.Y;
             }
 
-            // ! Creates an interpolated vector between this vector and another vector.
+            //! Creates an interpolated vector between this vector and another vector.
             /** \param other The other vector to interpolate with.
              * \param d Interpolation value between 0.0f (all the other vector) and 1.0f (all this vector).
              * Note that this is the opposite direction of interpolation to getInterpolated_quadratic()
@@ -319,7 +319,7 @@ public:
                 return vector3d<T>((T)(other.X * inv + X * d), (T)(other.Y * inv + Y * d), (T)(other.Z * inv + Z * d));
             }
 
-            // ! Creates a quadratically interpolated vector between this and two other vectors.
+            //! Creates a quadratically interpolated vector between this and two other vectors.
             /** \param v2 Second vector to interpolate with.
              * \param v3 Third vector to interpolate with (maximum at 1.0f)
              * \param d Interpolation value between 0.0f (all this vector) and 1.0f (all the 3rd vector).
@@ -338,7 +338,7 @@ public:
                            (T)(Z * mul0 + v2.Z * mul1 + v3.Z * mul2));
             }
 
-            // ! Sets this vector to the linearly interpolated vector between a and b.
+            //! Sets this vector to the linearly interpolated vector between a and b.
             /** \param a first vector to interpolate with, maximum at 1.0f
              * \param b second vector to interpolate with, maximum at 0.0f
              * \param d Interpolation value between 0.0f (all vector b) and 1.0f (all vector a)
@@ -353,7 +353,7 @@ public:
             }
 
 
-            // ! Get the rotations that would make a (0,0,1) direction vector point in the same direction as this direction vector.
+            //! Get the rotations that would make a (0,0,1) direction vector point in the same direction as this direction vector.
             /** Thanks to Arras on the Irrlicht forums for this method.  This utility method is very useful for
              * orienting scene nodes towards specific targets.  For example, if this vector represents the difference
              * between two scene nodes, then applying the result of getHorizontalAngle() to one scene node will point
@@ -393,7 +393,7 @@ public:
                 return angle;
             }
 
-            // ! Get the spherical coordinate angles
+            //! Get the spherical coordinate angles
             /** This returns Euler degrees for the point represented by
              * this vector.  The calculation assumes the pole at (0,1,0) and
              * returns the angles in X and Y.
@@ -418,7 +418,7 @@ public:
                 return angle;
             }
 
-            // ! Builds a direction vector from (this) rotation vector.
+            //! Builds a direction vector from (this) rotation vector.
             /** This vector is assumed to be a rotation vector composed of 3 Euler angle rotations, in degrees.
              * The implementation performs the same calculations as using a matrix to do the rotation.
              *
@@ -457,7 +457,7 @@ public:
                     forwards.Z * pseudoMatrix[8]));
             }
 
-            // ! Fills an array of 4 values with the vector data (usually floats).
+            //! Fills an array of 4 values with the vector data (usually floats).
             /** Useful for setting in shader constants for example. The fourth value
              * will always be 0. */
             void getAs4Values(T *array) const
@@ -468,7 +468,7 @@ public:
                 array[3] = 0;
             }
 
-            // ! Fills an array of 3 values with the vector data (usually floats).
+            //! Fills an array of 3 values with the vector data (usually floats).
             /** Useful for setting in shader constants for example.*/
             void getAs3Values(T *array) const
             {
@@ -478,17 +478,17 @@ public:
             }
 
 
-            // ! X coordinate of the vector
+            //! X coordinate of the vector
             T X;
 
-            // ! Y coordinate of the vector
+            //! Y coordinate of the vector
             T Y;
 
-            // ! Z coordinate of the vector
+            //! Z coordinate of the vector
             T Z;
         };
 
-        // ! partial specialization for integer vectors
+        //! partial specialization for integer vectors
         // Implementor note: inline keyword needed due to template specialization for s32. Otherwise put specialization into a .cpp
         template<>
         inline vector3d<s32> vector3d<s32>::operator /(s32 val) const
@@ -522,13 +522,13 @@ public:
             return angle;
         }
 
-        // ! Typedef for a f32 3d vector.
+        //! Typedef for a f32 3d vector.
         typedef vector3d<f32> vector3df;
 
-        // ! Typedef for an integer 3d vector.
+        //! Typedef for an integer 3d vector.
         typedef vector3d<s32> vector3di;
 
-        // ! Function multiplying a scalar and a vector component-wise.
+        //! Function multiplying a scalar and a vector component-wise.
         template<class S, class T>
         vector3d<T> operator*(const S scalar, const vector3d<T> &vector)
         {

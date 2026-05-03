@@ -19,90 +19,90 @@ namespace irr
 {
     namespace core
     {
-        // ! Quaternion class for representing rotations.
+        //! Quaternion class for representing rotations.
         /** It provides cheap combinations and avoids gimbal locks.
          * Also useful for interpolations. */
         class quaternion
         {
 public:
 
-            // ! Default Constructor
+            //! Default Constructor
             quaternion() : X(0.0f), Y(0.0f), Z(0.0f), W(1.0f) {}
 
-            // ! Constructor
+            //! Constructor
             quaternion(f32 x, f32 y, f32 z, f32 w) : X(x), Y(y), Z(z), W(w) { }
 
-            // ! Constructor which converts euler angles (radians) to a quaternion
+            //! Constructor which converts euler angles (radians) to a quaternion
             quaternion(f32 x, f32 y, f32 z);
 
-            // ! Constructor which converts euler angles (radians) to a quaternion
+            //! Constructor which converts euler angles (radians) to a quaternion
             quaternion(const vector3df &vec);
 
 #if !IRR_TEST_BROKEN_QUATERNION_USE
-            // ! Constructor which converts a matrix to a quaternion
+            //! Constructor which converts a matrix to a quaternion
             quaternion(const matrix4 &mat);
 #endif
 
-            // ! Equalilty operator
+            //! Equalilty operator
             bool operator==(const quaternion &other) const;
 
-            // ! inequality operator
+            //! inequality operator
             bool operator!=(const quaternion &other) const;
 
-            // ! Assignment operator
+            //! Assignment operator
             inline quaternion&operator=(const quaternion &other);
 
 #if !IRR_TEST_BROKEN_QUATERNION_USE
-            // ! Matrix assignment operator
+            //! Matrix assignment operator
             inline quaternion&operator=(const matrix4 &other);
 #endif
 
-            // ! Add operator
+            //! Add operator
             quaternion operator+(const quaternion &other) const;
 
-            // ! Multiplication operator
+            //! Multiplication operator
             quaternion operator*(const quaternion &other) const;
 
-            // ! Multiplication operator with scalar
+            //! Multiplication operator with scalar
             quaternion operator*(f32 s) const;
 
-            // ! Multiplication operator with scalar
+            //! Multiplication operator with scalar
             quaternion&operator*=(f32 s);
 
-            // ! Multiplication operator
+            //! Multiplication operator
             vector3df operator*(const vector3df &v) const;
 
-            // ! Multiplication operator
+            //! Multiplication operator
             quaternion&operator*=(const quaternion &other);
 
-            // ! Calculates the dot product
+            //! Calculates the dot product
             inline f32 dotProduct(const quaternion &other) const;
 
-            // ! Sets new quaternion
+            //! Sets new quaternion
             inline quaternion&set(f32 x, f32 y, f32 z, f32 w);
 
-            // ! Sets new quaternion based on euler angles (radians)
+            //! Sets new quaternion based on euler angles (radians)
             inline quaternion&set(f32 x, f32 y, f32 z);
 
-            // ! Sets new quaternion based on euler angles (radians)
+            //! Sets new quaternion based on euler angles (radians)
             inline quaternion&set(const core::vector3df &vec);
 
-            // ! Sets new quaternion from other quaternion
+            //! Sets new quaternion from other quaternion
             inline quaternion&set(const core::quaternion &quat);
 
-            // ! returns if this quaternion equals the other one, taking floating point rounding errors into account
+            //! returns if this quaternion equals the other one, taking floating point rounding errors into account
             inline bool equals(const quaternion &other,
                 const f32 tolerance = ROUNDING_ERROR_f32) const;
 
-            // ! Normalizes the quaternion
+            //! Normalizes the quaternion
             inline quaternion&normalize();
 
 #if !IRR_TEST_BROKEN_QUATERNION_USE
-            // ! Creates a matrix from this quaternion
+            //! Creates a matrix from this quaternion
             matrix4 getMatrix() const;
 #endif
 
-            // ! Creates a matrix from this quaternion
+            //! Creates a matrix from this quaternion
             void getMatrix(matrix4 &dest, const core::vector3df &translation = core::vector3df()) const;
 
             /*!
@@ -124,13 +124,13 @@ public:
              */
             void getMatrixCenter(matrix4 &dest, const core::vector3df &center, const core::vector3df &translation) const;
 
-            // ! Creates a matrix from this quaternion
+            //! Creates a matrix from this quaternion
             inline void getMatrix_transposed(matrix4 &dest) const;
 
-            // ! Inverts this quaternion
+            //! Inverts this quaternion
             quaternion&makeInverse();
 
-            // ! Set this quaternion to the linear interpolation between two quaternions
+            //! Set this quaternion to the linear interpolation between two quaternions
             /** \param q1 First quaternion to be interpolated.
              * \param q2 Second quaternion to be interpolated.
              * \param time Progress of interpolation. For time=0 the result is
@@ -139,7 +139,7 @@ public:
              */
             quaternion&lerp(quaternion q1, quaternion q2, f32 time);
 
-            // ! Set this quaternion to the result of the spherical interpolation between two quaternions
+            //! Set this quaternion to the result of the spherical interpolation between two quaternions
             /** \param q1 First quaternion to be interpolated.
              * \param q2 Second quaternion to be interpolated.
              * \param time Progress of interpolation. For time=0 the result is
@@ -154,7 +154,7 @@ public:
             quaternion&slerp(quaternion q1, quaternion q2,
                 f32 time, f32 threshold = .05f);
 
-            // ! Create quaternion from rotation angle and rotation axis.
+            //! Create quaternion from rotation angle and rotation axis.
             /** Axis must be unit length.
             *  The quaternion representing the rotation is
             *  q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k).
@@ -162,19 +162,19 @@ public:
             *  \param axis Rotation axis. */
             quaternion&fromAngleAxis(f32 angle, const vector3df &axis);
 
-            // ! Fills an angle (radians) around an axis (unit vector)
+            //! Fills an angle (radians) around an axis (unit vector)
             void toAngleAxis(f32 &angle, core::vector3df &axis) const;
 
-            // ! Output this quaternion to an euler angle (radians)
+            //! Output this quaternion to an euler angle (radians)
             void toEuler(vector3df &euler) const;
 
-            // ! Set quaternion to identity
+            //! Set quaternion to identity
             quaternion&makeIdentity();
 
-            // ! Set quaternion to represent a rotation from one vector to another.
+            //! Set quaternion to represent a rotation from one vector to another.
             quaternion&rotationFromTo(const vector3df &from, const vector3df &to);
 
-            // ! Quaternion elements.
+            //! Quaternion elements.
             f32 X; // vectorial (imaginary) part
             f32 Y;
             f32 Z;
@@ -496,7 +496,7 @@ public:
         }
 
 
-        // ! returns if this quaternion equals the other one, taking floating point rounding errors into account
+        //! returns if this quaternion equals the other one, taking floating point rounding errors into account
         inline bool quaternion::equals(const quaternion &other, const f32 tolerance) const
         {
             return core::equals(X, other.X, tolerance) &&
@@ -560,7 +560,7 @@ public:
         }
 
 
-        // ! axis must be unit length, angle in radians
+        //! axis must be unit length, angle in radians
         inline quaternion&quaternion::fromAngleAxis(f32 angle, const vector3df &axis)
         {
             const f32 fHalfAngle = 0.5f * angle;

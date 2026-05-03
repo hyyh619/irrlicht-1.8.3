@@ -19,34 +19,34 @@ namespace irr
 #define DEBUG_CLIENTBLOCK new
 #endif
 
-        // ! Very simple allocator implementation, containers using it can be used across dll boundaries
+        //! Very simple allocator implementation, containers using it can be used across dll boundaries
         template<typename T>
         class irrAllocator
         {
 public:
 
-            // ! Destructor
+            //! Destructor
             virtual ~irrAllocator() {}
 
-            // ! Allocate memory for an array of objects
+            //! Allocate memory for an array of objects
             T* allocate(size_t cnt)
             {
                 return (T*)internal_new(cnt * sizeof(T));
             }
 
-            // ! Deallocate memory for an array of objects
+            //! Deallocate memory for an array of objects
             void deallocate(T *ptr)
             {
                 internal_delete(ptr);
             }
 
-            // ! Construct an element
+            //! Construct an element
             void construct(T *ptr, const T &e)
             {
                 new ((void*)ptr)T(e);
             }
 
-            // ! Destruct an element
+            //! Destruct an element
             void destruct(T *ptr)
             {
                 ptr->~T();
@@ -66,7 +66,7 @@ protected:
         };
 
 
-        // ! Fast allocator, only to be used in containers inside the same memory heap.
+        //! Fast allocator, only to be used in containers inside the same memory heap.
         /** Containers using it are NOT able to be used it across dll boundaries. Use this
          * when using in an internal class or function or when compiled into a static lib */
         template<typename T>
@@ -74,25 +74,25 @@ protected:
         {
 public:
 
-            // ! Allocate memory for an array of objects
+            //! Allocate memory for an array of objects
             T* allocate(size_t cnt)
             {
                 return (T*)operator new(cnt * sizeof(T));
             }
 
-            // ! Deallocate memory for an array of objects
+            //! Deallocate memory for an array of objects
             void deallocate(T *ptr)
             {
                 operator delete(ptr);
             }
 
-            // ! Construct an element
+            //! Construct an element
             void construct(T *ptr, const T &e)
             {
                 new ((void*)ptr)T(e);
             }
 
-            // ! Destruct an element
+            //! Destruct an element
             void destruct(T *ptr)
             {
                 ptr->~T();
@@ -106,7 +106,7 @@ public:
 #define DEBUG_CLIENTBLOCK new(_CLIENT_BLOCK, __FILE__, __LINE__)
 #endif
 
-        // ! defines an allocation strategy
+        //! defines an allocation strategy
         enum eAllocStrategy
         {
             ALLOC_STRATEGY_SAFE   = 0,
