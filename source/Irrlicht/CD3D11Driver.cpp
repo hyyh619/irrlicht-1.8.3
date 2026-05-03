@@ -944,7 +944,10 @@ namespace irr
                 vbDesc.StructureByteStride  = 0;
 
                 if (FAILED(m_pID3DDevice->CreateBuffer(&vbDesc, 0, &m_TempVertexBuffer)))
+                {
+                    os::Printer::log("Failed to create vertex buffer", ELL_ERROR);
                     return;
+                }
 
                 m_TempVertexBufferSize = vertexBufferSize;
             }
@@ -954,6 +957,11 @@ namespace irr
             {
                 memcpy(mapped.pData, vertices, vertexBufferSize);
                 m_pID3DDeviceContext->Unmap(m_TempVertexBuffer, 0);
+            }
+            else
+            {
+                os::Printer::log("Failed to map vertex buffer", ELL_ERROR);
+                return;
             }
 
             ID3D11Buffer    *indexBuffer = 0;
@@ -973,7 +981,10 @@ namespace irr
                     ibDesc.StructureByteStride  = 0;
 
                     if (FAILED(m_pID3DDevice->CreateBuffer(&ibDesc, 0, &m_TempIndexBuffer)))
+                    {
+                        os::Printer::log("Failed to create index buffer", ELL_ERROR);
                         return;
+                    }
 
                     m_TempIndexBufferSize   = indexBufferSize;
                     m_TempIndexType         = iType;
@@ -983,6 +994,11 @@ namespace irr
                 {
                     memcpy(mapped.pData, indexList, indexBufferSize);
                     m_pID3DDeviceContext->Unmap(m_TempIndexBuffer, 0);
+                }
+                else
+                {
+                    os::Printer::log("Failed to map index buffer", ELL_ERROR);
+                    return;
                 }
 
                 indexBuffer = m_TempIndexBuffer;
