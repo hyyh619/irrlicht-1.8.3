@@ -218,11 +218,15 @@ namespace irr
             }
 
             D3D_FEATURE_LEVEL       featureLevel;
-            HRESULT                 hr = D3D11CreateDevice(
+            UINT                    deviceFlags = 0;
+#ifdef _DEBUG
+            deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+            HRESULT    hr = D3D11CreateDevice(
                 0,
                 D3D_DRIVER_TYPE_HARDWARE,
                 0,
-                0,
+                deviceFlags,
                 0,
                 0,
                 D3D11_SDK_VERSION,
@@ -393,13 +397,13 @@ namespace irr
             setViewPort(driverInitArea);
 
             D3D11_BUFFER_DESC    matrixBufferDesc;
-            matrixBufferDesc.ByteWidth            = sizeof(core::matrix4);
-            matrixBufferDesc.Usage                = D3D11_USAGE_DYNAMIC;
-            matrixBufferDesc.BindFlags            = D3D11_BIND_CONSTANT_BUFFER;
-            matrixBufferDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
-            matrixBufferDesc.MiscFlags            = 0;
-            matrixBufferDesc.StructureByteStride  = 0;
-            hr = m_pID3DDevice->CreateBuffer(&matrixBufferDesc, 0, &m_MatrixConstantBuffer);
+            matrixBufferDesc.ByteWidth              = sizeof(core::matrix4);
+            matrixBufferDesc.Usage                  = D3D11_USAGE_DYNAMIC;
+            matrixBufferDesc.BindFlags              = D3D11_BIND_CONSTANT_BUFFER;
+            matrixBufferDesc.CPUAccessFlags         = D3D11_CPU_ACCESS_WRITE;
+            matrixBufferDesc.MiscFlags              = 0;
+            matrixBufferDesc.StructureByteStride    = 0;
+            hr                                      = m_pID3DDevice->CreateBuffer(&matrixBufferDesc, 0, &m_MatrixConstantBuffer);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create matrix constant buffer.", ELL_ERROR);
@@ -1761,6 +1765,7 @@ namespace irr
             core::matrix4    mvp = m_Matrices[ETS_WORLD] * m_Matrices[ETS_VIEW] * m_Matrices[ETS_PROJECTION];
 
             D3D11_MAPPED_SUBRESOURCE    mapped;
+
             if (SUCCEEDED(m_pID3DDeviceContext->Map(m_MatrixConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
             {
                 memcpy(mapped.pData, mvp.pointer(), sizeof(core::matrix4));
