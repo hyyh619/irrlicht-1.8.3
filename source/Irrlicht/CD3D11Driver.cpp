@@ -892,15 +892,124 @@ namespace irr
                                                        E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
                                                        E_INDEX_TYPE iType, bool is3D)
         {
-            setRenderStates3DMode();
+            setVertexShader(vType);
 
-            if (m_CurrentTexture[0])
-                setActiveTexture(0, m_CurrentTexture[0]);
+            const u32       stride              = getVertexPitchFromType(vType);
+            const u32       vertexBufferSize    = stride * vertexCount;
+            const u32       indexSize           = (iType == EIT_16BIT) ? 2 : 4;
+            const u32       indexBufferSize     = indexSize * primitiveCount * 3;
 
-            if (!is3D)
+            DXGI_FORMAT    indexFormat = (iType == EIT_16BIT) ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
+
+            if (is3D)
             {
-                m_pID3DDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+                if (!setRenderStates3DMode())
+                    return;
             }
+            else
+            {
+                if (m_Material.MaterialType == EMT_ONETEXTURE_BLEND)
+                {
+                    E_BLEND_FACTOR      srcFact;
+                    E_BLEND_FACTOR      dstFact;
+                    E_MODULATE_FUNC     modulo;
+                    u32                 alphaSource;
+                    unpack_textureBlendFunc(srcFact, dstFact, modulo, alphaSource, m_Material.MaterialTypeParam);
+                    setRenderStates2DMode(alphaSource & video::EAS_VERTEX_COLOR, (m_Material.getTexture(0) != 0), (alphaSource&video::EAS_TEXTURE) != 0);
+                }
+                else
+                    setRenderStates2DMode(m_Material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA, (m_Material.getTexture(0) != 0), m_Material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL);
+            }
+
+            D3D11_BUFFER_DESC       vbDesc;
+            ID3D11Buffer            *vertexBuffer   = 0;
+            ID3D11Buffer            *indexBuffer    = 0;
+
+            vbDesc.ByteWidth            = vertexBufferSize;
+            vbDesc.Usage                = D3D11_USAGE_DYNAMIC;
+            vbDesc.BindFlags            = D3D11_BIND_VERTEX_BUFFER;
+            vbDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+            vbDesc.MiscFlags            = 0;
+            vbDesc.StructureByteStride  = 0;
+
+            D3D11_SUBRESOURCE_DATA    vbData;
+            vbData.pSysMem          = vertices;
+            vbData.SysMemPitch      = 0;
+            vbData.SysMemSlicePitch = 0;
+
+            if (FAILED(m_pID3DDevice->CreateBuffer(&vbDesc, &vbData, &vertexBuffer)))
+                return;
+
+            if (indexList)
+            {
+                D3D11_BUFFER_DESC    ibDesc;
+                ibDesc.ByteWidth            = indexBufferSize;
+                ibDesc.Usage                = D3D11_USAGE_DYNAMIC;
+                ibDesc.BindFlags            = D3D11_BIND_INDEX_BUFFER;
+                ibDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+                ibDesc.MiscFlags            = 0;
+                ibDesc.StructureByteStride  = 0;
+
+                D3D11_SUBRESOURCE_DATA    ibData;
+                ibData.pSysMem          = indexList;
+                ibData.SysMemPitch      = 0;
+                ibData.SysMemSlicePitch = 0;
+
+                m_pID3DDevice->CreateBuffer(&ibDesc, &ibData, &indexBuffer);
+            }
+
+            ID3D11Buffer    *buffers[1] = { vertexBuffer };
+            UINT            offsets[1]  = { 0 };
+            UINT            strides[1]  = { stride };
+            m_pID3DDeviceContext->IASetVertexBuffers(0, 1, buffers, strides, offsets);
+
+            if (indexBuffer)
+            {
+                m_pID3DDeviceContext->IASetIndexBuffer(indexBuffer, indexFormat, 0);
+            }
+
+            D3D11_PRIMITIVE_TOPOLOGY    topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+            switch (pType)
+            {
+                case scene::EPT_POINTS:
+                case scene::EPT_POINT_SPRITES:
+                    topology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+                    break;
+
+                case scene::EPT_LINE_STRIP:
+                    topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
+                    break;
+
+                case scene::EPT_LINE_LOOP:
+                case scene::EPT_LINES:
+                    topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+                    break;
+
+                case scene::EPT_TRIANGLE_STRIP:
+                    topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+                    break;
+
+                case scene::EPT_TRIANGLE_FAN:
+                case scene::EPT_TRIANGLES:
+                    topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+                    break;
+            }
+
+            m_pID3DDeviceContext->IASetPrimitiveTopology(topology);
+
+            if (indexBuffer)
+            {
+                m_pID3DDeviceContext->DrawIndexed(primitiveCount * 3, 0, 0);
+            }
+            else
+            {
+                m_pID3DDeviceContext->Draw(vertexCount, 0);
+            }
+
+            vertexBuffer->Release();
+            if (indexBuffer)
+                indexBuffer->Release();
         }
 
 

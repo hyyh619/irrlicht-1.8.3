@@ -308,3 +308,6 @@ d3d11最大可以支持8个纹理,其它video driver支持4个,改一下下面�
    B. 在 setVertexShader 中调用 IASetInputLayout
    C. 可能需要内置的 simple vertex shader 来处理基本渲染
 我没有内置 vertex shader 代码（如 EVT_STANDARD、EVT_2TCOORDS、EVT_TANGENTS 对应的 shader），帮我实现完整的版本。
+
+# 20
+参照CD3D9Driver::draw2D3DVertexPrimitiveList的代码，实现CD3D11Driver::draw2D3DVertexPrimitiveList
