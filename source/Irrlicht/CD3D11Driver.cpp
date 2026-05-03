@@ -22,6 +22,89 @@ namespace irr
 {
     namespace video
     {
+        static const char    VERTEX_SHADER_STANDARD[] =
+            "struct VS_INPUT {"
+            "    float3 Pos : POSITION;"
+            "    float3 Normal : NORMAL;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "};"
+            "struct VS_OUTPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Normal : TEXCOORD1;"
+            "};"
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
+            "VS_OUTPUT main(VS_INPUT input) {"
+            "    VS_OUTPUT output;"
+            "    output.Pos = mul(float4(input.Pos, 1.0), WorldViewProj);"
+            "    output.Color = input.Color;"
+            "    output.TexCoord = input.TexCoord;"
+            "    output.Normal = input.Normal;"
+            "    return output;"
+            "}";
+
+        static const char    VERTEX_SHADER_2TCOORDS[] =
+            "struct VS_INPUT {"
+            "    float3 Pos : POSITION;"
+            "    float3 Normal : NORMAL;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float2 TexCoord2 : TEXCOORD1;"
+            "};"
+            "struct VS_OUTPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float2 TexCoord2 : TEXCOORD1;"
+            "    float3 Normal : TEXCOORD2;"
+            "};"
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
+            "VS_OUTPUT main(VS_INPUT input) {"
+            "    VS_OUTPUT output;"
+            "    output.Pos = mul(float4(input.Pos, 1.0), WorldViewProj);"
+            "    output.Color = input.Color;"
+            "    output.TexCoord = input.TexCoord;"
+            "    output.TexCoord2 = input.TexCoord2;"
+            "    output.Normal = input.Normal;"
+            "    return output;"
+            "}";
+
+        static const char    VERTEX_SHADER_TANGENTS[] =
+            "struct VS_INPUT {"
+            "    float3 Pos : POSITION;"
+            "    float3 Normal : NORMAL;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Tangent : TANGENT;"
+            "    float3 Binormal : BINORMAL;"
+            "};"
+            "struct VS_OUTPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Normal : TEXCOORD1;"
+            "    float3 Tangent : TEXCOORD2;"
+            "    float3 Binormal : TEXCOORD3;"
+            "};"
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
+            "VS_OUTPUT main(VS_INPUT input) {"
+            "    VS_OUTPUT output;"
+            "    output.Pos = mul(float4(input.Pos, 1.0), WorldViewProj);"
+            "    output.Color = input.Color;"
+            "    output.TexCoord = input.TexCoord;"
+            "    output.Normal = input.Normal;"
+            "    output.Tangent = input.Tangent;"
+            "    output.Binormal = input.Binormal;"
+            "    return output;"
+            "}";
         CD3D11Driver::CD3D11Driver(const SIrrlichtCreationParameters &params, io::IFileSystem *io)
             : CNullDriver(io, params.WindowSize), m_CurrentRenderMode(ERM_NONE),
             m_ResetRenderStates(true), m_Transformation3DChanged(false),
@@ -29,6 +112,7 @@ namespace irr
             m_BackBufferRenderTargetView(0), m_DepthStencilView(0),
             m_WindowId(0), m_SceneSourceRect(0),
             m_LastVertexType((video::E_VERTEX_TYPE)-1), m_VendorID(0),
+            m_BuiltInShadersInitialized(false),
             m_MaxTextureUnits(0), m_MaxUserClipPlanes(0), m_MaxMRTs(1), m_NumSetMRTs(1),
             m_MaxLightDistance(0.f), m_LastSetLight(-1),
             m_ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), m_DeviceRemoved(false),
@@ -43,11 +127,17 @@ namespace irr
 
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
-                m_CurrentTexture[i]               = 0;
-                m_LastTextureMipMapsAvailable[i]  = false;
+                m_CurrentTexture[i]                 = 0;
+                m_LastTextureMipMapsAvailable[i]    = false;
             }
 
             m_MaxLightDistance = sqrtf(FLT_MAX);
+
+            for (u32 i = 0; i < 3; ++i)
+            {
+                m_InputLayout[i]            = 0;
+                m_BuiltInVertexShader[i]    = 0;
+            }
         }
 
 
@@ -64,6 +154,15 @@ namespace irr
             }
 
             m_DepthBuffers.clear();
+
+            for (u32 i = 0; i < 3; ++i)
+            {
+                if (m_InputLayout[i])
+                    m_InputLayout[i]->Release();
+
+                if (m_BuiltInVertexShader[i])
+                    m_BuiltInVertexShader[i]->Release();
+            }
 
             if (m_pID3DDeviceContext)
                 m_pID3DDeviceContext->Release();
@@ -87,7 +186,7 @@ namespace irr
 
         bool CD3D11Driver::initDriver(HWND hwnd, bool pureSoftware)
         {
-            char tmp[512];
+            char    tmp[512];
 
             m_WindowId = hwnd;
 
@@ -157,23 +256,23 @@ namespace irr
 
             currentDim = dim;
 
-            m_SwapChainBufferDesc.Width                   = currentDim.Width;
-            m_SwapChainBufferDesc.Height                  = currentDim.Height;
-            m_SwapChainBufferDesc.RefreshRate.Numerator   = 60;
-            m_SwapChainBufferDesc.RefreshRate.Denominator = 1;
-            m_SwapChainBufferDesc.Format                  = DXGI_FORMAT_B8G8R8A8_UNORM;
-            m_SwapChainBufferDesc.ScanlineOrdering        = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-            m_SwapChainBufferDesc.Scaling                 = DXGI_MODE_SCALING_UNSPECIFIED;
+            m_SwapChainBufferDesc.Width                     = currentDim.Width;
+            m_SwapChainBufferDesc.Height                    = currentDim.Height;
+            m_SwapChainBufferDesc.RefreshRate.Numerator     = 60;
+            m_SwapChainBufferDesc.RefreshRate.Denominator   = 1;
+            m_SwapChainBufferDesc.Format                    = DXGI_FORMAT_B8G8R8A8_UNORM;
+            m_SwapChainBufferDesc.ScanlineOrdering          = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+            m_SwapChainBufferDesc.Scaling                   = DXGI_MODE_SCALING_UNSPECIFIED;
 
-            m_SwapChainDesc.BufferDesc            = m_SwapChainBufferDesc;
-            m_SwapChainDesc.SampleDesc.Count      = 1;
-            m_SwapChainDesc.SampleDesc.Quality    = 0;
-            m_SwapChainDesc.BufferUsage           = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-            m_SwapChainDesc.BufferCount           = 1;
-            m_SwapChainDesc.OutputWindow          = hwnd;
-            m_SwapChainDesc.Windowed              = !m_Params.Fullscreen;
-            m_SwapChainDesc.SwapEffect            = DXGI_SWAP_EFFECT_DISCARD;
-            m_SwapChainDesc.Flags                 = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+            m_SwapChainDesc.BufferDesc              = m_SwapChainBufferDesc;
+            m_SwapChainDesc.SampleDesc.Count        = 1;
+            m_SwapChainDesc.SampleDesc.Quality      = 0;
+            m_SwapChainDesc.BufferUsage             = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+            m_SwapChainDesc.BufferCount             = 1;
+            m_SwapChainDesc.OutputWindow            = hwnd;
+            m_SwapChainDesc.Windowed                = !m_Params.Fullscreen;
+            m_SwapChainDesc.SwapEffect              = DXGI_SWAP_EFFECT_DISCARD;
+            m_SwapChainDesc.Flags                   = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
             hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&m_DXGIFactory);
             if (FAILED(hr))
@@ -270,12 +369,12 @@ namespace irr
                 return false;
             }
 
-            m_Viewport.TopLeftX   = 0;
-            m_Viewport.TopLeftY   = 0;
-            m_Viewport.Width      = (FLOAT)currentDim.Width;
-            m_Viewport.Height     = (FLOAT)currentDim.Height;
-            m_Viewport.MinDepth   = 0.0f;
-            m_Viewport.MaxDepth   = 1.0f;
+            m_Viewport.TopLeftX     = 0;
+            m_Viewport.TopLeftY     = 0;
+            m_Viewport.Width        = (FLOAT)currentDim.Width;
+            m_Viewport.Height       = (FLOAT)currentDim.Height;
+            m_Viewport.MinDepth     = 0.0f;
+            m_Viewport.MaxDepth     = 1.0f;
 
             m_CurrentRendertargetSize = currentDim;
             core::rect<s32>    driverInitArea(0, 0, currentDim.Width, currentDim.Height);
@@ -551,19 +650,123 @@ namespace irr
 
         bool CD3D11Driver::updateVertexHardwareBuffer(SHWBufferLink_d3d11 *hwBuffer)
         {
-            return false;
+            if (!hwBuffer)
+                return false;
+
+            const scene::IMeshBuffer    *mb         = hwBuffer->MeshBuffer;
+            const void                  *vertices   = mb->getVertices();
+            const u32                   vertexCount = mb->getVertexCount();
+            const E_VERTEX_TYPE         vType       = mb->getVertexType();
+            const u32                   vertexSize  = getVertexPitchFromType(vType);
+            const u32                   bufSize     = vertexSize * vertexCount;
+
+            if (!hwBuffer->vertexBuffer || (bufSize > hwBuffer->vertexBufferSize))
+            {
+                if (hwBuffer->vertexBuffer)
+                {
+                    hwBuffer->vertexBuffer->Release();
+                    hwBuffer->vertexBuffer = 0;
+                }
+
+                D3D11_BUFFER_DESC    bufferDesc;
+                bufferDesc.ByteWidth            = bufSize;
+                bufferDesc.Usage                = D3D11_USAGE_DYNAMIC;
+                bufferDesc.BindFlags            = D3D11_BIND_VERTEX_BUFFER;
+                bufferDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+                bufferDesc.MiscFlags            = 0;
+                bufferDesc.StructureByteStride  = 0;
+
+                D3D11_SUBRESOURCE_DATA    subData;
+                subData.pSysMem             = vertices;
+                subData.SysMemPitch         = 0;
+                subData.SysMemSlicePitch    = 0;
+
+                if (FAILED(m_pID3DDevice->CreateBuffer(&bufferDesc, &subData, &hwBuffer->vertexBuffer)))
+                    return false;
+
+                hwBuffer->vertexBufferSize = bufSize;
+            }
+            else
+            {
+                D3D11_MAPPED_SUBRESOURCE    mapped;
+                if (SUCCEEDED(m_pID3DDeviceContext->Map(hwBuffer->vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+                {
+                    memcpy(mapped.pData, vertices, bufSize);
+                    m_pID3DDeviceContext->Unmap(hwBuffer->vertexBuffer, 0);
+                }
+            }
+
+            return true;
         }
 
 
         bool CD3D11Driver::updateIndexHardwareBuffer(SHWBufferLink_d3d11 *hwBuffer)
         {
-            return false;
+            if (!hwBuffer)
+                return false;
+
+            const scene::IMeshBuffer    *mb         = hwBuffer->MeshBuffer;
+            const void                  *indices    = mb->getIndices();
+            const u32                   indexCount  = mb->getIndexCount();
+            const u32                   indexSize   = (mb->getIndexType() == EIT_16BIT) ? 2 : 4;
+            const u32                   bufSize     = indexSize * indexCount;
+
+            if (!hwBuffer->indexBuffer || (bufSize > hwBuffer->indexBufferSize))
+            {
+                if (hwBuffer->indexBuffer)
+                {
+                    hwBuffer->indexBuffer->Release();
+                    hwBuffer->indexBuffer = 0;
+                }
+
+                D3D11_BUFFER_DESC    bufferDesc;
+                bufferDesc.ByteWidth            = bufSize;
+                bufferDesc.Usage                = D3D11_USAGE_DYNAMIC;
+                bufferDesc.BindFlags            = D3D11_BIND_INDEX_BUFFER;
+                bufferDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+                bufferDesc.MiscFlags            = 0;
+                bufferDesc.StructureByteStride  = 0;
+
+                D3D11_SUBRESOURCE_DATA    subData;
+                subData.pSysMem             = indices;
+                subData.SysMemPitch         = 0;
+                subData.SysMemSlicePitch    = 0;
+
+                DXGI_FORMAT    format = (indexSize == 2) ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
+
+                if (FAILED(m_pID3DDevice->CreateBuffer(&bufferDesc, &subData, &hwBuffer->indexBuffer)))
+                    return false;
+
+                hwBuffer->indexBufferSize = bufSize;
+            }
+            else
+            {
+                D3D11_MAPPED_SUBRESOURCE    mapped;
+                if (SUCCEEDED(m_pID3DDeviceContext->Map(hwBuffer->indexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+                {
+                    memcpy(mapped.pData, indices, bufSize);
+                    m_pID3DDeviceContext->Unmap(hwBuffer->indexBuffer, 0);
+                }
+            }
+
+            return true;
         }
 
 
         bool CD3D11Driver::updateHardwareBuffer(SHWBufferLink *hwBuffer)
         {
-            return false;
+            if (!hwBuffer)
+                return false;
+
+            SHWBufferLink_d3d11    *hwBufferD3D = (SHWBufferLink_d3d11*)hwBuffer;
+
+            if (!updateVertexHardwareBuffer(hwBufferD3D))
+                return false;
+
+            if (!updateIndexHardwareBuffer(hwBufferD3D))
+                return false;
+
+            return true;
         }
 
 
@@ -597,7 +800,80 @@ namespace irr
 
 
         void CD3D11Driver::drawHardwareBuffer(SHWBufferLink *hwBuffer)
-        {}
+        {
+            if (!hwBuffer)
+                return;
+
+            SHWBufferLink_d3d11    *hwBufferD3D = (SHWBufferLink_d3d11*)hwBuffer;
+
+            updateHardwareBuffer(hwBuffer);
+
+            hwBuffer->LastUsed = 0;
+
+            const scene::IMeshBuffer    *mb     = hwBuffer->MeshBuffer;
+            const E_VERTEX_TYPE         vType   = mb->getVertexType();
+            const u32                   stride  = getVertexPitchFromType(vType);
+            const void                  *vPtr   = mb->getVertices();
+            const void                  *iPtr   = mb->getIndices();
+
+            setVertexShader(vType);
+
+            if (hwBufferD3D->vertexBuffer)
+            {
+                ID3D11Buffer    *buffers[1] = { hwBufferD3D->vertexBuffer };
+                UINT            offsets[1]  = { 0 };
+                UINT            strides[1]  = { stride };
+                m_pID3DDeviceContext->IASetVertexBuffers(0, 1, buffers, strides, offsets);
+                vPtr = 0;
+            }
+
+            if (hwBufferD3D->indexBuffer)
+            {
+                DXGI_FORMAT    format = (mb->getIndexType() == EIT_16BIT) ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
+                m_pID3DDeviceContext->IASetIndexBuffer(hwBufferD3D->indexBuffer, format, 0);
+                iPtr = 0;
+            }
+
+            D3D11_PRIMITIVE_TOPOLOGY    topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+            switch (mb->getPrimitiveType())
+            {
+                case scene::EPT_TRIANGLES:
+                    topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+                    break;
+
+                case scene::EPT_TRIANGLE_STRIP:
+                    topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+                    break;
+
+                case scene::EPT_TRIANGLE_FAN:
+                    topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+                    break;
+
+                case scene::EPT_LINES:
+                    topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
+                    break;
+
+                case scene::EPT_LINE_STRIP:
+                    topology = D3D_PRIMITIVE_TOPOLOGY_LINESTRIP;
+                    break;
+
+                case scene::EPT_POINTS:
+                    topology = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
+                    break;
+            }
+
+            m_pID3DDeviceContext->IASetPrimitiveTopology(topology);
+
+            if (iPtr)
+            {
+                m_pID3DDeviceContext->DrawIndexed(mb->getIndexCount(), 0, 0);
+            }
+            else
+            {
+                m_pID3DDeviceContext->Draw(mb->getVertexCount(), 0);
+            }
+        }
 
 
         void CD3D11Driver::addOcclusionQuery(scene::ISceneNode *node, const scene::IMesh *mesh)
@@ -1123,7 +1399,7 @@ namespace irr
 
         void CD3D11Driver::createMaterialRenderers()
         {
-            s32 matType = -1;
+            s32    matType = -1;
 
             new CD3D11MaterialRenderer(this, matType, "solid");
             new CD3D11MaterialRenderer(this, matType, "solid_lightmap");
@@ -1194,10 +1470,151 @@ namespace irr
 
         void CD3D11Driver::setVertexShader(video::E_VERTEX_TYPE newType)
         {
-            if (newType != m_LastVertexType)
+            if (newType != m_LastVertexType || !m_BuiltInShadersInitialized)
             {
+                if (!m_BuiltInShadersInitialized)
+                {
+                    for (u32 i = 0; i < 3; ++i)
+                    {
+                        createBuiltInVertexShader((E_VERTEX_TYPE)i);
+                    }
+
+                    m_BuiltInShadersInitialized = true;
+                }
+
+                if (newType >= 0 && newType < 3 && m_BuiltInVertexShader[newType])
+                {
+                    m_pID3DDeviceContext->VSSetShader(m_BuiltInVertexShader[newType], 0, 0);
+                    if (m_InputLayout[newType])
+                    {
+                        m_pID3DDeviceContext->IASetInputLayout(m_InputLayout[newType]);
+                    }
+                }
+
                 m_LastVertexType = newType;
             }
+        }
+
+
+        bool CD3D11Driver::createBuiltInVertexShader(E_VERTEX_TYPE type)
+        {
+            const char    *shaderSource = 0;
+
+            switch (type)
+            {
+                case EVT_STANDARD:
+                    shaderSource = VERTEX_SHADER_STANDARD;
+                    break;
+
+                case EVT_2TCOORDS:
+                    shaderSource = VERTEX_SHADER_2TCOORDS;
+                    break;
+
+                case EVT_TANGENTS:
+                    shaderSource = VERTEX_SHADER_TANGENTS;
+                    break;
+
+                default:
+                    return false;
+            }
+
+            ID3DBlob    *shaderBlob = 0;
+            ID3DBlob    *errorBlob  = 0;
+
+            HRESULT    hr = D3DCompile(shaderSource, strlen(shaderSource), 0, 0, 0, "main",
+                                       "vs_4_0", D3DCOMPILE_SKIP_VALIDATION, 0, &shaderBlob, &errorBlob);
+
+            if (FAILED(hr))
+            {
+                if (errorBlob)
+                {
+                    os::Printer::log("Vertex shader compilation failed:", ELL_ERROR);
+                    os::Printer::log((const c8*)errorBlob->GetBufferPointer(), ELL_ERROR);
+                    errorBlob->Release();
+                }
+
+                return false;
+            }
+
+            if (shaderBlob)
+            {
+                hr = m_pID3DDevice->CreateVertexShader(shaderBlob->GetBufferPointer(),
+                                                       shaderBlob->GetBufferSize(),
+                                                       nullptr,
+                                                       &m_BuiltInVertexShader[type]);
+                if (SUCCEEDED(hr))
+                {
+                    createInputLayout(type, shaderBlob);
+                }
+
+                shaderBlob->Release();
+            }
+
+            return true;
+        }
+
+
+        bool CD3D11Driver::createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob)
+        {
+            D3D11_INPUT_ELEMENT_DESC    *layout     = 0;
+            u32                         numElements = 0;
+
+            switch (type)
+            {
+                case EVT_STANDARD:
+                {
+                    static D3D11_INPUT_ELEMENT_DESC    standardLayout[] =
+                    {
+                        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                    };
+                    layout      = standardLayout;
+                    numElements = 4;
+                    break;
+                }
+
+                case EVT_2TCOORDS:
+                {
+                    static D3D11_INPUT_ELEMENT_DESC    twoTexLayout[] =
+                    {
+                        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                    };
+                    layout      = twoTexLayout;
+                    numElements = 5;
+                    break;
+                }
+
+                case EVT_TANGENTS:
+                {
+                    static D3D11_INPUT_ELEMENT_DESC    tangentLayout[] =
+                    {
+                        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                    };
+                    layout      = tangentLayout;
+                    numElements = 6;
+                    break;
+                }
+
+                default:
+                    return false;
+            }
+
+            HRESULT    hr = m_pID3DDevice->CreateInputLayout(layout, numElements,
+                                                             shaderBlob->GetBufferPointer(),
+                                                             shaderBlob->GetBufferSize(),
+                                                             &m_InputLayout[type]);
+            return SUCCEEDED(hr);
         }
 
 

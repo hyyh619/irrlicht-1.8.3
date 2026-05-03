@@ -21,6 +21,7 @@
 #include "irrMath.h"
 #endif
 #include <d3d11.h>
+#include <d3dcompiler.h>
 #include <windef.h>
 #include <dxgitype.h>
 #include <dxgi1_2.h>
@@ -45,7 +46,7 @@ namespace irr
             }
 
             ID3D11DepthStencilView  *Surface;
-            core::dimension2du Size;
+            core::dimension2du      Size;
         };
 
         class CD3D11ShaderMaterialRenderer;
@@ -293,6 +294,9 @@ private:
 
             void setVertexShader(video::E_VERTEX_TYPE newType);
 
+            bool createBuiltInVertexShader(E_VERTEX_TYPE type);
+            bool createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob);
+
             bool setRenderStates3DMode();
 
             void setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel);
@@ -312,8 +316,8 @@ private:
             void checkDepthBuffer(ITexture *tex);
 
             s32 addShaderMaterial(const c8 *vertexShaderProgram, const c8 *pixelShaderProgram,
-                IShaderConstantSetCallBack *callback,
-                E_MATERIAL_TYPE baseMaterial, s32 userData);
+                                  IShaderConstantSetCallBack *callback,
+                                  E_MATERIAL_TYPE baseMaterial, s32 userData);
 
             virtual s32 addHighLevelShaderMaterial(
                 const c8 *vertexShaderProgram,
@@ -333,7 +337,7 @@ private:
                 s32 userData = 0,
                 E_GPU_SHADING_LANGUAGE shadingLang = EGSL_DEFAULT);
 
-core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
+            core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
 
             void removeDepthSurface(SD3D11DepthStencilView *depth);
             DXGI_MODE_DESC          m_SwapChainBufferDesc;
@@ -357,9 +361,13 @@ core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
             UINT                            m_Caps;
             SIrrlichtCreationParameters     m_Params;
             E_VERTEX_TYPE                   m_LastVertexType;
-            SColorf                         m_AmbientLight;
-            core::stringc                   m_VendorName;
-            u16                             m_VendorID;
+            ID3D11InputLayout               *m_InputLayout[3];
+            ID3D11VertexShader              *m_BuiltInVertexShader[3];
+            bool                            m_BuiltInShadersInitialized;
+
+            SColorf             m_AmbientLight;
+            core::stringc       m_VendorName;
+            u16                 m_VendorID;
 
             u32     m_MaxTextureUnits;
             u32     m_MaxUserClipPlanes;
@@ -375,7 +383,7 @@ core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
             bool                m_OcclusionQuerySupport;
             bool                m_AlphaToCoverageSupport;
 
-            E_RENDER_MODE       m_CurrentRenderMode;
+            E_RENDER_MODE    m_CurrentRenderMode;
         };
 
         IVideoDriver* createDirectX11Driver(const SIrrlichtCreationParameters &params,
