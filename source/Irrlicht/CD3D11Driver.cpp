@@ -113,6 +113,9 @@ namespace irr
             m_WindowId(0), m_SceneSourceRect(0),
             m_LastVertexType((video::E_VERTEX_TYPE)-1), m_VendorID(0),
             m_BuiltInShadersInitialized(false),
+            m_TempVertexBuffer(0), m_TempIndexBuffer(0),
+            m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
+            m_TempIndexType(EIT_16BIT),
             m_MaxTextureUnits(0), m_MaxUserClipPlanes(0), m_MaxMRTs(1), m_NumSetMRTs(1),
             m_MaxLightDistance(0.f), m_LastSetLight(-1),
             m_ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), m_DeviceRemoved(false),
@@ -163,6 +166,12 @@ namespace irr
                 if (m_BuiltInVertexShader[i])
                     m_BuiltInVertexShader[i]->Release();
             }
+
+            if (m_TempVertexBuffer)
+                m_TempVertexBuffer->Release();
+
+            if (m_TempIndexBuffer)
+                m_TempIndexBuffer->Release();
 
             if (m_pID3DDeviceContext)
                 m_pID3DDeviceContext->Release();
@@ -921,52 +930,71 @@ namespace irr
                     setRenderStates2DMode(m_Material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA, (m_Material.getTexture(0) != 0), m_Material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL);
             }
 
-            D3D11_BUFFER_DESC       vbDesc;
-            ID3D11Buffer            *vertexBuffer   = 0;
-            ID3D11Buffer            *indexBuffer    = 0;
-
-            vbDesc.ByteWidth            = vertexBufferSize;
-            vbDesc.Usage                = D3D11_USAGE_DYNAMIC;
-            vbDesc.BindFlags            = D3D11_BIND_VERTEX_BUFFER;
-            vbDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
-            vbDesc.MiscFlags            = 0;
-            vbDesc.StructureByteStride  = 0;
-
-            D3D11_SUBRESOURCE_DATA    vbData;
-            vbData.pSysMem          = vertices;
-            vbData.SysMemPitch      = 0;
-            vbData.SysMemSlicePitch = 0;
-
-            if (FAILED(m_pID3DDevice->CreateBuffer(&vbDesc, &vbData, &vertexBuffer)))
-                return;
-
-            if (indexList)
+            if (!m_TempVertexBuffer || m_TempVertexBufferSize < vertexBufferSize)
             {
-                D3D11_BUFFER_DESC    ibDesc;
-                ibDesc.ByteWidth            = indexBufferSize;
-                ibDesc.Usage                = D3D11_USAGE_DYNAMIC;
-                ibDesc.BindFlags            = D3D11_BIND_INDEX_BUFFER;
-                ibDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
-                ibDesc.MiscFlags            = 0;
-                ibDesc.StructureByteStride  = 0;
+                if (m_TempVertexBuffer)
+                    m_TempVertexBuffer->Release();
 
-                D3D11_SUBRESOURCE_DATA    ibData;
-                ibData.pSysMem          = indexList;
-                ibData.SysMemPitch      = 0;
-                ibData.SysMemSlicePitch = 0;
+                D3D11_BUFFER_DESC    vbDesc;
+                vbDesc.ByteWidth            = vertexBufferSize;
+                vbDesc.Usage                = D3D11_USAGE_DYNAMIC;
+                vbDesc.BindFlags            = D3D11_BIND_VERTEX_BUFFER;
+                vbDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+                vbDesc.MiscFlags            = 0;
+                vbDesc.StructureByteStride  = 0;
 
-                m_pID3DDevice->CreateBuffer(&ibDesc, &ibData, &indexBuffer);
+                if (FAILED(m_pID3DDevice->CreateBuffer(&vbDesc, 0, &m_TempVertexBuffer)))
+                    return;
+
+                m_TempVertexBufferSize = vertexBufferSize;
             }
 
-            ID3D11Buffer    *buffers[1] = { vertexBuffer };
+            D3D11_MAPPED_SUBRESOURCE    mapped;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_TempVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+            {
+                memcpy(mapped.pData, vertices, vertexBufferSize);
+                m_pID3DDeviceContext->Unmap(m_TempVertexBuffer, 0);
+            }
+
+            ID3D11Buffer    *indexBuffer = 0;
+            if (indexList)
+            {
+                if (!m_TempIndexBuffer || m_TempIndexBufferSize < indexBufferSize || m_TempIndexType != iType)
+                {
+                    if (m_TempIndexBuffer)
+                        m_TempIndexBuffer->Release();
+
+                    D3D11_BUFFER_DESC    ibDesc;
+                    ibDesc.ByteWidth            = indexBufferSize;
+                    ibDesc.Usage                = D3D11_USAGE_DYNAMIC;
+                    ibDesc.BindFlags            = D3D11_BIND_INDEX_BUFFER;
+                    ibDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+                    ibDesc.MiscFlags            = 0;
+                    ibDesc.StructureByteStride  = 0;
+
+                    if (FAILED(m_pID3DDevice->CreateBuffer(&ibDesc, 0, &m_TempIndexBuffer)))
+                        return;
+
+                    m_TempIndexBufferSize   = indexBufferSize;
+                    m_TempIndexType         = iType;
+                }
+
+                if (SUCCEEDED(m_pID3DDeviceContext->Map(m_TempIndexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+                {
+                    memcpy(mapped.pData, indexList, indexBufferSize);
+                    m_pID3DDeviceContext->Unmap(m_TempIndexBuffer, 0);
+                }
+
+                indexBuffer = m_TempIndexBuffer;
+            }
+
+            ID3D11Buffer    *buffers[1] = { m_TempVertexBuffer };
             UINT            offsets[1]  = { 0 };
             UINT            strides[1]  = { stride };
             m_pID3DDeviceContext->IASetVertexBuffers(0, 1, buffers, strides, offsets);
 
             if (indexBuffer)
-            {
                 m_pID3DDeviceContext->IASetIndexBuffer(indexBuffer, indexFormat, 0);
-            }
 
             D3D11_PRIMITIVE_TOPOLOGY    topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
@@ -999,17 +1027,9 @@ namespace irr
             m_pID3DDeviceContext->IASetPrimitiveTopology(topology);
 
             if (indexBuffer)
-            {
                 m_pID3DDeviceContext->DrawIndexed(primitiveCount * 3, 0, 0);
-            }
             else
-            {
                 m_pID3DDeviceContext->Draw(vertexCount, 0);
-            }
-
-            vertexBuffer->Release();
-            if (indexBuffer)
-                indexBuffer->Release();
         }
 
 

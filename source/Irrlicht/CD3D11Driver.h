@@ -383,6 +383,12 @@ private:
             bool                m_OcclusionQuerySupport;
             bool                m_AlphaToCoverageSupport;
 
+            ID3D11Buffer            *m_TempVertexBuffer;
+            ID3D11Buffer            *m_TempIndexBuffer;
+            u32                     m_TempVertexBufferSize;
+            u32                     m_TempIndexBufferSize;
+            E_INDEX_TYPE            m_TempIndexType;
+
             E_RENDER_MODE    m_CurrentRenderMode;
         };
 

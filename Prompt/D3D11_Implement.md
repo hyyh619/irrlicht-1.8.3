@@ -311,3 +311,6 @@ d3d11最大可以支持8个纹理,其它video driver支持4个,改一下下面�
 
 # 20
 参照CD3D9Driver::draw2D3DVertexPrimitiveList的代码，实现CD3D11Driver::draw2D3DVertexPrimitiveList
+
+# 21
+每次调用CD3D11Driver::draw2D3DVertexPrimitiveList都需要创建vertex buffer和index buffer。我们没必要每次都创建一个临时buffer，绘制完成后就立马释放。优化这部分代码。
