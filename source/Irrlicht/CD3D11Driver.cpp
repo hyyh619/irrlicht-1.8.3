@@ -160,7 +160,7 @@ namespace irr
         CD3D11Driver::CD3D11Driver(const SIrrlichtCreationParameters &params, io::IFileSystem *io)
             : CNullDriver(io, params.WindowSize), m_CurrentRenderMode(ERM_NONE),
             m_ResetRenderStates(true), m_Transformation3DChanged(false),
-            m_D3D11Library(0), m_DXGIFactory(0), m_Adapter(0), m_pID3DDevice(0), m_pID3DDeviceContext(0), m_SwapChain(0),
+            m_D3D11Library(0), m_DXGIFactory(0), m_Adapter(0), m_pID3DDevice(0), m_pID3DDeviceContext(0), m_pID3DDevice1(0), m_SwapChain(0),
             m_BackBufferRenderTargetView(0), m_DepthStencilView(0),
             m_WindowId(0), m_SceneSourceRect(0),
             m_LastVertexType((video::E_VERTEX_TYPE)-1), m_VendorID(0),
@@ -248,6 +248,9 @@ namespace irr
             if (m_pID3DDeviceContext)
                 m_pID3DDeviceContext->Release();
 
+            if (m_pID3DDevice1)
+                m_pID3DDevice1->Release();
+
             if (m_pID3DDevice)
                 m_pID3DDevice->Release();
 
@@ -313,11 +316,11 @@ namespace irr
             hr = m_pID3DDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_pID3D11Debug);
 #endif
 
-            ID3D11Device1    *device1 = nullptr;
-            hr = m_pID3DDevice->QueryInterface(__uuidof(ID3D11Device1), (void**)&device1);
-            if (SUCCEEDED(hr) && device1)
+            hr = m_pID3DDevice->QueryInterface(__uuidof(ID3D11Device1), (void**)&m_pID3DDevice1);
+            if (FAILED(hr))
             {
-                device1->Release();
+                os::Printer::log("Could not get D3D11Device1 interface.", ELL_WARNING);
+                m_pID3DDevice1 = 0;
             }
 
             m_pID3DDevice->CheckFormatSupport(DXGI_FORMAT_D24_UNORM_S8_UINT, &m_Caps);
@@ -1935,22 +1938,22 @@ namespace irr
         {
             D3D11_RASTERIZER_DESC1    rasterizerDesc;
 
-            rasterizerDesc.AntialiasedLineEnable            = false;
-            rasterizerDesc.ConservativeRasterizationMode    = D3D11_CONSERVATIVE_RASTERIZATION_MODE_OFF;
-            rasterizerDesc.CullMode                         = D3D11_CULL_BACK;
-            rasterizerDesc.DepthBias                        = D3D11_DEFAULT_DEPTH_BIAS;
-            rasterizerDesc.DepthBiasClamp                   = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
-            rasterizerDesc.DepthClipEnable                  = true;
-            rasterizerDesc.ForcedSampleCount                = 0;
-            rasterizerDesc.FillMode                         = D3D11_FILL_SOLID;
-            rasterizerDesc.FrontCounterClockwise            = false;
-            rasterizerDesc.IndexBufferStripCutValue         = D3D11_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
-            rasterizerDesc.LineWidth                        = 1.0f;
-            rasterizerDesc.MultisampleEnable                = false;
-            rasterizerDesc.ScissorEnable                    = false;
-            rasterizerDesc.SlopeScaledDepthBias             = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+            rasterizerDesc.AntialiasedLineEnable    = false;
+            rasterizerDesc.CullMode                 = D3D11_CULL_BACK;
+            rasterizerDesc.DepthBias                = D3D11_DEFAULT_DEPTH_BIAS;
+            rasterizerDesc.DepthBiasClamp           = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
+            rasterizerDesc.DepthClipEnable          = true;
+            rasterizerDesc.FillMode                 = D3D11_FILL_SOLID;
+            rasterizerDesc.ForcedSampleCount        = 0;
+            rasterizerDesc.FrontCounterClockwise    = false;
+            rasterizerDesc.MultisampleEnable        = false;
+            rasterizerDesc.ScissorEnable            = false;
+            rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
 
-            HRESULT    hr = m_pID3DDevice->CreateRasterizerState1(&rasterizerDesc, &m_RasterizerState);
+            HRESULT    hr = E_FAIL;
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &m_RasterizerState);
+
             if (FAILED(hr))
                 return false;
 
@@ -1992,7 +1995,10 @@ namespace irr
                 blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
             }
 
-            hr = m_pID3DDevice->CreateBlendState1(&blendDesc, &m_BlendState);
+            hr = E_FAIL;
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_BlendState);
+
             if (FAILED(hr))
                 return false;
 
@@ -2044,7 +2050,7 @@ namespace irr
                 }
 
                 ID3D11BlendState1    *alphaBlendState = 0;
-                if (SUCCEEDED(m_pID3DDevice->CreateBlendState1(&blendDesc, &alphaBlendState)))
+                if (m_pID3DDevice1 && SUCCEEDED(m_pID3DDevice1->CreateBlendState1(&blendDesc, &alphaBlendState)))
                 {
                     m_pID3DDeviceContext->OMSetBlendState(alphaBlendState, blendFactor, 0xFFFFFFFF);
                     alphaBlendState->Release();

@@ -274,6 +274,7 @@ public:
 
             ID3D11Device                *m_pID3DDevice;
             ID3D11DeviceContext         *m_pID3DDeviceContext;
+            ID3D11Device1               *m_pID3DDevice1;
             IDXGISwapChain              *m_SwapChain;
             ID3D11RenderTargetView      *m_BackBufferRenderTargetView;
             ID3D11DepthStencilView      *m_DepthStencilView;
@@ -396,12 +397,12 @@ private:
             u32                     m_TempIndexBufferSize;
             E_INDEX_TYPE            m_TempIndexType;
 
-            D3D11_VIEWPORT                  m_DefaultViewport;
-            D3D11_RECT                      m_DefaultScissorRect;
-            ID3D11RasterizerState1           *m_RasterizerState;
-            ID3D11DepthStencilState         *m_DepthStencilState;
-            ID3D11BlendState1                *m_BlendState;
-            ID3D11SamplerState              *m_SamplerState;
+            D3D11_VIEWPORT                      m_DefaultViewport;
+            D3D11_RECT                          m_DefaultScissorRect;
+            ID3D11RasterizerState1              *m_RasterizerState;
+            ID3D11DepthStencilState             *m_DepthStencilState;
+            ID3D11BlendState1                   *m_BlendState;
+            ID3D11SamplerState                  *m_SamplerState;
 
             E_RENDER_MODE    m_CurrentRenderMode;
         };
