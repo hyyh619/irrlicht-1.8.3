@@ -139,7 +139,7 @@ int main()
             false, false, false, 0);
 #else
     IrrlichtDevice *device =
-        createDevice(video::EDT_DIRECT3D9, dimension2d<u32>(640, 480), 16,
+        createDevice(video::EDT_DIRECT3D11, dimension2d<u32>(640, 480), 16,
             false, false, false, 0);
 #endif
 #else
