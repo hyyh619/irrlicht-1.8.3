@@ -116,8 +116,10 @@ namespace irr
             "    float2 TexCoord : TEXCOORD0;"
             "    float3 Normal : TEXCOORD1;"
             "};"
+            "Texture2D DiffuseTexture : register(t0);"
+            "SamplerState LinearSampler : register(s0);"
             "float4 main(PS_INPUT input) : SV_TARGET {"
-            "    return input.Color;"
+            "    return DiffuseTexture.Sample(LinearSampler, input.TexCoord);"
             "}";
 
         static const char    PIXEL_SHADER_2TCOORDS[] =
