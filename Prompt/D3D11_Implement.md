@@ -333,3 +333,7 @@ d3d11的纹理采样的sampler，只有一个m_SamplerState，请做如下改动
 为CD3D11Driver::createDefaultStates的所有FAILED判断增加Log输出
             if (FAILED(hr))
                 return false;
+
+# 26
+d3d11在draw前调用CD3D11Driver::setMaterial设置m_CurrentTexture，因此我们需要在draw被执行前，为Pixel shader设置纹理。
+请生成一个PS的纹理和采样器配置函数，该函数需要在 m_pID3DDeviceContext->PSSetShader调用后执行

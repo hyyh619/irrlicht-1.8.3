@@ -241,7 +241,7 @@ namespace irr
         }
 
 
-bool CSampler::create(const D3D11_SAMPLER_DESC &desc)
+        bool CSampler::create(const D3D11_SAMPLER_DESC &desc)
         {
             m_Filter            = desc.Filter;
             m_AddressU          = desc.AddressU;
@@ -253,12 +253,13 @@ bool CSampler::create(const D3D11_SAMPLER_DESC &desc)
             m_MinLOD            = desc.MinLOD;
             m_MaxLOD            = desc.MaxLOD;
 
-            HRESULT hr = m_Driver->m_pID3DDevice->CreateSamplerState(&desc, &m_D3D11SamplerState);
+            HRESULT    hr = m_Driver->m_pID3DDevice->CreateSamplerState(&desc, &m_D3D11SamplerState);
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create sampler state.", ELL_ERROR);
                 return false;
             }
+
             return true;
         }
 
@@ -1805,6 +1806,37 @@ bool CSampler::create(const D3D11_SAMPLER_DESC &desc)
 
                 m_LastVertexType = newType;
             }
+
+            setPSTextureAndSamplerState();
+        }
+
+
+        void CD3D11Driver::setPSTextureAndSamplerState()
+        {
+            for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
+            {
+                if (m_CurrentTexture[i])
+                {
+                    CD3D11Texture               *tex    = static_cast<CD3D11Texture*>(const_cast<ITexture*>(m_CurrentTexture[i]));
+                    ID3D11ShaderResourceView    *srv    = tex->getShaderResourceView();
+
+                    m_pID3DDeviceContext->PSSetShaderResources(i, 1, &srv);
+
+                    if (m_DefaultSampler)
+                    {
+                        ID3D11SamplerState    *pSampler = m_DefaultSampler->getD3D11SamplerState();
+                        m_pID3DDeviceContext->PSSetSamplers(i, 1, &pSampler);
+                    }
+                }
+                else
+                {
+                    ID3D11SamplerState          *pSampler   = nullptr;
+                    ID3D11ShaderResourceView    *nullSrv    = 0;
+
+                    m_pID3DDeviceContext->PSSetShaderResources(i, 1, &nullSrv);
+                    m_pID3DDeviceContext->PSSetSamplers(i, 1, &pSampler);
+                }
+            }
         }
 
 
@@ -2130,9 +2162,6 @@ bool CSampler::create(const D3D11_SAMPLER_DESC &desc)
             {
                 m_pID3DDeviceContext->OMSetBlendState(m_BlendState, blendFactor, 0xFFFFFFFF);
             }
-
-            ID3D11SamplerState    *samplerState = m_DefaultSampler->getD3D11SamplerState();
-            m_pID3DDeviceContext->PSSetSamplers(0, 1, &samplerState);
         }
 
 

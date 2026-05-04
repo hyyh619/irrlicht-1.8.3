@@ -413,6 +413,8 @@ private:
 
             void setShadersByType(video::E_VERTEX_TYPE newType);
 
+            void setPSTextureAndSamplerState();
+
             bool setRenderStates3DMode();
 
             void setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel);
