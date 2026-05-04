@@ -328,3 +328,8 @@ d3d11的渲染管线需要设置viewport/scissor, ID3D11DepthStencilState, ID3D1
 d3d11的纹理采样的sampler，只有一个m_SamplerState，请做如下改动，
 1. 增加Sampler类，能够保存不同的d3d11的sampler设置，以及创建的sampler
 2. 初始化创建一个默认的sampler类对象供pixel shader采样使用。
+
+# 25
+为CD3D11Driver::createDefaultStates的所有FAILED判断增加Log输出
+            if (FAILED(hr))
+                return false;

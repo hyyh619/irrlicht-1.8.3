@@ -241,7 +241,7 @@ namespace irr
         }
 
 
-        bool CSampler::create(const D3D11_SAMPLER_DESC &desc)
+bool CSampler::create(const D3D11_SAMPLER_DESC &desc)
         {
             m_Filter            = desc.Filter;
             m_AddressU          = desc.AddressU;
@@ -253,8 +253,13 @@ namespace irr
             m_MinLOD            = desc.MinLOD;
             m_MaxLOD            = desc.MaxLOD;
 
-            HRESULT    hr = m_Driver->m_pID3DDevice->CreateSamplerState(&desc, &m_D3D11SamplerState);
-            return SUCCEEDED(hr);
+            HRESULT hr = m_Driver->m_pID3DDevice->CreateSamplerState(&desc, &m_D3D11SamplerState);
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create sampler state.", ELL_ERROR);
+                return false;
+            }
+            return true;
         }
 
 
@@ -596,6 +601,9 @@ namespace irr
                 }
             }
 
+            m_pID3DDeviceContext->OMSetRenderTargets(1, &m_BackBufferRenderTargetView, m_DepthStencilView);
+            m_pID3DDeviceContext->RSSetViewports(1, &m_Viewport);
+
             UINT    flags = 0;
 
             if (zBuffer)
@@ -617,9 +625,6 @@ namespace irr
                 colorToD3D(color, colorF);
                 m_pID3DDeviceContext->ClearRenderTargetView(m_BackBufferRenderTargetView, colorF);
             }
-
-            m_pID3DDeviceContext->OMSetRenderTargets(1, &m_BackBufferRenderTargetView, m_DepthStencilView);
-            m_pID3DDeviceContext->RSSetViewports(1, &m_Viewport);
 
             m_SceneSourceRect = sourceRect;
             return true;
@@ -1996,7 +2001,10 @@ namespace irr
 
         bool CD3D11Driver::createDefaultStates()
         {
-            D3D11_RASTERIZER_DESC1    rasterizerDesc;
+            HRESULT                     hr = E_FAIL;
+            D3D11_RASTERIZER_DESC1      rasterizerDesc;
+            D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
+            D3D11_BLEND_DESC1           blendDesc;
 
             rasterizerDesc.AntialiasedLineEnable    = false;
             rasterizerDesc.CullMode                 = D3D11_CULL_BACK;
@@ -2010,14 +2018,15 @@ namespace irr
             rasterizerDesc.ScissorEnable            = false;
             rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
 
-            HRESULT    hr = E_FAIL;
             if (m_pID3DDevice1)
                 hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &m_RasterizerState);
 
             if (FAILED(hr))
+            {
+                os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
                 return false;
+            }
 
-            D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
             depthStencilDesc.DepthEnable                    = true;
             depthStencilDesc.DepthWriteMask                 = D3D11_DEPTH_WRITE_MASK_ALL;
             depthStencilDesc.DepthFunc                      = D3D11_COMPARISON_LESS;
@@ -2035,9 +2044,11 @@ namespace irr
 
             hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_DepthStencilState);
             if (FAILED(hr))
+            {
+                os::Printer::log("Could not create depth stencil state.", ELL_ERROR);
                 return false;
+            }
 
-            D3D11_BLEND_DESC1    blendDesc;
             blendDesc.AlphaToCoverageEnable     = false;
             blendDesc.IndependentBlendEnable    = false;
 
@@ -2060,11 +2071,17 @@ namespace irr
                 hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_BlendState);
 
             if (FAILED(hr))
+            {
+                os::Printer::log("Could not create blend state.", ELL_ERROR);
                 return false;
+            }
 
             m_DefaultSampler = new CSampler(this);
             if (!m_DefaultSampler->createDefault())
+            {
+                os::Printer::log("Could not create default sampler state.", ELL_ERROR);
                 return false;
+            }
 
             return true;
         }
