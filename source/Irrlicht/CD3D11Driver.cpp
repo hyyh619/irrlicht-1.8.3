@@ -168,7 +168,7 @@ namespace irr
             m_TempVertexBuffer(0), m_TempIndexBuffer(0), m_MatrixConstantBuffer(0),
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
-            m_RasterizerState(0), m_DepthStencilState(0), m_BlendState(0), m_SamplerState(0),
+            m_RasterizerState(0), m_DepthStencilState(0), m_BlendState(0), m_DefaultSampler(0),
             m_MaxTextureUnits(0), m_MaxUserClipPlanes(0), m_MaxMRTs(1), m_NumSetMRTs(1),
             m_MaxLightDistance(0.f), m_LastSetLight(-1),
             m_ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), m_DeviceRemoved(false),
@@ -195,6 +195,66 @@ namespace irr
                 m_BuiltInVertexShader[i]    = 0;
                 m_BuiltInPixelShader[i]     = 0;
             }
+
+            m_DefaultSampler = new CSampler(this);
+        }
+
+
+        CSampler::CSampler(CD3D11Driver *driver)
+            : m_Driver(driver), m_D3D11SamplerState(0),
+            m_Filter(D3D11_FILTER_MIN_MAG_MIP_LINEAR),
+            m_AddressU(D3D11_TEXTURE_ADDRESS_WRAP),
+            m_AddressV(D3D11_TEXTURE_ADDRESS_WRAP),
+            m_AddressW(D3D11_TEXTURE_ADDRESS_WRAP),
+            m_MipLODBias(0.0f), m_MaxAnisotropy(1),
+            m_ComparisonFunc(D3D11_COMPARISON_NEVER),
+            m_MinLOD(-FLT_MAX), m_MaxLOD(FLT_MAX)
+        {
+#ifdef _DEBUG
+            setDebugName("CSampler");
+#endif
+        }
+
+
+        CSampler::~CSampler()
+        {
+            if (m_D3D11SamplerState)
+                m_D3D11SamplerState->Release();
+        }
+
+
+        bool CSampler::createDefault()
+        {
+            D3D11_SAMPLER_DESC    desc;
+
+            desc.Filter             = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            desc.AddressU           = D3D11_TEXTURE_ADDRESS_WRAP;
+            desc.AddressV           = D3D11_TEXTURE_ADDRESS_WRAP;
+            desc.AddressW           = D3D11_TEXTURE_ADDRESS_WRAP;
+            desc.MipLODBias         = 0.0f;
+            desc.MaxAnisotropy      = 1;
+            desc.ComparisonFunc     = D3D11_COMPARISON_NEVER;
+            desc.MinLOD             = -FLT_MAX;
+            desc.MaxLOD             = FLT_MAX;
+
+            return create(desc);
+        }
+
+
+        bool CSampler::create(const D3D11_SAMPLER_DESC &desc)
+        {
+            m_Filter            = desc.Filter;
+            m_AddressU          = desc.AddressU;
+            m_AddressV          = desc.AddressV;
+            m_AddressW          = desc.AddressW;
+            m_MipLODBias        = desc.MipLODBias;
+            m_MaxAnisotropy     = desc.MaxAnisotropy;
+            m_ComparisonFunc    = desc.ComparisonFunc;
+            m_MinLOD            = desc.MinLOD;
+            m_MaxLOD            = desc.MaxLOD;
+
+            HRESULT    hr = m_Driver->m_pID3DDevice->CreateSamplerState(&desc, &m_D3D11SamplerState);
+            return SUCCEEDED(hr);
         }
 
 
@@ -242,8 +302,8 @@ namespace irr
             if (m_BlendState)
                 m_BlendState->Release();
 
-            if (m_SamplerState)
-                m_SamplerState->Release();
+            if (m_DefaultSampler)
+                m_DefaultSampler->drop();
 
             if (m_pID3DDeviceContext)
                 m_pID3DDeviceContext->Release();
@@ -2002,19 +2062,8 @@ namespace irr
             if (FAILED(hr))
                 return false;
 
-            D3D11_SAMPLER_DESC    samplerDesc;
-            samplerDesc.Filter          = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-            samplerDesc.AddressU        = D3D11_TEXTURE_ADDRESS_WRAP;
-            samplerDesc.AddressV        = D3D11_TEXTURE_ADDRESS_WRAP;
-            samplerDesc.AddressW        = D3D11_TEXTURE_ADDRESS_WRAP;
-            samplerDesc.MipLODBias      = 0.0f;
-            samplerDesc.MaxAnisotropy   = 1;
-            samplerDesc.ComparisonFunc  = D3D11_COMPARISON_NEVER;
-            samplerDesc.MinLOD          = -FLT_MAX;
-            samplerDesc.MaxLOD          = FLT_MAX;
-
-            hr = m_pID3DDevice->CreateSamplerState(&samplerDesc, &m_SamplerState);
-            if (FAILED(hr))
+            m_DefaultSampler = new CSampler(this);
+            if (!m_DefaultSampler->createDefault())
                 return false;
 
             return true;
@@ -2065,7 +2114,8 @@ namespace irr
                 m_pID3DDeviceContext->OMSetBlendState(m_BlendState, blendFactor, 0xFFFFFFFF);
             }
 
-            m_pID3DDeviceContext->PSSetSamplers(0, 1, &m_SamplerState);
+            ID3D11SamplerState    *samplerState = m_DefaultSampler->getD3D11SamplerState();
+            m_pID3DDeviceContext->PSSetSamplers(0, 1, &samplerState);
         }
 
 

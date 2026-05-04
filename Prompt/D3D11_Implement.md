@@ -323,3 +323,8 @@ d3d11最大可以支持8个纹理,其它video driver支持4个,改一下下面�
 
 # 23
 d3d11的渲染管线需要设置viewport/scissor, ID3D11DepthStencilState, ID3D11RasterizerState1和ID3D11BlendState1，请增加这些设置项。
+
+# 24
+d3d11的纹理采样的sampler，只有一个m_SamplerState，请做如下改动，
+1. 增加Sampler类，能够保存不同的d3d11的sampler设置，以及创建的sampler
+2. 初始化创建一个默认的sampler类对象供pixel shader采样使用。

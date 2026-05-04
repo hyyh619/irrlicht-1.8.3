@@ -31,6 +31,122 @@ namespace irr
 {
     namespace video
     {
+        class CD3D11Driver;
+
+        class CSampler : public IReferenceCounted
+        {
+public:
+            CSampler(CD3D11Driver *driver);
+            virtual ~CSampler();
+
+            bool createDefault();
+            bool create(const D3D11_SAMPLER_DESC &desc);
+
+            ID3D11SamplerState* getD3D11SamplerState() const
+            {
+                return m_D3D11SamplerState;
+            }
+
+            D3D11_FILTER getFilter() const
+            {
+                return m_Filter;
+            }
+            void setFilter(D3D11_FILTER filter)
+            {
+                m_Filter = filter;
+            }
+
+            D3D11_TEXTURE_ADDRESS_MODE getAddressU() const
+            {
+                return m_AddressU;
+            }
+            void setAddressU(D3D11_TEXTURE_ADDRESS_MODE mode)
+            {
+                m_AddressU = mode;
+            }
+
+            D3D11_TEXTURE_ADDRESS_MODE getAddressV() const
+            {
+                return m_AddressV;
+            }
+            void setAddressV(D3D11_TEXTURE_ADDRESS_MODE mode)
+            {
+                m_AddressV = mode;
+            }
+
+            D3D11_TEXTURE_ADDRESS_MODE getAddressW() const
+            {
+                return m_AddressW;
+            }
+            void setAddressW(D3D11_TEXTURE_ADDRESS_MODE mode)
+            {
+                m_AddressW = mode;
+            }
+
+            f32 getMipLODBias() const
+            {
+                return m_MipLODBias;
+            }
+            void setMipLODBias(f32 bias)
+            {
+                m_MipLODBias = bias;
+            }
+
+            u32 getMaxAnisotropy() const
+            {
+                return m_MaxAnisotropy;
+            }
+            void setMaxAnisotropy(u32 max)
+            {
+                m_MaxAnisotropy = max;
+            }
+
+            D3D11_COMPARISON_FUNC getComparisonFunc() const
+            {
+                return m_ComparisonFunc;
+            }
+            void setComparisonFunc(D3D11_COMPARISON_FUNC func)
+            {
+                m_ComparisonFunc = func;
+            }
+
+            f32 getMinLOD() const
+            {
+                return m_MinLOD;
+            }
+            void setMinLOD(f32 lod)
+            {
+                m_MinLOD = lod;
+            }
+
+            f32 getMaxLOD() const
+            {
+                return m_MaxLOD;
+            }
+            void setMaxLOD(f32 lod)
+            {
+                m_MaxLOD = lod;
+            }
+
+private:
+            CD3D11Driver            *m_Driver;
+            ID3D11SamplerState      *m_D3D11SamplerState;
+
+            D3D11_FILTER                    m_Filter;
+            D3D11_TEXTURE_ADDRESS_MODE      m_AddressU;
+            D3D11_TEXTURE_ADDRESS_MODE      m_AddressV;
+            D3D11_TEXTURE_ADDRESS_MODE      m_AddressW;
+            f32                             m_MipLODBias;
+            u32                             m_MaxAnisotropy;
+            D3D11_COMPARISON_FUNC           m_ComparisonFunc;
+            f32                             m_MinLOD;
+            f32                             m_MaxLOD;
+
+#ifdef _DEBUG
+            core::stringc    m_DebugName;
+#endif
+        };
+
         struct SD3D11DepthStencilView : public IReferenceCounted
         {
             SD3D11DepthStencilView() : Surface(0)
@@ -63,6 +179,7 @@ namespace irr
 public:
 
             friend class CD3D11Texture;
+            friend class CSampler;
 
             CD3D11Driver(const SIrrlichtCreationParameters &params, io::IFileSystem *io);
 
@@ -402,7 +519,7 @@ private:
             ID3D11RasterizerState1              *m_RasterizerState;
             ID3D11DepthStencilState             *m_DepthStencilState;
             ID3D11BlendState1                   *m_BlendState;
-            ID3D11SamplerState                  *m_SamplerState;
+            CSampler                            *m_DefaultSampler;
 
             E_RENDER_MODE    m_CurrentRenderMode;
         };
