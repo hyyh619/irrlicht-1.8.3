@@ -340,3 +340,26 @@ d3d11在draw前调用CD3D11Driver::setMaterial设置m_CurrentTexture，因此我
 
 # 27
 d3d11的PIXEL_SHADER_STANDARD需要采样一个纹理的纹素，把该纹素作为PS的输出color
+
+# 28
+d3d9使用下面3个矩阵完成MVP转换
+            // ! View transformation
+            ETS_VIEW = 0,
+            // ! World transformation
+            ETS_WORLD,
+            // ! Projection transformation
+            ETS_PROJECTION,
+分别对应设置
+                case ETS_VIEW:
+                    m_pID3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)((void*)mat.pointer()));
+                    break;
+
+                case ETS_WORLD:
+                    m_pID3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)((void*)mat.pointer()));
+                    break;
+
+                case ETS_PROJECTION:
+                    m_pID3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)((void*)mat.pointer()));
+                    break;
+
+d3d11只需要给VS一个MVP矩阵，完成顶点转换。获得了ETS_VIEW，ETS_WORLD和ETS_PROJECTION矩阵，该如何计算出VS使用的MVP矩阵。

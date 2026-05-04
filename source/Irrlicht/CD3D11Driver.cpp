@@ -40,7 +40,7 @@ namespace irr
             "};"
             "VS_OUTPUT main(VS_INPUT input) {"
             "    VS_OUTPUT output;"
-            "    output.Pos = mul(float4(input.Pos, 1.0), WorldViewProj);"
+            "    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));"
             "    output.Color = input.Color;"
             "    output.TexCoord = input.TexCoord;"
             "    output.Normal = input.Normal;"
@@ -67,7 +67,7 @@ namespace irr
             "};"
             "VS_OUTPUT main(VS_INPUT input) {"
             "    VS_OUTPUT output;"
-            "    output.Pos = mul(float4(input.Pos, 1.0), WorldViewProj);"
+            "    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));"
             "    output.Color = input.Color;"
             "    output.TexCoord = input.TexCoord;"
             "    output.TexCoord2 = input.TexCoord2;"
@@ -97,7 +97,7 @@ namespace irr
             "};"
             "VS_OUTPUT main(VS_INPUT input) {"
             "    VS_OUTPUT output;"
-            "    output.Pos = mul(float4(input.Pos, 1.0), WorldViewProj);"
+            "    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));"
             "    output.Color = input.Color;"
             "    output.TexCoord = input.TexCoord;"
             "    output.Normal = input.Normal;"
@@ -2019,7 +2019,7 @@ namespace irr
 
         void CD3D11Driver::updateMatrixConstantBuffer()
         {
-            core::matrix4    mvp = m_Matrices[ETS_WORLD] * m_Matrices[ETS_VIEW] * m_Matrices[ETS_PROJECTION];
+            core::matrix4    mvp = m_Matrices[ETS_PROJECTION] * m_Matrices[ETS_VIEW] * m_Matrices[ETS_WORLD];
 
             D3D11_MAPPED_SUBRESOURCE    mapped;
 
