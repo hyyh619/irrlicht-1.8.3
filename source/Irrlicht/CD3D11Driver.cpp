@@ -168,6 +168,7 @@ namespace irr
             m_TempVertexBuffer(0), m_TempIndexBuffer(0), m_MatrixConstantBuffer(0),
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
+            m_RasterizerState(0), m_DepthStencilState(0), m_BlendState(0), m_SamplerState(0),
             m_MaxTextureUnits(0), m_MaxUserClipPlanes(0), m_MaxMRTs(1), m_NumSetMRTs(1),
             m_MaxLightDistance(0.f), m_LastSetLight(-1),
             m_ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), m_DeviceRemoved(false),
@@ -231,6 +232,18 @@ namespace irr
 
             if (m_MatrixConstantBuffer)
                 m_MatrixConstantBuffer->Release();
+
+            if (m_RasterizerState)
+                m_RasterizerState->Release();
+
+            if (m_DepthStencilState)
+                m_DepthStencilState->Release();
+
+            if (m_BlendState)
+                m_BlendState->Release();
+
+            if (m_SamplerState)
+                m_SamplerState->Release();
 
             if (m_pID3DDeviceContext)
                 m_pID3DDeviceContext->Release();
@@ -296,9 +309,16 @@ namespace irr
                 return false;
             }
 
- #ifdef _DEBUG
+#ifdef _DEBUG
             hr = m_pID3DDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_pID3D11Debug);
- #endif
+#endif
+
+            ID3D11Device1    *device1 = nullptr;
+            hr = m_pID3DDevice->QueryInterface(__uuidof(ID3D11Device1), (void**)&device1);
+            if (SUCCEEDED(hr) && device1)
+            {
+                device1->Release();
+            }
 
             m_pID3DDevice->CheckFormatSupport(DXGI_FORMAT_D24_UNORM_S8_UINT, &m_Caps);
 
@@ -448,6 +468,18 @@ namespace irr
             m_Viewport.MinDepth     = 0.0f;
             m_Viewport.MaxDepth     = 1.0f;
 
+            m_DefaultViewport.TopLeftX      = 0;
+            m_DefaultViewport.TopLeftY      = 0;
+            m_DefaultViewport.Width         = (FLOAT)currentDim.Width;
+            m_DefaultViewport.Height        = (FLOAT)currentDim.Height;
+            m_DefaultViewport.MinDepth      = 0.0f;
+            m_DefaultViewport.MaxDepth      = 1.0f;
+
+            m_DefaultScissorRect.left   = 0;
+            m_DefaultScissorRect.top    = 0;
+            m_DefaultScissorRect.right  = currentDim.Width;
+            m_DefaultScissorRect.bottom = currentDim.Height;
+
             m_CurrentRendertargetSize = currentDim;
             core::rect<s32>    driverInitArea(0, 0, currentDim.Width, currentDim.Height);
             setViewPort(driverInitArea);
@@ -463,6 +495,12 @@ namespace irr
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create matrix constant buffer.", ELL_ERROR);
+                return false;
+            }
+
+            if (!createDefaultStates())
+            {
+                os::Printer::log("Could not create default render states.", ELL_ERROR);
                 return false;
             }
 
@@ -724,6 +762,7 @@ namespace irr
                 return true;
 
             m_CurrentRenderMode = ERM_3D;
+            setRenderStates(ERM_3D, false);
             return true;
         }
 
@@ -731,6 +770,7 @@ namespace irr
         void CD3D11Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel)
         {
             m_CurrentRenderMode = ERM_2D;
+            setRenderStates(ERM_2D, alpha);
         }
 
 
@@ -1688,6 +1728,7 @@ namespace irr
                     {
                         m_pID3DDeviceContext->PSSetShader(m_BuiltInPixelShader[newType], 0, 0);
                     }
+
                     if (m_InputLayout[newType])
                     {
                         m_pID3DDeviceContext->IASetInputLayout(m_InputLayout[newType]);
@@ -1887,6 +1928,138 @@ namespace irr
             }
 
             m_pID3DDeviceContext->VSSetConstantBuffers(0, 1, &m_MatrixConstantBuffer);
+        }
+
+
+        bool CD3D11Driver::createDefaultStates()
+        {
+            D3D11_RASTERIZER_DESC1    rasterizerDesc;
+
+            rasterizerDesc.AntialiasedLineEnable            = false;
+            rasterizerDesc.ConservativeRasterizationMode    = D3D11_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+            rasterizerDesc.CullMode                         = D3D11_CULL_BACK;
+            rasterizerDesc.DepthBias                        = D3D11_DEFAULT_DEPTH_BIAS;
+            rasterizerDesc.DepthBiasClamp                   = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
+            rasterizerDesc.DepthClipEnable                  = true;
+            rasterizerDesc.ForcedSampleCount                = 0;
+            rasterizerDesc.FillMode                         = D3D11_FILL_SOLID;
+            rasterizerDesc.FrontCounterClockwise            = false;
+            rasterizerDesc.IndexBufferStripCutValue         = D3D11_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
+            rasterizerDesc.LineWidth                        = 1.0f;
+            rasterizerDesc.MultisampleEnable                = false;
+            rasterizerDesc.ScissorEnable                    = false;
+            rasterizerDesc.SlopeScaledDepthBias             = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+
+            HRESULT    hr = m_pID3DDevice->CreateRasterizerState1(&rasterizerDesc, &m_RasterizerState);
+            if (FAILED(hr))
+                return false;
+
+            D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
+            depthStencilDesc.DepthEnable                    = true;
+            depthStencilDesc.DepthWriteMask                 = D3D11_DEPTH_WRITE_MASK_ALL;
+            depthStencilDesc.DepthFunc                      = D3D11_COMPARISON_LESS;
+            depthStencilDesc.StencilEnable                  = false;
+            depthStencilDesc.StencilReadMask                = D3D11_DEFAULT_STENCIL_READ_MASK;
+            depthStencilDesc.StencilWriteMask               = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+            depthStencilDesc.FrontFace.StencilFunc          = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
+
+            hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_DepthStencilState);
+            if (FAILED(hr))
+                return false;
+
+            D3D11_BLEND_DESC1    blendDesc;
+            blendDesc.AlphaToCoverageEnable     = false;
+            blendDesc.IndependentBlendEnable    = false;
+
+            for (u32 i = 0; i < 8; ++i)
+            {
+                blendDesc.RenderTarget[i].BlendEnable           = true;
+                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            }
+
+            hr = m_pID3DDevice->CreateBlendState1(&blendDesc, &m_BlendState);
+            if (FAILED(hr))
+                return false;
+
+            D3D11_SAMPLER_DESC    samplerDesc;
+            samplerDesc.Filter          = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            samplerDesc.AddressU        = D3D11_TEXTURE_ADDRESS_WRAP;
+            samplerDesc.AddressV        = D3D11_TEXTURE_ADDRESS_WRAP;
+            samplerDesc.AddressW        = D3D11_TEXTURE_ADDRESS_WRAP;
+            samplerDesc.MipLODBias      = 0.0f;
+            samplerDesc.MaxAnisotropy   = 1;
+            samplerDesc.ComparisonFunc  = D3D11_COMPARISON_NEVER;
+            samplerDesc.MinLOD          = -FLT_MAX;
+            samplerDesc.MaxLOD          = FLT_MAX;
+
+            hr = m_pID3DDevice->CreateSamplerState(&samplerDesc, &m_SamplerState);
+            if (FAILED(hr))
+                return false;
+
+            return true;
+        }
+
+
+        void CD3D11Driver::setRenderStates(E_RENDER_MODE mode, bool alpha)
+        {
+            m_pID3DDeviceContext->RSSetViewports(1, &m_DefaultViewport);
+            m_pID3DDeviceContext->RSSetScissorRects(1, &m_DefaultScissorRect);
+            m_pID3DDeviceContext->RSSetState(m_RasterizerState);
+            m_pID3DDeviceContext->OMSetDepthStencilState(m_DepthStencilState, 0);
+
+            FLOAT    blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+            if (alpha)
+            {
+                D3D11_BLEND_DESC1    blendDesc;
+                blendDesc.AlphaToCoverageEnable     = false;
+                blendDesc.IndependentBlendEnable    = false;
+
+                for (u32 i = 0; i < 8; ++i)
+                {
+                    blendDesc.RenderTarget[i].BlendEnable           = true;
+                    blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                    blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                    blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                    blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                    blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                    blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+                }
+
+                ID3D11BlendState1    *alphaBlendState = 0;
+                if (SUCCEEDED(m_pID3DDevice->CreateBlendState1(&blendDesc, &alphaBlendState)))
+                {
+                    m_pID3DDeviceContext->OMSetBlendState(alphaBlendState, blendFactor, 0xFFFFFFFF);
+                    alphaBlendState->Release();
+                }
+                else
+                {
+                    m_pID3DDeviceContext->OMSetBlendState(m_BlendState, blendFactor, 0xFFFFFFFF);
+                }
+            }
+            else
+            {
+                m_pID3DDeviceContext->OMSetBlendState(m_BlendState, blendFactor, 0xFFFFFFFF);
+            }
+
+            m_pID3DDeviceContext->PSSetSamplers(0, 1, &m_SamplerState);
         }
 
 

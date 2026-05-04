@@ -21,6 +21,7 @@
 #include "irrMath.h"
 #endif
 #include <d3d11.h>
+#include <d3d11_1.h>
 #include <d3dcompiler.h>
 #include <windef.h>
 #include <dxgitype.h>
@@ -338,6 +339,8 @@ private:
             bool createBuiltInPixelShader(E_VERTEX_TYPE type);
             bool createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob);
             void updateMatrixConstantBuffer();
+            void setRenderStates(E_RENDER_MODE mode, bool alpha);
+            bool createDefaultStates();
 
             core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
 
@@ -392,6 +395,13 @@ private:
             u32                     m_TempVertexBufferSize;
             u32                     m_TempIndexBufferSize;
             E_INDEX_TYPE            m_TempIndexType;
+
+            D3D11_VIEWPORT                  m_DefaultViewport;
+            D3D11_RECT                      m_DefaultScissorRect;
+            ID3D11RasterizerState1           *m_RasterizerState;
+            ID3D11DepthStencilState         *m_DepthStencilState;
+            ID3D11BlendState1                *m_BlendState;
+            ID3D11SamplerState              *m_SamplerState;
 
             E_RENDER_MODE    m_CurrentRenderMode;
         };

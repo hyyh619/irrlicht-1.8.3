@@ -320,3 +320,6 @@ d3d11最大可以支持8个纹理,其它video driver支持4个,改一下下面�
 1. 请在draw前，通过model/view/project matrics计算出mvp matrix
 2. mvp matrix作为constant传递给vertex shader
 3. vertex shader的顶点计算增加mvp矩阵转换。
+
+# 23
+d3d11的渲染管线需要设置viewport/scissor, ID3D11DepthStencilState, ID3D11RasterizerState1和ID3D11BlendState1，请增加这些设置项。
