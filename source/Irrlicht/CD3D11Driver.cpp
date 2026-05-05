@@ -321,6 +321,17 @@ namespace irr
             if (m_DefaultSampler)
                 m_DefaultSampler->drop();
 
+            if (m_BackBufferRenderTargetView)
+                m_BackBufferRenderTargetView->Release();
+
+            if (m_DepthStencilView)
+                m_DepthStencilView->Release();
+
+#ifdef _DEBUG
+            if (m_pID3D11Debug)
+                m_pID3D11Debug->Release();
+#endif
+
             if (m_pID3DDeviceContext)
                 m_pID3DDeviceContext->Release();
 
