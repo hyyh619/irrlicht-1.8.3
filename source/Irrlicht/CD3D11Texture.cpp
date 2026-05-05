@@ -359,9 +359,31 @@ namespace irr
             destBox.bottom  = image->getDimension().Height;
             destBox.back    = 1;
 
-            u32     imagePitch  = image->getPitch();
             void    *imageData  = image->lock();
-            context->UpdateSubresource(m_Texture, 0, &destBox, imageData, imagePitch, 0);
+
+            if (image->getColorFormat() != m_ColorFormat)
+            {
+                IImage *tmpImage = m_Driver->createImage(m_ColorFormat, image->getDimension());
+                if (!tmpImage)
+                {
+                    image->unlock();
+                    return false;
+                }
+
+                image->copyToScaling(tmpImage);
+
+                u32     tmpPitch  = tmpImage->getPitch();
+                void    *tmpData   = tmpImage->lock();
+                context->UpdateSubresource(m_Texture, 0, &destBox, tmpData, tmpPitch, 0);
+                tmpImage->unlock();
+                tmpImage->drop();
+            }
+            else
+            {
+                u32     imagePitch  = image->getPitch();
+                context->UpdateSubresource(m_Texture, 0, &destBox, imageData, imagePitch, 0);
+            }
+
             image->unlock();
 
             return true;

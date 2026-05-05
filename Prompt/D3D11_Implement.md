@@ -363,3 +363,10 @@ d3d9使用下面3个矩阵完成MVP转换
                     break;
 
 d3d11只需要给VS一个MVP矩阵，完成顶点转换。获得了ETS_VIEW，ETS_WORLD和ETS_PROJECTION矩阵，该如何计算出VS使用的MVP矩阵。
+
+# 29
+CD3D11Texture::copyTexture在拷贝image数据到texture对应的resource中时，
+1. 需要先检查image的format与m_ColorFormat是否匹配。
+2. 如果不匹配需要使用m_ColorFormat创建一个临时的tmpImage
+3. 使用image的copyToScaling把原始image的数据拷贝到tmpImage中
+4. 使用tmpImage的data 上传到texture的resource中。
