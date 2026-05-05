@@ -1318,6 +1318,9 @@
     <ClInclude Include="CD3D11Texture.h">
       <Filter>Irrlicht\video\Direct3D11</Filter>
     </ClInclude>
+    <ClInclude Include="CD3D11Shader.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\changes.txt">
@@ -2274,6 +2277,9 @@
       <Filter>Irrlicht\video\Direct3D11</Filter>
     </ClCompile>
     <ClCompile Include="CD3D11CgMaterialRenderer.cpp">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="CD3D11Shader.cpp">
       <Filter>Irrlicht\video\Direct3D11</Filter>
     </ClCompile>
   </ItemGroup>

@@ -370,3 +370,149 @@ CD3D11Texture::copyTexture在拷贝image数据到texture对应的resource中时�
 2. 如果不匹配需要使用m_ColorFormat创建一个临时的tmpImage
 3. 使用image的copyToScaling把原始image的数据拷贝到tmpImage中
 4. 使用tmpImage的data 上传到texture的resource中。
+
+# 30
+创建shader类
+1. 该类表示d3d11的所有shader类型，包括vs/hs/ds/gs/ps/cs
+2. 该类保存shader HLSL源代码
+3. 如果是vs，还需要保存input layout信息以及创建的ID3D11InputLayout
+4. HLSL经过D3DCompile编译后生成的ID3DBlob也需要保存
+5. 需要保存创建的ID3D11VertexShader，ID3D11PixelShader，ID3D11DomainShader，ID3D11HullShader,ID3D11GeometryShader,ID3D11ComputeShader等对象
+6. 该类的对象由CD3D11Driver负责创建，管理和销毁
+7. 把下列shader源码的编译，创建都使用该shader类来管理
+           static const char    VERTEX_SHADER_STANDARD[] =
+            "struct VS_INPUT {"
+            "    float3 Pos : POSITION;"
+            "    float3 Normal : NORMAL;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "};"
+            "struct VS_OUTPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Normal : TEXCOORD1;"
+            "};"
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
+            "VS_OUTPUT main(VS_INPUT input) {"
+            "    VS_OUTPUT output;"
+            "    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));"
+            "    output.Color = input.Color;"
+            "    output.TexCoord = input.TexCoord;"
+            "    output.Normal = input.Normal;"
+            "    return output;"
+            "}";
+
+        static const char    VERTEX_SHADER_2TCOORDS[] =
+            "struct VS_INPUT {"
+            "    float3 Pos : POSITION;"
+            "    float3 Normal : NORMAL;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float2 TexCoord2 : TEXCOORD1;"
+            "};"
+            "struct VS_OUTPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float2 TexCoord2 : TEXCOORD1;"
+            "    float3 Normal : TEXCOORD2;"
+            "};"
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
+            "VS_OUTPUT main(VS_INPUT input) {"
+            "    VS_OUTPUT output;"
+            "    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));"
+            "    output.Color = input.Color;"
+            "    output.TexCoord = input.TexCoord;"
+            "    output.TexCoord2 = input.TexCoord2;"
+            "    output.Normal = input.Normal;"
+            "    return output;"
+            "}";
+
+        static const char    VERTEX_SHADER_TANGENTS[] =
+            "struct VS_INPUT {"
+            "    float3 Pos : POSITION;"
+            "    float3 Normal : NORMAL;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Tangent : TANGENT;"
+            "    float3 Binormal : BINORMAL;"
+            "};"
+            "struct VS_OUTPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Normal : TEXCOORD1;"
+            "    float3 Tangent : TEXCOORD2;"
+            "    float3 Binormal : TEXCOORD3;"
+            "};"
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
+            "VS_OUTPUT main(VS_INPUT input) {"
+            "    VS_OUTPUT output;"
+            "    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));"
+            "    output.Color = input.Color;"
+            "    output.TexCoord = input.TexCoord;"
+            "    output.Normal = input.Normal;"
+            "    output.Tangent = input.Tangent;"
+            "    output.Binormal = input.Binormal;"
+            "    return output;"
+            "}";
+
+        static const char    PIXEL_SHADER_STANDARD[] =
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
+            "struct PS_INPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Normal : TEXCOORD1;"
+            "};"
+            "Texture2D DiffuseTexture : register(t0);"
+            "SamplerState LinearSampler : register(s0);"
+            "float4 main(PS_INPUT input) : SV_TARGET {"
+            "    return DiffuseTexture.Sample(LinearSampler, input.TexCoord);"
+            "}";
+
+        static const char    PIXEL_SHADER_2TCOORDS[] =
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
+            "struct PS_INPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float2 TexCoord2 : TEXCOORD1;"
+            "    float3 Normal : TEXCOORD2;"
+            "};"
+            "Texture2D DiffuseTexture : register(t0);"
+            "SamplerState LinearSampler : register(s0);"
+            "float4 main(PS_INPUT input) : SV_TARGET {"
+            "    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);"
+            "    return input.Color * texColor;"
+            "}";
+
+        static const char    PIXEL_SHADER_TANGENTS[] =
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
+            "struct PS_INPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Normal : TEXCOORD1;"
+            "    float3 Tangent : TEXCOORD2;"
+            "    float3 Binormal : TEXCOORD3;"
+            "};"
+            "Texture2D DiffuseTexture : register(t0);"
+            "SamplerState LinearSampler : register(s0);"
+            "float4 main(PS_INPUT input) : SV_TARGET {"
+            "    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);"
+            "    return input.Color * texColor;"
+            "}";

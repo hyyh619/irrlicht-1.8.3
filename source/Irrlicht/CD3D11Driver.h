@@ -169,6 +169,7 @@ private:
         class CD3D11ShaderMaterialRenderer;
         class CD3D11NormalMapRenderer;
         class CD3D11ParallaxMapRenderer;
+        class CD3D11Shader;
 
 #if defined(_IRR_COMPILE_WITH_CG_)
         class CD3D11CgMaterialRenderer;
@@ -465,6 +466,8 @@ private:
             core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
 
             void removeDepthSurface(SD3D11DepthStencilView *depth);
+
+            core::array<CD3D11Shader*> m_ShaderPool;
             DXGI_MODE_DESC          m_SwapChainBufferDesc;
             DXGI_SWAP_CHAIN_DESC    m_SwapChainDesc;
 
