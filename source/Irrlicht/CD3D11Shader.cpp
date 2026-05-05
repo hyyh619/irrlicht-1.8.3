@@ -5,6 +5,7 @@
 #define _IRR_DONT_DO_MEMORY_DEBUGGING_HERE
 #include "CD3D11Shader.h"
 #include "CD3D11Driver.h"
+#include "CD3D11ObjectTracker.h"
 #include "os.h"
 
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_11_
@@ -27,7 +28,10 @@ namespace irr
         CD3D11Shader::~CD3D11Shader()
         {
             if (m_InputLayout)
+            {
+                IRR_D3D11_IL_RELEASE(m_InputLayout, "InputLayout");
                 m_InputLayout->Release();
+            }
 
             if (m_InputLayoutDesc)
                 delete[] m_InputLayoutDesc;
@@ -36,22 +40,40 @@ namespace irr
                 m_ShaderBlob->Release();
 
             if (m_VertexShader)
+            {
+                IRR_D3D11_VS_RELEASE(m_VertexShader, "VertexShader");
                 m_VertexShader->Release();
+            }
 
             if (m_HullShader)
+            {
+                IRR_D3D11_HS_RELEASE(m_HullShader, "HullShader");
                 m_HullShader->Release();
+            }
 
             if (m_DomainShader)
+            {
+                IRR_D3D11_DS_RELEASE(m_DomainShader, "DomainShader");
                 m_DomainShader->Release();
+            }
 
             if (m_GeometryShader)
+            {
+                IRR_D3D11_GS_RELEASE(m_GeometryShader, "GeometryShader");
                 m_GeometryShader->Release();
+            }
 
             if (m_PixelShader)
+            {
+                IRR_D3D11_PS_RELEASE(m_PixelShader, "PixelShader");
                 m_PixelShader->Release();
+            }
 
             if (m_ComputeShader)
+            {
+                IRR_D3D11_CS_RELEASE(m_ComputeShader, "ComputeShader");
                 m_ComputeShader->Release();
+            }
         }
 
         void CD3D11Shader::drop()
@@ -107,6 +129,7 @@ namespace irr
                 nullptr,
                 &m_VertexShader);
 
+            IRR_D3D11_VS_CREATE(m_VertexShader, "VertexShader");
             return SUCCEEDED(hr);
         }
 
@@ -127,6 +150,7 @@ namespace irr
                 nullptr,
                 &m_HullShader);
 
+            IRR_D3D11_HS_CREATE(m_HullShader, "HullShader");
             return SUCCEEDED(hr);
         }
 
@@ -147,6 +171,7 @@ namespace irr
                 nullptr,
                 &m_DomainShader);
 
+            IRR_D3D11_DS_CREATE(m_DomainShader, "DomainShader");
             return SUCCEEDED(hr);
         }
 
@@ -167,6 +192,7 @@ namespace irr
                 nullptr,
                 &m_GeometryShader);
 
+            IRR_D3D11_GS_CREATE(m_GeometryShader, "GeometryShader");
             return SUCCEEDED(hr);
         }
 
@@ -187,6 +213,7 @@ namespace irr
                 nullptr,
                 &m_PixelShader);
 
+            IRR_D3D11_PS_CREATE(m_PixelShader, "PixelShader");
             return SUCCEEDED(hr);
         }
 
@@ -207,6 +234,7 @@ namespace irr
                 nullptr,
                 &m_ComputeShader);
 
+            IRR_D3D11_CS_CREATE(m_ComputeShader, "ComputeShader");
             return SUCCEEDED(hr);
         }
 
@@ -238,6 +266,7 @@ namespace irr
                 m_ShaderBlob->GetBufferSize(),
                 &m_InputLayout);
 
+            IRR_D3D11_IL_CREATE(m_InputLayout, "InputLayout");
             return SUCCEEDED(hr);
         }
     } // end namespace video

@@ -8,6 +8,7 @@
 #define _IRR_DONT_DO_MEMORY_DEBUGGING_HERE
 #include "CD3D11Texture.h"
 #include "CD3D11Driver.h"
+#include "CD3D11ObjectTracker.h"
 #include "SColor.h"
 #include "os.h"
 
@@ -71,13 +72,22 @@ namespace irr
         CD3D11Texture::~CD3D11Texture()
         {
             if (m_Texture)
+            {
+                IRR_D3D11_TEXTURE2D_RELEASE(m_Texture, "RenderTargetTexture");
                 m_Texture->Release();
+            }
 
             if (m_RenderTargetView)
+            {
+                IRR_D3D11_RTV_RELEASE(m_RenderTargetView, "RenderTargetView");
                 m_RenderTargetView->Release();
+            }
 
             if (m_ShaderResourceView)
+            {
+                IRR_D3D11_SRV_RELEASE(m_ShaderResourceView, "ShaderResourceView");
                 m_ShaderResourceView->Release();
+            }
 
             if (m_DepthSurface)
             {
@@ -197,6 +207,7 @@ namespace irr
             desc.MiscFlags          = 0;
 
             HRESULT    hr = m_Device->CreateTexture2D(&desc, 0, &m_Texture);
+            IRR_D3D11_TEXTURE2D_CREATE(m_Texture, "RenderTargetTexture");
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create render target texture.", ELL_WARNING);
@@ -209,6 +220,7 @@ namespace irr
             rtvDesc.Texture2D.MipSlice  = 0;
 
             hr = m_Device->CreateRenderTargetView(m_Texture, &rtvDesc, &m_RenderTargetView);
+            IRR_D3D11_RTV_CREATE(m_RenderTargetView, "RenderTargetView");
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create render target view.", ELL_WARNING);
@@ -222,6 +234,7 @@ namespace irr
             srvDesc.Texture2D.MipLevels         = 1;
 
             hr = m_Device->CreateShaderResourceView(m_Texture, &srvDesc, &m_ShaderResourceView);
+            IRR_D3D11_SRV_CREATE(m_ShaderResourceView, "ShaderResourceView");
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create shader resource view.", ELL_WARNING);

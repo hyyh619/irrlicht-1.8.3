@@ -6,6 +6,7 @@
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_11_
 
 #include "CD3D11ShaderMaterialRenderer.h"
+#include "CD3D11ObjectTracker.h"
 #include "IShaderConstantSetCallBack.h"
 #include "IMaterialRendererServices.h"
 #include "IVideoDriver.h"
@@ -81,13 +82,22 @@ namespace irr
                 m_CallBack->drop();
 
             if (m_VertexShader)
+            {
+                IRR_D3D11_VS_RELEASE(m_VertexShader, "VertexShader");
                 m_VertexShader->Release();
+            }
 
             if (m_PixelShader)
+            {
+                IRR_D3D11_PS_RELEASE(m_PixelShader, "PixelShader");
                 m_PixelShader->Release();
+            }
 
             if (m_InputLayout)
+            {
+                IRR_D3D11_IL_RELEASE(m_InputLayout, "InputLayout");
                 m_InputLayout->Release();
+            }
 
             if (m_BaseMaterial)
                 m_BaseMaterial->drop();

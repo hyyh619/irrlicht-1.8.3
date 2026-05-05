@@ -387,3 +387,13 @@ CD3D11Texture::copyTexture在拷贝image数据到texture对应的resource中时�
             ID3D11InputLayout               *m_InputLayout[3];
             ID3D11VertexShader              *m_BuiltInVertexShader[3];
             ID3D11PixelShader               *m_BuiltInPixelShader[3];
+
+# 32
+为每个ID3D11* 对象的创建，引用和销毁都打印一个log来跟踪其生存周期，以及检测内存泄漏，
+打印的log要包括对象的ID3D11*的指针地址，以及在哪个函数被调用。
+这些ID3D11* 对象例如：
+ID3D11Buffer
+ID3D11SamplerState
+ID3D11BlendState1
+ID3D11DepthStencilView
+请包括所有的对象。

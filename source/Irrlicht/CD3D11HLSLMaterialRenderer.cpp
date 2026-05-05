@@ -6,6 +6,7 @@
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_11_
 
 #include "CD3D11HLSLMaterialRenderer.h"
+#include "CD3D11ObjectTracker.h"
 #include "IShaderConstantSetCallBack.h"
 #include "IVideoDriver.h"
 #include "os.h"
@@ -110,6 +111,7 @@ namespace irr
                     buffer->Release();
                     return false;
                 }
+                IRR_D3D11_VS_CREATE(m_VertexShader, "HLSLVertexShader");
                 buffer->Release();
                 return true;
             }
@@ -172,6 +174,7 @@ namespace irr
                     buffer->Release();
                     return false;
                 }
+                IRR_D3D11_PS_CREATE(m_PixelShader, "HLSLPixelShader");
                 buffer->Release();
                 return true;
             }

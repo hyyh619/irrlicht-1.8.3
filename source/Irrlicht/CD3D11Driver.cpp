@@ -4,6 +4,7 @@
 
 #define _IRR_DONT_DO_MEMORY_DEBUGGING_HERE
 #include "CD3D11Driver.h"
+#include "CD3D11ObjectTracker.h"
 
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_11_
 
@@ -222,7 +223,10 @@ namespace irr
         CSampler::~CSampler()
         {
             if (m_D3D11SamplerState)
+            {
+                IRR_D3D11_SAMPLER_RELEASE(m_D3D11SamplerState, "DefaultSamplerState");
                 m_D3D11SamplerState->Release();
+            }
         }
 
 
@@ -257,6 +261,7 @@ namespace irr
             m_MaxLOD            = desc.MaxLOD;
 
             HRESULT    hr = m_Driver->m_pID3DDevice->CreateSamplerState(&desc, &m_D3D11SamplerState);
+            IRR_D3D11_SAMPLER_CREATE(m_D3D11SamplerState, "DefaultSamplerState");
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create sampler state.", ELL_ERROR);
@@ -291,58 +296,106 @@ namespace irr
             for (u32 i = 0; i < EVT_TANGENTS + 1; ++i)
             {
                 if (m_InputLayout[i])
+                {
+                    IRR_D3D11_IL_RELEASE(m_InputLayout[i], "BuiltInInputLayout");
                     m_InputLayout[i]->Release();
+                }
 
                 if (m_BuiltInVertexShader[i])
+                {
+                    IRR_D3D11_VS_RELEASE(m_BuiltInVertexShader[i], "BuiltInVertexShader");
                     m_BuiltInVertexShader[i]->Release();
+                }
 
                 if (m_BuiltInPixelShader[i])
+                {
+                    IRR_D3D11_PS_RELEASE(m_BuiltInPixelShader[i], "BuiltInPixelShader");
                     m_BuiltInPixelShader[i]->Release();
+                }
             }
 
             if (m_TempVertexBuffer)
+            {
+                IRR_D3D11_BUFFER_RELEASE(m_TempVertexBuffer, "TempVertexBuffer");
                 m_TempVertexBuffer->Release();
+            }
 
             if (m_TempIndexBuffer)
+            {
+                IRR_D3D11_BUFFER_RELEASE(m_TempIndexBuffer, "TempIndexBuffer");
                 m_TempIndexBuffer->Release();
+            }
 
             if (m_MatrixConstantBuffer)
+            {
+                IRR_D3D11_BUFFER_RELEASE(m_MatrixConstantBuffer, "MatrixConstantBuffer");
                 m_MatrixConstantBuffer->Release();
+            }
 
             if (m_RasterizerState)
+            {
+                IRR_D3D11_RS_RELEASE(m_RasterizerState, "DefaultRasterizerState");
                 m_RasterizerState->Release();
+            }
 
             if (m_DepthStencilState)
+            {
+                IRR_D3D11_DSS_RELEASE(m_DepthStencilState, "DefaultDepthStencilState");
                 m_DepthStencilState->Release();
+            }
 
             if (m_BlendState)
+            {
+                IRR_D3D11_BLEND_RELEASE(m_BlendState, "DefaultBlendState");
                 m_BlendState->Release();
+            }
 
             if (m_DefaultSampler)
                 m_DefaultSampler->drop();
 
             if (m_BackBufferRenderTargetView)
+            {
+                IRR_D3D11_RTV_RELEASE(m_BackBufferRenderTargetView, "BackBufferRenderTargetView");
                 m_BackBufferRenderTargetView->Release();
+            }
 
             if (m_DepthStencilView)
+            {
+                IRR_D3D11_DSV_RELEASE(m_DepthStencilView, "DepthStencilView");
                 m_DepthStencilView->Release();
+            }
 
 #ifdef _DEBUG
             if (m_pID3D11Debug)
+            {
+                IRR_D3D11_DEBUG_RELEASE(m_pID3D11Debug, "D3D11Debug");
                 m_pID3D11Debug->Release();
+            }
 #endif
 
             if (m_pID3DDeviceContext)
+            {
+                IRR_D3D11_DEVICE_CONTEXT_RELEASE(m_pID3DDeviceContext, "DeviceContext");
                 m_pID3DDeviceContext->Release();
+            }
 
             if (m_pID3DDevice1)
+            {
+                IRR_D3D11_DEVICE1_RELEASE(m_pID3DDevice1, "Device1");
                 m_pID3DDevice1->Release();
+            }
 
             if (m_pID3DDevice)
+            {
+                IRR_D3D11_DEVICE_RELEASE(m_pID3DDevice, "Device");
                 m_pID3DDevice->Release();
+            }
 
             if (m_SwapChain)
+            {
+                IRR_D3D11_SWAPCHAIN_RELEASE(m_SwapChain, "SwapChain");
                 m_SwapChain->Release();
+            }
 
             if (m_DXGIFactory)
                 m_DXGIFactory->Release();
@@ -399,11 +452,18 @@ namespace irr
                 return false;
             }
 
+            IRR_D3D11_DEVICE_CREATE(m_pID3DDevice, "MainDevice");
+            IRR_D3D11_DEVICE_CONTEXT_CREATE(m_pID3DDeviceContext, "MainDeviceContext");
+
 #ifdef _DEBUG
             hr = m_pID3DDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_pID3D11Debug);
+            if (SUCCEEDED(hr))
+                IRR_D3D11_DEBUG_CREATE(m_pID3D11Debug, "D3D11Debug");
 #endif
 
             hr = m_pID3DDevice->QueryInterface(__uuidof(ID3D11Device1), (void**)&m_pID3DDevice1);
+            if (SUCCEEDED(hr))
+                IRR_D3D11_DEVICE1_CREATE(m_pID3DDevice1, "Device1");
             if (FAILED(hr))
             {
                 os::Printer::log("Could not get D3D11Device1 interface.", ELL_WARNING);
@@ -504,6 +564,7 @@ namespace irr
                 return false;
             }
 
+            IRR_D3D11_SWAPCHAIN_CREATE(m_SwapChain, "MainSwapChain");
             m_DXGIFactory->MakeWindowAssociation(hwnd, 0);
 
             ID3D11Texture2D    *backBuffer = 0;
@@ -514,8 +575,11 @@ namespace irr
                 return false;
             }
 
+            IRR_D3D11_TEXTURE2D_CREATE(backBuffer, "BackBuffer");
             hr = m_pID3DDevice->CreateRenderTargetView(backBuffer, 0, &m_BackBufferRenderTargetView);
+            IRR_D3D11_RTV_CREATE(m_BackBufferRenderTargetView, "BackBufferRTV");
             backBuffer->Release();
+            IRR_D3D11_TEXTURE2D_RELEASE(backBuffer, "BackBuffer");
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create render target view.", ELL_ERROR);
@@ -543,8 +607,11 @@ namespace irr
                 return false;
             }
 
+            IRR_D3D11_TEXTURE2D_CREATE(depthTexture, "DepthStencilTexture");
             hr = m_pID3DDevice->CreateDepthStencilView(depthTexture, 0, &m_DepthStencilView);
+            IRR_D3D11_DSV_CREATE(m_DepthStencilView, "DepthStencilView");
             depthTexture->Release();
+            IRR_D3D11_TEXTURE2D_RELEASE(depthTexture, "DepthStencilTexture");
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create depth stencil view.", ELL_ERROR);
@@ -582,6 +649,7 @@ namespace irr
             matrixBufferDesc.MiscFlags              = 0;
             matrixBufferDesc.StructureByteStride    = 0;
             hr                                      = m_pID3DDevice->CreateBuffer(&matrixBufferDesc, 0, &m_MatrixConstantBuffer);
+            IRR_D3D11_BUFFER_CREATE(m_MatrixConstantBuffer, "MatrixConstantBuffer");
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create matrix constant buffer.", ELL_ERROR);
@@ -900,6 +968,7 @@ namespace irr
                 if (FAILED(m_pID3DDevice->CreateBuffer(&bufferDesc, &subData, &hwBuffer->vertexBuffer)))
                     return false;
 
+                IRR_D3D11_BUFFER_CREATE(hwBuffer->vertexBuffer, "VertexBuffer");
                 hwBuffer->vertexBufferSize = bufSize;
             }
             else
@@ -953,6 +1022,7 @@ namespace irr
                 if (FAILED(m_pID3DDevice->CreateBuffer(&bufferDesc, &subData, &hwBuffer->indexBuffer)))
                     return false;
 
+                IRR_D3D11_BUFFER_CREATE(hwBuffer->indexBuffer, "IndexBuffer");
                 hwBuffer->indexBufferSize = bufSize;
             }
             else
@@ -1000,12 +1070,14 @@ namespace irr
 
                 if (hwBufferD3D->vertexBuffer)
                 {
+                    IRR_D3D11_BUFFER_RELEASE(hwBufferD3D->vertexBuffer, "VertexBuffer");
                     hwBufferD3D->vertexBuffer->Release();
                     hwBufferD3D->vertexBuffer = 0;
                 }
 
                 if (hwBufferD3D->indexBuffer)
                 {
+                    IRR_D3D11_BUFFER_RELEASE(hwBufferD3D->indexBuffer, "IndexBuffer");
                     hwBufferD3D->indexBuffer->Release();
                     hwBufferD3D->indexBuffer = 0;
                 }
@@ -1142,7 +1214,10 @@ namespace irr
             if (!m_TempVertexBuffer || m_TempVertexBufferSize < vertexBufferSize)
             {
                 if (m_TempVertexBuffer)
+                {
+                    IRR_D3D11_BUFFER_RELEASE(m_TempVertexBuffer, "TempVertexBuffer");
                     m_TempVertexBuffer->Release();
+                }
 
                 D3D11_BUFFER_DESC    vbDesc;
                 vbDesc.ByteWidth            = vertexBufferSize;
@@ -1158,6 +1233,7 @@ namespace irr
                     return;
                 }
 
+                IRR_D3D11_BUFFER_CREATE(m_TempVertexBuffer, "TempVertexBuffer");
                 m_TempVertexBufferSize = vertexBufferSize;
             }
 
@@ -1179,7 +1255,10 @@ namespace irr
                 if (!m_TempIndexBuffer || m_TempIndexBufferSize < indexBufferSize || m_TempIndexType != iType)
                 {
                     if (m_TempIndexBuffer)
+                    {
+                        IRR_D3D11_BUFFER_RELEASE(m_TempIndexBuffer, "TempIndexBuffer");
                         m_TempIndexBuffer->Release();
+                    }
 
                     D3D11_BUFFER_DESC    ibDesc;
                     ibDesc.ByteWidth            = indexBufferSize;
@@ -1195,6 +1274,7 @@ namespace irr
                         return;
                     }
 
+                    IRR_D3D11_BUFFER_CREATE(m_TempIndexBuffer, "TempIndexBuffer");
                     m_TempIndexBufferSize   = indexBufferSize;
                     m_TempIndexType         = iType;
                 }
@@ -1960,15 +2040,23 @@ namespace irr
             m_ShaderPool.push_back(shader);
 
             if (m_BuiltInVertexShader[type])
+            {
+                IRR_D3D11_VS_RELEASE(m_BuiltInVertexShader[type], "BuiltInVertexShader");
                 m_BuiltInVertexShader[type]->Release();
+            }
 
             m_BuiltInVertexShader[type] = shader->getVertexShader();
+            IRR_D3D11_VS_CREATE(m_BuiltInVertexShader[type], "BuiltInVertexShader");
             m_BuiltInVertexShader[type]->AddRef();
 
             if (m_InputLayout[type])
+            {
+                IRR_D3D11_IL_RELEASE(m_InputLayout[type], "BuiltInInputLayout");
                 m_InputLayout[type]->Release();
+            }
 
             m_InputLayout[type] = shader->getInputLayout();
+            IRR_D3D11_IL_CREATE(m_InputLayout[type], "BuiltInInputLayout");
             m_InputLayout[type]->AddRef();
 
             return true;
@@ -2013,9 +2101,13 @@ namespace irr
             m_ShaderPool.push_back(shader);
 
             if (m_BuiltInPixelShader[type])
+            {
+                IRR_D3D11_PS_RELEASE(m_BuiltInPixelShader[type], "BuiltInPixelShader");
                 m_BuiltInPixelShader[type]->Release();
+            }
 
             m_BuiltInPixelShader[type] = shader->getPixelShader();
+            IRR_D3D11_PS_CREATE(m_BuiltInPixelShader[type], "BuiltInPixelShader");
             m_BuiltInPixelShader[type]->AddRef();
 
             return true;
@@ -2130,6 +2222,8 @@ namespace irr
                 return false;
             }
 
+            IRR_D3D11_RS_CREATE(m_RasterizerState, "DefaultRasterizerState");
+
             depthStencilDesc.DepthEnable                    = true;
             depthStencilDesc.DepthWriteMask                 = D3D11_DEPTH_WRITE_MASK_ALL;
             depthStencilDesc.DepthFunc                      = D3D11_COMPARISON_LESS;
@@ -2146,6 +2240,7 @@ namespace irr
             depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
 
             hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_DepthStencilState);
+            IRR_D3D11_DSS_CREATE(m_DepthStencilState, "DefaultDepthStencilState");
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create depth stencil state.", ELL_ERROR);
@@ -2173,6 +2268,7 @@ namespace irr
             if (m_pID3DDevice1)
                 hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_BlendState);
 
+            IRR_D3D11_BLEND_CREATE(m_BlendState, "DefaultBlendState");
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create blend state.", ELL_ERROR);

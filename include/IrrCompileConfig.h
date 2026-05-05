@@ -825,6 +825,11 @@ typedef long intptr_t;
     #define _IRR_SCENEMANAGER_DEBUG
     #ifdef NO_IRR_SCENEMANAGER_DEBUG
         #undef _IRR_SCENEMANAGER_DEBUG
-#endif
+    #endif
+
+    #define _IRR_D3D11_OBJECT_TRACKING
+    #ifdef NO_IRR_D3D11_OBJECT_TRACKING
+        #undef _IRR_D3D11_OBJECT_TRACKING
+    #endif
 #endif
 #endif // __IRR_COMPILE_CONFIG_H_INCLUDED__
