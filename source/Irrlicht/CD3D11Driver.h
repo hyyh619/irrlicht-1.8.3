@@ -467,9 +467,9 @@ private:
 
             void removeDepthSurface(SD3D11DepthStencilView *depth);
 
-            core::array<CD3D11Shader*> m_ShaderPool;
-            DXGI_MODE_DESC          m_SwapChainBufferDesc;
-            DXGI_SWAP_CHAIN_DESC    m_SwapChainDesc;
+            core::array<CD3D11Shader*>      m_ShaderPool;
+            DXGI_MODE_DESC                  m_SwapChainBufferDesc;
+            DXGI_SWAP_CHAIN_DESC            m_SwapChainDesc;
 
             SMaterial           m_Material, m_LastMaterial;
             bool                m_ResetRenderStates;

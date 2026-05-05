@@ -1865,7 +1865,7 @@ namespace irr
                     return false;
             }
 
-            CD3D11Shader *shader = new CD3D11Shader(this);
+            CD3D11Shader    *shader = new CD3D11Shader(this);
             if (!shader->compile(EDST_VERTEX, shaderSource, "main", "vs_4_0"))
             {
                 shader->drop();
@@ -1878,28 +1878,28 @@ namespace irr
                 return false;
             }
 
-            D3D11_INPUT_ELEMENT_DESC *layout = 0;
-            u32 numElements = 0;
+            D3D11_INPUT_ELEMENT_DESC    *layout     = 0;
+            u32                         numElements = 0;
 
             switch (type)
             {
                 case EVT_STANDARD:
                 {
-                    static D3D11_INPUT_ELEMENT_DESC standardLayout[] =
+                    static D3D11_INPUT_ELEMENT_DESC    standardLayout[] =
                     {
                         {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
                         {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
                         {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
                         {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
                     };
-                    layout = standardLayout;
+                    layout      = standardLayout;
                     numElements = 4;
                     break;
                 }
 
                 case EVT_2TCOORDS:
                 {
-                    static D3D11_INPUT_ELEMENT_DESC twoTexLayout[] =
+                    static D3D11_INPUT_ELEMENT_DESC    twoTexLayout[] =
                     {
                         {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
                         {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -1907,14 +1907,14 @@ namespace irr
                         {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
                         {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
                     };
-                    layout = twoTexLayout;
+                    layout      = twoTexLayout;
                     numElements = 5;
                     break;
                 }
 
                 case EVT_TANGENTS:
                 {
-                    static D3D11_INPUT_ELEMENT_DESC tangentLayout[] =
+                    static D3D11_INPUT_ELEMENT_DESC    tangentLayout[] =
                     {
                         {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
                         {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -1923,7 +1923,7 @@ namespace irr
                         {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
                         {"BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0},
                     };
-                    layout = tangentLayout;
+                    layout      = tangentLayout;
                     numElements = 6;
                     break;
                 }
@@ -1943,11 +1943,13 @@ namespace irr
 
             if (m_BuiltInVertexShader[type])
                 m_BuiltInVertexShader[type]->Release();
+
             m_BuiltInVertexShader[type] = shader->getVertexShader();
             m_BuiltInVertexShader[type]->AddRef();
 
             if (m_InputLayout[type])
                 m_InputLayout[type]->Release();
+
             m_InputLayout[type] = shader->getInputLayout();
             m_InputLayout[type]->AddRef();
 
@@ -1977,7 +1979,7 @@ namespace irr
                     return false;
             }
 
-            CD3D11Shader *shader = new CD3D11Shader(this);
+            CD3D11Shader    *shader = new CD3D11Shader(this);
             if (!shader->compile(EDST_PIXEL, shaderSource, "main", "ps_4_0"))
             {
                 shader->drop();
@@ -1994,6 +1996,7 @@ namespace irr
 
             if (m_BuiltInPixelShader[type])
                 m_BuiltInPixelShader[type]->Release();
+
             m_BuiltInPixelShader[type] = shader->getPixelShader();
             m_BuiltInPixelShader[type]->AddRef();
 
