@@ -56,8 +56,7 @@ namespace irr
 
         void CD3D11Shader::drop()
         {
-            if (dropRefCount())
-                delete this;
+            IReferenceCounted::drop();
         }
 
         bool CD3D11Shader::compile(E_D3D11_SHADER_TYPE type, const c8 *hlslSource, const c8 *entryPoint, const c8 *profile)
