@@ -1763,6 +1763,7 @@
     <ClInclude Include="..\..\include\IGUITreeView.h" />
     <ClInclude Include="..\..\include\IGUIWindow.h" />
     <ClInclude Include="CCgMaterialRenderer.h" />
+    <ClInclude Include="CD3D11ObjectTracker.h" />
     <ClInclude Include="CD3D11Shader.h" />
     <ClInclude Include="CD3D9CgMaterialRenderer.h" />
     <ClInclude Include="CDefaultSceneNodeAnimatorFactory.h" />
