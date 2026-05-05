@@ -228,8 +228,8 @@ namespace irr
                 return;
             }
 
-            m_ColorFormat     = colorFormat;
-            m_IsRenderTarget  = true;
+            m_ColorFormat       = colorFormat;
+            m_IsRenderTarget    = true;
         }
 
 
@@ -335,9 +335,9 @@ namespace irr
                 return false;
             }
 
-            m_TextureSize = optSize;
-            m_ColorFormat = format;
-            m_HasMipMaps  = mipmaps;
+            m_TextureSize   = optSize;
+            m_ColorFormat   = format;
+            m_HasMipMaps    = mipmaps;
             setPitch(m_DXGIFormat);
 
             return true;
@@ -363,7 +363,7 @@ namespace irr
 
             if (image->getColorFormat() != m_ColorFormat)
             {
-                IImage *tmpImage = m_Driver->createImage(m_ColorFormat, image->getDimension());
+                IImage    *tmpImage = m_Driver->createImage(m_ColorFormat, image->getDimension());
                 if (!tmpImage)
                 {
                     image->unlock();
@@ -372,15 +372,15 @@ namespace irr
 
                 image->copyToScaling(tmpImage);
 
-                u32     tmpPitch  = tmpImage->getPitch();
-                void    *tmpData   = tmpImage->lock();
+                u32     tmpPitch    = tmpImage->getPitch();
+                void    *tmpData    = tmpImage->lock();
                 context->UpdateSubresource(m_Texture, 0, &destBox, tmpData, tmpPitch, 0);
                 tmpImage->unlock();
                 tmpImage->drop();
             }
             else
             {
-                u32     imagePitch  = image->getPitch();
+                u32    imagePitch  = image->getPitch();
                 context->UpdateSubresource(m_Texture, 0, &destBox, imageData, imagePitch, 0);
             }
 
