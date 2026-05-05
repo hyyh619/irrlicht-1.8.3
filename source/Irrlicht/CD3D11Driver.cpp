@@ -281,7 +281,14 @@ namespace irr
 
             m_DepthBuffers.clear();
 
-            for (u32 i = 0; i < 3; ++i)
+            for (u32 i = 0; i < m_ShaderPool.size(); ++i)
+            {
+                m_ShaderPool[i]->drop();
+            }
+
+            m_ShaderPool.clear();
+
+            for (u32 i = 0; i < EVT_TANGENTS + 1; ++i)
             {
                 if (m_InputLayout[i])
                     m_InputLayout[i]->Release();
