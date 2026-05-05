@@ -36,7 +36,7 @@ namespace irr
 
         class CD3D11Shader : public IReferenceCounted
         {
-        public:
+public:
             CD3D11Shader(CD3D11Driver *driver);
             virtual ~CD3D11Shader();
 
@@ -50,45 +50,76 @@ namespace irr
             bool createInputLayout(const D3D11_INPUT_ELEMENT_DESC *layout, u32 elementCount);
             void drop();
 
-            ID3D11VertexShader* getVertexShader() const { return m_VertexShader; }
-            ID3D11HullShader* getHullShader() const { return m_HullShader; }
-            ID3D11DomainShader* getDomainShader() const { return m_DomainShader; }
-            ID3D11GeometryShader* getGeometryShader() const { return m_GeometryShader; }
-            ID3D11PixelShader* getPixelShader() const { return m_PixelShader; }
-            ID3D11ComputeShader* getComputeShader() const { return m_ComputeShader; }
-            ID3D11InputLayout* getInputLayout() const { return m_InputLayout; }
-            ID3DBlob* getShaderBlob() const { return m_ShaderBlob; }
-            const core::stringc& getHLSLSource() const { return m_HLSLSource; }
-            E_D3D11_SHADER_TYPE getShaderType() const { return m_ShaderType; }
-            bool isCompiled() const { return m_Compiled; }
+            ID3D11VertexShader* getVertexShader() const
+            {
+                return m_VertexShader;
+            }
+            ID3D11HullShader* getHullShader() const
+            {
+                return m_HullShader;
+            }
+            ID3D11DomainShader* getDomainShader() const
+            {
+                return m_DomainShader;
+            }
+            ID3D11GeometryShader* getGeometryShader() const
+            {
+                return m_GeometryShader;
+            }
+            ID3D11PixelShader* getPixelShader() const
+            {
+                return m_PixelShader;
+            }
+            ID3D11ComputeShader* getComputeShader() const
+            {
+                return m_ComputeShader;
+            }
+            ID3D11InputLayout* getInputLayout() const
+            {
+                return m_InputLayout;
+            }
+            ID3DBlob* getShaderBlob() const
+            {
+                return m_ShaderBlob;
+            }
+            const core::stringc&getHLSLSource() const
+            {
+                return m_HLSLSource;
+            }
+            E_D3D11_SHADER_TYPE getShaderType() const
+            {
+                return m_ShaderType;
+            }
+            bool isCompiled() const
+            {
+                return m_Compiled;
+            }
 
-        private:
-            CD3D11Driver *m_Driver;
+private:
+            CD3D11Driver    *m_Driver;
 
-            core::stringc m_HLSLSource;
-            core::stringc m_EntryPoint;
-            core::stringc m_Profile;
+            core::stringc       m_HLSLSource;
+            core::stringc       m_EntryPoint;
+            core::stringc       m_Profile;
 
-            E_D3D11_SHADER_TYPE m_ShaderType;
-            bool m_Compiled;
+            E_D3D11_SHADER_TYPE     m_ShaderType;
+            bool                    m_Compiled;
 
-            ID3DBlob *m_ShaderBlob;
+            ID3DBlob    *m_ShaderBlob;
 
-            ID3D11VertexShader *m_VertexShader;
-            ID3D11HullShader *m_HullShader;
-            ID3D11DomainShader *m_DomainShader;
-            ID3D11GeometryShader *m_GeometryShader;
-            ID3D11PixelShader *m_PixelShader;
-            ID3D11ComputeShader *m_ComputeShader;
+            ID3D11VertexShader      *m_VertexShader;
+            ID3D11HullShader        *m_HullShader;
+            ID3D11DomainShader      *m_DomainShader;
+            ID3D11GeometryShader    *m_GeometryShader;
+            ID3D11PixelShader       *m_PixelShader;
+            ID3D11ComputeShader     *m_ComputeShader;
 
-            ID3D11InputLayout *m_InputLayout;
-            D3D11_INPUT_ELEMENT_DESC *m_InputLayoutDesc;
-            u32 m_InputLayoutElementCount;
+            ID3D11InputLayout           *m_InputLayout;
+            D3D11_INPUT_ELEMENT_DESC    *m_InputLayoutDesc;
+            u32                         m_InputLayoutElementCount;
         };
-
     } // end namespace video
 } // end namespace irr
-
 #endif // _IRR_COMPILE_WITH_DIRECT3D_11_
 #endif // _IRR_WINDOWS_
 #endif // __C_D3D11_SHADER_H_INCLUDED__

@@ -64,15 +64,15 @@ namespace irr
             if (!hlslSource || !entryPoint || !profile)
                 return false;
 
-            m_HLSLSource = hlslSource;
-            m_EntryPoint = entryPoint;
-            m_Profile = profile;
-            m_ShaderType = type;
+            m_HLSLSource    = hlslSource;
+            m_EntryPoint    = entryPoint;
+            m_Profile       = profile;
+            m_ShaderType    = type;
 
-            ID3DBlob *errorBlob = 0;
+            ID3DBlob    *errorBlob = 0;
 
-            HRESULT hr = D3DCompile(hlslSource, strlen(hlslSource), 0, 0, 0, entryPoint,
-                                    profile, D3DCOMPILE_SKIP_VALIDATION, 0, &m_ShaderBlob, &errorBlob);
+            HRESULT    hr = D3DCompile(hlslSource, strlen(hlslSource), 0, 0, 0, entryPoint,
+                                       profile, D3DCOMPILE_SKIP_VALIDATION, 0, &m_ShaderBlob, &errorBlob);
 
             if (FAILED(hr))
             {
@@ -82,6 +82,7 @@ namespace irr
                     os::Printer::log((const c8*)errorBlob->GetBufferPointer(), ELL_ERROR);
                     errorBlob->Release();
                 }
+
                 return false;
             }
 
@@ -100,7 +101,7 @@ namespace irr
                 m_VertexShader = 0;
             }
 
-            HRESULT hr = m_Driver->m_pID3DDevice->CreateVertexShader(
+            HRESULT    hr = m_Driver->m_pID3DDevice->CreateVertexShader(
                 m_ShaderBlob->GetBufferPointer(),
                 m_ShaderBlob->GetBufferSize(),
                 nullptr,
@@ -120,7 +121,7 @@ namespace irr
                 m_HullShader = 0;
             }
 
-            HRESULT hr = m_Driver->m_pID3DDevice->CreateHullShader(
+            HRESULT    hr = m_Driver->m_pID3DDevice->CreateHullShader(
                 m_ShaderBlob->GetBufferPointer(),
                 m_ShaderBlob->GetBufferSize(),
                 nullptr,
@@ -140,7 +141,7 @@ namespace irr
                 m_DomainShader = 0;
             }
 
-            HRESULT hr = m_Driver->m_pID3DDevice->CreateDomainShader(
+            HRESULT    hr = m_Driver->m_pID3DDevice->CreateDomainShader(
                 m_ShaderBlob->GetBufferPointer(),
                 m_ShaderBlob->GetBufferSize(),
                 nullptr,
@@ -160,7 +161,7 @@ namespace irr
                 m_GeometryShader = 0;
             }
 
-            HRESULT hr = m_Driver->m_pID3DDevice->CreateGeometryShader(
+            HRESULT    hr = m_Driver->m_pID3DDevice->CreateGeometryShader(
                 m_ShaderBlob->GetBufferPointer(),
                 m_ShaderBlob->GetBufferSize(),
                 nullptr,
@@ -180,7 +181,7 @@ namespace irr
                 m_PixelShader = 0;
             }
 
-            HRESULT hr = m_Driver->m_pID3DDevice->CreatePixelShader(
+            HRESULT    hr = m_Driver->m_pID3DDevice->CreatePixelShader(
                 m_ShaderBlob->GetBufferPointer(),
                 m_ShaderBlob->GetBufferSize(),
                 nullptr,
@@ -200,7 +201,7 @@ namespace irr
                 m_ComputeShader = 0;
             }
 
-            HRESULT hr = m_Driver->m_pID3DDevice->CreateComputeShader(
+            HRESULT    hr = m_Driver->m_pID3DDevice->CreateComputeShader(
                 m_ShaderBlob->GetBufferPointer(),
                 m_ShaderBlob->GetBufferSize(),
                 nullptr,
@@ -230,7 +231,7 @@ namespace irr
             memcpy(m_InputLayoutDesc, layout, sizeof(D3D11_INPUT_ELEMENT_DESC) * elementCount);
             m_InputLayoutElementCount = elementCount;
 
-            HRESULT hr = m_Driver->m_pID3DDevice->CreateInputLayout(
+            HRESULT    hr = m_Driver->m_pID3DDevice->CreateInputLayout(
                 layout,
                 elementCount,
                 m_ShaderBlob->GetBufferPointer(),
@@ -239,8 +240,6 @@ namespace irr
 
             return SUCCEEDED(hr);
         }
-
     } // end namespace video
 } // end namespace irr
-
 #endif // _IRR_COMPILE_WITH_DIRECT3D_11_
