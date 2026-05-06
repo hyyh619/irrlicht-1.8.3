@@ -21,9 +21,9 @@ namespace irr
     namespace video
     {
         CD3D11ShaderMaterialRenderer::CD3D11ShaderMaterialRenderer(ID3D11Device *d3dDevice,
-            ID3D11DeviceContext *d3dContext, video::IVideoDriver *driver, s32 &outMaterialTypeNr,
-            const c8 *vertexShaderProgram, const c8 *pixelShaderProgram,
-            IShaderConstantSetCallBack *callback, IMaterialRenderer *baseMaterial, s32 userData)
+                                                                   ID3D11DeviceContext *d3dContext, video::IVideoDriver *driver, s32 &outMaterialTypeNr,
+                                                                   const c8 *vertexShaderProgram, const c8 *pixelShaderProgram,
+                                                                   IShaderConstantSetCallBack *callback, IMaterialRenderer *baseMaterial, s32 userData)
             : m_pID3DDevice(d3dDevice), m_pID3DDeviceContext(d3dContext), m_Driver(driver),
             m_CallBack(callback), m_BaseMaterial(baseMaterial),
             m_VertexShader(0), m_OldVertexShader(0), m_PixelShader(0), m_InputLayout(0), m_UserData(userData)
@@ -43,8 +43,8 @@ namespace irr
 
 
         CD3D11ShaderMaterialRenderer::CD3D11ShaderMaterialRenderer(ID3D11Device *d3dDevice,
-            ID3D11DeviceContext *d3dContext, video::IVideoDriver *driver,
-            IShaderConstantSetCallBack *callback, IMaterialRenderer *baseMaterial, s32 userData)
+                                                                   ID3D11DeviceContext *d3dContext, video::IVideoDriver *driver,
+                                                                   IShaderConstantSetCallBack *callback, IMaterialRenderer *baseMaterial, s32 userData)
             : m_pID3DDevice(d3dDevice), m_pID3DDeviceContext(d3dContext), m_Driver(driver),
             m_CallBack(callback), m_BaseMaterial(baseMaterial),
             m_VertexShader(0), m_OldVertexShader(0), m_PixelShader(0), m_InputLayout(0), m_UserData(userData)
@@ -62,7 +62,7 @@ namespace irr
 
 
         void CD3D11ShaderMaterialRenderer::init(s32 &outMaterialTypeNr,
-            const c8 *vertexShaderProgram, const c8 *pixelShaderProgram)
+                                                const c8 *vertexShaderProgram, const c8 *pixelShaderProgram)
         {
             outMaterialTypeNr = -1;
 
@@ -120,8 +120,8 @@ namespace irr
 
 
         void CD3D11ShaderMaterialRenderer::OnSetMaterial(const video::SMaterial &material,
-            const video::SMaterial &lastMaterial, bool resetAllRenderstates,
-            video::IMaterialRendererServices *services)
+                                                         const video::SMaterial &lastMaterial, bool resetAllRenderstates,
+                                                         video::IMaterialRendererServices *services)
         {
             if (material.MaterialType != lastMaterial.MaterialType || resetAllRenderstates)
             {
@@ -167,23 +167,23 @@ namespace irr
             if (!pxsh)
                 return true;
 
-            ID3DBlob *code = 0;
-            ID3DBlob *errors = 0;
+            ID3DBlob    *code   = 0;
+            ID3DBlob    *errors = 0;
 
 #ifdef _IRR_D3D_NO_SHADER_DEBUGGING
-            HRESULT hr = D3DCompile(pxsh, (UINT)strlen(pxsh), 0, 0, 0, "main", "ps_5_0", 0, 0, &code, &errors);
+            HRESULT    hr = D3DCompile(pxsh, (UINT)strlen(pxsh), 0, 0, 0, "main", "ps_5_0", 0, 0, &code, &errors);
 #else
-            static int irr_dbg_file_nr = 0;
+            static int    irr_dbg_file_nr = 0;
             ++irr_dbg_file_nr;
-            char tmp[32];
+            char    tmp[32];
             sprintf(tmp, "irr_d3d11_dbg_shader_%d.psh", irr_dbg_file_nr);
 
-            FILE *f = fopen(tmp, "wb");
+            FILE    *f = fopen(tmp, "wb");
             fwrite(pxsh, strlen(pxsh), 1, f);
             fflush(f);
             fclose(f);
 
-            HRESULT hr = D3DCompileFromFile(utf8ToUtf16(tmp).c_str(), 0, 0, "main", "ps_5_0", 0, 0, &code, &errors);
+            HRESULT    hr = D3DCompileFromFile(utf8ToUtf16(tmp).c_str(), 0, 0, "main", "ps_5_0", 0, 0, &code, &errors);
 #endif
 
             if (errors)
@@ -195,6 +195,7 @@ namespace irr
                 errors->Release();
                 if (code)
                     code->Release();
+
                 return false;
             }
 
@@ -203,6 +204,7 @@ namespace irr
                 os::Printer::log("Could not create pixel shader.", ELL_ERROR);
                 if (code)
                     code->Release();
+
                 return false;
             }
 
@@ -220,23 +222,23 @@ namespace irr
             if (!vtxsh)
                 return true;
 
-            ID3DBlob *code = 0;
-            ID3DBlob *errors = 0;
+            ID3DBlob    *code   = 0;
+            ID3DBlob    *errors = 0;
 
 #ifdef _IRR_D3D_NO_SHADER_DEBUGGING
-            HRESULT hr = D3DCompile(vtxsh, (UINT)strlen(vtxsh), 0, 0, 0, "main", "vs_5_0", 0, 0, &code, &errors);
+            HRESULT    hr = D3DCompile(vtxsh, (UINT)strlen(vtxsh), 0, 0, 0, "main", "vs_5_0", 0, 0, &code, &errors);
 #else
-            static int irr_dbg_file_nr = 0;
+            static int    irr_dbg_file_nr = 0;
             ++irr_dbg_file_nr;
-            char tmp[32];
+            char    tmp[32];
             sprintf(tmp, "irr_d3d11_dbg_shader_%d.vsh", irr_dbg_file_nr);
 
-            FILE *f = fopen(tmp, "wb");
+            FILE    *f = fopen(tmp, "wb");
             fwrite(vtxsh, strlen(vtxsh), 1, f);
             fflush(f);
             fclose(f);
 
-            HRESULT hr = D3DCompileFromFile(utf8ToUtf16(tmp).c_str(), 0, 0, "main", "vs_5_0", 0, 0, &code, &errors);
+            HRESULT    hr = D3DCompileFromFile(utf8ToUtf16(tmp).c_str(), 0, 0, "main", "vs_5_0", 0, 0, &code, &errors);
 #endif
 
             if (errors)
@@ -248,6 +250,7 @@ namespace irr
                 errors->Release();
                 if (code)
                     code->Release();
+
                 return false;
             }
 
@@ -256,6 +259,7 @@ namespace irr
                 os::Printer::log("Could not create vertex shader.", ELL_ERROR);
                 if (code)
                     code->Release();
+
                 return false;
             }
 
