@@ -10,6 +10,8 @@
 #include "CD3D11Driver.h"
 #include "CD3D11Texture.h"
 #include "IMaterialRendererServices.h"
+#include "os.h"
+#include "irrString.h"
 
 namespace irr
 {
@@ -21,13 +23,22 @@ namespace irr
         {
 #ifdef _DEBUG
             setDebugName("CD3D11MaterialRenderer");
+            c8 buf[32];
+            sprintf(buf, "0x%p", (void*)this);
+            os::Printer::log("CD3D11MaterialRenderer created:", buf, ELL_INFORMATION);
 #endif
             driver->addMaterialRenderer(this);
         }
 
 
         CD3D11MaterialRenderer::~CD3D11MaterialRenderer()
-        {}
+        {
+#ifdef _DEBUG
+            c8 buf[32];
+            sprintf(buf, "0x%p", (void*)this);
+            os::Printer::log("CD3D11MaterialRenderer destroyed:", buf, ELL_INFORMATION);
+#endif
+        }
 
 
         void CD3D11MaterialRenderer::OnSetMaterial(const SMaterial &material, const SMaterial &lastMaterial,

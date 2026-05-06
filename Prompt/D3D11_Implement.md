@@ -440,3 +440,8 @@ CD3D11Driver::createMaterialRenderers创建了下列对象，但是只是到入C
 2. 调用CNullDriver::addMaterialRenderer加入到MaterialRenderers其ReferenceCounter为2
 3. 但是在释放时只调用了CNullDriver::deleteMaterialRenders,因此其ReferenceCounter只会减到1，不会调用delete
 4. 在CD3D11Driver::createMaterialRenderers创建MaterialRenderer对象时，请添加CD3D11Driver自己的管理对象，在CD3D11Driver释放时，先调用CNullDriver::deleteMaterialRenders，再调用CD3D11Driver自己的管理对象对MaterialRenderer对象进行释放。
+
+# 36
+为CD3D11NormalMapRenderer，CD3D11MaterialRenderer，CD3D11ShaderMaterialRenderer的构造函数和析构函数增加一个log打印
+1. 该打印需要打印当前对象的指针
+2. 该打印用于跟踪对象的创建和释放，只在Debug驱动时有效。

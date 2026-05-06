@@ -8,6 +8,7 @@
 #include "CD3D11NormalMapRenderer.h"
 #include "IVideoDriver.h"
 #include "IMaterialRendererServices.h"
+#include "irrString.h"
 #include "os.h"
 #include "SLight.h"
 
@@ -114,6 +115,9 @@ namespace irr
         {
 #ifdef _DEBUG
             setDebugName("CD3D11NormalMapRenderer");
+            c8 buf[32];
+            sprintf(buf, "0x%p", (void*)this);
+            os::Printer::log("CD3D11NormalMapRenderer created:", buf, ELL_INFORMATION);
 #endif
 
             m_CallBack = this;
@@ -136,6 +140,11 @@ namespace irr
 
         CD3D11NormalMapRenderer::~CD3D11NormalMapRenderer()
         {
+#ifdef _DEBUG
+            c8 buf[32];
+            sprintf(buf, "0x%p", (void*)this);
+            os::Printer::log("CD3D11NormalMapRenderer destroyed:", buf, ELL_INFORMATION);
+#endif
             if (m_CallBack == this)
                 m_CallBack = 0;
         }

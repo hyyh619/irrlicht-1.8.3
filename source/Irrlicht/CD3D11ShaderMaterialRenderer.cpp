@@ -10,6 +10,7 @@
 #include "IShaderConstantSetCallBack.h"
 #include "IMaterialRendererServices.h"
 #include "IVideoDriver.h"
+#include "irrString.h"
 #include "os.h"
 
 #ifndef _IRR_D3D_NO_SHADER_DEBUGGING
@@ -30,6 +31,9 @@ namespace irr
         {
 #ifdef _DEBUG
             setDebugName("CD3D11ShaderMaterialRenderer");
+            c8 buf[32];
+            sprintf(buf, "0x%p", (void*)this);
+            os::Printer::log("CD3D11ShaderMaterialRenderer created:", buf, ELL_INFORMATION);
 #endif
 
             if (m_BaseMaterial)
@@ -51,6 +55,9 @@ namespace irr
         {
 #ifdef _DEBUG
             setDebugName("CD3D11ShaderMaterialRenderer");
+            c8 buf[32];
+            sprintf(buf, "0x%p", (void*)this);
+            os::Printer::log("CD3D11ShaderMaterialRenderer created:", buf, ELL_INFORMATION);
 #endif
 
             if (m_BaseMaterial)
@@ -78,6 +85,11 @@ namespace irr
 
         CD3D11ShaderMaterialRenderer::~CD3D11ShaderMaterialRenderer()
         {
+#ifdef _DEBUG
+            c8 buf[32];
+            sprintf(buf, "0x%p", (void*)this);
+            os::Printer::log("CD3D11ShaderMaterialRenderer destroyed:", buf, ELL_INFORMATION);
+#endif
             if (m_CallBack)
                 m_CallBack->drop();
 
