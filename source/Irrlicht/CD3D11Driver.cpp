@@ -384,15 +384,6 @@ namespace irr
                 m_pID3DDevice1->Release();
             }
 
-#ifdef _DEBUG
-            if (m_pID3D11Debug)
-            {
-                m_pID3D11Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
-                IRR_D3D11_DEBUG_RELEASE(m_pID3D11Debug, "D3D11Debug");
-                m_pID3D11Debug->Release();
-            }
-#endif
-
             if (m_pID3DDevice)
             {
                 IRR_D3D11_DEVICE_RELEASE(m_pID3DDevice, "Device");
@@ -407,6 +398,15 @@ namespace irr
 
             if (m_DXGIFactory)
                 m_DXGIFactory->Release();
+
+#ifdef _DEBUG
+            if (m_pID3D11Debug)
+            {
+                m_pID3D11Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
+                IRR_D3D11_DEBUG_RELEASE(m_pID3D11Debug, "D3D11Debug");
+                m_pID3D11Debug->Release();
+            }
+#endif
 
             if (m_Adapter)
                 m_Adapter->Release();
