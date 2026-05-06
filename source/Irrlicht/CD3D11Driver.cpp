@@ -326,7 +326,7 @@ namespace irr
 
             m_ShaderPool.clear();
 
-            for (u32 i = 0; i < EVT_TANGENTS + 1; ++i)
+            for (u32 i = 0; i < EVT_2D_RECTANGLE + 1; ++i)
             {
                 if (m_InputLayout[i])
                 {
@@ -2355,7 +2355,6 @@ namespace irr
             }
 
             vsShader->setVertexType(EVT_2D_RECTANGLE);
-            vsShader->grab();
             m_ShaderPool.push_back(vsShader);
 
             if (m_BuiltInVertexShader[EVT_2D_RECTANGLE])
@@ -2393,7 +2392,6 @@ namespace irr
             }
 
             psShader->setVertexType(EVT_2D_RECTANGLE);
-            psShader->grab();
             m_ShaderPool.push_back(psShader);
 
             if (m_BuiltInPixelShader[EVT_2D_RECTANGLE])
