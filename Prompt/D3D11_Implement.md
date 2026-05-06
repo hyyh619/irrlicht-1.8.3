@@ -467,3 +467,18 @@ CD3D11Driver::createMaterialRenderers创建了下列对象，但是只是到入C
 3. 为rectangle shaders增加一个新的shader类型EVT_2D_RECTANGLE
 4. CShader增加一个成员变量记录E_VERTEX_TYPE
 5. CD3D11Driver增加一个查询函数，根据输入的E_VERTEX_TYPE和E_D3D11_SHADER_TYPE在m_ShaderPool中查找对应的CShader对象
+
+# 41
+1. 把CD3D11Driver::createRectangleShaders创建的shader也加入到m_BuiltInVertexShader和m_BuiltInPixelShader中统一管理
+2. CD3D11Driver::draw2DRectangle设置shader时，要像CD3D11Driver::draw2D3DVertexPrimitiveList一样使用setShadersByType来切换，而不是直接调用下面代码
+            CD3D11Shader    *vsShader   = getShaderByTypes(EVT_2D_RECTANGLE, EDST_VERTEX);
+            CD3D11Shader    *psShader   = getShaderByTypes(EVT_2D_RECTANGLE, EDST_PIXEL);
+
+            if (vsShader)
+                m_pID3DDeviceContext->VSSetShader(vsShader->getVertexShader(), 0, 0);
+
+            if (psShader)
+                m_pID3DDeviceContext->PSSetShader(psShader->getPixelShader(), 0, 0);
+
+            if (vsShader)
+                m_pID3DDeviceContext->IASetInputLayout(vsShader->getInputLayout());

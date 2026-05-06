@@ -218,7 +218,7 @@ namespace irr
 
             m_MaxLightDistance = sqrtf(FLT_MAX);
 
-            for (u32 i = 0; i < 3; ++i)
+            for (u32 i = 0; i <= EVT_2D_RECTANGLE; ++i)
             {
                 m_InputLayout[i]            = 0;
                 m_BuiltInVertexShader[i]    = 0;
@@ -1431,17 +1431,7 @@ namespace irr
                                   colorLeftDown.getAlpha() < 255 ||
                                   colorRightDown.getAlpha() < 255, false, false);
 
-            CD3D11Shader    *vsShader   = getShaderByTypes(EVT_2D_RECTANGLE, EDST_VERTEX);
-            CD3D11Shader    *psShader   = getShaderByTypes(EVT_2D_RECTANGLE, EDST_PIXEL);
-
-            if (vsShader)
-                m_pID3DDeviceContext->VSSetShader(vsShader->getVertexShader(), 0, 0);
-
-            if (psShader)
-                m_pID3DDeviceContext->PSSetShader(psShader->getPixelShader(), 0, 0);
-
-            if (vsShader)
-                m_pID3DDeviceContext->IASetInputLayout(vsShader->getInputLayout());
+            setShadersByType(EVT_2D_RECTANGLE);
 
             const u32       vertexBufferSize    = sizeof(vertices);
             const u32       indexBufferSize     = sizeof(indices);
@@ -2026,7 +2016,7 @@ namespace irr
             {
                 if (!m_BuiltInShadersInitialized)
                 {
-                    for (u32 i = 0; i < 3; ++i)
+                    for (u32 i = 0; i < EVT_2D_RECTANGLE; ++i)
                     {
                         createBuiltInVertexShader((E_VERTEX_TYPE)i);
                         createBuiltInPixelShader((E_VERTEX_TYPE)i);
@@ -2037,7 +2027,7 @@ namespace irr
                     m_BuiltInShadersInitialized = true;
                 }
 
-                if (newType >= 0 && newType < 3 && m_BuiltInVertexShader[newType])
+                if (newType >= 0 && newType <= EVT_2D_RECTANGLE && m_BuiltInVertexShader[newType])
                 {
                     m_pID3DDeviceContext->VSSetShader(m_BuiltInVertexShader[newType], 0, 0);
                     if (m_BuiltInPixelShader[newType])
@@ -2368,6 +2358,26 @@ namespace irr
             vsShader->grab();
             m_ShaderPool.push_back(vsShader);
 
+            if (m_BuiltInVertexShader[EVT_2D_RECTANGLE])
+            {
+                IRR_D3D11_VS_RELEASE(m_BuiltInVertexShader[EVT_2D_RECTANGLE], "BuiltInVertexShader");
+                m_BuiltInVertexShader[EVT_2D_RECTANGLE]->Release();
+            }
+
+            m_BuiltInVertexShader[EVT_2D_RECTANGLE] = vsShader->getVertexShader();
+            IRR_D3D11_VS_CREATE(m_BuiltInVertexShader[EVT_2D_RECTANGLE], "BuiltInVertexShader");
+            m_BuiltInVertexShader[EVT_2D_RECTANGLE]->AddRef();
+
+            if (m_InputLayout[EVT_2D_RECTANGLE])
+            {
+                IRR_D3D11_IL_RELEASE(m_InputLayout[EVT_2D_RECTANGLE], "BuiltInInputLayout");
+                m_InputLayout[EVT_2D_RECTANGLE]->Release();
+            }
+
+            m_InputLayout[EVT_2D_RECTANGLE] = vsShader->getInputLayout();
+            IRR_D3D11_IL_CREATE(m_InputLayout[EVT_2D_RECTANGLE], "BuiltInInputLayout");
+            m_InputLayout[EVT_2D_RECTANGLE]->AddRef();
+
             CD3D11Shader    *psShader = new CD3D11Shader(this);
 
             if (!psShader->compile(EDST_PIXEL, PIXEL_SHADER_RECTANGLE, "main", "ps_4_0"))
@@ -2385,6 +2395,16 @@ namespace irr
             psShader->setVertexType(EVT_2D_RECTANGLE);
             psShader->grab();
             m_ShaderPool.push_back(psShader);
+
+            if (m_BuiltInPixelShader[EVT_2D_RECTANGLE])
+            {
+                IRR_D3D11_PS_RELEASE(m_BuiltInPixelShader[EVT_2D_RECTANGLE], "BuiltInPixelShader");
+                m_BuiltInPixelShader[EVT_2D_RECTANGLE]->Release();
+            }
+
+            m_BuiltInPixelShader[EVT_2D_RECTANGLE] = psShader->getPixelShader();
+            IRR_D3D11_PS_CREATE(m_BuiltInPixelShader[EVT_2D_RECTANGLE], "BuiltInPixelShader");
+            m_BuiltInPixelShader[EVT_2D_RECTANGLE]->AddRef();
 
             return true;
         }
