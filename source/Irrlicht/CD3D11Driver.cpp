@@ -399,6 +399,9 @@ namespace irr
             if (m_DXGIFactory)
                 m_DXGIFactory->Release();
 
+            if (m_Adapter)
+                m_Adapter->Release();
+
 #ifdef _DEBUG
             if (m_pID3D11Debug)
             {
@@ -407,9 +410,6 @@ namespace irr
                 m_pID3D11Debug->Release();
             }
 #endif
-
-            if (m_Adapter)
-                m_Adapter->Release();
 
             if (m_D3D11Library)
                 FreeLibrary(m_D3D11Library);
@@ -466,12 +466,12 @@ namespace irr
 #ifdef _DEBUG
             hr = m_pID3DDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_pID3D11Debug);
             if (SUCCEEDED(hr))
-                IRR_D3D11_DEBUG_CREATE(m_pID3D11Debug, "D3D11Debug");
+                IRR_D3D11_DEBUG_ADDREF(m_pID3D11Debug, "D3D11Debug");
 #endif
 
             hr = m_pID3DDevice->QueryInterface(__uuidof(ID3D11Device1), (void**)&m_pID3DDevice1);
             if (SUCCEEDED(hr))
-                IRR_D3D11_DEVICE1_CREATE(m_pID3DDevice1, "Device1");
+                IRR_D3D11_DEVICE1_ADDREF(m_pID3DDevice1, "Device1");
             if (FAILED(hr))
             {
                 os::Printer::log("Could not get D3D11Device1 interface.", ELL_WARNING);

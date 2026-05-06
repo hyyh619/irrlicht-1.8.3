@@ -342,6 +342,26 @@ namespace irr
                 LogD3D11ObjectReleaseNoPtr("ID3D11Debug", name, func, line);
         }
 
+        inline void LogD3D11DeviceAddRef(ID3D11Device *obj, const char *name, const char *func, int line)
+        {
+            LogD3D11ObjectAddRef((void*)obj, "ID3D11Device", name, func, line);
+        }
+
+        inline void LogD3D11DeviceContextAddRef(ID3D11DeviceContext *obj, const char *name, const char *func, int line)
+        {
+            LogD3D11ObjectAddRef((void*)obj, "ID3D11DeviceContext", name, func, line);
+        }
+
+        inline void LogD3D11Device1AddRef(ID3D11Device1 *obj, const char *name, const char *func, int line)
+        {
+            LogD3D11ObjectAddRef((void*)obj, "ID3D11Device1", name, func, line);
+        }
+
+        inline void LogD3D11DebugAddRef(ID3D11Debug *obj, const char *name, const char *func, int line)
+        {
+            LogD3D11ObjectAddRef((void*)obj, "ID3D11Debug", name, func, line);
+        }
+
         #define IRR_D3D11_BUFFER_CREATE(obj, name)  LogD3D11BufferCreate(obj, name, __FUNCTION__, __LINE__)
         #define IRR_D3D11_BUFFER_RELEASE(obj, name) LogD3D11BufferRelease(obj, name, __FUNCTION__, __LINE__)
         #define IRR_D3D11_BUFFER_ADDREF(obj, name)  LogD3D11BufferAddRef(obj, name, __FUNCTION__, __LINE__)
@@ -393,18 +413,21 @@ namespace irr
 
         #define IRR_D3D11_SWAPCHAIN_CREATE(obj, name)   LogD3D11SwapChainCreate(obj, name, __FUNCTION__, __LINE__)
         #define IRR_D3D11_SWAPCHAIN_RELEASE(obj, name)  LogD3D11SwapChainRelease(obj, name, __FUNCTION__, __LINE__)
-
         #define IRR_D3D11_DEVICE_CREATE(obj, name)  LogD3D11DeviceCreate(obj, name, __FUNCTION__, __LINE__)
         #define IRR_D3D11_DEVICE_RELEASE(obj, name) LogD3D11DeviceRelease(obj, name, __FUNCTION__, __LINE__)
+        #define IRR_D3D11_DEVICE_ADDREF(obj, name) LogD3D11DeviceAddRef(obj, name, __FUNCTION__, __LINE__)
 
         #define IRR_D3D11_DEVICE_CONTEXT_CREATE(obj, name)  LogD3D11DeviceContextCreate(obj, name, __FUNCTION__, __LINE__)
         #define IRR_D3D11_DEVICE_CONTEXT_RELEASE(obj, name) LogD3D11DeviceContextRelease(obj, name, __FUNCTION__, __LINE__)
+        #define IRR_D3D11_DEVICE_CONTEXT_ADDREF(obj, name) LogD3D11DeviceContextAddRef(obj, name, __FUNCTION__, __LINE__)
 
         #define IRR_D3D11_DEVICE1_CREATE(obj, name)     LogD3D11Device1Create(obj, name, __FUNCTION__, __LINE__)
         #define IRR_D3D11_DEVICE1_RELEASE(obj, name)    LogD3D11Device1Release(obj, name, __FUNCTION__, __LINE__)
+        #define IRR_D3D11_DEVICE1_ADDREF(obj, name)    LogD3D11Device1AddRef(obj, name, __FUNCTION__, __LINE__)
 
         #define IRR_D3D11_DEBUG_CREATE(obj, name)   LogD3D11DebugCreate(obj, name, __FUNCTION__, __LINE__)
         #define IRR_D3D11_DEBUG_RELEASE(obj, name)  LogD3D11DebugRelease(obj, name, __FUNCTION__, __LINE__)
+        #define IRR_D3D11_DEBUG_ADDREF(obj, name)  LogD3D11DebugAddRef(obj, name, __FUNCTION__, __LINE__)
     }
 }
 #endif

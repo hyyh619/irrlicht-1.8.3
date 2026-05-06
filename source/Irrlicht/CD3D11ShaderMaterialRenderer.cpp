@@ -36,6 +36,17 @@ namespace irr
             os::Printer::log("CD3D11ShaderMaterialRenderer created:", buf, ELL_INFORMATION);
 #endif
 
+            if (m_pID3DDevice)
+            {
+                IRR_D3D11_DEVICE_ADDREF(m_pID3DDevice, "ShaderMatRenderer_Device");
+                m_pID3DDevice->AddRef();
+            }
+            if (m_pID3DDeviceContext)
+            {
+                IRR_D3D11_DEVICE_CONTEXT_ADDREF(m_pID3DDeviceContext, "ShaderMatRenderer_DeviceContext");
+                m_pID3DDeviceContext->AddRef();
+            }
+
             if (m_BaseMaterial)
                 m_BaseMaterial->grab();
 
@@ -59,6 +70,17 @@ namespace irr
             sprintf(buf, "0x%p", (void*)this);
             os::Printer::log("CD3D11ShaderMaterialRenderer created:", buf, ELL_INFORMATION);
 #endif
+
+            if (m_pID3DDevice)
+            {
+                IRR_D3D11_DEVICE_ADDREF(m_pID3DDevice, "ShaderMatRenderer_Device");
+                m_pID3DDevice->AddRef();
+            }
+            if (m_pID3DDeviceContext)
+            {
+                IRR_D3D11_DEVICE_CONTEXT_ADDREF(m_pID3DDeviceContext, "ShaderMatRenderer_DeviceContext");
+                m_pID3DDeviceContext->AddRef();
+            }
 
             if (m_BaseMaterial)
                 m_BaseMaterial->grab();
@@ -119,6 +141,17 @@ namespace irr
 
             if (m_BaseMaterial)
                 m_BaseMaterial->drop();
+
+            if (m_pID3DDevice)
+            {
+                IRR_D3D11_DEVICE_RELEASE(m_pID3DDevice, "ShaderMatRenderer_Device");
+                m_pID3DDevice->Release();
+            }
+            if (m_pID3DDeviceContext)
+            {
+                IRR_D3D11_DEVICE_CONTEXT_RELEASE(m_pID3DDeviceContext, "ShaderMatRenderer_DeviceContext");
+                m_pID3DDeviceContext->Release();
+            }
         }
 
 

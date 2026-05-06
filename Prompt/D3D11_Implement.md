@@ -445,3 +445,9 @@ CD3D11Driver::createMaterialRenderers创建了下列对象，但是只是到入C
 为CD3D11NormalMapRenderer，CD3D11MaterialRenderer，CD3D11ShaderMaterialRenderer的构造函数和析构函数增加一个log打印
 1. 该打印需要打印当前对象的指针
 2. 该打印用于跟踪对象的创建和释放，只在Debug驱动时有效。
+
+# 37
+给所有引用和释放ID3D11Device1，ID3D11Device的地方加上一个log来跟踪其生存周期，以及检测内存泄漏，
+打印的log要包括对象的ID3D11Device1, ID3D11Device的指针地址，以及在哪个函数被调用
+
+请检查CD3D11Texture，CD3D11ShaderMaterialRenderer是否用到ID3D11Device1，ID3D11Device，有没有添加相应的AddRef和Release，以及对应的Log打印。

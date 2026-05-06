@@ -30,7 +30,10 @@ namespace irr
 
             m_Device = driver->m_pID3DDevice;
             if (m_Device)
+            {
+                IRR_D3D11_DEVICE_ADDREF(m_Device, "CD3D11Texture_Device");
                 m_Device->AddRef();
+            }
 
             createRenderTarget(format);
         }
@@ -52,7 +55,10 @@ namespace irr
 
             m_Device = driver->m_pID3DDevice;
             if (m_Device)
+            {
+                IRR_D3D11_DEVICE_ADDREF(m_Device, "CD3D11Texture_Device");
                 m_Device->AddRef();
+            }
 
             if (image)
             {
@@ -96,7 +102,10 @@ namespace irr
             }
 
             if (m_Device)
+            {
+                IRR_D3D11_DEVICE_RELEASE(m_Device, "CD3D11Texture_Device");
                 m_Device->Release();
+            }
         }
 
 
