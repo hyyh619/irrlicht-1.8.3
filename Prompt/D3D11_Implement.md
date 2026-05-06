@@ -457,3 +457,6 @@ CD3D11Driver::createMaterialRenderers创建了下列对象，但是只是到入C
 1. 创建4个顶点，绘制两个三角形组成一个rectangle
 2. 4个顶点分别赋予四个颜色SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown
 3. Shader使用CShader对象管理
+
+# 39
+为CD3D11Driver::draw2DRectangle创建一组新的VS和PS，VS只需要输入pos,color，输出pos,color，PS只需要输入color，输出color。不要使用原来的video::EVT_STANDARD

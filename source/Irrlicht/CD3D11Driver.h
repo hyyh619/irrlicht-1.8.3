@@ -459,6 +459,7 @@ private:
             bool createBuiltInVertexShader(E_VERTEX_TYPE type);
             bool createBuiltInPixelShader(E_VERTEX_TYPE type);
             bool createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob);
+            bool createRectangleShaders();
             void updateMatrixConstantBuffer();
             void setRenderStates(E_RENDER_MODE mode, bool alpha);
             bool createDefaultStates();
@@ -494,6 +495,10 @@ private:
             ID3D11VertexShader              *m_BuiltInVertexShader[EVT_TANGENTS + 1];
             ID3D11PixelShader               *m_BuiltInPixelShader[EVT_TANGENTS + 1];
             bool                            m_BuiltInShadersInitialized;
+
+            ID3D11VertexShader              *m_RectangleVertexShader;
+            ID3D11PixelShader               *m_RectanglePixelShader;
+            ID3D11InputLayout               *m_RectangleInputLayout;
 
             SColorf             m_AmbientLight;
             core::stringc       m_VendorName;

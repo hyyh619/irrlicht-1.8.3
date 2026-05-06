@@ -77,6 +77,31 @@ namespace irr
             "    return output;"
             "}";
 
+        static const char    VERTEX_SHADER_RECTANGLE[] =
+            "struct VS_INPUT {"
+            "    float3 Pos : POSITION;"
+            "    float4 Color : COLOR;"
+            "};"
+            "struct VS_OUTPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "};"
+            "VS_OUTPUT main(VS_INPUT input) {"
+            "    VS_OUTPUT output;"
+            "    output.Pos = float4(input.Pos, 1.0);"
+            "    output.Color = input.Color;"
+            "    return output;"
+            "}";
+
+        static const char    PIXEL_SHADER_RECTANGLE[] =
+            "struct PS_INPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "};"
+            "float4 main(PS_INPUT input) : SV_TARGET {"
+            "    return input.Color;"
+            "}";
+
         static const char    VERTEX_SHADER_TANGENTS[] =
             "struct VS_INPUT {"
             "    float3 Pos : POSITION;"
@@ -169,6 +194,7 @@ namespace irr
             m_WindowId(0), m_SceneSourceRect(0),
             m_LastVertexType((video::E_VERTEX_TYPE)-1), m_VendorID(0),
             m_BuiltInShadersInitialized(false),
+            m_RectangleVertexShader(0), m_RectanglePixelShader(0), m_RectangleInputLayout(0),
             m_TempVertexBuffer(0), m_TempIndexBuffer(0), m_MatrixConstantBuffer(0),
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
@@ -280,6 +306,7 @@ namespace irr
             {
                 m_MaterialRenderers[i]->drop();
             }
+
             m_MaterialRenderers.clear();
 
             deleteAllTextures();
@@ -319,6 +346,24 @@ namespace irr
                     IRR_D3D11_PS_RELEASE(m_BuiltInPixelShader[i], "BuiltInPixelShader");
                     m_BuiltInPixelShader[i]->Release();
                 }
+            }
+
+            if (m_RectangleInputLayout)
+            {
+                IRR_D3D11_IL_RELEASE(m_RectangleInputLayout, "RectangleInputLayout");
+                m_RectangleInputLayout->Release();
+            }
+
+            if (m_RectangleVertexShader)
+            {
+                IRR_D3D11_VS_RELEASE(m_RectangleVertexShader, "RectangleVertexShader");
+                m_RectangleVertexShader->Release();
+            }
+
+            if (m_RectanglePixelShader)
+            {
+                IRR_D3D11_PS_RELEASE(m_RectanglePixelShader, "RectanglePixelShader");
+                m_RectanglePixelShader->Release();
             }
 
             if (m_TempVertexBuffer)
@@ -472,6 +517,7 @@ namespace irr
             hr = m_pID3DDevice->QueryInterface(__uuidof(ID3D11Device1), (void**)&m_pID3DDevice1);
             if (SUCCEEDED(hr))
                 IRR_D3D11_DEVICE1_ADDREF(m_pID3DDevice1, "Device1");
+
             if (FAILED(hr))
             {
                 os::Printer::log("Could not get D3D11Device1 interface.", ELL_WARNING);
@@ -1381,26 +1427,119 @@ namespace irr
             if (!clippedRect.isValid())
                 return;
 
-            S3DVertex vertices[4];
-            vertices[0] = S3DVertex((f32)clippedRect.UpperLeftCorner.X, (f32)clippedRect.UpperLeftCorner.Y, 0.0f,
-                                    0.0f, 0.0f, 0.0f, colorLeftUp, 0.0f, 0.0f);
-            vertices[1] = S3DVertex((f32)clippedRect.LowerRightCorner.X, (f32)clippedRect.UpperLeftCorner.Y, 0.0f,
-                                    0.0f, 0.0f, 0.0f, colorRightUp, 0.0f, 1.0f);
-            vertices[2] = S3DVertex((f32)clippedRect.LowerRightCorner.X, (f32)clippedRect.LowerRightCorner.Y, 0.0f,
-                                    0.0f, 0.0f, 0.0f, colorRightDown, 1.0f, 0.0f);
-            vertices[3] = S3DVertex((f32)clippedRect.UpperLeftCorner.X, (f32)clippedRect.LowerRightCorner.Y, 0.0f,
-                                    0.0f, 0.0f, 0.0f, colorLeftDown, 1.0f, 1.0f);
+            struct SRectVertex
+            {
+                core::vector3df Pos;
+                SColor          Color;
+            };
 
-            u16 indices[6] = { 0, 1, 2, 0, 2, 3 };
+            SRectVertex    vertices[4];
+            vertices[0].Pos     = core::vector3df((f32)clippedRect.UpperLeftCorner.X, (f32)clippedRect.UpperLeftCorner.Y, 0.0f);
+            vertices[0].Color   = colorLeftUp;
+            vertices[1].Pos     = core::vector3df((f32)clippedRect.LowerRightCorner.X, (f32)clippedRect.UpperLeftCorner.Y, 0.0f);
+            vertices[1].Color   = colorRightUp;
+            vertices[2].Pos     = core::vector3df((f32)clippedRect.LowerRightCorner.X, (f32)clippedRect.LowerRightCorner.Y, 0.0f);
+            vertices[2].Color   = colorRightDown;
+            vertices[3].Pos     = core::vector3df((f32)clippedRect.UpperLeftCorner.X, (f32)clippedRect.LowerRightCorner.Y, 0.0f);
+            vertices[3].Color   = colorLeftDown;
+
+            u16    indices[6] = { 0, 1, 2, 0, 2, 3 };
 
             setRenderStates2DMode(colorLeftUp.getAlpha() < 255 ||
                                   colorRightUp.getAlpha() < 255 ||
                                   colorLeftDown.getAlpha() < 255 ||
                                   colorRightDown.getAlpha() < 255, false, false);
 
-            setShadersByType(video::EVT_STANDARD);
+            m_pID3DDeviceContext->VSSetShader(m_RectangleVertexShader, 0, 0);
+            m_pID3DDeviceContext->PSSetShader(m_RectanglePixelShader, 0, 0);
+            m_pID3DDeviceContext->IASetInputLayout(m_RectangleInputLayout);
 
-            drawVertexPrimitiveList(vertices, 4, indices, 2, video::EVT_STANDARD, scene::EPT_TRIANGLES, EIT_16BIT);
+            const u32       vertexBufferSize    = sizeof(vertices);
+            const u32       indexBufferSize     = sizeof(indices);
+
+            if (!m_TempVertexBuffer || m_TempVertexBufferSize < vertexBufferSize)
+            {
+                if (m_TempVertexBuffer)
+                {
+                    IRR_D3D11_BUFFER_RELEASE(m_TempVertexBuffer, "TempVertexBuffer");
+                    m_TempVertexBuffer->Release();
+                }
+
+                D3D11_BUFFER_DESC    vbDesc;
+                vbDesc.ByteWidth            = vertexBufferSize;
+                vbDesc.Usage                = D3D11_USAGE_DYNAMIC;
+                vbDesc.BindFlags            = D3D11_BIND_VERTEX_BUFFER;
+                vbDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+                vbDesc.MiscFlags            = 0;
+                vbDesc.StructureByteStride  = 0;
+
+                if (FAILED(m_pID3DDevice->CreateBuffer(&vbDesc, 0, &m_TempVertexBuffer)))
+                {
+                    os::Printer::log("Failed to create vertex buffer", ELL_ERROR);
+                    return;
+                }
+
+                IRR_D3D11_BUFFER_CREATE(m_TempVertexBuffer, "TempVertexBuffer");
+                m_TempVertexBufferSize = vertexBufferSize;
+            }
+
+            D3D11_MAPPED_SUBRESOURCE    mapped;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_TempVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+            {
+                memcpy(mapped.pData, vertices, vertexBufferSize);
+                m_pID3DDeviceContext->Unmap(m_TempVertexBuffer, 0);
+            }
+            else
+            {
+                os::Printer::log("Failed to map vertex buffer", ELL_ERROR);
+                return;
+            }
+
+            if (!m_TempIndexBuffer || m_TempIndexBufferSize < indexBufferSize || m_TempIndexType != EIT_16BIT)
+            {
+                if (m_TempIndexBuffer)
+                {
+                    IRR_D3D11_BUFFER_RELEASE(m_TempIndexBuffer, "TempIndexBuffer");
+                    m_TempIndexBuffer->Release();
+                }
+
+                D3D11_BUFFER_DESC    ibDesc;
+                ibDesc.ByteWidth            = indexBufferSize;
+                ibDesc.Usage                = D3D11_USAGE_DYNAMIC;
+                ibDesc.BindFlags            = D3D11_BIND_INDEX_BUFFER;
+                ibDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+                ibDesc.MiscFlags            = 0;
+                ibDesc.StructureByteStride  = 0;
+
+                if (FAILED(m_pID3DDevice->CreateBuffer(&ibDesc, 0, &m_TempIndexBuffer)))
+                {
+                    os::Printer::log("Failed to create index buffer", ELL_ERROR);
+                    return;
+                }
+
+                IRR_D3D11_BUFFER_CREATE(m_TempIndexBuffer, "TempIndexBuffer");
+                m_TempIndexBufferSize   = indexBufferSize;
+                m_TempIndexType         = EIT_16BIT;
+            }
+
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_TempIndexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+            {
+                memcpy(mapped.pData, indices, indexBufferSize);
+                m_pID3DDeviceContext->Unmap(m_TempIndexBuffer, 0);
+            }
+            else
+            {
+                os::Printer::log("Failed to map index buffer", ELL_ERROR);
+                return;
+            }
+
+            ID3D11Buffer    *buffers[1] = { m_TempVertexBuffer };
+            UINT            offsets[1]  = { 0 };
+            UINT            strides[1]  = { sizeof(SRectVertex) };
+            m_pID3DDeviceContext->IASetVertexBuffers(0, 1, buffers, strides, offsets);
+            m_pID3DDeviceContext->IASetIndexBuffer(m_TempIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+            m_pID3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+            m_pID3DDeviceContext->DrawIndexed(6, 0, 0);
         }
 
 
@@ -1904,6 +2043,8 @@ namespace irr
                         createBuiltInPixelShader((E_VERTEX_TYPE)i);
                     }
 
+                    createRectangleShaders();
+
                     m_BuiltInShadersInitialized = true;
                 }
 
@@ -2191,6 +2332,61 @@ namespace irr
                                                              shaderBlob->GetBufferSize(),
                                                              &m_InputLayout[type]);
             return SUCCEEDED(hr);
+        }
+
+
+        bool CD3D11Driver::createRectangleShaders()
+        {
+            CD3D11Shader    *vsShader = new CD3D11Shader(this);
+
+            if (!vsShader->compile(EDST_VERTEX, VERTEX_SHADER_RECTANGLE, "main", "vs_4_0"))
+            {
+                vsShader->drop();
+                return false;
+            }
+
+            if (!vsShader->createVertexShader())
+            {
+                vsShader->drop();
+                return false;
+            }
+
+            D3D11_INPUT_ELEMENT_DESC    rectangleLayout[] =
+            {
+                {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+            };
+
+            if (!vsShader->createInputLayout(rectangleLayout, 2))
+            {
+                vsShader->drop();
+                return false;
+            }
+
+            m_RectangleVertexShader = vsShader->getVertexShader();
+            m_RectangleVertexShader->AddRef();
+            m_RectangleInputLayout = vsShader->getInputLayout();
+            m_RectangleInputLayout->AddRef();
+            vsShader->drop();
+
+            CD3D11Shader    *psShader = new CD3D11Shader(this);
+            if (!psShader->compile(EDST_PIXEL, PIXEL_SHADER_RECTANGLE, "main", "ps_4_0"))
+            {
+                psShader->drop();
+                return false;
+            }
+
+            if (!psShader->createPixelShader())
+            {
+                psShader->drop();
+                return false;
+            }
+
+            m_RectanglePixelShader = psShader->getPixelShader();
+            m_RectanglePixelShader->AddRef();
+            psShader->drop();
+
+            return true;
         }
 
 
