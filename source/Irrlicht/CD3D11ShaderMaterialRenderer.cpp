@@ -81,6 +81,12 @@ namespace irr
             if (m_CallBack)
                 m_CallBack->drop();
 
+            if (m_OldVertexShader)
+            {
+                IRR_D3D11_VS_RELEASE(m_OldVertexShader, "OldVertexShader");
+                m_OldVertexShader->Release();
+            }
+
             if (m_VertexShader)
             {
                 IRR_D3D11_VS_RELEASE(m_VertexShader, "VertexShader");
@@ -200,6 +206,8 @@ namespace irr
                 return false;
             }
 
+            IRR_D3D11_PS_CREATE(m_PixelShader, "PixelShader");
+
             if (code)
                 code->Release();
 
@@ -250,6 +258,8 @@ namespace irr
                     code->Release();
                 return false;
             }
+
+            IRR_D3D11_VS_CREATE(m_VertexShader, "VertexShader");
 
             if (code)
                 code->Release();

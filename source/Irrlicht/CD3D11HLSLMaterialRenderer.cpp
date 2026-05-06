@@ -111,7 +111,7 @@ namespace irr
                     buffer->Release();
                     return false;
                 }
-                IRR_D3D11_VS_CREATE(m_VertexShader, "HLSLVertexShader");
+                IRR_D3D11_VS_CREATE(m_VertexShader, "VertexShader");
                 buffer->Release();
                 return true;
             }
@@ -174,7 +174,7 @@ namespace irr
                     buffer->Release();
                     return false;
                 }
-                IRR_D3D11_PS_CREATE(m_PixelShader, "HLSLPixelShader");
+                IRR_D3D11_PS_CREATE(m_PixelShader, "PixelShader");
                 buffer->Release();
                 return true;
             }

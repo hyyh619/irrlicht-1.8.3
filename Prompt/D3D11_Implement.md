@@ -397,3 +397,18 @@ ID3D11SamplerState
 ID3D11BlendState1
 ID3D11DepthStencilView
 请包括所有的对象。
+
+# 33
+1. 检查CD3D11Driver::~CD3D11Driver 中 SwapChain 和 Device 的释放逻辑，确保没有memory leak
+2. 确保 DepthStencilTexture 在 initDriver 失败回滚时也有 Release
+3. 在CD3D11Driver释放结束时使用 ID3D11Debug::ReportLiveDeviceObjects 看到更完整的未释放对象列表，这个只对Debug代码有效
+4. 检查DepthStencilTexture， SwapChain， ID3D11Device/Device1是否释放，如果没有，添加释放代码。
+
+# 34
+CD3D11ShaderMaterialRenderer创建了下列d3d11的对象，没有释放。请释放。
+            ID3D11Device                *m_pID3DDevice;
+            ID3D11DeviceContext         *m_pID3DDeviceContext;
+            ID3D11VertexShader          *m_VertexShader;
+            ID3D11VertexShader          *m_OldVertexShader;
+            ID3D11PixelShader           *m_PixelShader;
+            ID3D11InputLayout           *m_InputLayout;

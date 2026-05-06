@@ -365,14 +365,6 @@ namespace irr
                 m_DepthStencilView->Release();
             }
 
-#ifdef _DEBUG
-            if (m_pID3D11Debug)
-            {
-                IRR_D3D11_DEBUG_RELEASE(m_pID3D11Debug, "D3D11Debug");
-                m_pID3D11Debug->Release();
-            }
-#endif
-
             if (m_pID3DDeviceContext)
             {
                 IRR_D3D11_DEVICE_CONTEXT_RELEASE(m_pID3DDeviceContext, "DeviceContext");
@@ -384,6 +376,15 @@ namespace irr
                 IRR_D3D11_DEVICE1_RELEASE(m_pID3DDevice1, "Device1");
                 m_pID3DDevice1->Release();
             }
+
+#ifdef _DEBUG
+            if (m_pID3D11Debug)
+            {
+                m_pID3D11Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
+                IRR_D3D11_DEBUG_RELEASE(m_pID3D11Debug, "D3D11Debug");
+                m_pID3D11Debug->Release();
+            }
+#endif
 
             if (m_pID3DDevice)
             {
