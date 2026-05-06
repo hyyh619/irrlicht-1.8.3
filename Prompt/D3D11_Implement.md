@@ -451,3 +451,9 @@ CD3D11Driver::createMaterialRenderers创建了下列对象，但是只是到入C
 打印的log要包括对象的ID3D11Device1, ID3D11Device的指针地址，以及在哪个函数被调用
 
 请检查CD3D11Texture，CD3D11ShaderMaterialRenderer是否用到ID3D11Device1，ID3D11Device，有没有添加相应的AddRef和Release，以及对应的Log打印。
+
+# 38
+参考 CD3D9Driver::draw2DRectangle的实现，实现CD3D11Driver::draw2DRectangle。主要功能就是Draws a 2d rectangle with a gradient
+1. 创建4个顶点，绘制两个三角形组成一个rectangle
+2. 4个顶点分别赋予四个颜色SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown
+3. Shader使用CShader对象管理

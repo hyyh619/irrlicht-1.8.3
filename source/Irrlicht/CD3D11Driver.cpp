@@ -1381,18 +1381,26 @@ namespace irr
             if (!clippedRect.isValid())
                 return;
 
-            core::position2d<s32>    pos2[4];
-            pos2[0] = clippedRect.UpperLeftCorner;
-            pos2[1] = clippedRect.LowerRightCorner;
-            pos2[2] = core::position2d<s32>(clippedRect.LowerRightCorner.X, clippedRect.UpperLeftCorner.Y);
-            pos2[3] = core::position2d<s32>(clippedRect.UpperLeftCorner.X, clippedRect.LowerRightCorner.Y);
+            S3DVertex vertices[4];
+            vertices[0] = S3DVertex((f32)clippedRect.UpperLeftCorner.X, (f32)clippedRect.UpperLeftCorner.Y, 0.0f,
+                                    0.0f, 0.0f, 0.0f, colorLeftUp, 0.0f, 0.0f);
+            vertices[1] = S3DVertex((f32)clippedRect.LowerRightCorner.X, (f32)clippedRect.UpperLeftCorner.Y, 0.0f,
+                                    0.0f, 0.0f, 0.0f, colorRightUp, 0.0f, 1.0f);
+            vertices[2] = S3DVertex((f32)clippedRect.LowerRightCorner.X, (f32)clippedRect.LowerRightCorner.Y, 0.0f,
+                                    0.0f, 0.0f, 0.0f, colorRightDown, 1.0f, 0.0f);
+            vertices[3] = S3DVertex((f32)clippedRect.UpperLeftCorner.X, (f32)clippedRect.LowerRightCorner.Y, 0.0f,
+                                    0.0f, 0.0f, 0.0f, colorLeftDown, 1.0f, 1.0f);
 
-            s32    indices[6] = { 0, 1, 2, 2, 1, 3 };
+            u16 indices[6] = { 0, 1, 2, 0, 2, 3 };
 
-            setRenderStates2DMode(false, false, false);
+            setRenderStates2DMode(colorLeftUp.getAlpha() < 255 ||
+                                  colorRightUp.getAlpha() < 255 ||
+                                  colorLeftDown.getAlpha() < 255 ||
+                                  colorRightDown.getAlpha() < 255, false, false);
 
-            for (s32 i = 0; i < 4; ++i)
-                drawPixel(pos2[i].X, pos2[i].Y, colorLeftUp);
+            setShadersByType(video::EVT_STANDARD);
+
+            drawVertexPrimitiveList(vertices, 4, indices, 2, video::EVT_STANDARD, scene::EPT_TRIANGLES, EIT_16BIT);
         }
 
 
