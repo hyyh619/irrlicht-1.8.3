@@ -412,3 +412,31 @@ CD3D11ShaderMaterialRenderer创建了下列d3d11的对象，没有释放。请�
             ID3D11VertexShader          *m_OldVertexShader;
             ID3D11PixelShader           *m_PixelShader;
             ID3D11InputLayout           *m_InputLayout;
+
+# 35
+CD3D11Driver::createMaterialRenderers创建了下列对象，但是只是到入CNullDriver的MaterialRenderers进行管理。
+            new CD3D11MaterialRenderer(this, matType, "solid");
+            new CD3D11MaterialRenderer(this, matType, "solid_lightmap");
+            new CD3D11MaterialRenderer(this, matType, "solid_2_layer");
+            new CD3D11MaterialRenderer(this, matType, "translucent");
+            new CD3D11MaterialRenderer(this, matType, "translucent_2_layer");
+            new CD3D11MaterialRenderer(this, matType, "translucent_add_color");
+            new CD3D11MaterialRenderer(this, matType, "translucent_vertex_alpha");
+            new CD3D11MaterialRenderer(this, matType, "translucent_alpha_channel");
+            new CD3D11MaterialRenderer(this, matType, "translucent_alpha_channel_ref");
+            new CD3D11MaterialRenderer(this, matType, "one_texture_blend");
+            new CD3D11MaterialRenderer(this, matType, "lightmap_blend");
+            new CD3D11MaterialRenderer(this, matType, "detail_map");
+            new CD3D11MaterialRenderer(this, matType, "sphere_map");
+            new CD3D11MaterialRenderer(this, matType, "reflection_2_layer");
+            new CD3D11MaterialRenderer(this, matType, "transparent_reflection_2_layer");
+
+            if (queryFeature(video::EVDF_PIXEL_SHADER_1_1) && queryFeature(video::EVDF_VERTEX_SHADER_1_1))
+            {
+                new CD3D11NormalMapRenderer(m_pID3DDevice, m_pID3DDeviceContext, this, matType, getMaterialRenderer(EMT_SOLID));
+                new CD3D11ParallaxMapRenderer(m_pID3DDevice, m_pID3DDeviceContext, this, matType, getMaterialRenderer(EMT_SOLID));
+            }
+1. CD3D11MaterialRenderer创建时其ReferenceCounter就为1了
+2. 调用CNullDriver::addMaterialRenderer加入到MaterialRenderers其ReferenceCounter为2
+3. 但是在释放时只调用了CNullDriver::deleteMaterialRenders,因此其ReferenceCounter只会减到1，不会调用delete
+4. 在CD3D11Driver::createMaterialRenderers创建MaterialRenderer对象时，请添加CD3D11Driver自己的管理对象，在CD3D11Driver释放时，先调用CNullDriver::deleteMaterialRenders，再调用CD3D11Driver自己的管理对象对MaterialRenderer对象进行释放。

@@ -275,6 +275,13 @@ namespace irr
         CD3D11Driver::~CD3D11Driver()
         {
             deleteMaterialRenders();
+
+            for (u32 i = 0; i < m_MaterialRenderers.size(); ++i)
+            {
+                m_MaterialRenderers[i]->drop();
+            }
+            m_MaterialRenderers.clear();
+
             deleteAllTextures();
             removeAllOcclusionQueries();
             removeAllHardwareBuffers();
@@ -1810,26 +1817,26 @@ namespace irr
         {
             s32    matType = -1;
 
-            new CD3D11MaterialRenderer(this, matType, "solid");
-            new CD3D11MaterialRenderer(this, matType, "solid_lightmap");
-            new CD3D11MaterialRenderer(this, matType, "solid_2_layer");
-            new CD3D11MaterialRenderer(this, matType, "translucent");
-            new CD3D11MaterialRenderer(this, matType, "translucent_2_layer");
-            new CD3D11MaterialRenderer(this, matType, "translucent_add_color");
-            new CD3D11MaterialRenderer(this, matType, "translucent_vertex_alpha");
-            new CD3D11MaterialRenderer(this, matType, "translucent_alpha_channel");
-            new CD3D11MaterialRenderer(this, matType, "translucent_alpha_channel_ref");
-            new CD3D11MaterialRenderer(this, matType, "one_texture_blend");
-            new CD3D11MaterialRenderer(this, matType, "lightmap_blend");
-            new CD3D11MaterialRenderer(this, matType, "detail_map");
-            new CD3D11MaterialRenderer(this, matType, "sphere_map");
-            new CD3D11MaterialRenderer(this, matType, "reflection_2_layer");
-            new CD3D11MaterialRenderer(this, matType, "transparent_reflection_2_layer");
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "solid"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "solid_lightmap"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "solid_2_layer"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "translucent"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "translucent_2_layer"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "translucent_add_color"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "translucent_vertex_alpha"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "translucent_alpha_channel"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "translucent_alpha_channel_ref"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "one_texture_blend"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "lightmap_blend"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "detail_map"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "sphere_map"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "reflection_2_layer"));
+            m_MaterialRenderers.push_back(new CD3D11MaterialRenderer(this, matType, "transparent_reflection_2_layer"));
 
             if (queryFeature(video::EVDF_PIXEL_SHADER_1_1) && queryFeature(video::EVDF_VERTEX_SHADER_1_1))
             {
-                new CD3D11NormalMapRenderer(m_pID3DDevice, m_pID3DDeviceContext, this, matType, getMaterialRenderer(EMT_SOLID));
-                new CD3D11ParallaxMapRenderer(m_pID3DDevice, m_pID3DDeviceContext, this, matType, getMaterialRenderer(EMT_SOLID));
+                m_MaterialRenderers.push_back(new CD3D11NormalMapRenderer(m_pID3DDevice, m_pID3DDeviceContext, this, matType, getMaterialRenderer(EMT_SOLID)));
+                m_MaterialRenderers.push_back(new CD3D11ParallaxMapRenderer(m_pID3DDevice, m_pID3DDeviceContext, this, matType, getMaterialRenderer(EMT_SOLID)));
             }
         }
 

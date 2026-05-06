@@ -464,6 +464,7 @@ private:
             bool createDefaultStates();
 
             core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
+            core::array<IMaterialRenderer*>         m_MaterialRenderers;
 
             void removeDepthSurface(SD3D11DepthStencilView *depth);
 
