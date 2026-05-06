@@ -25,7 +25,10 @@ namespace irr
 
             //! Vertex with a tangent and binormal vector, video::S3DVertexTangents.
             /** Usually used for tangent space normal mapping. */
-            EVT_TANGENTS
+            EVT_TANGENTS,
+
+            //! Vertex type for 2D rectangle drawing.
+            EVT_2D_RECTANGLE
         };
 
         //! Array holding the built in vertex type names
@@ -34,6 +37,7 @@ namespace irr
             "standard",
             "2tcoords",
             "tangents",
+            "2d_rectangle",
             0
         };
 

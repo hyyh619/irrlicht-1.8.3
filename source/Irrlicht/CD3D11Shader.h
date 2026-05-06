@@ -16,6 +16,7 @@
 #include <d3dcompiler.h>
 #include "IReferenceCounted.h"
 #include "irrString.h"
+#include "S3DVertex.h"
 
 namespace irr
 {
@@ -90,6 +91,14 @@ public:
             {
                 return m_ShaderType;
             }
+            E_VERTEX_TYPE getVertexType() const
+            {
+                return m_VertexType;
+            }
+            void setVertexType(E_VERTEX_TYPE type)
+            {
+                m_VertexType = type;
+            }
             bool isCompiled() const
             {
                 return m_Compiled;
@@ -103,6 +112,7 @@ private:
             core::stringc       m_Profile;
 
             E_D3D11_SHADER_TYPE     m_ShaderType;
+            E_VERTEX_TYPE           m_VertexType;
             bool                    m_Compiled;
 
             ID3DBlob    *m_ShaderBlob;

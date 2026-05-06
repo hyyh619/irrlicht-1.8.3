@@ -460,3 +460,10 @@ CD3D11Driver::createMaterialRenderers创建了下列对象，但是只是到入C
 
 # 39
 为CD3D11Driver::draw2DRectangle创建一组新的VS和PS，VS只需要输入pos,color，输出pos,color，PS只需要输入color，输出color。不要使用原来的video::EVT_STANDARD
+
+# 40
+1. CD3D11Driver::createRectangleShaders创建的CShader对象也要用m_ShaderPool来管理
+2. CD3D11Driver::draw2DRectangle切换shader时，也要使用setShadersByType来设置
+3. 为rectangle shaders增加一个新的shader类型EVT_2D_RECTANGLE
+4. CShader增加一个成员变量记录E_VERTEX_TYPE
+5. CD3D11Driver增加一个查询函数，根据输入的E_VERTEX_TYPE和E_D3D11_SHADER_TYPE在m_ShaderPool中查找对应的CShader对象

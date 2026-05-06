@@ -15,7 +15,7 @@ namespace irr
     namespace video
     {
         CD3D11Shader::CD3D11Shader(CD3D11Driver *driver)
-            : m_Driver(driver), m_ShaderType(EDST_COUNT), m_Compiled(false),
+            : m_Driver(driver), m_ShaderType(EDST_COUNT), m_VertexType(EVT_STANDARD), m_Compiled(false),
             m_ShaderBlob(0), m_VertexShader(0), m_HullShader(0), m_DomainShader(0),
             m_GeometryShader(0), m_PixelShader(0), m_ComputeShader(0),
             m_InputLayout(0), m_InputLayoutDesc(0), m_InputLayoutElementCount(0)

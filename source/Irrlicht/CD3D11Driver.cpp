@@ -194,7 +194,6 @@ namespace irr
             m_WindowId(0), m_SceneSourceRect(0),
             m_LastVertexType((video::E_VERTEX_TYPE)-1), m_VendorID(0),
             m_BuiltInShadersInitialized(false),
-            m_RectangleVertexShader(0), m_RectanglePixelShader(0), m_RectangleInputLayout(0),
             m_TempVertexBuffer(0), m_TempIndexBuffer(0), m_MatrixConstantBuffer(0),
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
@@ -346,24 +345,6 @@ namespace irr
                     IRR_D3D11_PS_RELEASE(m_BuiltInPixelShader[i], "BuiltInPixelShader");
                     m_BuiltInPixelShader[i]->Release();
                 }
-            }
-
-            if (m_RectangleInputLayout)
-            {
-                IRR_D3D11_IL_RELEASE(m_RectangleInputLayout, "RectangleInputLayout");
-                m_RectangleInputLayout->Release();
-            }
-
-            if (m_RectangleVertexShader)
-            {
-                IRR_D3D11_VS_RELEASE(m_RectangleVertexShader, "RectangleVertexShader");
-                m_RectangleVertexShader->Release();
-            }
-
-            if (m_RectanglePixelShader)
-            {
-                IRR_D3D11_PS_RELEASE(m_RectanglePixelShader, "RectanglePixelShader");
-                m_RectanglePixelShader->Release();
             }
 
             if (m_TempVertexBuffer)
@@ -1450,9 +1431,17 @@ namespace irr
                                   colorLeftDown.getAlpha() < 255 ||
                                   colorRightDown.getAlpha() < 255, false, false);
 
-            m_pID3DDeviceContext->VSSetShader(m_RectangleVertexShader, 0, 0);
-            m_pID3DDeviceContext->PSSetShader(m_RectanglePixelShader, 0, 0);
-            m_pID3DDeviceContext->IASetInputLayout(m_RectangleInputLayout);
+            CD3D11Shader    *vsShader   = getShaderByTypes(EVT_2D_RECTANGLE, EDST_VERTEX);
+            CD3D11Shader    *psShader   = getShaderByTypes(EVT_2D_RECTANGLE, EDST_PIXEL);
+
+            if (vsShader)
+                m_pID3DDeviceContext->VSSetShader(vsShader->getVertexShader(), 0, 0);
+
+            if (psShader)
+                m_pID3DDeviceContext->PSSetShader(psShader->getPixelShader(), 0, 0);
+
+            if (vsShader)
+                m_pID3DDeviceContext->IASetInputLayout(vsShader->getInputLayout());
 
             const u32       vertexBufferSize    = sizeof(vertices);
             const u32       indexBufferSize     = sizeof(indices);
@@ -2069,6 +2058,18 @@ namespace irr
         }
 
 
+        CD3D11Shader* CD3D11Driver::getShaderByTypes(video::E_VERTEX_TYPE vertexType, E_D3D11_SHADER_TYPE shaderType) const
+        {
+            for (u32 i = 0; i < m_ShaderPool.size(); ++i)
+            {
+                if (m_ShaderPool[i]->getVertexType() == vertexType && m_ShaderPool[i]->getShaderType() == shaderType)
+                    return m_ShaderPool[i];
+            }
+
+            return 0;
+        }
+
+
         void CD3D11Driver::setPSTextureAndSamplerState()
         {
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
@@ -2363,13 +2364,12 @@ namespace irr
                 return false;
             }
 
-            m_RectangleVertexShader = vsShader->getVertexShader();
-            m_RectangleVertexShader->AddRef();
-            m_RectangleInputLayout = vsShader->getInputLayout();
-            m_RectangleInputLayout->AddRef();
-            vsShader->drop();
+            vsShader->setVertexType(EVT_2D_RECTANGLE);
+            vsShader->grab();
+            m_ShaderPool.push_back(vsShader);
 
             CD3D11Shader    *psShader = new CD3D11Shader(this);
+
             if (!psShader->compile(EDST_PIXEL, PIXEL_SHADER_RECTANGLE, "main", "ps_4_0"))
             {
                 psShader->drop();
@@ -2382,9 +2382,9 @@ namespace irr
                 return false;
             }
 
-            m_RectanglePixelShader = psShader->getPixelShader();
-            m_RectanglePixelShader->AddRef();
-            psShader->drop();
+            psShader->setVertexType(EVT_2D_RECTANGLE);
+            psShader->grab();
+            m_ShaderPool.push_back(psShader);
 
             return true;
         }

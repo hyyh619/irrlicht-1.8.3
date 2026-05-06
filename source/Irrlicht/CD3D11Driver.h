@@ -17,6 +17,7 @@
 #include "CNullDriver.h"
 #include "SIrrCreationParameters.h"
 #include "IMaterialRendererServices.h"
+#include "CD3D11Shader.h"
 #if defined(__BORLANDC__) || defined (__BCPLUSPLUS__)
 #include "irrMath.h"
 #endif
@@ -414,6 +415,8 @@ private:
 
             void setShadersByType(video::E_VERTEX_TYPE newType);
 
+            CD3D11Shader* getShaderByTypes(video::E_VERTEX_TYPE vertexType, E_D3D11_SHADER_TYPE shaderType) const;
+
             void setPSTextureAndSamplerState();
 
             bool setRenderStates3DMode();
@@ -495,10 +498,6 @@ private:
             ID3D11VertexShader              *m_BuiltInVertexShader[EVT_TANGENTS + 1];
             ID3D11PixelShader               *m_BuiltInPixelShader[EVT_TANGENTS + 1];
             bool                            m_BuiltInShadersInitialized;
-
-            ID3D11VertexShader              *m_RectangleVertexShader;
-            ID3D11PixelShader               *m_RectanglePixelShader;
-            ID3D11InputLayout               *m_RectangleInputLayout;
 
             SColorf             m_AmbientLight;
             core::stringc       m_VendorName;
