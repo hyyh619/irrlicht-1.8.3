@@ -976,6 +976,9 @@ namespace irr
 
         void CD3D11Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel)
         {
+            if (m_CurrentRenderMode == ERM_2D)
+                return;
+
             m_CurrentRenderMode = ERM_2D;
             setRenderStates(ERM_2D, alpha);
         }
