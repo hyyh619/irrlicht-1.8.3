@@ -250,6 +250,13 @@ public:
             //! very useful method for statistics.
             virtual u32 getPrimitiveCountDrawn(u32 param = 0) const;
 
+            //! returns amount of draw calls made in the last frame.
+            //! very useful method for statistics.
+            virtual u32 getDrawCallCount() const;
+
+            //! resets the draw call counter
+            virtual void resetDrawCallCounter();
+
             //! deletes all dynamic lights there are
             virtual void deleteAllDynamicLights();
 
@@ -873,6 +880,7 @@ protected:
             CFPSCounter FPSCounter;
 
             u32 PrimitivesDrawn;
+            u32 DrawCallCounter;
             u32 MinVertexCountForVBO;
 
             u32 TextureCreationFlags;

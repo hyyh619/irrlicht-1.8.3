@@ -827,6 +827,15 @@ typedef long intptr_t;
         #undef _IRR_SCENEMANAGER_DEBUG
     #endif
 
+    //! Define _IRR_DUMP_DRAW_CALLS_ to dump each draw call's rendered image to a JPG file.
+    /** This is useful for debugging and profiling. Each draw call will save a screenshot
+     *  named "draw_call_XXXX.jpg" in the current working directory.
+     *  WARNING: This significantly slows down rendering! */
+    //#define _IRR_DUMP_DRAW_CALLS_
+    #ifdef NO_IRR_DUMP_DRAW_CALLS_
+        #undef _IRR_DUMP_DRAW_CALLS_
+    #endif
+
     #define _IRR_D3D11_OBJECT_TRACKING
     #ifdef NO_IRR_D3D11_OBJECT_TRACKING
         #undef _IRR_D3D11_OBJECT_TRACKING

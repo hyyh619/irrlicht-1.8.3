@@ -463,6 +463,11 @@ private:
             void renderArray(const void *indexList, u32 primitiveCount,
                 scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType);
 
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            //! dumps the current framebuffer to a file after each draw call (for debugging)
+            void dumpDrawCall();
+#endif
+
             core::stringw   Name;
             core::matrix4   Matrices[ETS_COUNT];
             core::array<u8> ColorBuffer;

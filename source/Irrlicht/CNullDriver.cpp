@@ -82,7 +82,7 @@ namespace irr
         //! constructor
         CNullDriver::CNullDriver(io::IFileSystem *io, const core::dimension2d<u32> &screenSize)
             : FileSystem(io), MeshManipulator(0), ViewPort(0, 0, 0, 0), ScreenSize(screenSize),
-            PrimitivesDrawn(0), MinVertexCountForVBO(500), TextureCreationFlags(0),
+            PrimitivesDrawn(0), DrawCallCounter(0), MinVertexCountForVBO(500), TextureCreationFlags(0),
             OverrideMaterial2DEnabled(false), AllowZWriteOnTransparent(false)
         {
 #ifdef _DEBUG
@@ -896,6 +896,23 @@ namespace irr
         u32 CNullDriver::getPrimitiveCountDrawn(u32 param) const
         {
             return (0 == param) ? FPSCounter.getPrimitive() : (1 == param) ? FPSCounter.getPrimitiveAverage() : FPSCounter.getPrimitiveTotal();
+        }
+
+
+
+        //! returns amount of draw calls made in the last frame.
+        //! very useful method for statistics.
+        u32 CNullDriver::getDrawCallCount() const
+        {
+            return DrawCallCounter;
+        }
+
+
+
+        //! resets the draw call counter
+        void CNullDriver::resetDrawCallCounter()
+        {
+            DrawCallCounter = 0;
         }
 
 

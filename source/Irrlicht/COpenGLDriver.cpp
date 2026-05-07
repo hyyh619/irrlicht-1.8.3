@@ -1806,7 +1806,28 @@ namespace irr
                     glDrawElements(GL_POLYGON, primitiveCount, indexSize, indexList);
                     break;
             }
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall();
+#endif
         }
+
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+        void COpenGLDriver::dumpDrawCall()
+        {
+            ++DrawCallCounter;
+
+            IImage* image = createScreenShot(video::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
+            if (image)
+            {
+                core::stringc filename = "draw_call_";
+                filename += DrawCallCounter;
+                filename += ".jpg";
+                writeImageToFile(image, filename.c_str(), 90);
+                image->drop();
+            }
+        }
+#endif
 
 
         //! draws a vertex primitive list in 2d

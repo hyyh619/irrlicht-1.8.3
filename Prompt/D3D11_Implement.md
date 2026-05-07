@@ -543,3 +543,4 @@ ALPHAARG2 = DIFFUSE             // 参数2：顶点漫反射Alpha
 
 # 46
 Git commit: 
+增加一个dump每个draw call绘制的图像的接口，通过一个宏开关来控制开启。开启这个功能，每个draw绘制后的内容被dump到一张jpg图片里.

@@ -420,6 +420,10 @@ private:
                 E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
                 E_INDEX_TYPE iType, bool is3D);
 
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            void dumpDrawCall();
+#endif
+
             D3DTEXTUREADDRESS getTextureWrapMode(const u8 clamp);
 
             inline D3DCOLORVALUE colorToD3D(const SColor &col)

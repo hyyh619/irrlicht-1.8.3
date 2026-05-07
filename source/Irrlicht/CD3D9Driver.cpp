@@ -1668,7 +1668,28 @@ namespace irr
 
                     break;
             }
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall();
+#endif
         }
+
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+        void CD3D9Driver::dumpDrawCall()
+        {
+            ++DrawCallCounter;
+
+            IImage* image = createScreenShot(video::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
+            if (image)
+            {
+                core::stringc filename = "draw_call_";
+                filename += DrawCallCounter;
+                filename += ".jpg";
+                writeImageToFile(image, filename.c_str(), 90);
+                image->drop();
+            }
+        }
+#endif
 
 
         void CD3D9Driver::draw2DImage(const video::ITexture *texture,
