@@ -421,7 +421,7 @@ private:
                 E_INDEX_TYPE iType, bool is3D);
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
-            void dumpDrawCall();
+            void dumpDrawCall(const c8* drawTypeName);
 #endif
 
             D3DTEXTUREADDRESS getTextureWrapMode(const u8 clamp);

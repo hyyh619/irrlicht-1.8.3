@@ -547,3 +547,5 @@ Git commit: add draw dump for each draw call by MiniMax-M2.7.
 
 # 47
 Git commit: 
+1. 为CD3D9Driver::draw*，CD3D11Driver::draw*, COpenGLDriver::draw*的所有draw绘制都加上dumpDrawCall
+2. dumpDrawCall输出的文件名需要包含当前draw类型，例如draw2D3DVertexPrimitiveList，draw2DRectangle, draw2DImageBatch等等。

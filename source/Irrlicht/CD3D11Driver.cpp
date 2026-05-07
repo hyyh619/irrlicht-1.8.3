@@ -1389,20 +1389,22 @@ namespace irr
                 m_pID3DDeviceContext->Draw(vertexCount, 0);
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
-            dumpDrawCall();
+            dumpDrawCall("draw2D3DVertexPrimitiveList");
 #endif
         }
 
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
-        void CD3D11Driver::dumpDrawCall()
+        void CD3D11Driver::dumpDrawCall(const c8* drawTypeName)
         {
             ++DrawCallCounter;
 
             IImage    *image = createScreenShot(ECOLOR_FORMAT::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
             if (image)
             {
-                core::stringc    filename = "draw_call_";
+                core::stringc    filename = "draw_";
+                filename    += drawTypeName;
+                filename    += "_";
                 filename    += DrawCallCounter;
                 filename    += ".jpg";
                 writeImageToFile(image, filename.c_str(), 90);
@@ -1658,6 +1660,10 @@ namespace irr
             m_pID3DDeviceContext->IASetIndexBuffer(m_TempIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
             m_pID3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
             m_pID3DDeviceContext->DrawIndexed(indices.size(), 0, 0);
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DImageBatch");
+#endif
         }
 
 
@@ -1798,6 +1804,10 @@ namespace irr
             m_pID3DDeviceContext->IASetIndexBuffer(m_TempIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
             m_pID3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
             m_pID3DDeviceContext->DrawIndexed(6, 0, 0);
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DRectangle");
+#endif
         }
 
 

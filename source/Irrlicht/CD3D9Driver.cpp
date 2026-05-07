@@ -1670,20 +1670,22 @@ namespace irr
             }
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
-            dumpDrawCall();
+            dumpDrawCall("draw2D3DVertexPrimitiveList");
 #endif
         }
 
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
-        void CD3D9Driver::dumpDrawCall()
+        void CD3D9Driver::dumpDrawCall(const c8* drawTypeName)
         {
             ++DrawCallCounter;
 
             IImage    *image = createScreenShot(ECOLOR_FORMAT::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
             if (image)
             {
-                core::stringc    filename = "draw_call_";
+                core::stringc    filename = "draw_";
+                filename    += drawTypeName;
+                filename    += "_";
                 filename    += DrawCallCounter;
                 filename    += ".jpg";
                 writeImageToFile(image, filename.c_str(), 90);
@@ -1908,6 +1910,10 @@ namespace irr
                 m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, vtx.size(), indices.size() / 3, indices.pointer(),
                                                       D3DFMT_INDEX16, vtx.pointer(), sizeof(S3DVertex));
             }
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DImageBatch");
+#endif
         }
 
 
@@ -2041,6 +2047,10 @@ namespace irr
 
             m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, &indices[0],
                                                   D3DFMT_INDEX16, &vtx[0],    sizeof(S3DVertex));
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DImagePos");
+#endif
         }
 
 
@@ -2081,6 +2091,10 @@ namespace irr
 
             m_pID3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST, 0, 4, 2, &indices[0],
                                                   D3DFMT_INDEX16, &vtx[0], sizeof(S3DVertex));
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DRectangle");
+#endif
         }
 
 
@@ -2110,6 +2124,10 @@ namespace irr
 
                 m_pID3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, 1,
                                                &vtx[0], sizeof(S3DVertex));
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+                dumpDrawCall("draw2DLine");
+#endif
             }
         }
 
@@ -2130,6 +2148,10 @@ namespace irr
             S3DVertex    vertex((f32)x + 0.375f, (f32)y + 0.375f, 0.f, 0.f, 0.f, 0.f, color, 0.f, 0.f);
 
             m_pID3DDevice->DrawPrimitiveUP(D3DPT_POINTLIST, 1, &vertex, sizeof(vertex));
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("drawPixel");
+#endif
         }
 
 

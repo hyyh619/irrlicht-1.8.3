@@ -465,7 +465,7 @@ private:
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
             //! dumps the current framebuffer to a file after each draw call (for debugging)
-            void dumpDrawCall();
+            void dumpDrawCall(const c8* drawTypeName);
 #endif
 
             core::stringw   Name;

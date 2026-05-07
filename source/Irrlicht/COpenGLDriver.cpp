@@ -1642,6 +1642,10 @@ namespace irr
             glDisableClientState(GL_VERTEX_ARRAY);
             glDisableClientState(GL_NORMAL_ARRAY);
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("drawVertexPrimitiveList");
+#endif
         }
 
 
@@ -1806,22 +1810,20 @@ namespace irr
                     glDrawElements(GL_POLYGON, primitiveCount, indexSize, indexList);
                     break;
             }
-
-#ifdef _IRR_DUMP_DRAW_CALLS_
-            dumpDrawCall();
-#endif
         }
 
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
-        void COpenGLDriver::dumpDrawCall()
+        void COpenGLDriver::dumpDrawCall(const c8* drawTypeName)
         {
             ++DrawCallCounter;
 
             IImage    *image = createScreenShot(ECOLOR_FORMAT::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
             if (image)
             {
-                core::stringc    filename = "draw_call_";
+                core::stringc    filename = "draw_";
+                filename    += drawTypeName;
+                filename    += "_";
                 filename    += DrawCallCounter;
                 filename    += ".jpg";
                 writeImageToFile(image, filename.c_str(), 90);
@@ -1987,6 +1989,10 @@ namespace irr
             glDisableClientState(GL_COLOR_ARRAY);
             glDisableClientState(GL_VERTEX_ARRAY);
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DVertexPrimitiveList");
+#endif
         }
 
 
@@ -2125,6 +2131,10 @@ namespace irr
             }
 
             glEnd();
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DImageBatch");
+#endif
         }
 
 
@@ -2258,6 +2268,10 @@ namespace irr
             glVertex2f(GLfloat(poss.UpperLeftCorner.X), GLfloat(poss.LowerRightCorner.Y));
 
             glEnd();
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DImagePos");
+#endif
         }
 
 
@@ -2327,6 +2341,10 @@ namespace irr
 
             if (clipRect)
                 glDisable(GL_SCISSOR_TEST);
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DImageRect");
+#endif
         }
 
 
@@ -2402,6 +2420,10 @@ namespace irr
 
             if (clipRect)
                 glDisable(GL_SCISSOR_TEST);
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DImageArray");
+#endif
         }
 
 
@@ -2423,6 +2445,10 @@ namespace irr
             glColor4ub(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
             glRectf(GLfloat(pos.UpperLeftCorner.X), GLfloat(pos.UpperLeftCorner.Y),
                     GLfloat(pos.LowerRightCorner.X), GLfloat(pos.LowerRightCorner.Y));
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DRectangle");
+#endif
         }
 
 
@@ -2464,6 +2490,10 @@ namespace irr
             glVertex2f(GLfloat(pos.UpperLeftCorner.X), GLfloat(pos.LowerRightCorner.Y));
 
             glEnd();
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DRectangleGradient");
+#endif
         }
 
 
@@ -2499,6 +2529,10 @@ namespace irr
 
                 glVertex2f(GLfloat(x),   GLfloat(y));
                 glEnd();
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+                dumpDrawCall("draw2DLine");
+#endif
             }
         }
 
@@ -2517,6 +2551,10 @@ namespace irr
             glColor4ub(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
             glVertex2i(x, y);
             glEnd();
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("drawPixel");
+#endif
         }
 
         bool COpenGLDriver::setActiveTexture(u32 stage, const video::ITexture *texture)

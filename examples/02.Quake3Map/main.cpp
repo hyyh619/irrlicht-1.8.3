@@ -42,7 +42,7 @@ using namespace irr;
 #endif
 
 #ifndef CONFORM_TEST_DX11
-#define CONFORM_TEST_DX11 0
+#define CONFORM_TEST_DX11 1
 #endif
 
 /*

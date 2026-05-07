@@ -831,7 +831,7 @@ typedef long intptr_t;
     /** This is useful for debugging and profiling. Each draw call will save a screenshot
      *  named "draw_call_XXXX.jpg" in the current working directory.
      *  WARNING: This significantly slows down rendering! */
-    //#define _IRR_DUMP_DRAW_CALLS_
+    #define _IRR_DUMP_DRAW_CALLS_
     #ifdef NO_IRR_DUMP_DRAW_CALLS_
         #undef _IRR_DUMP_DRAW_CALLS_
     #endif
