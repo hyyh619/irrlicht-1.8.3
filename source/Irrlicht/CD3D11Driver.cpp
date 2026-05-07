@@ -331,7 +331,7 @@ namespace irr
 
             m_ShaderPool.clear();
 
-            for (u32 i = 0; i < EVT_2D_RECTANGLE + 1; ++i)
+            for (u32 i = 0; i < EVT_VERTEX_TYPE_MAX; ++i)
             {
                 if (m_InputLayout[i])
                 {

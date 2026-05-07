@@ -495,9 +495,9 @@ private:
             UINT                            m_Caps;
             SIrrlichtCreationParameters     m_Params;
             E_VERTEX_TYPE                   m_LastVertexType;
-            ID3D11InputLayout               *m_InputLayout[EVT_2D_RECTANGLE + 1];
-            ID3D11VertexShader              *m_BuiltInVertexShader[EVT_2D_RECTANGLE + 1];
-            ID3D11PixelShader               *m_BuiltInPixelShader[EVT_2D_RECTANGLE + 1];
+            ID3D11InputLayout               *m_InputLayout[EVT_VERTEX_TYPE_MAX];
+            ID3D11VertexShader              *m_BuiltInVertexShader[EVT_VERTEX_TYPE_MAX];
+            ID3D11PixelShader               *m_BuiltInPixelShader[EVT_VERTEX_TYPE_MAX];
             bool                            m_BuiltInShadersInitialized;
 
             SColorf             m_AmbientLight;

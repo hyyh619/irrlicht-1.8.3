@@ -28,7 +28,9 @@ namespace irr
             EVT_TANGENTS,
 
             //! Vertex type for 2D rectangle drawing.
-            EVT_2D_RECTANGLE
+            EVT_2D_RECTANGLE,
+
+            EVT_VERTEX_TYPE_MAX
         };
 
         //! Array holding the built in vertex type names

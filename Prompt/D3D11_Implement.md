@@ -508,7 +508,7 @@ Git commit: Add alpha blend to render states for draw2DImageBatch by MiniMax-M2.
 2. CD3D11Driver::setRenderStates根据alpha是否开启，来选择正确的blendstate
 
 # 46
-Git commit: .
+Git commit: Chang font's color from white to black which uses alpha blend in PS by MiniMax-M2.7.
 分析一下下列d3d9调用的作用。
 m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 m_pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -540,3 +540,6 @@ ALPHAARG2 = DIFFUSE             // 参数2：顶点漫反射Alpha
 结果: FinalAlpha = TextureAlpha × DiffuseAlpha
 总结
 这是渲染带纹理的半透明物体（如UI元素、粒子效果）的标准配置。纹理颜色与顶点颜色调制产生最终颜色，Alpha值也通过相同方式计算，然后使用标准的SRCALPHA/INVSRCALPHA混合公式与背景混合。
+
+# 46
+Git commit: 
