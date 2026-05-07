@@ -492,6 +492,7 @@ Git commit: Created SRenderStateSet struct containing RasterizerState, DepthSten
 4. CD3D11Driver::setRenderStates调用时，根据E_RENDER_MODE来选择对应的states。
 
 # 43
+Git commit: Add mvp for 2d rectangle by MiniMax-M2.7.
 CD3D11Driver::draw2DRectangle收到的pos是屏幕像素坐标，我们需要在vs里面经过mvp矩阵把其转换到NDC坐标中
 1. 改动VERTEX_SHADER_RECTANGLE，支持MVP变换
 2. 生成CD3D11Driver::draw2DRectangle转换屏幕像素坐标到NDC坐标的MVP矩阵
