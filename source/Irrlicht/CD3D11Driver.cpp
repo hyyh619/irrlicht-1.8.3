@@ -149,7 +149,8 @@ namespace irr
             "Texture2D DiffuseTexture : register(t0);"
             "SamplerState LinearSampler : register(s0);"
             "float4 main(PS_INPUT input) : SV_TARGET {"
-            "    return DiffuseTexture.Sample(LinearSampler, input.TexCoord);"
+            "    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);"
+            "    return float4(texColor.rgb * input.Color.rgb, texColor.a * input.Color.a);"
             "}";
 
         static const char    PIXEL_SHADER_2TCOORDS[] =

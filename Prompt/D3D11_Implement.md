@@ -503,6 +503,40 @@ Git commit: Implement draw2DImageBatch by MiniMax-M2.7.
 根据CD3D9Driver::draw2DImageBatch的实现，实现CD3D11Driver::draw2DImageBatch
 
 # 45
-Git commit: 
+Git commit: Add alpha blend to render states for draw2DImageBatch by MiniMax-M2.7.
 1. SRenderStateSet的BlendState需要增加一个，两个BlendState分别是开启alpha和不开启alpha的state
 2. CD3D11Driver::setRenderStates根据alpha是否开启，来选择正确的blendstate
+
+# 46
+Git commit: .
+分析一下下列d3d9调用的作用。
+m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+m_pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+m_pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+m_pID3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
+根据下面的d3d9的计算公式改造PIXEL_SHADER_STANDARD，只是alpha混合
+这些D3D9调用配置了典型的Alpha透明渲染：
+Alpha混合设置
+调用
+ALPHABLENDENABLE = TRUE
+SRCBLEND = SRCALPHA
+DESTBLEND = INVSRCALPHA
+混合公式: Final = Source × α + Dest × (1-α)（标准Alpha混合）
+纹理颜色操作 (Stage 0)
+COLOROP = MODULATE              // 操作：相乘
+COLORARG1 = TEXTURE             // 参数1：纹理颜色
+COLORARG2 = DIFFUSE             // 参数2：顶点漫反射色
+结果: FinalColor = TextureColor × DiffuseColor
+纹理Alpha操作 (Stage 0)
+ALPHAOP = MODULATE              // 操作：相乘
+ALPHAARG1 = TEXTURE             // 参数1：纹理Alpha
+ALPHAARG2 = DIFFUSE             // 参数2：顶点漫反射Alpha
+结果: FinalAlpha = TextureAlpha × DiffuseAlpha
+总结
+这是渲染带纹理的半透明物体（如UI元素、粒子效果）的标准配置。纹理颜色与顶点颜色调制产生最终颜色，Alpha值也通过相同方式计算，然后使用标准的SRCALPHA/INVSRCALPHA混合公式与背景混合。
