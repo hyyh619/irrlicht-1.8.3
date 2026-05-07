@@ -546,6 +546,23 @@ Git commit: add draw dump for each draw call by MiniMax-M2.7.
 增加一个dump每个draw call绘制的图像的接口，通过一个宏开关来控制开启。开启这个功能，每个draw绘制后的内容被dump到一张jpg图片里.
 
 # 47
-Git commit: 
+Git commit: Add draw dump for all draw calls by MiniMax-M2.7.
 1. 为CD3D9Driver::draw*，CD3D11Driver::draw*, COpenGLDriver::draw*的所有draw绘制都加上dumpDrawCall
 2. dumpDrawCall输出的文件名需要包含当前draw类型，例如draw2D3DVertexPrimitiveList，draw2DRectangle, draw2DImageBatch等等。
+
+# 48
+Git commit:
+1. CShader 增加一个E_MATERIAL_TYPE类型的成员变量
+2. CShader创建时，如果是PS，需要设置E_MATERIAL_TYPE类型的成员变量，其他shader type设成EMT_SOLID
+3. CShader增加setMaterialType和getMaterialType成员函数
+4. CD3D11Driver::getShaderByTypes增加一个E_MATERIAL_TYPE类型的判断
+5. CD3D11Driver::setShadersByType改成CD3D11Driver::setVSByType，只保留VS设置
+6. 新增CD3D11Driver::setPSByType函数，把CD3D11Driver::setShadersByType函数内PS设置相关的代码放到CD3D11Driver::setPSByType函数，CD3D11Driver::setPSByType函数根据E_MATERIAL_TYPE和video::E_VERTEX_TYPE类型来选择对应的PS
+
+优化下列三个Shader创建函数，改成统一的VS创建和PS创建,VS创建在CD3D11Driver::setVSByType初始化，PS创建在CD3D11Driver::setPSByType
+createBuiltInVertexShader((E_VERTEX_TYPE)i);
+createBuiltInPixelShader((E_VERTEX_TYPE)i);
+createRectangleShaders();
+
+                dev->SetTextureStageState(i, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+                dev->SetTextureStageState(i, D3DTSS_COLORARG1, arg1);

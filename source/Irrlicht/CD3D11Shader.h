@@ -17,6 +17,7 @@
 #include "IReferenceCounted.h"
 #include "irrString.h"
 #include "S3DVertex.h"
+#include "EMaterialTypes.h"
 
 namespace irr
 {
@@ -99,6 +100,14 @@ public:
             {
                 m_VertexType = type;
             }
+            void setMaterialType(E_MATERIAL_TYPE type)
+            {
+                m_MaterialType = type;
+            }
+            E_MATERIAL_TYPE getMaterialType() const
+            {
+                return m_MaterialType;
+            }
             bool isCompiled() const
             {
                 return m_Compiled;
@@ -113,6 +122,7 @@ private:
 
             E_D3D11_SHADER_TYPE     m_ShaderType;
             E_VERTEX_TYPE           m_VertexType;
+            E_MATERIAL_TYPE         m_MaterialType;
             bool                    m_Compiled;
 
             ID3DBlob    *m_ShaderBlob;

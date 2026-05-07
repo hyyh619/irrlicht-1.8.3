@@ -264,7 +264,7 @@ public:
                                              E_INDEX_TYPE iType, bool is3D);
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
-            void dumpDrawCall(const c8* drawTypeName);
+            void dumpDrawCall(const c8 *drawTypeName);
 #endif
 
             virtual void draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos,
@@ -418,9 +418,10 @@ private:
                 ERM_RENDER_MODE_MAX
             };
 
-            void setShadersByType(video::E_VERTEX_TYPE newType);
+            void setVSByType(video::E_VERTEX_TYPE newType);
+            void setPSByType(video::E_MATERIAL_TYPE materialType, video::E_VERTEX_TYPE vertexType);
 
-            CD3D11Shader* getShaderByTypes(video::E_VERTEX_TYPE vertexType, E_D3D11_SHADER_TYPE shaderType) const;
+            CD3D11Shader* getShaderByTypes(video::E_VERTEX_TYPE vertexType, E_D3D11_SHADER_TYPE shaderType, E_MATERIAL_TYPE materialType) const;
 
             void setPSTextureAndSamplerState();
 
@@ -502,7 +503,8 @@ private:
             ID3D11InputLayout               *m_InputLayout[EVT_VERTEX_TYPE_MAX];
             ID3D11VertexShader              *m_BuiltInVertexShader[EVT_VERTEX_TYPE_MAX];
             ID3D11PixelShader               *m_BuiltInPixelShader[EVT_VERTEX_TYPE_MAX];
-            bool                            m_BuiltInShadersInitialized;
+            bool                            m_BuiltInVSInitialized;
+            bool                            m_BuiltInPSInitialized;
 
             SColorf             m_AmbientLight;
             core::stringc       m_VendorName;

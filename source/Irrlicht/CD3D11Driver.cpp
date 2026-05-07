@@ -197,7 +197,7 @@ namespace irr
             m_BackBufferRenderTargetView(0), m_DepthStencilView(0),
             m_WindowId(0), m_SceneSourceRect(0),
             m_LastVertexType((video::E_VERTEX_TYPE)-1), m_VendorID(0),
-            m_BuiltInShadersInitialized(false),
+            m_BuiltInVSInitialized(false), m_BuiltInPSInitialized(false),
             m_TempVertexBuffer(0), m_TempIndexBuffer(0), m_MatrixConstantBuffer(0),
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
@@ -1156,7 +1156,8 @@ namespace irr
             const void                  *vPtr   = mb->getVertices();
             const void                  *iPtr   = mb->getIndices();
 
-            setShadersByType(vType);
+            setVSByType(vType);
+            setPSByType(m_Material.MaterialType, vType);
 
             if (hwBufferD3D->vertexBuffer)
             {
@@ -1234,7 +1235,8 @@ namespace irr
                                                        E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
                                                        E_INDEX_TYPE iType, bool is3D)
         {
-            setShadersByType(vType);
+            setVSByType(vType);
+            setPSByType(m_Material.MaterialType, vType);
 
             const u32       stride              = getVertexPitchFromType(vType);
             const u32       vertexBufferSize    = stride * vertexCount;
@@ -1398,7 +1400,7 @@ namespace irr
 
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
-        void CD3D11Driver::dumpDrawCall(const c8* drawTypeName)
+        void CD3D11Driver::dumpDrawCall(const c8 *drawTypeName)
         {
             ++DrawCallCounter;
 
@@ -1561,7 +1563,8 @@ namespace irr
             if (!vtx.size())
                 return;
 
-            setShadersByType(EVT_STANDARD);
+            setVSByType(EVT_STANDARD);
+            setPSByType(m_Material.MaterialType, EVT_STANDARD);
 
             core::matrix4    mvp;
             mvp.buildProjectionMatrixOrthoLH(f32(getCurrentRenderTargetSize().Width), f32(-(s32)getCurrentRenderTargetSize().Height), -1.0f, 1.0f);
@@ -1705,7 +1708,8 @@ namespace irr
                                   colorLeftDown.getAlpha() < 255 ||
                                   colorRightDown.getAlpha() < 255, false, false);
 
-            setShadersByType(EVT_2D_RECTANGLE);
+            setVSByType(EVT_2D_RECTANGLE);
+            setPSByType(m_Material.MaterialType, EVT_2D_RECTANGLE);
 
             core::matrix4    mvp;
             mvp.buildProjectionMatrixOrthoLH(f32(getCurrentRenderTargetSize().Width), f32(-(s32)getCurrentRenderTargetSize().Height), -1.0f, 1.0f);
@@ -2386,30 +2390,25 @@ namespace irr
         }
 
 
-        void CD3D11Driver::setShadersByType(video::E_VERTEX_TYPE newType)
+        void CD3D11Driver::setVSByType(video::E_VERTEX_TYPE newType)
         {
-            if (newType != m_LastVertexType || !m_BuiltInShadersInitialized)
+            if (newType != m_LastVertexType || !m_BuiltInVSInitialized)
             {
-                if (!m_BuiltInShadersInitialized)
+                if (!m_BuiltInVSInitialized)
                 {
                     for (u32 i = 0; i < EVT_2D_RECTANGLE; ++i)
                     {
                         createBuiltInVertexShader((E_VERTEX_TYPE)i);
-                        createBuiltInPixelShader((E_VERTEX_TYPE)i);
                     }
 
                     createRectangleShaders();
 
-                    m_BuiltInShadersInitialized = true;
+                    m_BuiltInVSInitialized = true;
                 }
 
                 if (newType >= 0 && newType <= EVT_2D_RECTANGLE && m_BuiltInVertexShader[newType])
                 {
                     m_pID3DDeviceContext->VSSetShader(m_BuiltInVertexShader[newType], 0, 0);
-                    if (m_BuiltInPixelShader[newType])
-                    {
-                        m_pID3DDeviceContext->PSSetShader(m_BuiltInPixelShader[newType], 0, 0);
-                    }
 
                     if (m_InputLayout[newType])
                     {
@@ -2419,16 +2418,44 @@ namespace irr
 
                 m_LastVertexType = newType;
             }
+        }
+
+
+        void CD3D11Driver::setPSByType(video::E_MATERIAL_TYPE materialType, video::E_VERTEX_TYPE vertexType)
+        {
+            if (!m_BuiltInPSInitialized)
+            {
+                for (u32 i = 0; i < EVT_2D_RECTANGLE; ++i)
+                {
+                    createBuiltInPixelShader((E_VERTEX_TYPE)i);
+                }
+
+                createRectangleShaders();
+
+                m_BuiltInPSInitialized = true;
+            }
+
+            CD3D11Shader    *shader = getShaderByTypes(vertexType, EDST_PIXEL, materialType);
+            if (shader && shader->getPixelShader())
+            {
+                m_pID3DDeviceContext->PSSetShader(shader->getPixelShader(), 0, 0);
+            }
+            else if (vertexType >= 0 && vertexType <= EVT_2D_RECTANGLE && m_BuiltInPixelShader[vertexType])
+            {
+                m_pID3DDeviceContext->PSSetShader(m_BuiltInPixelShader[vertexType], 0, 0);
+            }
 
             setPSTextureAndSamplerState();
         }
 
 
-        CD3D11Shader* CD3D11Driver::getShaderByTypes(video::E_VERTEX_TYPE vertexType, E_D3D11_SHADER_TYPE shaderType) const
+        CD3D11Shader* CD3D11Driver::getShaderByTypes(video::E_VERTEX_TYPE vertexType, E_D3D11_SHADER_TYPE shaderType, E_MATERIAL_TYPE materialType) const
         {
             for (u32 i = 0; i < m_ShaderPool.size(); ++i)
             {
-                if (m_ShaderPool[i]->getVertexType() == vertexType && m_ShaderPool[i]->getShaderType() == shaderType)
+                if (m_ShaderPool[i]->getVertexType() == vertexType &&
+                    m_ShaderPool[i]->getShaderType() == shaderType &&
+                    m_ShaderPool[i]->getMaterialType() == materialType)
                     return m_ShaderPool[i];
             }
 
