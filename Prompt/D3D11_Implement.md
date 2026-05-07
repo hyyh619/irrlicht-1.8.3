@@ -497,3 +497,6 @@ CD3D11Driver::draw2DRectangle收到的pos是屏幕像素坐标，我们需要在
 1. 改动VERTEX_SHADER_RECTANGLE，支持MVP变换
 2. 生成CD3D11Driver::draw2DRectangle转换屏幕像素坐标到NDC坐标的MVP矩阵
 3. 执行CD3D11Driver::draw2DRectangle的draw前把MVP矩阵作为constant给到VS
+
+# 44
+根据CD3D9Driver::draw2DImageBatch的实现，实现CD3D11Driver::draw2DImageBatch
