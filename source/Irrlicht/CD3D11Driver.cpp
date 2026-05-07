@@ -78,6 +78,9 @@ namespace irr
             "}";
 
         static const char    VERTEX_SHADER_RECTANGLE[] =
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "};"
             "struct VS_INPUT {"
             "    float3 Pos : POSITION;"
             "    float4 Color : COLOR;"
@@ -88,7 +91,7 @@ namespace irr
             "};"
             "VS_OUTPUT main(VS_INPUT input) {"
             "    VS_OUTPUT output;"
-            "    output.Pos = float4(input.Pos, 1.0);"
+            "    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));"
             "    output.Color = input.Color;"
             "    return output;"
             "}";
@@ -1437,6 +1440,19 @@ namespace irr
 
             setShadersByType(EVT_2D_RECTANGLE);
 
+            core::matrix4    mvp;
+            mvp.buildProjectionMatrixOrthoLH(f32(getCurrentRenderTargetSize().Width), f32(-(s32)getCurrentRenderTargetSize().Height), -1.0f, 1.0f);
+            mvp.setTranslation(core::vector3df(-1.0f, 1.0f, 0.0f));
+
+            D3D11_MAPPED_SUBRESOURCE    mappedMatrix;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_MatrixConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMatrix)))
+            {
+                memcpy(mappedMatrix.pData, mvp.pointer(), sizeof(core::matrix4));
+                m_pID3DDeviceContext->Unmap(m_MatrixConstantBuffer, 0);
+            }
+
+            m_pID3DDeviceContext->VSSetConstantBuffers(0, 1, &m_MatrixConstantBuffer);
+
             const u32       vertexBufferSize    = sizeof(vertices);
             const u32       indexBufferSize     = sizeof(indices);
 
@@ -1466,10 +1482,10 @@ namespace irr
                 m_TempVertexBufferSize = vertexBufferSize;
             }
 
-            D3D11_MAPPED_SUBRESOURCE    mapped;
-            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_TempVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+            D3D11_MAPPED_SUBRESOURCE    mappedVB;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_TempVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedVB)))
             {
-                memcpy(mapped.pData, vertices, vertexBufferSize);
+                memcpy(mappedVB.pData, vertices, vertexBufferSize);
                 m_pID3DDeviceContext->Unmap(m_TempVertexBuffer, 0);
             }
             else
@@ -1505,9 +1521,10 @@ namespace irr
                 m_TempIndexType         = EIT_16BIT;
             }
 
-            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_TempIndexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+            D3D11_MAPPED_SUBRESOURCE    mappedIB;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_TempIndexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedIB)))
             {
-                memcpy(mapped.pData, indices, indexBufferSize);
+                memcpy(mappedIB.pData, indices, indexBufferSize);
                 m_pID3DDeviceContext->Unmap(m_TempIndexBuffer, 0);
             }
             else

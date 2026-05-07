@@ -468,7 +468,8 @@ CD3D11Driver::createMaterialRenderers创建了下列对象，但是只是到入C
 4. CShader增加一个成员变量记录E_VERTEX_TYPE
 5. CD3D11Driver增加一个查询函数，根据输入的E_VERTEX_TYPE和E_D3D11_SHADER_TYPE在m_ShaderPool中查找对应的CShader对象
 
-# 41
+# 41 
+Git commit: Implement CD3D11Driver::draw2DRectangle
 1. 把CD3D11Driver::createRectangleShaders创建的shader也加入到m_BuiltInVertexShader和m_BuiltInPixelShader中统一管理
 2. CD3D11Driver::draw2DRectangle设置shader时，要像CD3D11Driver::draw2D3DVertexPrimitiveList一样使用setShadersByType来切换，而不是直接调用下面代码
             CD3D11Shader    *vsShader   = getShaderByTypes(EVT_2D_RECTANGLE, EDST_VERTEX);
@@ -483,8 +484,15 @@ CD3D11Driver::createMaterialRenderers创建了下列对象，但是只是到入C
             if (vsShader)
                 m_pID3DDeviceContext->IASetInputLayout(vsShader->getInputLayout());
 
-# 42
+# 42 
+Git commit: Created SRenderStateSet struct containing RasterizerState, DepthStencilState, BlendState by MiniMax-M2.7.
 1. m_RasterizerState，m_DepthStencilState，m_BlendState只是为ERM_3D使用，我们需要为ERM_2D创建另外一组m_RasterizerState，m_DepthStencilState，m_BlendState
 2. ERM_2D的m_RasterizerState，m_DepthStencilState，m_BlendState，要关闭depth/stencil/blend。
 3. 多组m_RasterizerState，m_DepthStencilState，m_BlendState状态，需要创建一个数据结构统一管理
 4. CD3D11Driver::setRenderStates调用时，根据E_RENDER_MODE来选择对应的states。
+
+# 43
+CD3D11Driver::draw2DRectangle收到的pos是屏幕像素坐标，我们需要在vs里面经过mvp矩阵把其转换到NDC坐标中
+1. 改动VERTEX_SHADER_RECTANGLE，支持MVP变换
+2. 生成CD3D11Driver::draw2DRectangle转换屏幕像素坐标到NDC坐标的MVP矩阵
+3. 执行CD3D11Driver::draw2DRectangle的draw前把MVP矩阵作为constant给到VS
