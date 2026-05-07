@@ -1680,7 +1680,7 @@ namespace irr
         {
             ++DrawCallCounter;
 
-            IImage    *image = createScreenShot(video::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
+            IImage    *image = createScreenShot(ECOLOR_FORMAT::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
             if (image)
             {
                 core::stringc    filename = "draw_call_";
