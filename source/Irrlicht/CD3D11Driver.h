@@ -410,7 +410,8 @@ private:
                 ERM_3D,
                 ERM_STENCIL_FILL,
                 ERM_SHADOW_VOLUME_ZFAIL,
-                ERM_SHADOW_VOLUME_ZPASS
+                ERM_SHADOW_VOLUME_ZPASS,
+                ERM_RENDER_MODE_MAX
             };
 
             void setShadersByType(video::E_VERTEX_TYPE newType);
@@ -465,7 +466,7 @@ private:
             bool createRectangleShaders();
             void updateMatrixConstantBuffer();
             void setRenderStates(E_RENDER_MODE mode, bool alpha);
-            bool createDefaultStates();
+            bool createRenderStates();
 
             core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
             core::array<IMaterialRenderer*>         m_MaterialRenderers;
@@ -524,11 +525,17 @@ private:
             u32                     m_TempIndexBufferSize;
             E_INDEX_TYPE            m_TempIndexType;
 
-            D3D11_VIEWPORT                      m_DefaultViewport;
-            D3D11_RECT                          m_DefaultScissorRect;
-            ID3D11RasterizerState1              *m_RasterizerState;
-            ID3D11DepthStencilState             *m_DepthStencilState;
-            ID3D11BlendState1                   *m_BlendState;
+            D3D11_VIEWPORT      m_DefaultViewport;
+            D3D11_RECT          m_DefaultScissorRect;
+
+            struct SRenderStateSet
+            {
+                ID3D11RasterizerState1  *RasterizerState;
+                ID3D11DepthStencilState *DepthStencilState;
+                ID3D11BlendState1       *BlendState;
+            };
+
+            SRenderStateSet                     m_RenderStateSets[ERM_RENDER_MODE_MAX];
             CSampler                            *m_DefaultSampler;
 
             E_RENDER_MODE    m_CurrentRenderMode;

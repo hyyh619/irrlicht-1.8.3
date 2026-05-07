@@ -197,7 +197,8 @@ namespace irr
             m_TempVertexBuffer(0), m_TempIndexBuffer(0), m_MatrixConstantBuffer(0),
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
-            m_RasterizerState(0), m_DepthStencilState(0), m_BlendState(0), m_DefaultSampler(0),
+            m_RenderStateSets(),
+            m_DefaultSampler(0),
             m_MaxTextureUnits(0), m_MaxUserClipPlanes(0), m_MaxMRTs(1), m_NumSetMRTs(1),
             m_MaxLightDistance(0.f), m_LastSetLight(-1),
             m_ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), m_DeviceRemoved(false),
@@ -365,22 +366,25 @@ namespace irr
                 m_MatrixConstantBuffer->Release();
             }
 
-            if (m_RasterizerState)
+            for (u32 i = 0; i < ERM_RENDER_MODE_MAX; ++i)
             {
-                IRR_D3D11_RS_RELEASE(m_RasterizerState, "DefaultRasterizerState");
-                m_RasterizerState->Release();
-            }
+                if (m_RenderStateSets[i].RasterizerState)
+                {
+                    IRR_D3D11_RS_RELEASE(m_RenderStateSets[i].RasterizerState, "RasterizerState");
+                    m_RenderStateSets[i].RasterizerState->Release();
+                }
 
-            if (m_DepthStencilState)
-            {
-                IRR_D3D11_DSS_RELEASE(m_DepthStencilState, "DefaultDepthStencilState");
-                m_DepthStencilState->Release();
-            }
+                if (m_RenderStateSets[i].DepthStencilState)
+                {
+                    IRR_D3D11_DSS_RELEASE(m_RenderStateSets[i].DepthStencilState, "DepthStencilState");
+                    m_RenderStateSets[i].DepthStencilState->Release();
+                }
 
-            if (m_BlendState)
-            {
-                IRR_D3D11_BLEND_RELEASE(m_BlendState, "DefaultBlendState");
-                m_BlendState->Release();
+                if (m_RenderStateSets[i].BlendState)
+                {
+                    IRR_D3D11_BLEND_RELEASE(m_RenderStateSets[i].BlendState, "BlendState");
+                    m_RenderStateSets[i].BlendState->Release();
+                }
             }
 
             if (m_DefaultSampler)
@@ -691,7 +695,7 @@ namespace irr
                 return false;
             }
 
-            if (!createDefaultStates())
+            if (!createRenderStates())
             {
                 os::Printer::log("Could not create default render states.", ELL_ERROR);
                 return false;
@@ -2424,7 +2428,7 @@ namespace irr
         }
 
 
-        bool CD3D11Driver::createDefaultStates()
+        bool CD3D11Driver::createRenderStates()
         {
             HRESULT                     hr = E_FAIL;
             D3D11_RASTERIZER_DESC1      rasterizerDesc;
@@ -2444,15 +2448,28 @@ namespace irr
             rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
 
             if (m_pID3DDevice1)
-                hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &m_RasterizerState);
+                hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &m_RenderStateSets[ERM_3D].RasterizerState);
 
             if (FAILED(hr))
             {
-                os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
+                os::Printer::log("Could not create rasterizer state for ERM_3D.", ELL_ERROR);
                 return false;
             }
 
-            IRR_D3D11_RS_CREATE(m_RasterizerState, "DefaultRasterizerState");
+            IRR_D3D11_RS_CREATE(m_RenderStateSets[ERM_3D].RasterizerState, "DefaultRasterizerState_3D");
+
+            rasterizerDesc.CullMode                 = D3D11_CULL_NONE;
+            rasterizerDesc.DepthClipEnable          = false;
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &m_RenderStateSets[ERM_2D].RasterizerState);
+
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create rasterizer state for ERM_2D.", ELL_ERROR);
+                return false;
+            }
+
+            IRR_D3D11_RS_CREATE(m_RenderStateSets[ERM_2D].RasterizerState, "DefaultRasterizerState_2D");
 
             depthStencilDesc.DepthEnable                    = true;
             depthStencilDesc.DepthWriteMask                 = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -2469,11 +2486,20 @@ namespace irr
             depthStencilDesc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;
             depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
 
-            hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_DepthStencilState);
-            IRR_D3D11_DSS_CREATE(m_DepthStencilState, "DefaultDepthStencilState");
+            hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_RenderStateSets[ERM_3D].DepthStencilState);
+            IRR_D3D11_DSS_CREATE(m_RenderStateSets[ERM_3D].DepthStencilState, "DefaultDepthStencilState_3D");
             if (FAILED(hr))
             {
-                os::Printer::log("Could not create depth stencil state.", ELL_ERROR);
+                os::Printer::log("Could not create depth stencil state for ERM_3D.", ELL_ERROR);
+                return false;
+            }
+
+            depthStencilDesc.DepthEnable    = false;
+            hr                              = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_RenderStateSets[ERM_2D].DepthStencilState);
+            IRR_D3D11_DSS_CREATE(m_RenderStateSets[ERM_2D].DepthStencilState, "DefaultDepthStencilState_2D");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create depth stencil state for ERM_2D.", ELL_ERROR);
                 return false;
             }
 
@@ -2496,12 +2522,29 @@ namespace irr
 
             hr = E_FAIL;
             if (m_pID3DDevice1)
-                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_BlendState);
+                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_RenderStateSets[ERM_3D].BlendState);
 
-            IRR_D3D11_BLEND_CREATE(m_BlendState, "DefaultBlendState");
+            IRR_D3D11_BLEND_CREATE(m_RenderStateSets[ERM_3D].BlendState, "DefaultBlendState_3D");
             if (FAILED(hr))
             {
-                os::Printer::log("Could not create blend state.", ELL_ERROR);
+                os::Printer::log("Could not create blend state for ERM_3D.", ELL_ERROR);
+                return false;
+            }
+
+            for (u32 i = 0; i < 8; ++i)
+            {
+                blendDesc.RenderTarget[i].BlendEnable           = false;
+                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            }
+
+            hr = E_FAIL;
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_RenderStateSets[ERM_2D].BlendState);
+
+            IRR_D3D11_BLEND_CREATE(m_RenderStateSets[ERM_2D].BlendState, "DefaultBlendState_2D");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create blend state for ERM_2D.", ELL_ERROR);
                 return false;
             }
 
@@ -2520,11 +2563,13 @@ namespace irr
         {
             m_pID3DDeviceContext->RSSetViewports(1, &m_DefaultViewport);
             m_pID3DDeviceContext->RSSetScissorRects(1, &m_DefaultScissorRect);
-            m_pID3DDeviceContext->RSSetState(m_RasterizerState);
-            m_pID3DDeviceContext->OMSetDepthStencilState(m_DepthStencilState, 0);
+
+            SRenderStateSet    &stateSet = m_RenderStateSets[mode];
+            m_pID3DDeviceContext->RSSetState(stateSet.RasterizerState);
+            m_pID3DDeviceContext->OMSetDepthStencilState(stateSet.DepthStencilState, 0);
 
             FLOAT    blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-            if (alpha)
+            if (alpha && mode == ERM_3D)
             {
                 D3D11_BLEND_DESC1    blendDesc;
                 blendDesc.AlphaToCoverageEnable     = false;
@@ -2552,12 +2597,12 @@ namespace irr
                 }
                 else
                 {
-                    m_pID3DDeviceContext->OMSetBlendState(m_BlendState, blendFactor, 0xFFFFFFFF);
+                    m_pID3DDeviceContext->OMSetBlendState(stateSet.BlendState, blendFactor, 0xFFFFFFFF);
                 }
             }
             else
             {
-                m_pID3DDeviceContext->OMSetBlendState(m_BlendState, blendFactor, 0xFFFFFFFF);
+                m_pID3DDeviceContext->OMSetBlendState(stateSet.BlendState, blendFactor, 0xFFFFFFFF);
             }
         }
 

@@ -482,3 +482,9 @@ CD3D11Driver::createMaterialRenderers创建了下列对象，但是只是到入C
 
             if (vsShader)
                 m_pID3DDeviceContext->IASetInputLayout(vsShader->getInputLayout());
+
+# 42
+1. m_RasterizerState，m_DepthStencilState，m_BlendState只是为ERM_3D使用，我们需要为ERM_2D创建另外一组m_RasterizerState，m_DepthStencilState，m_BlendState
+2. ERM_2D的m_RasterizerState，m_DepthStencilState，m_BlendState，要关闭depth/stencil/blend。
+3. 多组m_RasterizerState，m_DepthStencilState，m_BlendState状态，需要创建一个数据结构统一管理
+4. CD3D11Driver::setRenderStates调用时，根据E_RENDER_MODE来选择对应的states。
