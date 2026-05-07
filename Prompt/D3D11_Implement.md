@@ -542,5 +542,8 @@ ALPHAARG2 = DIFFUSE             // 参数2：顶点漫反射Alpha
 这是渲染带纹理的半透明物体（如UI元素、粒子效果）的标准配置。纹理颜色与顶点颜色调制产生最终颜色，Alpha值也通过相同方式计算，然后使用标准的SRCALPHA/INVSRCALPHA混合公式与背景混合。
 
 # 46
-Git commit: 
+Git commit: add draw dump for each draw call by MiniMax-M2.7.
 增加一个dump每个draw call绘制的图像的接口，通过一个宏开关来控制开启。开启这个功能，每个draw绘制后的内容被dump到一张jpg图片里.
+
+# 47
+Git commit: 

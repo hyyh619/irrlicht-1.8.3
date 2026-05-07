@@ -21,65 +21,65 @@ namespace irr
 {
     namespace video
     {
-        //! creates a loader which is able to load windows bitmaps
+        // ! creates a loader which is able to load windows bitmaps
         IImageLoader* createImageLoaderBMP();
 
-        //! creates a loader which is able to load jpeg images
+        // ! creates a loader which is able to load jpeg images
         IImageLoader* createImageLoaderJPG();
 
-        //! creates a loader which is able to load targa images
+        // ! creates a loader which is able to load targa images
         IImageLoader* createImageLoaderTGA();
 
-        //! creates a loader which is able to load psd images
+        // ! creates a loader which is able to load psd images
         IImageLoader* createImageLoaderPSD();
 
-        //! creates a loader which is able to load dds images
+        // ! creates a loader which is able to load dds images
         IImageLoader* createImageLoaderDDS();
 
-        //! creates a loader which is able to load pcx images
+        // ! creates a loader which is able to load pcx images
         IImageLoader* createImageLoaderPCX();
 
-        //! creates a loader which is able to load png images
+        // ! creates a loader which is able to load png images
         IImageLoader* createImageLoaderPNG();
 
-        //! creates a loader which is able to load WAL images
+        // ! creates a loader which is able to load WAL images
         IImageLoader* createImageLoaderWAL();
 
-        //! creates a loader which is able to load halflife images
+        // ! creates a loader which is able to load halflife images
         IImageLoader* createImageLoaderHalfLife();
 
-        //! creates a loader which is able to load lmp images
+        // ! creates a loader which is able to load lmp images
         IImageLoader* createImageLoaderLMP();
 
-        //! creates a loader which is able to load ppm/pgm/pbm images
+        // ! creates a loader which is able to load ppm/pgm/pbm images
         IImageLoader* createImageLoaderPPM();
 
-        //! creates a loader which is able to load rgb images
+        // ! creates a loader which is able to load rgb images
         IImageLoader* createImageLoaderRGB();
 
 
-        //! creates a writer which is able to save bmp images
+        // ! creates a writer which is able to save bmp images
         IImageWriter* createImageWriterBMP();
 
-        //! creates a writer which is able to save jpg images
+        // ! creates a writer which is able to save jpg images
         IImageWriter* createImageWriterJPG();
 
-        //! creates a writer which is able to save tga images
+        // ! creates a writer which is able to save tga images
         IImageWriter* createImageWriterTGA();
 
-        //! creates a writer which is able to save psd images
+        // ! creates a writer which is able to save psd images
         IImageWriter* createImageWriterPSD();
 
-        //! creates a writer which is able to save pcx images
+        // ! creates a writer which is able to save pcx images
         IImageWriter* createImageWriterPCX();
 
-        //! creates a writer which is able to save png images
+        // ! creates a writer which is able to save png images
         IImageWriter* createImageWriterPNG();
 
-        //! creates a writer which is able to save ppm images
+        // ! creates a writer which is able to save ppm images
         IImageWriter* createImageWriterPPM();
 
-        //! constructor
+        // ! constructor
         CNullDriver::CNullDriver(io::IFileSystem *io, const core::dimension2d<u32> &screenSize)
             : FileSystem(io), MeshManipulator(0), ViewPort(0, 0, 0, 0), ScreenSize(screenSize),
             PrimitivesDrawn(0), DrawCallCounter(0), MinVertexCountForVBO(500), TextureCreationFlags(0),
@@ -193,16 +193,16 @@ namespace irr
 
             for (u32 i = 0; i < video::MATERIAL_MAX_TEXTURES; ++i)
             {
-                InitMaterial2D.TextureLayer[i].BilinearFilter = false;
-                InitMaterial2D.TextureLayer[i].TextureWrapU   = video::ETC_REPEAT;
-                InitMaterial2D.TextureLayer[i].TextureWrapV   = video::ETC_REPEAT;
+                InitMaterial2D.TextureLayer[i].BilinearFilter   = false;
+                InitMaterial2D.TextureLayer[i].TextureWrapU     = video::ETC_REPEAT;
+                InitMaterial2D.TextureLayer[i].TextureWrapV     = video::ETC_REPEAT;
             }
 
             OverrideMaterial2D = InitMaterial2D;
         }
 
 
-        //! destructor
+        // ! destructor
         CNullDriver::~CNullDriver()
         {
             if (DriverAttributes)
@@ -216,7 +216,7 @@ namespace irr
 
             deleteAllTextures();
 
-            u32 i;
+            u32    i;
 
             for (i = 0; i < SurfaceLoader.size(); ++i)
                 SurfaceLoader[i]->drop();
@@ -232,7 +232,7 @@ namespace irr
         }
 
 
-        //! Adds an external surface loader to the engine.
+        // ! Adds an external surface loader to the engine.
         void CNullDriver::addExternalImageLoader(IImageLoader *loader)
         {
             if (!loader)
@@ -243,7 +243,7 @@ namespace irr
         }
 
 
-        //! Adds an external surface writer to the engine.
+        // ! Adds an external surface writer to the engine.
         void CNullDriver::addExternalImageWriter(IImageWriter *writer)
         {
             if (!writer)
@@ -254,14 +254,14 @@ namespace irr
         }
 
 
-        //! Retrieve the number of image loaders
+        // ! Retrieve the number of image loaders
         u32 CNullDriver::getImageLoaderCount() const
         {
             return SurfaceLoader.size();
         }
 
 
-        //! Retrieve the given image loader
+        // ! Retrieve the given image loader
         IImageLoader* CNullDriver::getImageLoader(u32 n)
         {
             if (n < SurfaceLoader.size())
@@ -271,14 +271,14 @@ namespace irr
         }
 
 
-        //! Retrieve the number of image writers
+        // ! Retrieve the number of image writers
         u32 CNullDriver::getImageWriterCount() const
         {
             return SurfaceWriter.size();
         }
 
 
-        //! Retrieve the given image writer
+        // ! Retrieve the given image writer
         IImageWriter* CNullDriver::getImageWriter(u32 n)
         {
             if (n < SurfaceWriter.size())
@@ -288,7 +288,7 @@ namespace irr
         }
 
 
-        //! deletes all textures
+        // ! deletes all textures
         void CNullDriver::deleteAllTextures()
         {
             // we need to remove previously set textures which might otherwise be kept in the
@@ -303,9 +303,9 @@ namespace irr
 
 
 
-        //! applications must call this method before performing any rendering. returns false if failed.
+        // ! applications must call this method before performing any rendering. returns false if failed.
         bool CNullDriver::beginScene(bool backBuffer, bool zBuffer, SColor color,
-            const SExposedVideoData &videoData, core::rect<s32> *sourceRect)
+                                     const SExposedVideoData &videoData, core::rect<s32> *sourceRect)
         {
             core::clearFPUException();
 
@@ -314,7 +314,7 @@ namespace irr
         }
 
 
-        //! applications must call this method after performing any rendering. returns false if failed.
+        // ! applications must call this method after performing any rendering. returns false if failed.
         bool CNullDriver::endScene()
         {
             FPSCounter.registerFrame(os::Timer::getRealTime(), PrimitivesDrawn);
@@ -324,46 +324,46 @@ namespace irr
         }
 
 
-        //! Disable a feature of the driver.
+        // ! Disable a feature of the driver.
         void CNullDriver::disableFeature(E_VIDEO_DRIVER_FEATURE feature, bool flag)
         {
             FeatureEnabled[feature] = !flag;
         }
 
 
-        //! queries the features of the driver, returns true if feature is available
+        // ! queries the features of the driver, returns true if feature is available
         bool CNullDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
         {
             return false;
         }
 
 
-        //! Get attributes of the actual video driver
+        // ! Get attributes of the actual video driver
         const io::IAttributes&CNullDriver::getDriverAttributes() const
         {
             return *DriverAttributes;
         }
 
 
-        //! sets transformation
+        // ! sets transformation
         void CNullDriver::setTransform(E_TRANSFORMATION_STATE state, const core::matrix4 &mat)
         {}
 
 
-        //! Returns the transformation set by setTransform
+        // ! Returns the transformation set by setTransform
         const core::matrix4&CNullDriver::getTransform(E_TRANSFORMATION_STATE state) const
         {
             return TransformationMatrix;
         }
 
 
-        //! sets a material
+        // ! sets a material
         void CNullDriver::setMaterial(const SMaterial &material)
         {}
 
 
-        //! Removes a texture from the texture cache and deletes it, freeing lot of
-        //! memory.
+        // ! Removes a texture from the texture cache and deletes it, freeing lot of
+        // ! memory.
         void CNullDriver::removeTexture(ITexture *texture)
         {
             if (!texture)
@@ -380,8 +380,8 @@ namespace irr
         }
 
 
-        //! Removes all texture from the texture cache and deletes them, freeing lot of
-        //! memory.
+        // ! Removes all texture from the texture cache and deletes them, freeing lot of
+        // ! memory.
         void CNullDriver::removeAllTextures()
         {
             setMaterial (SMaterial());
@@ -389,7 +389,7 @@ namespace irr
         }
 
 
-        //! Returns a texture by index
+        // ! Returns a texture by index
         ITexture* CNullDriver::getTextureByIndex(u32 i)
         {
             if (i < Textures.size())
@@ -399,21 +399,21 @@ namespace irr
         }
 
 
-        //! Returns amount of textures currently loaded
+        // ! Returns amount of textures currently loaded
         u32 CNullDriver::getTextureCount() const
         {
             return Textures.size();
         }
 
 
-        //! Renames a texture
+        // ! Renames a texture
         void CNullDriver::renameTexture(ITexture *texture, const io::path &newName)
         {
             // we can do a const_cast here safely, the name of the ITexture interface
             // is just readonly to prevent the user changing the texture name without invoking
             // this method, because the textures will need resorting afterwards
 
-            io::SNamedPath &name = const_cast<io::SNamedPath&>(texture->getName());
+            io::SNamedPath    &name = const_cast<io::SNamedPath&>(texture->getName());
 
             name.setPath(newName);
 
@@ -421,13 +421,13 @@ namespace irr
         }
 
 
-        //! loads a Texture
+        // ! loads a Texture
         ITexture* CNullDriver::getTexture(const io::path &filename)
         {
             // Identify textures by their absolute filenames if possible.
-            const io::path absolutePath = FileSystem->getAbsolutePath(filename);
+            const io::path    absolutePath = FileSystem->getAbsolutePath(filename);
 
-            ITexture *texture = findTexture(absolutePath);
+            ITexture    *texture = findTexture(absolutePath);
 
             if (texture)
                 return texture;
@@ -438,7 +438,7 @@ namespace irr
                 return texture;
 
             // Now try to open the file using the complete path.
-            io::IReadFile *file = FileSystem->createAndOpenFile(absolutePath);
+            io::IReadFile    *file = FileSystem->createAndOpenFile(absolutePath);
 
             if (!file)
             {
@@ -477,10 +477,10 @@ namespace irr
         }
 
 
-        //! loads a Texture
+        // ! loads a Texture
         ITexture* CNullDriver::getTexture(io::IReadFile *file)
         {
-            ITexture *texture = 0;
+            ITexture    *texture = 0;
 
             if (file)
             {
@@ -505,11 +505,11 @@ namespace irr
         }
 
 
-        //! opens the file and loads it into the surface
+        // ! opens the file and loads it into the surface
         video::ITexture* CNullDriver::loadTextureFromFile(io::IReadFile *file, const io::path &hashName)
         {
-            ITexture *texture = 0;
-            IImage   *image   = createImageFromFile(file);
+            ITexture    *texture    = 0;
+            IImage      *image      = createImageFromFile(file);
 
             if (image)
             {
@@ -523,12 +523,12 @@ namespace irr
         }
 
 
-        //! adds a surface, not loaded or created by the Irrlicht Engine
+        // ! adds a surface, not loaded or created by the Irrlicht Engine
         void CNullDriver::addTexture(video::ITexture *texture)
         {
             if (texture)
             {
-                SSurface s;
+                SSurface    s;
                 s.Surface = texture;
                 texture->grab();
 
@@ -544,15 +544,15 @@ namespace irr
         }
 
 
-        //! looks if the image is already loaded
+        // ! looks if the image is already loaded
         video::ITexture* CNullDriver::findTexture(const io::path &filename)
         {
-            SSurface      s;
-            SDummyTexture dummy(filename);
+            SSurface            s;
+            SDummyTexture       dummy(filename);
 
             s.Surface = &dummy;
 
-            s32 index = Textures.binary_search(s);
+            s32    index = Textures.binary_search(s);
             if (index != -1)
                 return Textures[index].Surface;
 
@@ -560,13 +560,13 @@ namespace irr
         }
 
 
-        //! Creates a texture from a loaded IImage.
+        // ! Creates a texture from a loaded IImage.
         ITexture* CNullDriver::addTexture(const io::path &name, IImage *image, void *mipmapData)
         {
             if (0 == name.size() || !image)
                 return 0;
 
-            ITexture *t = createDeviceDependentTexture(image, name, mipmapData);
+            ITexture    *t = createDeviceDependentTexture(image, name, mipmapData);
             if (t)
             {
                 addTexture(t);
@@ -577,9 +577,9 @@ namespace irr
         }
 
 
-        //! creates a Texture
+        // ! creates a Texture
         ITexture* CNullDriver::addTexture(const core::dimension2d<u32> &size,
-            const io::path &name, ECOLOR_FORMAT format)
+                                          const io::path &name, ECOLOR_FORMAT format)
         {
             if (IImage::isRenderTargetOnlyFormat(format))
             {
@@ -590,8 +590,8 @@ namespace irr
             if (0 == name.size ())
                 return 0;
 
-            IImage   *image = new CImage(format, size);
-            ITexture *t     = createDeviceDependentTexture(image, name);
+            IImage      *image  = new CImage(format, size);
+            ITexture    *t      = createDeviceDependentTexture(image, name);
             image->drop();
             addTexture(t);
 
@@ -603,17 +603,17 @@ namespace irr
 
 
 
-        //! returns a device dependent texture from a software surface (IImage)
-        //! THIS METHOD HAS TO BE OVERRIDDEN BY DERIVED DRIVERS WITH OWN TEXTURES
+        // ! returns a device dependent texture from a software surface (IImage)
+        // ! THIS METHOD HAS TO BE OVERRIDDEN BY DERIVED DRIVERS WITH OWN TEXTURES
         ITexture* CNullDriver::createDeviceDependentTexture(IImage *surface, const io::path &name, void *mipmapData)
         {
             return new SDummyTexture(name);
         }
 
 
-        //! set or reset special render targets
+        // ! set or reset special render targets
         bool CNullDriver::setRenderTarget(video::E_RENDER_TARGET target, bool clearTarget,
-            bool clearZBuffer, SColor color)
+                                          bool clearZBuffer, SColor color)
         {
             if (ERT_FRAME_BUFFER == target)
                 return setRenderTarget(0, clearTarget, clearZBuffer, color);
@@ -622,35 +622,35 @@ namespace irr
         }
 
 
-        //! sets a render target
+        // ! sets a render target
         bool CNullDriver::setRenderTarget(video::ITexture *texture, bool clearBackBuffer,
-            bool clearZBuffer, SColor color)
+                                          bool clearZBuffer, SColor color)
         {
             return false;
         }
 
 
-        //! Sets multiple render targets
+        // ! Sets multiple render targets
         bool CNullDriver::setRenderTarget(const core::array<video::IRenderTarget> &texture,
-            bool clearBackBuffer, bool clearZBuffer, SColor color)
+                                          bool clearBackBuffer, bool clearZBuffer, SColor color)
         {
             return false;
         }
 
 
-        //! sets a viewport
+        // ! sets a viewport
         void CNullDriver::setViewPort(const core::rect<s32> &area)
         {}
 
 
-        //! gets the area of the current viewport
+        // ! gets the area of the current viewport
         const core::rect<s32>&CNullDriver::getViewPort() const
         {
             return ViewPort;
         }
 
 
-        //! draws a vertex primitive list
+        // ! draws a vertex primitive list
         void CNullDriver::drawVertexPrimitiveList(const void *vertices, u32 vertexCount, const void *indexList, u32 primitiveCount, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType)
         {
             if ((iType == EIT_16BIT) && (vertexCount > 65536))
@@ -660,7 +660,7 @@ namespace irr
         }
 
 
-        //! draws a vertex primitive list in 2d
+        // ! draws a vertex primitive list in 2d
         void CNullDriver::draw2DVertexPrimitiveList(const void *vertices, u32 vertexCount, const void *indexList, u32 primitiveCount, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType, E_INDEX_TYPE iType)
         {
             if ((iType == EIT_16BIT) && (vertexCount > 65536))
@@ -670,38 +670,38 @@ namespace irr
         }
 
 
-        //! Draws a 3d line.
+        // ! Draws a 3d line.
         void CNullDriver::draw3DLine(const core::vector3df &start,
-            const core::vector3df &end, SColor color)
+                                     const core::vector3df &end, SColor color)
         {}
 
 
-        //! Draws a 3d triangle.
+        // ! Draws a 3d triangle.
         void CNullDriver::draw3DTriangle(const core::triangle3df &triangle, SColor color)
         {
-            S3DVertex vertices[3];
+            S3DVertex    vertices[3];
 
-            vertices[0].Pos    = triangle.pointA;
-            vertices[0].Color  = color;
-            vertices[0].Normal = triangle.getNormal().normalize();
+            vertices[0].Pos     = triangle.pointA;
+            vertices[0].Color   = color;
+            vertices[0].Normal  = triangle.getNormal().normalize();
             vertices[0].TCoords.set(0.f, 0.f);
-            vertices[1].Pos    = triangle.pointB;
-            vertices[1].Color  = color;
-            vertices[1].Normal = vertices[0].Normal;
+            vertices[1].Pos     = triangle.pointB;
+            vertices[1].Color   = color;
+            vertices[1].Normal  = vertices[0].Normal;
             vertices[1].TCoords.set(0.5f, 1.f);
-            vertices[2].Pos    = triangle.pointC;
-            vertices[2].Color  = color;
-            vertices[2].Normal = vertices[0].Normal;
+            vertices[2].Pos     = triangle.pointC;
+            vertices[2].Color   = color;
+            vertices[2].Normal  = vertices[0].Normal;
             vertices[2].TCoords.set(1.f, 0.f);
-            const u16 indexList[] = {0, 1, 2};
+            const u16    indexList[] = {0, 1, 2};
             drawVertexPrimitiveList(vertices, 3, indexList, 1, EVT_STANDARD, scene::EPT_TRIANGLES, EIT_16BIT);
         }
 
 
-        //! Draws a 3d axis aligned box.
+        // ! Draws a 3d axis aligned box.
         void CNullDriver::draw3DBox(const core::aabbox3d<f32> &box, SColor color)
         {
-            core::vector3df edges[8];
+            core::vector3df    edges[8];
 
             box.getEdges(edges);
 
@@ -723,82 +723,82 @@ namespace irr
 
 
 
-        //! draws an 2d image
+        // ! draws an 2d image
         void CNullDriver::draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos)
         {
             if (!texture)
                 return;
 
             draw2DImage(texture, destPos, core::rect<s32>(core::position2d<s32>(0, 0),
-                core::dimension2di(texture->getOriginalSize())));
+                                                          core::dimension2di(texture->getOriginalSize())));
         }
 
 
 
-        //! draws a set of 2d images, using a color and the alpha channel of the
-        //! texture if desired. The images are drawn beginning at pos and concatenated
-        //! in one line. All drawings are clipped against clipRect (if != 0).
-        //! The subtextures are defined by the array of sourceRects and are chosen
-        //! by the indices given.
+        // ! draws a set of 2d images, using a color and the alpha channel of the
+        // ! texture if desired. The images are drawn beginning at pos and concatenated
+        // ! in one line. All drawings are clipped against clipRect (if != 0).
+        // ! The subtextures are defined by the array of sourceRects and are chosen
+        // ! by the indices given.
         void CNullDriver::draw2DImageBatch(const video::ITexture *texture,
-            const core::position2d<s32> &pos,
-            const core::array<core::rect<s32>> &sourceRects,
-            const core::array<s32> &indices,
-            s32 kerningWidth,
-            const core::rect<s32> *clipRect, SColor color,
-            bool useAlphaChannelOfTexture)
+                                           const core::position2d<s32> &pos,
+                                           const core::array<core::rect<s32> > &sourceRects,
+                                           const core::array<s32> &indices,
+                                           s32 kerningWidth,
+                                           const core::rect<s32> *clipRect, SColor color,
+                                           bool useAlphaChannelOfTexture)
         {
-            core::position2d<s32> target(pos);
+            core::position2d<s32>    target(pos);
 
             for (u32 i = 0; i < indices.size(); ++i)
             {
                 draw2DImage(texture, target, sourceRects[indices[i]],
-                    clipRect, color, useAlphaChannelOfTexture);
-                target.X += sourceRects[indices[i]].getWidth();
-                target.X += kerningWidth;
+                            clipRect, color, useAlphaChannelOfTexture);
+                target.X    += sourceRects[indices[i]].getWidth();
+                target.X    += kerningWidth;
             }
         }
 
-        //! draws a set of 2d images, using a color and the alpha channel of the
-        //! texture if desired.
+        // ! draws a set of 2d images, using a color and the alpha channel of the
+        // ! texture if desired.
         void CNullDriver::draw2DImageBatch(const video::ITexture *texture,
-            const core::array<core::position2d<s32>> &positions,
-            const core::array<core::rect<s32>> &sourceRects,
-            const core::rect<s32> *clipRect,
-            SColor color,
-            bool useAlphaChannelOfTexture)
+                                           const core::array<core::position2d<s32> > &positions,
+                                           const core::array<core::rect<s32> > &sourceRects,
+                                           const core::rect<s32> *clipRect,
+                                           SColor color,
+                                           bool useAlphaChannelOfTexture)
         {
-            const irr::u32 drawCount = core::min_<u32>(positions.size(), sourceRects.size());
+            const irr::u32    drawCount = core::min_<u32>(positions.size(), sourceRects.size());
 
             for (u32 i = 0; i < drawCount; ++i)
             {
                 draw2DImage(texture, positions[i], sourceRects[i],
-                    clipRect, color, useAlphaChannelOfTexture);
+                            clipRect, color, useAlphaChannelOfTexture);
             }
         }
 
 
-        //! Draws a part of the texture into the rectangle.
+        // ! Draws a part of the texture into the rectangle.
         void CNullDriver::draw2DImage(const video::ITexture *texture, const core::rect<s32> &destRect,
-            const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect,
-            const video::SColor* const colors, bool useAlphaChannelOfTexture)
+                                      const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect,
+                                      const video::SColor* const colors, bool useAlphaChannelOfTexture)
         {
             if (destRect.isValid())
                 draw2DImage(texture, core::position2d<s32>(destRect.UpperLeftCorner),
-                    sourceRect, clipRect, colors ? colors[0] : video::SColor(0xffffffff),
-                    useAlphaChannelOfTexture);
+                            sourceRect, clipRect, colors ? colors[0] : video::SColor(0xffffffff),
+                            useAlphaChannelOfTexture);
         }
 
 
-        //! Draws a 2d image, using a color (if color is other then Color(255,255,255,255)) and the alpha channel of the texture if wanted.
+        // ! Draws a 2d image, using a color (if color is other then Color(255,255,255,255)) and the alpha channel of the texture if wanted.
         void CNullDriver::draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos,
-            const core::rect<s32> &sourceRect,
-            const core::rect<s32> *clipRect, SColor color,
-            bool useAlphaChannelOfTexture)
+                                      const core::rect<s32> &sourceRect,
+                                      const core::rect<s32> *clipRect, SColor color,
+                                      bool useAlphaChannelOfTexture)
         {}
 
 
-        //! Draws the outline of a 2d rectangle
+        // ! Draws the outline of a 2d rectangle
         void CNullDriver::draw2DRectangleOutline(const core::recti &pos, SColor color)
         {
             draw2DLine(pos.UpperLeftCorner, core::position2di(pos.LowerRightCorner.X, pos.UpperLeftCorner.Y), color);
@@ -808,7 +808,7 @@ namespace irr
         }
 
 
-        //! Draw a 2d rectangle
+        // ! Draw a 2d rectangle
         void CNullDriver::draw2DRectangle(SColor color, const core::rect<s32> &pos, const core::rect<s32> *clip)
         {
             draw2DRectangle(pos, color, color, color, color, clip);
@@ -816,39 +816,39 @@ namespace irr
 
 
 
-        //! Draws a 2d rectangle with a gradient.
+        // ! Draws a 2d rectangle with a gradient.
         void CNullDriver::draw2DRectangle(const core::rect<s32> &pos,
-            SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown,
-            const core::rect<s32> *clip)
+                                          SColor colorLeftUp, SColor colorRightUp, SColor colorLeftDown, SColor colorRightDown,
+                                          const core::rect<s32> *clip)
         {}
 
 
 
-        //! Draws a 2d line.
+        // ! Draws a 2d line.
         void CNullDriver::draw2DLine(const core::position2d<s32> &start,
-            const core::position2d<s32> &end, SColor color)
+                                     const core::position2d<s32> &end, SColor color)
         {}
 
-        //! Draws a pixel
+        // ! Draws a pixel
         void CNullDriver::drawPixel(u32 x, u32 y, const SColor &color)
         {}
 
 
-        //! Draws a non filled concyclic regular 2d polyon.
+        // ! Draws a non filled concyclic regular 2d polyon.
         void CNullDriver::draw2DPolygon(core::position2d<s32> center,
-            f32 radius, video::SColor color, s32 count)
+                                        f32 radius, video::SColor color, s32 count)
         {
             if (count < 2)
                 return;
 
-            core::position2d<s32> first;
-            core::position2d<s32> a, b;
+            core::position2d<s32>       first;
+            core::position2d<s32>       a, b;
 
             for (s32 j = 0; j < count; ++j)
             {
                 b = a;
 
-                f32 p = j / (f32)count * (core::PI * 2);
+                f32    p = j / (f32)count * (core::PI * 2);
                 a = center + core::position2d<s32>((s32)(sin(p) * radius), (s32)(cos(p) * radius));
 
                 if (j == 0)
@@ -861,22 +861,22 @@ namespace irr
         }
 
 
-        //! returns color format
+        // ! returns color format
         ECOLOR_FORMAT CNullDriver::getColorFormat() const
         {
             return ECOLOR_FORMAT::ECF_R5G6B5;
         }
 
 
-        //! returns screen size
+        // ! returns screen size
         const core::dimension2d<u32>&CNullDriver::getScreenSize() const
         {
             return ScreenSize;
         }
 
 
-        //! returns the current render target size,
-        //! or the screen size if render targets are not implemented
+        // ! returns the current render target size,
+        // ! or the screen size if render targets are not implemented
         const core::dimension2d<u32>&CNullDriver::getCurrentRenderTargetSize() const
         {
             return ScreenSize;
@@ -891,8 +891,8 @@ namespace irr
 
 
 
-        //! returns amount of primitives (mostly triangles) were drawn in the last frame.
-        //! very useful method for statistics.
+        // ! returns amount of primitives (mostly triangles) were drawn in the last frame.
+        // ! very useful method for statistics.
         u32 CNullDriver::getPrimitiveCountDrawn(u32 param) const
         {
             return (0 == param) ? FPSCounter.getPrimitive() : (1 == param) ? FPSCounter.getPrimitiveAverage() : FPSCounter.getPrimitiveTotal();
@@ -900,8 +900,8 @@ namespace irr
 
 
 
-        //! returns amount of draw calls made in the last frame.
-        //! very useful method for statistics.
+        // ! returns amount of draw calls made in the last frame.
+        // ! very useful method for statistics.
         u32 CNullDriver::getDrawCallCount() const
         {
             return DrawCallCounter;
@@ -909,7 +909,7 @@ namespace irr
 
 
 
-        //! resets the draw call counter
+        // ! resets the draw call counter
         void CNullDriver::resetDrawCallCounter()
         {
             DrawCallCounter = 0;
@@ -917,16 +917,16 @@ namespace irr
 
 
 
-        //! Sets the dynamic ambient light color. The default color is
-        //! (0,0,0,0) which means it is dark.
-        //! \param color: New color of the ambient light.
+        // ! Sets the dynamic ambient light color. The default color is
+        // ! (0,0,0,0) which means it is dark.
+        // ! \param color: New color of the ambient light.
         void CNullDriver::setAmbientLight(const SColorf &color)
         {}
 
 
 
-        //! \return Returns the name of the video driver. Example: In case of the DIRECT3D8
-        //! driver, it would return "Direct3D8".
+        // ! \return Returns the name of the video driver. Example: In case of the DIRECT3D8
+        // ! driver, it would return "Direct3D8".
 
         const wchar_t* CNullDriver::getName() const
         {
@@ -935,65 +935,65 @@ namespace irr
 
 
 
-        //! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
-        //! this: Frist, draw all geometry. Then use this method, to draw the shadow
-        //! volume. Then, use IVideoDriver::drawStencilShadow() to visualize the shadow.
+        // ! Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
+        // ! this: Frist, draw all geometry. Then use this method, to draw the shadow
+        // ! volume. Then, use IVideoDriver::drawStencilShadow() to visualize the shadow.
         void CNullDriver::drawStencilShadowVolume(const core::array<core::vector3df> &triangles, bool zfail, u32 debugDataVisible)
         {}
 
 
-        //! Fills the stencil shadow with color. After the shadow volume has been drawn
-        //! into the stencil buffer using IVideoDriver::drawStencilShadowVolume(), use this
-        //! to draw the color of the shadow.
+        // ! Fills the stencil shadow with color. After the shadow volume has been drawn
+        // ! into the stencil buffer using IVideoDriver::drawStencilShadowVolume(), use this
+        // ! to draw the color of the shadow.
         void CNullDriver::drawStencilShadow(bool clearStencilBuffer,
-            video::SColor leftUpEdge, video::SColor rightUpEdge,
-            video::SColor leftDownEdge, video::SColor rightDownEdge)
+                                            video::SColor leftUpEdge, video::SColor rightUpEdge,
+                                            video::SColor leftDownEdge, video::SColor rightDownEdge)
         {}
 
 
-        //! deletes all dynamic lights there are
+        // ! deletes all dynamic lights there are
         void CNullDriver::deleteAllDynamicLights()
         {
             Lights.set_used(0);
         }
 
 
-        //! adds a dynamic light
+        // ! adds a dynamic light
         s32 CNullDriver::addDynamicLight(const SLight &light)
         {
             Lights.push_back(light);
             return Lights.size() - 1;
         }
 
-        //! Turns a dynamic light on or off
-        //! \param lightIndex: the index returned by addDynamicLight
-        //! \param turnOn: true to turn the light on, false to turn it off
+        // ! Turns a dynamic light on or off
+        // ! \param lightIndex: the index returned by addDynamicLight
+        // ! \param turnOn: true to turn the light on, false to turn it off
         void CNullDriver::turnLightOn(s32 lightIndex, bool turnOn)
         {
             // Do nothing
         }
 
 
-        //! returns the maximal amount of dynamic lights the device can handle
+        // ! returns the maximal amount of dynamic lights the device can handle
         u32 CNullDriver::getMaximalDynamicLightAmount() const
         {
             return 0;
         }
 
 
-        //! Returns current amount of dynamic lights set
-        //! \return Current amount of dynamic lights set
+        // ! Returns current amount of dynamic lights set
+        // ! \return Current amount of dynamic lights set
         u32 CNullDriver::getDynamicLightCount() const
         {
             return Lights.size();
         }
 
 
-        //! Returns light data which was previously set by IVideoDriver::addDynamicLight().
-        //! \param idx: Zero based index of the light. Must be greater than 0 and smaller
-        //! than IVideoDriver()::getDynamicLightCount.
-        //! \return Light data.
-        const SLight&CNullDriver::getDynamicLight(u32 idx) const
+        // ! Returns light data which was previously set by IVideoDriver::addDynamicLight().
+        // ! \param idx: Zero based index of the light. Must be greater than 0 and smaller
+        // ! than IVideoDriver()::getDynamicLightCount.
+        // ! \return Light data.
+        const SLight    &CNullDriver::getDynamicLight(u32 idx) const
         {
             if (idx < Lights.size())
                 return Lights[idx];
@@ -1002,10 +1002,10 @@ namespace irr
         }
 
 
-        //! Creates a boolean alpha channel of the texture based of an color key.
+        // ! Creates a boolean alpha channel of the texture based of an color key.
         void CNullDriver::makeColorKeyTexture(video::ITexture *texture,
-            video::SColor color,
-            bool zeroTexels) const
+                                              video::SColor color,
+                                              bool zeroTexels) const
         {
             if (!texture)
                 return;
@@ -1019,7 +1019,7 @@ namespace irr
 
             if (texture->getColorFormat() == ECOLOR_FORMAT::ECF_A1R5G5B5)
             {
-                u16 *p = (u16*)texture->lock();
+                u16    *p = (u16*)texture->lock();
 
                 if (!p)
                 {
@@ -1027,13 +1027,13 @@ namespace irr
                     return;
                 }
 
-                const core::dimension2d<u32> dim   = texture->getSize();
-                const u32                    pitch = texture->getPitch() / 2;
+                const core::dimension2d<u32>    dim     = texture->getSize();
+                const u32                       pitch   = texture->getPitch() / 2;
 
                 // color with alpha disabled (i.e. fully transparent)
-                const u16 refZeroAlpha = (0x7fff & color.toA1R5G5B5());
+                const u16    refZeroAlpha = (0x7fff & color.toA1R5G5B5());
 
-                const u32 pixels = pitch * dim.Height;
+                const u32    pixels = pitch * dim.Height;
 
                 for (u32 pixel = 0; pixel < pixels; ++pixel)
                 {
@@ -1054,7 +1054,7 @@ namespace irr
             }
             else
             {
-                u32 *p = (u32*)texture->lock();
+                u32    *p = (u32*)texture->lock();
 
                 if (!p)
                 {
@@ -1062,13 +1062,13 @@ namespace irr
                     return;
                 }
 
-                core::dimension2d<u32> dim   = texture->getSize();
-                u32                    pitch = texture->getPitch() / 4;
+                core::dimension2d<u32>      dim     = texture->getSize();
+                u32                         pitch   = texture->getPitch() / 4;
 
                 // color with alpha disabled (fully transparent)
-                const u32 refZeroAlpha = 0x00ffffff & color.color;
+                const u32    refZeroAlpha = 0x00ffffff & color.color;
 
-                const u32 pixels = pitch * dim.Height;
+                const u32    pixels = pitch * dim.Height;
 
                 for (u32 pixel = 0; pixel < pixels; ++pixel)
                 {
@@ -1093,10 +1093,10 @@ namespace irr
 
 
 
-        //! Creates an boolean alpha channel of the texture based of an color key position.
+        // ! Creates an boolean alpha channel of the texture based of an color key position.
         void CNullDriver::makeColorKeyTexture(video::ITexture *texture,
-            core::position2d<s32> colorKeyPixelPos,
-            bool zeroTexels) const
+                                              core::position2d<s32> colorKeyPixelPos,
+                                              bool zeroTexels) const
         {
             if (!texture)
                 return;
@@ -1108,11 +1108,11 @@ namespace irr
                 return;
             }
 
-            SColor colorKey;
+            SColor    colorKey;
 
             if (texture->getColorFormat() == ECOLOR_FORMAT::ECF_A1R5G5B5)
             {
-                u16 *p = (u16*)texture->lock(ETLM_READ_ONLY);
+                u16    *p = (u16*)texture->lock(ETLM_READ_ONLY);
 
                 if (!p)
                 {
@@ -1120,15 +1120,15 @@ namespace irr
                     return;
                 }
 
-                u32 pitch = texture->getPitch() / 2;
+                u32    pitch = texture->getPitch() / 2;
 
-                const u16 key16Bit = 0x7fff & p[colorKeyPixelPos.Y * pitch + colorKeyPixelPos.X];
+                const u16    key16Bit = 0x7fff & p[colorKeyPixelPos.Y * pitch + colorKeyPixelPos.X];
 
                 colorKey = video::A1R5G5B5toA8R8G8B8(key16Bit);
             }
             else
             {
-                u32 *p = (u32*)texture->lock(ETLM_READ_ONLY);
+                u32    *p = (u32*)texture->lock(ETLM_READ_ONLY);
 
                 if (!p)
                 {
@@ -1136,7 +1136,7 @@ namespace irr
                     return;
                 }
 
-                u32 pitch = texture->getPitch() / 4;
+                u32    pitch = texture->getPitch() / 4;
                 colorKey = 0x00ffffff & p[colorKeyPixelPos.Y * pitch + colorKeyPixelPos.X];
             }
 
@@ -1146,8 +1146,8 @@ namespace irr
 
 
 
-        //! Creates a normal map from a height map texture.
-        //! \param amplitude: Constant value by which the height information is multiplied.
+        // ! Creates a normal map from a height map texture.
+        // ! \param amplitude: Constant value by which the height information is multiplied.
         void CNullDriver::makeNormalMapTexture(video::ITexture *texture, f32 amplitude) const
         {
             if (!texture)
@@ -1160,16 +1160,16 @@ namespace irr
                 return;
             }
 
-            core::dimension2d<u32> dim = texture->getSize();
+            core::dimension2d<u32>    dim = texture->getSize();
             amplitude = amplitude / 255.0f;
-            f32 vh = dim.Height / (f32)dim.Width;
-            f32 hh = dim.Width / (f32)dim.Height;
+            f32     vh  = dim.Height / (f32)dim.Width;
+            f32     hh  = dim.Width / (f32)dim.Height;
 
             if (texture->getColorFormat() == ECOLOR_FORMAT::ECF_A8R8G8B8)
             {
                 // ECF_A8R8G8B8 version
 
-                s32 *p = (s32*)texture->lock();
+                s32    *p = (s32*)texture->lock();
 
                 if (!p)
                 {
@@ -1179,9 +1179,9 @@ namespace irr
 
                 // copy texture
 
-                u32 pitch = texture->getPitch() / 4;
+                u32    pitch = texture->getPitch() / 4;
 
-                s32 *in = new s32[dim.Height * pitch];
+                s32    *in = new s32[dim.Height * pitch];
                 memcpy(in, p, dim.Height * pitch * 4);
 
                 for (s32 x = 0; x < s32(pitch); ++x)
@@ -1189,23 +1189,23 @@ namespace irr
                     {
                         // TODO: this could be optimized really a lot
 
-                        core::vector3df h1((x - 1) * hh, nml32(x - 1, y, pitch, dim.Height, in) * amplitude, y * vh);
-                        core::vector3df h2((x + 1) * hh, nml32(x + 1, y, pitch, dim.Height, in) * amplitude, y * vh);
+                        core::vector3df     h1((x - 1) * hh, nml32(x - 1, y, pitch, dim.Height, in) * amplitude, y * vh);
+                        core::vector3df     h2((x + 1) * hh, nml32(x + 1, y, pitch, dim.Height, in) * amplitude, y * vh);
                         // core::vector3df v1(x*hh, nml32(x, y-1, pitch, dim.Height, in)*amplitude, (y-1)*vh);
                         // core::vector3df v2(x*hh, nml32(x, y+1, pitch, dim.Height, in)*amplitude, (y+1)*vh);
-                        core::vector3df v1(x * hh, nml32(x, y + 1, pitch, dim.Height, in) * amplitude, (y - 1) * vh);
-                        core::vector3df v2(x * hh, nml32(x, y - 1, pitch, dim.Height, in) * amplitude, (y + 1) * vh);
+                        core::vector3df     v1(x * hh, nml32(x, y + 1, pitch, dim.Height, in) * amplitude, (y - 1) * vh);
+                        core::vector3df     v2(x * hh, nml32(x, y - 1, pitch, dim.Height, in) * amplitude, (y + 1) * vh);
 
-                        core::vector3df v = v1 - v2;
-                        core::vector3df h = h1 - h2;
+                        core::vector3df     v   = v1 - v2;
+                        core::vector3df     h   = h1 - h2;
 
-                        core::vector3df n = v.crossProduct(h);
+                        core::vector3df    n = v.crossProduct(h);
                         n.normalize();
-                        n *= 0.5f;
-                        n += core::vector3df(0.5f, 0.5f, 0.5f); // now between 0 and 1
-                        n *= 255.0f;
+                        n   *= 0.5f;
+                        n   += core::vector3df(0.5f, 0.5f, 0.5f); // now between 0 and 1
+                        n   *= 255.0f;
 
-                        s32 height = (s32)nml32(x, y, pitch, dim.Height, in);
+                        s32    height = (s32)nml32(x, y, pitch, dim.Height, in);
                         p[y * pitch + x] = video::SColor(
                             height, // store height in alpha
                             (s32)n.X, (s32)n.Z, (s32)n.Y).color;
@@ -1218,7 +1218,7 @@ namespace irr
             {
                 // ECF_A1R5G5B5 version
 
-                s16 *p = (s16*)texture->lock();
+                s16    *p = (s16*)texture->lock();
 
                 if (!p)
                 {
@@ -1226,11 +1226,11 @@ namespace irr
                     return;
                 }
 
-                u32 pitch = texture->getPitch() / 2;
+                u32    pitch = texture->getPitch() / 2;
 
                 // copy texture
 
-                s16 *in = new s16[dim.Height * pitch];
+                s16    *in = new s16[dim.Height * pitch];
                 memcpy(in, p, dim.Height * pitch * 2);
 
                 for (s32 x = 0; x < s32(pitch); ++x)
@@ -1238,19 +1238,19 @@ namespace irr
                     {
                         // TODO: this could be optimized really a lot
 
-                        core::vector3df h1((x - 1) * hh, nml16(x - 1, y, pitch, dim.Height, in) * amplitude, y * vh);
-                        core::vector3df h2((x + 1) * hh, nml16(x + 1, y, pitch, dim.Height, in) * amplitude, y * vh);
-                        core::vector3df v1(x * hh, nml16(x, y - 1, pitch, dim.Height, in) * amplitude, (y - 1) * vh);
-                        core::vector3df v2(x * hh, nml16(x, y + 1, pitch, dim.Height, in) * amplitude, (y + 1) * vh);
+                        core::vector3df     h1((x - 1) * hh, nml16(x - 1, y, pitch, dim.Height, in) * amplitude, y * vh);
+                        core::vector3df     h2((x + 1) * hh, nml16(x + 1, y, pitch, dim.Height, in) * amplitude, y * vh);
+                        core::vector3df     v1(x * hh, nml16(x, y - 1, pitch, dim.Height, in) * amplitude, (y - 1) * vh);
+                        core::vector3df     v2(x * hh, nml16(x, y + 1, pitch, dim.Height, in) * amplitude, (y + 1) * vh);
 
-                        core::vector3df v = v1 - v2;
-                        core::vector3df h = h1 - h2;
+                        core::vector3df     v   = v1 - v2;
+                        core::vector3df     h   = h1 - h2;
 
-                        core::vector3df n = v.crossProduct(h);
+                        core::vector3df    n = v.crossProduct(h);
                         n.normalize();
-                        n *= 0.5f;
-                        n += core::vector3df(0.5f, 0.5f, 0.5f); // now between 0 and 1
-                        n *= 255.0f;
+                        n   *= 0.5f;
+                        n   += core::vector3df(0.5f, 0.5f, 0.5f); // now between 0 and 1
+                        n   *= 255.0f;
 
                         p[y * pitch + x] = video::RGBA16((u32)n.X, (u32)n.Z, (u32)n.Y);
                     }
@@ -1263,23 +1263,23 @@ namespace irr
         }
 
 
-        //! Returns the maximum amount of primitives (mostly vertices) which
-        //! the device is able to render with one drawIndexedTriangleList
-        //! call.
+        // ! Returns the maximum amount of primitives (mostly vertices) which
+        // ! the device is able to render with one drawIndexedTriangleList
+        // ! call.
         u32 CNullDriver::getMaximalPrimitiveCount() const
         {
             return 0xFFFFFFFF;
         }
 
 
-        //! checks triangle count and print warning if wrong
+        // ! checks triangle count and print warning if wrong
         bool CNullDriver::checkPrimitiveCount(u32 prmCount) const
         {
-            const u32 m = getMaximalPrimitiveCount();
+            const u32    m = getMaximalPrimitiveCount();
 
             if (prmCount > m)
             {
-                char tmp[1024];
+                char    tmp[1024];
                 sprintf(tmp, "Could not draw triangles, too many primitives(%u), maxium is %u.", prmCount, m);
                 os::Printer::log(tmp, ELL_ERROR);
                 return false;
@@ -1288,11 +1288,11 @@ namespace irr
             return true;
         }
 
-        //! Enables or disables a texture creation flag.
+        // ! Enables or disables a texture creation flag.
         void CNullDriver::setTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag, bool enabled)
         {
             if (enabled && ((flag == ETCF_ALWAYS_16_BIT) || (flag == ETCF_ALWAYS_32_BIT)
-                || (flag == ETCF_OPTIMIZED_FOR_QUALITY) || (flag == ETCF_OPTIMIZED_FOR_SPEED)))
+                            || (flag == ETCF_OPTIMIZED_FOR_QUALITY) || (flag == ETCF_OPTIMIZED_FOR_SPEED)))
             {
                 // disable other formats
                 setTextureCreationFlag(ETCF_ALWAYS_16_BIT, false);
@@ -1303,25 +1303,25 @@ namespace irr
 
             // set flag
             TextureCreationFlags = (TextureCreationFlags & (~flag)) |
-                ((((u32) !enabled) - 1) & flag);
+                                   ((((u32) !enabled) - 1) & flag);
         }
 
 
-        //! Returns if a texture creation flag is enabled or disabled.
+        // ! Returns if a texture creation flag is enabled or disabled.
         bool CNullDriver::getTextureCreationFlag(E_TEXTURE_CREATION_FLAG flag) const
         {
             return (TextureCreationFlags & flag) != 0;
         }
 
 
-        //! Creates a software image from a file.
+        // ! Creates a software image from a file.
         IImage* CNullDriver::createImageFromFile(const io::path &filename)
         {
             if (!filename.size())
                 return 0;
 
-            IImage        *image = 0;
-            io::IReadFile *file  = FileSystem->createAndOpenFile(filename);
+            IImage              *image  = 0;
+            io::IReadFile       *file   = FileSystem->createAndOpenFile(filename);
 
             if (file)
             {
@@ -1335,15 +1335,15 @@ namespace irr
         }
 
 
-        //! Creates a software image from a file.
+        // ! Creates a software image from a file.
         IImage* CNullDriver::createImageFromFile(io::IReadFile *file)
         {
             if (!file)
                 return 0;
 
-            IImage *image = 0;
+            IImage    *image = 0;
 
-            s32 i;
+            s32    i;
 
             // try to load file based on file extension
             for (i = SurfaceLoader.size() - 1; i >= 0; --i)
@@ -1376,21 +1376,21 @@ namespace irr
         }
 
 
-        //! Writes the provided image to disk file
+        // ! Writes the provided image to disk file
         bool CNullDriver::writeImageToFile(IImage *image, const io::path &filename, u32 param)
         {
-            io::IWriteFile *file = FileSystem->createAndWriteFile(filename);
+            io::IWriteFile    *file = FileSystem->createAndWriteFile(filename);
 
             if (!file)
                 return false;
 
-            bool result = writeImageToFile(image, file, param);
+            bool    result = writeImageToFile(image, file, param);
             file->drop();
 
             return result;
         }
 
-        //! Writes the provided image to a file.
+        // ! Writes the provided image to a file.
         bool CNullDriver::writeImageToFile(IImage *image, io::IWriteFile *file, u32 param)
         {
             if (!file)
@@ -1400,7 +1400,7 @@ namespace irr
             {
                 if (SurfaceWriter[i]->isAWriteableFileExtension(file->getFileName()))
                 {
-                    bool written = SurfaceWriter[i]->writeImage(file, image, param);
+                    bool    written = SurfaceWriter[i]->writeImage(file, image, param);
                     if (written)
                         return true;
                 }
@@ -1410,11 +1410,11 @@ namespace irr
         }
 
 
-        //! Creates a software image from a byte array.
+        // ! Creates a software image from a byte array.
         IImage* CNullDriver::createImageFromData(ECOLOR_FORMAT format,
-            const core::dimension2d<u32> &size,
-            void *data, bool ownForeignMemory,
-            bool deleteMemory)
+                                                 const core::dimension2d<u32> &size,
+                                                 void *data, bool ownForeignMemory,
+                                                 bool deleteMemory)
         {
             if (IImage::isRenderTargetOnlyFormat(format))
             {
@@ -1426,7 +1426,7 @@ namespace irr
         }
 
 
-        //! Creates an empty software image.
+        // ! Creates an empty software image.
         IImage* CNullDriver::createImage(ECOLOR_FORMAT format, const core::dimension2d<u32> &size)
         {
             if (IImage::isRenderTargetOnlyFormat(format))
@@ -1439,7 +1439,7 @@ namespace irr
         }
 
 
-        //! Creates a software image from another image.
+        // ! Creates a software image from another image.
         IImage* CNullDriver::createImage(ECOLOR_FORMAT format, IImage *imageToCopy)
         {
             os::Printer::log("Deprecated method, please create an empty image instead and use copyTo().", ELL_WARNING);
@@ -1450,29 +1450,29 @@ namespace irr
                 return 0;
             }
 
-            CImage *tmp = new CImage(format, imageToCopy->getDimension());
+            CImage    *tmp = new CImage(format, imageToCopy->getDimension());
             imageToCopy->copyTo(tmp);
             return tmp;
         }
 
 
-        //! Creates a software image from part of another image.
+        // ! Creates a software image from part of another image.
         IImage* CNullDriver::createImage(IImage *imageToCopy, const core::position2d<s32> &pos, const core::dimension2d<u32> &size)
         {
             os::Printer::log("Deprecated method, please create an empty image instead and use copyTo().", ELL_WARNING);
-            CImage *tmp = new CImage(imageToCopy->getColorFormat(), imageToCopy->getDimension());
+            CImage    *tmp = new CImage(imageToCopy->getColorFormat(), imageToCopy->getDimension());
 
             imageToCopy->copyTo(tmp, core::position2di(0, 0), core::recti(pos, size));
             return tmp;
         }
 
 
-        //! Creates a software image from part of a texture.
+        // ! Creates a software image from part of a texture.
         IImage* CNullDriver::createImage(ITexture *texture, const core::position2d<s32> &pos, const core::dimension2d<u32> &size)
         {
             if ((pos == core::position2di(0, 0)) && (size == texture->getSize()))
             {
-                IImage *image = new CImage(texture->getColorFormat(), size, texture->lock(ETLM_READ_ONLY), false);
+                IImage    *image = new CImage(texture->getColorFormat(), size, texture->lock(ETLM_READ_ONLY), false);
                 texture->unlock();
                 return image;
             }
@@ -1480,20 +1480,20 @@ namespace irr
             {
                 // make sure to avoid buffer overruns
                 // make the vector a separate variable for g++ 3.x
-                const core::vector2d<u32> leftUpper(core::clamp(static_cast<u32>(pos.X), 0u, texture->getSize().Width),
-                    core::clamp(static_cast<u32>(pos.Y), 0u, texture->getSize().Height));
-                const core::rect<u32> clamped(leftUpper,
-                    core::dimension2du(core::clamp(static_cast<u32>(size.Width), 0u, texture->getSize().Width),
-                    core::clamp(static_cast<u32>(size.Height), 0u, texture->getSize().Height)));
+                const core::vector2d<u32>    leftUpper(core::clamp(static_cast<u32>(pos.X), 0u, texture->getSize().Width),
+                                                       core::clamp(static_cast<u32>(pos.Y), 0u, texture->getSize().Height));
+                const core::rect<u32>    clamped(leftUpper,
+                                                 core::dimension2du(core::clamp(static_cast<u32>(size.Width), 0u, texture->getSize().Width),
+                                                                    core::clamp(static_cast<u32>(size.Height), 0u, texture->getSize().Height)));
                 if (!clamped.isValid())
                     return 0;
 
-                u8 *src = static_cast<u8*>(texture->lock(ETLM_READ_ONLY));
+                u8    *src = static_cast<u8*>(texture->lock(ETLM_READ_ONLY));
                 if (!src)
                     return 0;
 
-                IImage *image = new CImage(texture->getColorFormat(), clamped.getSize());
-                u8     *dst   = static_cast<u8*>(image->lock());
+                IImage      *image  = new CImage(texture->getColorFormat(), clamped.getSize());
+                u8          *dst    = static_cast<u8*>(image->lock());
                 src += clamped.UpperLeftCorner.Y * texture->getPitch() + image->getBytesPerPixel() * clamped.UpperLeftCorner.X;
 
                 for (u32 i = 0; i < clamped.getHeight(); ++i)
@@ -1510,40 +1510,40 @@ namespace irr
         }
 
 
-        //! Sets the fog mode.
+        // ! Sets the fog mode.
         void CNullDriver::setFog(SColor color, E_FOG_TYPE fogType, f32 start, f32 end,
-            f32 density, bool pixelFog, bool rangeFog)
+                                 f32 density, bool pixelFog, bool rangeFog)
         {
-            FogColor   = color;
-            FogType    = fogType;
-            FogStart   = start;
-            FogEnd     = end;
-            FogDensity = density;
-            PixelFog   = pixelFog;
-            RangeFog   = rangeFog;
+            FogColor    = color;
+            FogType     = fogType;
+            FogStart    = start;
+            FogEnd      = end;
+            FogDensity  = density;
+            PixelFog    = pixelFog;
+            RangeFog    = rangeFog;
         }
 
-        //! Gets the fog mode.
+        // ! Gets the fog mode.
         void CNullDriver::getFog(SColor &color, E_FOG_TYPE &fogType, f32 &start, f32 &end,
-            f32 &density, bool &pixelFog, bool &rangeFog)
+                                 f32 &density, bool &pixelFog, bool &rangeFog)
         {
-            color    = FogColor;
-            fogType  = FogType;
-            start    = FogStart;
-            end      = FogEnd;
-            density  = FogDensity;
-            pixelFog = PixelFog;
-            rangeFog = RangeFog;
+            color       = FogColor;
+            fogType     = FogType;
+            start       = FogStart;
+            end         = FogEnd;
+            density     = FogDensity;
+            pixelFog    = PixelFog;
+            rangeFog    = RangeFog;
         }
 
-        //! Draws a mesh buffer
+        // ! Draws a mesh buffer
         void CNullDriver::drawMeshBuffer(const scene::IMeshBuffer *mb)
         {
             if (!mb)
                 return;
 
             // IVertexBuffer and IIndexBuffer later
-            SHWBufferLink *HWBuffer = getBufferLink(mb);
+            SHWBufferLink    *HWBuffer = getBufferLink(mb);
 
             if (HWBuffer)
                 drawHardwareBuffer(HWBuffer);
@@ -1552,19 +1552,19 @@ namespace irr
         }
 
 
-        //! Draws the normals of a mesh buffer
+        // ! Draws the normals of a mesh buffer
         void CNullDriver::drawMeshBufferNormals(const scene::IMeshBuffer *mb, f32 length, SColor color)
         {
-            const u32  count     = mb->getVertexCount();
-            const bool normalize = mb->getMaterial().NormalizeNormals;
+            const u32       count       = mb->getVertexCount();
+            const bool      normalize   = mb->getMaterial().NormalizeNormals;
 
             for (u32 i = 0; i < count; ++i)
             {
-                core::vector3df normalizedNormal = mb->getNormal(i);
+                core::vector3df    normalizedNormal = mb->getNormal(i);
                 if (normalize)
                     normalizedNormal.normalize();
 
-                const core::vector3df &pos = mb->getPosition(i);
+                const core::vector3df    &pos = mb->getPosition(i);
                 draw3DLine(pos, pos + (normalizedNormal * length), color);
             }
         }
@@ -1576,7 +1576,7 @@ namespace irr
                 return 0;
 
             // search for hardware links
-            core::map<const scene::IMeshBuffer*, SHWBufferLink*>::Node *node = HWBufferMap.find(mb);
+            core::map<const scene::IMeshBuffer*, SHWBufferLink*>::Node    *node = HWBufferMap.find(mb);
             if (node)
                 return node->getValue();
 
@@ -1584,14 +1584,14 @@ namespace irr
         }
 
 
-        //! Update all hardware buffers, remove unused ones
+        // ! Update all hardware buffers, remove unused ones
         void CNullDriver::updateAllHardwareBuffers()
         {
-            core::map<const scene::IMeshBuffer*, SHWBufferLink*>::ParentFirstIterator Iterator = HWBufferMap.getParentFirstIterator();
+            core::map<const scene::IMeshBuffer*, SHWBufferLink*>::ParentFirstIterator    Iterator = HWBufferMap.getParentFirstIterator();
 
             for (; !Iterator.atEnd(); Iterator++)
             {
-                SHWBufferLink *Link = Iterator.getNode()->getValue();
+                SHWBufferLink    *Link = Iterator.getNode()->getValue();
 
                 Link->LastUsed++;
                 if (Link->LastUsed > 20000)
@@ -1615,17 +1615,17 @@ namespace irr
         }
 
 
-        //! Remove hardware buffer
+        // ! Remove hardware buffer
         void CNullDriver::removeHardwareBuffer(const scene::IMeshBuffer *mb)
         {
-            core::map<const scene::IMeshBuffer*, SHWBufferLink*>::Node *node = HWBufferMap.find(mb);
+            core::map<const scene::IMeshBuffer*, SHWBufferLink*>::Node    *node = HWBufferMap.find(mb);
 
             if (node)
                 deleteHardwareBuffer(node->getValue());
         }
 
 
-        //! Remove all hardware buffers
+        // ! Remove all hardware buffers
         void CNullDriver::removeAllHardwareBuffers()
         {
             while (HWBufferMap.size())
@@ -1645,7 +1645,7 @@ namespace irr
         }
 
 
-        //! Create occlusion query.
+        // ! Create occlusion query.
         /** Use node for identification and mesh for occlusion test. */
         void CNullDriver::addOcclusionQuery(scene::ISceneNode *node, const scene::IMesh *mesh)
         {
@@ -1666,7 +1666,7 @@ namespace irr
             }
 
             // search for query
-            s32 index = OcclusionQueries.linear_search(SOccQuery(node));
+            s32    index = OcclusionQueries.linear_search(SOccQuery(node));
             if (index != -1)
             {
                 if (OcclusionQueries[index].Mesh != mesh)
@@ -1684,11 +1684,11 @@ namespace irr
         }
 
 
-        //! Remove occlusion query.
+        // ! Remove occlusion query.
         void CNullDriver::removeOcclusionQuery(scene::ISceneNode *node)
         {
             // search for query
-            s32 index = OcclusionQueries.linear_search(SOccQuery(node));
+            s32    index = OcclusionQueries.linear_search(SOccQuery(node));
 
             if (index != -1)
             {
@@ -1698,7 +1698,7 @@ namespace irr
         }
 
 
-        //! Remove all occlusion queries.
+        // ! Remove all occlusion queries.
         void CNullDriver::removeAllOcclusionQueries()
         {
             for (s32 i = OcclusionQueries.size() - 1; i >= 0; --i)
@@ -1708,7 +1708,7 @@ namespace irr
         }
 
 
-        //! Run occlusion query. Draws mesh stored in query.
+        // ! Run occlusion query. Draws mesh stored in query.
         /** If the mesh shall be rendered visible, use
          *  flag to enable the proper material setting. */
         void CNullDriver::runOcclusionQuery(scene::ISceneNode *node, bool visible)
@@ -1716,24 +1716,24 @@ namespace irr
             if (!node)
                 return;
 
-            s32 index = OcclusionQueries.linear_search(SOccQuery(node));
+            s32    index = OcclusionQueries.linear_search(SOccQuery(node));
             if (index == -1)
                 return;
 
             OcclusionQueries[index].Run = 0;
             if (!visible)
             {
-                SMaterial mat;
-                mat.Lighting       = false;
-                mat.AntiAliasing   = 0;
-                mat.ColorMask      = ECP_NONE;
-                mat.GouraudShading = false;
-                mat.ZWriteEnable   = false;
+                SMaterial    mat;
+                mat.Lighting        = false;
+                mat.AntiAliasing    = 0;
+                mat.ColorMask       = ECP_NONE;
+                mat.GouraudShading  = false;
+                mat.ZWriteEnable    = false;
                 setMaterial(mat);
             }
 
             setTransform(video::ETS_WORLD, node->getAbsoluteTransformation());
-            const scene::IMesh *mesh = OcclusionQueries[index].Mesh;
+            const scene::IMesh    *mesh = OcclusionQueries[index].Mesh;
 
             for (u32 i = 0; i < mesh->getMeshBufferCount(); ++i)
             {
@@ -1745,7 +1745,7 @@ namespace irr
         }
 
 
-        //! Run all occlusion queries. Draws all meshes stored in queries.
+        // ! Run all occlusion queries. Draws all meshes stored in queries.
         /** If the meshes shall not be rendered visible, use
          * overrideMaterial to disable the color and depth buffer. */
         void CNullDriver::runAllOcclusionQueries(bool visible)
@@ -1755,14 +1755,14 @@ namespace irr
         }
 
 
-        //! Update occlusion query. Retrieves results from GPU.
+        // ! Update occlusion query. Retrieves results from GPU.
         /** If the query shall not block, set the flag to false.
          * Update might not occur in this case, though */
         void CNullDriver::updateOcclusionQuery(scene::ISceneNode *node, bool block)
         {}
 
 
-        //! Update all occlusion queries. Retrieves results from GPU.
+        // ! Update all occlusion queries. Retrieves results from GPU.
         /** If the query shall not block, set the flag to false.
          * Update might not occur in this case, though */
         void CNullDriver::updateAllOcclusionQueries(bool block)
@@ -1780,7 +1780,7 @@ namespace irr
         }
 
 
-        //! Return query result.
+        // ! Return query result.
         /** Return value is the number of visible pixels/fragments.
          * The value is a safe approximation, i.e. can be larger then the
          * actual value of pixels. */
@@ -1790,14 +1790,14 @@ namespace irr
         }
 
 
-        //! Only used by the internal engine. Used to notify the driver that
-        //! the window was resized.
+        // ! Only used by the internal engine. Used to notify the driver that
+        // ! the window was resized.
         void CNullDriver::OnResize(const core::dimension2d<u32> &size)
         {
             if (ViewPort.getWidth() == (s32)ScreenSize.Width &&
                 ViewPort.getHeight() == (s32)ScreenSize.Height)
                 ViewPort = core::rect<s32>(core::position2d<s32>(0, 0),
-                        core::dimension2di(size));
+                                           core::dimension2di(size));
 
             ScreenSize = size;
         }
@@ -1806,7 +1806,7 @@ namespace irr
         // adds a material renderer and drops it afterwards. To be used for internal creation
         s32 CNullDriver::addAndDropMaterialRenderer(IMaterialRenderer *m)
         {
-            s32 i = addMaterialRenderer(m);
+            s32    i = addMaterialRenderer(m);
 
             if (m)
                 m->drop();
@@ -1815,15 +1815,15 @@ namespace irr
         }
 
 
-        //! Adds a new material renderer to the video device.
+        // ! Adds a new material renderer to the video device.
         s32 CNullDriver::addMaterialRenderer(IMaterialRenderer *renderer, const char *name)
         {
             if (!renderer)
                 return -1;
 
-            SMaterialRenderer r;
-            r.Renderer = renderer;
-            r.Name     = name;
+            SMaterialRenderer    r;
+            r.Renderer  = renderer;
+            r.Name      = name;
 
             if (name == 0 && (MaterialRenderers.size() < (sizeof(sBuiltInMaterialTypeNames) / sizeof(char*)) - 1))
             {
@@ -1839,7 +1839,7 @@ namespace irr
         }
 
 
-        //! Sets the name of a material renderer.
+        // ! Sets the name of a material renderer.
         void CNullDriver::setMaterialRendererName(s32 idx, const char *name)
         {
             if (idx < s32(sizeof(sBuiltInMaterialTypeNames) / sizeof(char*)) - 1 ||
@@ -1850,11 +1850,11 @@ namespace irr
         }
 
 
-        //! Creates material attributes list from a material, usable for serialization and more.
+        // ! Creates material attributes list from a material, usable for serialization and more.
         io::IAttributes* CNullDriver::createAttributesFromMaterial(const video::SMaterial &material,
-            io::SAttributeReadWriteOptions *options)
+                                                                   io::SAttributeReadWriteOptions *options)
         {
-            io::CAttributes *attr = new io::CAttributes(this);
+            io::CAttributes    *attr = new io::CAttributes(this);
 
             attr->addEnum("Type", material.MaterialType, sBuiltInMaterialTypeNames);
 
@@ -1867,14 +1867,14 @@ namespace irr
             attr->addFloat("Param1", material.MaterialTypeParam);
             attr->addFloat("Param2", material.MaterialTypeParam2);
 
-            core::stringc prefix = "Texture";
-            u32           i;
+            core::stringc       prefix = "Texture";
+            u32                 i;
 
             for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
                 if (options && (options->Flags & io::EARWF_USE_RELATIVE_PATHS) && options->Filename && material.getTexture(i))
                 {
-                    io::path path = FileSystem->getRelativeFilename(
+                    io::path    path = FileSystem->getRelativeFilename(
                         FileSystem->getAbsolutePath(material.getTexture(i)->getName()), options->Filename);
                     attr->addTexture((prefix + core::stringc(i + 1)).c_str(), material.getTexture(i), path);
                 }
@@ -1932,14 +1932,14 @@ namespace irr
         }
 
 
-        //! Fills an SMaterial structure from attributes.
+        // ! Fills an SMaterial structure from attributes.
         void CNullDriver::fillMaterialStructureFromAttributes(video::SMaterial &outMaterial, io::IAttributes *attr)
         {
             outMaterial.MaterialType = video::EMT_SOLID;
 
-            core::stringc name = attr->getAttributeAsString("Type");
+            core::stringc    name = attr->getAttributeAsString("Type");
 
-            u32 i;
+            u32    i;
 
             for (i = 0; i < MaterialRenderers.size(); ++i)
                 if (name == MaterialRenderers[i].Name)
@@ -1948,29 +1948,29 @@ namespace irr
                     break;
                 }
 
-            outMaterial.AmbientColor  = attr->getAttributeAsColor("Ambient");
-            outMaterial.DiffuseColor  = attr->getAttributeAsColor("Diffuse");
-            outMaterial.EmissiveColor = attr->getAttributeAsColor("Emissive");
-            outMaterial.SpecularColor = attr->getAttributeAsColor("Specular");
+            outMaterial.AmbientColor    = attr->getAttributeAsColor("Ambient");
+            outMaterial.DiffuseColor    = attr->getAttributeAsColor("Diffuse");
+            outMaterial.EmissiveColor   = attr->getAttributeAsColor("Emissive");
+            outMaterial.SpecularColor   = attr->getAttributeAsColor("Specular");
 
-            outMaterial.Shininess          = attr->getAttributeAsFloat("Shininess");
-            outMaterial.MaterialTypeParam  = attr->getAttributeAsFloat("Param1");
-            outMaterial.MaterialTypeParam2 = attr->getAttributeAsFloat("Param2");
+            outMaterial.Shininess           = attr->getAttributeAsFloat("Shininess");
+            outMaterial.MaterialTypeParam   = attr->getAttributeAsFloat("Param1");
+            outMaterial.MaterialTypeParam2  = attr->getAttributeAsFloat("Param2");
 
-            core::stringc prefix = "Texture";
+            core::stringc    prefix = "Texture";
 
             for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 outMaterial.setTexture(i, attr->getAttributeAsTexture((prefix + core::stringc(i + 1)).c_str()));
 
-            outMaterial.Wireframe        = attr->getAttributeAsBool("Wireframe");
-            outMaterial.GouraudShading   = attr->getAttributeAsBool("GouraudShading");
-            outMaterial.Lighting         = attr->getAttributeAsBool("Lighting");
-            outMaterial.ZWriteEnable     = attr->getAttributeAsBool("ZWriteEnable");
-            outMaterial.ZBuffer          = (u8)attr->getAttributeAsInt("ZBuffer");
-            outMaterial.BackfaceCulling  = attr->getAttributeAsBool("BackfaceCulling");
-            outMaterial.FrontfaceCulling = attr->getAttributeAsBool("FrontfaceCulling");
-            outMaterial.FogEnable        = attr->getAttributeAsBool("FogEnable");
-            outMaterial.NormalizeNormals = attr->getAttributeAsBool("NormalizeNormals");
+            outMaterial.Wireframe           = attr->getAttributeAsBool("Wireframe");
+            outMaterial.GouraudShading      = attr->getAttributeAsBool("GouraudShading");
+            outMaterial.Lighting            = attr->getAttributeAsBool("Lighting");
+            outMaterial.ZWriteEnable        = attr->getAttributeAsBool("ZWriteEnable");
+            outMaterial.ZBuffer             = (u8)attr->getAttributeAsInt("ZBuffer");
+            outMaterial.BackfaceCulling     = attr->getAttributeAsBool("BackfaceCulling");
+            outMaterial.FrontfaceCulling    = attr->getAttributeAsBool("FrontfaceCulling");
+            outMaterial.FogEnable           = attr->getAttributeAsBool("FogEnable");
+            outMaterial.NormalizeNormals    = attr->getAttributeAsBool("NormalizeNormals");
             if (attr->existsAttribute("UseMipMaps")) // legacy
                 outMaterial.UseMipMaps = attr->getAttributeAsBool("UseMipMaps");
             else
@@ -2016,16 +2016,16 @@ namespace irr
             {
                 for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 {
-                    outMaterial.TextureLayer[i].TextureWrapU = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix + core::stringc(i + 1)).c_str(), aTextureClampNames);
-                    outMaterial.TextureLayer[i].TextureWrapV = outMaterial.TextureLayer[i].TextureWrapU;
+                    outMaterial.TextureLayer[i].TextureWrapU    = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix + core::stringc(i + 1)).c_str(), aTextureClampNames);
+                    outMaterial.TextureLayer[i].TextureWrapV    = outMaterial.TextureLayer[i].TextureWrapU;
                 }
             }
             else
             {
                 for (i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
                 {
-                    outMaterial.TextureLayer[i].TextureWrapU = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix + "U" + core::stringc(i + 1)).c_str(), aTextureClampNames);
-                    outMaterial.TextureLayer[i].TextureWrapV = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix + "V" + core::stringc(i + 1)).c_str(), aTextureClampNames);
+                    outMaterial.TextureLayer[i].TextureWrapU    = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix + "U" + core::stringc(i + 1)).c_str(), aTextureClampNames);
+                    outMaterial.TextureLayer[i].TextureWrapV    = (E_TEXTURE_CLAMP)attr->getAttributeAsEnumeration((prefix + "V" + core::stringc(i + 1)).c_str(), aTextureClampNames);
                 }
             }
 
@@ -2037,21 +2037,21 @@ namespace irr
         }
 
 
-        //! Returns driver and operating system specific data about the IVideoDriver.
-        const SExposedVideoData&CNullDriver::getExposedVideoData()
+        // ! Returns driver and operating system specific data about the IVideoDriver.
+        const SExposedVideoData    &CNullDriver::getExposedVideoData()
         {
             return ExposedData;
         }
 
 
-        //! Returns type of video driver
+        // ! Returns type of video driver
         E_DRIVER_TYPE CNullDriver::getDriverType() const
         {
             return EDT_NULL;
         }
 
 
-        //! deletes all material renderers
+        // ! deletes all material renderers
         void CNullDriver::deleteMaterialRenders()
         {
             // delete material renderers
@@ -2067,7 +2067,7 @@ namespace irr
         }
 
 
-        //! Returns pointer to material renderer or null
+        // ! Returns pointer to material renderer or null
         IMaterialRenderer* CNullDriver::getMaterialRenderer(u32 idx)
         {
             if (idx < MaterialRenderers.size())
@@ -2077,14 +2077,14 @@ namespace irr
         }
 
 
-        //! Returns amount of currently available material renderers.
+        // ! Returns amount of currently available material renderers.
         u32 CNullDriver::getMaterialRendererCount() const
         {
             return MaterialRenderers.size();
         }
 
 
-        //! Returns name of the material renderer
+        // ! Returns name of the material renderer
         const char* CNullDriver::getMaterialRendererName(u32 idx) const
         {
             if (idx < MaterialRenderers.size())
@@ -2094,14 +2094,14 @@ namespace irr
         }
 
 
-        //! Returns pointer to the IGPUProgrammingServices interface.
+        // ! Returns pointer to the IGPUProgrammingServices interface.
         IGPUProgrammingServices* CNullDriver::getGPUProgrammingServices()
         {
             return this;
         }
 
 
-        //! Adds a new material renderer to the VideoDriver, based on a high level shading language.
+        // ! Adds a new material renderer to the VideoDriver, based on a high level shading language.
         s32 CNullDriver::addHighLevelShaderMaterial(
             const c8 *vertexShaderProgram,
             const c8 *vertexShaderEntryPointName,
@@ -2124,8 +2124,8 @@ namespace irr
         }
 
 
-        //! Like IGPUProgrammingServices::addShaderMaterial() (look there for a detailed description),
-        //! but tries to load the programs from files.
+        // ! Like IGPUProgrammingServices::addShaderMaterial() (look there for a detailed description),
+        // ! but tries to load the programs from files.
         s32 CNullDriver::addHighLevelShaderMaterialFromFiles(
             const io::path &vertexShaderProgramFileName,
             const c8 *vertexShaderEntryPointName,
@@ -2142,9 +2142,9 @@ namespace irr
             E_MATERIAL_TYPE baseMaterial,
             s32 userData, E_GPU_SHADING_LANGUAGE shadingLang)
         {
-            io::IReadFile *vsfile = 0;
-            io::IReadFile *psfile = 0;
-            io::IReadFile *gsfile = 0;
+            io::IReadFile       *vsfile = 0;
+            io::IReadFile       *psfile = 0;
+            io::IReadFile       *gsfile = 0;
 
             if (vertexShaderProgramFileName.size())
             {
@@ -2152,7 +2152,7 @@ namespace irr
                 if (!vsfile)
                 {
                     os::Printer::log("Could not open vertex shader program file",
-                        vertexShaderProgramFileName, ELL_WARNING);
+                                     vertexShaderProgramFileName, ELL_WARNING);
                 }
             }
 
@@ -2162,7 +2162,7 @@ namespace irr
                 if (!psfile)
                 {
                     os::Printer::log("Could not open pixel shader program file",
-                        pixelShaderProgramFileName, ELL_WARNING);
+                                     pixelShaderProgramFileName, ELL_WARNING);
                 }
             }
 
@@ -2172,11 +2172,11 @@ namespace irr
                 if (!gsfile)
                 {
                     os::Printer::log("Could not open geometry shader program file",
-                        geometryShaderProgramFileName, ELL_WARNING);
+                                     geometryShaderProgramFileName, ELL_WARNING);
                 }
             }
 
-            s32 result = addHighLevelShaderMaterialFromFiles(
+            s32    result = addHighLevelShaderMaterialFromFiles(
                 vsfile, vertexShaderEntryPointName, vsCompileTarget,
                 psfile, pixelShaderEntryPointName, psCompileTarget,
                 gsfile, geometryShaderEntryPointName, gsCompileTarget,
@@ -2196,8 +2196,8 @@ namespace irr
         }
 
 
-        //! Like IGPUProgrammingServices::addShaderMaterial() (look there for a detailed description),
-        //! but tries to load the programs from files.
+        // ! Like IGPUProgrammingServices::addShaderMaterial() (look there for a detailed description),
+        // ! but tries to load the programs from files.
         s32 CNullDriver::addHighLevelShaderMaterialFromFiles(
             io::IReadFile *vertexShaderProgram,
             const c8 *vertexShaderEntryPointName,
@@ -2214,13 +2214,13 @@ namespace irr
             E_MATERIAL_TYPE baseMaterial,
             s32 userData, E_GPU_SHADING_LANGUAGE shadingLang)
         {
-            c8 *vs = 0;
-            c8 *ps = 0;
-            c8 *gs = 0;
+            c8      *vs = 0;
+            c8      *ps = 0;
+            c8      *gs = 0;
 
             if (vertexShaderProgram)
             {
-                const long size = vertexShaderProgram->getSize();
+                const long    size = vertexShaderProgram->getSize();
                 if (size)
                 {
                     vs = new c8[size + 1];
@@ -2231,7 +2231,7 @@ namespace irr
 
             if (pixelShaderProgram)
             {
-                const long size = pixelShaderProgram->getSize();
+                const long    size = pixelShaderProgram->getSize();
                 if (size)
                 {
                     // if both handles are the same we must reset the file
@@ -2246,7 +2246,7 @@ namespace irr
 
             if (geometryShaderProgram)
             {
-                const long size = geometryShaderProgram->getSize();
+                const long    size = geometryShaderProgram->getSize();
                 if (size)
                 {
                     // if both handles are the same we must reset the file
@@ -2260,7 +2260,7 @@ namespace irr
                 }
             }
 
-            s32 result = this->addHighLevelShaderMaterial(
+            s32    result = this->addHighLevelShaderMaterial(
                 vs, vertexShaderEntryPointName, vsCompileTarget,
                 ps, pixelShaderEntryPointName, psCompileTarget,
                 gs, geometryShaderEntryPointName, gsCompileTarget,
@@ -2275,13 +2275,13 @@ namespace irr
         }
 
 
-        //! Adds a new material renderer to the VideoDriver, using pixel and/or
-        //! vertex shaders to render geometry.
+        // ! Adds a new material renderer to the VideoDriver, using pixel and/or
+        // ! vertex shaders to render geometry.
         s32 CNullDriver::addShaderMaterial(const c8 *vertexShaderProgram,
-            const c8 *pixelShaderProgram,
-            IShaderConstantSetCallBack *callback,
-            E_MATERIAL_TYPE baseMaterial,
-            s32 userData)
+                                           const c8 *pixelShaderProgram,
+                                           IShaderConstantSetCallBack *callback,
+                                           E_MATERIAL_TYPE baseMaterial,
+                                           s32 userData)
         {
             os::Printer::log("Shader materials not implemented yet in this driver, sorry.");
 
@@ -2289,20 +2289,20 @@ namespace irr
         }
 
 
-        //! Like IGPUProgrammingServices::addShaderMaterial(), but tries to load the
-        //! programs from files.
+        // ! Like IGPUProgrammingServices::addShaderMaterial(), but tries to load the
+        // ! programs from files.
         s32 CNullDriver::addShaderMaterialFromFiles(io::IReadFile *vertexShaderProgram,
-            io::IReadFile *pixelShaderProgram,
-            IShaderConstantSetCallBack *callback,
-            E_MATERIAL_TYPE baseMaterial,
-            s32 userData)
+                                                    io::IReadFile *pixelShaderProgram,
+                                                    IShaderConstantSetCallBack *callback,
+                                                    E_MATERIAL_TYPE baseMaterial,
+                                                    s32 userData)
         {
-            c8 *vs = 0;
-            c8 *ps = 0;
+            c8      *vs = 0;
+            c8      *ps = 0;
 
             if (vertexShaderProgram)
             {
-                const long size = vertexShaderProgram->getSize();
+                const long    size = vertexShaderProgram->getSize();
                 if (size)
                 {
                     vs = new c8[size + 1];
@@ -2313,7 +2313,7 @@ namespace irr
 
             if (pixelShaderProgram)
             {
-                const long size = pixelShaderProgram->getSize();
+                const long    size = pixelShaderProgram->getSize();
                 if (size)
                 {
                     ps = new c8[size + 1];
@@ -2322,7 +2322,7 @@ namespace irr
                 }
             }
 
-            s32 result = addShaderMaterial(vs, ps, callback, baseMaterial, userData);
+            s32    result = addShaderMaterial(vs, ps, callback, baseMaterial, userData);
 
             delete[] vs;
             delete[] ps;
@@ -2331,16 +2331,16 @@ namespace irr
         }
 
 
-        //! Like IGPUProgrammingServices::addShaderMaterial(), but tries to load the
-        //! programs from files.
+        // ! Like IGPUProgrammingServices::addShaderMaterial(), but tries to load the
+        // ! programs from files.
         s32 CNullDriver::addShaderMaterialFromFiles(const io::path &vertexShaderProgramFileName,
-            const io::path &pixelShaderProgramFileName,
-            IShaderConstantSetCallBack *callback,
-            E_MATERIAL_TYPE baseMaterial,
-            s32 userData)
+                                                    const io::path &pixelShaderProgramFileName,
+                                                    IShaderConstantSetCallBack *callback,
+                                                    E_MATERIAL_TYPE baseMaterial,
+                                                    s32 userData)
         {
-            io::IReadFile *vsfile = 0;
-            io::IReadFile *psfile = 0;
+            io::IReadFile       *vsfile = 0;
+            io::IReadFile       *psfile = 0;
 
             if (vertexShaderProgramFileName.size())
             {
@@ -2348,7 +2348,7 @@ namespace irr
                 if (!vsfile)
                 {
                     os::Printer::log("Could not open vertex shader program file",
-                        vertexShaderProgramFileName, ELL_WARNING);
+                                     vertexShaderProgramFileName, ELL_WARNING);
                     return -1;
                 }
             }
@@ -2359,7 +2359,7 @@ namespace irr
                 if (!psfile)
                 {
                     os::Printer::log("Could not open pixel shader program file",
-                        pixelShaderProgramFileName, ELL_WARNING);
+                                     pixelShaderProgramFileName, ELL_WARNING);
                     if (vsfile)
                         vsfile->drop();
 
@@ -2367,8 +2367,8 @@ namespace irr
                 }
             }
 
-            s32 result = addShaderMaterialFromFiles(vsfile, psfile, callback,
-                    baseMaterial, userData);
+            s32    result = addShaderMaterialFromFiles(vsfile, psfile, callback,
+                                                       baseMaterial, userData);
 
             if (psfile)
                 psfile->drop();
@@ -2380,27 +2380,27 @@ namespace irr
         }
 
 
-        //! Creates a render target texture.
+        // ! Creates a render target texture.
         ITexture* CNullDriver::addRenderTargetTexture(const core::dimension2d<u32> &size,
-            const io::path &name, const ECOLOR_FORMAT format)
+                                                      const io::path &name, const ECOLOR_FORMAT format)
         {
             return 0;
         }
 
 
-        //! Clears the ZBuffer.
+        // ! Clears the ZBuffer.
         void CNullDriver::clearZBuffer()
         {}
 
 
-        //! Returns a pointer to the mesh manipulator.
+        // ! Returns a pointer to the mesh manipulator.
         scene::IMeshManipulator* CNullDriver::getMeshManipulator()
         {
             return MeshManipulator;
         }
 
 
-        //! Returns an image created from the last rendered frame.
+        // ! Returns an image created from the last rendered frame.
         IImage* CNullDriver::createScreenShot(video::ECOLOR_FORMAT format, video::E_RENDER_TARGET target)
         {
             return 0;
@@ -2410,22 +2410,22 @@ namespace irr
         // prints renderer version
         void CNullDriver::printVersion()
         {
-            core::stringw namePrint = L"Using renderer: ";
+            core::stringw    namePrint = L"Using renderer: ";
 
             namePrint += getName();
             os::Printer::log(namePrint.c_str(), ELL_INFORMATION);
         }
 
 
-        //! creates a video driver
+        // ! creates a video driver
         IVideoDriver* createNullDriver(io::IFileSystem *io, const core::dimension2d<u32> &screenSize)
         {
-            CNullDriver *nullDriver = new CNullDriver(io, screenSize);
+            CNullDriver    *nullDriver = new CNullDriver(io, screenSize);
 
             // create empty material renderers
             for (u32 i = 0; sBuiltInMaterialTypeNames[i]; ++i)
             {
-                IMaterialRenderer *imr = new IMaterialRenderer();
+                IMaterialRenderer    *imr = new IMaterialRenderer();
                 nullDriver->addMaterialRenderer(imr);
                 imr->drop();
             }
@@ -2434,18 +2434,18 @@ namespace irr
         }
 
 
-        //! Set/unset a clipping plane.
-        //! There are at least 6 clipping planes available for the user to set at will.
-        //! \param index: The plane index. Must be between 0 and MaxUserClipPlanes.
-        //! \param plane: The plane itself.
-        //! \param enable: If true, enable the clipping plane else disable it.
+        // ! Set/unset a clipping plane.
+        // ! There are at least 6 clipping planes available for the user to set at will.
+        // ! \param index: The plane index. Must be between 0 and MaxUserClipPlanes.
+        // ! \param plane: The plane itself.
+        // ! \param enable: If true, enable the clipping plane else disable it.
         bool CNullDriver::setClipPlane(u32 index, const core::plane3df &plane, bool enable)
         {
             return false;
         }
 
 
-        //! Enable/disable a clipping plane.
+        // ! Enable/disable a clipping plane.
         void CNullDriver::enableClipPlane(u32 index, bool enable)
         {
             // not necessary
@@ -2453,10 +2453,10 @@ namespace irr
 
 
         ITexture* CNullDriver::createRenderTargetTexture(const core::dimension2d<u32> &size,
-            const c8 *name)
+                                                         const c8 *name)
         {
             os::Printer::log("createRenderTargetTexture is deprecated, use addRenderTargetTexture instead");
-            ITexture *tex = addRenderTargetTexture(size, name);
+            ITexture    *tex = addRenderTargetTexture(size, name);
 
             tex->grab();
             return tex;
@@ -2475,14 +2475,14 @@ namespace irr
         }
 
 
-        //! Get the 2d override material for altering its values
+        // ! Get the 2d override material for altering its values
         SMaterial&CNullDriver::getMaterial2D()
         {
             return OverrideMaterial2D;
         }
 
 
-        //! Enable the 2d override material
+        // ! Enable the 2d override material
         void CNullDriver::enableMaterial2D(bool enable)
         {
             OverrideMaterial2DEnabled = enable;
@@ -2495,7 +2495,7 @@ namespace irr
         }
 
 
-        //! Color conversion convenience function
+        // ! Color conversion convenience function
         /** Convert an image (as array of pixels) from source to destination
          * array, thereby converting the color format. The pixel size is
          * determined by the color formats.
@@ -2506,7 +2506,7 @@ namespace irr
          * \param dF Color format of destination
          */
         void CNullDriver::convertColor(const void *sP, ECOLOR_FORMAT sF, s32 sN,
-            void *dP, ECOLOR_FORMAT dF) const
+                                       void *dP, ECOLOR_FORMAT dF) const
         {
             video::CColorConverter::convert_viaFormat(sP, sF, sN, dP, dF);
         }

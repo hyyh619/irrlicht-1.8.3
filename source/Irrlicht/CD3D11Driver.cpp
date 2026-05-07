@@ -1399,12 +1399,12 @@ namespace irr
         {
             ++DrawCallCounter;
 
-            IImage* image = createScreenShot(video::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
+            IImage    *image = createScreenShot(video::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
             if (image)
             {
-                core::stringc filename = "draw_call_";
-                filename += DrawCallCounter;
-                filename += ".jpg";
+                core::stringc    filename = "draw_call_";
+                filename    += DrawCallCounter;
+                filename    += ".jpg";
                 writeImageToFile(image, filename.c_str(), 90);
                 image->drop();
             }
@@ -2103,18 +2103,18 @@ namespace irr
             if (format == video::ECOLOR_FORMAT::ECF_UNKNOWN)
                 format = m_ColorFormat;
 
-            ID3D11Texture2D* backBuffer = 0;
-            HRESULT hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
+            ID3D11Texture2D     *backBuffer = 0;
+            HRESULT             hr          = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
             if (FAILED(hr) || !backBuffer)
                 return 0;
 
-            D3D11_TEXTURE2D_DESC desc;
+            D3D11_TEXTURE2D_DESC    desc;
             backBuffer->GetDesc(&desc);
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-            desc.Usage = D3D11_USAGE_STAGING;
-            desc.BindFlags = 0;
+            desc.Usage          = D3D11_USAGE_STAGING;
+            desc.BindFlags      = 0;
 
-            ID3D11Texture2D* stagingTexture = 0;
+            ID3D11Texture2D    *stagingTexture = 0;
             hr = m_pID3DDevice->CreateTexture2D(&desc, 0, &stagingTexture);
             if (FAILED(hr) || !stagingTexture)
             {
@@ -2124,7 +2124,7 @@ namespace irr
 
             m_pID3DDeviceContext->CopyResource(stagingTexture, backBuffer);
 
-            D3D11_MAPPED_SUBRESOURCE mapped;
+            D3D11_MAPPED_SUBRESOURCE    mapped;
             hr = m_pID3DDeviceContext->Map(stagingTexture, 0, D3D11_MAP_READ, 0, &mapped);
             if (FAILED(hr))
             {
@@ -2133,7 +2133,7 @@ namespace irr
                 return 0;
             }
 
-            IImage* image = createImage(format, core::dimension2d<u32>(desc.Width, desc.Height));
+            IImage    *image = createImage(format, core::dimension2d<u32>(desc.Width, desc.Height));
             if (!image)
             {
                 m_pID3DDeviceContext->Unmap(stagingTexture, 0);
@@ -2142,35 +2142,39 @@ namespace irr
                 return 0;
             }
 
-            u8* pixels = (u8*)image->lock();
+            u8    *pixels = (u8*)image->lock();
             if (pixels)
             {
-                u32 bytesPerPixel = 4;
+                u32    bytesPerPixel = 4;
+
                 switch (format)
                 {
                     case ECOLOR_FORMAT::ECF_A1R5G5B5:
                     case ECOLOR_FORMAT::ECF_R5G6B5:
                         bytesPerPixel = 2;
                         break;
+
                     case ECOLOR_FORMAT::ECF_R8G8B8:
                         bytesPerPixel = 3;
                         break;
+
                     case ECOLOR_FORMAT::ECF_A8R8G8B8:
                     default:
                         bytesPerPixel = 4;
                         break;
                 }
 
-                const u32 rowPitch = mapped.RowPitch;
-                const u32 imageRowPitch = image->getPitch();
+                const u32       rowPitch        = mapped.RowPitch;
+                const u32       imageRowPitch   = image->getPitch();
 
                 for (u32 y = 0; y < desc.Height; ++y)
                 {
-                    u8* srcRow = (u8*)mapped.pData + y * rowPitch;
-                    u8* dstRow = pixels + y * imageRowPitch;
+                    u8      *srcRow = (u8*)mapped.pData + y * rowPitch;
+                    u8      *dstRow = pixels + y * imageRowPitch;
                     memcpy(dstRow, srcRow, desc.Width * bytesPerPixel);
                 }
             }
+
             image->unlock();
 
             m_pID3DDeviceContext->Unmap(stagingTexture, 0);
