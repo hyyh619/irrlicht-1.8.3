@@ -164,3 +164,5 @@ source/Irrlicht/latex
 Scripts/BiliBiliDownloader/bilibili_ocr_test.png
 Scripts/BiliBiliDownloader/ocr_debug*.png
 screenshot.bmp
+
+draw_call_*.jpg
