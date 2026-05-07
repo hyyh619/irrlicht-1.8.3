@@ -499,4 +499,10 @@ CD3D11Driver::draw2DRectangle收到的pos是屏幕像素坐标，我们需要在
 3. 执行CD3D11Driver::draw2DRectangle的draw前把MVP矩阵作为constant给到VS
 
 # 44
+Git commit: Implement draw2DImageBatch by MiniMax-M2.7.
 根据CD3D9Driver::draw2DImageBatch的实现，实现CD3D11Driver::draw2DImageBatch
+
+# 45
+Git commit: 
+1. SRenderStateSet的BlendState需要增加一个，两个BlendState分别是开启alpha和不开启alpha的state
+2. CD3D11Driver::setRenderStates根据alpha是否开启，来选择正确的blendstate

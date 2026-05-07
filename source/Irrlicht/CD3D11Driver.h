@@ -533,6 +533,7 @@ private:
                 ID3D11RasterizerState1  *RasterizerState;
                 ID3D11DepthStencilState *DepthStencilState;
                 ID3D11BlendState1       *BlendState;
+                ID3D11BlendState1       *AlphaBlendState;
             };
 
             SRenderStateSet                     m_RenderStateSets[ERM_RENDER_MODE_MAX];

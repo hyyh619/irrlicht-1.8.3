@@ -388,6 +388,12 @@ namespace irr
                     IRR_D3D11_BLEND_RELEASE(m_RenderStateSets[i].BlendState, "BlendState");
                     m_RenderStateSets[i].BlendState->Release();
                 }
+
+                if (m_RenderStateSets[i].AlphaBlendState)
+                {
+                    IRR_D3D11_BLEND_RELEASE(m_RenderStateSets[i].AlphaBlendState, "AlphaBlendState");
+                    m_RenderStateSets[i].AlphaBlendState->Release();
+                }
             }
 
             if (m_DefaultSampler)
@@ -1409,16 +1415,16 @@ namespace irr
 
             setRenderStates2DMode(color.getAlpha() < 255, true, useAlphaChannelOfTexture);
 
-            const irr::u32 drawCount = core::min_<u32>(positions.size(), sourceRects.size());
+            const irr::u32    drawCount = core::min_<u32>(positions.size(), sourceRects.size());
 
-            core::array<S3DVertex> vtx(drawCount * 4);
-            core::array<u16> indices(drawCount * 6);
+            core::array<S3DVertex>      vtx(drawCount * 4);
+            core::array<u16>            indices(drawCount * 6);
 
             for (u32 i = 0; i < drawCount; i++)
             {
-                core::position2d<s32> targetPos = positions[i];
-                core::position2d<s32> sourcePos = sourceRects[i].UpperLeftCorner;
-                core::dimension2d<s32> sourceSize(sourceRects[i].getSize());
+                core::position2d<s32>       targetPos   = positions[i];
+                core::position2d<s32>       sourcePos   = sourceRects[i].UpperLeftCorner;
+                core::dimension2d<s32>      sourceSize(sourceRects[i].getSize());
 
                 if (clipRect)
                 {
@@ -1428,8 +1434,8 @@ namespace irr
                         if (sourceSize.Width <= 0)
                             continue;
 
-                        sourcePos.X -= targetPos.X - clipRect->UpperLeftCorner.X;
-                        targetPos.X  = clipRect->UpperLeftCorner.X;
+                        sourcePos.X     -= targetPos.X - clipRect->UpperLeftCorner.X;
+                        targetPos.X     = clipRect->UpperLeftCorner.X;
                     }
 
                     if (targetPos.X + (s32)sourceSize.Width > clipRect->LowerRightCorner.X)
@@ -1445,8 +1451,8 @@ namespace irr
                         if (sourceSize.Height <= 0)
                             continue;
 
-                        sourcePos.Y -= targetPos.Y - clipRect->UpperLeftCorner.Y;
-                        targetPos.Y  = clipRect->UpperLeftCorner.Y;
+                        sourcePos.Y     -= targetPos.Y - clipRect->UpperLeftCorner.Y;
+                        targetPos.Y     = clipRect->UpperLeftCorner.Y;
                     }
 
                     if (targetPos.Y + (s32)sourceSize.Height > clipRect->LowerRightCorner.Y)
@@ -1463,11 +1469,11 @@ namespace irr
                     if (sourceSize.Width <= 0)
                         continue;
 
-                    sourcePos.X -= targetPos.X;
-                    targetPos.X  = 0;
+                    sourcePos.X     -= targetPos.X;
+                    targetPos.X     = 0;
                 }
 
-                const core::dimension2d<u32> &renderTargetSize = getCurrentRenderTargetSize();
+                const core::dimension2d<u32>    &renderTargetSize = getCurrentRenderTargetSize();
 
                 if (targetPos.X + sourceSize.Width > (s32)renderTargetSize.Width)
                 {
@@ -1482,8 +1488,8 @@ namespace irr
                     if (sourceSize.Height <= 0)
                         continue;
 
-                    sourcePos.Y -= targetPos.Y;
-                    targetPos.Y  = 0;
+                    sourcePos.Y     -= targetPos.Y;
+                    targetPos.Y     = 0;
                 }
 
                 if (targetPos.Y + sourceSize.Height > (s32)renderTargetSize.Height)
@@ -1493,28 +1499,28 @@ namespace irr
                         continue;
                 }
 
-                core::rect<f32> tcoords;
-                tcoords.UpperLeftCorner.X  = (((f32)sourcePos.X)) / texture->getOriginalSize().Width;
-                tcoords.UpperLeftCorner.Y  = (((f32)sourcePos.Y)) / texture->getOriginalSize().Height;
-                tcoords.LowerRightCorner.X = tcoords.UpperLeftCorner.X + ((f32)(sourceSize.Width) / texture->getOriginalSize().Width);
-                tcoords.LowerRightCorner.Y = tcoords.UpperLeftCorner.Y + ((f32)(sourceSize.Height) / texture->getOriginalSize().Height);
+                core::rect<f32>    tcoords;
+                tcoords.UpperLeftCorner.X   = (((f32)sourcePos.X)) / texture->getOriginalSize().Width;
+                tcoords.UpperLeftCorner.Y   = (((f32)sourcePos.Y)) / texture->getOriginalSize().Height;
+                tcoords.LowerRightCorner.X  = tcoords.UpperLeftCorner.X + ((f32)(sourceSize.Width) / texture->getOriginalSize().Width);
+                tcoords.LowerRightCorner.Y  = tcoords.UpperLeftCorner.Y + ((f32)(sourceSize.Height) / texture->getOriginalSize().Height);
 
-                const core::rect<s32> poss(targetPos, sourceSize);
+                const core::rect<s32>    poss(targetPos, sourceSize);
 
                 vtx.push_back(S3DVertex((f32)poss.UpperLeftCorner.X, (f32)poss.UpperLeftCorner.Y, 0.0f,
-                    0.0f, 0.0f, 0.0f, color,
-                    tcoords.UpperLeftCorner.X, tcoords.UpperLeftCorner.Y));
+                                        0.0f, 0.0f, 0.0f, color,
+                                        tcoords.UpperLeftCorner.X, tcoords.UpperLeftCorner.Y));
                 vtx.push_back(S3DVertex((f32)poss.LowerRightCorner.X, (f32)poss.UpperLeftCorner.Y, 0.0f,
-                    0.0f, 0.0f, 0.0f, color,
-                    tcoords.LowerRightCorner.X, tcoords.UpperLeftCorner.Y));
+                                        0.0f, 0.0f, 0.0f, color,
+                                        tcoords.LowerRightCorner.X, tcoords.UpperLeftCorner.Y));
                 vtx.push_back(S3DVertex((f32)poss.LowerRightCorner.X, (f32)poss.LowerRightCorner.Y, 0.0f,
-                    0.0f, 0.0f, 0.0f, color,
-                    tcoords.LowerRightCorner.X, tcoords.LowerRightCorner.Y));
+                                        0.0f, 0.0f, 0.0f, color,
+                                        tcoords.LowerRightCorner.X, tcoords.LowerRightCorner.Y));
                 vtx.push_back(S3DVertex((f32)poss.UpperLeftCorner.X, (f32)poss.LowerRightCorner.Y, 0.0f,
-                    0.0f, 0.0f, 0.0f, color,
-                    tcoords.UpperLeftCorner.X, tcoords.LowerRightCorner.Y));
+                                        0.0f, 0.0f, 0.0f, color,
+                                        tcoords.UpperLeftCorner.X, tcoords.LowerRightCorner.Y));
 
-                const u32 curPos = vtx.size() - 4;
+                const u32    curPos = vtx.size() - 4;
                 indices.push_back(0 + curPos);
                 indices.push_back(1 + curPos);
                 indices.push_back(2 + curPos);
@@ -2754,14 +2760,14 @@ namespace irr
 
             for (u32 i = 0; i < 8; ++i)
             {
-                blendDesc.RenderTarget[i].BlendEnable           = true;
-                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].BlendEnable           = false;
+                blendDesc.RenderTarget[i].LogicOpEnable         = false;
                 blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
                 blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
-                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
                 blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
                 blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-                blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
                 blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
                 blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
             }
@@ -2779,7 +2785,65 @@ namespace irr
 
             for (u32 i = 0; i < 8; ++i)
             {
+                blendDesc.RenderTarget[i].BlendEnable           = true;
+                blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            }
+
+            hr = E_FAIL;
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_RenderStateSets[ERM_3D].AlphaBlendState);
+
+            IRR_D3D11_BLEND_CREATE(m_RenderStateSets[ERM_3D].AlphaBlendState, "DefaultAlphaBlendState_3D");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create alpha blend state for ERM_3D.", ELL_ERROR);
+                return false;
+            }
+
+            for (u32 i = 0; i < 8; ++i)
+            {
+                blendDesc.RenderTarget[i].BlendEnable           = true;
+                blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            }
+
+            hr = E_FAIL;
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_RenderStateSets[ERM_3D].AlphaBlendState);
+
+            IRR_D3D11_BLEND_CREATE(m_RenderStateSets[ERM_3D].AlphaBlendState, "DefaultAlphaBlendState_3D");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create alpha blend state for ERM_3D.", ELL_ERROR);
+                return false;
+            }
+
+            for (u32 i = 0; i < 8; ++i)
+            {
                 blendDesc.RenderTarget[i].BlendEnable           = false;
+                blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
                 blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
             }
 
@@ -2791,6 +2855,31 @@ namespace irr
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create blend state for ERM_2D.", ELL_ERROR);
+                return false;
+            }
+
+            for (u32 i = 0; i < 8; ++i)
+            {
+                blendDesc.RenderTarget[i].BlendEnable           = true;
+                blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            }
+
+            hr = E_FAIL;
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_RenderStateSets[ERM_2D].AlphaBlendState);
+
+            IRR_D3D11_BLEND_CREATE(m_RenderStateSets[ERM_2D].AlphaBlendState, "DefaultAlphaBlendState_2D");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create alpha blend state for ERM_2D.", ELL_ERROR);
                 return false;
             }
 
@@ -2814,42 +2903,9 @@ namespace irr
             m_pID3DDeviceContext->RSSetState(stateSet.RasterizerState);
             m_pID3DDeviceContext->OMSetDepthStencilState(stateSet.DepthStencilState, 0);
 
-            FLOAT    blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-            if (alpha && mode == ERM_3D)
-            {
-                D3D11_BLEND_DESC1    blendDesc;
-                blendDesc.AlphaToCoverageEnable     = false;
-                blendDesc.IndependentBlendEnable    = false;
-
-                for (u32 i = 0; i < 8; ++i)
-                {
-                    blendDesc.RenderTarget[i].BlendEnable           = true;
-                    blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
-                    blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
-                    blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
-                    blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
-                    blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
-                    blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-                    blendDesc.RenderTarget[i].LogicOpEnable         = false;
-                    blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-                    blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-                }
-
-                ID3D11BlendState1    *alphaBlendState = 0;
-                if (m_pID3DDevice1 && SUCCEEDED(m_pID3DDevice1->CreateBlendState1(&blendDesc, &alphaBlendState)))
-                {
-                    m_pID3DDeviceContext->OMSetBlendState(alphaBlendState, blendFactor, 0xFFFFFFFF);
-                    alphaBlendState->Release();
-                }
-                else
-                {
-                    m_pID3DDeviceContext->OMSetBlendState(stateSet.BlendState, blendFactor, 0xFFFFFFFF);
-                }
-            }
-            else
-            {
-                m_pID3DDeviceContext->OMSetBlendState(stateSet.BlendState, blendFactor, 0xFFFFFFFF);
-            }
+            FLOAT                   blendFactor[4]  = { 1.0f, 1.0f, 1.0f, 1.0f };
+            ID3D11BlendState1       *blendState     = alpha ? stateSet.AlphaBlendState : stateSet.BlendState;
+            m_pID3DDeviceContext->OMSetBlendState(blendState, blendFactor, 0xFFFFFFFF);
         }
 
 
