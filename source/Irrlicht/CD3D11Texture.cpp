@@ -9,8 +9,20 @@
 #include "CD3D11Texture.h"
 #include "CD3D11Driver.h"
 #include "CD3D11ObjectTracker.h"
+#include "CD3D11Debug.h"
 #include "SColor.h"
 #include "os.h"
+
+#ifdef _IRR_TEXTURE_DUMP
+#define _IRR_DUMP_TEXTURE(img, name) \
+    do { \
+        core::stringc dumpName = "dump_"; \
+        dumpName += name; \
+        m_Driver->writeImageToFile(img, dumpName); \
+    } while (false)
+#else
+#define _IRR_DUMP_TEXTURE(img, name) do { } while (false)
+#endif
 
 namespace irr
 {
@@ -311,6 +323,8 @@ namespace irr
                 else if (format == ECOLOR_FORMAT::ECF_A1R5G5B5)
                     format = ECOLOR_FORMAT::ECF_R5G6B5;
             }
+
+            _IRR_DUMP_TEXTURE(image, getName());
 
             m_DXGIFormat = m_Driver->getDXGIFormatFromColorFormat(format);
             if (m_DXGIFormat == DXGI_FORMAT_UNKNOWN)

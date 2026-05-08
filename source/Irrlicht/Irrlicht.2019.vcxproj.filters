@@ -1324,6 +1324,9 @@
     <ClInclude Include="CD3D11ObjectTracker.h">
       <Filter>Irrlicht\video\Direct3D11</Filter>
     </ClInclude>
+    <ClInclude Include="CD3D11Debug.h">
+      <Filter>Irrlicht\video\Direct3D11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\changes.txt">

@@ -290,9 +290,9 @@
 
 //! Define _IRR_D3D_USE_LEGACY_HLSL_COMPILER to enable the old HLSL compiler in recent DX SDKs
 /** This enables support for ps_1_x shaders for recent DX SDKs. Otherwise, support
- * for this shader model is not available anymore in SDKs after Oct2006. You need to
- * distribute the OCT2006_d3dx9_31_x86.cab or OCT2006_d3dx9_31_x64.cab though, in order
- * to provide the user with the proper DLL. That's why it's disabled by default. */
+ *  for this shader model is not available anymore in SDKs after Oct2006. You need to
+ *  distribute the OCT2006_d3dx9_31_x86.cab or OCT2006_d3dx9_31_x64.cab though, in order
+ *  to provide the user with the proper DLL. That's why it's disabled by default. */
 //#define _IRR_D3D_USE_LEGACY_HLSL_COMPILER
 #ifdef NO_IRR_D3D_USE_LEGACY_HLSL_COMPILER
 #undef _IRR_D3D_USE_LEGACY_HLSL_COMPILER
@@ -834,11 +834,6 @@ typedef long intptr_t;
     #define _IRR_DUMP_DRAW_CALLS_
     #ifdef NO_IRR_DUMP_DRAW_CALLS_
         #undef _IRR_DUMP_DRAW_CALLS_
-    #endif
-
-    #define _IRR_D3D11_OBJECT_TRACKING
-    #ifdef NO_IRR_D3D11_OBJECT_TRACKING
-        #undef _IRR_D3D11_OBJECT_TRACKING
     #endif
 #endif
 #endif // __IRR_COMPILE_CONFIG_H_INCLUDED__

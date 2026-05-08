@@ -5,6 +5,7 @@
 #define _IRR_DONT_DO_MEMORY_DEBUGGING_HERE
 #include "CD3D11Driver.h"
 #include "CD3D11ObjectTracker.h"
+#include "CD3D11Debug.h"
 
 #ifdef _IRR_COMPILE_WITH_DIRECT3D_11_
 
@@ -904,7 +905,7 @@ namespace irr
             setBasicRenderStates(material, m_LastMaterial, true);
             m_LastMaterial = material;
 
-#ifdef _DEBUG
+#ifdef _IRR_MATERIAL_PRINT
             core::stringc    msg = "Type=";
             msg += getMaterialTypeName(material.MaterialType);
             msg += ", Wireframe=";
@@ -1452,14 +1453,6 @@ namespace irr
             dumpDrawCall("draw2D3DVertexPrimitiveList");
 #endif
         }
-
-#ifndef _IRR_DUMP_DRAW_CALLS_PRINT
-#define _IRR_DUMP_DRAW_CALLS_PRINT 1
-#endif
-
-#ifndef _IRR_DUMP_DRAW_CALLS_FILE
-#define _IRR_DUMP_DRAW_CALLS_FILE 0
-#endif
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
         void CD3D11Driver::dumpDrawCall(const c8 *drawTypeName)

@@ -8,12 +8,7 @@
 #include <d3d11_1.h>
 #include <dxgi1_2.h>
 #include "os.h"
-
-#ifdef _IRR_D3D11_OBJECT_TRACKING
-#define IRR_D3D11_TRACKING_ENABLED 1
-#else
-#define IRR_D3D11_TRACKING_ENABLED 0
-#endif
+#include "CD3D11Debug.h"
 
 namespace irr
 {

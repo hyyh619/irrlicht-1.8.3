@@ -680,7 +680,7 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\include;zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_WINDOWS;_USRDLL;IRRLICHT_EXPORTS;_CRT_SECURE_NO_DEPRECATE;NO_IRR_COMPILE_WITH_DIRECT3D_9_;%(PreprocessorDefinitions);_ITERATOR_DEBUG_LEVEL=0;NO_IRR_D3D11_OBJECT_TRACKING</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_WINDOWS;_USRDLL;IRRLICHT_EXPORTS;_CRT_SECURE_NO_DEPRECATE;NO_IRR_COMPILE_WITH_DIRECT3D_9_;%(PreprocessorDefinitions);_ITERATOR_DEBUG_LEVEL=0</PreprocessorDefinitions>
       <ExceptionHandling>
       </ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -1775,6 +1775,7 @@
     <ClInclude Include="..\..\include\IGUITreeView.h" />
     <ClInclude Include="..\..\include\IGUIWindow.h" />
     <ClInclude Include="CCgMaterialRenderer.h" />
+    <ClInclude Include="CD3D11Debug.h" />
     <ClInclude Include="CD3D11ObjectTracker.h" />
     <ClInclude Include="CD3D11Shader.h" />
     <ClInclude Include="CD3D9CgMaterialRenderer.h" />

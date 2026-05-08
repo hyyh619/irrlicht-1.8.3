@@ -791,3 +791,21 @@ CD3D11Driver::set2DRectangleShader不要使用m_BuiltInVSInitialized来决定是
 
 # 52
 Git commit: 
+d3d9的EMT_LIGHTMAP_M4实现如下，请帮我们分析其对应的PS实现
+                m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+                m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+                m_pID3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+                m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE4X);
+                m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+                m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
+                m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE)
+
+dump image in CD3D11Texture::createTexture
+
+把下列调试使用的宏放到一个统一的CD3D11Debug.h头文件中，并添加注释，方便统一开启
+_IRR_TEXTURE_DUMP
+_IRR_MATERIAL_PRINT
+_IRR_DUMP_DRAW_CALLS_FILE
+_IRR_DUMP_DRAW_CALLS_PRINT
+_IRR_DUMP_DRAW_CALLS_
+_IRR_D3D11_OBJECT_TRACKING
