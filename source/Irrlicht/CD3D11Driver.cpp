@@ -222,8 +222,10 @@ namespace irr
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
                 m_CurrentTexture[i]                 = 0;
+                m_PreviousTexture[i]                = 0;
                 m_LastTextureMipMapsAvailable[i]    = false;
                 m_CurrentSampler[i]                 = 0;
+                m_PreviousSampler[i]                 = 0;
             }
 
             m_MaxLightDistance = sqrtf(FLT_MAX);
@@ -2667,26 +2669,32 @@ namespace irr
         {
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
-                if (m_CurrentTexture[i])
+                if (m_CurrentTexture[i] != m_PreviousTexture[i] || m_CurrentSampler[i] != m_PreviousSampler[i])
                 {
-                    CD3D11Texture               *tex    = static_cast<CD3D11Texture*>(const_cast<ITexture*>(m_CurrentTexture[i]));
-                    ID3D11ShaderResourceView    *srv    = tex->getShaderResourceView();
-
-                    m_pID3DDeviceContext->PSSetShaderResources(i, 1, &srv);
-
-                    if (m_CurrentSampler[i])
+                    if (m_CurrentTexture[i])
                     {
-                        ID3D11SamplerState    *pSampler = m_CurrentSampler[i]->getD3D11SamplerState();
+                        CD3D11Texture               *tex    = static_cast<CD3D11Texture*>(const_cast<ITexture*>(m_CurrentTexture[i]));
+                        ID3D11ShaderResourceView    *srv    = tex->getShaderResourceView();
+
+                        m_pID3DDeviceContext->PSSetShaderResources(i, 1, &srv);
+
+                        if (m_CurrentSampler[i])
+                        {
+                            ID3D11SamplerState    *pSampler = m_CurrentSampler[i]->getD3D11SamplerState();
+                            m_pID3DDeviceContext->PSSetSamplers(i, 1, &pSampler);
+                        }
+                    }
+                    else
+                    {
+                        ID3D11SamplerState          *pSampler   = nullptr;
+                        ID3D11ShaderResourceView    *nullSrv    = 0;
+
+                        m_pID3DDeviceContext->PSSetShaderResources(i, 1, &nullSrv);
                         m_pID3DDeviceContext->PSSetSamplers(i, 1, &pSampler);
                     }
-                }
-                else
-                {
-                    ID3D11SamplerState          *pSampler   = nullptr;
-                    ID3D11ShaderResourceView    *nullSrv    = 0;
 
-                    m_pID3DDeviceContext->PSSetShaderResources(i, 1, &nullSrv);
-                    m_pID3DDeviceContext->PSSetSamplers(i, 1, &pSampler);
+                    m_PreviousTexture[i] = m_CurrentTexture[i];
+                    m_PreviousSampler[i] = m_CurrentSampler[i];
                 }
             }
         }

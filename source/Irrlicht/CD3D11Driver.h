@@ -503,6 +503,7 @@ private:
             bool                m_ResetRenderStates;
             bool                m_Transformation3DChanged;
             const ITexture      *m_CurrentTexture[MATERIAL_MAX_TEXTURES];
+            const ITexture      *m_PreviousTexture[MATERIAL_MAX_TEXTURES];
             bool                m_LastTextureMipMapsAvailable[MATERIAL_MAX_TEXTURES];
             core::matrix4       m_Matrices[ETS_COUNT];
 
@@ -568,6 +569,7 @@ private:
             CSampler                            *m_DefaultSampler;
             core::map<u64, CSampler*>           m_SamplerPool;
             CSampler                            *m_CurrentSampler[MATERIAL_MAX_TEXTURES];
+            CSampler                            *m_PreviousSampler[MATERIAL_MAX_TEXTURES];
 
             E_RENDER_MODE    m_CurrentRenderMode;
         };

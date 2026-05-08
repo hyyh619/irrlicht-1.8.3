@@ -884,7 +884,7 @@ dump texture的同时，打印出dump的文件名
     } while (false)
 
 # 54
-Git commit: 
+Git commit: Create sampler based on material's texture layer by MiniMax-M2.7.
 我们对所有的纹理采样，d3d11都使用m_DefaultSampler。
 1. 我们需要根据Material内的SMaterialLayer    TextureLayer来判断某一个纹理需要使用什么样的采样器
    请根据SMaterialLayer提供的下列参数来创建对应的CSampler
@@ -920,3 +920,8 @@ Git commit:
 3. 创建CSampler之前，请根据SMaterialLayer参数判断在m_SamplerPool是否已经有已经创建的sampler，如果有则直接使用已有的。
 4. 创建一个m_CurrentSampler[MATERIAL_MAX_TEXTURES]保存当前纹理单元使用的CSampler对象
 5. CD3D11Driver::setPSTextureAndSamplerState配置CSampler时，使用m_CurrentSampler
+
+# 55
+Git commit: 
+CD3D11Driver::setPSTextureAndSamplerState总是根据当前m_CurrentTexture和m_CurrentSampler的状态来设置texture/sampler。
+我们需要根据当前texture/sampler与上一次draw有没有变化来决定是否设置
