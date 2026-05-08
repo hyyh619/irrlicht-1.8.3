@@ -781,7 +781,7 @@ float4 PS_SPHERE_MAP(PS_INPUT_BASIC input) : SV_TARGET
 }
 
 # 51
-Git commit: 
+Git commit: Refine 2d rectangle shaders code by MiniMax-M2.7.
 1. createRectangleShaders创建的VS/PS单独用一个成员变量保存
 2. 创建一个set2DRectangleShader的函数来设置createRectangleShaders创建的VS/PS
 3. draw2DRectangle调用set2DRectangleShader来设置VS/PS

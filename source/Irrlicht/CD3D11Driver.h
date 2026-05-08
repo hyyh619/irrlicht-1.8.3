@@ -433,6 +433,8 @@ private:
 
             void setRenderStatesStencilShadowMode(bool zfail, u32 debugDataVisible);
 
+            static const c8* getMaterialTypeName(video::E_MATERIAL_TYPE materialType);
+
             bool setActiveTexture(u32 stage, const video::ITexture *texture);
 
             bool reset();

@@ -856,6 +856,41 @@ namespace irr
         }
 
 
+        const c8* CD3D11Driver::getMaterialTypeName(video::E_MATERIAL_TYPE materialType)
+        {
+            switch (materialType)
+            {
+                case video::EMT_SOLID: return "EMT_SOLID";
+                case video::EMT_SOLID_2_LAYER: return "EMT_SOLID_2_LAYER";
+                case video::EMT_LIGHTMAP: return "EMT_LIGHTMAP";
+                case video::EMT_LIGHTMAP_ADD: return "EMT_LIGHTMAP_ADD";
+                case video::EMT_LIGHTMAP_M2: return "EMT_LIGHTMAP_M2";
+                case video::EMT_LIGHTMAP_M4: return "EMT_LIGHTMAP_M4";
+                case video::EMT_LIGHTMAP_LIGHTING: return "EMT_LIGHTMAP_LIGHTING";
+                case video::EMT_LIGHTMAP_LIGHTING_M2: return "EMT_LIGHTMAP_LIGHTING_M2";
+                case video::EMT_LIGHTMAP_LIGHTING_M4: return "EMT_LIGHTMAP_LIGHTING_M4";
+                case video::EMT_DETAIL_MAP: return "EMT_DETAIL_MAP";
+                case video::EMT_SPHERE_MAP: return "EMT_SPHERE_MAP";
+                case video::EMT_REFLECTION_2_LAYER: return "EMT_REFLECTION_2_LAYER";
+                case video::EMT_TRANSPARENT_ADD_COLOR: return "EMT_TRANSPARENT_ADD_COLOR";
+                case video::EMT_TRANSPARENT_ALPHA_CHANNEL: return "EMT_TRANSPARENT_ALPHA_CHANNEL";
+                case video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF: return "EMT_TRANSPARENT_ALPHA_CHANNEL_REF";
+                case video::EMT_TRANSPARENT_VERTEX_ALPHA: return "EMT_TRANSPARENT_VERTEX_ALPHA";
+                case video::EMT_TRANSPARENT_REFLECTION_2_LAYER: return "EMT_TRANSPARENT_REFLECTION_2_LAYER";
+                case video::EMT_NORMAL_MAP_SOLID: return "EMT_NORMAL_MAP_SOLID";
+                case video::EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR: return "EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR";
+                case video::EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA: return "EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA";
+                case video::EMT_PARALLAX_MAP_SOLID: return "EMT_PARALLAX_MAP_SOLID";
+                case video::EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR: return "EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR";
+                case video::EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA: return "EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA";
+                case video::EMT_ONETEXTURE_BLEND: return "EMT_ONETEXTURE_BLEND";
+                case video::EMT_2D_RECTANGLE: return "EMT_2D_RECTANGLE";
+                case video::EMT_MATERIAL_MAX: return "EMT_MATERIAL_MAX";
+                default: return "?";
+            }
+        }
+
+
         void CD3D11Driver::setMaterial(const SMaterial &material)
         {
             m_Material = material;
@@ -868,6 +903,27 @@ namespace irr
 
             setBasicRenderStates(material, m_LastMaterial, true);
             m_LastMaterial = material;
+
+#ifdef _DEBUG
+            core::stringc    msg = "Type=";
+            msg += getMaterialTypeName(material.MaterialType);
+            msg += ", Wireframe=";
+            msg += material.Wireframe ? "1" : "0";
+            msg += ", Lighting=";
+            msg += material.Lighting ? "1" : "0";
+            msg += ", ZBuffer=";
+            msg += core::stringc(material.ZBuffer);
+            msg += ", Diffuse=(";
+            msg += core::stringc(material.DiffuseColor.getRed());
+            msg += ",";
+            msg += core::stringc(material.DiffuseColor.getGreen());
+            msg += ",";
+            msg += core::stringc(material.DiffuseColor.getBlue());
+            msg += ",";
+            msg += core::stringc(material.DiffuseColor.getAlpha());
+            msg += ")";
+            os::Printer::log("CD3D11Driver::setMaterial", msg.c_str());
+#endif
         }
 
 
@@ -1397,12 +1453,25 @@ namespace irr
 #endif
         }
 
+#ifndef _IRR_DUMP_DRAW_CALLS_PRINT
+#define _IRR_DUMP_DRAW_CALLS_PRINT 1
+#endif
+
+#ifndef _IRR_DUMP_DRAW_CALLS_FILE
+#define _IRR_DUMP_DRAW_CALLS_FILE 0
+#endif
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
         void CD3D11Driver::dumpDrawCall(const c8 *drawTypeName)
         {
             ++DrawCallCounter;
 
+#ifdef _IRR_DUMP_DRAW_CALLS_PRINT
+            os::Printer::log("DrawCall", core::stringc(DrawCallCounter).c_str(), ELL_INFORMATION);
+            os::Printer::log(drawTypeName);
+#endif
+
+#ifdef _IRR_DUMP_DRAW_CALLS_FILE
             IImage    *image = createScreenShot(ECOLOR_FORMAT::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
             if (image)
             {
@@ -1414,6 +1483,7 @@ namespace irr
                 writeImageToFile(image, filename.c_str(), 90);
                 image->drop();
             }
+#endif
         }
 #endif
 
@@ -2441,7 +2511,7 @@ namespace irr
                 }
                 else
                 {
-                    const CD3D11Shader *pShader = getShaderByTypes((E_VERTEX_TYPE)0, EDST_PIXEL, materialType);
+                    const CD3D11Shader    *pShader = getShaderByTypes((E_VERTEX_TYPE)0, EDST_PIXEL, materialType);
 
                     if (pShader && pShader->getPixelShader())
                     {
@@ -3098,6 +3168,7 @@ namespace irr
                 os::Printer::log("Could not create alpha blend state for ERM_3D.", ELL_ERROR);
                 return false;
             }
+
             for (u32 i = 0; i < 8; ++i)
             {
                 blendDesc.RenderTarget[i].BlendEnable           = false;
