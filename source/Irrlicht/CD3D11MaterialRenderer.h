@@ -54,6 +54,11 @@ Texture2D SphereMap : register(t2);
 
 SamplerState LinearSampler : register(s0);
 
+float4 PS_SOLID_COLOR_ONLY(PS_INPUT_BASIC input) : SV_TARGET
+{
+    return input.Color;
+}
+
 float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);

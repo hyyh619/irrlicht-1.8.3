@@ -934,6 +934,8 @@ namespace irr
             m_Material = material;
             OverrideMaterial.apply(m_Material);
 
+            m_bHasTex = false;
+
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
                 setActiveTexture(i, material.getTexture(i));
@@ -1027,6 +1029,8 @@ namespace irr
             {
                 if (texture->getDriverType() != EDT_DIRECT3D11)
                     return false;
+
+                m_bHasTex = true;
             }
 
             m_CurrentTexture[stage] = texture;
@@ -1510,12 +1514,12 @@ namespace irr
         {
             ++DrawCallCounter;
 
-#ifdef _IRR_DUMP_DRAW_CALLS_PRINT
+#if _IRR_DUMP_DRAW_CALLS_PRINT
             os::Printer::log("DrawCall", core::stringc(DrawCallCounter).c_str(), ELL_INFORMATION);
             os::Printer::log(drawTypeName);
 #endif
 
-#ifdef _IRR_DUMP_DRAW_CALLS_FILE
+#if _IRR_DUMP_DRAW_CALLS_FILE
             IImage    *image = createScreenShot(ECOLOR_FORMAT::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
             if (image)
             {
@@ -2623,7 +2627,10 @@ namespace irr
             {
                 m_LastMaterialType = materialType;
 
-                if (materialType >= EMT_SOLID && materialType <= EMT_ONETEXTURE_BLEND && m_BuiltInPixelShader[materialType])
+                if (materialType == EMT_SOLID && m_bHasTex == false)
+                    materialType = EMT_SOLID_COLOR;
+
+                if (materialType >= EMT_SOLID && materialType <= EMT_MATERIAL_MAX && m_BuiltInPixelShader[materialType])
                 {
                     m_pID3DDeviceContext->PSSetShader(m_BuiltInPixelShader[materialType], 0, 0);
                 }
@@ -2926,6 +2933,8 @@ namespace irr
                 case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA: entryPoint = "PS_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA"; break;
 
                 case EMT_ONETEXTURE_BLEND:                      entryPoint = "PS_ONETEXTURE_BLEND"; break;
+
+                case EMT_SOLID_COLOR:                           entryPoint = "PS_SOLID_COLOR_ONLY"; break;
 
                 default:
                     return false;

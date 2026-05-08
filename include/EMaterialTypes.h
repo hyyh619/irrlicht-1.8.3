@@ -191,6 +191,9 @@ namespace irr
             /** Using only first texture. Generic blending method. */
             EMT_ONETEXTURE_BLEND,
 
+            //! solid without texture, color only.
+            EMT_SOLID_COLOR,
+
             //! Just make PS changing if using 2d rectangle shader
             EMT_2D_RECTANGLE,
 
