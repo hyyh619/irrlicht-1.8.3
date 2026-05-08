@@ -48,6 +48,16 @@ public:
                 return m_D3D11SamplerState;
             }
 
+            u64 getSamplerKey() const
+            {
+                return m_SamplerKey;
+            }
+
+            void setSamplerKey(u64 key)
+            {
+                m_SamplerKey = key;
+            }
+
             D3D11_FILTER getFilter() const
             {
                 return m_Filter;
@@ -132,6 +142,7 @@ public:
 private:
             CD3D11Driver            *m_Driver;
             ID3D11SamplerState      *m_D3D11SamplerState;
+            u64                     m_SamplerKey;
 
             D3D11_FILTER                    m_Filter;
             D3D11_TEXTURE_ADDRESS_MODE      m_AddressU;
@@ -386,6 +397,8 @@ public:
 
             D3D11_TEXTURE_ADDRESS_MODE getTextureWrapMode(const u8 clamp) const;
 
+            CSampler* getSampler(const SMaterialLayer &layer);
+
             inline FLOAT* colorToD3D(const SColor &col, FLOAT *f)
             {
                 f[0]    = col.getRed() / 255.0f;
@@ -508,9 +521,9 @@ private:
             ID3D11InputLayout               *m_InputLayout[EVT_VERTEX_TYPE_MAX];
             ID3D11VertexShader              *m_BuiltInVertexShader[EVT_VERTEX_TYPE_MAX];
             ID3D11PixelShader               *m_BuiltInPixelShader[EMT_MATERIAL_MAX];
-            ID3D11VertexShader             *m_RectangleVertexShader;
-            ID3D11PixelShader              *m_RectanglePixelShader;
-            ID3D11InputLayout              *m_RectangleInputLayout;
+            ID3D11VertexShader              *m_RectangleVertexShader;
+            ID3D11PixelShader               *m_RectanglePixelShader;
+            ID3D11InputLayout               *m_RectangleInputLayout;
             bool                            m_RectangleShaderInitialized;
             bool                            m_BuiltInVSInitialized;
             bool                            m_MaterialPSInitialized;
@@ -553,6 +566,8 @@ private:
 
             SRenderStateSet                     m_RenderStateSets[ERM_RENDER_MODE_MAX];
             CSampler                            *m_DefaultSampler;
+            core::map<u64, CSampler*>           m_SamplerPool;
+            CSampler                            *m_CurrentSampler[MATERIAL_MAX_TEXTURES];
 
             E_RENDER_MODE    m_CurrentRenderMode;
         };

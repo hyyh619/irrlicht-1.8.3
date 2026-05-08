@@ -223,16 +223,15 @@ namespace irr
             {
                 m_CurrentTexture[i]                 = 0;
                 m_LastTextureMipMapsAvailable[i]    = false;
+                m_CurrentSampler[i]                 = 0;
             }
 
             m_MaxLightDistance = sqrtf(FLT_MAX);
-
-            m_DefaultSampler = new CSampler(this);
         }
 
 
         CSampler::CSampler(CD3D11Driver *driver)
-            : m_Driver(driver), m_D3D11SamplerState(0),
+            : m_Driver(driver), m_D3D11SamplerState(0), m_SamplerKey(0),
             m_Filter(D3D11_FILTER_MIN_MAG_MIP_LINEAR),
             m_AddressU(D3D11_TEXTURE_ADDRESS_WRAP),
             m_AddressV(D3D11_TEXTURE_ADDRESS_WRAP),
@@ -327,6 +326,13 @@ namespace irr
             }
 
             m_ShaderPool.clear();
+
+            for (core::map<u64, CSampler*>::ParentLastIterator it = m_SamplerPool.getParentLastIterator(); !it.atEnd(); it++)
+            {
+                it->getValue()->drop();
+            }
+
+            m_SamplerPool.clear();
 
             for (u32 i = 0; i < EVT_VERTEX_TYPE_MAX; ++i)
             {
@@ -715,6 +721,9 @@ namespace irr
             setTransform(ETS_PROJECTION, core::IdentityMatrix);
             setTransform(ETS_WORLD, core::IdentityMatrix);
 
+            m_DefaultSampler = new CSampler(this);
+            m_DefaultSampler->createDefault();
+
             return true;
         }
 
@@ -862,31 +871,57 @@ namespace irr
             switch (materialType)
             {
                 case video::EMT_SOLID: return "EMT_SOLID";
+
                 case video::EMT_SOLID_2_LAYER: return "EMT_SOLID_2_LAYER";
+
                 case video::EMT_LIGHTMAP: return "EMT_LIGHTMAP";
+
                 case video::EMT_LIGHTMAP_ADD: return "EMT_LIGHTMAP_ADD";
+
                 case video::EMT_LIGHTMAP_M2: return "EMT_LIGHTMAP_M2";
+
                 case video::EMT_LIGHTMAP_M4: return "EMT_LIGHTMAP_M4";
+
                 case video::EMT_LIGHTMAP_LIGHTING: return "EMT_LIGHTMAP_LIGHTING";
+
                 case video::EMT_LIGHTMAP_LIGHTING_M2: return "EMT_LIGHTMAP_LIGHTING_M2";
+
                 case video::EMT_LIGHTMAP_LIGHTING_M4: return "EMT_LIGHTMAP_LIGHTING_M4";
+
                 case video::EMT_DETAIL_MAP: return "EMT_DETAIL_MAP";
+
                 case video::EMT_SPHERE_MAP: return "EMT_SPHERE_MAP";
+
                 case video::EMT_REFLECTION_2_LAYER: return "EMT_REFLECTION_2_LAYER";
+
                 case video::EMT_TRANSPARENT_ADD_COLOR: return "EMT_TRANSPARENT_ADD_COLOR";
+
                 case video::EMT_TRANSPARENT_ALPHA_CHANNEL: return "EMT_TRANSPARENT_ALPHA_CHANNEL";
+
                 case video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF: return "EMT_TRANSPARENT_ALPHA_CHANNEL_REF";
+
                 case video::EMT_TRANSPARENT_VERTEX_ALPHA: return "EMT_TRANSPARENT_VERTEX_ALPHA";
+
                 case video::EMT_TRANSPARENT_REFLECTION_2_LAYER: return "EMT_TRANSPARENT_REFLECTION_2_LAYER";
+
                 case video::EMT_NORMAL_MAP_SOLID: return "EMT_NORMAL_MAP_SOLID";
+
                 case video::EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR: return "EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR";
+
                 case video::EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA: return "EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA";
+
                 case video::EMT_PARALLAX_MAP_SOLID: return "EMT_PARALLAX_MAP_SOLID";
+
                 case video::EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR: return "EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR";
+
                 case video::EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA: return "EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA";
+
                 case video::EMT_ONETEXTURE_BLEND: return "EMT_ONETEXTURE_BLEND";
+
                 case video::EMT_2D_RECTANGLE: return "EMT_2D_RECTANGLE";
+
                 case video::EMT_MATERIAL_MAX: return "EMT_MATERIAL_MAX";
+
                 default: return "?";
             }
         }
@@ -923,6 +958,7 @@ namespace irr
             msg += ",";
             msg += core::stringc(material.DiffuseColor.getAlpha());
             msg += ")";
+
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
                 if (material.getTexture(i))
@@ -985,9 +1021,6 @@ namespace irr
             if (stage >= MATERIAL_MAX_TEXTURES)
                 return false;
 
-            if (m_CurrentTexture[stage] == texture)
-                return true;
-
             if (texture)
             {
                 if (texture->getDriverType() != EDT_DIRECT3D11)
@@ -995,6 +1028,12 @@ namespace irr
             }
 
             m_CurrentTexture[stage] = texture;
+
+            if (texture)
+                m_CurrentSampler[stage] = getSampler(m_Material.TextureLayer[stage]);
+            else
+                m_CurrentSampler[stage] = 0;
+
             return true;
         }
 
@@ -2420,7 +2459,79 @@ namespace irr
 
         D3D11_TEXTURE_ADDRESS_MODE CD3D11Driver::getTextureWrapMode(const u8 clamp) const
         {
-            return D3D11_TEXTURE_ADDRESS_WRAP;
+            switch (clamp)
+            {
+                case ETC_REPEAT:
+                    return D3D11_TEXTURE_ADDRESS_WRAP;
+
+                case ETC_CLAMP:
+                    return D3D11_TEXTURE_ADDRESS_CLAMP;
+
+                case ETC_CLAMP_TO_EDGE:
+                    return D3D11_TEXTURE_ADDRESS_CLAMP;
+
+                case ETC_CLAMP_TO_BORDER:
+                    return D3D11_TEXTURE_ADDRESS_BORDER;
+
+                case ETC_MIRROR:
+                    return D3D11_TEXTURE_ADDRESS_MIRROR;
+
+                case ETC_MIRROR_CLAMP:
+                    return D3D11_TEXTURE_ADDRESS_MIRROR_ONCE;
+
+                case ETC_MIRROR_CLAMP_TO_EDGE:
+                    return D3D11_TEXTURE_ADDRESS_MIRROR_ONCE;
+
+                case ETC_MIRROR_CLAMP_TO_BORDER:
+                    return D3D11_TEXTURE_ADDRESS_MIRROR_ONCE;
+
+                default:
+                    return D3D11_TEXTURE_ADDRESS_WRAP;
+            }
+        }
+
+
+        CSampler* CD3D11Driver::getSampler(const SMaterialLayer &layer)
+        {
+            const u8        filterType  = layer.TrilinearFilter ? 2 : (layer.BilinearFilter ? 1 : 0);
+            const u64       key         = (u64(layer.TextureWrapU) << 0) |
+                                          (u64(layer.TextureWrapV) << 4) |
+                                          (u64(filterType) << 8) |
+                                          (u64(layer.AnisotropicFilter) << 12) |
+                                          (u64(layer.LODBias + 128) << 20);
+
+            core::map<u64, CSampler*>::Node    *node = m_SamplerPool.find(key);
+
+            if (node)
+                return node->getValue();
+
+            CSampler    *sampler = new CSampler(this);
+
+            D3D11_SAMPLER_DESC    desc;
+            desc.AddressU       = getTextureWrapMode(layer.TextureWrapU);
+            desc.AddressV       = getTextureWrapMode(layer.TextureWrapV);
+            desc.AddressW       = D3D11_TEXTURE_ADDRESS_WRAP;
+            desc.MipLODBias     = layer.LODBias / 8.0f;
+            desc.MaxAnisotropy  = layer.AnisotropicFilter > 0 ? layer.AnisotropicFilter : 1;
+            desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+            desc.MinLOD         = -FLT_MAX;
+            desc.MaxLOD         = FLT_MAX;
+
+            if (layer.AnisotropicFilter > 0)
+                desc.Filter = D3D11_FILTER_ANISOTROPIC;
+            else if (layer.TrilinearFilter)
+                desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            else if (layer.BilinearFilter)
+                desc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+            else
+                desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+
+            sampler->setSamplerKey(key);
+            sampler->create(desc);
+
+            m_SamplerPool.set(key, sampler);
+
+            return sampler;
         }
 
 
@@ -2561,9 +2672,9 @@ namespace irr
 
                     m_pID3DDeviceContext->PSSetShaderResources(i, 1, &srv);
 
-                    if (m_DefaultSampler)
+                    if (m_CurrentSampler[i])
                     {
-                        ID3D11SamplerState    *pSampler = m_DefaultSampler->getD3D11SamplerState();
+                        ID3D11SamplerState    *pSampler = m_CurrentSampler[i]->getD3D11SamplerState();
                         m_pID3DDeviceContext->PSSetSamplers(i, 1, &pSampler);
                     }
                 }

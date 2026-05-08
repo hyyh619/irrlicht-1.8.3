@@ -811,7 +811,7 @@ _IRR_DUMP_DRAW_CALLS_
 _IRR_D3D11_OBJECT_TRACKING
 
 # 53
-Git commit: 
+Git commit: Add debug code for texture dumping.
 CD3D11Driver::setMaterial打印当前Material用到的纹理
 
 dump texture的同时，打印出dump的文件名
@@ -882,3 +882,41 @@ dump texture的同时，打印出dump的文件名
         if (dumpSuccess)                                                  \
             ++CD3D11Texture::TextureDumpCounter;                          \
     } while (false)
+
+# 54
+Git commit: 
+我们对所有的纹理采样，d3d11都使用m_DefaultSampler。
+1. 我们需要根据Material内的SMaterialLayer    TextureLayer来判断某一个纹理需要使用什么样的采样器
+   请根据SMaterialLayer提供的下列参数来创建对应的CSampler
+            //! Texture Clamp Mode
+            /** Values are taken from E_TEXTURE_CLAMP. */
+            u8 TextureWrapU : 4;
+            u8 TextureWrapV : 4;
+
+            //! Is bilinear filtering enabled? Default: true
+            bool BilinearFilter : 1;
+
+            //! Is trilinear filtering enabled? Default: false
+            /** If the trilinear filter flag is enabled,
+             * the bilinear filtering flag is ignored. */
+            bool TrilinearFilter : 1;
+
+            //! Is anisotropic filtering enabled? Default: 0, disabled
+            /** In Irrlicht you can use anisotropic texture filtering
+             * in conjunction with bilinear or trilinear texture
+             * filtering to improve rendering results. Primitives
+             * will look less blurry with this flag switched on. The number gives
+             * the maximal anisotropy degree, and is often in the range 2-16.
+             * Value 1 is equivalent to 0, but should be avoided. */
+            u8 AnisotropicFilter;
+
+            //! Bias for the mipmap choosing decision.
+            /** This value can make the textures more or less blurry than with the
+             * default value of 0. The value (divided by 8.f) is added to the mipmap level
+             * chosen initially, and thus takes a smaller mipmap for a region
+             * if the value is positive. */
+            s8 LODBias;
+2. 创建的CSampler都使用一个m_SamplerPool进行管理
+3. 创建CSampler之前，请根据SMaterialLayer参数判断在m_SamplerPool是否已经有已经创建的sampler，如果有则直接使用已有的。
+4. 创建一个m_CurrentSampler[MATERIAL_MAX_TEXTURES]保存当前纹理单元使用的CSampler对象
+5. CD3D11Driver::setPSTextureAndSamplerState配置CSampler时，使用m_CurrentSampler
