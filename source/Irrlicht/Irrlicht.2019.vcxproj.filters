@@ -106,6 +106,9 @@
     <Filter Include="Irrlicht\video\Direct3D11">
       <UniqueIdentifier>{b92505ac-9c0b-428b-9a57-07689e133854}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Irrlicht\video\Direct3D11\HLSL">
+      <UniqueIdentifier>{fb9f97e5-9428-44e8-907b-f20ec03121e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\IEventReceiver.h">
@@ -2288,5 +2291,10 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Irrlicht.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="PS_MaterialShaders.hlsl">
+      <Filter>Irrlicht\video\Direct3D11\HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

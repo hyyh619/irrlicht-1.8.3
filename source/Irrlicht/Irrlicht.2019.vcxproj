@@ -2338,6 +2338,9 @@
   <ItemGroup>
     <ResourceCompile Include="Irrlicht.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="PS_MaterialShaders.hlsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
