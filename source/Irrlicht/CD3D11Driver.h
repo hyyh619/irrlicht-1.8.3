@@ -419,7 +419,7 @@ private:
             };
 
             void setVSByType(video::E_VERTEX_TYPE newType);
-            void setPSByType(video::E_MATERIAL_TYPE materialType, video::E_VERTEX_TYPE vertexType);
+            void setPSByType(video::E_MATERIAL_TYPE materialType);
 
             CD3D11Shader* getShaderByTypes(video::E_VERTEX_TYPE vertexType, E_D3D11_SHADER_TYPE shaderType, E_MATERIAL_TYPE materialType) const;
 
@@ -467,6 +467,7 @@ private:
 
             bool createBuiltInVertexShader(E_VERTEX_TYPE type);
             bool createBuiltInPixelShader(E_VERTEX_TYPE type);
+            bool createMaterialPixelShader(E_MATERIAL_TYPE materialType);
             bool createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob);
             bool createRectangleShaders();
             void updateMatrixConstantBuffer();
@@ -502,9 +503,10 @@ private:
             E_VERTEX_TYPE                   m_LastVertexType;
             ID3D11InputLayout               *m_InputLayout[EVT_VERTEX_TYPE_MAX];
             ID3D11VertexShader              *m_BuiltInVertexShader[EVT_VERTEX_TYPE_MAX];
-            ID3D11PixelShader               *m_BuiltInPixelShader[EVT_VERTEX_TYPE_MAX];
+            ID3D11PixelShader               *m_BuiltInPixelShader[EMT_MATERIAL_MAX];
             bool                            m_BuiltInVSInitialized;
             bool                            m_BuiltInPSInitialized;
+            bool                            m_MaterialPSInitialized;
 
             SColorf             m_AmbientLight;
             core::stringc       m_VendorName;

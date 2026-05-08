@@ -565,7 +565,7 @@ createBuiltInPixelShader((E_VERTEX_TYPE)i);
 createRectangleShaders();
 
 # 49
-Git commit: 
+Git commit: Create PS HLSL by materials by MiniMax-M2.7.
 根据下面material的类型，生成对应的PS HLSL代码
             //! Standard solid material.
             /** Only first texture is used, which is supposed to be the
@@ -748,6 +748,20 @@ Git commit:
 
             //! This value is not used. It only forces this enumeration to compile to 32 bit.
             EMT_FORCE_32BIT = 0x7fffffff
+
+# 50
+Git commit: Create PS HLSL by materials by MiniMax-M2.7.
+以前的代码是PS根据E_VERTEX_TYPE创建
+                for (u32 i = 0; i < EVT_2D_RECTANGLE; ++i)
+                {
+                    createBuiltInPixelShader((E_VERTEX_TYPE)i);
+                }
+改动代码如下：
+1. CD3D11Driver::getShaderByTypes(video::E_VERTEX_TYPE vertexType, E_D3D11_SHADER_TYPE shaderType, E_MATERIAL_TYPE materialType)查找Shader时，如果是VS，就通过vertexType查找，如果是PS，通过materialType查找
+2. PS不需要根据E_VERTEX_TYPE来创建
+3. PS根据E_MATERIAL_TYPE来创建
+4. PS创建时需要加载PS_MaterialShaders.hlsl的对应shader
+5. CD3D11Driver::setPSByType(video::E_MATERIAL_TYPE materialType, video::E_VERTEX_TYPE vertexType)改成仅用materialType来选择PS
 
 # 50
 Git commit: 

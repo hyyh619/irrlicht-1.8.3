@@ -197,7 +197,7 @@ namespace irr
             m_BackBufferRenderTargetView(0), m_DepthStencilView(0),
             m_WindowId(0), m_SceneSourceRect(0),
             m_LastVertexType((video::E_VERTEX_TYPE)-1), m_VendorID(0),
-            m_BuiltInVSInitialized(false), m_BuiltInPSInitialized(false),
+            m_BuiltInVSInitialized(false), m_BuiltInPSInitialized(false), m_MaterialPSInitialized(false),
             m_TempVertexBuffer(0), m_TempIndexBuffer(0), m_MatrixConstantBuffer(0),
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
@@ -227,6 +227,10 @@ namespace irr
             {
                 m_InputLayout[i]            = 0;
                 m_BuiltInVertexShader[i]    = 0;
+            }
+
+            for (u32 i = 0; i <= EMT_ONETEXTURE_BLEND; ++i)
+            {
                 m_BuiltInPixelShader[i]     = 0;
             }
 
@@ -344,7 +348,10 @@ namespace irr
                     IRR_D3D11_VS_RELEASE(m_BuiltInVertexShader[i], "BuiltInVertexShader");
                     m_BuiltInVertexShader[i]->Release();
                 }
+            }
 
+            for (u32 i = 0; i <= EMT_ONETEXTURE_BLEND; ++i)
+            {
                 if (m_BuiltInPixelShader[i])
                 {
                     IRR_D3D11_PS_RELEASE(m_BuiltInPixelShader[i], "BuiltInPixelShader");
@@ -1157,7 +1164,7 @@ namespace irr
             const void                  *iPtr   = mb->getIndices();
 
             setVSByType(vType);
-            setPSByType(m_Material.MaterialType, vType);
+            setPSByType(m_Material.MaterialType);
 
             if (hwBufferD3D->vertexBuffer)
             {
@@ -1236,7 +1243,7 @@ namespace irr
                                                        E_INDEX_TYPE iType, bool is3D)
         {
             setVSByType(vType);
-            setPSByType(m_Material.MaterialType, vType);
+            setPSByType(m_Material.MaterialType);
 
             const u32       stride              = getVertexPitchFromType(vType);
             const u32       vertexBufferSize    = stride * vertexCount;
@@ -1564,7 +1571,7 @@ namespace irr
                 return;
 
             setVSByType(EVT_STANDARD);
-            setPSByType(m_Material.MaterialType, EVT_STANDARD);
+            setPSByType(m_Material.MaterialType);
 
             core::matrix4    mvp;
             mvp.buildProjectionMatrixOrthoLH(f32(getCurrentRenderTargetSize().Width), f32(-(s32)getCurrentRenderTargetSize().Height), -1.0f, 1.0f);
@@ -1709,7 +1716,7 @@ namespace irr
                                   colorRightDown.getAlpha() < 255, false, false);
 
             setVSByType(EVT_2D_RECTANGLE);
-            setPSByType(m_Material.MaterialType, EVT_2D_RECTANGLE);
+            setPSByType(m_Material.MaterialType);
 
             core::matrix4    mvp;
             mvp.buildProjectionMatrixOrthoLH(f32(getCurrentRenderTargetSize().Width), f32(-(s32)getCurrentRenderTargetSize().Height), -1.0f, 1.0f);
@@ -2421,28 +2428,26 @@ namespace irr
         }
 
 
-        void CD3D11Driver::setPSByType(video::E_MATERIAL_TYPE materialType, video::E_VERTEX_TYPE vertexType)
+        void CD3D11Driver::setPSByType(video::E_MATERIAL_TYPE materialType)
         {
-            if (!m_BuiltInPSInitialized)
+            if (!m_MaterialPSInitialized)
             {
-                for (u32 i = 0; i < EVT_2D_RECTANGLE; ++i)
+                for (u32 i = EMT_SOLID; i < EMT_MATERIAL_MAX; ++i)
                 {
-                    createBuiltInPixelShader((E_VERTEX_TYPE)i);
+                    createMaterialPixelShader((E_MATERIAL_TYPE)i);
                 }
 
-                createRectangleShaders();
-
-                m_BuiltInPSInitialized = true;
+                m_MaterialPSInitialized = true;
             }
 
-            CD3D11Shader    *shader = getShaderByTypes(vertexType, EDST_PIXEL, materialType);
+            CD3D11Shader    *shader = getShaderByTypes((E_VERTEX_TYPE)0, EDST_PIXEL, materialType);
             if (shader && shader->getPixelShader())
             {
                 m_pID3DDeviceContext->PSSetShader(shader->getPixelShader(), 0, 0);
             }
-            else if (vertexType >= 0 && vertexType <= EVT_2D_RECTANGLE && m_BuiltInPixelShader[vertexType])
+            else if (materialType >= EMT_SOLID && materialType <= EMT_ONETEXTURE_BLEND && m_BuiltInPixelShader[materialType])
             {
-                m_pID3DDeviceContext->PSSetShader(m_BuiltInPixelShader[vertexType], 0, 0);
+                m_pID3DDeviceContext->PSSetShader(m_BuiltInPixelShader[materialType], 0, 0);
             }
 
             setPSTextureAndSamplerState();
@@ -2453,10 +2458,19 @@ namespace irr
         {
             for (u32 i = 0; i < m_ShaderPool.size(); ++i)
             {
-                if (m_ShaderPool[i]->getVertexType() == vertexType &&
-                    m_ShaderPool[i]->getShaderType() == shaderType &&
-                    m_ShaderPool[i]->getMaterialType() == materialType)
-                    return m_ShaderPool[i];
+                if (shaderType == EDST_PIXEL)
+                {
+                    if (m_ShaderPool[i]->getShaderType() == shaderType &&
+                        m_ShaderPool[i]->getMaterialType() == materialType)
+                        return m_ShaderPool[i];
+                }
+                else
+                {
+                    if (m_ShaderPool[i]->getVertexType() == vertexType &&
+                        m_ShaderPool[i]->getShaderType() == shaderType &&
+                        m_ShaderPool[i]->getMaterialType() == materialType)
+                        return m_ShaderPool[i];
+                }
             }
 
             return 0;
@@ -2660,6 +2674,111 @@ namespace irr
             m_BuiltInPixelShader[type] = shader->getPixelShader();
             IRR_D3D11_PS_CREATE(m_BuiltInPixelShader[type], "BuiltInPixelShader");
             m_BuiltInPixelShader[type]->AddRef();
+
+            return true;
+        }
+
+
+        bool CD3D11Driver::createMaterialPixelShader(E_MATERIAL_TYPE materialType)
+        {
+            const char    *entryPoint = 0;
+
+            switch (materialType)
+            {
+                case EMT_SOLID:                                 entryPoint = "PS_SOLID"; break;
+
+                case EMT_SOLID_2_LAYER:                         entryPoint = "PS_SOLID_2_LAYER"; break;
+
+                case EMT_LIGHTMAP:                              entryPoint = "PS_LIGHTMAP"; break;
+
+                case EMT_LIGHTMAP_ADD:                          entryPoint = "PS_LIGHTMAP_ADD"; break;
+
+                case EMT_LIGHTMAP_M2:                           entryPoint = "PS_LIGHTMAP_M2"; break;
+
+                case EMT_LIGHTMAP_M4:                           entryPoint = "PS_LIGHTMAP_M4"; break;
+
+                case EMT_LIGHTMAP_LIGHTING:                     entryPoint = "PS_LIGHTMAP_LIGHTING"; break;
+
+                case EMT_LIGHTMAP_LIGHTING_M2:                  entryPoint = "PS_LIGHTMAP_LIGHTING_M2"; break;
+
+                case EMT_LIGHTMAP_LIGHTING_M4:                  entryPoint = "PS_LIGHTMAP_LIGHTING_M4"; break;
+
+                case EMT_DETAIL_MAP:                            entryPoint = "PS_DETAIL_MAP"; break;
+
+                case EMT_SPHERE_MAP:                            entryPoint = "PS_SPHERE_MAP"; break;
+
+                case EMT_REFLECTION_2_LAYER:                    entryPoint = "PS_REFLECTION_2_LAYER"; break;
+
+                case EMT_TRANSPARENT_ADD_COLOR:                 entryPoint = "PS_TRANSPARENT_ADD_COLOR"; break;
+
+                case EMT_TRANSPARENT_ALPHA_CHANNEL:             entryPoint = "PS_TRANSPARENT_ALPHA_CHANNEL"; break;
+
+                case EMT_TRANSPARENT_ALPHA_CHANNEL_REF:         entryPoint = "PS_TRANSPARENT_ALPHA_CHANNEL_REF"; break;
+
+                case EMT_TRANSPARENT_VERTEX_ALPHA:              entryPoint = "PS_TRANSPARENT_VERTEX_ALPHA"; break;
+
+                case EMT_TRANSPARENT_REFLECTION_2_LAYER:        entryPoint = "PS_TRANSPARENT_REFLECTION_2_LAYER"; break;
+
+                case EMT_NORMAL_MAP_SOLID:                      entryPoint = "PS_NORMAL_MAP_SOLID"; break;
+
+                case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:      entryPoint = "PS_NORMAL_MAP_TRANSPARENT_ADD_COLOR"; break;
+
+                case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:   entryPoint = "PS_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA"; break;
+
+                case EMT_PARALLAX_MAP_SOLID:                    entryPoint = "PS_PARALLAX_MAP_SOLID"; break;
+
+                case EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:    entryPoint = "PS_PARALLAX_MAP_TRANSPARENT_ADD_COLOR"; break;
+
+                case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA: entryPoint = "PS_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA"; break;
+
+                case EMT_ONETEXTURE_BLEND:                      entryPoint = "PS_ONETEXTURE_BLEND"; break;
+
+                default:
+                    return false;
+            }
+
+            io::IReadFile    *file = FileSystem->createAndOpenFile("PS_MaterialShaders.hlsl");
+            if (!file)
+            {
+                os::Printer::log("Failed to load PS_MaterialShaders.hlsl", ELL_ERROR);
+                return false;
+            }
+
+            const long      fileSize        = file->getSize();
+            char            *shaderSource   = new char[fileSize + 1];
+            file->read(shaderSource, fileSize);
+            shaderSource[fileSize] = 0;
+            file->drop();
+
+            CD3D11Shader    *shader = new CD3D11Shader(this);
+            shader->setMaterialType(materialType);
+
+            if (!shader->compile(EDST_PIXEL, shaderSource, entryPoint, "ps_4_0"))
+            {
+                delete[] shaderSource;
+                shader->drop();
+                return false;
+            }
+
+            delete[] shaderSource;
+
+            if (!shader->createPixelShader())
+            {
+                shader->drop();
+                return false;
+            }
+
+            m_ShaderPool.push_back(shader);
+
+            if (m_BuiltInPixelShader[materialType])
+            {
+                IRR_D3D11_PS_RELEASE(m_BuiltInPixelShader[materialType], "BuiltInPixelShader");
+                m_BuiltInPixelShader[materialType]->Release();
+            }
+
+            m_BuiltInPixelShader[materialType] = shader->getPixelShader();
+            IRR_D3D11_PS_CREATE(m_BuiltInPixelShader[materialType], "MaterialPixelShader");
+            m_BuiltInPixelShader[materialType]->AddRef();
 
             return true;
         }

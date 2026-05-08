@@ -191,6 +191,9 @@ namespace irr
             /** Using only first texture. Generic blending method. */
             EMT_ONETEXTURE_BLEND,
 
+            //! The max value of material.
+            EMT_MATERIAL_MAX,
+
             //! This value is not used. It only forces this enumeration to compile to 32 bit.
             EMT_FORCE_32BIT = 0x7fffffff
         };

@@ -165,8 +165,8 @@ float4 PS_SPHERE_MAP(PS_INPUT_BASIC input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
     float3 viewDir = normalize(float3(0.5, 0.5, 1.0) - input.Pos.xyz);
-    float3 reflect = reflect(-viewDir, input.Normal);
-    float2 sphereUV = reflect.xy * 0.5 + 0.5;
+    float3 reflectVec = reflect(-viewDir, input.Normal);
+    float2 sphereUV = reflectVec.xy * 0.5 + 0.5;
     float4 sphereColor = SphereMap.Sample(LinearSampler, sphereUV);
     return texColor * sphereColor * 2.0;
 }
@@ -325,8 +325,10 @@ float4 PS_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA(PS_INPUT_TANGENTS input) : SV_TARG
 // EMT_PARALLAX_MAP_SOLID - Normal map with height offset (parallax mapping)
 // Height scale from MaterialTypeParam (default 0.02)
 //==============================================================================
-float4 PS_PARALLAX_MAP_SOLID(PS_INPUT_TANGENTS input, float heightScale) : SV_TARGET
+float4 PS_PARALLAX_MAP_SOLID(PS_INPUT_TANGENTS input) : SV_TARGET
 {
+    const float heightScale = 0.02f;
+    
     float4 diffuseColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord) * input.Color;
     float height = NormalMap.Sample(LinearSampler, input.TexCoord).a;
     float3 normalTex = NormalMap.Sample(LinearSampler, input.TexCoord).rgb * 2.0 - 1.0;
@@ -353,8 +355,10 @@ float4 PS_PARALLAX_MAP_SOLID(PS_INPUT_TANGENTS input, float heightScale) : SV_TA
 //==============================================================================
 // EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR
 //==============================================================================
-float4 PS_PARALLAX_MAP_TRANSPARENT_ADD_COLOR(PS_INPUT_TANGENTS input, float heightScale) : SV_TARGET
+float4 PS_PARALLAX_MAP_TRANSPARENT_ADD_COLOR(PS_INPUT_TANGENTS input) : SV_TARGET
 {
+    const float heightScale = 0.02f;
+    
     float4 diffuseColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord) * input.Color;
     float height = NormalMap.Sample(LinearSampler, input.TexCoord).a;
     float3 normalTex = NormalMap.Sample(LinearSampler, input.TexCoord).rgb * 2.0 - 1.0;
@@ -381,8 +385,10 @@ float4 PS_PARALLAX_MAP_TRANSPARENT_ADD_COLOR(PS_INPUT_TANGENTS input, float heig
 //==============================================================================
 // EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA
 //==============================================================================
-float4 PS_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA(PS_INPUT_TANGENTS input, float heightScale) : SV_TARGET
+float4 PS_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA(PS_INPUT_TANGENTS input) : SV_TARGET
 {
+    const float heightScale = 0.02f;
+    
     float4 diffuseColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord) * input.Color;
     float height = NormalMap.Sample(LinearSampler, input.TexCoord).a;
     float3 normalTex = NormalMap.Sample(LinearSampler, input.TexCoord).rgb * 2.0 - 1.0;
@@ -415,7 +421,7 @@ float4 PS_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA(PS_INPUT_TANGENTS input, float h
 // srcFact/dstFact from MaterialTypeParam
 // modulate: 1x=MODULATE, 2x=MODULATE2X, 4x=MODULATE4X
 //==============================================================================
-float4 PS_ONETEXTURE_BLEND(PS_INPUT_BASIC input, float4 blendFactor) : SV_TARGET
+float4 PS_ONETEXTURE_BLEND(PS_INPUT_BASIC input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
     float4 result = texColor * input.Color;
@@ -424,5 +430,22 @@ float4 PS_ONETEXTURE_BLEND(PS_INPUT_BASIC input, float4 blendFactor) : SV_TARGET
     // This shader returns the pre-blended color
     return result;
 }
+
+//==============================================================================
+// dummy for d3d11 compiler
+//==============================================================================
+struct PS_INPUT1
+{
+    float4 Pos : SV_POSITION;
+    float4 Color : COLOR;
+    float2 TexCoord : TEXCOORD0;
+    float3 Normal : TEXCOORD1;
+};
+
+float4 main(PS_INPUT1 input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+    return float4(texColor.rgb * input.Color.rgb, texColor.a * input.Color.a);
+};
 
 #endif // __PS_MATERIAL_SHADERS_H__
