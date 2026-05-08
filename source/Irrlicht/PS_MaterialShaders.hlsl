@@ -434,18 +434,27 @@ float4 PS_ONETEXTURE_BLEND(PS_INPUT_BASIC input) : SV_TARGET
 //==============================================================================
 // dummy for d3d11 compiler
 //==============================================================================
-struct PS_INPUT1
-{
-    float4 Pos : SV_POSITION;
-    float4 Color : COLOR;
-    float2 TexCoord : TEXCOORD0;
-    float3 Normal : TEXCOORD1;
-};
-
-float4 main(PS_INPUT1 input) : SV_TARGET
-{
-    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
-    return float4(texColor.rgb * input.Color.rgb, texColor.a * input.Color.a);
-};
-
+ struct VS_INPUT {
+     float3 Pos : POSITION;
+     float3 Normal : NORMAL;
+     float4 Color : COLOR;
+     float2 TexCoord : TEXCOORD0;
+ };
+ struct VS_OUTPUT {
+     float4 Pos : SV_POSITION;
+     float4 Color : COLOR;
+     float2 TexCoord : TEXCOORD0;
+     float3 Normal : TEXCOORD1;
+ };
+ cbuffer MatrixBuffer : register(b0) {
+     float4x4 WorldViewProj;
+ };
+ VS_OUTPUT main(VS_INPUT input) {
+     VS_OUTPUT output;
+     output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));
+     output.Color = input.Color;
+     output.TexCoord = input.TexCoord;
+     output.Normal = input.Normal;
+     return output;
+ };
 #endif // __PS_MATERIAL_SHADERS_H__
