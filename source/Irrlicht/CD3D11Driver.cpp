@@ -350,7 +350,7 @@ namespace irr
                 }
             }
 
-            for (u32 i = 0; i <= EMT_ONETEXTURE_BLEND; ++i)
+            for (u32 i = 0; i < EMT_MATERIAL_MAX; ++i)
             {
                 if (m_BuiltInPixelShader[i])
                 {
@@ -3057,32 +3057,6 @@ namespace irr
                 os::Printer::log("Could not create alpha blend state for ERM_3D.", ELL_ERROR);
                 return false;
             }
-
-            for (u32 i = 0; i < 8; ++i)
-            {
-                blendDesc.RenderTarget[i].BlendEnable           = true;
-                blendDesc.RenderTarget[i].LogicOpEnable         = false;
-                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
-                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
-                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
-                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
-                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
-                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-            }
-
-            hr = E_FAIL;
-            if (m_pID3DDevice1)
-                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_RenderStateSets[ERM_3D].AlphaBlendState);
-
-            IRR_D3D11_BLEND_CREATE(m_RenderStateSets[ERM_3D].AlphaBlendState, "DefaultAlphaBlendState_3D");
-            if (FAILED(hr))
-            {
-                os::Printer::log("Could not create alpha blend state for ERM_3D.", ELL_ERROR);
-                return false;
-            }
-
             for (u32 i = 0; i < 8; ++i)
             {
                 blendDesc.RenderTarget[i].BlendEnable           = false;
