@@ -764,7 +764,7 @@ Git commit: Create PS HLSL by materials by MiniMax-M2.7.
 5. CD3D11Driver::setPSByType(video::E_MATERIAL_TYPE materialType, video::E_VERTEX_TYPE vertexType)改成仅用materialType来选择PS
 
 # 50
-Git commit: 
+Git commit: Fix HLSL build issue.
 1. 把PS_MaterialShaders.hlsl的内容放到CD3D11MaterialRenderer，创建一个全局的字符串
 2. CD3D11Driver::createMaterialPixelShader不需要file = FileSystem->createAndOpenFile("PS_MaterialShaders.hlsl");，直接加载该字符串
 
@@ -780,5 +780,11 @@ float4 PS_SPHERE_MAP(PS_INPUT_BASIC input) : SV_TARGET
     return texColor * sphereColor * 2.0;
 }
 
-                dev->SetTextureStageState(i, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-                dev->SetTextureStageState(i, D3DTSS_COLORARG1, arg1);
+# 51
+Git commit: 
+1. createRectangleShaders创建的VS/PS单独用一个成员变量保存
+2. 创建一个set2DRectangleShader的函数来设置createRectangleShaders创建的VS/PS
+3. draw2DRectangle调用set2DRectangleShader来设置VS/PS
+
+# 52
+Git commit: 

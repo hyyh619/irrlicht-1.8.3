@@ -418,8 +418,8 @@ private:
                 ERM_RENDER_MODE_MAX
             };
 
-            void setVSByType(video::E_VERTEX_TYPE newType);
-            void setPSByType(video::E_MATERIAL_TYPE materialType);
+            void setVSByVertexType(video::E_VERTEX_TYPE newType);
+            void setPSByMaterialType(video::E_MATERIAL_TYPE materialType);
 
             CD3D11Shader* getShaderByTypes(video::E_VERTEX_TYPE vertexType, E_D3D11_SHADER_TYPE shaderType, E_MATERIAL_TYPE materialType) const;
 
@@ -501,11 +501,11 @@ private:
             UINT                            m_Caps;
             SIrrlichtCreationParameters     m_Params;
             E_VERTEX_TYPE                   m_LastVertexType;
+            E_MATERIAL_TYPE                 m_LastMaterialType;
             ID3D11InputLayout               *m_InputLayout[EVT_VERTEX_TYPE_MAX];
             ID3D11VertexShader              *m_BuiltInVertexShader[EVT_VERTEX_TYPE_MAX];
             ID3D11PixelShader               *m_BuiltInPixelShader[EMT_MATERIAL_MAX];
             bool                            m_BuiltInVSInitialized;
-            bool                            m_BuiltInPSInitialized;
             bool                            m_MaterialPSInitialized;
 
             SColorf             m_AmbientLight;
