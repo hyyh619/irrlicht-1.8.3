@@ -2737,30 +2737,14 @@ namespace irr
                     return false;
             }
 
-            io::IReadFile    *file = FileSystem->createAndOpenFile("PS_MaterialShaders.hlsl");
-            if (!file)
-            {
-                os::Printer::log("Failed to load PS_MaterialShaders.hlsl", ELL_ERROR);
-                return false;
-            }
-
-            const long      fileSize        = file->getSize();
-            char            *shaderSource   = new char[fileSize + 1];
-            file->read(shaderSource, fileSize);
-            shaderSource[fileSize] = 0;
-            file->drop();
-
             CD3D11Shader    *shader = new CD3D11Shader(this);
             shader->setMaterialType(materialType);
 
-            if (!shader->compile(EDST_PIXEL, shaderSource, entryPoint, "ps_4_0"))
+            if (!shader->compile(EDST_PIXEL, PS_MaterialShaders, entryPoint, "ps_4_0"))
             {
-                delete[] shaderSource;
                 shader->drop();
                 return false;
             }
-
-            delete[] shaderSource;
 
             if (!shader->createPixelShader())
             {

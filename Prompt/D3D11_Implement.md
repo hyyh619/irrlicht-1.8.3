@@ -765,5 +765,20 @@ Git commit: Create PS HLSL by materials by MiniMax-M2.7.
 
 # 50
 Git commit: 
+1. 把PS_MaterialShaders.hlsl的内容放到CD3D11MaterialRenderer，创建一个全局的字符串
+2. CD3D11Driver::createMaterialPixelShader不需要file = FileSystem->createAndOpenFile("PS_MaterialShaders.hlsl");，直接加载该字符串
+
+根据下面的报错和HLSL代码分析是什么问题
+Shader@0x00007FF930B83630(36,11-19): error X4500: overlapping register semantics not yet implemented 't0'
+float4 PS_SPHERE_MAP(PS_INPUT_BASIC input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+    float3 viewDir = normalize(float3(0.5, 0.5, 1.0) - input.Pos.xyz);
+    float3 reflectVec = reflect(-viewDir, input.Normal);
+    float2 sphereUV = reflectVec.xy * 0.5 + 0.5;
+    float4 sphereColor = SphereMap.Sample(LinearSampler, sphereUV);
+    return texColor * sphereColor * 2.0;
+}
+
                 dev->SetTextureStageState(i, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
                 dev->SetTextureStageState(i, D3DTSS_COLORARG1, arg1);
