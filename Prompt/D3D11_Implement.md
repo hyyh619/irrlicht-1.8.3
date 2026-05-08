@@ -790,7 +790,7 @@ CD3D11Driver::set2DRectangleShader不要使用m_BuiltInVSInitialized来决定是
 不要使用m_InputLayout[EVT_2D_RECTANGLE]来保存input layout，像shader一样，使用一个新变量保存。
 
 # 52
-Git commit: 
+Git commit: Add debugging code by MiniMax-M2.7.
 d3d9的EMT_LIGHTMAP_M4实现如下，请帮我们分析其对应的PS实现
                 m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
                 m_pID3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -809,3 +809,76 @@ _IRR_DUMP_DRAW_CALLS_FILE
 _IRR_DUMP_DRAW_CALLS_PRINT
 _IRR_DUMP_DRAW_CALLS_
 _IRR_D3D11_OBJECT_TRACKING
+
+# 53
+Git commit: 
+CD3D11Driver::setMaterial打印当前Material用到的纹理
+
+dump texture的同时，打印出dump的文件名
+#define _IRR_DUMP_TEXTURE(img, name) \
+    do { \
+        core::stringc dumpName = "dump_"; \
+        dumpName += name; \
+        m_Driver->writeImageToFile(img, dumpName); \
+    } while (false)
+#else
+#define _IRR_DUMP_TEXTURE(img, name) do { } while (false)
+#endif
+
+打印时给"dump_*"加上一个counter计数,文件名变成"dump_count_*"
+#define _IRR_DUMP_TEXTURE(img, name) \
+    do { \
+        core::stringc dumpName = "dump_"; \
+        dumpName += name; \
+        os::Printer::log("DUMP_TEXTURE", dumpName.c_str()); \
+        m_Driver->writeImageToFile(img, dumpName); \
+    } while (false)
+#else
+#define _IRR_DUMP_TEXTURE(img, name) do { } while (false)
+#endif
+
+#define _IRR_DUMP_TEXTURE(img, name) \
+    do { \
+        core::stringc dumpName = "dump_"; \
+        dumpName += core::stringc(CD3D11Texture::TextureDumpCounter); \
+        dumpName += "_"; \
+        dumpName += name; \
+        os::Printer::log("DUMP_TEXTURE", dumpName.c_str()); \
+        m_Driver->writeImageToFile(img, dumpName); \
+        ++CD3D11Texture::TextureDumpCounter; \
+    } while (false)
+#else
+#define _IRR_DUMP_TEXTURE(img, name) do { } while (false)
+#endif
+1. 检查name是否包含“#”，如果包含，用“-”替代“#”
+2. 上面代码需要判断m_Driver->writeImageToFile(img, dumpName)的返回
+3. 如果成功就继续往下执行
+4. 如果失败，则检查文件名是否没有后缀名.bmp, .jpg, .pcx, .png, .pcm, .tga, .ppd，如果没有，就增加后缀名.jpg，重新调用m_Driver->writeImageToFile
+
+下列代码，
+1. 判断第一次dumpSuccess是否成功
+2. 如果fail，则删除已经创建的file
+#define _IRR_DUMP_TEXTURE(img, name)                                      \
+    do {                                                                  \
+        core::stringc    dumpName = "dump_";                              \
+        dumpName    += core::stringc(CD3D11Texture::TextureDumpCounter);  \
+        dumpName    += "_";                                               \
+        dumpName    += name;                                              \
+        dumpName.replace('#', '-');                                       \
+        os::Printer::log("DUMP_TEXTURE", dumpName.c_str());               \
+        bool    dumpSuccess = m_Driver->writeImageToFile(img, dumpName);  \
+        if (!dumpSuccess)                                                 \
+        {                                                                 \
+            if (dumpName.find(".bmp") < 0 && dumpName.find(".jpg") < 0 && \
+                dumpName.find(".pcx") < 0 && dumpName.find(".png") < 0 && \
+                dumpName.find(".ppm") < 0 && dumpName.find(".tga") < 0 && \
+                dumpName.find(".psd") < 0)                                \
+            {                                                             \
+                dumpName += ".jpg";                                       \
+                os::Printer::log("DUMP_TEXTURE_RETRY", dumpName.c_str()); \
+                dumpSuccess = m_Driver->writeImageToFile(img, dumpName);  \
+            }                                                             \
+        }                                                                 \
+        if (dumpSuccess)                                                  \
+            ++CD3D11Texture::TextureDumpCounter;                          \
+    } while (false)

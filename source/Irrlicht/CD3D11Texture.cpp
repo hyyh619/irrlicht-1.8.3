@@ -14,11 +14,29 @@
 #include "os.h"
 
 #ifdef _IRR_TEXTURE_DUMP
-#define _IRR_DUMP_TEXTURE(img, name) \
-    do { \
-        core::stringc dumpName = "dump_"; \
-        dumpName += name; \
-        m_Driver->writeImageToFile(img, dumpName); \
+#define _IRR_DUMP_TEXTURE(img, name)                                      \
+    do {                                                                  \
+        core::stringc    dumpName = "dump_";                              \
+        dumpName    += core::stringc(CD3D11Texture::TextureDumpCounter);  \
+        dumpName    += "_";                                               \
+        dumpName    += name;                                              \
+        dumpName.replace('#', '-');                                       \
+        os::Printer::log("DUMP_TEXTURE", dumpName.c_str());               \
+        bool    dumpSuccess = m_Driver->writeImageToFile(img, dumpName);  \
+        if (!dumpSuccess)                                                 \
+        {                                                                 \
+            if (dumpName.find(".bmp") < 0 && dumpName.find(".jpg") < 0 && \
+                dumpName.find(".pcx") < 0 && dumpName.find(".png") < 0 && \
+                dumpName.find(".ppm") < 0 && dumpName.find(".tga") < 0 && \
+                dumpName.find(".psd") < 0)                                \
+            {                                                             \
+                dumpName += ".jpg";                                       \
+                os::Printer::log("DUMP_TEXTURE_RETRY", dumpName.c_str()); \
+                dumpSuccess = m_Driver->writeImageToFile(img, dumpName);  \
+            }                                                             \
+        }                                                                 \
+        if (dumpSuccess)                                                  \
+            ++CD3D11Texture::TextureDumpCounter;                          \
     } while (false)
 #else
 #define _IRR_DUMP_TEXTURE(img, name) do { } while (false)
@@ -28,6 +46,8 @@ namespace irr
 {
     namespace video
     {
+        u32    CD3D11Texture::TextureDumpCounter = 0;
+
         CD3D11Texture::CD3D11Texture(CD3D11Driver *driver, const core::dimension2d<u32> &size,
                                      const io::path &name, const ECOLOR_FORMAT format)
             : ITexture(name), m_Texture(0), m_ShaderResourceView(0), m_RenderTargetView(0),

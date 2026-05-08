@@ -923,6 +923,16 @@ namespace irr
             msg += ",";
             msg += core::stringc(material.DiffuseColor.getAlpha());
             msg += ")";
+            for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
+            {
+                if (material.getTexture(i))
+                {
+                    msg += ", Tex";
+                    msg += core::stringc(i);
+                    msg += "=";
+                    msg += material.getTexture(i)->getName().getPath().c_str();
+                }
+            }
             os::Printer::log("CD3D11Driver::setMaterial", msg.c_str());
 #endif
         }

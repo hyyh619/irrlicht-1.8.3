@@ -98,6 +98,8 @@ private:
             bool    m_HasMipMaps;
             bool    m_HardwareMipMaps;
             bool    m_IsRenderTarget;
+
+            static u32 TextureDumpCounter;
         };
     } // end namespace video
 } // end namespace irr
