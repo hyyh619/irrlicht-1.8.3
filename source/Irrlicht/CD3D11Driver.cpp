@@ -197,7 +197,10 @@ namespace irr
             m_BackBufferRenderTargetView(0), m_DepthStencilView(0),
             m_WindowId(0), m_SceneSourceRect(0),
             m_LastVertexType((video::E_VERTEX_TYPE)-1), m_VendorID(0),
+            m_InputLayout(), m_BuiltInVertexShader(), m_BuiltInPixelShader(),
             m_BuiltInVSInitialized(false), m_MaterialPSInitialized(false),
+            m_RectangleVertexShader(0), m_RectanglePixelShader(0), m_RectangleInputLayout(0),
+            m_RectangleShaderInitialized(false),
             m_TempVertexBuffer(0), m_TempIndexBuffer(0), m_MatrixConstantBuffer(0),
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
@@ -222,17 +225,6 @@ namespace irr
             }
 
             m_MaxLightDistance = sqrtf(FLT_MAX);
-
-            for (u32 i = 0; i <= EVT_2D_RECTANGLE; ++i)
-            {
-                m_InputLayout[i]            = 0;
-                m_BuiltInVertexShader[i]    = 0;
-            }
-
-            for (u32 i = 0; i <= EMT_ONETEXTURE_BLEND; ++i)
-            {
-                m_BuiltInPixelShader[i]     = 0;
-            }
 
             m_DefaultSampler = new CSampler(this);
         }
@@ -1415,9 +1407,9 @@ namespace irr
             if (image)
             {
                 core::stringc    filename = "draw_";
-                filename    += drawTypeName;
-                filename    += "_";
                 filename    += DrawCallCounter;
+                filename    += "_";
+                filename    += drawTypeName;
                 filename    += ".jpg";
                 writeImageToFile(image, filename.c_str(), 90);
                 image->drop();
@@ -1715,8 +1707,7 @@ namespace irr
                                   colorLeftDown.getAlpha() < 255 ||
                                   colorRightDown.getAlpha() < 255, false, false);
 
-            setVSByVertexType(EVT_2D_RECTANGLE);
-            setPSByMaterialType(m_Material.MaterialType);
+            set2DRectangleShader();
 
             core::matrix4    mvp;
             mvp.buildProjectionMatrixOrthoLH(f32(getCurrentRenderTargetSize().Width), f32(-(s32)getCurrentRenderTargetSize().Height), -1.0f, 1.0f);
@@ -2872,25 +2863,25 @@ namespace irr
             vsShader->setVertexType(EVT_2D_RECTANGLE);
             m_ShaderPool.push_back(vsShader);
 
-            if (m_BuiltInVertexShader[EVT_2D_RECTANGLE])
+            if (m_RectangleVertexShader)
             {
-                IRR_D3D11_VS_RELEASE(m_BuiltInVertexShader[EVT_2D_RECTANGLE], "BuiltInVertexShader");
-                m_BuiltInVertexShader[EVT_2D_RECTANGLE]->Release();
+                IRR_D3D11_VS_RELEASE(m_RectangleVertexShader, "RectangleVertexShader");
+                m_RectangleVertexShader->Release();
             }
 
-            m_BuiltInVertexShader[EVT_2D_RECTANGLE] = vsShader->getVertexShader();
-            IRR_D3D11_VS_CREATE(m_BuiltInVertexShader[EVT_2D_RECTANGLE], "BuiltInVertexShader");
-            m_BuiltInVertexShader[EVT_2D_RECTANGLE]->AddRef();
+            m_RectangleVertexShader = vsShader->getVertexShader();
+            IRR_D3D11_VS_CREATE(m_RectangleVertexShader, "RectangleVertexShader");
+            m_RectangleVertexShader->AddRef();
 
-            if (m_InputLayout[EVT_2D_RECTANGLE])
+            if (m_RectangleInputLayout)
             {
-                IRR_D3D11_IL_RELEASE(m_InputLayout[EVT_2D_RECTANGLE], "BuiltInInputLayout");
-                m_InputLayout[EVT_2D_RECTANGLE]->Release();
+                IRR_D3D11_IL_RELEASE(m_RectangleInputLayout, "RectangleInputLayout");
+                m_RectangleInputLayout->Release();
             }
 
-            m_InputLayout[EVT_2D_RECTANGLE] = vsShader->getInputLayout();
-            IRR_D3D11_IL_CREATE(m_InputLayout[EVT_2D_RECTANGLE], "BuiltInInputLayout");
-            m_InputLayout[EVT_2D_RECTANGLE]->AddRef();
+            m_RectangleInputLayout = vsShader->getInputLayout();
+            IRR_D3D11_IL_CREATE(m_RectangleInputLayout, "RectangleInputLayout");
+            m_RectangleInputLayout->AddRef();
 
             CD3D11Shader    *psShader = new CD3D11Shader(this);
 
@@ -2909,17 +2900,58 @@ namespace irr
             psShader->setVertexType(EVT_2D_RECTANGLE);
             m_ShaderPool.push_back(psShader);
 
-            if (m_BuiltInPixelShader[EVT_2D_RECTANGLE])
+            if (m_RectanglePixelShader)
             {
-                IRR_D3D11_PS_RELEASE(m_BuiltInPixelShader[EVT_2D_RECTANGLE], "BuiltInPixelShader");
-                m_BuiltInPixelShader[EVT_2D_RECTANGLE]->Release();
+                IRR_D3D11_PS_RELEASE(m_RectanglePixelShader, "RectanglePixelShader");
+                m_RectanglePixelShader->Release();
             }
 
-            m_BuiltInPixelShader[EVT_2D_RECTANGLE] = psShader->getPixelShader();
-            IRR_D3D11_PS_CREATE(m_BuiltInPixelShader[EVT_2D_RECTANGLE], "BuiltInPixelShader");
-            m_BuiltInPixelShader[EVT_2D_RECTANGLE]->AddRef();
+            m_RectanglePixelShader = psShader->getPixelShader();
+            IRR_D3D11_PS_CREATE(m_RectanglePixelShader, "RectanglePixelShader");
+            m_RectanglePixelShader->AddRef();
 
             return true;
+        }
+
+
+        void CD3D11Driver::set2DRectangleShader()
+        {
+            if (!m_RectangleShaderInitialized)
+            {
+                for (u32 i = 0; i < EVT_2D_RECTANGLE; ++i)
+                {
+                    createBuiltInVertexShader((E_VERTEX_TYPE)i);
+                }
+
+                createRectangleShaders();
+
+                m_RectangleShaderInitialized = true;
+            }
+
+            // If the last shaders are 2d rectangle, we set nothing.
+            if (m_LastMaterialType == EMT_2D_RECTANGLE && m_LastVertexType == EVT_2D_RECTANGLE)
+                return;
+
+            // We have to set m_LastVertexType and m_LastMaterialType
+            m_LastVertexType    = EVT_2D_RECTANGLE;
+            m_LastMaterialType  = EMT_2D_RECTANGLE;
+
+            if (m_RectangleVertexShader)
+            {
+                m_pID3DDeviceContext->VSSetShader(m_RectangleVertexShader, 0, 0);
+            }
+
+            if (m_RectangleInputLayout)
+            {
+                m_pID3DDeviceContext->IASetInputLayout(m_RectangleInputLayout);
+            }
+
+            if (m_RectanglePixelShader)
+            {
+                m_pID3DDeviceContext->PSSetShader(m_RectanglePixelShader, 0, 0);
+            }
+
+            setPSTextureAndSamplerState();
         }
 
 

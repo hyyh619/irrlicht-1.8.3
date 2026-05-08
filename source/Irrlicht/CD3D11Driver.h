@@ -470,6 +470,7 @@ private:
             bool createMaterialPixelShader(E_MATERIAL_TYPE materialType);
             bool createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob);
             bool createRectangleShaders();
+            void set2DRectangleShader();
             void updateMatrixConstantBuffer();
             void setRenderStates(E_RENDER_MODE mode, bool alpha);
             bool createRenderStates();
@@ -505,6 +506,10 @@ private:
             ID3D11InputLayout               *m_InputLayout[EVT_VERTEX_TYPE_MAX];
             ID3D11VertexShader              *m_BuiltInVertexShader[EVT_VERTEX_TYPE_MAX];
             ID3D11PixelShader               *m_BuiltInPixelShader[EMT_MATERIAL_MAX];
+            ID3D11VertexShader             *m_RectangleVertexShader;
+            ID3D11PixelShader              *m_RectanglePixelShader;
+            ID3D11InputLayout              *m_RectangleInputLayout;
+            bool                            m_RectangleShaderInitialized;
             bool                            m_BuiltInVSInitialized;
             bool                            m_MaterialPSInitialized;
 

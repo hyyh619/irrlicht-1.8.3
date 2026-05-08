@@ -786,5 +786,8 @@ Git commit:
 2. 创建一个set2DRectangleShader的函数来设置createRectangleShaders创建的VS/PS
 3. draw2DRectangle调用set2DRectangleShader来设置VS/PS
 
+CD3D11Driver::set2DRectangleShader不要使用m_BuiltInVSInitialized来决定是否初始化，创建一个新变量来判断
+不要使用m_InputLayout[EVT_2D_RECTANGLE]来保存input layout，像shader一样，使用一个新变量保存。
+
 # 52
 Git commit: 

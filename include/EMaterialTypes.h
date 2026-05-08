@@ -191,6 +191,9 @@ namespace irr
             /** Using only first texture. Generic blending method. */
             EMT_ONETEXTURE_BLEND,
 
+            //! Just make PS changing if using 2d rectangle shader
+            EMT_2D_RECTANGLE,
+
             //! The max value of material.
             EMT_MATERIAL_MAX,
 

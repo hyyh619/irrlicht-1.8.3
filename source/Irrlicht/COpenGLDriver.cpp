@@ -1822,9 +1822,9 @@ namespace irr
             if (image)
             {
                 core::stringc    filename = "draw_";
-                filename    += drawTypeName;
-                filename    += "_";
                 filename    += DrawCallCounter;
+                filename    += "_";
+                filename    += drawTypeName;
                 filename    += ".jpg";
                 writeImageToFile(image, filename.c_str(), 90);
                 image->drop();
