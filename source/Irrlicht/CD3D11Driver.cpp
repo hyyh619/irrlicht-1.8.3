@@ -2615,6 +2615,8 @@ namespace irr
                 m_MaterialPSInitialized = true;
             }
 
+            // material type is only used for changing shader.
+            // The draw has the same material type but it has different textures.
             if (m_LastMaterialType != materialType)
             {
                 m_LastMaterialType = materialType;
@@ -2625,16 +2627,16 @@ namespace irr
                 }
                 else
                 {
-                    const CD3D11Shader    *pShader = getShaderByTypes((E_VERTEX_TYPE)0, EDST_PIXEL, materialType);
+                    const CD3D11Shader *pShader = getShaderByTypes((E_VERTEX_TYPE)0, EDST_PIXEL, materialType);
 
                     if (pShader && pShader->getPixelShader())
                     {
                         m_pID3DDeviceContext->PSSetShader(pShader->getPixelShader(), 0, 0);
                     }
                 }
-
-                setPSTextureAndSamplerState();
             }
+
+            setPSTextureAndSamplerState();
         }
 
 
