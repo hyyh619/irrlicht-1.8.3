@@ -194,6 +194,7 @@ namespace irr
         CD3D11Driver::CD3D11Driver(const SIrrlichtCreationParameters &params, io::IFileSystem *io)
             : CNullDriver(io, params.WindowSize), m_CurrentRenderMode(ERM_NONE),
             m_Current2DStateKey(0),
+            m_Current3DStateKey(0),
             m_ResetRenderStates(true), m_Transformation3DChanged(false),
             m_D3D11Library(0), m_DXGIFactory(0), m_Adapter(0), m_pID3DDevice(0), m_pID3DDeviceContext(0), m_pID3DDevice1(0), m_SwapChain(0),
             m_BackBufferRenderTargetView(0), m_DepthStencilView(0),
@@ -1002,7 +1003,8 @@ namespace irr
                 setActiveTexture(i, material.getTexture(i));
             }
 
-            if (material.Lighting == 1)
+            // if (material.Lighting == 1)
+            if (material.Wireframe == 1)
                 os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
 
             setBasicRenderStates(material, m_LastMaterial, true);
@@ -1140,11 +1142,27 @@ namespace irr
 
         bool CD3D11Driver::setRenderStates3DMode()
         {
-            if (m_CurrentRenderMode == ERM_3D)
+            const u64 key = createRenderStateKey3D(m_Material);
+
+            if (m_CurrentRenderMode == ERM_3D && m_Current3DStateKey == key)
                 return true;
 
             m_CurrentRenderMode = ERM_3D;
-            setRenderStates(ERM_3D, false);
+            m_Current3DStateKey = key;
+
+            m_pID3DDeviceContext->RSSetViewports(1, &m_DefaultViewport);
+            m_pID3DDeviceContext->RSSetScissorRects(1, &m_DefaultScissorRect);
+
+            SRenderStateSet *stateSet = getOrCreateRenderStateSet3D(m_Material);
+            if (!stateSet)
+                return true;
+
+            m_pID3DDeviceContext->RSSetState(stateSet->RasterizerState);
+            m_pID3DDeviceContext->OMSetDepthStencilState(stateSet->DepthStencilState, 0);
+
+            FLOAT blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+            m_pID3DDeviceContext->OMSetBlendState(stateSet->BlendState, blendFactor, 0xFFFFFFFF);
+
             return true;
         }
 
@@ -4139,23 +4157,6 @@ namespace irr
                 return getOrCreateRenderStateSet3D(material);
             else
                 return getOrCreateRenderStateSetOther(mode);
-        }
-
-
-        void CD3D11Driver::setRenderStates(E_RENDER_MODE mode, bool alpha)
-        {
-            m_pID3DDeviceContext->RSSetViewports(1, &m_DefaultViewport);
-            m_pID3DDeviceContext->RSSetScissorRects(1, &m_DefaultScissorRect);
-
-            SRenderStateSet    *stateSet = getOrCreateRenderStateSet(mode, alpha, false, false, m_Material);
-            if (!stateSet)
-                return;
-
-            m_pID3DDeviceContext->RSSetState(stateSet->RasterizerState);
-            m_pID3DDeviceContext->OMSetDepthStencilState(stateSet->DepthStencilState, 0);
-
-            FLOAT    blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-            m_pID3DDeviceContext->OMSetBlendState(stateSet->BlendState, blendFactor, 0xFFFFFFFF);
         }
 
 

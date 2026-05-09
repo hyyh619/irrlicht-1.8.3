@@ -1171,6 +1171,9 @@ Git commit: 1. Fix wrong last ps material type. 2. print draw parameters.
 
 # 65
 Git commit: 
+1. 把CD3D11Driver::setRenderStates的代码合并到CD3D11Driver::setRenderStates3DMode()，删除CD3D11Driver::setRenderStates
+2. 判断是否需要重新设置3d render states,不能只是判断render mode，还需要结合当前render state key来判断。
+
 
 # 66
 Git commit: 

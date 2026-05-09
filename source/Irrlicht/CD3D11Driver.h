@@ -494,7 +494,7 @@ private:
             bool createRectangleShaders();
             void set2DRectangleShader();
             void updateMatrixConstantBuffer();
-            void setRenderStates(E_RENDER_MODE mode, bool alpha);
+            
             u64 createRenderStateKey2D(bool alpha, bool texture, bool alphaChannel);
             u64 createRenderStateKey3D(const SMaterial &material);
             u64 createRenderStateKeyOther(E_RENDER_MODE mode);
@@ -590,6 +590,7 @@ private:
 
             E_RENDER_MODE    m_CurrentRenderMode;
             u64              m_Current2DStateKey;
+            u64              m_Current3DStateKey;
         };
 
         IVideoDriver* createDirectX11Driver(const SIrrlichtCreationParameters &params,
