@@ -193,6 +193,7 @@ namespace irr
 
         CD3D11Driver::CD3D11Driver(const SIrrlichtCreationParameters &params, io::IFileSystem *io)
             : CNullDriver(io, params.WindowSize), m_CurrentRenderMode(ERM_NONE),
+            m_Current2DStateKey(0),
             m_ResetRenderStates(true), m_Transformation3DChanged(false),
             m_D3D11Library(0), m_DXGIFactory(0), m_Adapter(0), m_pID3DDevice(0), m_pID3DDeviceContext(0), m_pID3DDevice1(0), m_SwapChain(0),
             m_BackBufferRenderTargetView(0), m_DepthStencilView(0),
@@ -1094,12 +1095,15 @@ namespace irr
 
         void CD3D11Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel)
         {
-            if (m_CurrentRenderMode == ERM_2D)
+            const u64    key = createRenderStateKey2D(alpha, texture, alphaChannel);
+
+            if (m_CurrentRenderMode == ERM_2D && m_Current2DStateKey == key)
                 return;
 
             m_CurrentRenderMode = ERM_2D;
+            m_Current2DStateKey = key;
 
-            SRenderStateSet    *stateSet = getOrCreateRenderStateSet(ERM_2D, alpha, texture, alphaChannel, m_Material);
+            SRenderStateSet    *stateSet = getOrCreateRenderStateSet2D(alpha, texture, alphaChannel);
             if (!stateSet)
                 return;
 

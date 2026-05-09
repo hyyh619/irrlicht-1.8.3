@@ -582,6 +582,7 @@ private:
             CSampler                            *m_PreviousSampler[MATERIAL_MAX_TEXTURES];
 
             E_RENDER_MODE    m_CurrentRenderMode;
+            u64              m_Current2DStateKey;
         };
 
         IVideoDriver* createDirectX11Driver(const SIrrlichtCreationParameters &params,

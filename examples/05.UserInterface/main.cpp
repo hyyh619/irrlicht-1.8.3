@@ -30,7 +30,7 @@ using namespace gui;
 #endif
 
 #ifndef CONFORM_TEST_DX11
-#define CONFORM_TEST_DX11 1
+#define CONFORM_TEST_DX11 0
 #endif
 
 // Declare a structure to hold some context for the event receiver so that it
