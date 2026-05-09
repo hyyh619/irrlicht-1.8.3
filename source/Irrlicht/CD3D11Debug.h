@@ -15,7 +15,7 @@
 //! _IRR_TEXTURE_DUMP: Dumps IImage content to disk when creating textures in CD3D11Texture::createTexture
 // Default: disabled
 // Usage: Define _IRR_TEXTURE_DUMP to save textures as "dump_<name>" files
-//#define _IRR_TEXTURE_DUMP
+#define _IRR_TEXTURE_DUMP
 
 //! _IRR_MATERIAL_PRINT: Prints material info to log whenever setMaterial is called
 // Default: disabled
@@ -29,7 +29,7 @@
 #define _IRR_DUMP_DRAW_CALLS_PRINT 1   // 1=print to log, 0=silent
 #endif
 #ifndef _IRR_DUMP_DRAW_CALLS_FILE
-#define _IRR_DUMP_DRAW_CALLS_FILE 0    // 1=write to file, 0=no file output
+#define _IRR_DUMP_DRAW_CALLS_FILE 1    // 1=write to file, 0=no file output
 #endif
 
 //! _IRR_D3D11_OBJECT_TRACKING: Enables D3D11 object reference tracking

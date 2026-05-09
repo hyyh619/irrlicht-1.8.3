@@ -1111,6 +1111,11 @@ Git commit: Implement draw2DImage for Movement example by MiniMax-M2.7.
 
 # 62
 Git commit: 
+setRenderStates2DMode函数不能简单判断上次是否是ERM_2D,应该通过SRenderStateSet的key来判断当前ERM_2D的state是否跟上次一样，如果不一样则配置新的state。
+        void CD3D11Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel)
+        {
+            if (m_CurrentRenderMode == ERM_2D)
+                return;
 
 # 63
 Git commit: 
