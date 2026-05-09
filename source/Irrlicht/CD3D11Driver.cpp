@@ -941,7 +941,7 @@ namespace irr
             m_Material = material;
             OverrideMaterial.apply(m_Material);
 
-            m_bHasTex = false;
+            m_nPsTexCount   = 0;
 
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
@@ -1037,7 +1037,7 @@ namespace irr
                 if (texture->getDriverType() != EDT_DIRECT3D11)
                     return false;
 
-                m_bHasTex = true;
+                m_nPsTexCount++;
             }
 
             m_CurrentTexture[stage] = texture;
@@ -2645,8 +2645,13 @@ namespace irr
             {
                 m_LastMaterialType = materialType;
 
-                if (materialType == EMT_SOLID && m_bHasTex == false)
-                    materialType = EMT_SOLID_COLOR;
+                if (materialType == EMT_SOLID)
+                {
+                    if (m_nPsTexCount == 0)
+                        materialType = EMT_SOLID_COLOR;
+                    else if (m_nPsTexCount == 1)
+                        materialType = EMT_SOLID_1_LAYER;
+                }
 
                 if (materialType >= EMT_SOLID && materialType <= EMT_MATERIAL_MAX && m_BuiltInPixelShader[materialType])
                 {
@@ -2953,6 +2958,8 @@ namespace irr
                 case EMT_ONETEXTURE_BLEND:                      entryPoint = "PS_ONETEXTURE_BLEND"; break;
 
                 case EMT_SOLID_COLOR:                           entryPoint = "PS_SOLID_COLOR_ONLY"; break;
+
+                case EMT_SOLID_1_LAYER:                         entryPoint = "PS_SOLID_1_LAYER"; break;
 
                 default:
                     return false;

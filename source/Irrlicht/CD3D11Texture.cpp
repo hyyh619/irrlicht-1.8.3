@@ -14,29 +14,26 @@
 #include "os.h"
 
 #ifdef _IRR_TEXTURE_DUMP
-#define _IRR_DUMP_TEXTURE(img, name)                                      \
-    do {                                                                  \
-        core::stringc    dumpName = "dump_";                              \
-        dumpName    += core::stringc(CD3D11Texture::TextureDumpCounter);  \
-        dumpName    += "_";                                               \
-        dumpName    += name;                                              \
-        dumpName.replace('#', '-');                                       \
-        os::Printer::log("DUMP_TEXTURE", dumpName.c_str());               \
-        bool    dumpSuccess = m_Driver->writeImageToFile(img, dumpName);  \
-        if (!dumpSuccess)                                                 \
-        {                                                                 \
-            if (dumpName.find(".bmp") < 0 && dumpName.find(".jpg") < 0 && \
-                dumpName.find(".pcx") < 0 && dumpName.find(".png") < 0 && \
-                dumpName.find(".ppm") < 0 && dumpName.find(".tga") < 0 && \
-                dumpName.find(".psd") < 0)                                \
-            {                                                             \
-                dumpName += ".jpg";                                       \
-                os::Printer::log("DUMP_TEXTURE_RETRY", dumpName.c_str()); \
-                dumpSuccess = m_Driver->writeImageToFile(img, dumpName);  \
-            }                                                             \
-        }                                                                 \
-        if (dumpSuccess)                                                  \
-            ++CD3D11Texture::TextureDumpCounter;                          \
+#define _IRR_DUMP_TEXTURE(img, name)                                                  \
+    do {                                                                              \
+        core::stringc    dumpName = "dump_";                                          \
+        core::stringc nameStr(name);                                                  \
+        s32    pos = nameStr.findLast('/');                                           \
+        if (pos >= 0)                                                                 \
+            nameStr = nameStr.subString(pos + 1, nameStr.size() - pos - 1);           \
+        nameStr.replace('#', '-');                                                    \
+        dumpName    += core::stringc(CD3D11Texture::TextureDumpCounter);              \
+        dumpName    += "_";                                                           \
+        dumpName    += nameStr;                                                       \
+        os::Printer::log("DUMP_TEXTURE", dumpName.c_str());                           \
+        bool    hasExt = (dumpName.find(".bmp") >= 0 || dumpName.find(".jpg") >= 0 || \
+                          dumpName.find(".pcx") >= 0 || dumpName.find(".png") >= 0 || \
+                          dumpName.find(".ppm") >= 0 || dumpName.find(".psd") >= 0);  \
+        if (!hasExt)                                                                  \
+            dumpName += ".jpg";                                                       \
+        bool    dumpSuccess = m_Driver->writeImageToFile(img, dumpName);              \
+        if (dumpSuccess)                                                              \
+            ++CD3D11Texture::TextureDumpCounter;                                      \
     } while (false)
 #else
 #define _IRR_DUMP_TEXTURE(img, name) do { } while (false)

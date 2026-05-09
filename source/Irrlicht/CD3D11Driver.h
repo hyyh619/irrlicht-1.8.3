@@ -522,7 +522,7 @@ private:
             bool                m_Transformation3DChanged;
             const ITexture      *m_CurrentTexture[MATERIAL_MAX_TEXTURES];
             const ITexture      *m_PreviousTexture[MATERIAL_MAX_TEXTURES];
-            bool                m_bHasTex;
+            u32                 m_nPsTexCount;
             bool                m_LastTextureMipMapsAvailable[MATERIAL_MAX_TEXTURES];
             core::matrix4       m_Matrices[ETS_COUNT];
 

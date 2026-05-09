@@ -194,6 +194,9 @@ namespace irr
             //! solid without texture, color only.
             EMT_SOLID_COLOR,
 
+            //! 2tex coordinates but there is one texture.
+            EMT_SOLID_1_LAYER,
+
             //! Just make PS changing if using 2d rectangle shader
             EMT_2D_RECTANGLE,
 

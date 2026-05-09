@@ -1080,7 +1080,19 @@ Git commit: Fix memory leak caused by rectangle shader reference by MiniMax-M2.7
 
 # 60
 Git commit: 
+代码#define _IRR_DUMP_TEXTURE(img, name) name可能是包含了全路径的pathname，如下所示，请去掉路劲
+DUMP_TEXTURE: dump_1_C:/Development/Graphics/irrlicht-1.8.3/media/wall.bmp
+改为
+DUMP_TEXTURE: dump_1_wall.bmp
 
+1. 看起来name没有getFileName函数，请直接用字符串处理的办法去掉路径，只保留文件名字
+错误	C2039	"getFileName": 不是 "irr::io::SNamedPath" 的成员	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	347		
+错误(活动)	E0135	类 "irr::io::SNamedPath" 没有成员 "getFileName"	Irrlicht	C:\Development\Graphics\irrlicht-1.8.3\source\Irrlicht\CD3D11Texture.cpp	347		
+2. 在调用 m_Driver->writeImageToFile(img, dumpName)前
+   A. 如果name包含‘#’替代为‘-’
+   B. 如果name的后缀名不是.bmp, .jpg, .pcx, .png, .pcm, .tga, .ppd，就增加后缀名.jpg
+
+#define _IRR_DUMP_TEXTURE(img, name)把tga后缀名换成jpg
 
 # 61
 Git commit: 

@@ -65,6 +65,12 @@ float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
     return float4(texColor.rgb * input.Color.rgb, texColor.a * input.Color.a);
 }
 
+float4 PS_SOLID_1_LAYER(PS_INPUT_2TEX input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord0);
+    return float4(texColor.rgb * input.Color.rgb, texColor.a * input.Color.a);
+}
+
 float4 PS_SOLID_2_LAYER(PS_INPUT_2TEX input) : SV_TARGET
 {
     float4 layer0 = DiffuseTexture.Sample(LinearSampler, input.TexCoord0);
