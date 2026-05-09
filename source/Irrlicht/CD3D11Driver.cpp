@@ -932,6 +932,58 @@ namespace irr
 
                 case video::EMT_MATERIAL_MAX: return "EMT_MATERIAL_MAX";
 
+                case video::EMT_SOLID_1_LAYER: return "EMT_SOLID_1_LAYER";
+
+                case video::EMT_SOLID_COLOR: return "EMT_SOLID_COLOR";
+
+                default: return "?";
+            }
+        }
+
+
+        const c8* CD3D11Driver::getVertexTypeName(video::E_VERTEX_TYPE vType)
+        {
+            switch (vType)
+            {
+                case video::EVT_STANDARD: return "EVT_STANDARD";
+
+                case video::EVT_2TCOORDS: return "EVT_2TCOORDS";
+
+                case video::EVT_TANGENTS: return "EVT_TANGENTS";
+
+                case video::EVT_2D_RECTANGLE: return "EVT_2D_RECTANGLE";
+
+                default: return "?";
+            }
+        }
+
+
+        const c8* CD3D11Driver::getPrimitiveTypeName(scene::E_PRIMITIVE_TYPE pType)
+        {
+            switch (pType)
+            {
+                case scene::EPT_POINTS: return "EPT_POINTS";
+
+                case scene::EPT_LINE_STRIP: return "EPT_LINE_STRIP";
+
+                case scene::EPT_LINE_LOOP: return "EPT_LINE_LOOP";
+
+                case scene::EPT_LINES: return "EPT_LINES";
+
+                case scene::EPT_TRIANGLE_STRIP: return "EPT_TRIANGLE_STRIP";
+
+                case scene::EPT_TRIANGLE_FAN: return "EPT_TRIANGLE_FAN";
+
+                case scene::EPT_TRIANGLES: return "EPT_TRIANGLES";
+
+                case scene::EPT_QUAD_STRIP: return "EPT_QUAD_STRIP";
+
+                case scene::EPT_QUADS: return "EPT_QUADS";
+
+                case scene::EPT_POLYGON: return "EPT_POLYGON";
+
+                case scene::EPT_POINT_SPRITES: return "EPT_POINT_SPRITES";
+
                 default: return "?";
             }
         }
@@ -1531,7 +1583,7 @@ namespace irr
                 m_pID3DDeviceContext->Draw(vertexCount, 0);
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
-            dumpDrawCall("draw2D3DVertexPrimitiveList");
+            dumpDrawCall("draw2D3DVertexPrimitiveList", vType, pType, iType, is3D, vertexCount);
 #endif
         }
 
@@ -1553,6 +1605,44 @@ namespace irr
                 filename    += DrawCallCounter;
                 filename    += "_";
                 filename    += drawTypeName;
+                filename    += ".jpg";
+                writeImageToFile(image, filename.c_str(), 90);
+                image->drop();
+            }
+#endif
+        }
+
+        void CD3D11Driver::dumpDrawCall(const c8 *drawTypeName, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
+                                        E_INDEX_TYPE iType, bool is3D, u32 vertexCount)
+        {
+            ++DrawCallCounter;
+
+            const char      *vTypeName  = getVertexTypeName(vType);
+            const char      *pTypeName  = getPrimitiveTypeName(pType);
+            const char      *iTypeName  = (iType == EIT_16BIT) ? "EIT_16BIT" : "EIT_32BIT";
+            const char      *is3DStr    = is3D ? "3D" : "2D";
+
+            char    paramStr[256];
+            sprintf(paramStr, "%s: vType=%s pType=%s iType=%s is3D=%s vertexCount=%d",
+                    drawTypeName, vTypeName, pTypeName, iTypeName, is3DStr, vertexCount);
+
+#if _IRR_DUMP_DRAW_CALLS_PRINT
+            os::Printer::log("DrawCall", core::stringc(DrawCallCounter).c_str(), ELL_INFORMATION);
+            os::Printer::log(paramStr);
+#endif
+
+#if _IRR_DUMP_DRAW_CALLS_FILE
+            IImage    *image = createScreenShot(ECOLOR_FORMAT::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
+            if (image)
+            {
+                core::stringc    filename = "draw_";
+                filename    += DrawCallCounter;
+                filename    += "_";
+                filename    += drawTypeName;
+                filename    += "_";
+                filename    += vTypeName;
+                filename    += "_";
+                filename    += pTypeName;
                 filename    += ".jpg";
                 writeImageToFile(image, filename.c_str(), 90);
                 image->drop();
@@ -3006,6 +3096,10 @@ namespace irr
                     m_BuiltInVSInitialized = true;
                 }
 
+#ifdef _IRR_MATERIAL_PRINT
+                os::Printer::log("setVSByVertexType", getVertexTypeName(vType), ELL_INFORMATION);
+#endif
+
                 if (vType >= 0 && vType <= EVT_2D_RECTANGLE && m_BuiltInVertexShader[vType])
                 {
                     m_pID3DDeviceContext->VSSetShader(m_BuiltInVertexShader[vType], 0, 0);
@@ -3037,7 +3131,6 @@ namespace irr
             // The draw has the same material type but it has different textures.
             if (m_LastMaterialType != materialType || m_nPsTexCount != m_nLastPsTexCount)
             {
-                m_LastMaterialType = materialType;
 
                 if (materialType == EMT_SOLID)
                 {
@@ -3046,6 +3139,12 @@ namespace irr
                     else if (m_nPsTexCount == 1 && vType == EVT_2TCOORDS)
                         materialType = EMT_SOLID_1_LAYER;
                 }
+
+                m_LastMaterialType = materialType;
+
+#ifdef _IRR_MATERIAL_PRINT
+                os::Printer::log("setPSByMaterialType", getMaterialTypeName(materialType), ELL_INFORMATION);
+#endif
 
                 if (materialType >= EMT_SOLID && materialType <= EMT_MATERIAL_MAX && m_BuiltInPixelShader[materialType])
                 {
@@ -3063,6 +3162,7 @@ namespace irr
             }
 
             setPSTextureAndSamplerState();
+
         }
 
 

@@ -1138,6 +1138,35 @@ Git commit: Implement texture lock/unlock by MiniMax-M2.7.
 
 # 64
 Git commit: 
+函数dumpDrawCall打印vType，pType，iType不要当成整型参数打印，把其对应的enmu名称打印出来，is3D也要打印成字符串
+        void CD3D11Driver::dumpDrawCall(const c8 *drawTypeName, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
+            E_INDEX_TYPE iType, bool is3D, u32 primitiveCount)
+        {
+            ++DrawCallCounter;
+
+            char    paramStr[256];
+            sprintf(paramStr, "%s: v%d_p%d_i%d_3d%d_pc%d", drawTypeName,
+                vType, pType, iType, is3D ? 1 : 0, primitiveCount);
+
+#if _IRR_DUMP_DRAW_CALLS_PRINT
+            os::Printer::log("DrawCall", core::stringc(DrawCallCounter).c_str(), ELL_INFORMATION);
+            os::Printer::log(paramStr);
+#endif
+
+#if _IRR_DUMP_DRAW_CALLS_FILE
+            IImage    *image = createScreenShot(ECOLOR_FORMAT::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
+            if (image)
+            {
+                core::stringc    filename = "draw_";
+                filename    += DrawCallCounter;
+                filename    += "_";
+                filename    += drawTypeName;
+                filename    += ".jpg";
+                writeImageToFile(image, filename.c_str(), 90);
+                image->drop();
+            }
+#endif
+        }
 
 
 # 65

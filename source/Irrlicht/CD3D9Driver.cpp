@@ -1670,7 +1670,7 @@ namespace irr
             }
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
-            dumpDrawCall("draw2D3DVertexPrimitiveList");
+            dumpDrawCall("draw2D3DVertexPrimitiveList", vType, pType, iType, is3D, primitiveCount);
 #endif
         }
 
@@ -1687,6 +1687,56 @@ namespace irr
                 filename    += DrawCallCounter;
                 filename    += "_";
                 filename    += drawTypeName;
+                filename    += ".jpg";
+                writeImageToFile(image, filename.c_str(), 90);
+                image->drop();
+            }
+        }
+
+        void CD3D9Driver::dumpDrawCall(const c8* drawTypeName, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
+            E_INDEX_TYPE iType, bool is3D, u32 primitiveCount)
+        {
+            ++DrawCallCounter;
+
+            const char* vTypeName = "UNKNOWN";
+            switch (vType)
+            {
+                case EVT_STANDARD: vTypeName = "EVT_STANDARD"; break;
+                case EVT_2TCOORDS: vTypeName = "EVT_2TCOORDS"; break;
+                case EVT_TANGENTS: vTypeName = "EVT_TANGENTS"; break;
+                case EVT_2D_RECTANGLE: vTypeName = "EVT_2D_RECTANGLE"; break;
+            }
+
+            const char* pTypeName = "UNKNOWN";
+            switch (pType)
+            {
+                case scene::EPT_POINTS: pTypeName = "EPT_POINTS"; break;
+                case scene::EPT_LINE_STRIP: pTypeName = "EPT_LINE_STRIP"; break;
+                case scene::EPT_LINE_LOOP: pTypeName = "EPT_LINE_LOOP"; break;
+                case scene::EPT_LINES: pTypeName = "EPT_LINES"; break;
+                case scene::EPT_TRIANGLE_STRIP: pTypeName = "EPT_TRIANGLE_STRIP"; break;
+                case scene::EPT_TRIANGLE_FAN: pTypeName = "EPT_TRIANGLE_FAN"; break;
+                case scene::EPT_TRIANGLES: pTypeName = "EPT_TRIANGLES"; break;
+                case scene::EPT_QUAD_STRIP: pTypeName = "EPT_QUAD_STRIP"; break;
+                case scene::EPT_QUADS: pTypeName = "EPT_QUADS"; break;
+                case scene::EPT_POLYGON: pTypeName = "EPT_POLYGON"; break;
+                case scene::EPT_POINT_SPRITES: pTypeName = "EPT_POINT_SPRITES"; break;
+            }
+
+            const char* iTypeName = (iType == EIT_16BIT) ? "EIT_16BIT" : "EIT_32BIT";
+            const char* is3DStr = is3D ? "3D" : "2D";
+
+            IImage    *image = createScreenShot(ECOLOR_FORMAT::ECF_A8R8G8B8, video::ERT_FRAME_BUFFER);
+            if (image)
+            {
+                core::stringc    filename = "draw_";
+                filename    += DrawCallCounter;
+                filename    += "_";
+                filename    += drawTypeName;
+                filename    += "_";
+                filename    += vTypeName;
+                filename    += "_";
+                filename    += pTypeName;
                 filename    += ".jpg";
                 writeImageToFile(image, filename.c_str(), 90);
                 image->drop();

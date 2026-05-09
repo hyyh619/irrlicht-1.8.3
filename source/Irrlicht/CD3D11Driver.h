@@ -276,6 +276,8 @@ public:
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
             void dumpDrawCall(const c8 *drawTypeName);
+            void dumpDrawCall(const c8 *drawTypeName, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
+                E_INDEX_TYPE iType, bool is3D, u32 primitiveCount);
 #endif
 
             virtual void draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos,
@@ -448,6 +450,10 @@ private:
             void setRenderStatesStencilShadowMode(bool zfail, u32 debugDataVisible);
 
             static const c8* getMaterialTypeName(video::E_MATERIAL_TYPE materialType);
+
+            static const c8* getVertexTypeName(video::E_VERTEX_TYPE vType);
+
+            static const c8* getPrimitiveTypeName(scene::E_PRIMITIVE_TYPE pType);
 
             bool setActiveTexture(u32 stage, const video::ITexture *texture);
 
