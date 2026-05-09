@@ -1072,7 +1072,7 @@ Git commit: Create render states based on material step2. Now rendering is OK. T
 2. 把ERM_3D,ERM_2D和其它render mode的key生成代码用函数完成，不要在代码里分散计算。
 
 # 59
-Git commit: 
+Git commit: Fix memory leak caused by rectangle shader reference by MiniMax-M2.7.
 下列d3d11 object没有释放
             ID3D11VertexShader              *m_RectangleVertexShader;
             ID3D11PixelShader               *m_RectanglePixelShader;

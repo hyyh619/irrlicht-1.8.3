@@ -89,7 +89,8 @@ int main()
 #elif CONFORM_TEST_DX11
     video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D11;
 #else
-    video::E_DRIVER_TYPE driverType = driverChoiceConsole();
+    video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D11;
+    //video::E_DRIVER_TYPE driverType = driverChoiceConsole();
 #endif
 
     if (driverType==video::EDT_COUNT)

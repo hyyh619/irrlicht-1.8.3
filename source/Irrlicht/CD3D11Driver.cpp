@@ -583,10 +583,10 @@ namespace irr
             m_SwapChainDesc.SampleDesc.Count        = 1;
             m_SwapChainDesc.SampleDesc.Quality      = 0;
             m_SwapChainDesc.BufferUsage             = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-            m_SwapChainDesc.BufferCount             = 1;
+            m_SwapChainDesc.BufferCount             = 3;
             m_SwapChainDesc.OutputWindow            = hwnd;
             m_SwapChainDesc.Windowed                = !m_Params.Fullscreen;
-            m_SwapChainDesc.SwapEffect              = DXGI_SWAP_EFFECT_DISCARD;
+            m_SwapChainDesc.SwapEffect              = DXGI_SWAP_EFFECT_FLIP_DISCARD;
             m_SwapChainDesc.Flags                   = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
             hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&m_DXGIFactory);
