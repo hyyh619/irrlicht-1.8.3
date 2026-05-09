@@ -927,7 +927,7 @@ CD3D11Driver::setPSTextureAndSamplerState总是根据当前m_CurrentTexture和m_
 我们需要根据当前texture/sampler与上一次draw有没有变化来决定是否设置
 
 # 56
-Git commit: 
+Git commit: Create render states based on material step1 by MiniMax-M2.7.
 d3d11的m_RenderStateSets[ERM_RENDER_MODE_MAX]只是针对每个render mode创建一套pipeline state，并不能满足不同material的要求。请做如下修改
 1. 每个render mode可以有多个render states，每个render states根据material的配置来创建
 2. m_RenderStateSets[ERM_RENDER_MODE_MAX]变成一个字典数组，每个创建的SRenderStateSet对象同时创建一个key，(key, SRenderStateSet)都保存在m_RenderStateSets[ERM_RENDER_MODE_MAX]中。
@@ -1065,3 +1065,14 @@ d3d11的m_RenderStateSets[ERM_RENDER_MODE_MAX]只是针对每个render mode创�
 
             //! Is frontface culling enabled? Default: false
             bool    FrontfaceCulling : 1;
+
+# 58
+Git commit: 
+1. CD3D11Driver::getOrCreateRenderStateSet分成三个函数，分别针对ERM_3D，ERM_2D和其他render mode
+2. 把ERM_3D,ERM_2D和其它render mode的key生成代码用函数完成，不要在代码里分散计算。
+
+# 59
+Git commit: 
+
+# 60
+Git commit: 

@@ -380,7 +380,7 @@ namespace irr
             for (u32 i = 0; i < ERM_RENDER_MODE_MAX; ++i)
             {
                 for (core::map<u64, SRenderStateSet>::ParentLastIterator it = m_RenderStateSets[i].getParentLastIterator();
-                    !it.atEnd(); it++)
+                     !it.atEnd(); it++)
                 {
                     SRenderStateSet    &stateSet = it->getValue();
 
@@ -3174,51 +3174,148 @@ namespace irr
         }
 
 
-        u64 CD3D11Driver::createRenderStateKey(
-            E_RENDER_MODE mode, bool alpha, bool texture, bool alphaChannel, const SMaterial &material)
+        u64 CD3D11Driver::createRenderStateKey2D(bool alpha, bool texture, bool alphaChannel)
         {
-            u64 key = 0;
+            return u64(ERM_2D) | (u64(alpha) << 4) | (u64(texture) << 8) | (u64(alphaChannel) << 12);
+        }
 
-            if (mode == ERM_2D)
-            {
-                key |= u64(mode) << 0;
-                key |= u64(alpha) << 4;
-                key |= u64(texture) << 8;
-                key |= u64(alphaChannel) << 12;
-            }
-            else if (mode == ERM_3D)
-            {
-                key |= u64(mode) << 0;
-                key |= u64(material.MaterialType) << 4;
-                key |= u64(*(u32*)&material.MaterialTypeParam) << 12;
-                key |= u64(*(u32*)&material.Thickness) << 20;
-                key |= u64(material.ZBuffer) << 28;
-                key |= u64(material.AntiAliasing) << 32;
-                key |= u64(material.ColorMask) << 36;
-                key |= u64(material.BlendOperation) << 40;
-                key |= u64(material.PolygonOffsetFactor) << 44;
-                key |= u64(material.PolygonOffsetDirection) << 48;
-                key |= u64(material.Wireframe) << 52;
-                key |= u64(material.PointCloud) << 53;
-                key |= u64(material.ZWriteEnable) << 54;
-                key |= u64(material.BackfaceCulling) << 55;
-                key |= u64(material.FrontfaceCulling) << 56;
-            }
-            else
-            {
-                _IRR_DEBUG_BREAK_IF(false);
-                key |= u64(mode) << 0;
-            }
+        u64 CD3D11Driver::createRenderStateKey3D(const SMaterial &material)
+        {
+            return u64(ERM_3D) |
+                   (u64(material.MaterialType) << 4) |
+                   (u64(*(u32*)&material.MaterialTypeParam) << 12) |
+                   (u64(*(u32*)&material.Thickness) << 20) |
+                   (u64(material.ZBuffer) << 28) |
+                   (u64(material.AntiAliasing) << 32) |
+                   (u64(material.ColorMask) << 36) |
+                   (u64(material.BlendOperation) << 40) |
+                   (u64(material.PolygonOffsetFactor) << 44) |
+                   (u64(material.PolygonOffsetDirection) << 48) |
+                   (u64(material.Wireframe) << 52) |
+                   (u64(material.PointCloud) << 53) |
+                   (u64(material.ZWriteEnable) << 54) |
+                   (u64(material.BackfaceCulling) << 55) |
+                   (u64(material.FrontfaceCulling) << 56);
+        }
 
-            return key;
+        u64 CD3D11Driver::createRenderStateKeyOther(E_RENDER_MODE mode)
+        {
+            _IRR_DEBUG_BREAK_IF(false);
+            return u64(mode) << 0;
         }
 
 
-        CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSet(
-            E_RENDER_MODE mode, bool alpha, bool texture, bool alphaChannel, const SMaterial &material)
+        CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSet2D(bool alpha, bool texture, bool alphaChannel)
         {
-            const u64                                   key     = createRenderStateKey(mode, alpha, texture, alphaChannel, material);
-            core::map<u64, SRenderStateSet>::Node       *node   = m_RenderStateSets[mode].find(key);
+            const u64                                   key     = createRenderStateKey2D(alpha, texture, alphaChannel);
+            core::map<u64, SRenderStateSet>::Node       *node   = m_RenderStateSets[ERM_2D].find(key);
+
+            if (node)
+                return &node->getValue();
+
+            SRenderStateSet    stateSet;
+            stateSet.Key                = key;
+            stateSet.RasterizerState    = 0;
+            stateSet.DepthStencilState  = 0;
+            stateSet.BlendState         = 0;
+
+            HRESULT                     hr = E_FAIL;
+            D3D11_RASTERIZER_DESC1      rasterizerDesc;
+            rasterizerDesc.AntialiasedLineEnable    = false;
+            rasterizerDesc.CullMode                 = D3D11_CULL_NONE;
+            rasterizerDesc.DepthBias                = D3D11_DEFAULT_DEPTH_BIAS;
+            rasterizerDesc.DepthBiasClamp           = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
+            rasterizerDesc.DepthClipEnable          = false;
+            rasterizerDesc.FillMode                 = D3D11_FILL_SOLID;
+            rasterizerDesc.ForcedSampleCount        = 0;
+            rasterizerDesc.FrontCounterClockwise    = false;
+            rasterizerDesc.MultisampleEnable        = false;
+            rasterizerDesc.ScissorEnable            = false;
+            rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &stateSet.RasterizerState);
+
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
+                return 0;
+            }
+
+            IRR_D3D11_RS_CREATE(stateSet.RasterizerState, "RasterizerState");
+
+            D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
+            depthStencilDesc.DepthEnable                    = false;
+            depthStencilDesc.DepthWriteMask                 = D3D11_DEPTH_WRITE_MASK_ALL;
+            depthStencilDesc.DepthFunc                      = D3D11_COMPARISON_LESS;
+            depthStencilDesc.StencilEnable                  = false;
+            depthStencilDesc.StencilReadMask                = D3D11_DEFAULT_STENCIL_READ_MASK;
+            depthStencilDesc.StencilWriteMask               = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+            depthStencilDesc.FrontFace.StencilFunc          = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
+
+            hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &stateSet.DepthStencilState);
+            IRR_D3D11_DSS_CREATE(stateSet.DepthStencilState, "DepthStencilState");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create depth stencil state.", ELL_ERROR);
+                return 0;
+            }
+
+            D3D11_BLEND_DESC1    blendDesc;
+            blendDesc.AlphaToCoverageEnable     = false;
+            blendDesc.IndependentBlendEnable    = false;
+
+            const bool    enableAlphaBlend = alpha || (alphaChannel && texture);
+
+            for (u32 i = 0; i < 8; ++i)
+            {
+                blendDesc.RenderTarget[i].BlendEnable           = enableAlphaBlend;
+                blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            }
+
+            hr = E_FAIL;
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &stateSet.BlendState);
+
+            IRR_D3D11_BLEND_CREATE(stateSet.BlendState, "BlendState");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create blend state.", ELL_ERROR);
+                return 0;
+            }
+
+            m_RenderStateSets[ERM_2D].set(key, stateSet);
+
+            core::map<u64, SRenderStateSet>::Node    *pNode = m_RenderStateSets[ERM_2D].find(key);
+            if (pNode == nullptr)
+            {
+                os::Printer::log("Could not find the render states.", ELL_ERROR);
+                return 0;
+            }
+
+            return &pNode->getValue();
+        }
+
+
+        CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSet3D(const SMaterial &material)
+        {
+            const u64                                   key     = createRenderStateKey3D(material);
+            core::map<u64, SRenderStateSet>::Node       *node   = m_RenderStateSets[ERM_3D].find(key);
 
             if (node)
                 return &node->getValue();
@@ -3243,23 +3340,199 @@ namespace irr
             rasterizerDesc.ScissorEnable            = false;
             rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
 
-            if (mode == ERM_2D)
-            {
-                rasterizerDesc.CullMode = D3D11_CULL_NONE;
-                rasterizerDesc.DepthClipEnable = false;
-            }
-            else if (mode == ERM_3D)
-            {
-                if (material.Wireframe)
-                    rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
+            if (material.Wireframe)
+                rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
 
-                if (material.BackfaceCulling)
-                    rasterizerDesc.CullMode = D3D11_CULL_BACK;
-                else if (material.FrontfaceCulling)
-                    rasterizerDesc.CullMode = D3D11_CULL_FRONT;
-                else
-                    rasterizerDesc.CullMode = D3D11_CULL_NONE;
+            if (material.BackfaceCulling)
+                rasterizerDesc.CullMode = D3D11_CULL_BACK;
+            else if (material.FrontfaceCulling)
+                rasterizerDesc.CullMode = D3D11_CULL_FRONT;
+            else
+                rasterizerDesc.CullMode = D3D11_CULL_NONE;
+
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &stateSet.RasterizerState);
+
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
+                return 0;
             }
+
+            IRR_D3D11_RS_CREATE(stateSet.RasterizerState, "RasterizerState");
+
+            D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
+            depthStencilDesc.DepthEnable                    = (material.ZBuffer != ECFN_NEVER);
+            depthStencilDesc.DepthWriteMask                 = material.ZWriteEnable ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
+            depthStencilDesc.StencilEnable                  = false;
+            depthStencilDesc.StencilReadMask                = D3D11_DEFAULT_STENCIL_READ_MASK;
+            depthStencilDesc.StencilWriteMask               = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+            depthStencilDesc.FrontFace.StencilFunc          = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
+
+            switch (material.ZBuffer)
+            {
+                case ECFN_NEVER:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_NEVER;
+                    break;
+
+                case ECFN_LESSEQUAL:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+                    break;
+
+                case ECFN_EQUAL:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
+                    break;
+
+                case ECFN_LESS:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+                    break;
+
+                case ECFN_GREATEREQUAL:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
+                    break;
+
+                case ECFN_NOTEQUAL:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_NOT_EQUAL;
+                    break;
+
+                case ECFN_GREATER:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER;
+                    break;
+
+                case ECFN_ALWAYS:
+                default:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+                    break;
+            }
+
+            hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &stateSet.DepthStencilState);
+            IRR_D3D11_DSS_CREATE(stateSet.DepthStencilState, "DepthStencilState");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create depth stencil state.", ELL_ERROR);
+                return 0;
+            }
+
+            D3D11_BLEND_DESC1    blendDesc;
+            blendDesc.AlphaToCoverageEnable     = false;
+            blendDesc.IndependentBlendEnable    = false;
+
+            bool    blendEnable = material.BlendOperation != EBO_NONE;
+
+            if (material.MaterialType == EMT_TRANSPARENT_ADD_COLOR ||
+                material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL ||
+                material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA ||
+                material.MaterialType == EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR ||
+                material.MaterialType == EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA ||
+                material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL_REF ||
+                material.MaterialType == EMT_TRANSPARENT_REFLECTION_2_LAYER)
+            {
+                blendEnable = true;
+            }
+
+            D3D11_BLEND_OP    blendOp = D3D11_BLEND_OP_ADD;
+            if (blendEnable)
+            {
+                switch (material.BlendOperation)
+                {
+                    case EBO_SUBTRACT:
+                        blendOp = D3D11_BLEND_OP_SUBTRACT;
+                        break;
+
+                    case EBO_REVSUBTRACT:
+                        blendOp = D3D11_BLEND_OP_REV_SUBTRACT;
+                        break;
+
+                    case EBO_MIN:
+                    case EBO_MIN_FACTOR:
+                    case EBO_MIN_ALPHA:
+                        blendOp = D3D11_BLEND_OP_MIN;
+                        break;
+
+                    case EBO_MAX:
+                    case EBO_MAX_FACTOR:
+                    case EBO_MAX_ALPHA:
+                        blendOp = D3D11_BLEND_OP_MAX;
+                        break;
+
+                    default:
+                        blendOp = D3D11_BLEND_OP_ADD;
+                        break;
+                }
+            }
+
+            for (u32 i = 0; i < 8; ++i)
+            {
+                blendDesc.RenderTarget[i].BlendEnable           = blendEnable;
+                blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOp               = blendOp;
+                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            }
+
+            hr = E_FAIL;
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &stateSet.BlendState);
+
+            IRR_D3D11_BLEND_CREATE(stateSet.BlendState, "BlendState");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create blend state.", ELL_ERROR);
+                return 0;
+            }
+
+            m_RenderStateSets[ERM_3D].set(key, stateSet);
+
+            core::map<u64, SRenderStateSet>::Node    *pNode = m_RenderStateSets[ERM_3D].find(key);
+            if (pNode == nullptr)
+            {
+                os::Printer::log("Could not find the render states.", ELL_ERROR);
+                return 0;
+            }
+
+            return &pNode->getValue();
+        }
+
+
+        CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSetOther(E_RENDER_MODE mode)
+        {
+            const u64                                   key     = createRenderStateKeyOther(mode);
+            core::map<u64, SRenderStateSet>::Node       *node   = m_RenderStateSets[mode].find(key);
+
+            if (node)
+                return &node->getValue();
+
+            SRenderStateSet    stateSet;
+            stateSet.Key                = key;
+            stateSet.RasterizerState    = 0;
+            stateSet.DepthStencilState  = 0;
+            stateSet.BlendState         = 0;
+
+            HRESULT                     hr = E_FAIL;
+            D3D11_RASTERIZER_DESC1      rasterizerDesc;
+            rasterizerDesc.AntialiasedLineEnable    = false;
+            rasterizerDesc.CullMode                 = D3D11_CULL_BACK;
+            rasterizerDesc.DepthBias                = D3D11_DEFAULT_DEPTH_BIAS;
+            rasterizerDesc.DepthBiasClamp           = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
+            rasterizerDesc.DepthClipEnable          = true;
+            rasterizerDesc.FillMode                 = D3D11_FILL_SOLID;
+            rasterizerDesc.ForcedSampleCount        = 0;
+            rasterizerDesc.FrontCounterClockwise    = false;
+            rasterizerDesc.MultisampleEnable        = false;
+            rasterizerDesc.ScissorEnable            = false;
+            rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
 
             if (m_pID3DDevice1)
                 hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &stateSet.RasterizerState);
@@ -3288,45 +3561,6 @@ namespace irr
             depthStencilDesc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;
             depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
 
-            if (mode == ERM_2D)
-            {
-                depthStencilDesc.DepthEnable = false;
-            }
-            else if (mode == ERM_3D)
-            {
-                depthStencilDesc.DepthEnable = (material.ZBuffer != ECFN_NEVER);
-                depthStencilDesc.DepthWriteMask = material.ZWriteEnable ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
-
-                switch (material.ZBuffer)
-                {
-                    case ECFN_NEVER:
-                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_NEVER;
-                        break;
-                    case ECFN_LESSEQUAL:
-                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-                        break;
-                    case ECFN_EQUAL:
-                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
-                        break;
-                    case ECFN_LESS:
-                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-                        break;
-                    case ECFN_GREATEREQUAL:
-                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
-                        break;
-                    case ECFN_NOTEQUAL:
-                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_NOT_EQUAL;
-                        break;
-                    case ECFN_GREATER:
-                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER;
-                        break;
-                    case ECFN_ALWAYS:
-                    default:
-                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-                        break;
-                }
-            }
-
             hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &stateSet.DepthStencilState);
             IRR_D3D11_DSS_CREATE(stateSet.DepthStencilState, "DepthStencilState");
             if (FAILED(hr))
@@ -3339,101 +3573,18 @@ namespace irr
             blendDesc.AlphaToCoverageEnable     = false;
             blendDesc.IndependentBlendEnable    = false;
 
-            bool                blendEnable = false;
-            D3D11_BLEND_OP      blendOp     = D3D11_BLEND_OP_ADD;
-
-            if (mode == ERM_2D)
+            for (u32 i = 0; i < 8; ++i)
             {
-                const bool    enableAlphaBlend = alpha || (alphaChannel && texture);
-
-                for (u32 i = 0; i < 8; ++i)
-                {
-                    blendDesc.RenderTarget[i].BlendEnable           = enableAlphaBlend;
-                    blendDesc.RenderTarget[i].LogicOpEnable         = false;
-                    blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
-                    blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
-                    blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
-                    blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
-                    blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-                    blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
-                    blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-                    blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-                }
-            }
-            else if (mode == ERM_3D)
-            {
-                blendEnable = material.BlendOperation != EBO_NONE;
-
-                if (material.MaterialType == EMT_TRANSPARENT_ADD_COLOR ||
-                    material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL ||
-                    material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA ||
-                    material.MaterialType == EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR ||
-                    material.MaterialType == EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA ||
-                    material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL_REF ||
-                    material.MaterialType == EMT_TRANSPARENT_REFLECTION_2_LAYER)
-                {
-                    blendEnable = true;
-                }
-
-                if (blendEnable)
-                {
-                    switch (material.BlendOperation)
-                    {
-                        case EBO_SUBTRACT:
-                            blendOp = D3D11_BLEND_OP_SUBTRACT;
-                            break;
-
-                        case EBO_REVSUBTRACT:
-                            blendOp = D3D11_BLEND_OP_REV_SUBTRACT;
-                            break;
-
-                        case EBO_MIN:
-                        case EBO_MIN_FACTOR:
-                        case EBO_MIN_ALPHA:
-                            blendOp = D3D11_BLEND_OP_MIN;
-                            break;
-
-                        case EBO_MAX:
-                        case EBO_MAX_FACTOR:
-                        case EBO_MAX_ALPHA:
-                            blendOp = D3D11_BLEND_OP_MAX;
-                            break;
-
-                        default:
-                            blendOp = D3D11_BLEND_OP_ADD;
-                            break;
-                    }
-                }
-
-                for (u32 i = 0; i < 8; ++i)
-                {
-                    blendDesc.RenderTarget[i].BlendEnable           = blendEnable;
-                    blendDesc.RenderTarget[i].LogicOpEnable         = false;
-                    blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
-                    blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
-                    blendDesc.RenderTarget[i].BlendOp               = blendOp;
-                    blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
-                    blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-                    blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
-                    blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-                    blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-                }
-            }
-            else
-            {
-                for (u32 i = 0; i < 8; ++i)
-                {
-                    blendDesc.RenderTarget[i].BlendEnable           = false;
-                    blendDesc.RenderTarget[i].LogicOpEnable         = false;
-                    blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
-                    blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
-                    blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
-                    blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
-                    blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-                    blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
-                    blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-                    blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-                }
+                blendDesc.RenderTarget[i].BlendEnable           = false;
+                blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
             }
 
             hr = E_FAIL;
@@ -3449,8 +3600,7 @@ namespace irr
 
             m_RenderStateSets[mode].set(key, stateSet);
 
-            core::map<u64, SRenderStateSet>::Node *pNode = m_RenderStateSets[mode].find(key);
-
+            core::map<u64, SRenderStateSet>::Node    *pNode = m_RenderStateSets[mode].find(key);
             if (pNode == nullptr)
             {
                 os::Printer::log("Could not find the render states.", ELL_ERROR);
@@ -3458,6 +3608,18 @@ namespace irr
             }
 
             return &pNode->getValue();
+        }
+
+
+        CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSet(
+            E_RENDER_MODE mode, bool alpha, bool texture, bool alphaChannel, const SMaterial &material)
+        {
+            if (mode == ERM_2D)
+                return getOrCreateRenderStateSet2D(alpha, texture, alphaChannel);
+            else if (mode == ERM_3D)
+                return getOrCreateRenderStateSet3D(material);
+            else
+                return getOrCreateRenderStateSetOther(mode);
         }
 
 

@@ -489,8 +489,9 @@ private:
             void set2DRectangleShader();
             void updateMatrixConstantBuffer();
             void setRenderStates(E_RENDER_MODE mode, bool alpha);
-            u64 createRenderStateKey(
-                E_RENDER_MODE mode, bool alpha, bool texture, bool alphaChannel, const SMaterial &material);
+            u64 createRenderStateKey2D(bool alpha, bool texture, bool alphaChannel);
+            u64 createRenderStateKey3D(const SMaterial &material);
+            u64 createRenderStateKeyOther(E_RENDER_MODE mode);
 
             struct SRenderStateSet
             {
@@ -502,6 +503,10 @@ private:
 
             SRenderStateSet* getOrCreateRenderStateSet(
                 E_RENDER_MODE mode, bool alpha, bool texture, bool alphaChannel, const SMaterial &material);
+
+            SRenderStateSet* getOrCreateRenderStateSet2D(bool alpha, bool texture, bool alphaChannel);
+            SRenderStateSet* getOrCreateRenderStateSet3D(const SMaterial &material);
+            SRenderStateSet* getOrCreateRenderStateSetOther(E_RENDER_MODE mode);
 
             core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
             core::array<IMaterialRenderer*>         m_MaterialRenderers;
