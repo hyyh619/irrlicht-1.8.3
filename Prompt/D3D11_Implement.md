@@ -1137,7 +1137,7 @@ Git commit: Implement texture lock/unlock by MiniMax-M2.7.
 4. CD3D11Texture::lock已经实现ETLM_READ_WRITE，ETLM_READ_ONLY，没有实现ETLM_WRITE_ONLY
 
 # 64
-Git commit: 
+Git commit: 1. Fix wrong last ps material type. 2. print draw parameters.
 函数dumpDrawCall打印vType，pType，iType不要当成整型参数打印，把其对应的enmu名称打印出来，is3D也要打印成字符串
         void CD3D11Driver::dumpDrawCall(const c8 *drawTypeName, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
             E_INDEX_TYPE iType, bool is3D, u32 primitiveCount)
@@ -1173,4 +1173,11 @@ Git commit:
 Git commit: 
 
 # 66
+Git commit: 
+
+
+# 67
+Git commit: 
+
+# 68
 Git commit: 
