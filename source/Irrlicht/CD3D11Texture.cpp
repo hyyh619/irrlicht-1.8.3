@@ -51,7 +51,8 @@ namespace irr
             m_Driver(driver), m_DepthSurface(0),
             m_TextureSize(size), m_ImageSize(size), m_Pitch(0), m_ColorFormat(ECOLOR_FORMAT::ECF_UNKNOWN),
             m_DXGIFormat(DXGI_FORMAT_UNKNOWN),
-            m_HasMipMaps(false), m_HardwareMipMaps(false), m_IsRenderTarget(true)
+            m_HasMipMaps(false), m_HardwareMipMaps(false), m_IsRenderTarget(true),
+            m_StagingTexture(0), m_StagingTextureMipLevel(0), m_DirectMap(false)
         {
 #ifdef _DEBUG
             setDebugName("CD3D11Texture");
@@ -74,7 +75,8 @@ namespace irr
             m_Driver(driver), m_DepthSurface(0),
             m_TextureSize(0, 0), m_ImageSize(0, 0), m_Pitch(0), m_ColorFormat(ECOLOR_FORMAT::ECF_UNKNOWN),
             m_DXGIFormat(DXGI_FORMAT_UNKNOWN),
-            m_HasMipMaps(false), m_HardwareMipMaps(false), m_IsRenderTarget(false)
+            m_HasMipMaps(false), m_HardwareMipMaps(false), m_IsRenderTarget(false),
+            m_StagingTexture(0), m_StagingTextureMipLevel(0), m_DirectMap(false)
         {
 #ifdef _DEBUG
             setDebugName("CD3D11Texture");
@@ -130,6 +132,12 @@ namespace irr
                     m_Driver->removeDepthSurface(reinterpret_cast<SD3D11DepthStencilView*>(m_DepthSurface));
             }
 
+            if (m_StagingTexture)
+            {
+                IRR_D3D11_TEXTURE2D_RELEASE(m_StagingTexture, "StagingTexture");
+                m_StagingTexture->Release();
+            }
+
             if (m_Device)
             {
                 IRR_D3D11_DEVICE_RELEASE(m_Device, "CD3D11Texture_Device");
@@ -140,12 +148,170 @@ namespace irr
 
         void* CD3D11Texture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel)
         {
-            return 0;
+            if (!m_Texture)
+                return 0;
+
+            ID3D11DeviceContext    *context = m_Driver->m_pID3DDeviceContext;
+            if (!context)
+                return 0;
+
+            D3D11_TEXTURE2D_DESC    desc;
+            m_Texture->GetDesc(&desc);
+
+            bool    cpuReadable = (desc.CPUAccessFlags & D3D11_CPU_ACCESS_READ) != 0;
+            bool    cpuWritable = (desc.CPUAccessFlags & D3D11_CPU_ACCESS_WRITE) != 0;
+
+            if (mode == ETLM_READ_WRITE && cpuReadable && cpuWritable)
+            {
+                D3D11_MAPPED_SUBRESOURCE    mapped;
+                HRESULT                     hr = context->Map(m_Texture, mipmapLevel, D3D11_MAP_READ_WRITE, 0, &mapped);
+                if (SUCCEEDED(hr))
+                {
+                    m_MappedResource            = mapped;
+                    m_StagingTextureMipLevel    = mipmapLevel;
+                    m_DirectMap                 = true;
+                    return mapped.pData;
+                }
+            }
+            else if (mode == ETLM_READ_ONLY && cpuReadable)
+            {
+                D3D11_MAPPED_SUBRESOURCE    mapped;
+                HRESULT                     hr = context->Map(m_Texture, mipmapLevel, D3D11_MAP_READ, 0, &mapped);
+                if (SUCCEEDED(hr))
+                {
+                    m_MappedResource            = mapped;
+                    m_StagingTextureMipLevel    = mipmapLevel;
+                    m_DirectMap                 = true;
+                    return mapped.pData;
+                }
+            }
+            else if (mode == ETLM_WRITE_ONLY && cpuWritable)
+            {
+                D3D11_MAPPED_SUBRESOURCE    mapped;
+                HRESULT                     hr = context->Map(m_Texture, mipmapLevel, D3D11_MAP_WRITE, 0, &mapped);
+                if (SUCCEEDED(hr))
+                {
+                    m_MappedResource            = mapped;
+                    m_StagingTextureMipLevel    = mipmapLevel;
+                    m_DirectMap                 = true;
+                    return mapped.pData;
+                }
+            }
+
+            if (!m_StagingTexture)
+            {
+                u32    mipWidth = desc.Width >> mipmapLevel;
+                if (mipWidth == 0)
+                    mipWidth = 1;
+
+                u32    mipHeight = desc.Height >> mipmapLevel;
+                if (mipHeight == 0)
+                    mipHeight = 1;
+
+                D3D11_TEXTURE2D_DESC    stagingDesc;
+                stagingDesc.Width               = mipWidth;
+                stagingDesc.Height              = mipHeight;
+                stagingDesc.MipLevels           = 1;
+                stagingDesc.ArraySize           = 1;
+                stagingDesc.Format              = desc.Format;
+                stagingDesc.SampleDesc.Count    = 1;
+                stagingDesc.SampleDesc.Quality  = 0;
+                stagingDesc.Usage               = D3D11_USAGE_STAGING;
+                stagingDesc.BindFlags           = 0;
+                stagingDesc.CPUAccessFlags      = D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE;
+                stagingDesc.MiscFlags           = 0;
+
+                if (m_StagingTexture)
+                {
+                    IRR_D3D11_TEXTURE2D_RELEASE(m_StagingTexture, "StagingTexture");
+                    m_StagingTexture->Release();
+                    m_StagingTexture = 0;
+                }
+
+                HRESULT    hr = m_Device->CreateTexture2D(&stagingDesc, 0, &m_StagingTexture);
+                if (FAILED(hr))
+                    return 0;
+
+                IRR_D3D11_TEXTURE2D_CREATE(m_StagingTexture, "StagingTexture");
+            }
+
+            if (mode != ETLM_WRITE_ONLY)
+            {
+                u32    mipWidth = desc.Width >> mipmapLevel;
+                if (mipWidth == 0)
+                    mipWidth = 1;
+
+                u32    mipHeight = desc.Height >> mipmapLevel;
+                if (mipHeight == 0)
+                    mipHeight = 1;
+
+                D3D11_BOX    srcBox;
+                srcBox.left     = 0;
+                srcBox.top      = 0;
+                srcBox.front    = 0;
+                srcBox.right    = mipWidth;
+                srcBox.bottom   = mipHeight;
+                srcBox.back     = 1;
+
+                context->CopySubresourceRegion(m_StagingTexture, 0, 0, 0, 0, m_Texture, mipmapLevel, &srcBox);
+            }
+
+            D3D11_MAP    mapType = D3D11_MAP_READ_WRITE;
+            if (mode == ETLM_READ_ONLY)
+                mapType = D3D11_MAP_READ;
+            else if (mode == ETLM_WRITE_ONLY)
+                mapType = D3D11_MAP_WRITE;
+
+            D3D11_MAPPED_SUBRESOURCE    mapped;
+            HRESULT                     hr = context->Map(m_StagingTexture, 0, mapType, 0, &mapped);
+            if (FAILED(hr))
+                return 0;
+
+            m_MappedResource            = mapped;
+            m_StagingTextureMipLevel    = mipmapLevel;
+            return mapped.pData;
         }
 
 
         void CD3D11Texture::unlock()
-        {}
+        {
+            if (!m_Driver->m_pID3DDeviceContext)
+                return;
+
+            if (m_StagingTexture)
+            {
+                m_Driver->m_pID3DDeviceContext->Unmap(m_StagingTexture, 0);
+
+                ID3D11DeviceContext    *context = m_Driver->m_pID3DDeviceContext;
+
+                D3D11_TEXTURE2D_DESC    desc;
+                m_Texture->GetDesc(&desc);
+
+                u32    mipWidth = desc.Width >> m_StagingTextureMipLevel;
+                if (mipWidth == 0)
+                    mipWidth = 1;
+
+                u32    mipHeight = desc.Height >> m_StagingTextureMipLevel;
+                if (mipHeight == 0)
+                    mipHeight = 1;
+
+                D3D11_BOX    destBox;
+                destBox.left    = 0;
+                destBox.top     = 0;
+                destBox.front   = 0;
+                destBox.right   = mipWidth;
+                destBox.bottom  = mipHeight;
+                destBox.back    = 1;
+
+                context->CopySubresourceRegion(m_Texture, m_StagingTextureMipLevel, 0, 0, 0,
+                                               m_StagingTexture, 0, &destBox);
+            }
+            else if (m_DirectMap && m_Texture)
+            {
+                m_Driver->m_pID3DDeviceContext->Unmap(m_Texture, m_StagingTextureMipLevel);
+                m_DirectMap = false;
+            }
+        }
 
 
         const core::dimension2d<u32>&CD3D11Texture::getOriginalSize() const

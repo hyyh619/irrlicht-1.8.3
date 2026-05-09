@@ -99,6 +99,11 @@ private:
             bool    m_HardwareMipMaps;
             bool    m_IsRenderTarget;
 
+            ID3D11Texture2D* m_StagingTexture;
+            u32 m_StagingTextureMipLevel;
+            D3D11_MAPPED_SUBRESOURCE m_MappedResource;
+            bool m_DirectMap;
+
             static u32 TextureDumpCounter;
         };
     } // end namespace video

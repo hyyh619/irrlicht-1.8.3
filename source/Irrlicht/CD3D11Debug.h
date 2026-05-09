@@ -29,7 +29,7 @@
 #define _IRR_DUMP_DRAW_CALLS_PRINT 1   // 1=print to log, 0=silent
 #endif
 #ifndef _IRR_DUMP_DRAW_CALLS_FILE
-#define _IRR_DUMP_DRAW_CALLS_FILE 0    // 1=write to file, 0=no file output
+#define _IRR_DUMP_DRAW_CALLS_FILE 1    // 1=write to file, 0=no file output
 #endif
 
 //! _IRR_D3D11_OBJECT_TRACKING: Enables D3D11 object reference tracking

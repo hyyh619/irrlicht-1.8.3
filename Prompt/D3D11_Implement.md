@@ -1110,7 +1110,7 @@ Git commit: Implement draw2DImage for Movement example by MiniMax-M2.7.
         {}
 
 # 62
-Git commit: 
+Git commit: We should check 2d render state key to decide if there is 2d render state switch by MiniMax-M2.7.
 setRenderStates2DMode函数不能简单判断上次是否是ERM_2D,应该通过SRenderStateSet的key来判断当前ERM_2D的state是否跟上次一样，如果不一样则配置新的state。
         void CD3D11Driver::setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel)
         {
@@ -1119,6 +1119,29 @@ setRenderStates2DMode函数不能简单判断上次是否是ERM_2D,应该通过S
 
 # 63
 Git commit: 
+实现下面函数
+        void* CD3D11Texture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel)
+        {
+            return 0;
+        }
+
+
+        void CD3D11Texture::unlock()
+        {}
+1. 如果texture的video memory能够被CPU access，直接返回lock地址，
+2. 如果texture的video memory不能被CPU access，则创建一个临时resource，该resource需要能CPU access
+   a. 在Lock时把当前texture内容拷贝到临时resource中,返回resource的cpu地址
+   b. 在unlock时把resource中的内容又拷贝回当前texture中。
+
+3. CD3D11Texture::lock中创建的m_StagingTexture只需要在第一次lock时被创建出来，后面就一直使用，在CD3D11Texture对象被销毁时再销毁m_StagingTexture
+4. CD3D11Texture::lock已经实现ETLM_READ_WRITE，ETLM_READ_ONLY，没有实现ETLM_WRITE_ONLY
 
 # 64
+Git commit: 
+
+
+# 65
+Git commit: 
+
+# 66
 Git commit: 
