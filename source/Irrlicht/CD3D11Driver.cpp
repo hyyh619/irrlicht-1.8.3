@@ -1569,7 +1569,7 @@ namespace irr
 
             core::position2d<s32>       targetPos   = destPos;
             core::position2d<s32>       sourcePos   = sourceRect.UpperLeftCorner;
-            core::dimension2d<s32>    sourceSize(sourceRect.getSize());
+            core::dimension2d<s32>      sourceSize(sourceRect.getSize());
 
             if (clipRect)
             {

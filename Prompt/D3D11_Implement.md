@@ -1095,7 +1095,7 @@ DUMP_TEXTURE: dump_1_wall.bmp
 #define _IRR_DUMP_TEXTURE(img, name)把tga后缀名换成jpg
 
 # 61
-Git commit: 
+Git commit: Implement draw2DImage for Movement example by MiniMax-M2.7.
 调用CD3D11Driver::draw2DImageBatch
 实现下列函数
         void CD3D11Driver::draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos,
