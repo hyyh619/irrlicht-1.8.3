@@ -359,6 +359,24 @@ namespace irr
                 }
             }
 
+            if (m_RectangleInputLayout)
+            {
+                IRR_D3D11_IL_RELEASE(m_RectangleInputLayout, "RectangleInputLayout");
+                m_RectangleInputLayout->Release();
+            }
+
+            if (m_RectangleVertexShader)
+            {
+                IRR_D3D11_VS_RELEASE(m_RectangleVertexShader, "RectangleVertexShader");
+                m_RectangleVertexShader->Release();
+            }
+
+            if (m_RectanglePixelShader)
+            {
+                IRR_D3D11_PS_RELEASE(m_RectanglePixelShader, "RectanglePixelShader");
+                m_RectanglePixelShader->Release();
+            }
+
             if (m_TempVertexBuffer)
             {
                 IRR_D3D11_BUFFER_RELEASE(m_TempVertexBuffer, "TempVertexBuffer");

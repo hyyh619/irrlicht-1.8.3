@@ -20,13 +20,13 @@
 //! _IRR_MATERIAL_PRINT: Prints material info to log whenever setMaterial is called
 // Default: disabled
 // Usage: Define _IRR_MATERIAL_PRINT to log material properties
-//#define _IRR_MATERIAL_PRINT
+#define _IRR_MATERIAL_PRINT
 
 //! _IRR_DUMP_DRAW_CALLS: Enables draw call statistics logging
 // Default: disabled
 // Usage: Define _IRR_DUMP_DRAW_CALLS to track draw call counts
 #ifndef _IRR_DUMP_DRAW_CALLS_PRINT
-#define _IRR_DUMP_DRAW_CALLS_PRINT 0   // 1=print to log, 0=silent
+#define _IRR_DUMP_DRAW_CALLS_PRINT 1   // 1=print to log, 0=silent
 #endif
 #ifndef _IRR_DUMP_DRAW_CALLS_FILE
 #define _IRR_DUMP_DRAW_CALLS_FILE 0    // 1=write to file, 0=no file output
@@ -36,7 +36,7 @@
 // Tracks Create/Release/AddRef calls for D3D11 objects to detect leaks
 // Default: disabled
 // Usage: Define _IRR_D3D11_OBJECT_TRACKING to enable object tracking
-#define _IRR_D3D11_OBJECT_TRACKING
+//#define _IRR_D3D11_OBJECT_TRACKING
 
 //==============================================================================
 // Disable macros via NO_IRR_<MACRO_NAME> prefix (override definitions above)

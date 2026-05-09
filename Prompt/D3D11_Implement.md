@@ -1067,12 +1067,23 @@ d3d11的m_RenderStateSets[ERM_RENDER_MODE_MAX]只是针对每个render mode创�
             bool    FrontfaceCulling : 1;
 
 # 58
-Git commit: 
+Git commit: Create render states based on material step2. Now rendering is OK. The coding is by MiniMax-M2.7.
 1. CD3D11Driver::getOrCreateRenderStateSet分成三个函数，分别针对ERM_3D，ERM_2D和其他render mode
 2. 把ERM_3D,ERM_2D和其它render mode的key生成代码用函数完成，不要在代码里分散计算。
 
 # 59
 Git commit: 
+下列d3d11 object没有释放
+            ID3D11VertexShader              *m_RectangleVertexShader;
+            ID3D11PixelShader               *m_RectanglePixelShader;
+            ID3D11InputLayout               *m_RectangleInputLayout;
 
 # 60
+Git commit: 
+
+
+# 61
+Git commit: 
+
+# 62
 Git commit: 
