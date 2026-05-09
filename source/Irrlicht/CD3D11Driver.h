@@ -431,8 +431,8 @@ private:
                 ERM_RENDER_MODE_MAX
             };
 
-            void setVSByVertexType(video::E_VERTEX_TYPE newType);
-            void setPSByMaterialType(video::E_MATERIAL_TYPE materialType);
+            void setVSByVertexType(video::E_VERTEX_TYPE vType);
+            void setPSByMaterialType(video::E_VERTEX_TYPE vType, video::E_MATERIAL_TYPE materialType);
 
             CD3D11Shader* getShaderByTypes(
                 video::E_VERTEX_TYPE vertexType, E_D3D11_SHADER_TYPE shaderType, E_MATERIAL_TYPE materialType) const;

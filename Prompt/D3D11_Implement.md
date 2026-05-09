@@ -1079,7 +1079,7 @@ Git commit: Fix memory leak caused by rectangle shader reference by MiniMax-M2.7
             ID3D11InputLayout               *m_RectangleInputLayout;
 
 # 60
-Git commit: 
+Git commit: Fix vs/ps input/output mismatch issue. Sometimes ps's material is EMT_SOLID and vs is EVT_2TCOORDS, but there is one texture. Fixed by ying.
 代码#define _IRR_DUMP_TEXTURE(img, name) name可能是包含了全路径的pathname，如下所示，请去掉路劲
 DUMP_TEXTURE: dump_1_C:/Development/Graphics/irrlicht-1.8.3/media/wall.bmp
 改为
@@ -1096,6 +1096,24 @@ DUMP_TEXTURE: dump_1_wall.bmp
 
 # 61
 Git commit: 
+调用CD3D11Driver::draw2DImageBatch
+实现下列函数
+        void CD3D11Driver::draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos,
+                                       const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect,
+                                       SColor color, bool useAlphaChannelOfTexture)
+        {}
+
+
+        void CD3D11Driver::draw2DImage(const video::ITexture *texture, const core::rect<s32> &destRect,
+                                       const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect,
+                                       const video::SColor* const colors, bool useAlphaChannelOfTexture)
+        {}
 
 # 62
+Git commit: 
+
+# 63
+Git commit: 
+
+# 64
 Git commit: 

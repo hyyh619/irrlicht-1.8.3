@@ -1286,7 +1286,7 @@ namespace irr
             const void                  *iPtr   = mb->getIndices();
 
             setVSByVertexType(vType);
-            setPSByMaterialType(m_Material.MaterialType);
+            setPSByMaterialType(vType, m_Material.MaterialType);
 
             if (hwBufferD3D->vertexBuffer)
             {
@@ -1365,7 +1365,7 @@ namespace irr
                                                        E_INDEX_TYPE iType, bool is3D)
         {
             setVSByVertexType(vType);
-            setPSByMaterialType(m_Material.MaterialType);
+            setPSByMaterialType(vType, m_Material.MaterialType);
 
             const u32       stride              = getVertexPitchFromType(vType);
             const u32       vertexBufferSize    = stride * vertexCount;
@@ -1557,13 +1557,399 @@ namespace irr
         void CD3D11Driver::draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos,
                                        const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect,
                                        SColor color, bool useAlphaChannelOfTexture)
-        {}
+        {
+            if (!texture)
+                return;
+
+            if (!sourceRect.isValid())
+                return;
+
+            if (!setActiveTexture(0, const_cast<video::ITexture*>(texture)))
+                return;
+
+            core::position2d<s32>       targetPos   = destPos;
+            core::position2d<s32>       sourcePos   = sourceRect.UpperLeftCorner;
+            core::dimension2d<s32>    sourceSize(sourceRect.getSize());
+
+            if (clipRect)
+            {
+                if (targetPos.X < clipRect->UpperLeftCorner.X)
+                {
+                    sourceSize.Width += targetPos.X - clipRect->UpperLeftCorner.X;
+                    if (sourceSize.Width <= 0)
+                        return;
+
+                    sourcePos.X     -= targetPos.X - clipRect->UpperLeftCorner.X;
+                    targetPos.X     = clipRect->UpperLeftCorner.X;
+                }
+
+                if (targetPos.X + (s32)sourceSize.Width > clipRect->LowerRightCorner.X)
+                {
+                    sourceSize.Width -= (targetPos.X + sourceSize.Width) - clipRect->LowerRightCorner.X;
+                    if (sourceSize.Width <= 0)
+                        return;
+                }
+
+                if (targetPos.Y < clipRect->UpperLeftCorner.Y)
+                {
+                    sourceSize.Height += targetPos.Y - clipRect->UpperLeftCorner.Y;
+                    if (sourceSize.Height <= 0)
+                        return;
+
+                    sourcePos.Y     -= targetPos.Y - clipRect->UpperLeftCorner.Y;
+                    targetPos.Y     = clipRect->UpperLeftCorner.Y;
+                }
+
+                if (targetPos.Y + (s32)sourceSize.Height > clipRect->LowerRightCorner.Y)
+                {
+                    sourceSize.Height -= (targetPos.Y + sourceSize.Height) - clipRect->LowerRightCorner.Y;
+                    if (sourceSize.Height <= 0)
+                        return;
+                }
+            }
+
+            if (targetPos.X < 0)
+            {
+                sourceSize.Width += targetPos.X;
+                if (sourceSize.Width <= 0)
+                    return;
+
+                sourcePos.X     -= targetPos.X;
+                targetPos.X     = 0;
+            }
+
+            const core::dimension2d<u32>    &renderTargetSize = getCurrentRenderTargetSize();
+
+            if (targetPos.X + sourceSize.Width > (s32)renderTargetSize.Width)
+            {
+                sourceSize.Width -= (targetPos.X + sourceSize.Width) - renderTargetSize.Width;
+                if (sourceSize.Width <= 0)
+                    return;
+            }
+
+            if (targetPos.Y < 0)
+            {
+                sourceSize.Height += targetPos.Y;
+                if (sourceSize.Height <= 0)
+                    return;
+
+                sourcePos.Y     -= targetPos.Y;
+                targetPos.Y     = 0;
+            }
+
+            if (targetPos.Y + sourceSize.Height > (s32)renderTargetSize.Height)
+            {
+                sourceSize.Height -= (targetPos.Y + sourceSize.Height) - renderTargetSize.Height;
+                if (sourceSize.Height <= 0)
+                    return;
+            }
+
+            core::rect<f32>    tcoords;
+            tcoords.UpperLeftCorner.X   = (f32)sourcePos.X / texture->getOriginalSize().Width;
+            tcoords.UpperLeftCorner.Y   = (f32)sourcePos.Y / texture->getOriginalSize().Height;
+            tcoords.LowerRightCorner.X  = tcoords.UpperLeftCorner.X + (f32)sourceSize.Width / texture->getOriginalSize().Width;
+            tcoords.LowerRightCorner.Y  = tcoords.UpperLeftCorner.Y + (f32)sourceSize.Height / texture->getOriginalSize().Height;
+
+            const core::rect<s32>    poss(targetPos, sourceSize);
+
+            setRenderStates2DMode(color.getAlpha() < 255, true, useAlphaChannelOfTexture);
+
+            S3DVertex    vtx[4];
+            vtx[0] = S3DVertex((f32)poss.UpperLeftCorner.X, (f32)poss.UpperLeftCorner.Y, 0.0f,
+                               0.0f, 0.0f, 0.0f, color,
+                               tcoords.UpperLeftCorner.X, tcoords.UpperLeftCorner.Y);
+            vtx[1] = S3DVertex((f32)poss.LowerRightCorner.X, (f32)poss.UpperLeftCorner.Y, 0.0f,
+                               0.0f, 0.0f, 0.0f, color,
+                               tcoords.LowerRightCorner.X, tcoords.UpperLeftCorner.Y);
+            vtx[2] = S3DVertex((f32)poss.LowerRightCorner.X, (f32)poss.LowerRightCorner.Y, 0.0f,
+                               0.0f, 0.0f, 0.0f, color,
+                               tcoords.LowerRightCorner.X, tcoords.LowerRightCorner.Y);
+            vtx[3] = S3DVertex((f32)poss.UpperLeftCorner.X, (f32)poss.LowerRightCorner.Y, 0.0f,
+                               0.0f, 0.0f, 0.0f, color,
+                               tcoords.UpperLeftCorner.X, tcoords.LowerRightCorner.Y);
+
+            u16    indices[6] = {0, 1, 2, 0, 2, 3};
+
+            setVSByVertexType(EVT_STANDARD);
+            setPSByMaterialType(EVT_STANDARD, m_Material.MaterialType);
+
+            core::matrix4    mvp;
+            mvp.buildProjectionMatrixOrthoLH(f32(getCurrentRenderTargetSize().Width), f32(-(s32)getCurrentRenderTargetSize().Height), -1.0f, 1.0f);
+            mvp.setTranslation(core::vector3df(-1.0f, 1.0f, 0.0f));
+
+            D3D11_MAPPED_SUBRESOURCE    mappedMatrix;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_MatrixConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMatrix)))
+            {
+                memcpy(mappedMatrix.pData, mvp.pointer(), sizeof(core::matrix4));
+                m_pID3DDeviceContext->Unmap(m_MatrixConstantBuffer, 0);
+            }
+
+            m_pID3DDeviceContext->VSSetConstantBuffers(0, 1, &m_MatrixConstantBuffer);
+
+            const u32       vertexBufferSize    = sizeof(vtx);
+            const u32       indexBufferSize     = sizeof(indices);
+
+            if (!m_TempVertexBuffer || m_TempVertexBufferSize < vertexBufferSize)
+            {
+                if (m_TempVertexBuffer)
+                {
+                    IRR_D3D11_BUFFER_RELEASE(m_TempVertexBuffer, "TempVertexBuffer");
+                    m_TempVertexBuffer->Release();
+                }
+
+                D3D11_BUFFER_DESC    vbDesc;
+                vbDesc.ByteWidth            = vertexBufferSize;
+                vbDesc.Usage                = D3D11_USAGE_DYNAMIC;
+                vbDesc.BindFlags            = D3D11_BIND_VERTEX_BUFFER;
+                vbDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+                vbDesc.MiscFlags            = 0;
+                vbDesc.StructureByteStride  = 0;
+
+                if (FAILED(m_pID3DDevice->CreateBuffer(&vbDesc, 0, &m_TempVertexBuffer)))
+                {
+                    os::Printer::log("Failed to create vertex buffer", ELL_ERROR);
+                    return;
+                }
+
+                IRR_D3D11_BUFFER_CREATE(m_TempVertexBuffer, "TempVertexBuffer");
+                m_TempVertexBufferSize = vertexBufferSize;
+            }
+
+            D3D11_MAPPED_SUBRESOURCE    mappedVB;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_TempVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedVB)))
+            {
+                memcpy(mappedVB.pData, vtx, vertexBufferSize);
+                m_pID3DDeviceContext->Unmap(m_TempVertexBuffer, 0);
+            }
+            else
+            {
+                os::Printer::log("Failed to map vertex buffer", ELL_ERROR);
+                return;
+            }
+
+            if (!m_TempIndexBuffer || m_TempIndexBufferSize < indexBufferSize || m_TempIndexType != EIT_16BIT)
+            {
+                if (m_TempIndexBuffer)
+                {
+                    IRR_D3D11_BUFFER_RELEASE(m_TempIndexBuffer, "TempIndexBuffer");
+                    m_TempIndexBuffer->Release();
+                }
+
+                D3D11_BUFFER_DESC    ibDesc;
+                ibDesc.ByteWidth            = indexBufferSize;
+                ibDesc.Usage                = D3D11_USAGE_DYNAMIC;
+                ibDesc.BindFlags            = D3D11_BIND_INDEX_BUFFER;
+                ibDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+                ibDesc.MiscFlags            = 0;
+                ibDesc.StructureByteStride  = 0;
+
+                if (FAILED(m_pID3DDevice->CreateBuffer(&ibDesc, 0, &m_TempIndexBuffer)))
+                {
+                    os::Printer::log("Failed to create index buffer", ELL_ERROR);
+                    return;
+                }
+
+                IRR_D3D11_BUFFER_CREATE(m_TempIndexBuffer, "TempIndexBuffer");
+                m_TempIndexBufferSize   = indexBufferSize;
+                m_TempIndexType         = EIT_16BIT;
+            }
+
+            D3D11_MAPPED_SUBRESOURCE    mappedIB;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_TempIndexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedIB)))
+            {
+                memcpy(mappedIB.pData, indices, indexBufferSize);
+                m_pID3DDeviceContext->Unmap(m_TempIndexBuffer, 0);
+            }
+            else
+            {
+                os::Printer::log("Failed to map index buffer", ELL_ERROR);
+                return;
+            }
+
+            ID3D11Buffer    *buffers[1] = { m_TempVertexBuffer };
+            UINT            offsets[1]  = { 0 };
+            UINT            strides[1]  = { sizeof(S3DVertex) };
+            m_pID3DDeviceContext->IASetVertexBuffers(0, 1, buffers, strides, offsets);
+            m_pID3DDeviceContext->IASetIndexBuffer(m_TempIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+            m_pID3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+            m_pID3DDeviceContext->DrawIndexed(6, 0, 0);
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DImage");
+#endif
+        }
 
 
         void CD3D11Driver::draw2DImage(const video::ITexture *texture, const core::rect<s32> &destRect,
                                        const core::rect<s32> &sourceRect, const core::rect<s32> *clipRect,
                                        const video::SColor* const colors, bool useAlphaChannelOfTexture)
-        {}
+        {
+            if (!texture)
+                return;
+
+            const core::dimension2d<u32>    &ss = texture->getOriginalSize();
+            core::rect<f32>                 tcoords;
+            tcoords.UpperLeftCorner.X   = (f32)sourceRect.UpperLeftCorner.X / (f32)ss.Width;
+            tcoords.UpperLeftCorner.Y   = (f32)sourceRect.UpperLeftCorner.Y / (f32)ss.Height;
+            tcoords.LowerRightCorner.X  = (f32)sourceRect.LowerRightCorner.X / (f32)ss.Width;
+            tcoords.LowerRightCorner.Y  = (f32)sourceRect.LowerRightCorner.Y / (f32)ss.Height;
+
+            const video::SColor    temp[4] =
+            {
+                0xFFFFFFFF,
+                0xFFFFFFFF,
+                0xFFFFFFFF,
+                0xFFFFFFFF
+            };
+
+            const video::SColor* const    useColor = colors ? colors : temp;
+
+            S3DVertex    vtx[4];
+            vtx[0] = S3DVertex((f32)destRect.UpperLeftCorner.X, (f32)destRect.UpperLeftCorner.Y, 0.0f,
+                               0.0f, 0.0f, 0.0f, useColor[0],
+                               tcoords.UpperLeftCorner.X, tcoords.UpperLeftCorner.Y);
+            vtx[1] = S3DVertex((f32)destRect.LowerRightCorner.X, (f32)destRect.UpperLeftCorner.Y, 0.0f,
+                               0.0f, 0.0f, 0.0f, useColor[3],
+                               tcoords.LowerRightCorner.X, tcoords.UpperLeftCorner.Y);
+            vtx[2] = S3DVertex((f32)destRect.LowerRightCorner.X, (f32)destRect.LowerRightCorner.Y, 0.0f,
+                               0.0f, 0.0f, 0.0f, useColor[2],
+                               tcoords.LowerRightCorner.X, tcoords.LowerRightCorner.Y);
+            vtx[3] = S3DVertex((f32)destRect.UpperLeftCorner.X, (f32)destRect.LowerRightCorner.Y, 0.0f,
+                               0.0f, 0.0f, 0.0f, useColor[1],
+                               tcoords.UpperLeftCorner.X, tcoords.LowerRightCorner.Y);
+
+            u16    indices[6] = {0, 1, 2, 0, 2, 3};
+
+            if (!setActiveTexture(0, const_cast<video::ITexture*>(texture)))
+                return;
+
+            setRenderStates2DMode(useColor[0].getAlpha() < 255 || useColor[1].getAlpha() < 255 ||
+                                  useColor[2].getAlpha() < 255 || useColor[3].getAlpha() < 255,
+                                  true, useAlphaChannelOfTexture);
+
+            setVSByVertexType(EVT_STANDARD);
+            setPSByMaterialType(EVT_STANDARD, m_Material.MaterialType);
+
+            core::matrix4    mvp;
+            mvp.buildProjectionMatrixOrthoLH(f32(getCurrentRenderTargetSize().Width), f32(-(s32)getCurrentRenderTargetSize().Height), -1.0f, 1.0f);
+            mvp.setTranslation(core::vector3df(-1.0f, 1.0f, 0.0f));
+
+            D3D11_MAPPED_SUBRESOURCE    mappedMatrix;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_MatrixConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMatrix)))
+            {
+                memcpy(mappedMatrix.pData, mvp.pointer(), sizeof(core::matrix4));
+                m_pID3DDeviceContext->Unmap(m_MatrixConstantBuffer, 0);
+            }
+
+            m_pID3DDeviceContext->VSSetConstantBuffers(0, 1, &m_MatrixConstantBuffer);
+
+            const u32       vertexBufferSize    = sizeof(vtx);
+            const u32       indexBufferSize     = sizeof(indices);
+
+            if (!m_TempVertexBuffer || m_TempVertexBufferSize < vertexBufferSize)
+            {
+                if (m_TempVertexBuffer)
+                {
+                    IRR_D3D11_BUFFER_RELEASE(m_TempVertexBuffer, "TempVertexBuffer");
+                    m_TempVertexBuffer->Release();
+                }
+
+                D3D11_BUFFER_DESC    vbDesc;
+                vbDesc.ByteWidth            = vertexBufferSize;
+                vbDesc.Usage                = D3D11_USAGE_DYNAMIC;
+                vbDesc.BindFlags            = D3D11_BIND_VERTEX_BUFFER;
+                vbDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+                vbDesc.MiscFlags            = 0;
+                vbDesc.StructureByteStride  = 0;
+
+                if (FAILED(m_pID3DDevice->CreateBuffer(&vbDesc, 0, &m_TempVertexBuffer)))
+                {
+                    os::Printer::log("Failed to create vertex buffer", ELL_ERROR);
+                    return;
+                }
+
+                IRR_D3D11_BUFFER_CREATE(m_TempVertexBuffer, "TempVertexBuffer");
+                m_TempVertexBufferSize = vertexBufferSize;
+            }
+
+            D3D11_MAPPED_SUBRESOURCE    mappedVB;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_TempVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedVB)))
+            {
+                memcpy(mappedVB.pData, vtx, vertexBufferSize);
+                m_pID3DDeviceContext->Unmap(m_TempVertexBuffer, 0);
+            }
+            else
+            {
+                os::Printer::log("Failed to map vertex buffer", ELL_ERROR);
+                return;
+            }
+
+            if (!m_TempIndexBuffer || m_TempIndexBufferSize < indexBufferSize || m_TempIndexType != EIT_16BIT)
+            {
+                if (m_TempIndexBuffer)
+                {
+                    IRR_D3D11_BUFFER_RELEASE(m_TempIndexBuffer, "TempIndexBuffer");
+                    m_TempIndexBuffer->Release();
+                }
+
+                D3D11_BUFFER_DESC    ibDesc;
+                ibDesc.ByteWidth            = indexBufferSize;
+                ibDesc.Usage                = D3D11_USAGE_DYNAMIC;
+                ibDesc.BindFlags            = D3D11_BIND_INDEX_BUFFER;
+                ibDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+                ibDesc.MiscFlags            = 0;
+                ibDesc.StructureByteStride  = 0;
+
+                if (FAILED(m_pID3DDevice->CreateBuffer(&ibDesc, 0, &m_TempIndexBuffer)))
+                {
+                    os::Printer::log("Failed to create index buffer", ELL_ERROR);
+                    return;
+                }
+
+                IRR_D3D11_BUFFER_CREATE(m_TempIndexBuffer, "TempIndexBuffer");
+                m_TempIndexBufferSize   = indexBufferSize;
+                m_TempIndexType         = EIT_16BIT;
+            }
+
+            D3D11_MAPPED_SUBRESOURCE    mappedIB;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_TempIndexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedIB)))
+            {
+                memcpy(mappedIB.pData, indices, indexBufferSize);
+                m_pID3DDeviceContext->Unmap(m_TempIndexBuffer, 0);
+            }
+            else
+            {
+                os::Printer::log("Failed to map index buffer", ELL_ERROR);
+                return;
+            }
+
+            if (clipRect)
+            {
+                D3D11_RECT    scissor;
+                scissor.left    = clipRect->UpperLeftCorner.X;
+                scissor.top     = clipRect->UpperLeftCorner.Y;
+                scissor.right   = clipRect->LowerRightCorner.X;
+                scissor.bottom  = clipRect->LowerRightCorner.Y;
+                m_pID3DDeviceContext->RSSetScissorRects(1, &scissor);
+            }
+
+            ID3D11Buffer    *buffers[1] = { m_TempVertexBuffer };
+            UINT            offsets[1]  = { 0 };
+            UINT            strides[1]  = { sizeof(S3DVertex) };
+            m_pID3DDeviceContext->IASetVertexBuffers(0, 1, buffers, strides, offsets);
+            m_pID3DDeviceContext->IASetIndexBuffer(m_TempIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+            m_pID3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+            m_pID3DDeviceContext->DrawIndexed(6, 0, 0);
+
+            if (clipRect)
+            {
+                m_pID3DDeviceContext->RSSetScissorRects(1, &m_DefaultScissorRect);
+            }
+
+#ifdef _IRR_DUMP_DRAW_CALLS_
+            dumpDrawCall("draw2DImage");
+#endif
+        }
 
 
         void CD3D11Driver::draw2DImageBatch(const video::ITexture *texture,
@@ -1699,7 +2085,7 @@ namespace irr
                 return;
 
             setVSByVertexType(EVT_STANDARD);
-            setPSByMaterialType(m_Material.MaterialType);
+            setPSByMaterialType(EVT_STANDARD, m_Material.MaterialType);
 
             core::matrix4    mvp;
             mvp.buildProjectionMatrixOrthoLH(f32(getCurrentRenderTargetSize().Width), f32(-(s32)getCurrentRenderTargetSize().Height), -1.0f, 1.0f);
@@ -2596,9 +2982,9 @@ namespace irr
         }
 
 
-        void CD3D11Driver::setVSByVertexType(video::E_VERTEX_TYPE newType)
+        void CD3D11Driver::setVSByVertexType(video::E_VERTEX_TYPE vType)
         {
-            if (newType != m_LastVertexType || !m_BuiltInVSInitialized)
+            if (vType != m_LastVertexType || !m_BuiltInVSInitialized)
             {
                 if (!m_BuiltInVSInitialized)
                 {
@@ -2612,22 +2998,22 @@ namespace irr
                     m_BuiltInVSInitialized = true;
                 }
 
-                if (newType >= 0 && newType <= EVT_2D_RECTANGLE && m_BuiltInVertexShader[newType])
+                if (vType >= 0 && vType <= EVT_2D_RECTANGLE && m_BuiltInVertexShader[vType])
                 {
-                    m_pID3DDeviceContext->VSSetShader(m_BuiltInVertexShader[newType], 0, 0);
+                    m_pID3DDeviceContext->VSSetShader(m_BuiltInVertexShader[vType], 0, 0);
 
-                    if (m_InputLayout[newType])
+                    if (m_InputLayout[vType])
                     {
-                        m_pID3DDeviceContext->IASetInputLayout(m_InputLayout[newType]);
+                        m_pID3DDeviceContext->IASetInputLayout(m_InputLayout[vType]);
                     }
                 }
 
-                m_LastVertexType = newType;
+                m_LastVertexType = vType;
             }
         }
 
 
-        void CD3D11Driver::setPSByMaterialType(video::E_MATERIAL_TYPE materialType)
+        void CD3D11Driver::setPSByMaterialType(video::E_VERTEX_TYPE vType, video::E_MATERIAL_TYPE materialType)
         {
             if (!m_MaterialPSInitialized)
             {
@@ -2649,7 +3035,7 @@ namespace irr
                 {
                     if (m_nPsTexCount == 0)
                         materialType = EMT_SOLID_COLOR;
-                    else if (m_nPsTexCount == 1)
+                    else if (m_nPsTexCount == 1 && vType == EVT_2TCOORDS)
                         materialType = EMT_SOLID_1_LAYER;
                 }
 
