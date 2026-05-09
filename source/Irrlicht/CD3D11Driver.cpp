@@ -942,12 +942,16 @@ namespace irr
             m_Material = material;
             OverrideMaterial.apply(m_Material);
 
-            m_nPsTexCount   = 0;
+            m_nLastPsTexCount   = m_nPsTexCount;
+            m_nPsTexCount       = 0;
 
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
                 setActiveTexture(i, material.getTexture(i));
             }
+
+            if (material.Lighting == 1)
+                os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
 
             setBasicRenderStates(material, m_LastMaterial, true);
             m_LastMaterial = material;
@@ -3031,7 +3035,7 @@ namespace irr
 
             // material type is only used for changing shader.
             // The draw has the same material type but it has different textures.
-            if (m_LastMaterialType != materialType)
+            if (m_LastMaterialType != materialType || m_nPsTexCount != m_nLastPsTexCount)
             {
                 m_LastMaterialType = materialType;
 

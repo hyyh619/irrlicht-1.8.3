@@ -523,6 +523,7 @@ private:
             const ITexture      *m_CurrentTexture[MATERIAL_MAX_TEXTURES];
             const ITexture      *m_PreviousTexture[MATERIAL_MAX_TEXTURES];
             u32                 m_nPsTexCount;
+            u32                 m_nLastPsTexCount;
             bool                m_LastTextureMipMapsAvailable[MATERIAL_MAX_TEXTURES];
             core::matrix4       m_Matrices[ETS_COUNT];
 

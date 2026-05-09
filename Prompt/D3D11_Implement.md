@@ -1118,7 +1118,7 @@ setRenderStates2DMode函数不能简单判断上次是否是ERM_2D,应该通过S
                 return;
 
 # 63
-Git commit: 
+Git commit: Implement texture lock/unlock by MiniMax-M2.7.
 实现下面函数
         void* CD3D11Texture::lock(E_TEXTURE_LOCK_MODE mode, u32 mipmapLevel)
         {
