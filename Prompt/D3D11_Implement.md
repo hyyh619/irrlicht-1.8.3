@@ -922,6 +922,146 @@ Git commit: Create sampler based on material's texture layer by MiniMax-M2.7.
 5. CD3D11Driver::setPSTextureAndSamplerState配置CSampler时，使用m_CurrentSampler
 
 # 55
-Git commit: 
+Git commit: Fix sampler/texture settings if changing material's texture, not changing material's type by MiniMax-M2.7.
 CD3D11Driver::setPSTextureAndSamplerState总是根据当前m_CurrentTexture和m_CurrentSampler的状态来设置texture/sampler。
 我们需要根据当前texture/sampler与上一次draw有没有变化来决定是否设置
+
+# 56
+Git commit: 
+d3d11的m_RenderStateSets[ERM_RENDER_MODE_MAX]只是针对每个render mode创建一套pipeline state，并不能满足不同material的要求。请做如下修改
+1. 每个render mode可以有多个render states，每个render states根据material的配置来创建
+2. m_RenderStateSets[ERM_RENDER_MODE_MAX]变成一个字典数组，每个创建的SRenderStateSet对象同时创建一个key，(key, SRenderStateSet)都保存在m_RenderStateSets[ERM_RENDER_MODE_MAX]中。
+3. depth/stencil/rasterizer/blend的状态的创建需要参考material的设置
+4. 每次需要创建SRenderStateSet前，在m_RenderStateSets[ERM_RENDER_MODE_MAX]查找是否有已经创建的state使用，如果没有则创建
+5. 删除SRenderStateSet中的AlphaBlendState，每个blend state的创建要根据material的配置，
+   A. 如果是ERM_2D，根据setRenderStates2DMode的输入参数满足下面条件就开启alphablend
+            alphaChannel &= texture;
+
+            if (alpha || alphaChannel)
+            {
+                // Enable alpha blend
+            }
+            else
+            {
+                // Disable alpha blend
+            }
+    B. 如果是ERM_3D，则根据material的“E_BLEND_OPERATION    BlendOperation”来确定是否开启，以及alpha blend的设置参数，可以参考如下d3d9代码
+            if (queryFeature(EVDF_BLEND_OPERATIONS) &&
+                (resetAllRenderstates || lastmaterial.BlendOperation != material.BlendOperation))
+            {
+                if (material.BlendOperation == EBO_NONE)
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+                else
+                {
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+
+                    switch (material.BlendOperation)
+                    {
+                        case EBO_SUBTRACT:
+                            m_pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_SUBTRACT);
+                            break;
+
+                        case EBO_REVSUBTRACT:
+                            m_pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
+                            break;
+
+                        case EBO_MIN:
+                        case EBO_MIN_FACTOR:
+                        case EBO_MIN_ALPHA:
+                            m_pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_MIN);
+                            break;
+
+                        case EBO_MAX:
+                        case EBO_MAX_FACTOR:
+                        case EBO_MAX_ALPHA:
+                            m_pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_MAX);
+                            break;
+
+                        default:
+                            m_pID3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+                            break;
+                    }
+                }
+            }
+
+6. 帮我解析这段代码的意思，以及对应于d3d11的实现，看起来似乎d3d11需要用shader来完成
+            if (lastmaterial.ColorMaterial != material.ColorMaterial)
+            {
+                m_pID3DDevice->SetRenderState(D3DRS_COLORVERTEX, (material.ColorMaterial != ECM_NONE));
+                m_pID3DDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE,
+                                              ((material.ColorMaterial == ECM_DIFFUSE) ||
+                                               (material.ColorMaterial == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE,
+                                              ((material.ColorMaterial == ECM_AMBIENT) ||
+                                               (material.ColorMaterial == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_EMISSIVEMATERIALSOURCE,
+                                              (material.ColorMaterial == ECM_EMISSIVE) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE,
+                                              (material.ColorMaterial == ECM_SPECULAR) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+            }
+
+7. CD3D11Driver::createRenderStateKey创建key，针对ERM_2D,ERM_3D和其他rendermode分别创建，
+8. ERM_2D使用mode, alpha, texture, alphaChannel来创建key
+9.  ERM_3D使用SMaterial &material内的参数来创建key，包括以下参数
+            //! Type of the material. Specifies how everything is blended together
+            E_MATERIAL_TYPE    MaterialType;
+
+            //! Free parameter, dependent on the material type.
+            /** Mostly ignored, used for example in EMT_PARALLAX_MAP_SOLID
+             * and EMT_TRANSPARENT_ALPHA_CHANNEL. */
+            f32    MaterialTypeParam;
+
+            //! Thickness of non-3dimensional elements such as lines and points.
+            f32    Thickness;
+
+            //! Is the ZBuffer enabled? Default: ECFN_LESSEQUAL
+            /** Values are from E_COMPARISON_FUNC. */
+            u8    ZBuffer;
+
+            //! Sets the antialiasing mode
+            /** Values are chosen from E_ANTI_ALIASING_MODE. Default is
+             * EAAM_SIMPLE|EAAM_LINE_SMOOTH, i.e. simple multi-sample
+             * anti-aliasing and lime smoothing is enabled. */
+            u8    AntiAliasing;
+
+            //! Defines the enabled color planes
+            /** Values are defined as or'ed values of the E_COLOR_PLANE enum.
+             * Only enabled color planes will be rendered to the current render
+             * target. Typical use is to disable all colors when rendering only to
+             * depth or stencil buffer, or using Red and Green for Stereo rendering. */
+            u8    ColorMask : 4;
+
+            //! Store the blend operation of choice
+            /** Values to be chosen from E_BLEND_OPERATION. The actual way to use this value
+             * is not yet determined, so ignore it for now. */
+            E_BLEND_OPERATION    BlendOperation : 4;
+
+            //! Factor specifying how far the polygon offset should be made
+            /** Specifying 0 disables the polygon offset. The direction is specified spearately.
+             * The factor can be from 0 to 7.*/
+            u8    PolygonOffsetFactor : 3;
+
+            //! Flag defining the direction the polygon offset is applied to.
+            /** Can be to front or to back, specififed by values from E_POLYGON_OFFSET. */
+            E_POLYGON_OFFSET    PolygonOffsetDirection : 1;
+
+            //! Draw as wireframe or filled triangles? Default: false
+            /** The user can access a material flag using
+             * \code material.Wireframe=true \endcode
+             * or \code material.setFlag(EMF_WIREFRAME, true); \endcode */
+            bool    Wireframe : 1;
+
+            //! Draw as point cloud or filled triangles? Default: false
+            bool    PointCloud : 1;
+
+            //! Is the zbuffer writeable or is it read-only. Default: true.
+            /** This flag is forced to false if the MaterialType is a
+             * transparent type and the scene parameter
+             * ALLOW_ZWRITE_ON_TRANSPARENT is not set. */
+            bool    ZWriteEnable : 1;
+
+            //! Is backface culling enabled? Default: true
+            bool    BackfaceCulling : 1;
+
+            //! Is frontface culling enabled? Default: false
+            bool    FrontfaceCulling : 1;

@@ -206,7 +206,6 @@ namespace irr
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
             m_RenderStateSets(),
-            m_DefaultSampler(0),
             m_MaxTextureUnits(0), m_MaxUserClipPlanes(0), m_MaxMRTs(1), m_NumSetMRTs(1),
             m_MaxLightDistance(0.f), m_LastSetLight(-1),
             m_ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), m_DeviceRemoved(false),
@@ -221,11 +220,11 @@ namespace irr
 
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
-                m_CurrentTexture[i]                 = 0;
-                m_PreviousTexture[i]                = 0;
-                m_LastTextureMipMapsAvailable[i]    = false;
-                m_CurrentSampler[i]                 = 0;
-                m_PreviousSampler[i]                 = 0;
+                m_CurrentTexture[i]                     = 0;
+                m_PreviousTexture[i]                    = 0;
+                m_LastTextureMipMapsAvailable[i]        = false;
+                m_CurrentSampler[i]                     = 0;
+                m_PreviousSampler[i]                    = 0;
             }
 
             m_MaxLightDistance = sqrtf(FLT_MAX);
@@ -380,33 +379,32 @@ namespace irr
 
             for (u32 i = 0; i < ERM_RENDER_MODE_MAX; ++i)
             {
-                if (m_RenderStateSets[i].RasterizerState)
+                for (core::map<u64, SRenderStateSet>::ParentLastIterator it = m_RenderStateSets[i].getParentLastIterator();
+                    !it.atEnd(); it++)
                 {
-                    IRR_D3D11_RS_RELEASE(m_RenderStateSets[i].RasterizerState, "RasterizerState");
-                    m_RenderStateSets[i].RasterizerState->Release();
+                    SRenderStateSet    &stateSet = it->getValue();
+
+                    if (stateSet.RasterizerState)
+                    {
+                        IRR_D3D11_RS_RELEASE(stateSet.RasterizerState, "RasterizerState");
+                        stateSet.RasterizerState->Release();
+                    }
+
+                    if (stateSet.DepthStencilState)
+                    {
+                        IRR_D3D11_DSS_RELEASE(stateSet.DepthStencilState, "DepthStencilState");
+                        stateSet.DepthStencilState->Release();
+                    }
+
+                    if (stateSet.BlendState)
+                    {
+                        IRR_D3D11_BLEND_RELEASE(stateSet.BlendState, "BlendState");
+                        stateSet.BlendState->Release();
+                    }
                 }
 
-                if (m_RenderStateSets[i].DepthStencilState)
-                {
-                    IRR_D3D11_DSS_RELEASE(m_RenderStateSets[i].DepthStencilState, "DepthStencilState");
-                    m_RenderStateSets[i].DepthStencilState->Release();
-                }
-
-                if (m_RenderStateSets[i].BlendState)
-                {
-                    IRR_D3D11_BLEND_RELEASE(m_RenderStateSets[i].BlendState, "BlendState");
-                    m_RenderStateSets[i].BlendState->Release();
-                }
-
-                if (m_RenderStateSets[i].AlphaBlendState)
-                {
-                    IRR_D3D11_BLEND_RELEASE(m_RenderStateSets[i].AlphaBlendState, "AlphaBlendState");
-                    m_RenderStateSets[i].AlphaBlendState->Release();
-                }
+                m_RenderStateSets[i].clear();
             }
-
-            if (m_DefaultSampler)
-                m_DefaultSampler->drop();
 
             if (m_BackBufferRenderTargetView)
             {
@@ -713,18 +711,9 @@ namespace irr
                 return false;
             }
 
-            if (!createRenderStates())
-            {
-                os::Printer::log("Could not create default render states.", ELL_ERROR);
-                return false;
-            }
-
             setTransform(ETS_VIEW, core::IdentityMatrix);
             setTransform(ETS_PROJECTION, core::IdentityMatrix);
             setTransform(ETS_WORLD, core::IdentityMatrix);
-
-            m_DefaultSampler = new CSampler(this);
-            m_DefaultSampler->createDefault();
 
             return true;
         }
@@ -1091,7 +1080,18 @@ namespace irr
                 return;
 
             m_CurrentRenderMode = ERM_2D;
-            setRenderStates(ERM_2D, alpha);
+
+            SRenderStateSet    *stateSet = getOrCreateRenderStateSet(ERM_2D, alpha, texture, alphaChannel, m_Material);
+            if (!stateSet)
+                return;
+
+            m_pID3DDeviceContext->RSSetViewports(1, &m_DefaultViewport);
+            m_pID3DDeviceContext->RSSetScissorRects(1, &m_DefaultScissorRect);
+            m_pID3DDeviceContext->RSSetState(stateSet->RasterizerState);
+            m_pID3DDeviceContext->OMSetDepthStencilState(stateSet->DepthStencilState, 0);
+
+            FLOAT    blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+            m_pID3DDeviceContext->OMSetBlendState(stateSet->BlendState, blendFactor, 0xFFFFFFFF);
         }
 
 
@@ -2636,7 +2636,7 @@ namespace irr
                 }
                 else
                 {
-                    const CD3D11Shader *pShader = getShaderByTypes((E_VERTEX_TYPE)0, EDST_PIXEL, materialType);
+                    const CD3D11Shader    *pShader = getShaderByTypes((E_VERTEX_TYPE)0, EDST_PIXEL, materialType);
 
                     if (pShader && pShader->getPixelShader())
                     {
@@ -2700,8 +2700,8 @@ namespace irr
                         m_pID3DDeviceContext->PSSetSamplers(i, 1, &pSampler);
                     }
 
-                    m_PreviousTexture[i] = m_CurrentTexture[i];
-                    m_PreviousSampler[i] = m_CurrentSampler[i];
+                    m_PreviousTexture[i]    = m_CurrentTexture[i];
+                    m_PreviousSampler[i]    = m_CurrentSampler[i];
                 }
             }
         }
@@ -3174,13 +3174,63 @@ namespace irr
         }
 
 
-        bool CD3D11Driver::createRenderStates()
+        u64 CD3D11Driver::createRenderStateKey(
+            E_RENDER_MODE mode, bool alpha, bool texture, bool alphaChannel, const SMaterial &material)
         {
+            u64 key = 0;
+
+            if (mode == ERM_2D)
+            {
+                key |= u64(mode) << 0;
+                key |= u64(alpha) << 4;
+                key |= u64(texture) << 8;
+                key |= u64(alphaChannel) << 12;
+            }
+            else if (mode == ERM_3D)
+            {
+                key |= u64(mode) << 0;
+                key |= u64(material.MaterialType) << 4;
+                key |= u64(*(u32*)&material.MaterialTypeParam) << 12;
+                key |= u64(*(u32*)&material.Thickness) << 20;
+                key |= u64(material.ZBuffer) << 28;
+                key |= u64(material.AntiAliasing) << 32;
+                key |= u64(material.ColorMask) << 36;
+                key |= u64(material.BlendOperation) << 40;
+                key |= u64(material.PolygonOffsetFactor) << 44;
+                key |= u64(material.PolygonOffsetDirection) << 48;
+                key |= u64(material.Wireframe) << 52;
+                key |= u64(material.PointCloud) << 53;
+                key |= u64(material.ZWriteEnable) << 54;
+                key |= u64(material.BackfaceCulling) << 55;
+                key |= u64(material.FrontfaceCulling) << 56;
+            }
+            else
+            {
+                _IRR_DEBUG_BREAK_IF(false);
+                key |= u64(mode) << 0;
+            }
+
+            return key;
+        }
+
+
+        CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSet(
+            E_RENDER_MODE mode, bool alpha, bool texture, bool alphaChannel, const SMaterial &material)
+        {
+            const u64                                   key     = createRenderStateKey(mode, alpha, texture, alphaChannel, material);
+            core::map<u64, SRenderStateSet>::Node       *node   = m_RenderStateSets[mode].find(key);
+
+            if (node)
+                return &node->getValue();
+
+            SRenderStateSet    stateSet;
+            stateSet.Key                = key;
+            stateSet.RasterizerState    = 0;
+            stateSet.DepthStencilState  = 0;
+            stateSet.BlendState         = 0;
+
             HRESULT                     hr = E_FAIL;
             D3D11_RASTERIZER_DESC1      rasterizerDesc;
-            D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
-            D3D11_BLEND_DESC1           blendDesc;
-
             rasterizerDesc.AntialiasedLineEnable    = false;
             rasterizerDesc.CullMode                 = D3D11_CULL_BACK;
             rasterizerDesc.DepthBias                = D3D11_DEFAULT_DEPTH_BIAS;
@@ -3193,30 +3243,36 @@ namespace irr
             rasterizerDesc.ScissorEnable            = false;
             rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
 
+            if (mode == ERM_2D)
+            {
+                rasterizerDesc.CullMode = D3D11_CULL_NONE;
+                rasterizerDesc.DepthClipEnable = false;
+            }
+            else if (mode == ERM_3D)
+            {
+                if (material.Wireframe)
+                    rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
+
+                if (material.BackfaceCulling)
+                    rasterizerDesc.CullMode = D3D11_CULL_BACK;
+                else if (material.FrontfaceCulling)
+                    rasterizerDesc.CullMode = D3D11_CULL_FRONT;
+                else
+                    rasterizerDesc.CullMode = D3D11_CULL_NONE;
+            }
+
             if (m_pID3DDevice1)
-                hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &m_RenderStateSets[ERM_3D].RasterizerState);
+                hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &stateSet.RasterizerState);
 
             if (FAILED(hr))
             {
-                os::Printer::log("Could not create rasterizer state for ERM_3D.", ELL_ERROR);
-                return false;
+                os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
+                return 0;
             }
 
-            IRR_D3D11_RS_CREATE(m_RenderStateSets[ERM_3D].RasterizerState, "DefaultRasterizerState_3D");
+            IRR_D3D11_RS_CREATE(stateSet.RasterizerState, "RasterizerState");
 
-            rasterizerDesc.CullMode                 = D3D11_CULL_NONE;
-            rasterizerDesc.DepthClipEnable          = false;
-            if (m_pID3DDevice1)
-                hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &m_RenderStateSets[ERM_2D].RasterizerState);
-
-            if (FAILED(hr))
-            {
-                os::Printer::log("Could not create rasterizer state for ERM_2D.", ELL_ERROR);
-                return false;
-            }
-
-            IRR_D3D11_RS_CREATE(m_RenderStateSets[ERM_2D].RasterizerState, "DefaultRasterizerState_2D");
-
+            D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
             depthStencilDesc.DepthEnable                    = true;
             depthStencilDesc.DepthWriteMask                 = D3D11_DEPTH_WRITE_MASK_ALL;
             depthStencilDesc.DepthFunc                      = D3D11_COMPARISON_LESS;
@@ -3232,134 +3288,176 @@ namespace irr
             depthStencilDesc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;
             depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
 
-            hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_RenderStateSets[ERM_3D].DepthStencilState);
-            IRR_D3D11_DSS_CREATE(m_RenderStateSets[ERM_3D].DepthStencilState, "DefaultDepthStencilState_3D");
-            if (FAILED(hr))
+            if (mode == ERM_2D)
             {
-                os::Printer::log("Could not create depth stencil state for ERM_3D.", ELL_ERROR);
-                return false;
+                depthStencilDesc.DepthEnable = false;
+            }
+            else if (mode == ERM_3D)
+            {
+                depthStencilDesc.DepthEnable = (material.ZBuffer != ECFN_NEVER);
+                depthStencilDesc.DepthWriteMask = material.ZWriteEnable ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
+
+                switch (material.ZBuffer)
+                {
+                    case ECFN_NEVER:
+                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_NEVER;
+                        break;
+                    case ECFN_LESSEQUAL:
+                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+                        break;
+                    case ECFN_EQUAL:
+                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
+                        break;
+                    case ECFN_LESS:
+                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+                        break;
+                    case ECFN_GREATEREQUAL:
+                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
+                        break;
+                    case ECFN_NOTEQUAL:
+                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_NOT_EQUAL;
+                        break;
+                    case ECFN_GREATER:
+                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER;
+                        break;
+                    case ECFN_ALWAYS:
+                    default:
+                        depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+                        break;
+                }
             }
 
-            depthStencilDesc.DepthEnable    = false;
-            hr                              = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &m_RenderStateSets[ERM_2D].DepthStencilState);
-            IRR_D3D11_DSS_CREATE(m_RenderStateSets[ERM_2D].DepthStencilState, "DefaultDepthStencilState_2D");
+            hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &stateSet.DepthStencilState);
+            IRR_D3D11_DSS_CREATE(stateSet.DepthStencilState, "DepthStencilState");
             if (FAILED(hr))
             {
-                os::Printer::log("Could not create depth stencil state for ERM_2D.", ELL_ERROR);
-                return false;
+                os::Printer::log("Could not create depth stencil state.", ELL_ERROR);
+                return 0;
             }
 
+            D3D11_BLEND_DESC1    blendDesc;
             blendDesc.AlphaToCoverageEnable     = false;
             blendDesc.IndependentBlendEnable    = false;
 
-            for (u32 i = 0; i < 8; ++i)
+            bool                blendEnable = false;
+            D3D11_BLEND_OP      blendOp     = D3D11_BLEND_OP_ADD;
+
+            if (mode == ERM_2D)
             {
-                blendDesc.RenderTarget[i].BlendEnable           = false;
-                blendDesc.RenderTarget[i].LogicOpEnable         = false;
-                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
-                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
-                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
-                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
-                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
-                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+                const bool    enableAlphaBlend = alpha || (alphaChannel && texture);
+
+                for (u32 i = 0; i < 8; ++i)
+                {
+                    blendDesc.RenderTarget[i].BlendEnable           = enableAlphaBlend;
+                    blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                    blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                    blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                    blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                    blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                    blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+                }
+            }
+            else if (mode == ERM_3D)
+            {
+                blendEnable = material.BlendOperation != EBO_NONE;
+
+                if (material.MaterialType == EMT_TRANSPARENT_ADD_COLOR ||
+                    material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL ||
+                    material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA ||
+                    material.MaterialType == EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR ||
+                    material.MaterialType == EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA ||
+                    material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL_REF ||
+                    material.MaterialType == EMT_TRANSPARENT_REFLECTION_2_LAYER)
+                {
+                    blendEnable = true;
+                }
+
+                if (blendEnable)
+                {
+                    switch (material.BlendOperation)
+                    {
+                        case EBO_SUBTRACT:
+                            blendOp = D3D11_BLEND_OP_SUBTRACT;
+                            break;
+
+                        case EBO_REVSUBTRACT:
+                            blendOp = D3D11_BLEND_OP_REV_SUBTRACT;
+                            break;
+
+                        case EBO_MIN:
+                        case EBO_MIN_FACTOR:
+                        case EBO_MIN_ALPHA:
+                            blendOp = D3D11_BLEND_OP_MIN;
+                            break;
+
+                        case EBO_MAX:
+                        case EBO_MAX_FACTOR:
+                        case EBO_MAX_ALPHA:
+                            blendOp = D3D11_BLEND_OP_MAX;
+                            break;
+
+                        default:
+                            blendOp = D3D11_BLEND_OP_ADD;
+                            break;
+                    }
+                }
+
+                for (u32 i = 0; i < 8; ++i)
+                {
+                    blendDesc.RenderTarget[i].BlendEnable           = blendEnable;
+                    blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                    blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].BlendOp               = blendOp;
+                    blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                    blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                    blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                    blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+                }
+            }
+            else
+            {
+                for (u32 i = 0; i < 8; ++i)
+                {
+                    blendDesc.RenderTarget[i].BlendEnable           = false;
+                    blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                    blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                    blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                    blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                    blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                    blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+                }
             }
 
             hr = E_FAIL;
             if (m_pID3DDevice1)
-                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_RenderStateSets[ERM_3D].BlendState);
+                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &stateSet.BlendState);
 
-            IRR_D3D11_BLEND_CREATE(m_RenderStateSets[ERM_3D].BlendState, "DefaultBlendState_3D");
+            IRR_D3D11_BLEND_CREATE(stateSet.BlendState, "BlendState");
             if (FAILED(hr))
             {
-                os::Printer::log("Could not create blend state for ERM_3D.", ELL_ERROR);
-                return false;
+                os::Printer::log("Could not create blend state.", ELL_ERROR);
+                return 0;
             }
 
-            for (u32 i = 0; i < 8; ++i)
+            m_RenderStateSets[mode].set(key, stateSet);
+
+            core::map<u64, SRenderStateSet>::Node *pNode = m_RenderStateSets[mode].find(key);
+
+            if (pNode == nullptr)
             {
-                blendDesc.RenderTarget[i].BlendEnable           = true;
-                blendDesc.RenderTarget[i].LogicOpEnable         = false;
-                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
-                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
-                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
-                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
-                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
-                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+                os::Printer::log("Could not find the render states.", ELL_ERROR);
+                return 0;
             }
 
-            hr = E_FAIL;
-            if (m_pID3DDevice1)
-                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_RenderStateSets[ERM_3D].AlphaBlendState);
-
-            IRR_D3D11_BLEND_CREATE(m_RenderStateSets[ERM_3D].AlphaBlendState, "DefaultAlphaBlendState_3D");
-            if (FAILED(hr))
-            {
-                os::Printer::log("Could not create alpha blend state for ERM_3D.", ELL_ERROR);
-                return false;
-            }
-
-            for (u32 i = 0; i < 8; ++i)
-            {
-                blendDesc.RenderTarget[i].BlendEnable           = false;
-                blendDesc.RenderTarget[i].LogicOpEnable         = false;
-                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
-                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
-                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
-                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
-                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
-                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-            }
-
-            hr = E_FAIL;
-            if (m_pID3DDevice1)
-                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_RenderStateSets[ERM_2D].BlendState);
-
-            IRR_D3D11_BLEND_CREATE(m_RenderStateSets[ERM_2D].BlendState, "DefaultBlendState_2D");
-            if (FAILED(hr))
-            {
-                os::Printer::log("Could not create blend state for ERM_2D.", ELL_ERROR);
-                return false;
-            }
-
-            for (u32 i = 0; i < 8; ++i)
-            {
-                blendDesc.RenderTarget[i].BlendEnable           = true;
-                blendDesc.RenderTarget[i].LogicOpEnable         = false;
-                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
-                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
-                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
-                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
-                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
-                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-            }
-
-            hr = E_FAIL;
-            if (m_pID3DDevice1)
-                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &m_RenderStateSets[ERM_2D].AlphaBlendState);
-
-            IRR_D3D11_BLEND_CREATE(m_RenderStateSets[ERM_2D].AlphaBlendState, "DefaultAlphaBlendState_2D");
-            if (FAILED(hr))
-            {
-                os::Printer::log("Could not create alpha blend state for ERM_2D.", ELL_ERROR);
-                return false;
-            }
-
-            m_DefaultSampler = new CSampler(this);
-            if (!m_DefaultSampler->createDefault())
-            {
-                os::Printer::log("Could not create default sampler state.", ELL_ERROR);
-                return false;
-            }
-
-            return true;
+            return &pNode->getValue();
         }
 
 
@@ -3368,13 +3466,15 @@ namespace irr
             m_pID3DDeviceContext->RSSetViewports(1, &m_DefaultViewport);
             m_pID3DDeviceContext->RSSetScissorRects(1, &m_DefaultScissorRect);
 
-            SRenderStateSet    &stateSet = m_RenderStateSets[mode];
-            m_pID3DDeviceContext->RSSetState(stateSet.RasterizerState);
-            m_pID3DDeviceContext->OMSetDepthStencilState(stateSet.DepthStencilState, 0);
+            SRenderStateSet    *stateSet = getOrCreateRenderStateSet(mode, alpha, false, false, m_Material);
+            if (!stateSet)
+                return;
 
-            FLOAT                   blendFactor[4]  = { 1.0f, 1.0f, 1.0f, 1.0f };
-            ID3D11BlendState1       *blendState     = alpha ? stateSet.AlphaBlendState : stateSet.BlendState;
-            m_pID3DDeviceContext->OMSetBlendState(blendState, blendFactor, 0xFFFFFFFF);
+            m_pID3DDeviceContext->RSSetState(stateSet->RasterizerState);
+            m_pID3DDeviceContext->OMSetDepthStencilState(stateSet->DepthStencilState, 0);
+
+            FLOAT    blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+            m_pID3DDeviceContext->OMSetBlendState(stateSet->BlendState, blendFactor, 0xFFFFFFFF);
         }
 
 

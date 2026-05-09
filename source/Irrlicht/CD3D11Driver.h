@@ -434,7 +434,8 @@ private:
             void setVSByVertexType(video::E_VERTEX_TYPE newType);
             void setPSByMaterialType(video::E_MATERIAL_TYPE materialType);
 
-            CD3D11Shader* getShaderByTypes(video::E_VERTEX_TYPE vertexType, E_D3D11_SHADER_TYPE shaderType, E_MATERIAL_TYPE materialType) const;
+            CD3D11Shader* getShaderByTypes(
+                video::E_VERTEX_TYPE vertexType, E_D3D11_SHADER_TYPE shaderType, E_MATERIAL_TYPE materialType) const;
 
             void setPSTextureAndSamplerState();
 
@@ -488,7 +489,19 @@ private:
             void set2DRectangleShader();
             void updateMatrixConstantBuffer();
             void setRenderStates(E_RENDER_MODE mode, bool alpha);
-            bool createRenderStates();
+            u64 createRenderStateKey(
+                E_RENDER_MODE mode, bool alpha, bool texture, bool alphaChannel, const SMaterial &material);
+
+            struct SRenderStateSet
+            {
+                u64                     Key;
+                ID3D11RasterizerState1  *RasterizerState;
+                ID3D11DepthStencilState *DepthStencilState;
+                ID3D11BlendState1       *BlendState;
+            };
+
+            SRenderStateSet* getOrCreateRenderStateSet(
+                E_RENDER_MODE mode, bool alpha, bool texture, bool alphaChannel, const SMaterial &material);
 
             core::array<SD3D11DepthStencilView*>    m_DepthBuffers;
             core::array<IMaterialRenderer*>         m_MaterialRenderers;
@@ -558,16 +571,7 @@ private:
             D3D11_VIEWPORT      m_DefaultViewport;
             D3D11_RECT          m_DefaultScissorRect;
 
-            struct SRenderStateSet
-            {
-                ID3D11RasterizerState1  *RasterizerState;
-                ID3D11DepthStencilState *DepthStencilState;
-                ID3D11BlendState1       *BlendState;
-                ID3D11BlendState1       *AlphaBlendState;
-            };
-
-            SRenderStateSet                     m_RenderStateSets[ERM_RENDER_MODE_MAX];
-            CSampler                            *m_DefaultSampler;
+            core::map<u64, SRenderStateSet>     m_RenderStateSets[ERM_RENDER_MODE_MAX];
             core::map<u64, CSampler*>           m_SamplerPool;
             CSampler                            *m_CurrentSampler[MATERIAL_MAX_TEXTURES];
             CSampler                            *m_PreviousSampler[MATERIAL_MAX_TEXTURES];
