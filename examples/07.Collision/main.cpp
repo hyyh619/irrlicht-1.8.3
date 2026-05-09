@@ -47,10 +47,14 @@ int main()
 {
     // ask user for driver
 
+#if WIN32 
 #if CONFORM_TEST_DX9
     video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D9;
 #elif CONFORM_TEST_DX11
     video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D11;
+#else
+    video::E_DRIVER_TYPE driverType = video::EDT_DIRECT3D11;
+#endif
 #else
     video::E_DRIVER_TYPE driverType = driverChoiceConsole();
 #endif
