@@ -360,6 +360,30 @@ float4 PS_SOLID_LIGHTING_GOURAUD(PS_INPUT_BASIC input) : SV_TARGET
     return float4(litColor, texColor.a * input.Color.a);
 }
 
+//==============================================================================
+// EMT_SOLID_LIGHTING_FLAT - Solid with Flat shading (constant per face lighting)
+// Uses dFdx/dFdy to compute face normal, lighting computed once per face
+// Ambient + Diffuse lighting model
+//==============================================================================
+float4 PS_SOLID_LIGHTING_FLAT(PS_INPUT_BASIC input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+
+    float3 dPosX = dFdx(input.Pos.xyz);
+    float3 dPosY = dFdy(input.Pos.xyz);
+    float3 faceNormal = normalize(cross(dPosX, dPosY));
+
+    float3 lightDir = normalize(float3(1.0, 1.0, 1.0));
+
+    float ambient = 0.3f;
+    float diffuse = max(dot(faceNormal, lightDir), 0.0f);
+
+    float lighting = ambient + diffuse;
+    float3 litColor = texColor.rgb * lighting;
+
+    return float4(litColor, texColor.a * input.Color.a);
+}
+
  struct VS_INPUT {
      float3 Pos : POSITION;
      float3 Normal : NORMAL;

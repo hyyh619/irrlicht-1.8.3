@@ -200,6 +200,9 @@ namespace irr
             //! Solid material with Gouraud shading for lighting interpolation.
             EMT_SOLID_LIGHTING_GOURAUD,
 
+            //! Solid material with Flat shading (constant per face lighting).
+            EMT_SOLID_LIGHTING_FLAT,
+
             //! Just make PS changing if using 2d rectangle shader
             EMT_2D_RECTANGLE,
 
@@ -239,6 +242,7 @@ namespace irr
             "onetexture_blend",
             "solid_1layer",
             "solid_lighting_gouraud",
+            "solid_lighting_flat",
             0
         };
     } // end namespace video

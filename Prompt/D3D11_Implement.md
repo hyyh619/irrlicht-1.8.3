@@ -1348,7 +1348,7 @@ EMT_TRANSPARENT_ALPHA_CHANNEL_REF的描述如下
 根据上述的描述，d3d11的PS_TRANSPARENT_ALPHA_CHANNEL shader需要考虑其最后output的color的alpha channel值，如果大于127，这个Pixel就输出，如果小于等于127，就抛弃这个pixel。
 
 # 70
-Git commit: 
+Git commit: Implement gouraud shading PS by MiniMax-M2.7.
 1. 新增material type EMT_SOLID_LIGHTING_GOURAUD
 2. 在EMT_SOLID对应的PS实现基础上实现EMT_SOLID_LIGHTING_GOURAUD，主要实现Gouraud shading
 float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
@@ -1360,6 +1360,9 @@ float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
 
 # 71
 Git commit: 
+仿照EMT_SOLID_LIGHTING_GOURAUD和PS_SOLID_LIGHTING_GOURAUD实现，
+实现EMT_SOLID_LIGHTING_FLAT和PS_SOLID_LIGHTING_FLAT。
+请参照git commit id: 87d9da4679c42db55a6627d3ceb2c427cd960576
 
 # 72
 Git commit: 

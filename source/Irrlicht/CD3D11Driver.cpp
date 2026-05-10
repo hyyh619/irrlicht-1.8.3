@@ -940,6 +940,8 @@ namespace irr
 
                 case video::EMT_SOLID_LIGHTING_GOURAUD: return "EMT_SOLID_LIGHTING_GOURAUD";
 
+                case video::EMT_SOLID_LIGHTING_FLAT: return "EMT_SOLID_LIGHTING_FLAT";
+
                 default:
                     _IRR_DEBUG_BREAK_IF(false);
                     return "?";
@@ -3178,6 +3180,10 @@ namespace irr
                         {
                             materialType = EMT_SOLID_LIGHTING_GOURAUD;
                         }
+                        else
+                        {
+                            materialType = EMT_SOLID_LIGHTING_FLAT;
+                        }
                     }
                 }
 
@@ -3494,6 +3500,8 @@ namespace irr
                 case EMT_SOLID_COLOR:                           entryPoint = "PS_SOLID_COLOR_ONLY"; break;
 
                 case EMT_SOLID_LIGHTING_GOURAUD:                entryPoint = "PS_SOLID_LIGHTING_GOURAUD"; break;
+
+                case EMT_SOLID_LIGHTING_FLAT:                   entryPoint = "PS_SOLID_LIGHTING_FLAT"; break;
 
                 case EMT_SOLID_1_LAYER:                         entryPoint = "PS_SOLID_1_LAYER"; break;
 
