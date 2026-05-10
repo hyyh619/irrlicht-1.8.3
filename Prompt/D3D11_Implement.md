@@ -1287,7 +1287,7 @@ CNullDriver::draw3DTriangle(const core::triangle3df &triangle, SColor color)输�
 
 
 # 69
-Git commit: 
+Git commit: Fix alpha blend enable if using transparent material by MiniMax-M2.7.
 material.MaterialType为EMT_TRANSPARENT_ADD_COLOR时，d3d9要做如下配置
                     setTextureColorStage(m_pID3DDevice, 0,
                         D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_DIFFUSE);
@@ -1349,6 +1349,14 @@ EMT_TRANSPARENT_ALPHA_CHANNEL_REF的描述如下
 
 # 70
 Git commit: 
+1. 新增material type EMT_SOLID_LIGHTING_GOURAUD
+2. 在EMT_SOLID对应的PS实现基础上实现EMT_SOLID_LIGHTING_GOURAUD，主要实现Gouraud shading
+float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+    return float4(texColor.rgb * input.Color.rgb, texColor.a * input.Color.a);
+}
+3. d3d9的Gouraud shading是这样实现m_pID3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);请参考来实现PS
 
 # 71
 Git commit: 

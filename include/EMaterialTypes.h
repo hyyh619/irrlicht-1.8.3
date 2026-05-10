@@ -197,6 +197,9 @@ namespace irr
             //! 2tex coordinates but there is one texture.
             EMT_SOLID_1_LAYER,
 
+            //! Solid material with Gouraud shading for lighting interpolation.
+            EMT_SOLID_LIGHTING_GOURAUD,
+
             //! Just make PS changing if using 2d rectangle shader
             EMT_2D_RECTANGLE,
 
@@ -234,6 +237,8 @@ namespace irr
             "parallaxmap_trans_add",
             "parallaxmap_trans_vertexalpha",
             "onetexture_blend",
+            "solid_1layer",
+            "solid_lighting_gouraud",
             0
         };
     } // end namespace video

@@ -339,6 +339,27 @@ float4 PS_ONETEXTURE_BLEND(PS_INPUT_BASIC input) : SV_TARGET
     return result;
 }
 
+//==============================================================================
+// EMT_SOLID_LIGHTING_GOURAUD - Solid with Gouraud shading (lighting interpolation)
+// Similar to EMT_SOLID but performs per-pixel lighting using interpolated normals
+// Ambient + Diffuse lighting model
+//==============================================================================
+float4 PS_SOLID_LIGHTING_GOURAUD(PS_INPUT_BASIC input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+
+    float3 normal = normalize(input.Normal);
+    float3 lightDir = normalize(float3(1.0, 1.0, 1.0));
+
+    float ambient = 0.3f;
+    float diffuse = max(dot(normal, lightDir), 0.0f);
+
+    float lighting = ambient + diffuse;
+    float3 litColor = texColor.rgb * lighting;
+
+    return float4(litColor, texColor.a * input.Color.a);
+}
+
  struct VS_INPUT {
      float3 Pos : POSITION;
      float3 Normal : NORMAL;

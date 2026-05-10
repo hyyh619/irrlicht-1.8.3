@@ -123,13 +123,33 @@ float4 PS_LIGHTMAP_LIGHTING(PS_INPUT_2TEX input) : SV_TARGET
 }
 
 //==============================================================================
-// EMT_LIGHTMAP_LIGHTING_M2
+// EMT_SOLID_LIGHTING_GOURAUD - Solid with Gouraud shading (lighting interpolation)
+// Similar to EMT_SOLID but performs per-pixel lighting using interpolated normals
+// Ambient + Diffuse lighting model
 //==============================================================================
-float4 PS_LIGHTMAP_LIGHTING_M2(PS_INPUT_2TEX input) : SV_TARGET
+float4 PS_SOLID_LIGHTING_GOURAUD(PS_INPUT_BASIC input) : SV_TARGET
 {
-    float4 diffuse = DiffuseTexture.Sample(LinearSampler, input.TexCoord0) * input.Color;
-    float4 lightmap = LightmapTexture.Sample(LinearSampler, input.TexCoord1);
-    return diffuse * (lightmap * 2.0);
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+
+    float3 normal = normalize(input.Normal);
+    float3 lightDir = normalize(float3(1.0, 1.0, 1.0));
+
+    float ambient = 0.3f;
+    float diffuse = max(dot(normal, lightDir), 0.0f);
+
+    float lighting = ambient + diffuse;
+    float3 litColor = texColor.rgb * lighting;
+
+    return float4(litColor, texColor.a * input.Color.a);
+}
+
+//==============================================================================
+// EMT_SOLID_1_LAYER - 2tex coordinates but one texture
+//==============================================================================
+float4 PS_SOLID_1_LAYER(PS_INPUT_2TEX input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord0);
+    return float4(texColor.rgb * input.Color.rgb, texColor.a * input.Color.a);
 }
 
 //==============================================================================

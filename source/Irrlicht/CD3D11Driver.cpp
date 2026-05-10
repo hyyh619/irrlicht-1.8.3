@@ -938,7 +938,11 @@ namespace irr
 
                 case video::EMT_SOLID_COLOR: return "EMT_SOLID_COLOR";
 
-                default: return "?";
+                case video::EMT_SOLID_LIGHTING_GOURAUD: return "EMT_SOLID_LIGHTING_GOURAUD";
+
+                default:
+                    _IRR_DEBUG_BREAK_IF(false);
+                    return "?";
             }
         }
 
@@ -955,7 +959,9 @@ namespace irr
 
                 case video::EVT_2D_RECTANGLE: return "EVT_2D_RECTANGLE";
 
-                default: return "?";
+                default:
+                    _IRR_DEBUG_BREAK_IF(false);
+                    return "?";
             }
         }
 
@@ -986,7 +992,9 @@ namespace irr
 
                 case scene::EPT_POINT_SPRITES: return "EPT_POINT_SPRITES";
 
-                default: return "?";
+                default:
+                    _IRR_DEBUG_BREAK_IF(false);
+                    return "?";
             }
         }
 
@@ -3148,8 +3156,8 @@ namespace irr
                 m_MaterialPSInitialized = true;
             }
 
-            if (materialType == EMT_TRANSPARENT_ADD_COLOR)
-                os::Printer::log("hy", ELL_INFORMATION);
+            //if (materialType == EMT_TRANSPARENT_ADD_COLOR)
+            //    os::Printer::log("hy", ELL_INFORMATION);
 
             // material type is only used for changing shader.
             // The draw has the same material type but it has different textures.
@@ -3157,10 +3165,20 @@ namespace irr
             {
                 if (materialType == EMT_SOLID)
                 {
-                    if (m_nPsTexCount == 0)
-                        materialType = EMT_SOLID_COLOR;
-                    else if (m_nPsTexCount == 1 && vType == EVT_2TCOORDS)
-                        materialType = EMT_SOLID_1_LAYER;
+                    if (m_Material.Lighting == false)
+                    {
+                        if (m_nPsTexCount == 0)
+                            materialType = EMT_SOLID_COLOR;
+                        else if (m_nPsTexCount == 1 && vType == EVT_2TCOORDS)
+                            materialType = EMT_SOLID_1_LAYER;
+                    }
+                    else
+                    {
+                        if (m_Material.GouraudShading == true)
+                        {
+                            materialType = EMT_SOLID_LIGHTING_GOURAUD;
+                        }
+                    }
                 }
 
                 m_LastMaterialType = materialType;
@@ -3474,6 +3492,8 @@ namespace irr
                 case EMT_ONETEXTURE_BLEND:                      entryPoint = "PS_ONETEXTURE_BLEND"; break;
 
                 case EMT_SOLID_COLOR:                           entryPoint = "PS_SOLID_COLOR_ONLY"; break;
+
+                case EMT_SOLID_LIGHTING_GOURAUD:                entryPoint = "PS_SOLID_LIGHTING_GOURAUD"; break;
 
                 case EMT_SOLID_1_LAYER:                         entryPoint = "PS_SOLID_1_LAYER"; break;
 
