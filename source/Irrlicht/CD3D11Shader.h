@@ -42,7 +42,7 @@ public:
             CD3D11Shader(CD3D11Driver *driver);
             virtual ~CD3D11Shader();
 
-            bool compile(E_D3D11_SHADER_TYPE type, const c8 *hlslSource, const c8 *entryPoint, const c8 *profile);
+            bool compile(E_D3D11_SHADER_TYPE type, const c8 *hlslSource, const c8 *entryPoint, const c8 *profile, const c8 *hlslSourcePart2 = 0);
             bool createVertexShader();
             bool createHullShader();
             bool createDomainShader();

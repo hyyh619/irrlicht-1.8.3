@@ -277,7 +277,7 @@ public:
 #ifdef _IRR_DUMP_DRAW_CALLS_
             void dumpDrawCall(const c8 *drawTypeName);
             void dumpDrawCall(const c8 *drawTypeName, E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
-                E_INDEX_TYPE iType, bool is3D, u32 primitiveCount);
+                              E_INDEX_TYPE iType, bool is3D, u32 primitiveCount);
 #endif
 
             virtual void draw2DImage(const video::ITexture *texture, const core::position2d<s32> &destPos,
@@ -494,7 +494,7 @@ private:
             bool createRectangleShaders();
             void set2DRectangleShader();
             void updateMatrixConstantBuffer();
-            
+
             u64 createRenderStateKey2D(bool alpha, bool texture, bool alphaChannel);
             void createRenderStateKey3D(const SMaterial &material, u64 &key1, u64 &key2);
             u64 createRenderStateKeyOther(E_RENDER_MODE mode);
@@ -576,6 +576,7 @@ private:
             ID3D11Buffer            *m_TempVertexBuffer;
             ID3D11Buffer            *m_TempIndexBuffer;
             ID3D11Buffer            *m_MatrixConstantBuffer;
+            ID3D11Buffer            *m_LightConstantBuffer;
             u32                     m_TempVertexBufferSize;
             u32                     m_TempIndexBufferSize;
             E_INDEX_TYPE            m_TempIndexType;
@@ -588,10 +589,10 @@ private:
             CSampler                            *m_CurrentSampler[MATERIAL_MAX_TEXTURES];
             CSampler                            *m_PreviousSampler[MATERIAL_MAX_TEXTURES];
 
-            E_RENDER_MODE    m_CurrentRenderMode;
-            u64              m_Current2DStateKey;
-            u64              m_Current3DStateKeyKey1;
-            u64              m_Current3DStateKeyKey2;
+            E_RENDER_MODE       m_CurrentRenderMode;
+            u64                 m_Current2DStateKey;
+            u64                 m_Current3DStateKeyKey1;
+            u64                 m_Current3DStateKeyKey2;
         };
 
         IVideoDriver* createDirectX11Driver(const SIrrlichtCreationParameters &params,

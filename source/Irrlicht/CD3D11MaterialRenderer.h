@@ -15,7 +15,7 @@ namespace irr
 {
     namespace video
     {
-        const char    PS_MaterialShaders[] = R"(
+        const char    PS_MaterialShaders_Part1[] = R"(
 // Auto-generated HLSL Pixel Shaders for Irrlicht Material Types
 // Reference: CD3D9MaterialRenderer implementation
 
@@ -142,8 +142,8 @@ float4 PS_SPHERE_MAP(PS_INPUT_BASIC input) : SV_TARGET
     float3 viewDir = normalize(float3(0.5, 0.5, 1.0) - input.Pos.xyz);
     float3 reflectVec = reflect(-viewDir, input.Normal);
     float2 sphereUV = reflectVec.xy * 0.5 + 0.5;
-    float4 sphereColor = SphereMap.Sample(LinearSampler, sphereUV);
-    return texColor * sphereColor * 2.0;
+    float4 sphere_color = SphereMap.Sample(LinearSampler, sphereUV);
+    return texColor * sphere_color * 2.0;
 }
 
 float4 PS_REFLECTION_2_LAYER(PS_INPUT_2TEX input) : SV_TARGET
@@ -343,45 +343,136 @@ float4 PS_ONETEXTURE_BLEND(PS_INPUT_BASIC input) : SV_TARGET
 // EMT_SOLID_LIGHTING_GOURAUD - Solid with Gouraud shading (lighting interpolation)
 // Similar to EMT_SOLID but performs per-pixel lighting using interpolated normals
 // Ambient + Diffuse lighting model
+// Uses light data from LightBuffer cbuffer (register b1)
+// LightType: 0=Point, 1=Spot, 2=Directional
 //==============================================================================
+
+cbuffer LightBuffer : register(b1) {
+    float4 LightAmbient;
+    float4 LightDiffuse;
+    float4 LightSpecular;
+    float3 LightPosition;
+    float LightRadius;
+    float3 LightDirection;
+    float LightAttenuation;
+    float3 CameraPosition;
+    float LightOuterCone;
+    float LightInnerCone;
+    float LightFalloff;
+    float LightType;
+};
+
 float4 PS_SOLID_LIGHTING_GOURAUD(PS_INPUT_BASIC input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
 
     float3 normal = normalize(input.Normal);
-    float3 lightDir = normalize(float3(1.0, 1.0, 1.0));
+    float3 lightDir;
+    float attenuation = 1.0f;
 
-    float ambient = 0.3f;
-    float diffuse = max(dot(normal, lightDir), 0.0f);
+    if (LightType < 0.5f)
+    {
+        float3 toLight = LightPosition - input.Pos.xyz;
+        lightDir = normalize(toLight);
+        float dist = length(toLight);
+        float distFactor = 1.0 - clamp(dist / LightRadius, 0.0, 1.0);
+        attenuation = distFactor / (LightAttenuation * dist + 1.0);
+    }
+    else if (LightType < 1.5f)
+    {
+        float3 toLight = LightPosition - input.Pos.xyz;
+        lightDir = normalize(toLight);
+        float dist = length(toLight);
 
-    float lighting = ambient + diffuse;
-    float3 litColor = texColor.rgb * lighting;
+        float spotCos = dot(-lightDir, normalize(LightDirection));
+        float spotAngle = acos(spotCos);
+        float innerConeRad = LightInnerCone * 3.14159f / 180.0f;
+        float outerConeRad = LightOuterCone * 3.14159f / 180.0f;
 
-    return float4(litColor, texColor.a * input.Color.a);
+        float spotFactor = 0.0f;
+        if (spotAngle < outerConeRad && innerConeRad > outerConeRad)
+        {
+            spotFactor = pow((outerConeRad - spotAngle) / (outerConeRad - innerConeRad), LightFalloff);
+            spotFactor = clamp(spotFactor, 0.0, 1.0);
+        }
+
+        float distFactor = 1.0 - clamp(dist / LightRadius, 0.0, 1.0);
+        attenuation = distFactor * spotFactor / (LightAttenuation * dist + 1.0);
+    }
+    else
+    {
+        lightDir = normalize(-LightDirection);
+    }
+
+    float4 ambient = LightAmbient;
+    float4 diffuse = max(dot(normal, lightDir), 0.0f);
+    float4 lighting = ambient + diffuse * attenuation;
+    float4 litColor = texColor * lighting * LightDiffuse;
+
+    return float4(litColor.rgb, texColor.a * input.Color.a);
 }
+)";
+
+        const char    PS_MaterialShaders_Part2[] = R"(
 
 //==============================================================================
 // EMT_SOLID_LIGHTING_FLAT - Solid with Flat shading (constant per face lighting)
 // Uses dFdx/dFdy to compute face normal, lighting computed once per face
 // Ambient + Diffuse lighting model
+// Uses light data from LightBuffer cbuffer (register b1)
+// LightType: 0=Point, 1=Spot, 2=Directional
 //==============================================================================
 float4 PS_SOLID_LIGHTING_FLAT(PS_INPUT_BASIC input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
 
-    float3 dPosX = dFdx(input.Pos.xyz);
-    float3 dPosY = dFdy(input.Pos.xyz);
+    float3 dPosX = ddx(input.Pos.xyz);
+    float3 dPosY = ddy(input.Pos.xyz);
     float3 faceNormal = normalize(cross(dPosX, dPosY));
 
-    float3 lightDir = normalize(float3(1.0, 1.0, 1.0));
+    float3 lightDir;
+    float attenuation = 1.0f;
 
-    float ambient = 0.3f;
-    float diffuse = max(dot(faceNormal, lightDir), 0.0f);
+    if (LightType < 0.5f)
+    {
+        float3 toLight = LightPosition - input.Pos.xyz;
+        lightDir = normalize(toLight);
+        float dist = length(toLight);
+        float distFactor = 1.0 - clamp(dist / LightRadius, 0.0, 1.0);
+        attenuation = distFactor / (LightAttenuation * dist + 1.0);
+    }
+    else if (LightType < 1.5f)
+    {
+        float3 toLight = LightPosition - input.Pos.xyz;
+        lightDir = normalize(toLight);
+        float dist = length(toLight);
 
-    float lighting = ambient + diffuse;
-    float3 litColor = texColor.rgb * lighting;
+        float spotCos = dot(-lightDir, normalize(LightDirection));
+        float spotAngle = acos(spotCos);
+        float innerConeRad = LightInnerCone * 3.14159f / 180.0f;
+        float outerConeRad = LightOuterCone * 3.14159f / 180.0f;
 
-    return float4(litColor, texColor.a * input.Color.a);
+        float spotFactor = 0.0f;
+        if (spotAngle < outerConeRad && innerConeRad > outerConeRad)
+        {
+            spotFactor = pow((outerConeRad - spotAngle) / (outerConeRad - innerConeRad), LightFalloff);
+            spotFactor = clamp(spotFactor, 0.0, 1.0);
+        }
+
+        float distFactor = 1.0 - clamp(dist / LightRadius, 0.0, 1.0);
+        attenuation = distFactor * spotFactor / (LightAttenuation * dist + 1.0);
+    }
+    else
+    {
+        lightDir = normalize(-LightDirection);
+    }
+
+    float4 ambient = LightAmbient;
+    float4 diffuse = max(dot(faceNormal, lightDir), 0.0f);
+    float4 lighting = ambient + diffuse * attenuation;
+    float4 litColor = texColor * lighting * LightDiffuse;
+
+    return float4(litColor.rgb, texColor.a * input.Color.a);
 }
 
  struct VS_INPUT {
@@ -407,7 +498,7 @@ float4 PS_SOLID_LIGHTING_FLAT(PS_INPUT_BASIC input) : SV_TARGET
      output.Normal = input.Normal;
      return output;
  };
-)";
+ )";
 
         class CD3D11Driver;
 

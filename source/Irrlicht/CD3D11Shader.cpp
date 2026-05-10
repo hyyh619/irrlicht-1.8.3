@@ -82,19 +82,36 @@ namespace irr
             IReferenceCounted::drop();
         }
 
-        bool CD3D11Shader::compile(E_D3D11_SHADER_TYPE type, const c8 *hlslSource, const c8 *entryPoint, const c8 *profile)
+        bool CD3D11Shader::compile(E_D3D11_SHADER_TYPE type, const c8 *hlslSource, const c8 *entryPoint, const c8 *profile, const c8 *hlslSourcePart2)
         {
             if (!hlslSource || !entryPoint || !profile)
                 return false;
 
-            m_HLSLSource    = hlslSource;
+            if (hlslSourcePart2)
+            {
+                m_HLSLSource = hlslSource;
+                m_HLSLSource += hlslSourcePart2;
+            }
+            else
+            {
+                m_HLSLSource = hlslSource;
+            }
+
             m_EntryPoint    = entryPoint;
             m_Profile       = profile;
             m_ShaderType    = type;
 
             ID3DBlob    *errorBlob = 0;
 
-            HRESULT    hr = D3DCompile(hlslSource, strlen(hlslSource), 0, 0, 0, entryPoint,
+            const c8* sourceToCompile = hlslSource;
+            size_t sourceLen = strlen(hlslSource);
+            if (hlslSourcePart2)
+            {
+                sourceToCompile = m_HLSLSource.c_str();
+                sourceLen = m_HLSLSource.size();
+            }
+
+            HRESULT    hr = D3DCompile(sourceToCompile, sourceLen, 0, 0, 0, entryPoint,
                                        profile, D3DCOMPILE_SKIP_VALIDATION, 0, &m_ShaderBlob, &errorBlob);
 
             if (FAILED(hr))

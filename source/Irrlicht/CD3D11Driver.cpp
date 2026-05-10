@@ -206,6 +206,7 @@ namespace irr
             m_RectangleVertexShader(0), m_RectanglePixelShader(0), m_RectangleInputLayout(0),
             m_RectangleShaderInitialized(false),
             m_TempVertexBuffer(0), m_TempIndexBuffer(0), m_MatrixConstantBuffer(0),
+            m_LightConstantBuffer(0),
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
             m_RenderStateSets(),
@@ -396,6 +397,12 @@ namespace irr
             {
                 IRR_D3D11_BUFFER_RELEASE(m_MatrixConstantBuffer, "MatrixConstantBuffer");
                 m_MatrixConstantBuffer->Release();
+            }
+
+            if (m_LightConstantBuffer)
+            {
+                IRR_D3D11_BUFFER_RELEASE(m_LightConstantBuffer, "LightConstantBuffer");
+                m_LightConstantBuffer->Release();
             }
 
             for (u32 i = 0; i < ERM_RENDER_MODE_MAX; ++i)
@@ -729,6 +736,21 @@ namespace irr
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create matrix constant buffer.", ELL_ERROR);
+                return false;
+            }
+
+            D3D11_BUFFER_DESC    lightBufferDesc;
+            lightBufferDesc.ByteWidth           = 256;
+            lightBufferDesc.Usage               = D3D11_USAGE_DYNAMIC;
+            lightBufferDesc.BindFlags           = D3D11_BIND_CONSTANT_BUFFER;
+            lightBufferDesc.CPUAccessFlags      = D3D11_CPU_ACCESS_WRITE;
+            lightBufferDesc.MiscFlags           = 0;
+            lightBufferDesc.StructureByteStride = 0;
+            hr                                  = m_pID3DDevice->CreateBuffer(&lightBufferDesc, 0, &m_LightConstantBuffer);
+            IRR_D3D11_BUFFER_CREATE(m_LightConstantBuffer, "LightConstantBuffer");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create light constant buffer.", ELL_ERROR);
                 return false;
             }
 
@@ -2639,6 +2661,55 @@ namespace irr
         void CD3D11Driver::turnLightOn(s32 lightIndex, bool turnOn)
         {
             m_LastSetLight = turnOn ? lightIndex : -1;
+
+            if (turnOn && lightIndex >= 0 && lightIndex < (s32)Lights.size())
+            {
+                const SLight    &light = Lights[lightIndex];
+
+                D3D11_MAPPED_SUBRESOURCE    mapped;
+                if (SUCCEEDED(m_pID3DDeviceContext->Map(m_LightConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+                {
+                    float    *data = (float*)mapped.pData;
+
+                    data[0] = m_AmbientLight.r;
+                    data[1] = m_AmbientLight.g;
+                    data[2] = m_AmbientLight.b;
+                    data[3] = m_AmbientLight.a;
+
+                    data[4] = light.DiffuseColor.r;
+                    data[5] = light.DiffuseColor.g;
+                    data[6] = light.DiffuseColor.b;
+                    data[7] = light.DiffuseColor.a;
+
+                    data[8]     = light.SpecularColor.r;
+                    data[9]     = light.SpecularColor.g;
+                    data[10]    = light.SpecularColor.b;
+                    data[11]    = light.SpecularColor.a;
+
+                    data[12]    = light.Position.X;
+                    data[13]    = light.Position.Y;
+                    data[14]    = light.Position.Z;
+                    data[15]    = light.Radius;
+
+                    data[16]    = light.Direction.X;
+                    data[17]    = light.Direction.Y;
+                    data[18]    = light.Direction.Z;
+                    data[19]    = light.Attenuation.X;
+
+                    data[20]    = light.Attenuation.Y;
+                    data[21]    = light.Attenuation.Z;
+                    data[22]    = light.OuterCone;
+                    data[23]    = light.InnerCone;
+
+                    data[24]    = light.Falloff;
+                    data[25]    = (float)light.Type;
+
+                    m_pID3DDeviceContext->Unmap(m_LightConstantBuffer, 0);
+
+                    ID3D11Buffer    *buffers[1] = { m_LightConstantBuffer };
+                    m_pID3DDeviceContext->PSSetConstantBuffers(1, 1, buffers);
+                }
+            }
         }
 
 
@@ -3158,7 +3229,7 @@ namespace irr
                 m_MaterialPSInitialized = true;
             }
 
-            //if (materialType == EMT_TRANSPARENT_ADD_COLOR)
+            // if (materialType == EMT_TRANSPARENT_ADD_COLOR)
             //    os::Printer::log("hy", ELL_INFORMATION);
 
             // material type is only used for changing shader.
@@ -3512,7 +3583,7 @@ namespace irr
             CD3D11Shader    *shader = new CD3D11Shader(this);
             shader->setMaterialType(materialType);
 
-            if (!shader->compile(EDST_PIXEL, PS_MaterialShaders, entryPoint, "ps_4_0"))
+            if (!shader->compile(EDST_PIXEL, PS_MaterialShaders_Part1, entryPoint, "ps_4_0", PS_MaterialShaders_Part2))
             {
                 shader->drop();
                 return false;

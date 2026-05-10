@@ -1359,13 +1359,81 @@ float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
 3. d3d9的Gouraud shading是这样实现m_pID3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);请参考来实现PS
 
 # 71
-Git commit: 
+Git commit: Implement lighting+FLAT PS by MiniMax-M2.7.
 仿照EMT_SOLID_LIGHTING_GOURAUD和PS_SOLID_LIGHTING_GOURAUD实现，
 实现EMT_SOLID_LIGHTING_FLAT和PS_SOLID_LIGHTING_FLAT。
 请参照git commit id: 87d9da4679c42db55a6627d3ceb2c427cd960576
 
 # 72
 Git commit: 
+1. CD3D11Driver::turnLightOn并不是只开启一个light,而是需要根据每次传入的index，开启对应的light
+2. EMT_SOLID_LIGHTING_GOURAUD和PS_SOLID_LIGHTING_GOURAUD实现需要更改，要依赖Light的 E_LIGHT_TYPE Type生成ELT_POINT，ELT_SPOT，ELT_DIRECTIONAL三种不同的灯光PS。
+3. 对于CD3D11MaterialRenderer.h文件上实现的PS_SOLID_LIGHTING_GOURAUD，需要设置其ambient为m_AmbientLight表示的值。
+4. 对于PS_SOLID_LIGHTING_GOURAUD,根据CD3D11Driver::turnLightOn开启的Light，从core::array<SLight> Lights中找到对应的Light，根据以下Light参数来设置对应的PS内的控制变量
+               //! Ambient color emitted by the light
+            SColorf AmbientColor;
+
+            //! Diffuse color emitted by the light.
+            /** This is the primary color you want to set. */
+            SColorf DiffuseColor;
+
+            //! Specular color emitted by the light.
+            /** For details how to use specular highlights, see SMaterial::Shininess */
+            SColorf SpecularColor;
+
+            //! Attenuation factors (constant, linear, quadratic)
+            /** Changes the light strength fading over distance.
+             * Can also be altered by setting the radius, Attenuation will change to
+             * (0,1.f/radius,0). Can be overridden after radius was set. */
+            core::vector3df Attenuation;
+
+            //! The angle of the spot's outer cone. Ignored for other lights.
+            f32 OuterCone;
+
+            //! The angle of the spot's inner cone. Ignored for other lights.
+            f32 InnerCone;
+
+            //! The light strength's decrease between Outer and Inner cone.
+            f32 Falloff;
+
+            //! Read-ONLY! Position of the light.
+            /** If Type is ELT_DIRECTIONAL, it is ignored. Changed via light scene node's position. */
+            core::vector3df Position;
+
+            //! Read-ONLY! Direction of the light.
+            /** If Type is ELT_POINT, it is ignored. Changed via light scene node's rotation. */
+            core::vector3df Direction;
+
+            //! Read-ONLY! Radius of light. Everything within this radius will be lighted.
+            f32 Radius;
+
+            //! Read-ONLY! Type of the light. Default: ELT_POINT
+            E_LIGHT_TYPE Type;
+
+            //! Read-ONLY! Does the light cast shadows?
+            bool CastShadows : 1;
+
+PS_SOLID_LIGHTING_GOURAUD的ambient，diffuse，lighting都改成float4
+    float ambient = LightAmbient.r;
+    float diffuse = max(dot(normal, lightDir), 0.0f);
+    float lighting = ambient + diffuse * attenuation;
+
+my fix:
+1. PS_SOLID_LIGHTING_FLAT: dFdx/dFdy -> ddx/ddy
 
 # 73
+Git commit: 
+
+
+# 74
+Git commit: 
+
+# 75
+Git commit: 
+
+
+# 76
+Git commit: 
+
+# 77
 Git commit: 
