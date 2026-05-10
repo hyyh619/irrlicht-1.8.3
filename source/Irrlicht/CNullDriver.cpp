@@ -679,6 +679,11 @@ namespace irr
         // ! Draws a 3d triangle.
         void CNullDriver::draw3DTriangle(const core::triangle3df &triangle, SColor color)
         {
+            if (getDriverType() == EDT_DIRECT3D11)
+            {
+                color = SColor(color.getAlpha(), color.getBlue(), color.getGreen(), color.getRed());
+            }
+
             S3DVertex    vertices[3];
 
             vertices[0].Pos     = triangle.pointA;

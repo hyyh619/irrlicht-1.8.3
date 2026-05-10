@@ -1225,7 +1225,7 @@ CD3D11Driver::createRenderStateKey3D计算key时，material.MaterialTypeParam和
 
 
 # 67
-Git commit: 
+Git commit: Add antialise and colormask setting for 3d render states by MiniMax-M2.7.
 1. 根据material的AntiAliasing设置，来配置d3d11的rasterizer state。
             //! Sets the antialiasing mode
             /** Values are chosen from E_ANTI_ALIASING_MODE. Default is
@@ -1260,6 +1260,30 @@ Git commit:
 
 # 68
 Git commit: 
+CNullDriver::draw3DTriangle(const core::triangle3df &triangle, SColor color)输入的color从高位到低位是ARGB，但是d3d11对顶点color的排序从高到低是ABGR,请在CNullDriver::draw3DTriangle函数，针对D3D11的编译，对颜色做swizzle.
+        // ! Draws a 3d triangle.
+        void CNullDriver::draw3DTriangle(const core::triangle3df &triangle, SColor color)
+        {
+            S3DVertex    vertices[3];
+
+            vertices[0].Pos     = triangle.pointA;
+            vertices[0].Color   = color;
+            vertices[0].Normal  = triangle.getNormal().normalize();
+            vertices[0].TCoords.set(0.f, 0.f);
+            vertices[1].Pos     = triangle.pointB;
+            vertices[1].Color   = color;
+            vertices[1].Normal  = vertices[0].Normal;
+            vertices[1].TCoords.set(0.5f, 1.f);
+            vertices[2].Pos     = triangle.pointC;
+            vertices[2].Color   = color;
+            vertices[2].Normal  = vertices[0].Normal;
+            vertices[2].TCoords.set(1.f, 0.f);
+            const u16    indexList[] = {0, 1, 2};
+            drawVertexPrimitiveList(vertices, 3, indexList, 1, EVT_STANDARD, scene::EPT_TRIANGLES, EIT_16BIT);
+        }
+
+            SColor (u32 a, u32 r, u32 g, u32 b)
+                : color(((a & 0xff) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff)) {}
 
 
 # 69
