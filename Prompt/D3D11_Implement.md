@@ -1174,7 +1174,7 @@ Git commit: Fix 3d render state switch. We should use both mode and key. by Mini
 2. 判断是否需要重新设置3d render states,不能只是判断render mode，还需要结合当前render state key来判断。
 
 # 66
-Git commit: 
+Git commit: Fix 3d key collision by MiniMax-M2.7.
 CD3D11Driver::createRenderStateKey3D计算key时，material.MaterialTypeParam和material.Thickness都是32bit，因此会覆盖高32位的key值。
 请为material.MaterialTypeParam和material.Thickness单独创建一个u64 key。3d render states使用两个key进行比较，2d还是使用原来的一个key。
             return u64(ERM_3D) |
@@ -1228,4 +1228,14 @@ CD3D11Driver::createRenderStateKey3D计算key时，material.MaterialTypeParam和
 Git commit: 
 
 # 68
+Git commit: 
+
+
+# 69
+Git commit: 
+
+# 70
+Git commit: 
+
+# 71
 Git commit: 

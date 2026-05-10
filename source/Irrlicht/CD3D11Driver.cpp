@@ -3727,7 +3727,7 @@ namespace irr
                    (u64(material.ColorMask) << 36) |
                    (u64(material.BlendOperation) << 40) |
                    (u64(material.PolygonOffsetFactor) << 44) |
-                   // (u64(material.PolygonOffsetDirection) << 48) |
+                   (u64(material.PolygonOffsetDirection) << 48) |
                    (u64(material.Wireframe) << 52) |
                    (u64(material.PointCloud) << 53) |
                    (u64(material.ZWriteEnable) << 54) |

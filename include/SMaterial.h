@@ -403,7 +403,7 @@ public:
 
             //! Flag defining the direction the polygon offset is applied to.
             /** Can be to front or to back, specififed by values from E_POLYGON_OFFSET. */
-            E_POLYGON_OFFSET    PolygonOffsetDirection : 1;
+            E_POLYGON_OFFSET    PolygonOffsetDirection : 2;
 
             //! Draw as wireframe or filled triangles? Default: false
             /** The user can access a material flag using
