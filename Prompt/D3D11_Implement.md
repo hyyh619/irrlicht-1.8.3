@@ -1259,7 +1259,7 @@ Git commit: Add antialise and colormask setting for 3d render states by MiniMax-
 
 
 # 68
-Git commit: 
+Git commit: Fix wrong color swizzle between D3D9 and D3D11 by ying.
 CNullDriver::draw3DTriangle(const core::triangle3df &triangle, SColor color)输入的color从高位到低位是ARGB，但是d3d11对顶点color的排序从高到低是ABGR,请在CNullDriver::draw3DTriangle函数，针对D3D11的编译，对颜色做swizzle.
         // ! Draws a 3d triangle.
         void CNullDriver::draw3DTriangle(const core::triangle3df &triangle, SColor color)
@@ -1288,9 +1288,73 @@ CNullDriver::draw3DTriangle(const core::triangle3df &triangle, SColor color)输�
 
 # 69
 Git commit: 
+material.MaterialType为EMT_TRANSPARENT_ADD_COLOR时，d3d9要做如下配置
+                    setTextureColorStage(m_pID3DDevice, 0,
+                        D3DTA_TEXTURE, D3DTOP_MODULATE, D3DTA_DIFFUSE);
+
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+                    m_pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+
+EMT_TRANSPARENT_ADD_COLOR的描述如下
+            //! A transparent material.
+            /** Only the first texture is used. The new color is calculated
+             * by simply adding the source color and the dest color. This
+             * means if for example a billboard using a texture with black
+             * background and a red circle on it is drawn with this material,
+             * the result is that only the red circle will be drawn a little
+             * bit transparent, and everything which was black is 100%
+             * transparent and not visible. This material type is useful for
+             * particle effects. */
+根据以上的信息，对d3d11做相应更改。d3d11如果material type是EMT_TRANSPARENT_ADD_COLOR
+1. 开启alpha blend
+2. src blend是one，dest blend是INVSRCCOLOR
+
+material.MaterialType为EMT_TRANSPARENT_ALPHA_CHANNEL时，d3d9要做如下配置
+                    m_pID3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+                    m_pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+                    m_pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHAREF, core::floor32(material.MaterialTypeParam * 255.f));
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+                    m_pID3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+
+EMT_TRANSPARENT_ALPHA_CHANNEL的描述如下
+             * The final color is blended together from the destination
+             * color and the texture color, using the alpha channel value as
+             * blend factor. Only first texture is used. If you are using
+             * this material with small textures, it is a good idea to load
+             * the texture in 32 bit mode
+             * (video::IVideoDriver::setTextureCreationFlag()). Also, an alpha
+             * ref is used, which can be manipulated using
+             * SMaterial::MaterialTypeParam. This value controls how sharp the
+             * edges become when going from a transparent to a solid spot on
+             * the texture
+根据以上的信息，对d3d11做相应更改。
+
+EMT_TRANSPARENT_ALPHA_CHANNEL_REF的描述如下
+            //! Makes the material transparent based on the texture alpha channel.
+            /** If the alpha channel value is greater than 127, a
+             * pixel is written to the target, otherwise not. This
+             * material does not use alpha blending and is a lot faster
+             * than EMT_TRANSPARENT_ALPHA_CHANNEL. It is ideal for drawing
+             * stuff like leafes of plants, because the borders are not
+             * blurry but sharp. Only first texture is used. If you are
+             * using this material with small textures and 3d object, it
+             * is a good idea to load the texture in 32 bit mode
+             * (video::IVideoDriver::setTextureCreationFlag()). */
+根据上述的描述，d3d11的PS_TRANSPARENT_ALPHA_CHANNEL shader需要考虑其最后output的color的alpha channel值，如果大于127，这个Pixel就输出，如果小于等于127，就抛弃这个pixel。
 
 # 70
 Git commit: 
 
 # 71
+Git commit: 
+
+# 72
+Git commit: 
+
+# 73
 Git commit: 

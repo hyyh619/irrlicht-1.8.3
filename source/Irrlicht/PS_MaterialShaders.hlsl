@@ -221,8 +221,9 @@ float4 PS_TRANSPARENT_ALPHA_CHANNEL(PS_INPUT_BASIC input) : SV_TARGET
 float4 PS_TRANSPARENT_ALPHA_CHANNEL_REF(PS_INPUT_BASIC input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
-    clip(texColor.a - 0.5); // alpha >= 127/255 ≈ 0.5
-    return texColor * input.Color;
+    float4 result = texColor * input.Color;
+    clip(result.a - 0.5);
+    return result;
 }
 
 //==============================================================================

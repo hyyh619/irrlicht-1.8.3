@@ -3148,6 +3148,9 @@ namespace irr
                 m_MaterialPSInitialized = true;
             }
 
+            if (materialType == EMT_TRANSPARENT_ADD_COLOR)
+                os::Printer::log("hy", ELL_INFORMATION);
+
             // material type is only used for changing shader.
             // The draw has the same material type but it has different textures.
             if (m_LastMaterialType != materialType || m_nPsTexCount != m_nLastPsTexCount)
@@ -4014,8 +4017,25 @@ namespace irr
             {
                 blendDesc.RenderTarget[i].BlendEnable           = blendEnable;
                 blendDesc.RenderTarget[i].LogicOpEnable         = false;
-                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
-                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+
+                if (material.MaterialType == EMT_TRANSPARENT_ADD_COLOR)
+                {
+                    blendDesc.RenderTarget[i].BlendEnable       = TRUE;
+                    blendDesc.RenderTarget[i].SrcBlend          = D3D11_BLEND_ONE;
+                    blendDesc.RenderTarget[i].DestBlend         = D3D11_BLEND_INV_SRC_COLOR;
+                }
+                else if (material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL)
+                {
+                    blendDesc.RenderTarget[i].BlendEnable       = TRUE;
+                    blendDesc.RenderTarget[i].SrcBlend          = D3D11_BLEND_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].DestBlend         = D3D11_BLEND_INV_SRC_ALPHA;
+                }
+                else
+                {
+                    blendDesc.RenderTarget[i].SrcBlend          = D3D11_BLEND_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].DestBlend         = D3D11_BLEND_INV_SRC_ALPHA;
+                }
+
                 blendDesc.RenderTarget[i].BlendOp               = blendOp;
                 blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
                 blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
