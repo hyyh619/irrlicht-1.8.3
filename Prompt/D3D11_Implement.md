@@ -1168,15 +1168,60 @@ Git commit: 1. Fix wrong last ps material type. 2. print draw parameters.
 #endif
         }
 
-
 # 65
-Git commit: 
+Git commit: Fix 3d render state switch. We should use both mode and key. by MiniMax-M2.7.
 1. 把CD3D11Driver::setRenderStates的代码合并到CD3D11Driver::setRenderStates3DMode()，删除CD3D11Driver::setRenderStates
 2. 判断是否需要重新设置3d render states,不能只是判断render mode，还需要结合当前render state key来判断。
 
-
 # 66
 Git commit: 
+CD3D11Driver::createRenderStateKey3D计算key时，material.MaterialTypeParam和material.Thickness都是32bit，因此会覆盖高32位的key值。
+请为material.MaterialTypeParam和material.Thickness单独创建一个u64 key。3d render states使用两个key进行比较，2d还是使用原来的一个key。
+            return u64(ERM_3D) |
+                   (u64(material.MaterialType) << 4) |
+                   (u64(*(u32*)&material.MaterialTypeParam) << 12) |
+                   (u64(*(u32*)&material.Thickness) << 20) |
+                   (u64(material.ZBuffer) << 28) |
+                   (u64(material.AntiAliasing) << 32) |
+                   (u64(material.ColorMask) << 36) |
+                   (u64(material.BlendOperation) << 40) |
+                   (u64(material.PolygonOffsetFactor) << 44) |
+                   (u64(material.PolygonOffsetDirection) << 48) |
+                   (u64(material.Wireframe) << 52) |
+                   (u64(material.PointCloud) << 53) |
+                   (u64(material.ZWriteEnable) << 54) |
+                   (u64(material.BackfaceCulling) << 55) |
+                   (u64(material.FrontfaceCulling) << 56);
+
+下列material的成员变量值，为什么计算CD3D11Driver::createRenderStateKey3D时，key1的(u64(material.Wireframe) << 52)位是1，而material.Wireframe的值是false
+-		material	{TextureLayer=0x0000027446cbbbd8 {{Texture=0x0000027451481580 {...} TextureWrapU='\0' TextureWrapV='\0' ...}, ...} ...}	const irr::video::SMaterial &
++		TextureLayer	0x0000027446cbbbd8 {{Texture=0x0000027451481580 {m_Device=0x0000027446cf0fd0 {...} m_Texture=0x000002744eee35d0 {...} ...} ...}, ...}	irr::video::SMaterialLayer[0x00000008]
+		MaterialType	EMT_LIGHTMAP_M4 (0x00000005)	irr::video::E_MATERIAL_TYPE
++		AmbientColor	{color=0xffffffff }	irr::video::SColor
++		DiffuseColor	{color=0xffffffff }	irr::video::SColor
++		EmissiveColor	{color=0x00000000 }	irr::video::SColor
++		SpecularColor	{color=0xffffffff }	irr::video::SColor
+		Shininess	0.00000000	float
+		MaterialTypeParam	0.00000000	float
+		MaterialTypeParam2	-1.00000000	float
+		Thickness	1.00000000	float
+		ZBuffer	0x01 '\x1'	unsigned char
+		AntiAliasing	0x01 '\x1'	unsigned char
+		ColorMask	0x0f '\xf'	unsigned char
+		ColorMaterial	0x01 '\x1'	unsigned char
+		BlendOperation	EBO_NONE (0x00000000)	irr::video::E_BLEND_OPERATION
+		PolygonOffsetFactor	0x00 '\0'	unsigned char
+		PolygonOffsetDirection	EPO_FRONT | 0xfffffffe (0xffffffff)	irr::video::E_POLYGON_OFFSET
+		Wireframe	false	bool
+		PointCloud	false	bool
+		GouraudShading	true	bool
+		Lighting	false	bool
+		ZWriteEnable	true	bool
+		BackfaceCulling	true	bool
+		FrontfaceCulling	false	bool
+		FogEnable	false	bool
+		NormalizeNormals	false	bool
+		UseMipMaps	true	bool
 
 
 # 67

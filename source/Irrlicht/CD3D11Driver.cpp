@@ -194,7 +194,8 @@ namespace irr
         CD3D11Driver::CD3D11Driver(const SIrrlichtCreationParameters &params, io::IFileSystem *io)
             : CNullDriver(io, params.WindowSize), m_CurrentRenderMode(ERM_NONE),
             m_Current2DStateKey(0),
-            m_Current3DStateKey(0),
+            m_Current3DStateKeyKey1(0),
+            m_Current3DStateKeyKey2(0),
             m_ResetRenderStates(true), m_Transformation3DChanged(false),
             m_D3D11Library(0), m_DXGIFactory(0), m_Adapter(0), m_pID3DDevice(0), m_pID3DDeviceContext(0), m_pID3DDevice1(0), m_SwapChain(0),
             m_BackBufferRenderTargetView(0), m_DepthStencilView(0),
@@ -1142,25 +1143,28 @@ namespace irr
 
         bool CD3D11Driver::setRenderStates3DMode()
         {
-            const u64 key = createRenderStateKey3D(m_Material);
+            u64    key1, key2;
 
-            if (m_CurrentRenderMode == ERM_3D && m_Current3DStateKey == key)
+            createRenderStateKey3D(m_Material, key1, key2);
+
+            if (m_CurrentRenderMode == ERM_3D && m_Current3DStateKeyKey1 == key1 && m_Current3DStateKeyKey2 == key2)
                 return true;
 
-            m_CurrentRenderMode = ERM_3D;
-            m_Current3DStateKey = key;
+            m_CurrentRenderMode     = ERM_3D;
+            m_Current3DStateKeyKey1 = key1;
+            m_Current3DStateKeyKey2 = key2;
 
             m_pID3DDeviceContext->RSSetViewports(1, &m_DefaultViewport);
             m_pID3DDeviceContext->RSSetScissorRects(1, &m_DefaultScissorRect);
 
-            SRenderStateSet *stateSet = getOrCreateRenderStateSet3D(m_Material);
+            SRenderStateSet    *stateSet = getOrCreateRenderStateSet3D(m_Material);
             if (!stateSet)
                 return true;
 
             m_pID3DDeviceContext->RSSetState(stateSet->RasterizerState);
             m_pID3DDeviceContext->OMSetDepthStencilState(stateSet->DepthStencilState, 0);
 
-            FLOAT blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+            FLOAT    blendFactor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
             m_pID3DDeviceContext->OMSetBlendState(stateSet->BlendState, blendFactor, 0xFFFFFFFF);
 
             return true;
@@ -3149,7 +3153,6 @@ namespace irr
             // The draw has the same material type but it has different textures.
             if (m_LastMaterialType != materialType || m_nPsTexCount != m_nLastPsTexCount)
             {
-
                 if (materialType == EMT_SOLID)
                 {
                     if (m_nPsTexCount == 0)
@@ -3180,7 +3183,6 @@ namespace irr
             }
 
             setPSTextureAndSamplerState();
-
         }
 
 
@@ -3716,23 +3718,24 @@ namespace irr
             return u64(ERM_2D) | (u64(alpha) << 4) | (u64(texture) << 8) | (u64(alphaChannel) << 12);
         }
 
-        u64 CD3D11Driver::createRenderStateKey3D(const SMaterial &material)
+        void CD3D11Driver::createRenderStateKey3D(const SMaterial &material, u64 &key1, u64 &key2)
         {
-            return u64(ERM_3D) |
+            key1 = u64(ERM_3D) |
                    (u64(material.MaterialType) << 4) |
-                   (u64(*(u32*)&material.MaterialTypeParam) << 12) |
-                   (u64(*(u32*)&material.Thickness) << 20) |
                    (u64(material.ZBuffer) << 28) |
                    (u64(material.AntiAliasing) << 32) |
                    (u64(material.ColorMask) << 36) |
                    (u64(material.BlendOperation) << 40) |
                    (u64(material.PolygonOffsetFactor) << 44) |
-                   (u64(material.PolygonOffsetDirection) << 48) |
+                   // (u64(material.PolygonOffsetDirection) << 48) |
                    (u64(material.Wireframe) << 52) |
                    (u64(material.PointCloud) << 53) |
                    (u64(material.ZWriteEnable) << 54) |
                    (u64(material.BackfaceCulling) << 55) |
                    (u64(material.FrontfaceCulling) << 56);
+
+            key2 = (u64(*(u32*)&material.MaterialTypeParam) << 0) |
+                   (u64(*(u32*)&material.Thickness) << 32);
         }
 
         u64 CD3D11Driver::createRenderStateKeyOther(E_RENDER_MODE mode)
@@ -3851,14 +3854,17 @@ namespace irr
 
         CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSet3D(const SMaterial &material)
         {
-            const u64                                   key     = createRenderStateKey3D(material);
-            core::map<u64, SRenderStateSet>::Node       *node   = m_RenderStateSets[ERM_3D].find(key);
+            u64    key1, key2;
+
+            createRenderStateKey3D(material, key1, key2);
+            const u64                                   combinedKey = key1 ^ (key2 << 1);
+            core::map<u64, SRenderStateSet>::Node       *node       = m_RenderStateSets[ERM_3D].find(combinedKey);
 
             if (node)
                 return &node->getValue();
 
             SRenderStateSet    stateSet;
-            stateSet.Key                = key;
+            stateSet.Key                = combinedKey;
             stateSet.RasterizerState    = 0;
             stateSet.DepthStencilState  = 0;
             stateSet.BlendState         = 0;
@@ -4030,9 +4036,9 @@ namespace irr
                 return 0;
             }
 
-            m_RenderStateSets[ERM_3D].set(key, stateSet);
+            m_RenderStateSets[ERM_3D].set(combinedKey, stateSet);
 
-            core::map<u64, SRenderStateSet>::Node    *pNode = m_RenderStateSets[ERM_3D].find(key);
+            core::map<u64, SRenderStateSet>::Node    *pNode = m_RenderStateSets[ERM_3D].find(combinedKey);
             if (pNode == nullptr)
             {
                 os::Printer::log("Could not find the render states.", ELL_ERROR);

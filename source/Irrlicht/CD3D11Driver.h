@@ -496,7 +496,7 @@ private:
             void updateMatrixConstantBuffer();
             
             u64 createRenderStateKey2D(bool alpha, bool texture, bool alphaChannel);
-            u64 createRenderStateKey3D(const SMaterial &material);
+            void createRenderStateKey3D(const SMaterial &material, u64 &key1, u64 &key2);
             u64 createRenderStateKeyOther(E_RENDER_MODE mode);
 
             struct SRenderStateSet
@@ -590,7 +590,8 @@ private:
 
             E_RENDER_MODE    m_CurrentRenderMode;
             u64              m_Current2DStateKey;
-            u64              m_Current3DStateKey;
+            u64              m_Current3DStateKeyKey1;
+            u64              m_Current3DStateKeyKey2;
         };
 
         IVideoDriver* createDirectX11Driver(const SIrrlichtCreationParameters &params,
