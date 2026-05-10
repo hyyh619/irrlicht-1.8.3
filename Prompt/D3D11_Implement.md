@@ -1226,6 +1226,37 @@ CD3D11Driver::createRenderStateKey3D计算key时，material.MaterialTypeParam和
 
 # 67
 Git commit: 
+1. 根据material的AntiAliasing设置，来配置d3d11的rasterizer state。
+            //! Sets the antialiasing mode
+            /** Values are chosen from E_ANTI_ALIASING_MODE. Default is
+             * EAAM_SIMPLE|EAAM_LINE_SMOOTH, i.e. simple multi-sample
+             * anti-aliasing and lime smoothing is enabled. */
+            u8    AntiAliasing;
+
+        enum E_ANTI_ALIASING_MODE
+        {
+            //! Use to turn off anti-aliasing for this material
+            EAAM_OFF = 0,
+            //! Default anti-aliasing mode
+            EAAM_SIMPLE = 1,
+            //! High-quality anti-aliasing, not always supported, automatically enables SIMPLE mode
+            EAAM_QUALITY = 3,
+            //! Line smoothing
+            EAAM_LINE_SMOOTH = 4,
+            //! point smoothing, often in software and slow, only with OpenGL
+            EAAM_POINT_SMOOTH = 8,
+            //! All typical anti-alias and smooth modes
+            EAAM_FULL_BASIC = 15,
+            //! Enhanced anti-aliasing for transparent materials
+            /** Usually used with EMT_TRANSPARENT_ALPHA_REF and multisampling. */
+            EAAM_ALPHA_TO_COVERAGE = 16
+        };
+2. 3d key计算，看起来material.AntiAliasing左移32位，material.AntiAliasing左移36位，而material.AntiAliasing是8位，有可能覆盖掉material.AntiAliasing，请解决这个冲突
+                   (u64(material.AntiAliasing) << 32) |
+                   (u64(material.ColorMask) << 36) |
+3. 根据material.ColorMask的配置，来设置blend state的RenderTargetWriteMask
+4. 根据material.AntiAliasing是否设置alpha to coverage来配置blend state的AlphaToCoverageEnable
+
 
 # 68
 Git commit: 

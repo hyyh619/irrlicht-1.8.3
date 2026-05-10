@@ -1004,8 +1004,7 @@ namespace irr
                 setActiveTexture(i, material.getTexture(i));
             }
 
-            // if (material.Lighting == 1)
-            if (material.Wireframe == 1)
+            if (material.Lighting == 1)
                 os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
 
             setBasicRenderStates(material, m_LastMaterial, true);
@@ -3724,15 +3723,15 @@ namespace irr
                    (u64(material.MaterialType) << 4) |
                    (u64(material.ZBuffer) << 28) |
                    (u64(material.AntiAliasing) << 32) |
-                   (u64(material.ColorMask) << 36) |
-                   (u64(material.BlendOperation) << 40) |
-                   (u64(material.PolygonOffsetFactor) << 44) |
-                   (u64(material.PolygonOffsetDirection) << 48) |
-                   (u64(material.Wireframe) << 52) |
-                   (u64(material.PointCloud) << 53) |
-                   (u64(material.ZWriteEnable) << 54) |
-                   (u64(material.BackfaceCulling) << 55) |
-                   (u64(material.FrontfaceCulling) << 56);
+                   (u64(material.ColorMask) << 40) |
+                   (u64(material.BlendOperation) << 44) |
+                   (u64(material.PolygonOffsetFactor) << 48) |
+                   (u64(material.PolygonOffsetDirection) << 51) |
+                   (u64(material.Wireframe) << 53) |
+                   (u64(material.PointCloud) << 54) |
+                   (u64(material.ZWriteEnable) << 55) |
+                   (u64(material.BackfaceCulling) << 56) |
+                   (u64(material.FrontfaceCulling) << 57);
 
             key2 = (u64(*(u32*)&material.MaterialTypeParam) << 0) |
                    (u64(*(u32*)&material.Thickness) << 32);
@@ -3765,7 +3764,7 @@ namespace irr
             rasterizerDesc.CullMode                 = D3D11_CULL_NONE;
             rasterizerDesc.DepthBias                = D3D11_DEFAULT_DEPTH_BIAS;
             rasterizerDesc.DepthBiasClamp           = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
-            rasterizerDesc.DepthClipEnable          = false;
+            rasterizerDesc.DepthClipEnable          = true;
             rasterizerDesc.FillMode                 = D3D11_FILL_SOLID;
             rasterizerDesc.ForcedSampleCount        = 0;
             rasterizerDesc.FrontCounterClockwise    = false;
@@ -3871,7 +3870,7 @@ namespace irr
 
             HRESULT                     hr = E_FAIL;
             D3D11_RASTERIZER_DESC1      rasterizerDesc;
-            rasterizerDesc.AntialiasedLineEnable    = false;
+            rasterizerDesc.AntialiasedLineEnable    = (material.AntiAliasing & EAAM_LINE_SMOOTH) != 0;
             rasterizerDesc.CullMode                 = D3D11_CULL_BACK;
             rasterizerDesc.DepthBias                = D3D11_DEFAULT_DEPTH_BIAS;
             rasterizerDesc.DepthBiasClamp           = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
@@ -3879,7 +3878,7 @@ namespace irr
             rasterizerDesc.FillMode                 = D3D11_FILL_SOLID;
             rasterizerDesc.ForcedSampleCount        = 0;
             rasterizerDesc.FrontCounterClockwise    = false;
-            rasterizerDesc.MultisampleEnable        = false;
+            rasterizerDesc.MultisampleEnable        = (material.AntiAliasing & (EAAM_SIMPLE | EAAM_QUALITY)) != 0;
             rasterizerDesc.ScissorEnable            = false;
             rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
 
@@ -3964,7 +3963,7 @@ namespace irr
             }
 
             D3D11_BLEND_DESC1    blendDesc;
-            blendDesc.AlphaToCoverageEnable     = false;
+            blendDesc.AlphaToCoverageEnable     = (material.AntiAliasing & EAAM_ALPHA_TO_COVERAGE) != 0;
             blendDesc.IndependentBlendEnable    = false;
 
             bool    blendEnable = material.BlendOperation != EBO_NONE;
@@ -4022,7 +4021,12 @@ namespace irr
                 blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
                 blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
                 blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+                blendDesc.RenderTarget[i].RenderTargetWriteMask = (material.ColorMask == ECP_ALL) ?
+                                                                  D3D11_COLOR_WRITE_ENABLE_ALL :
+                                                                  ((material.ColorMask & ECP_RED)   ? D3D11_COLOR_WRITE_ENABLE_RED   : 0) |
+                                                                  ((material.ColorMask & ECP_GREEN) ? D3D11_COLOR_WRITE_ENABLE_GREEN : 0) |
+                                                                  ((material.ColorMask & ECP_BLUE)  ? D3D11_COLOR_WRITE_ENABLE_BLUE  : 0) |
+                                                                  ((material.ColorMask & ECP_ALPHA) ? D3D11_COLOR_WRITE_ENABLE_ALPHA : 0);
             }
 
             hr = E_FAIL;
