@@ -1422,7 +1422,7 @@ my fix:
 1. PS_SOLID_LIGHTING_FLAT: dFdx/dFdy -> ddx/ddy
 
 # 73
-Git commit: 
+Git commit: Implement gouraud shading of VS for EVT_STANDARD.
 根据基础的VERTEX_SHADER_STANDARD内容以及SLight的下列参数，生成三组新的VS，分别支持ELT_POINT，ELT_SPOT，ELT_DIRECTIONAL三种不同的灯光
                //! Ambient color emitted by the light
             SColorf AmbientColor;
@@ -1485,6 +1485,17 @@ CD3D11Driver::setVSByVertexType如果需要使用下列带光照的VS
 
 # 74
 Git commit: 
+1. 仿照EVT_STANDARD+gouraud shading实现的下列shader，为EVT_2TCOORDS增加gourand shading
+    EVT_STANDARD_LIGHTING_POINT;
+    EVT_STANDARD_LIGHTING_SPOT;
+    EVT_STANDARD_LIGHTING_DIRECTIONAL;
+2. CD3D11Driver::setVSByVertexType,在vType == EVT_2TCOORDS && m_Material.GouraudShading时，也选择对应的gouraud shading版本的VS
+
+Delete the following code of S3DVertex.h
+{
+            //! default constructor
+            S3DVertex() {}
+
 
 # 75
 Git commit: 

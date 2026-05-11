@@ -32,6 +32,11 @@ namespace irr
             EVT_STANDARD_LIGHTING_SPOT,
             EVT_STANDARD_LIGHTING_POINT,
 
+            //! for Gouraud lighting with 2 texture coordinates
+            EVT_2TCOORDS_LIGHTING_DIRECTIONAL,
+            EVT_2TCOORDS_LIGHTING_SPOT,
+            EVT_2TCOORDS_LIGHTING_POINT,
+
             //! Vertex type for 2D rectangle drawing.
             EVT_2D_RECTANGLE,
 
@@ -44,6 +49,12 @@ namespace irr
             "standard",
             "2tcoords",
             "tangents",
+            "standard_lighting_directional",
+            "standard_lighting_spot",
+            "standard_lighting_point",
+            "2tcoords_lighting_directional",
+            "2tcoords_lighting_spot",
+            "2tcoords_lighting_point",
             "2d_rectangle",
             0
         };

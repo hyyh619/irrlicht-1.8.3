@@ -567,6 +567,7 @@ private:
             u32     m_MaxMRTs;
             u32     m_NumSetMRTs;
             f32     m_MaxLightDistance;
+            s32     m_CurSetLight;
             s32     m_LastSetLight;
 
             ECOLOR_FORMAT       m_ColorFormat;
