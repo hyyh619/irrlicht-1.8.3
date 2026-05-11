@@ -27,6 +27,11 @@ namespace irr
             /** Usually used for tangent space normal mapping. */
             EVT_TANGENTS,
 
+            //! for Gouraud lighting
+            EVT_STANDARD_LIGHTING_DIRECTIONAL,
+            EVT_STANDARD_LIGHTING_SPOT,
+            EVT_STANDARD_LIGHTING_POINT,
+
             //! Vertex type for 2D rectangle drawing.
             EVT_2D_RECTANGLE,
 

@@ -50,6 +50,142 @@ namespace irr
             "    return output;"
             "}";
 
+        // ELT_DIRECTIONAL Light Vertex Shader
+        static const char    VERTEX_SHADER_STANDARD_DIRECTIONAL[] =
+            "struct VS_INPUT {"
+            "    float3 Pos : POSITION;"
+            "    float3 Normal : NORMAL;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "};"
+            "struct VS_OUTPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Normal : TEXCOORD1;"
+            "    float3 WorldPos : TEXCOORD2;"
+            "};"
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "    float4x4 World;"
+            "};"
+            "cbuffer LightBuffer : register(b1) {"
+            "    float4 AmbientColor;"
+            "    float4 DiffuseColor;"
+            "    float4 SpecularColor;"
+            "    float4 LightDir;"
+            "};"
+            "VS_OUTPUT main(VS_INPUT input) {"
+            "    VS_OUTPUT output;"
+            "    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));"
+            "    float4 worldPos = mul(float4(input.Pos, 1.0), transpose(World));"
+            "    output.WorldPos = worldPos.xyz;"
+            "    output.Normal = mul(input.Normal, (float3x3)World);"
+            "    output.TexCoord = input.TexCoord;"
+            "    float3 normal = normalize(input.Normal);"
+            "    float diff = max(dot(normal, normalize(-LightDir.xyz)), 0.0);"
+            "    output.Color = float4(AmbientColor.rgb + DiffuseColor.rgb * diff, 1.0);"
+            "    return output;"
+            "}";
+
+        // ELT_POINT Light Vertex Shader
+        static const char    VERTEX_SHADER_STANDARD_POINT[] =
+            "struct VS_INPUT {"
+            "    float3 Pos : POSITION;"
+            "    float3 Normal : NORMAL;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "};"
+            "struct VS_OUTPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Normal : TEXCOORD1;"
+            "    float3 WorldPos : TEXCOORD2;"
+            "};"
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "    float4x4 World;"
+            "};"
+            "cbuffer LightBuffer : register(b1) {"
+            "    float4 AmbientColor;"
+            "    float4 DiffuseColor;"
+            "    float4 SpecularColor;"
+            "    float4 LightPos;"
+            "    float4 Attenuation;"
+            "    float LightRadius;"
+            "};"
+            "VS_OUTPUT main(VS_INPUT input) {"
+            "    VS_OUTPUT output;"
+            "    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));"
+            "    float4 worldPos = mul(float4(input.Pos, 1.0), transpose(World));"
+            "    output.WorldPos = worldPos.xyz;"
+            "    output.Normal = mul(input.Normal, (float3x3)World);"
+            "    output.TexCoord = input.TexCoord;"
+            "    float3 lightDir = LightPos.xyz - worldPos.xyz;"
+            "    float dist = length(lightDir);"
+            "    lightDir = normalize(lightDir);"
+            "    float3 normal = normalize(input.Normal);"
+            "    float diff = max(dot(normal, lightDir), 0.0);"
+            "    float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist);"
+            "    float cond = dist <= LightRadius ? 1.0 : 0.0;"
+            "    output.Color = float4((AmbientColor.rgb + DiffuseColor.rgb * diff * att) * cond, 1.0);"
+            "    return output;"
+            "}";
+
+        // ELT_SPOT Light Vertex Shader
+        static const char    VERTEX_SHADER_STANDARD_SPOT[] =
+            "struct VS_INPUT {"
+            "    float3 Pos : POSITION;"
+            "    float3 Normal : NORMAL;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "};"
+            "struct VS_OUTPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float3 Normal : TEXCOORD1;"
+            "    float3 WorldPos : TEXCOORD2;"
+            "};"
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "    float4x4 World;"
+            "};"
+            "cbuffer LightBuffer : register(b1) {"
+            "    float4 AmbientColor;"
+            "    float4 DiffuseColor;"
+            "    float4 SpecularColor;"
+            "    float4 LightPos;"
+            "    float4 LightDir;"
+            "    float4 Attenuation;"
+            "    float OuterCone;"
+            "    float InnerCone;"
+            "    float Falloff;"
+            "    float LightRadius;"
+            "};"
+            "VS_OUTPUT main(VS_INPUT input) {"
+            "    VS_OUTPUT output;"
+            "    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));"
+            "    float4 worldPos = mul(float4(input.Pos, 1.0), transpose(World));"
+            "    output.WorldPos = worldPos.xyz;"
+            "    output.Normal = mul(input.Normal, (float3x3)World);"
+            "    output.TexCoord = input.TexCoord;"
+            "    float3 lightDir = LightPos.xyz - worldPos.xyz;"
+            "    float dist = length(lightDir);"
+            "    lightDir = normalize(lightDir);"
+            "    float3 normal = normalize(input.Normal);"
+            "    float diff = max(dot(normal, lightDir), 0.0);"
+            "    float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist);"
+            "    float cosAngle = dot(-lightDir, normalize(LightDir.xyz));"
+            "    float cosOuter = cos(radians(OuterCone * 0.5));"
+            "    float cosInner = cos(radians(InnerCone * 0.5));"
+            "    float spotFactor = smoothstep(cosOuter, cosInner, cosAngle);"
+            "    float cond = dist <= LightRadius ? 1.0 : 0.0;"
+            "    output.Color = float4((AmbientColor.rgb + DiffuseColor.rgb * diff * att * spotFactor * cond), 1.0);"
+            "    return output;"
+            "}";
+
         static const char    VERTEX_SHADER_2TCOORDS[] =
             "struct VS_INPUT {"
             "    float3 Pos : POSITION;"
@@ -725,7 +861,7 @@ namespace irr
             setViewPort(driverInitArea);
 
             D3D11_BUFFER_DESC    matrixBufferDesc;
-            matrixBufferDesc.ByteWidth              = sizeof(core::matrix4);
+            matrixBufferDesc.ByteWidth              = sizeof(core::matrix4) * 2;  // Two matrices, WorldViewProj, World
             matrixBufferDesc.Usage                  = D3D11_USAGE_DYNAMIC;
             matrixBufferDesc.BindFlags              = D3D11_BIND_CONSTANT_BUFFER;
             matrixBufferDesc.CPUAccessFlags         = D3D11_CPU_ACCESS_WRITE;
@@ -983,6 +1119,29 @@ namespace irr
 
                 case video::EVT_2D_RECTANGLE: return "EVT_2D_RECTANGLE";
 
+                case video::EVT_STANDARD_LIGHTING_DIRECTIONAL: return "EVT_STANDARD_LIGHTING_DIRECTIONAL";
+
+                case video::EVT_STANDARD_LIGHTING_SPOT: return "EVT_STANDARD_LIGHTING_SPOT";
+
+                case video::EVT_STANDARD_LIGHTING_POINT: return "EVT_STANDARD_LIGHTING_POINT";
+
+                default:
+                    _IRR_DEBUG_BREAK_IF(false);
+                    return "?";
+            }
+        }
+
+
+        const c8* CD3D11Driver::getLightTypeName(video::E_LIGHT_TYPE lightType)
+        {
+            switch (lightType)
+            {
+                case video::ELT_POINT: return "ELT_POINT";
+
+                case video::ELT_SPOT: return "ELT_SPOT";
+
+                case video::ELT_DIRECTIONAL: return "ELT_DIRECTIONAL";
+
                 default:
                     _IRR_DEBUG_BREAK_IF(false);
                     return "?";
@@ -1039,7 +1198,7 @@ namespace irr
             // if (material.Lighting == 1)
             //    os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
 
-            setBasicRenderStates(material, m_LastMaterial, true);
+            setBasicRenderStates(material, m_LastMaterial, false);
             m_LastMaterial = material;
 
 #ifdef _IRR_MATERIAL_PRINT
@@ -1047,6 +1206,8 @@ namespace irr
             msg += getMaterialTypeName(material.MaterialType);
             msg += ", Wireframe=";
             msg += material.Wireframe ? "1" : "0";
+            msg += ", GouraudShading=";
+            msg += material.GouraudShading ? "1" : "0";
             msg += ", Lighting=";
             msg += material.Lighting ? "1" : "0";
             msg += ", ZBuffer=";
@@ -1157,7 +1318,21 @@ namespace irr
             }
 
             if (resetAllRenderstates || lastMaterial.GouraudShading != material.GouraudShading)
-            {}
+            {
+                if (m_LastVertexType == EVT_STANDARD_LIGHTING_DIRECTIONAL ||
+                    m_LastVertexType == EVT_STANDARD_LIGHTING_SPOT ||
+                    m_LastVertexType == EVT_STANDARD_LIGHTING_POINT)
+                {
+                    ID3D11Buffer    *pBuffer = { nullptr };
+                    m_pID3DDeviceContext->VSSetConstantBuffers(1, 1, &pBuffer);
+                }
+
+                if (m_LastMaterialType == EMT_SOLID_LIGHTING_GOURAUD)
+                {
+                    ID3D11Buffer    *pBuffer = { nullptr };
+                    m_pID3DDeviceContext->PSSetConstantBuffers(1, 1, &pBuffer);
+                }
+            }
 
             if (resetAllRenderstates || lastMaterial.Lighting != material.Lighting)
             {}
@@ -1509,6 +1684,9 @@ namespace irr
                                                        E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
                                                        E_INDEX_TYPE iType, bool is3D)
         {
+            if (m_Material.GouraudShading == 1)
+                os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
+
             setVSByVertexType(vType);
             setPSByMaterialType(vType, m_Material.MaterialType);
 
@@ -2693,54 +2871,61 @@ namespace irr
         void CD3D11Driver::turnLightOn(s32 lightIndex, bool turnOn)
         {
             m_LastSetLight = turnOn ? lightIndex : -1;
+        }
 
-            if (turnOn && lightIndex >= 0 && lightIndex < (s32)Lights.size())
+
+        void CD3D11Driver::updateLightConstantBuffer(bool vsLighting)
+        {
+            if (m_LastSetLight < 0 || m_LastSetLight >= (s32)Lights.size())
+                return;
+
+            const SLight    &light = Lights[m_LastSetLight];
+
+            D3D11_MAPPED_SUBRESOURCE    mapped;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_LightConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
             {
-                const SLight    &light = Lights[lightIndex];
+                float    *data = (float*)mapped.pData;
 
-                D3D11_MAPPED_SUBRESOURCE    mapped;
-                if (SUCCEEDED(m_pID3DDeviceContext->Map(m_LightConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
-                {
-                    float    *data = (float*)mapped.pData;
+                data[0] = m_AmbientLight.r;
+                data[1] = m_AmbientLight.g;
+                data[2] = m_AmbientLight.b;
+                data[3] = m_AmbientLight.a;
 
-                    data[0] = m_AmbientLight.r;
-                    data[1] = m_AmbientLight.g;
-                    data[2] = m_AmbientLight.b;
-                    data[3] = m_AmbientLight.a;
+                data[4] = light.DiffuseColor.r;
+                data[5] = light.DiffuseColor.g;
+                data[6] = light.DiffuseColor.b;
+                data[7] = light.DiffuseColor.a;
 
-                    data[4] = light.DiffuseColor.r;
-                    data[5] = light.DiffuseColor.g;
-                    data[6] = light.DiffuseColor.b;
-                    data[7] = light.DiffuseColor.a;
+                data[8]     = light.SpecularColor.r;
+                data[9]     = light.SpecularColor.g;
+                data[10]    = light.SpecularColor.b;
+                data[11]    = light.SpecularColor.a;
 
-                    data[8]     = light.SpecularColor.r;
-                    data[9]     = light.SpecularColor.g;
-                    data[10]    = light.SpecularColor.b;
-                    data[11]    = light.SpecularColor.a;
+                data[12]    = light.Position.X;
+                data[13]    = light.Position.Y;
+                data[14]    = light.Position.Z;
+                data[15]    = light.Radius;
 
-                    data[12]    = light.Position.X;
-                    data[13]    = light.Position.Y;
-                    data[14]    = light.Position.Z;
-                    data[15]    = light.Radius;
+                data[16]    = light.Direction.X;
+                data[17]    = light.Direction.Y;
+                data[18]    = light.Direction.Z;
+                data[19]    = light.Attenuation.X;
 
-                    data[16]    = light.Direction.X;
-                    data[17]    = light.Direction.Y;
-                    data[18]    = light.Direction.Z;
-                    data[19]    = light.Attenuation.X;
+                data[20]    = light.Attenuation.Y;
+                data[21]    = light.Attenuation.Z;
+                data[22]    = light.OuterCone;
+                data[23]    = light.InnerCone;
 
-                    data[20]    = light.Attenuation.Y;
-                    data[21]    = light.Attenuation.Z;
-                    data[22]    = light.OuterCone;
-                    data[23]    = light.InnerCone;
+                data[24]    = light.Falloff;
+                data[25]    = (float)light.Type;
 
-                    data[24]    = light.Falloff;
-                    data[25]    = (float)light.Type;
+                m_pID3DDeviceContext->Unmap(m_LightConstantBuffer, 0);
 
-                    m_pID3DDeviceContext->Unmap(m_LightConstantBuffer, 0);
-
-                    ID3D11Buffer    *buffers[1] = { m_LightConstantBuffer };
+                ID3D11Buffer    *buffers[1] = {m_LightConstantBuffer};
+                if (vsLighting)
+                    m_pID3DDeviceContext->VSSetConstantBuffers(1, 1, buffers);
+                else
                     m_pID3DDeviceContext->PSSetConstantBuffers(1, 1, buffers);
-                }
             }
         }
 
@@ -3216,7 +3401,34 @@ namespace irr
 
         void CD3D11Driver::setVSByVertexType(video::E_VERTEX_TYPE vType)
         {
-            if (vType != m_LastVertexType || !m_BuiltInVSInitialized)
+            E_VERTEX_TYPE    actualVType = vType;
+
+            // We should check if there is lighting.
+            if (vType == EVT_STANDARD && m_Material.Lighting)
+            {
+                const SLight    &light = getDynamicLight(m_LastSetLight);
+
+                switch (light.Type)
+                {
+                    case ELT_POINT:
+                        actualVType = EVT_STANDARD_LIGHTING_POINT;
+                        break;
+
+                    case ELT_SPOT:
+                        actualVType = EVT_STANDARD_LIGHTING_SPOT;
+                        break;
+
+                    case ELT_DIRECTIONAL:
+                        actualVType = EVT_STANDARD_LIGHTING_DIRECTIONAL;
+                        break;
+
+                    default:
+                        os::Printer::log("setVSByVertexType", getLightTypeName(light.Type), ELL_ERROR);
+                        break;
+                }
+            }
+
+            if (actualVType != m_LastVertexType || !m_BuiltInVSInitialized)
             {
                 if (!m_BuiltInVSInitialized)
                 {
@@ -3231,20 +3443,27 @@ namespace irr
                 }
 
 #ifdef _IRR_MATERIAL_PRINT
-                os::Printer::log("setVSByVertexType", getVertexTypeName(vType), ELL_INFORMATION);
+                os::Printer::log("setVSByVertexType", getVertexTypeName(actualVType), ELL_INFORMATION);
 #endif
 
-                if (vType >= 0 && vType <= EVT_2D_RECTANGLE && m_BuiltInVertexShader[vType])
+                if (actualVType >= 0 && actualVType <= EVT_2D_RECTANGLE && m_BuiltInVertexShader[actualVType])
                 {
-                    m_pID3DDeviceContext->VSSetShader(m_BuiltInVertexShader[vType], 0, 0);
+                    m_pID3DDeviceContext->VSSetShader(m_BuiltInVertexShader[actualVType], 0, 0);
 
-                    if (m_InputLayout[vType])
+                    if (m_InputLayout[actualVType])
                     {
-                        m_pID3DDeviceContext->IASetInputLayout(m_InputLayout[vType]);
+                        m_pID3DDeviceContext->IASetInputLayout(m_InputLayout[actualVType]);
+                    }
+
+                    if (actualVType == EVT_STANDARD_LIGHTING_POINT ||
+                        actualVType == EVT_STANDARD_LIGHTING_SPOT ||
+                        actualVType == EVT_STANDARD_LIGHTING_DIRECTIONAL)
+                    {
+                        updateLightConstantBuffer(true);
                     }
                 }
 
-                m_LastVertexType = vType;
+                m_LastVertexType = actualVType;
             }
         }
 
@@ -3270,6 +3489,7 @@ namespace irr
             {
                 if (materialType == EMT_SOLID)
                 {
+#if 0
                     if (m_Material.Lighting == false)
                     {
                         if (m_nPsTexCount == 0)
@@ -3288,27 +3508,41 @@ namespace irr
                             materialType = EMT_SOLID_LIGHTING_FLAT;
                         }
                     }
-                }
 
-                m_LastMaterialType = materialType;
+#else
+                    if (m_nPsTexCount == 0)
+                        materialType = EMT_SOLID_COLOR;
+                    else if (m_nPsTexCount == 1 && vType == EVT_2TCOORDS)
+                        materialType = EMT_SOLID_1_LAYER;
+#endif
+                }
+            }
+
+            m_LastMaterialType = materialType;
 
 #ifdef _IRR_MATERIAL_PRINT
-                os::Printer::log("setPSByMaterialType", getMaterialTypeName(materialType), ELL_INFORMATION);
+            os::Printer::log("setPSByMaterialType", getMaterialTypeName(materialType), ELL_INFORMATION);
 #endif
 
-                if (materialType >= EMT_SOLID && materialType <= EMT_MATERIAL_MAX && m_BuiltInPixelShader[materialType])
-                {
-                    m_pID3DDeviceContext->PSSetShader(m_BuiltInPixelShader[materialType], 0, 0);
-                }
-                else
-                {
-                    const CD3D11Shader    *pShader = getShaderByTypes((E_VERTEX_TYPE)0, EDST_PIXEL, materialType);
+            if (materialType >= EMT_SOLID && materialType <= EMT_MATERIAL_MAX && m_BuiltInPixelShader[materialType])
+            {
+                m_pID3DDeviceContext->PSSetShader(m_BuiltInPixelShader[materialType], 0, 0);
+            }
+            else
+            {
+                const CD3D11Shader    *pShader = getShaderByTypes((E_VERTEX_TYPE)0, EDST_PIXEL, materialType);
 
-                    if (pShader && pShader->getPixelShader())
-                    {
-                        m_pID3DDeviceContext->PSSetShader(pShader->getPixelShader(), 0, 0);
-                    }
+                if (pShader && pShader->getPixelShader())
+                {
+                    m_pID3DDeviceContext->PSSetShader(pShader->getPixelShader(), 0, 0);
                 }
+            }
+
+            if (m_Material.GouraudShading &&
+                (materialType == EMT_SOLID_LIGHTING_GOURAUD ||
+                 materialType == EMT_SOLID_LIGHTING_FLAT))
+            {
+                updateLightConstantBuffer(false);
             }
 
             setPSTextureAndSamplerState();
@@ -3391,6 +3625,18 @@ namespace irr
                     shaderSource = VERTEX_SHADER_TANGENTS;
                     break;
 
+                case EVT_STANDARD_LIGHTING_DIRECTIONAL:
+                    shaderSource = VERTEX_SHADER_STANDARD_DIRECTIONAL;
+                    break;
+
+                case EVT_STANDARD_LIGHTING_SPOT:
+                    shaderSource = VERTEX_SHADER_STANDARD_SPOT;
+                    break;
+
+                case EVT_STANDARD_LIGHTING_POINT:
+                    shaderSource = VERTEX_SHADER_STANDARD_POINT;
+                    break;
+
                 default:
                     return false;
             }
@@ -3455,6 +3701,22 @@ namespace irr
                     };
                     layout      = tangentLayout;
                     numElements = 6;
+                    break;
+                }
+
+                case EVT_STANDARD_LIGHTING_DIRECTIONAL:
+                case EVT_STANDARD_LIGHTING_SPOT:
+                case EVT_STANDARD_LIGHTING_POINT:
+                {
+                    static D3D11_INPUT_ELEMENT_DESC    lightingLayout[] =
+                    {
+                        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                    };
+                    layout      = lightingLayout;
+                    numElements = 4;
                     break;
                 }
 
@@ -3793,13 +4055,7 @@ namespace irr
         {
             if (!m_RectangleShaderInitialized)
             {
-                for (u32 i = 0; i < EVT_2D_RECTANGLE; ++i)
-                {
-                    createBuiltInVertexShader((E_VERTEX_TYPE)i);
-                }
-
                 createRectangleShaders();
-
                 m_RectangleShaderInitialized = true;
             }
 
@@ -3832,13 +4088,21 @@ namespace irr
 
         void CD3D11Driver::updateMatrixConstantBuffer()
         {
-            core::matrix4    mvp = m_Matrices[ETS_PROJECTION] * m_Matrices[ETS_VIEW] * m_Matrices[ETS_WORLD];
+            core::matrix4       mvp     = m_Matrices[ETS_PROJECTION] * m_Matrices[ETS_VIEW] * m_Matrices[ETS_WORLD];
+            core::matrix4       m       = m_Matrices[ETS_WORLD];
+            u32                 size    = sizeof(core::matrix4);
 
             D3D11_MAPPED_SUBRESOURCE    mapped;
 
             if (SUCCEEDED(m_pID3DDeviceContext->Map(m_MatrixConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
             {
-                memcpy(mapped.pData, mvp.pointer(), sizeof(core::matrix4));
+                c8    *p = (c8*)mapped.pData;
+
+                memcpy(p, mvp.pointer(), size);
+
+                p += size;
+                memcpy(p, m.pointer(), size);
+
                 m_pID3DDeviceContext->Unmap(m_MatrixConstantBuffer, 0);
             }
 

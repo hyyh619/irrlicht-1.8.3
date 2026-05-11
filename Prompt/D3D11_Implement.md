@@ -1423,9 +1423,65 @@ my fix:
 
 # 73
 Git commit: 
-d3d9的下列Lighting设置，d3d11需要做什么相应的操作。
-    if (material.Lighting)
-        m_pID3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+根据基础的VERTEX_SHADER_STANDARD内容以及SLight的下列参数，生成三组新的VS，分别支持ELT_POINT，ELT_SPOT，ELT_DIRECTIONAL三种不同的灯光
+               //! Ambient color emitted by the light
+            SColorf AmbientColor;
+
+            //! Diffuse color emitted by the light.
+            /** This is the primary color you want to set. */
+            SColorf DiffuseColor;
+
+            //! Specular color emitted by the light.
+            /** For details how to use specular highlights, see SMaterial::Shininess */
+            SColorf SpecularColor;
+
+            //! Attenuation factors (constant, linear, quadratic)
+            /** Changes the light strength fading over distance.
+             * Can also be altered by setting the radius, Attenuation will change to
+             * (0,1.f/radius,0). Can be overridden after radius was set. */
+            core::vector3df Attenuation;
+
+            //! The angle of the spot's outer cone. Ignored for other lights.
+            f32 OuterCone;
+
+            //! The angle of the spot's inner cone. Ignored for other lights.
+            f32 InnerCone;
+
+            //! The light strength's decrease between Outer and Inner cone.
+            f32 Falloff;
+
+            //! Read-ONLY! Position of the light.
+            /** If Type is ELT_DIRECTIONAL, it is ignored. Changed via light scene node's position. */
+            core::vector3df Position;
+
+            //! Read-ONLY! Direction of the light.
+            /** If Type is ELT_POINT, it is ignored. Changed via light scene node's rotation. */
+            core::vector3df Direction;
+
+            //! Read-ONLY! Radius of light. Everything within this radius will be lighted.
+            f32 Radius;
+
+            //! Read-ONLY! Type of the light. Default: ELT_POINT
+            E_LIGHT_TYPE Type;
+
+            //! Read-ONLY! Does the light cast shadows?
+            bool CastShadows : 1;
+
+CD3D11Driver::setVSByVertexType在vType设置成EVT_STANDARD时，需要对m_Material.Lighting做光照处理
+1. 如果Light为false，就用EVT_STANDARD的VS
+2. 如果Light为true, 获取当前turn on light，根据light类型，选择下列对应的VS
+    EVT_STANDARD_LIGHTING_DIRECTIONAL,
+    EVT_STANDARD_LIGHTING_SPOT,
+    EVT_STANDARD_LIGHTING_POINT,
+
+CD3D11Driver::setVSByVertexType如果需要使用下列带光照的VS
+    EVT_STANDARD_LIGHTING_DIRECTIONAL,
+    EVT_STANDARD_LIGHTING_SPOT,
+    EVT_STANDARD_LIGHTING_POINT,
+1. 需要判断是VS还是PS开启了光照计算
+2. 如果是VS开启，则在CD3D11Driver::setVSByVertexType中设置m_LightConstantBuffer到CBV
+3. 如果是PS开启，则在CD3D11Driver::setPSByMaterialType中设置m_LightConstantBuffer到CBV
+4. 不要直接在CD3D11Driver::turnLightOn中设置m_LightConstantBuffer。
 
 # 74
 Git commit: 

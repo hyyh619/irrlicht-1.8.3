@@ -453,6 +453,8 @@ private:
 
             static const c8* getVertexTypeName(video::E_VERTEX_TYPE vType);
 
+            static const c8* getLightTypeName(video::E_LIGHT_TYPE lightType);
+
             static const c8* getPrimitiveTypeName(scene::E_PRIMITIVE_TYPE pType);
 
             bool setActiveTexture(u32 stage, const video::ITexture *texture);
@@ -494,6 +496,7 @@ private:
             bool createRectangleShaders();
             void set2DRectangleShader();
             void updateMatrixConstantBuffer();
+            void updateLightConstantBuffer(bool vsLighting);
 
             u64 createRenderStateKey2D(bool alpha, bool texture, bool alphaChannel);
             void createRenderStateKey3D(const SMaterial &material, u64 &key1, u64 &key2);
