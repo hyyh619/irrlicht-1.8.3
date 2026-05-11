@@ -27,7 +27,7 @@ using namespace irr;
 #endif
 
 #ifndef CONFORM_TEST_DX11
-#define CONFORM_TEST_DX11 0
+#define CONFORM_TEST_DX11 1
 #endif
 
 int main()
@@ -35,7 +35,7 @@ int main()
     // ask if user would like shadows
     char i;
 
-#if CONFORM_TEST_DX9 || CONFORM_TEST_DX11
+#if CONFORM_TEST_DX9 || CONFORM_TEST_DX11 || WIN32
     i = 'y';
 #else
     printf("Please press 'y' if you want to use realtime shadows.\n");

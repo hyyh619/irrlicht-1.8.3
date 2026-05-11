@@ -1036,8 +1036,8 @@ namespace irr
                 setActiveTexture(i, material.getTexture(i));
             }
 
-            if (material.Lighting == 1)
-                os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
+            // if (material.Lighting == 1)
+            //    os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
 
             setBasicRenderStates(material, m_LastMaterial, true);
             m_LastMaterial = material;
@@ -1352,7 +1352,33 @@ namespace irr
 
         CD3D11Driver::SHWBufferLink* CD3D11Driver::createHardwareBuffer(const scene::IMeshBuffer *mb)
         {
-            return new SHWBufferLink_d3d11(mb);
+            // Looks like d3d does not support only partial buffering, so refuse
+            // in any case of NEVER
+            if (!mb || (mb->getHardwareMappingHint_Index() == scene::EHM_NEVER || mb->getHardwareMappingHint_Vertex() == scene::EHM_NEVER))
+                return 0;
+
+            SHWBufferLink_d3d11    *hwBuffer = new SHWBufferLink_d3d11(mb);
+
+            // add to map
+            HWBufferMap.insert(hwBuffer->MeshBuffer, hwBuffer);
+
+            hwBuffer->ChangedID_Vertex  = hwBuffer->MeshBuffer->getChangedID_Vertex();
+            hwBuffer->ChangedID_Index   = hwBuffer->MeshBuffer->getChangedID_Index();
+            hwBuffer->Mapped_Vertex     = mb->getHardwareMappingHint_Vertex();
+            hwBuffer->Mapped_Index      = mb->getHardwareMappingHint_Index();
+            hwBuffer->LastUsed          = 0;
+            hwBuffer->vertexBuffer      = 0;
+            hwBuffer->indexBuffer       = 0;
+            hwBuffer->vertexBufferSize  = 0;
+            hwBuffer->indexBufferSize   = 0;
+
+            if (!updateHardwareBuffer(hwBuffer))
+            {
+                deleteHardwareBuffer(hwBuffer);
+                return 0;
+            }
+
+            return hwBuffer;
         }
 
 
@@ -1376,7 +1402,7 @@ namespace irr
                     hwBufferD3D->indexBuffer = 0;
                 }
 
-                delete hwBuffer;
+                CNullDriver::deleteHardwareBuffer(hwBuffer);
             }
         }
 

@@ -36,7 +36,7 @@
 // Tracks Create/Release/AddRef calls for D3D11 objects to detect leaks
 // Default: disabled
 // Usage: Define _IRR_D3D11_OBJECT_TRACKING to enable object tracking
-//#define _IRR_D3D11_OBJECT_TRACKING
+#define _IRR_D3D11_OBJECT_TRACKING
 
 //==============================================================================
 // Disable macros via NO_IRR_<MACRO_NAME> prefix (override definitions above)

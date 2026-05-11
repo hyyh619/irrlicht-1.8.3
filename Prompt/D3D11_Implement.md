@@ -1365,7 +1365,7 @@ Git commit: Implement lighting+FLAT PS by MiniMax-M2.7.
 请参照git commit id: 87d9da4679c42db55a6627d3ceb2c427cd960576
 
 # 72
-Git commit: 
+Git commit: Implement gouraud shading based on Lights by MiniMax-M2.7.
 1. CD3D11Driver::turnLightOn并不是只开启一个light,而是需要根据每次传入的index，开启对应的light
 2. EMT_SOLID_LIGHTING_GOURAUD和PS_SOLID_LIGHTING_GOURAUD实现需要更改，要依赖Light的 E_LIGHT_TYPE Type生成ELT_POINT，ELT_SPOT，ELT_DIRECTIONAL三种不同的灯光PS。
 3. 对于CD3D11MaterialRenderer.h文件上实现的PS_SOLID_LIGHTING_GOURAUD，需要设置其ambient为m_AmbientLight表示的值。
@@ -1423,7 +1423,9 @@ my fix:
 
 # 73
 Git commit: 
-
+d3d9的下列Lighting设置，d3d11需要做什么相应的操作。
+    if (material.Lighting)
+        m_pID3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 # 74
 Git commit: 
