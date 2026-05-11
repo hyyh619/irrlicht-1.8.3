@@ -487,7 +487,7 @@ namespace irr
             m_RectangleVertexShader(0), m_RectanglePixelShader(0), m_RectangleInputLayout(0),
             m_RectangleShaderInitialized(false),
             m_TempVertexBuffer(0), m_TempIndexBuffer(0), m_MatrixConstantBuffer(0),
-            m_LightConstantBuffer(0),
+            m_MaterialConstantBuffer(0), m_LightConstantBuffer(0),
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
             m_RenderStateSets(),
@@ -684,6 +684,12 @@ namespace irr
             {
                 IRR_D3D11_BUFFER_RELEASE(m_LightConstantBuffer, "LightConstantBuffer");
                 m_LightConstantBuffer->Release();
+            }
+
+            if (m_MaterialConstantBuffer)
+            {
+                IRR_D3D11_BUFFER_RELEASE(m_MaterialConstantBuffer, "MaterialConstantBuffer");
+                m_MaterialConstantBuffer->Release();
             }
 
             for (u32 i = 0; i < ERM_RENDER_MODE_MAX; ++i)
@@ -1032,6 +1038,32 @@ namespace irr
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create light constant buffer.", ELL_ERROR);
+                return false;
+            }
+
+            struct SMaterialBuffer
+            {
+                f32 DiffuseColor[4];
+                f32 AmbientColor[4];
+                f32 SpecularColor[4];
+                f32 EmissiveColor[4];
+                f32 Shininess;
+                f32 ColorMaterialMode;
+                f32 Padding[2];
+            };
+
+            D3D11_BUFFER_DESC    materialBufferDesc;
+            materialBufferDesc.ByteWidth            = sizeof(SMaterialBuffer);
+            materialBufferDesc.Usage                = D3D11_USAGE_DYNAMIC;
+            materialBufferDesc.BindFlags            = D3D11_BIND_CONSTANT_BUFFER;
+            materialBufferDesc.CPUAccessFlags       = D3D11_CPU_ACCESS_WRITE;
+            materialBufferDesc.MiscFlags            = 0;
+            materialBufferDesc.StructureByteStride  = 0;
+            hr                                      = m_pID3DDevice->CreateBuffer(&materialBufferDesc, 0, &m_MaterialConstantBuffer);
+            IRR_D3D11_BUFFER_CREATE(m_MaterialConstantBuffer, "MaterialConstantBuffer");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create material constant buffer.", ELL_ERROR);
                 return false;
             }
 
@@ -1491,6 +1523,53 @@ namespace irr
             if (resetAllRenderstates || lastMaterial.ZWriteEnable != material.ZWriteEnable)
             {
                 m_pID3DDeviceContext->OMSetDepthStencilState(0, 0);
+            }
+
+            if (resetAllRenderstates ||
+                lastMaterial.DiffuseColor != material.DiffuseColor ||
+                lastMaterial.AmbientColor != material.AmbientColor ||
+                lastMaterial.SpecularColor != material.SpecularColor ||
+                lastMaterial.EmissiveColor != material.EmissiveColor ||
+                lastMaterial.Shininess != material.Shininess ||
+                lastMaterial.ColorMaterial != material.ColorMaterial)
+            {
+                struct SMaterialBuffer
+                {
+                    f32 DiffuseColor[4];
+                    f32 AmbientColor[4];
+                    f32 SpecularColor[4];
+                    f32 EmissiveColor[4];
+                    f32 Shininess;
+                    u32 ColorMaterialMode;
+                    f32 Padding[2];
+                };
+
+                D3D11_MAPPED_SUBRESOURCE    mappedResource;
+                if (SUCCEEDED(m_pID3DDeviceContext->Map(m_MaterialConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource)))
+                {
+                    SMaterialBuffer    *pData = static_cast<SMaterialBuffer*>(mappedResource.pData);
+                    pData->DiffuseColor[0]      = static_cast<f32>(material.DiffuseColor.getRed()) / 255.0f;
+                    pData->DiffuseColor[1]      = static_cast<f32>(material.DiffuseColor.getGreen()) / 255.0f;
+                    pData->DiffuseColor[2]      = static_cast<f32>(material.DiffuseColor.getBlue()) / 255.0f;
+                    pData->DiffuseColor[3]      = static_cast<f32>(material.DiffuseColor.getAlpha()) / 255.0f;
+                    pData->AmbientColor[0]      = static_cast<f32>(material.AmbientColor.getRed()) / 255.0f;
+                    pData->AmbientColor[1]      = static_cast<f32>(material.AmbientColor.getGreen()) / 255.0f;
+                    pData->AmbientColor[2]      = static_cast<f32>(material.AmbientColor.getBlue()) / 255.0f;
+                    pData->AmbientColor[3]      = static_cast<f32>(material.AmbientColor.getAlpha()) / 255.0f;
+                    pData->SpecularColor[0]     = static_cast<f32>(material.SpecularColor.getRed()) / 255.0f;
+                    pData->SpecularColor[1]     = static_cast<f32>(material.SpecularColor.getGreen()) / 255.0f;
+                    pData->SpecularColor[2]     = static_cast<f32>(material.SpecularColor.getBlue()) / 255.0f;
+                    pData->SpecularColor[3]     = static_cast<f32>(material.SpecularColor.getAlpha()) / 255.0f;
+                    pData->EmissiveColor[0]     = static_cast<f32>(material.EmissiveColor.getRed()) / 255.0f;
+                    pData->EmissiveColor[1]     = static_cast<f32>(material.EmissiveColor.getGreen()) / 255.0f;
+                    pData->EmissiveColor[2]     = static_cast<f32>(material.EmissiveColor.getBlue()) / 255.0f;
+                    pData->EmissiveColor[3]     = static_cast<f32>(material.EmissiveColor.getAlpha()) / 255.0f;
+                    pData->Shininess            = material.Shininess;
+                    pData->ColorMaterialMode    = static_cast<u32>(material.ColorMaterial);
+                    m_pID3DDeviceContext->Unmap(m_MaterialConstantBuffer, 0);
+                }
+
+                m_pID3DDeviceContext->PSSetConstantBuffers(2, 1, &m_MaterialConstantBuffer);
             }
 
             if (resetAllRenderstates || lastMaterial.FogEnable != material.FogEnable)
@@ -3031,7 +3110,7 @@ namespace irr
                 return;
 
 #ifdef _IRR_MATERIAL_PRINT
-            c8 buf[128];
+            c8    buf[128];
 
             sprintf(buf, "light=%d", m_CurSetLight);
             os::Printer::log("updateLightConstantBuffer", buf, ELL_INFORMATION);
@@ -3580,48 +3659,48 @@ namespace irr
             {
                 if (vType == EVT_STANDARD && m_Material.GouraudShading)
                 {
-                    const SLight &light = getDynamicLight(m_CurSetLight);
+                    const SLight    &light = getDynamicLight(m_CurSetLight);
 
                     switch (light.Type)
                     {
-                    case ELT_POINT:
-                        actualVType = EVT_STANDARD_LIGHTING_POINT;
-                        break;
+                        case ELT_POINT:
+                            actualVType = EVT_STANDARD_LIGHTING_POINT;
+                            break;
 
-                    case ELT_SPOT:
-                        actualVType = EVT_STANDARD_LIGHTING_SPOT;
-                        break;
+                        case ELT_SPOT:
+                            actualVType = EVT_STANDARD_LIGHTING_SPOT;
+                            break;
 
-                    case ELT_DIRECTIONAL:
-                        actualVType = EVT_STANDARD_LIGHTING_DIRECTIONAL;
-                        break;
+                        case ELT_DIRECTIONAL:
+                            actualVType = EVT_STANDARD_LIGHTING_DIRECTIONAL;
+                            break;
 
-                    default:
-                        os::Printer::log("setVSByVertexType", getLightTypeName(light.Type), ELL_ERROR);
-                        break;
+                        default:
+                            os::Printer::log("setVSByVertexType", getLightTypeName(light.Type), ELL_ERROR);
+                            break;
                     }
                 }
                 else if (vType == EVT_2TCOORDS && m_Material.GouraudShading)
                 {
-                    const SLight &light = getDynamicLight(m_CurSetLight);
+                    const SLight    &light = getDynamicLight(m_CurSetLight);
 
                     switch (light.Type)
                     {
-                    case ELT_POINT:
-                        actualVType = EVT_2TCOORDS_LIGHTING_POINT;
-                        break;
+                        case ELT_POINT:
+                            actualVType = EVT_2TCOORDS_LIGHTING_POINT;
+                            break;
 
-                    case ELT_SPOT:
-                        actualVType = EVT_2TCOORDS_LIGHTING_SPOT;
-                        break;
+                        case ELT_SPOT:
+                            actualVType = EVT_2TCOORDS_LIGHTING_SPOT;
+                            break;
 
-                    case ELT_DIRECTIONAL:
-                        actualVType = EVT_2TCOORDS_LIGHTING_DIRECTIONAL;
-                        break;
+                        case ELT_DIRECTIONAL:
+                            actualVType = EVT_2TCOORDS_LIGHTING_DIRECTIONAL;
+                            break;
 
-                    default:
-                        os::Printer::log("setVSByVertexType", getLightTypeName(light.Type), ELL_ERROR);
-                        break;
+                        default:
+                            os::Printer::log("setVSByVertexType", getLightTypeName(light.Type), ELL_ERROR);
+                            break;
                     }
                 }
             }
@@ -3776,11 +3855,11 @@ namespace irr
                 {
                     if (m_CurrentTexture[i])
                     {
-                        CD3D11Texture *tex = static_cast<CD3D11Texture *>(const_cast<ITexture *>(m_CurrentTexture[i]));
-                        ID3D11ShaderResourceView *srv = tex->getShaderResourceView();
+                        CD3D11Texture               *tex    = static_cast<CD3D11Texture*>(const_cast<ITexture*>(m_CurrentTexture[i]));
+                        ID3D11ShaderResourceView    *srv    = tex->getShaderResourceView();
 
 #ifdef _IRR_MATERIAL_PRINT
-                        c8 buf[128];
+                        c8    buf[128];
 
                         sprintf(buf, "tex%d: %s", i, m_CurrentTexture[i]->getName().getPath().c_str());
                         os::Printer::log("setPSTextureState", buf, ELL_INFORMATION);
@@ -3790,7 +3869,7 @@ namespace irr
                     }
                     else
                     {
-                        ID3D11ShaderResourceView *nullSrv = 0;
+                        ID3D11ShaderResourceView    *nullSrv = 0;
 
                         m_pID3DDeviceContext->PSSetShaderResources(i, 1, &nullSrv);
                     }
@@ -3800,10 +3879,10 @@ namespace irr
                 {
                     if (m_CurrentSampler[i])
                     {
-                        ID3D11SamplerState *pSampler = m_CurrentSampler[i]->getD3D11SamplerState();
+                        ID3D11SamplerState    *pSampler = m_CurrentSampler[i]->getD3D11SamplerState();
 
 #ifdef _IRR_MATERIAL_PRINT
-                        c8 buf[128];
+                        c8    buf[128];
 
                         sprintf(buf, "sampler%d: %ld", i, m_CurrentSampler[i]->getSamplerKey());
                         os::Printer::log("setPSSamplerState", buf, ELL_INFORMATION);
@@ -3813,1051 +3892,1051 @@ namespace irr
                     }
                     else
                     {
-                        ID3D11SamplerState *pSampler = nullptr;
+                        ID3D11SamplerState    *pSampler = nullptr;
 
                         m_pID3DDeviceContext->PSSetSamplers(i, 1, &pSampler);
                     }
                 }
 
-                m_PreviousTexture[i] = m_CurrentTexture[i];
-                m_PreviousSampler[i] = m_CurrentSampler[i];
+                m_PreviousTexture[i]    = m_CurrentTexture[i];
+                m_PreviousSampler[i]    = m_CurrentSampler[i];
             }
         }
 
 
-    bool CD3D11Driver::createBuiltInVertexShader(E_VERTEX_TYPE type)
-    {
-        const char    *shaderSource = 0;
-
-        switch (type)
+        bool CD3D11Driver::createBuiltInVertexShader(E_VERTEX_TYPE type)
         {
-            case EVT_STANDARD:
-                shaderSource = VERTEX_SHADER_STANDARD;
-                break;
+            const char    *shaderSource = 0;
 
-            case EVT_2TCOORDS:
-                shaderSource = VERTEX_SHADER_2TCOORDS;
-                break;
-
-            case EVT_TANGENTS:
-                shaderSource = VERTEX_SHADER_TANGENTS;
-                break;
-
-            case EVT_STANDARD_LIGHTING_DIRECTIONAL:
-                shaderSource = VERTEX_SHADER_STANDARD_DIRECTIONAL;
-                break;
-
-            case EVT_STANDARD_LIGHTING_SPOT:
-                shaderSource = VERTEX_SHADER_STANDARD_SPOT;
-                break;
-
-            case EVT_STANDARD_LIGHTING_POINT:
-                shaderSource = VERTEX_SHADER_STANDARD_POINT;
-                break;
-
-            case EVT_2TCOORDS_LIGHTING_DIRECTIONAL:
-                shaderSource = VERTEX_SHADER_2TCOORDS_DIRECTIONAL;
-                break;
-
-            case EVT_2TCOORDS_LIGHTING_SPOT:
-                shaderSource = VERTEX_SHADER_2TCOORDS_SPOT;
-                break;
-
-            case EVT_2TCOORDS_LIGHTING_POINT:
-                shaderSource = VERTEX_SHADER_2TCOORDS_POINT;
-                break;
-
-            default:
-                return false;
-        }
-
-        CD3D11Shader    *shader = new CD3D11Shader(this);
-        if (!shader->compile(EDST_VERTEX, shaderSource, "main", "vs_4_0"))
-        {
-            shader->drop();
-            return false;
-        }
-
-        if (!shader->createVertexShader())
-        {
-            shader->drop();
-            return false;
-        }
-
-        D3D11_INPUT_ELEMENT_DESC    *layout     = 0;
-        u32                         numElements = 0;
-
-        switch (type)
-        {
-            case EVT_STANDARD:
+            switch (type)
             {
-                static D3D11_INPUT_ELEMENT_DESC    standardLayout[] =
-                {
-                    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                };
-                layout      = standardLayout;
-                numElements = 4;
-                break;
-            }
-
-            case EVT_2TCOORDS:
-            {
-                static D3D11_INPUT_ELEMENT_DESC    twoTexLayout[] =
-                {
-                    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                };
-                layout      = twoTexLayout;
-                numElements = 5;
-                break;
-            }
-
-            case EVT_TANGENTS:
-            {
-                static D3D11_INPUT_ELEMENT_DESC    tangentLayout[] =
-                {
-                    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                };
-                layout      = tangentLayout;
-                numElements = 6;
-                break;
-            }
-
-            case EVT_STANDARD_LIGHTING_DIRECTIONAL:
-            case EVT_STANDARD_LIGHTING_SPOT:
-            case EVT_STANDARD_LIGHTING_POINT:
-            {
-                static D3D11_INPUT_ELEMENT_DESC    lightingLayout[] =
-                {
-                    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                };
-                layout      = lightingLayout;
-                numElements = 4;
-                break;
-            }
-
-            case EVT_2TCOORDS_LIGHTING_DIRECTIONAL:
-            case EVT_2TCOORDS_LIGHTING_SPOT:
-            case EVT_2TCOORDS_LIGHTING_POINT:
-            {
-                static D3D11_INPUT_ELEMENT_DESC    twoTexLightingLayout[] =
-                {
-                    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                };
-                layout      = twoTexLightingLayout;
-                numElements = 5;
-                break;
-            }
-
-            default:
-                shader->drop();
-                return false;
-        }
-
-        if (!shader->createInputLayout(layout, numElements))
-        {
-            shader->drop();
-            return false;
-        }
-
-        m_ShaderPool.push_back(shader);
-
-        if (m_BuiltInVertexShader[type])
-        {
-            IRR_D3D11_VS_RELEASE(m_BuiltInVertexShader[type], "BuiltInVertexShader");
-            m_BuiltInVertexShader[type]->Release();
-        }
-
-        m_BuiltInVertexShader[type] = shader->getVertexShader();
-        IRR_D3D11_VS_CREATE(m_BuiltInVertexShader[type], "BuiltInVertexShader");
-        m_BuiltInVertexShader[type]->AddRef();
-
-        if (m_InputLayout[type])
-        {
-            IRR_D3D11_IL_RELEASE(m_InputLayout[type], "BuiltInInputLayout");
-            m_InputLayout[type]->Release();
-        }
-
-        m_InputLayout[type] = shader->getInputLayout();
-        IRR_D3D11_IL_CREATE(m_InputLayout[type], "BuiltInInputLayout");
-        m_InputLayout[type]->AddRef();
-
-        return true;
-    }
-
-
-    bool CD3D11Driver::createBuiltInPixelShader(E_VERTEX_TYPE type)
-    {
-        const char    *shaderSource = 0;
-
-        switch (type)
-        {
-            case EVT_STANDARD:
-                shaderSource = PIXEL_SHADER_STANDARD;
-                break;
-
-            case EVT_2TCOORDS:
-                shaderSource = PIXEL_SHADER_2TCOORDS;
-                break;
-
-            case EVT_TANGENTS:
-                shaderSource = PIXEL_SHADER_TANGENTS;
-                break;
-
-            default:
-                return false;
-        }
-
-        CD3D11Shader    *shader = new CD3D11Shader(this);
-        if (!shader->compile(EDST_PIXEL, shaderSource, "main", "ps_4_0"))
-        {
-            shader->drop();
-            return false;
-        }
-
-        if (!shader->createPixelShader())
-        {
-            shader->drop();
-            return false;
-        }
-
-        m_ShaderPool.push_back(shader);
-
-        if (m_BuiltInPixelShader[type])
-        {
-            IRR_D3D11_PS_RELEASE(m_BuiltInPixelShader[type], "BuiltInPixelShader");
-            m_BuiltInPixelShader[type]->Release();
-        }
-
-        m_BuiltInPixelShader[type] = shader->getPixelShader();
-        IRR_D3D11_PS_CREATE(m_BuiltInPixelShader[type], "BuiltInPixelShader");
-        m_BuiltInPixelShader[type]->AddRef();
-
-        return true;
-    }
-
-
-    bool CD3D11Driver::createMaterialPixelShader(E_MATERIAL_TYPE materialType)
-    {
-        const char    *entryPoint = 0;
-
-        switch (materialType)
-        {
-            case EMT_SOLID:                                 entryPoint = "PS_SOLID"; break;
-
-            case EMT_SOLID_2_LAYER:                         entryPoint = "PS_SOLID_2_LAYER"; break;
-
-            case EMT_LIGHTMAP:                              entryPoint = "PS_LIGHTMAP"; break;
-
-            case EMT_LIGHTMAP_ADD:                          entryPoint = "PS_LIGHTMAP_ADD"; break;
-
-            case EMT_LIGHTMAP_M2:                           entryPoint = "PS_LIGHTMAP_M2"; break;
-
-            case EMT_LIGHTMAP_M4:                           entryPoint = "PS_LIGHTMAP_M4"; break;
-
-            case EMT_LIGHTMAP_LIGHTING:                     entryPoint = "PS_LIGHTMAP_LIGHTING"; break;
-
-            case EMT_LIGHTMAP_LIGHTING_M2:                  entryPoint = "PS_LIGHTMAP_LIGHTING_M2"; break;
-
-            case EMT_LIGHTMAP_LIGHTING_M4:                  entryPoint = "PS_LIGHTMAP_LIGHTING_M4"; break;
-
-            case EMT_DETAIL_MAP:                            entryPoint = "PS_DETAIL_MAP"; break;
-
-            case EMT_SPHERE_MAP:                            entryPoint = "PS_SPHERE_MAP"; break;
-
-            case EMT_REFLECTION_2_LAYER:                    entryPoint = "PS_REFLECTION_2_LAYER"; break;
-
-            case EMT_TRANSPARENT_ADD_COLOR:                 entryPoint = "PS_TRANSPARENT_ADD_COLOR"; break;
-
-            case EMT_TRANSPARENT_ALPHA_CHANNEL:             entryPoint = "PS_TRANSPARENT_ALPHA_CHANNEL"; break;
-
-            case EMT_TRANSPARENT_ALPHA_CHANNEL_REF:         entryPoint = "PS_TRANSPARENT_ALPHA_CHANNEL_REF"; break;
-
-            case EMT_TRANSPARENT_VERTEX_ALPHA:              entryPoint = "PS_TRANSPARENT_VERTEX_ALPHA"; break;
-
-            case EMT_TRANSPARENT_REFLECTION_2_LAYER:        entryPoint = "PS_TRANSPARENT_REFLECTION_2_LAYER"; break;
-
-            case EMT_NORMAL_MAP_SOLID:                      entryPoint = "PS_NORMAL_MAP_SOLID"; break;
-
-            case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:      entryPoint = "PS_NORMAL_MAP_TRANSPARENT_ADD_COLOR"; break;
-
-            case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:   entryPoint = "PS_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA"; break;
-
-            case EMT_PARALLAX_MAP_SOLID:                    entryPoint = "PS_PARALLAX_MAP_SOLID"; break;
-
-            case EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:    entryPoint = "PS_PARALLAX_MAP_TRANSPARENT_ADD_COLOR"; break;
-
-            case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA: entryPoint = "PS_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA"; break;
-
-            case EMT_ONETEXTURE_BLEND:                      entryPoint = "PS_ONETEXTURE_BLEND"; break;
-
-            case EMT_SOLID_COLOR:                           entryPoint = "PS_SOLID_COLOR_ONLY"; break;
-
-            case EMT_SOLID_LIGHTING_GOURAUD:                entryPoint = "PS_SOLID_LIGHTING_GOURAUD"; break;
-
-            case EMT_SOLID_LIGHTING_FLAT:                   entryPoint = "PS_SOLID_LIGHTING_FLAT"; break;
-
-            case EMT_SOLID_1_LAYER:                         entryPoint = "PS_SOLID_1_LAYER"; break;
-
-            default:
-                return false;
-        }
-
-        CD3D11Shader    *shader = new CD3D11Shader(this);
-        shader->setMaterialType(materialType);
-
-        if (!shader->compile(EDST_PIXEL, PS_MaterialShaders_Part1, entryPoint, "ps_4_0", PS_MaterialShaders_Part2))
-        {
-            shader->drop();
-            return false;
-        }
-
-        if (!shader->createPixelShader())
-        {
-            shader->drop();
-            return false;
-        }
-
-        m_ShaderPool.push_back(shader);
-
-        if (m_BuiltInPixelShader[materialType])
-        {
-            IRR_D3D11_PS_RELEASE(m_BuiltInPixelShader[materialType], "BuiltInPixelShader");
-            m_BuiltInPixelShader[materialType]->Release();
-        }
-
-        m_BuiltInPixelShader[materialType] = shader->getPixelShader();
-        IRR_D3D11_PS_CREATE(m_BuiltInPixelShader[materialType], "MaterialPixelShader");
-        m_BuiltInPixelShader[materialType]->AddRef();
-
-        return true;
-    }
-
-
-    bool CD3D11Driver::createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob)
-    {
-        D3D11_INPUT_ELEMENT_DESC    *layout     = 0;
-        u32                         numElements = 0;
-
-        switch (type)
-        {
-            case EVT_STANDARD:
-            {
-                static D3D11_INPUT_ELEMENT_DESC    standardLayout[] =
-                {
-                    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                };
-                layout      = standardLayout;
-                numElements = 4;
-                break;
-            }
-
-            case EVT_2TCOORDS:
-            {
-                static D3D11_INPUT_ELEMENT_DESC    twoTexLayout[] =
-                {
-                    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                };
-                layout      = twoTexLayout;
-                numElements = 5;
-                break;
-            }
-
-            case EVT_TANGENTS:
-            {
-                static D3D11_INPUT_ELEMENT_DESC    tangentLayout[] =
-                {
-                    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                    {"BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0},
-                };
-                layout      = tangentLayout;
-                numElements = 6;
-                break;
-            }
-
-            default:
-                return false;
-        }
-
-        HRESULT    hr = m_pID3DDevice->CreateInputLayout(layout, numElements,
-                                                         shaderBlob->GetBufferPointer(),
-                                                         shaderBlob->GetBufferSize(),
-                                                         &m_InputLayout[type]);
-        return SUCCEEDED(hr);
-    }
-
-
-    bool CD3D11Driver::createRectangleShaders()
-    {
-        CD3D11Shader    *vsShader = new CD3D11Shader(this);
-
-        if (!vsShader->compile(EDST_VERTEX, VERTEX_SHADER_RECTANGLE, "main", "vs_4_0"))
-        {
-            vsShader->drop();
-            return false;
-        }
-
-        if (!vsShader->createVertexShader())
-        {
-            vsShader->drop();
-            return false;
-        }
-
-        D3D11_INPUT_ELEMENT_DESC    rectangleLayout[] =
-        {
-            {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-            {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-        };
-
-        if (!vsShader->createInputLayout(rectangleLayout, 2))
-        {
-            vsShader->drop();
-            return false;
-        }
-
-        vsShader->setVertexType(EVT_2D_RECTANGLE);
-        m_ShaderPool.push_back(vsShader);
-
-        if (m_RectangleVertexShader)
-        {
-            IRR_D3D11_VS_RELEASE(m_RectangleVertexShader, "RectangleVertexShader");
-            m_RectangleVertexShader->Release();
-        }
-
-        m_RectangleVertexShader = vsShader->getVertexShader();
-        IRR_D3D11_VS_CREATE(m_RectangleVertexShader, "RectangleVertexShader");
-        m_RectangleVertexShader->AddRef();
-
-        if (m_RectangleInputLayout)
-        {
-            IRR_D3D11_IL_RELEASE(m_RectangleInputLayout, "RectangleInputLayout");
-            m_RectangleInputLayout->Release();
-        }
-
-        m_RectangleInputLayout = vsShader->getInputLayout();
-        IRR_D3D11_IL_CREATE(m_RectangleInputLayout, "RectangleInputLayout");
-        m_RectangleInputLayout->AddRef();
-
-        CD3D11Shader    *psShader = new CD3D11Shader(this);
-
-        if (!psShader->compile(EDST_PIXEL, PIXEL_SHADER_RECTANGLE, "main", "ps_4_0"))
-        {
-            psShader->drop();
-            return false;
-        }
-
-        if (!psShader->createPixelShader())
-        {
-            psShader->drop();
-            return false;
-        }
-
-        psShader->setVertexType(EVT_2D_RECTANGLE);
-        m_ShaderPool.push_back(psShader);
-
-        if (m_RectanglePixelShader)
-        {
-            IRR_D3D11_PS_RELEASE(m_RectanglePixelShader, "RectanglePixelShader");
-            m_RectanglePixelShader->Release();
-        }
-
-        m_RectanglePixelShader = psShader->getPixelShader();
-        IRR_D3D11_PS_CREATE(m_RectanglePixelShader, "RectanglePixelShader");
-        m_RectanglePixelShader->AddRef();
-
-        return true;
-    }
-
-
-    void CD3D11Driver::set2DRectangleShader()
-    {
-        if (!m_RectangleShaderInitialized)
-        {
-            createRectangleShaders();
-            m_RectangleShaderInitialized = true;
-        }
-
-        // If the last shaders are 2d rectangle, we set nothing.
-        if (m_LastMaterialType == EMT_2D_RECTANGLE && m_LastVertexType == EVT_2D_RECTANGLE)
-            return;
-
-        // We have to set m_LastVertexType and m_LastMaterialType
-        m_LastVertexType    = EVT_2D_RECTANGLE;
-        m_LastMaterialType  = EMT_2D_RECTANGLE;
-
-        if (m_RectangleVertexShader)
-        {
-            m_pID3DDeviceContext->VSSetShader(m_RectangleVertexShader, 0, 0);
-        }
-
-        if (m_RectangleInputLayout)
-        {
-            m_pID3DDeviceContext->IASetInputLayout(m_RectangleInputLayout);
-        }
-
-        if (m_RectanglePixelShader)
-        {
-            m_pID3DDeviceContext->PSSetShader(m_RectanglePixelShader, 0, 0);
-        }
-
-        setPSTextureAndSamplerState();
-    }
-
-
-    void CD3D11Driver::updateMatrixConstantBuffer()
-    {
-        core::matrix4       mvp     = m_Matrices[ETS_PROJECTION] * m_Matrices[ETS_VIEW] * m_Matrices[ETS_WORLD];
-        core::matrix4       m       = m_Matrices[ETS_WORLD];
-        u32                 size    = sizeof(core::matrix4);
-
-        D3D11_MAPPED_SUBRESOURCE    mapped;
-
-        if (SUCCEEDED(m_pID3DDeviceContext->Map(m_MatrixConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
-        {
-            c8    *p = (c8*)mapped.pData;
-
-            memcpy(p, mvp.pointer(), size);
-
-            p += size;
-            memcpy(p, m.pointer(), size);
-
-            m_pID3DDeviceContext->Unmap(m_MatrixConstantBuffer, 0);
-        }
-
-        m_pID3DDeviceContext->VSSetConstantBuffers(0, 1, &m_MatrixConstantBuffer);
-    }
-
-
-    u64 CD3D11Driver::createRenderStateKey2D(bool alpha, bool texture, bool alphaChannel)
-    {
-        return u64(ERM_2D) | (u64(alpha) << 4) | (u64(texture) << 8) | (u64(alphaChannel) << 12);
-    }
-
-    void CD3D11Driver::createRenderStateKey3D(const SMaterial &material, u64 &key1, u64 &key2)
-    {
-        key1 = u64(ERM_3D) |
-               (u64(material.MaterialType) << 4) |
-               (u64(material.ZBuffer) << 28) |
-               (u64(material.AntiAliasing) << 32) |
-               (u64(material.ColorMask) << 40) |
-               (u64(material.BlendOperation) << 44) |
-               (u64(material.PolygonOffsetFactor) << 48) |
-               (u64(material.PolygonOffsetDirection) << 51) |
-               (u64(material.Wireframe) << 53) |
-               (u64(material.PointCloud) << 54) |
-               (u64(material.ZWriteEnable) << 55) |
-               (u64(material.BackfaceCulling) << 56) |
-               (u64(material.FrontfaceCulling) << 57);
-
-        key2 = (u64(*(u32*)&material.MaterialTypeParam) << 0) |
-               (u64(*(u32*)&material.Thickness) << 32);
-    }
-
-    u64 CD3D11Driver::createRenderStateKeyOther(E_RENDER_MODE mode)
-    {
-        _IRR_DEBUG_BREAK_IF(false);
-        return u64(mode) << 0;
-    }
-
-
-    CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSet2D(bool alpha, bool texture, bool alphaChannel)
-    {
-        const u64                                   key     = createRenderStateKey2D(alpha, texture, alphaChannel);
-        core::map<u64, SRenderStateSet>::Node       *node   = m_RenderStateSets[ERM_2D].find(key);
-
-        if (node)
-            return &node->getValue();
-
-        SRenderStateSet    stateSet;
-        stateSet.Key                = key;
-        stateSet.RasterizerState    = 0;
-        stateSet.DepthStencilState  = 0;
-        stateSet.BlendState         = 0;
-
-        HRESULT                     hr = E_FAIL;
-        D3D11_RASTERIZER_DESC1      rasterizerDesc;
-        rasterizerDesc.AntialiasedLineEnable    = false;
-        rasterizerDesc.CullMode                 = D3D11_CULL_NONE;
-        rasterizerDesc.DepthBias                = D3D11_DEFAULT_DEPTH_BIAS;
-        rasterizerDesc.DepthBiasClamp           = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
-        rasterizerDesc.DepthClipEnable          = true;
-        rasterizerDesc.FillMode                 = D3D11_FILL_SOLID;
-        rasterizerDesc.ForcedSampleCount        = 0;
-        rasterizerDesc.FrontCounterClockwise    = false;
-        rasterizerDesc.MultisampleEnable        = false;
-        rasterizerDesc.ScissorEnable            = false;
-        rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-
-        if (m_pID3DDevice1)
-            hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &stateSet.RasterizerState);
-
-        if (FAILED(hr))
-        {
-            os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
-            return 0;
-        }
-
-        IRR_D3D11_RS_CREATE(stateSet.RasterizerState, "RasterizerState");
-
-        D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
-        depthStencilDesc.DepthEnable                    = false;
-        depthStencilDesc.DepthWriteMask                 = D3D11_DEPTH_WRITE_MASK_ALL;
-        depthStencilDesc.DepthFunc                      = D3D11_COMPARISON_LESS;
-        depthStencilDesc.StencilEnable                  = false;
-        depthStencilDesc.StencilReadMask                = D3D11_DEFAULT_STENCIL_READ_MASK;
-        depthStencilDesc.StencilWriteMask               = D3D11_DEFAULT_STENCIL_WRITE_MASK;
-        depthStencilDesc.FrontFace.StencilFunc          = D3D11_COMPARISON_ALWAYS;
-        depthStencilDesc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;
-        depthStencilDesc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
-
-        hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &stateSet.DepthStencilState);
-        IRR_D3D11_DSS_CREATE(stateSet.DepthStencilState, "DepthStencilState");
-        if (FAILED(hr))
-        {
-            os::Printer::log("Could not create depth stencil state.", ELL_ERROR);
-            return 0;
-        }
-
-        D3D11_BLEND_DESC1    blendDesc;
-        blendDesc.AlphaToCoverageEnable     = false;
-        blendDesc.IndependentBlendEnable    = false;
-
-        const bool    enableAlphaBlend = alpha || (alphaChannel && texture);
-
-        for (u32 i = 0; i < 8; ++i)
-        {
-            blendDesc.RenderTarget[i].BlendEnable           = enableAlphaBlend;
-            blendDesc.RenderTarget[i].LogicOpEnable         = false;
-            blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
-            blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
-            blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
-            blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
-            blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-            blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
-            blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-            blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-        }
-
-        hr = E_FAIL;
-        if (m_pID3DDevice1)
-            hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &stateSet.BlendState);
-
-        IRR_D3D11_BLEND_CREATE(stateSet.BlendState, "BlendState");
-        if (FAILED(hr))
-        {
-            os::Printer::log("Could not create blend state.", ELL_ERROR);
-            return 0;
-        }
-
-        m_RenderStateSets[ERM_2D].set(key, stateSet);
-
-        core::map<u64, SRenderStateSet>::Node    *pNode = m_RenderStateSets[ERM_2D].find(key);
-        if (pNode == nullptr)
-        {
-            os::Printer::log("Could not find the render states.", ELL_ERROR);
-            return 0;
-        }
-
-        return &pNode->getValue();
-    }
-
-
-    CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSet3D(const SMaterial &material)
-    {
-        u64    key1, key2;
-
-        createRenderStateKey3D(material, key1, key2);
-        const u64                                   combinedKey = key1 ^ (key2 << 1);
-        core::map<u64, SRenderStateSet>::Node       *node       = m_RenderStateSets[ERM_3D].find(combinedKey);
-
-        if (node)
-            return &node->getValue();
-
-        SRenderStateSet    stateSet;
-        stateSet.Key                = combinedKey;
-        stateSet.RasterizerState    = 0;
-        stateSet.DepthStencilState  = 0;
-        stateSet.BlendState         = 0;
-
-        HRESULT                     hr = E_FAIL;
-        D3D11_RASTERIZER_DESC1      rasterizerDesc;
-        rasterizerDesc.AntialiasedLineEnable    = (material.AntiAliasing & EAAM_LINE_SMOOTH) != 0;
-        rasterizerDesc.CullMode                 = D3D11_CULL_BACK;
-        rasterizerDesc.DepthBias                = D3D11_DEFAULT_DEPTH_BIAS;
-        rasterizerDesc.DepthBiasClamp           = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
-        rasterizerDesc.DepthClipEnable          = true;
-        rasterizerDesc.FillMode                 = D3D11_FILL_SOLID;
-        rasterizerDesc.ForcedSampleCount        = 0;
-        rasterizerDesc.FrontCounterClockwise    = false;
-        rasterizerDesc.MultisampleEnable        = (material.AntiAliasing & (EAAM_SIMPLE | EAAM_QUALITY)) != 0;
-        rasterizerDesc.ScissorEnable            = false;
-        rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-
-        if (material.Wireframe)
-            rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
-
-        if (material.BackfaceCulling)
-            rasterizerDesc.CullMode = D3D11_CULL_BACK;
-        else if (material.FrontfaceCulling)
-            rasterizerDesc.CullMode = D3D11_CULL_FRONT;
-        else
-            rasterizerDesc.CullMode = D3D11_CULL_NONE;
-
-        if (m_pID3DDevice1)
-            hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &stateSet.RasterizerState);
-
-        if (FAILED(hr))
-        {
-            os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
-            return 0;
-        }
-
-        IRR_D3D11_RS_CREATE(stateSet.RasterizerState, "RasterizerState");
-
-        D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
-        depthStencilDesc.DepthEnable                    = (material.ZBuffer != ECFN_NEVER);
-        depthStencilDesc.DepthWriteMask                 = material.ZWriteEnable ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
-        depthStencilDesc.StencilEnable                  = false;
-        depthStencilDesc.StencilReadMask                = D3D11_DEFAULT_STENCIL_READ_MASK;
-        depthStencilDesc.StencilWriteMask               = D3D11_DEFAULT_STENCIL_WRITE_MASK;
-        depthStencilDesc.FrontFace.StencilFunc          = D3D11_COMPARISON_ALWAYS;
-        depthStencilDesc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;
-        depthStencilDesc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
-
-        switch (material.ZBuffer)
-        {
-            case ECFN_NEVER:
-                depthStencilDesc.DepthFunc = D3D11_COMPARISON_NEVER;
-                break;
-
-            case ECFN_LESSEQUAL:
-                depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-                break;
-
-            case ECFN_EQUAL:
-                depthStencilDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
-                break;
-
-            case ECFN_LESS:
-                depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-                break;
-
-            case ECFN_GREATEREQUAL:
-                depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
-                break;
-
-            case ECFN_NOTEQUAL:
-                depthStencilDesc.DepthFunc = D3D11_COMPARISON_NOT_EQUAL;
-                break;
-
-            case ECFN_GREATER:
-                depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER;
-                break;
-
-            case ECFN_ALWAYS:
-            default:
-                depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-                break;
-        }
-
-        hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &stateSet.DepthStencilState);
-        IRR_D3D11_DSS_CREATE(stateSet.DepthStencilState, "DepthStencilState");
-        if (FAILED(hr))
-        {
-            os::Printer::log("Could not create depth stencil state.", ELL_ERROR);
-            return 0;
-        }
-
-        D3D11_BLEND_DESC1    blendDesc;
-        blendDesc.AlphaToCoverageEnable     = (material.AntiAliasing & EAAM_ALPHA_TO_COVERAGE) != 0;
-        blendDesc.IndependentBlendEnable    = false;
-
-        bool    blendEnable = material.BlendOperation != EBO_NONE;
-
-        if (material.MaterialType == EMT_TRANSPARENT_ADD_COLOR ||
-            material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL ||
-            material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA ||
-            material.MaterialType == EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR ||
-            material.MaterialType == EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA ||
-            material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL_REF ||
-            material.MaterialType == EMT_TRANSPARENT_REFLECTION_2_LAYER)
-        {
-            blendEnable = true;
-        }
-
-        D3D11_BLEND_OP    blendOp = D3D11_BLEND_OP_ADD;
-        if (blendEnable)
-        {
-            switch (material.BlendOperation)
-            {
-                case EBO_SUBTRACT:
-                    blendOp = D3D11_BLEND_OP_SUBTRACT;
+                case EVT_STANDARD:
+                    shaderSource = VERTEX_SHADER_STANDARD;
                     break;
 
-                case EBO_REVSUBTRACT:
-                    blendOp = D3D11_BLEND_OP_REV_SUBTRACT;
+                case EVT_2TCOORDS:
+                    shaderSource = VERTEX_SHADER_2TCOORDS;
                     break;
 
-                case EBO_MIN:
-                case EBO_MIN_FACTOR:
-                case EBO_MIN_ALPHA:
-                    blendOp = D3D11_BLEND_OP_MIN;
+                case EVT_TANGENTS:
+                    shaderSource = VERTEX_SHADER_TANGENTS;
                     break;
 
-                case EBO_MAX:
-                case EBO_MAX_FACTOR:
-                case EBO_MAX_ALPHA:
-                    blendOp = D3D11_BLEND_OP_MAX;
+                case EVT_STANDARD_LIGHTING_DIRECTIONAL:
+                    shaderSource = VERTEX_SHADER_STANDARD_DIRECTIONAL;
+                    break;
+
+                case EVT_STANDARD_LIGHTING_SPOT:
+                    shaderSource = VERTEX_SHADER_STANDARD_SPOT;
+                    break;
+
+                case EVT_STANDARD_LIGHTING_POINT:
+                    shaderSource = VERTEX_SHADER_STANDARD_POINT;
+                    break;
+
+                case EVT_2TCOORDS_LIGHTING_DIRECTIONAL:
+                    shaderSource = VERTEX_SHADER_2TCOORDS_DIRECTIONAL;
+                    break;
+
+                case EVT_2TCOORDS_LIGHTING_SPOT:
+                    shaderSource = VERTEX_SHADER_2TCOORDS_SPOT;
+                    break;
+
+                case EVT_2TCOORDS_LIGHTING_POINT:
+                    shaderSource = VERTEX_SHADER_2TCOORDS_POINT;
                     break;
 
                 default:
-                    blendOp = D3D11_BLEND_OP_ADD;
+                    return false;
+            }
+
+            CD3D11Shader    *shader = new CD3D11Shader(this);
+            if (!shader->compile(EDST_VERTEX, shaderSource, "main", "vs_4_0"))
+            {
+                shader->drop();
+                return false;
+            }
+
+            if (!shader->createVertexShader())
+            {
+                shader->drop();
+                return false;
+            }
+
+            D3D11_INPUT_ELEMENT_DESC    *layout     = 0;
+            u32                         numElements = 0;
+
+            switch (type)
+            {
+                case EVT_STANDARD:
+                {
+                    static D3D11_INPUT_ELEMENT_DESC    standardLayout[] =
+                    {
+                        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                    };
+                    layout      = standardLayout;
+                    numElements = 4;
+                    break;
+                }
+
+                case EVT_2TCOORDS:
+                {
+                    static D3D11_INPUT_ELEMENT_DESC    twoTexLayout[] =
+                    {
+                        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                    };
+                    layout      = twoTexLayout;
+                    numElements = 5;
+                    break;
+                }
+
+                case EVT_TANGENTS:
+                {
+                    static D3D11_INPUT_ELEMENT_DESC    tangentLayout[] =
+                    {
+                        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                    };
+                    layout      = tangentLayout;
+                    numElements = 6;
+                    break;
+                }
+
+                case EVT_STANDARD_LIGHTING_DIRECTIONAL:
+                case EVT_STANDARD_LIGHTING_SPOT:
+                case EVT_STANDARD_LIGHTING_POINT:
+                {
+                    static D3D11_INPUT_ELEMENT_DESC    lightingLayout[] =
+                    {
+                        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                    };
+                    layout      = lightingLayout;
+                    numElements = 4;
+                    break;
+                }
+
+                case EVT_2TCOORDS_LIGHTING_DIRECTIONAL:
+                case EVT_2TCOORDS_LIGHTING_SPOT:
+                case EVT_2TCOORDS_LIGHTING_POINT:
+                {
+                    static D3D11_INPUT_ELEMENT_DESC    twoTexLightingLayout[] =
+                    {
+                        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                    };
+                    layout      = twoTexLightingLayout;
+                    numElements = 5;
+                    break;
+                }
+
+                default:
+                    shader->drop();
+                    return false;
+            }
+
+            if (!shader->createInputLayout(layout, numElements))
+            {
+                shader->drop();
+                return false;
+            }
+
+            m_ShaderPool.push_back(shader);
+
+            if (m_BuiltInVertexShader[type])
+            {
+                IRR_D3D11_VS_RELEASE(m_BuiltInVertexShader[type], "BuiltInVertexShader");
+                m_BuiltInVertexShader[type]->Release();
+            }
+
+            m_BuiltInVertexShader[type] = shader->getVertexShader();
+            IRR_D3D11_VS_CREATE(m_BuiltInVertexShader[type], "BuiltInVertexShader");
+            m_BuiltInVertexShader[type]->AddRef();
+
+            if (m_InputLayout[type])
+            {
+                IRR_D3D11_IL_RELEASE(m_InputLayout[type], "BuiltInInputLayout");
+                m_InputLayout[type]->Release();
+            }
+
+            m_InputLayout[type] = shader->getInputLayout();
+            IRR_D3D11_IL_CREATE(m_InputLayout[type], "BuiltInInputLayout");
+            m_InputLayout[type]->AddRef();
+
+            return true;
+        }
+
+
+        bool CD3D11Driver::createBuiltInPixelShader(E_VERTEX_TYPE type)
+        {
+            const char    *shaderSource = 0;
+
+            switch (type)
+            {
+                case EVT_STANDARD:
+                    shaderSource = PIXEL_SHADER_STANDARD;
+                    break;
+
+                case EVT_2TCOORDS:
+                    shaderSource = PIXEL_SHADER_2TCOORDS;
+                    break;
+
+                case EVT_TANGENTS:
+                    shaderSource = PIXEL_SHADER_TANGENTS;
+                    break;
+
+                default:
+                    return false;
+            }
+
+            CD3D11Shader    *shader = new CD3D11Shader(this);
+            if (!shader->compile(EDST_PIXEL, shaderSource, "main", "ps_4_0"))
+            {
+                shader->drop();
+                return false;
+            }
+
+            if (!shader->createPixelShader())
+            {
+                shader->drop();
+                return false;
+            }
+
+            m_ShaderPool.push_back(shader);
+
+            if (m_BuiltInPixelShader[type])
+            {
+                IRR_D3D11_PS_RELEASE(m_BuiltInPixelShader[type], "BuiltInPixelShader");
+                m_BuiltInPixelShader[type]->Release();
+            }
+
+            m_BuiltInPixelShader[type] = shader->getPixelShader();
+            IRR_D3D11_PS_CREATE(m_BuiltInPixelShader[type], "BuiltInPixelShader");
+            m_BuiltInPixelShader[type]->AddRef();
+
+            return true;
+        }
+
+
+        bool CD3D11Driver::createMaterialPixelShader(E_MATERIAL_TYPE materialType)
+        {
+            const char    *entryPoint = 0;
+
+            switch (materialType)
+            {
+                case EMT_SOLID:                                 entryPoint = "PS_SOLID"; break;
+
+                case EMT_SOLID_2_LAYER:                         entryPoint = "PS_SOLID_2_LAYER"; break;
+
+                case EMT_LIGHTMAP:                              entryPoint = "PS_LIGHTMAP"; break;
+
+                case EMT_LIGHTMAP_ADD:                          entryPoint = "PS_LIGHTMAP_ADD"; break;
+
+                case EMT_LIGHTMAP_M2:                           entryPoint = "PS_LIGHTMAP_M2"; break;
+
+                case EMT_LIGHTMAP_M4:                           entryPoint = "PS_LIGHTMAP_M4"; break;
+
+                case EMT_LIGHTMAP_LIGHTING:                     entryPoint = "PS_LIGHTMAP_LIGHTING"; break;
+
+                case EMT_LIGHTMAP_LIGHTING_M2:                  entryPoint = "PS_LIGHTMAP_LIGHTING_M2"; break;
+
+                case EMT_LIGHTMAP_LIGHTING_M4:                  entryPoint = "PS_LIGHTMAP_LIGHTING_M4"; break;
+
+                case EMT_DETAIL_MAP:                            entryPoint = "PS_DETAIL_MAP"; break;
+
+                case EMT_SPHERE_MAP:                            entryPoint = "PS_SPHERE_MAP"; break;
+
+                case EMT_REFLECTION_2_LAYER:                    entryPoint = "PS_REFLECTION_2_LAYER"; break;
+
+                case EMT_TRANSPARENT_ADD_COLOR:                 entryPoint = "PS_TRANSPARENT_ADD_COLOR"; break;
+
+                case EMT_TRANSPARENT_ALPHA_CHANNEL:             entryPoint = "PS_TRANSPARENT_ALPHA_CHANNEL"; break;
+
+                case EMT_TRANSPARENT_ALPHA_CHANNEL_REF:         entryPoint = "PS_TRANSPARENT_ALPHA_CHANNEL_REF"; break;
+
+                case EMT_TRANSPARENT_VERTEX_ALPHA:              entryPoint = "PS_TRANSPARENT_VERTEX_ALPHA"; break;
+
+                case EMT_TRANSPARENT_REFLECTION_2_LAYER:        entryPoint = "PS_TRANSPARENT_REFLECTION_2_LAYER"; break;
+
+                case EMT_NORMAL_MAP_SOLID:                      entryPoint = "PS_NORMAL_MAP_SOLID"; break;
+
+                case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR:      entryPoint = "PS_NORMAL_MAP_TRANSPARENT_ADD_COLOR"; break;
+
+                case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA:   entryPoint = "PS_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA"; break;
+
+                case EMT_PARALLAX_MAP_SOLID:                    entryPoint = "PS_PARALLAX_MAP_SOLID"; break;
+
+                case EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR:    entryPoint = "PS_PARALLAX_MAP_TRANSPARENT_ADD_COLOR"; break;
+
+                case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA: entryPoint = "PS_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA"; break;
+
+                case EMT_ONETEXTURE_BLEND:                      entryPoint = "PS_ONETEXTURE_BLEND"; break;
+
+                case EMT_SOLID_COLOR:                           entryPoint = "PS_SOLID_COLOR_ONLY"; break;
+
+                case EMT_SOLID_LIGHTING_GOURAUD:                entryPoint = "PS_SOLID_LIGHTING_GOURAUD"; break;
+
+                case EMT_SOLID_LIGHTING_FLAT:                   entryPoint = "PS_SOLID_LIGHTING_FLAT"; break;
+
+                case EMT_SOLID_1_LAYER:                         entryPoint = "PS_SOLID_1_LAYER"; break;
+
+                default:
+                    return false;
+            }
+
+            CD3D11Shader    *shader = new CD3D11Shader(this);
+            shader->setMaterialType(materialType);
+
+            if (!shader->compile(EDST_PIXEL, PS_MaterialShaders_Part1, entryPoint, "ps_4_0", PS_MaterialShaders_Part2))
+            {
+                shader->drop();
+                return false;
+            }
+
+            if (!shader->createPixelShader())
+            {
+                shader->drop();
+                return false;
+            }
+
+            m_ShaderPool.push_back(shader);
+
+            if (m_BuiltInPixelShader[materialType])
+            {
+                IRR_D3D11_PS_RELEASE(m_BuiltInPixelShader[materialType], "BuiltInPixelShader");
+                m_BuiltInPixelShader[materialType]->Release();
+            }
+
+            m_BuiltInPixelShader[materialType] = shader->getPixelShader();
+            IRR_D3D11_PS_CREATE(m_BuiltInPixelShader[materialType], "MaterialPixelShader");
+            m_BuiltInPixelShader[materialType]->AddRef();
+
+            return true;
+        }
+
+
+        bool CD3D11Driver::createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob)
+        {
+            D3D11_INPUT_ELEMENT_DESC    *layout     = 0;
+            u32                         numElements = 0;
+
+            switch (type)
+            {
+                case EVT_STANDARD:
+                {
+                    static D3D11_INPUT_ELEMENT_DESC    standardLayout[] =
+                    {
+                        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                    };
+                    layout      = standardLayout;
+                    numElements = 4;
+                    break;
+                }
+
+                case EVT_2TCOORDS:
+                {
+                    static D3D11_INPUT_ELEMENT_DESC    twoTexLayout[] =
+                    {
+                        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                    };
+                    layout      = twoTexLayout;
+                    numElements = 5;
+                    break;
+                }
+
+                case EVT_TANGENTS:
+                {
+                    static D3D11_INPUT_ELEMENT_DESC    tangentLayout[] =
+                    {
+                        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                        {"BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                    };
+                    layout      = tangentLayout;
+                    numElements = 6;
+                    break;
+                }
+
+                default:
+                    return false;
+            }
+
+            HRESULT    hr = m_pID3DDevice->CreateInputLayout(layout, numElements,
+                                                             shaderBlob->GetBufferPointer(),
+                                                             shaderBlob->GetBufferSize(),
+                                                             &m_InputLayout[type]);
+            return SUCCEEDED(hr);
+        }
+
+
+        bool CD3D11Driver::createRectangleShaders()
+        {
+            CD3D11Shader    *vsShader = new CD3D11Shader(this);
+
+            if (!vsShader->compile(EDST_VERTEX, VERTEX_SHADER_RECTANGLE, "main", "vs_4_0"))
+            {
+                vsShader->drop();
+                return false;
+            }
+
+            if (!vsShader->createVertexShader())
+            {
+                vsShader->drop();
+                return false;
+            }
+
+            D3D11_INPUT_ELEMENT_DESC    rectangleLayout[] =
+            {
+                {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+                {"COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+            };
+
+            if (!vsShader->createInputLayout(rectangleLayout, 2))
+            {
+                vsShader->drop();
+                return false;
+            }
+
+            vsShader->setVertexType(EVT_2D_RECTANGLE);
+            m_ShaderPool.push_back(vsShader);
+
+            if (m_RectangleVertexShader)
+            {
+                IRR_D3D11_VS_RELEASE(m_RectangleVertexShader, "RectangleVertexShader");
+                m_RectangleVertexShader->Release();
+            }
+
+            m_RectangleVertexShader = vsShader->getVertexShader();
+            IRR_D3D11_VS_CREATE(m_RectangleVertexShader, "RectangleVertexShader");
+            m_RectangleVertexShader->AddRef();
+
+            if (m_RectangleInputLayout)
+            {
+                IRR_D3D11_IL_RELEASE(m_RectangleInputLayout, "RectangleInputLayout");
+                m_RectangleInputLayout->Release();
+            }
+
+            m_RectangleInputLayout = vsShader->getInputLayout();
+            IRR_D3D11_IL_CREATE(m_RectangleInputLayout, "RectangleInputLayout");
+            m_RectangleInputLayout->AddRef();
+
+            CD3D11Shader    *psShader = new CD3D11Shader(this);
+
+            if (!psShader->compile(EDST_PIXEL, PIXEL_SHADER_RECTANGLE, "main", "ps_4_0"))
+            {
+                psShader->drop();
+                return false;
+            }
+
+            if (!psShader->createPixelShader())
+            {
+                psShader->drop();
+                return false;
+            }
+
+            psShader->setVertexType(EVT_2D_RECTANGLE);
+            m_ShaderPool.push_back(psShader);
+
+            if (m_RectanglePixelShader)
+            {
+                IRR_D3D11_PS_RELEASE(m_RectanglePixelShader, "RectanglePixelShader");
+                m_RectanglePixelShader->Release();
+            }
+
+            m_RectanglePixelShader = psShader->getPixelShader();
+            IRR_D3D11_PS_CREATE(m_RectanglePixelShader, "RectanglePixelShader");
+            m_RectanglePixelShader->AddRef();
+
+            return true;
+        }
+
+
+        void CD3D11Driver::set2DRectangleShader()
+        {
+            if (!m_RectangleShaderInitialized)
+            {
+                createRectangleShaders();
+                m_RectangleShaderInitialized = true;
+            }
+
+            // If the last shaders are 2d rectangle, we set nothing.
+            if (m_LastMaterialType == EMT_2D_RECTANGLE && m_LastVertexType == EVT_2D_RECTANGLE)
+                return;
+
+            // We have to set m_LastVertexType and m_LastMaterialType
+            m_LastVertexType    = EVT_2D_RECTANGLE;
+            m_LastMaterialType  = EMT_2D_RECTANGLE;
+
+            if (m_RectangleVertexShader)
+            {
+                m_pID3DDeviceContext->VSSetShader(m_RectangleVertexShader, 0, 0);
+            }
+
+            if (m_RectangleInputLayout)
+            {
+                m_pID3DDeviceContext->IASetInputLayout(m_RectangleInputLayout);
+            }
+
+            if (m_RectanglePixelShader)
+            {
+                m_pID3DDeviceContext->PSSetShader(m_RectanglePixelShader, 0, 0);
+            }
+
+            setPSTextureAndSamplerState();
+        }
+
+
+        void CD3D11Driver::updateMatrixConstantBuffer()
+        {
+            core::matrix4       mvp     = m_Matrices[ETS_PROJECTION] * m_Matrices[ETS_VIEW] * m_Matrices[ETS_WORLD];
+            core::matrix4       m       = m_Matrices[ETS_WORLD];
+            u32                 size    = sizeof(core::matrix4);
+
+            D3D11_MAPPED_SUBRESOURCE    mapped;
+
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_MatrixConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+            {
+                c8    *p = (c8*)mapped.pData;
+
+                memcpy(p, mvp.pointer(), size);
+
+                p += size;
+                memcpy(p, m.pointer(), size);
+
+                m_pID3DDeviceContext->Unmap(m_MatrixConstantBuffer, 0);
+            }
+
+            m_pID3DDeviceContext->VSSetConstantBuffers(0, 1, &m_MatrixConstantBuffer);
+        }
+
+
+        u64 CD3D11Driver::createRenderStateKey2D(bool alpha, bool texture, bool alphaChannel)
+        {
+            return u64(ERM_2D) | (u64(alpha) << 4) | (u64(texture) << 8) | (u64(alphaChannel) << 12);
+        }
+
+        void CD3D11Driver::createRenderStateKey3D(const SMaterial &material, u64 &key1, u64 &key2)
+        {
+            key1 = u64(ERM_3D) |
+                   (u64(material.MaterialType) << 4) |
+                   (u64(material.ZBuffer) << 28) |
+                   (u64(material.AntiAliasing) << 32) |
+                   (u64(material.ColorMask) << 40) |
+                   (u64(material.BlendOperation) << 44) |
+                   (u64(material.PolygonOffsetFactor) << 48) |
+                   (u64(material.PolygonOffsetDirection) << 51) |
+                   (u64(material.Wireframe) << 53) |
+                   (u64(material.PointCloud) << 54) |
+                   (u64(material.ZWriteEnable) << 55) |
+                   (u64(material.BackfaceCulling) << 56) |
+                   (u64(material.FrontfaceCulling) << 57);
+
+            key2 = (u64(*(u32*)&material.MaterialTypeParam) << 0) |
+                   (u64(*(u32*)&material.Thickness) << 32);
+        }
+
+        u64 CD3D11Driver::createRenderStateKeyOther(E_RENDER_MODE mode)
+        {
+            _IRR_DEBUG_BREAK_IF(false);
+            return u64(mode) << 0;
+        }
+
+
+        CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSet2D(bool alpha, bool texture, bool alphaChannel)
+        {
+            const u64                                   key     = createRenderStateKey2D(alpha, texture, alphaChannel);
+            core::map<u64, SRenderStateSet>::Node       *node   = m_RenderStateSets[ERM_2D].find(key);
+
+            if (node)
+                return &node->getValue();
+
+            SRenderStateSet    stateSet;
+            stateSet.Key                = key;
+            stateSet.RasterizerState    = 0;
+            stateSet.DepthStencilState  = 0;
+            stateSet.BlendState         = 0;
+
+            HRESULT                     hr = E_FAIL;
+            D3D11_RASTERIZER_DESC1      rasterizerDesc;
+            rasterizerDesc.AntialiasedLineEnable    = false;
+            rasterizerDesc.CullMode                 = D3D11_CULL_NONE;
+            rasterizerDesc.DepthBias                = D3D11_DEFAULT_DEPTH_BIAS;
+            rasterizerDesc.DepthBiasClamp           = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
+            rasterizerDesc.DepthClipEnable          = true;
+            rasterizerDesc.FillMode                 = D3D11_FILL_SOLID;
+            rasterizerDesc.ForcedSampleCount        = 0;
+            rasterizerDesc.FrontCounterClockwise    = false;
+            rasterizerDesc.MultisampleEnable        = false;
+            rasterizerDesc.ScissorEnable            = false;
+            rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &stateSet.RasterizerState);
+
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
+                return 0;
+            }
+
+            IRR_D3D11_RS_CREATE(stateSet.RasterizerState, "RasterizerState");
+
+            D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
+            depthStencilDesc.DepthEnable                    = false;
+            depthStencilDesc.DepthWriteMask                 = D3D11_DEPTH_WRITE_MASK_ALL;
+            depthStencilDesc.DepthFunc                      = D3D11_COMPARISON_LESS;
+            depthStencilDesc.StencilEnable                  = false;
+            depthStencilDesc.StencilReadMask                = D3D11_DEFAULT_STENCIL_READ_MASK;
+            depthStencilDesc.StencilWriteMask               = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+            depthStencilDesc.FrontFace.StencilFunc          = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
+
+            hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &stateSet.DepthStencilState);
+            IRR_D3D11_DSS_CREATE(stateSet.DepthStencilState, "DepthStencilState");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create depth stencil state.", ELL_ERROR);
+                return 0;
+            }
+
+            D3D11_BLEND_DESC1    blendDesc;
+            blendDesc.AlphaToCoverageEnable     = false;
+            blendDesc.IndependentBlendEnable    = false;
+
+            const bool    enableAlphaBlend = alpha || (alphaChannel && texture);
+
+            for (u32 i = 0; i < 8; ++i)
+            {
+                blendDesc.RenderTarget[i].BlendEnable           = enableAlphaBlend;
+                blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            }
+
+            hr = E_FAIL;
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &stateSet.BlendState);
+
+            IRR_D3D11_BLEND_CREATE(stateSet.BlendState, "BlendState");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create blend state.", ELL_ERROR);
+                return 0;
+            }
+
+            m_RenderStateSets[ERM_2D].set(key, stateSet);
+
+            core::map<u64, SRenderStateSet>::Node    *pNode = m_RenderStateSets[ERM_2D].find(key);
+            if (pNode == nullptr)
+            {
+                os::Printer::log("Could not find the render states.", ELL_ERROR);
+                return 0;
+            }
+
+            return &pNode->getValue();
+        }
+
+
+        CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSet3D(const SMaterial &material)
+        {
+            u64    key1, key2;
+
+            createRenderStateKey3D(material, key1, key2);
+            const u64                                   combinedKey = key1 ^ (key2 << 1);
+            core::map<u64, SRenderStateSet>::Node       *node       = m_RenderStateSets[ERM_3D].find(combinedKey);
+
+            if (node)
+                return &node->getValue();
+
+            SRenderStateSet    stateSet;
+            stateSet.Key                = combinedKey;
+            stateSet.RasterizerState    = 0;
+            stateSet.DepthStencilState  = 0;
+            stateSet.BlendState         = 0;
+
+            HRESULT                     hr = E_FAIL;
+            D3D11_RASTERIZER_DESC1      rasterizerDesc;
+            rasterizerDesc.AntialiasedLineEnable    = (material.AntiAliasing & EAAM_LINE_SMOOTH) != 0;
+            rasterizerDesc.CullMode                 = D3D11_CULL_BACK;
+            rasterizerDesc.DepthBias                = D3D11_DEFAULT_DEPTH_BIAS;
+            rasterizerDesc.DepthBiasClamp           = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
+            rasterizerDesc.DepthClipEnable          = true;
+            rasterizerDesc.FillMode                 = D3D11_FILL_SOLID;
+            rasterizerDesc.ForcedSampleCount        = 0;
+            rasterizerDesc.FrontCounterClockwise    = false;
+            rasterizerDesc.MultisampleEnable        = (material.AntiAliasing & (EAAM_SIMPLE | EAAM_QUALITY)) != 0;
+            rasterizerDesc.ScissorEnable            = false;
+            rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+
+            if (material.Wireframe)
+                rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
+
+            if (material.BackfaceCulling)
+                rasterizerDesc.CullMode = D3D11_CULL_BACK;
+            else if (material.FrontfaceCulling)
+                rasterizerDesc.CullMode = D3D11_CULL_FRONT;
+            else
+                rasterizerDesc.CullMode = D3D11_CULL_NONE;
+
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &stateSet.RasterizerState);
+
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
+                return 0;
+            }
+
+            IRR_D3D11_RS_CREATE(stateSet.RasterizerState, "RasterizerState");
+
+            D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
+            depthStencilDesc.DepthEnable                    = (material.ZBuffer != ECFN_NEVER);
+            depthStencilDesc.DepthWriteMask                 = material.ZWriteEnable ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
+            depthStencilDesc.StencilEnable                  = false;
+            depthStencilDesc.StencilReadMask                = D3D11_DEFAULT_STENCIL_READ_MASK;
+            depthStencilDesc.StencilWriteMask               = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+            depthStencilDesc.FrontFace.StencilFunc          = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
+
+            switch (material.ZBuffer)
+            {
+                case ECFN_NEVER:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_NEVER;
+                    break;
+
+                case ECFN_LESSEQUAL:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+                    break;
+
+                case ECFN_EQUAL:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
+                    break;
+
+                case ECFN_LESS:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+                    break;
+
+                case ECFN_GREATEREQUAL:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
+                    break;
+
+                case ECFN_NOTEQUAL:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_NOT_EQUAL;
+                    break;
+
+                case ECFN_GREATER:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER;
+                    break;
+
+                case ECFN_ALWAYS:
+                default:
+                    depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
                     break;
             }
+
+            hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &stateSet.DepthStencilState);
+            IRR_D3D11_DSS_CREATE(stateSet.DepthStencilState, "DepthStencilState");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create depth stencil state.", ELL_ERROR);
+                return 0;
+            }
+
+            D3D11_BLEND_DESC1    blendDesc;
+            blendDesc.AlphaToCoverageEnable     = (material.AntiAliasing & EAAM_ALPHA_TO_COVERAGE) != 0;
+            blendDesc.IndependentBlendEnable    = false;
+
+            bool    blendEnable = material.BlendOperation != EBO_NONE;
+
+            if (material.MaterialType == EMT_TRANSPARENT_ADD_COLOR ||
+                material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL ||
+                material.MaterialType == EMT_TRANSPARENT_VERTEX_ALPHA ||
+                material.MaterialType == EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR ||
+                material.MaterialType == EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA ||
+                material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL_REF ||
+                material.MaterialType == EMT_TRANSPARENT_REFLECTION_2_LAYER)
+            {
+                blendEnable = true;
+            }
+
+            D3D11_BLEND_OP    blendOp = D3D11_BLEND_OP_ADD;
+            if (blendEnable)
+            {
+                switch (material.BlendOperation)
+                {
+                    case EBO_SUBTRACT:
+                        blendOp = D3D11_BLEND_OP_SUBTRACT;
+                        break;
+
+                    case EBO_REVSUBTRACT:
+                        blendOp = D3D11_BLEND_OP_REV_SUBTRACT;
+                        break;
+
+                    case EBO_MIN:
+                    case EBO_MIN_FACTOR:
+                    case EBO_MIN_ALPHA:
+                        blendOp = D3D11_BLEND_OP_MIN;
+                        break;
+
+                    case EBO_MAX:
+                    case EBO_MAX_FACTOR:
+                    case EBO_MAX_ALPHA:
+                        blendOp = D3D11_BLEND_OP_MAX;
+                        break;
+
+                    default:
+                        blendOp = D3D11_BLEND_OP_ADD;
+                        break;
+                }
+            }
+
+            for (u32 i = 0; i < 8; ++i)
+            {
+                blendDesc.RenderTarget[i].BlendEnable           = blendEnable;
+                blendDesc.RenderTarget[i].LogicOpEnable         = false;
+
+                if (material.MaterialType == EMT_TRANSPARENT_ADD_COLOR)
+                {
+                    blendDesc.RenderTarget[i].BlendEnable       = TRUE;
+                    blendDesc.RenderTarget[i].SrcBlend          = D3D11_BLEND_ONE;
+                    blendDesc.RenderTarget[i].DestBlend         = D3D11_BLEND_INV_SRC_COLOR;
+                }
+                else if (material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL)
+                {
+                    blendDesc.RenderTarget[i].BlendEnable       = TRUE;
+                    blendDesc.RenderTarget[i].SrcBlend          = D3D11_BLEND_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].DestBlend         = D3D11_BLEND_INV_SRC_ALPHA;
+                }
+                else
+                {
+                    blendDesc.RenderTarget[i].SrcBlend          = D3D11_BLEND_SRC_ALPHA;
+                    blendDesc.RenderTarget[i].DestBlend         = D3D11_BLEND_INV_SRC_ALPHA;
+                }
+
+                blendDesc.RenderTarget[i].BlendOp               = blendOp;
+                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                blendDesc.RenderTarget[i].RenderTargetWriteMask = (material.ColorMask == ECP_ALL) ?
+                                                                  D3D11_COLOR_WRITE_ENABLE_ALL :
+                                                                  ((material.ColorMask & ECP_RED)   ? D3D11_COLOR_WRITE_ENABLE_RED   : 0) |
+                                                                  ((material.ColorMask & ECP_GREEN) ? D3D11_COLOR_WRITE_ENABLE_GREEN : 0) |
+                                                                  ((material.ColorMask & ECP_BLUE)  ? D3D11_COLOR_WRITE_ENABLE_BLUE  : 0) |
+                                                                  ((material.ColorMask & ECP_ALPHA) ? D3D11_COLOR_WRITE_ENABLE_ALPHA : 0);
+            }
+
+            hr = E_FAIL;
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &stateSet.BlendState);
+
+            IRR_D3D11_BLEND_CREATE(stateSet.BlendState, "BlendState");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create blend state.", ELL_ERROR);
+                return 0;
+            }
+
+            m_RenderStateSets[ERM_3D].set(combinedKey, stateSet);
+
+            core::map<u64, SRenderStateSet>::Node    *pNode = m_RenderStateSets[ERM_3D].find(combinedKey);
+            if (pNode == nullptr)
+            {
+                os::Printer::log("Could not find the render states.", ELL_ERROR);
+                return 0;
+            }
+
+            return &pNode->getValue();
         }
 
-        for (u32 i = 0; i < 8; ++i)
-        {
-            blendDesc.RenderTarget[i].BlendEnable           = blendEnable;
-            blendDesc.RenderTarget[i].LogicOpEnable         = false;
 
-            if (material.MaterialType == EMT_TRANSPARENT_ADD_COLOR)
+        CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSetOther(E_RENDER_MODE mode)
+        {
+            const u64                                   key     = createRenderStateKeyOther(mode);
+            core::map<u64, SRenderStateSet>::Node       *node   = m_RenderStateSets[mode].find(key);
+
+            if (node)
+                return &node->getValue();
+
+            SRenderStateSet    stateSet;
+            stateSet.Key                = key;
+            stateSet.RasterizerState    = 0;
+            stateSet.DepthStencilState  = 0;
+            stateSet.BlendState         = 0;
+
+            HRESULT                     hr = E_FAIL;
+            D3D11_RASTERIZER_DESC1      rasterizerDesc;
+            rasterizerDesc.AntialiasedLineEnable    = false;
+            rasterizerDesc.CullMode                 = D3D11_CULL_BACK;
+            rasterizerDesc.DepthBias                = D3D11_DEFAULT_DEPTH_BIAS;
+            rasterizerDesc.DepthBiasClamp           = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
+            rasterizerDesc.DepthClipEnable          = true;
+            rasterizerDesc.FillMode                 = D3D11_FILL_SOLID;
+            rasterizerDesc.ForcedSampleCount        = 0;
+            rasterizerDesc.FrontCounterClockwise    = false;
+            rasterizerDesc.MultisampleEnable        = false;
+            rasterizerDesc.ScissorEnable            = false;
+            rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &stateSet.RasterizerState);
+
+            if (FAILED(hr))
             {
-                blendDesc.RenderTarget[i].BlendEnable       = TRUE;
-                blendDesc.RenderTarget[i].SrcBlend          = D3D11_BLEND_ONE;
-                blendDesc.RenderTarget[i].DestBlend         = D3D11_BLEND_INV_SRC_COLOR;
+                os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
+                return 0;
             }
-            else if (material.MaterialType == EMT_TRANSPARENT_ALPHA_CHANNEL)
+
+            IRR_D3D11_RS_CREATE(stateSet.RasterizerState, "RasterizerState");
+
+            D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
+            depthStencilDesc.DepthEnable                    = true;
+            depthStencilDesc.DepthWriteMask                 = D3D11_DEPTH_WRITE_MASK_ALL;
+            depthStencilDesc.DepthFunc                      = D3D11_COMPARISON_LESS;
+            depthStencilDesc.StencilEnable                  = false;
+            depthStencilDesc.StencilReadMask                = D3D11_DEFAULT_STENCIL_READ_MASK;
+            depthStencilDesc.StencilWriteMask               = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+            depthStencilDesc.FrontFace.StencilFunc          = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
+
+            hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &stateSet.DepthStencilState);
+            IRR_D3D11_DSS_CREATE(stateSet.DepthStencilState, "DepthStencilState");
+            if (FAILED(hr))
             {
-                blendDesc.RenderTarget[i].BlendEnable       = TRUE;
-                blendDesc.RenderTarget[i].SrcBlend          = D3D11_BLEND_SRC_ALPHA;
-                blendDesc.RenderTarget[i].DestBlend         = D3D11_BLEND_INV_SRC_ALPHA;
+                os::Printer::log("Could not create depth stencil state.", ELL_ERROR);
+                return 0;
             }
+
+            D3D11_BLEND_DESC1    blendDesc;
+            blendDesc.AlphaToCoverageEnable     = false;
+            blendDesc.IndependentBlendEnable    = false;
+
+            for (u32 i = 0; i < 8; ++i)
+            {
+                blendDesc.RenderTarget[i].BlendEnable           = false;
+                blendDesc.RenderTarget[i].LogicOpEnable         = false;
+                blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
+                blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
+                blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
+                blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
+                blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
+                blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+            }
+
+            hr = E_FAIL;
+            if (m_pID3DDevice1)
+                hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &stateSet.BlendState);
+
+            IRR_D3D11_BLEND_CREATE(stateSet.BlendState, "BlendState");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create blend state.", ELL_ERROR);
+                return 0;
+            }
+
+            m_RenderStateSets[mode].set(key, stateSet);
+
+            core::map<u64, SRenderStateSet>::Node    *pNode = m_RenderStateSets[mode].find(key);
+            if (pNode == nullptr)
+            {
+                os::Printer::log("Could not find the render states.", ELL_ERROR);
+                return 0;
+            }
+
+            return &pNode->getValue();
+        }
+
+
+        CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSet(
+            E_RENDER_MODE mode, bool alpha, bool texture, bool alphaChannel, const SMaterial &material)
+        {
+            if (mode == ERM_2D)
+                return getOrCreateRenderStateSet2D(alpha, texture, alphaChannel);
+            else if (mode == ERM_3D)
+                return getOrCreateRenderStateSet3D(material);
             else
+                return getOrCreateRenderStateSetOther(mode);
+        }
+
+
+        void CD3D11Driver::setRenderStatesStencilFillMode(bool alpha)
+        {
+            m_CurrentRenderMode = ERM_STENCIL_FILL;
+        }
+
+
+        void CD3D11Driver::setRenderStatesStencilShadowMode(bool zfail, u32 debugDataVisible)
+        {
+            m_CurrentRenderMode = zfail ? ERM_SHADOW_VOLUME_ZFAIL : ERM_SHADOW_VOLUME_ZPASS;
+        }
+
+
+        IVideoDriver* createDirectX11Driver(const SIrrlichtCreationParameters &params,
+                                            io::IFileSystem *io, HWND window)
+        {
+            const bool      pureSoftware    = false;
+            CD3D11Driver    *dx11           = new CD3D11Driver(params, io);
+
+            if (!dx11->initDriver(window, pureSoftware))
             {
-                blendDesc.RenderTarget[i].SrcBlend          = D3D11_BLEND_SRC_ALPHA;
-                blendDesc.RenderTarget[i].DestBlend         = D3D11_BLEND_INV_SRC_ALPHA;
+                dx11->drop();
+                dx11 = 0;
             }
 
-            blendDesc.RenderTarget[i].BlendOp               = blendOp;
-            blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
-            blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-            blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
-            blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-            blendDesc.RenderTarget[i].RenderTargetWriteMask = (material.ColorMask == ECP_ALL) ?
-                                                              D3D11_COLOR_WRITE_ENABLE_ALL :
-                                                              ((material.ColorMask & ECP_RED)   ? D3D11_COLOR_WRITE_ENABLE_RED   : 0) |
-                                                              ((material.ColorMask & ECP_GREEN) ? D3D11_COLOR_WRITE_ENABLE_GREEN : 0) |
-                                                              ((material.ColorMask & ECP_BLUE)  ? D3D11_COLOR_WRITE_ENABLE_BLUE  : 0) |
-                                                              ((material.ColorMask & ECP_ALPHA) ? D3D11_COLOR_WRITE_ENABLE_ALPHA : 0);
+            return dx11;
         }
-
-        hr = E_FAIL;
-        if (m_pID3DDevice1)
-            hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &stateSet.BlendState);
-
-        IRR_D3D11_BLEND_CREATE(stateSet.BlendState, "BlendState");
-        if (FAILED(hr))
-        {
-            os::Printer::log("Could not create blend state.", ELL_ERROR);
-            return 0;
-        }
-
-        m_RenderStateSets[ERM_3D].set(combinedKey, stateSet);
-
-        core::map<u64, SRenderStateSet>::Node    *pNode = m_RenderStateSets[ERM_3D].find(combinedKey);
-        if (pNode == nullptr)
-        {
-            os::Printer::log("Could not find the render states.", ELL_ERROR);
-            return 0;
-        }
-
-        return &pNode->getValue();
-    }
-
-
-    CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSetOther(E_RENDER_MODE mode)
-    {
-        const u64                                   key     = createRenderStateKeyOther(mode);
-        core::map<u64, SRenderStateSet>::Node       *node   = m_RenderStateSets[mode].find(key);
-
-        if (node)
-            return &node->getValue();
-
-        SRenderStateSet    stateSet;
-        stateSet.Key                = key;
-        stateSet.RasterizerState    = 0;
-        stateSet.DepthStencilState  = 0;
-        stateSet.BlendState         = 0;
-
-        HRESULT                     hr = E_FAIL;
-        D3D11_RASTERIZER_DESC1      rasterizerDesc;
-        rasterizerDesc.AntialiasedLineEnable    = false;
-        rasterizerDesc.CullMode                 = D3D11_CULL_BACK;
-        rasterizerDesc.DepthBias                = D3D11_DEFAULT_DEPTH_BIAS;
-        rasterizerDesc.DepthBiasClamp           = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
-        rasterizerDesc.DepthClipEnable          = true;
-        rasterizerDesc.FillMode                 = D3D11_FILL_SOLID;
-        rasterizerDesc.ForcedSampleCount        = 0;
-        rasterizerDesc.FrontCounterClockwise    = false;
-        rasterizerDesc.MultisampleEnable        = false;
-        rasterizerDesc.ScissorEnable            = false;
-        rasterizerDesc.SlopeScaledDepthBias     = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-
-        if (m_pID3DDevice1)
-            hr = m_pID3DDevice1->CreateRasterizerState1(&rasterizerDesc, &stateSet.RasterizerState);
-
-        if (FAILED(hr))
-        {
-            os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
-            return 0;
-        }
-
-        IRR_D3D11_RS_CREATE(stateSet.RasterizerState, "RasterizerState");
-
-        D3D11_DEPTH_STENCIL_DESC    depthStencilDesc;
-        depthStencilDesc.DepthEnable                    = true;
-        depthStencilDesc.DepthWriteMask                 = D3D11_DEPTH_WRITE_MASK_ALL;
-        depthStencilDesc.DepthFunc                      = D3D11_COMPARISON_LESS;
-        depthStencilDesc.StencilEnable                  = false;
-        depthStencilDesc.StencilReadMask                = D3D11_DEFAULT_STENCIL_READ_MASK;
-        depthStencilDesc.StencilWriteMask               = D3D11_DEFAULT_STENCIL_WRITE_MASK;
-        depthStencilDesc.FrontFace.StencilFunc          = D3D11_COMPARISON_ALWAYS;
-        depthStencilDesc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;
-        depthStencilDesc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_KEEP;
-
-        hr = m_pID3DDevice->CreateDepthStencilState(&depthStencilDesc, &stateSet.DepthStencilState);
-        IRR_D3D11_DSS_CREATE(stateSet.DepthStencilState, "DepthStencilState");
-        if (FAILED(hr))
-        {
-            os::Printer::log("Could not create depth stencil state.", ELL_ERROR);
-            return 0;
-        }
-
-        D3D11_BLEND_DESC1    blendDesc;
-        blendDesc.AlphaToCoverageEnable     = false;
-        blendDesc.IndependentBlendEnable    = false;
-
-        for (u32 i = 0; i < 8; ++i)
-        {
-            blendDesc.RenderTarget[i].BlendEnable           = false;
-            blendDesc.RenderTarget[i].LogicOpEnable         = false;
-            blendDesc.RenderTarget[i].SrcBlend              = D3D11_BLEND_SRC_ALPHA;
-            blendDesc.RenderTarget[i].DestBlend             = D3D11_BLEND_INV_SRC_ALPHA;
-            blendDesc.RenderTarget[i].BlendOp               = D3D11_BLEND_OP_ADD;
-            blendDesc.RenderTarget[i].SrcBlendAlpha         = D3D11_BLEND_ONE;
-            blendDesc.RenderTarget[i].DestBlendAlpha        = D3D11_BLEND_INV_SRC_ALPHA;
-            blendDesc.RenderTarget[i].BlendOpAlpha          = D3D11_BLEND_OP_ADD;
-            blendDesc.RenderTarget[i].LogicOp               = D3D11_LOGIC_OP_NOOP;
-            blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-        }
-
-        hr = E_FAIL;
-        if (m_pID3DDevice1)
-            hr = m_pID3DDevice1->CreateBlendState1(&blendDesc, &stateSet.BlendState);
-
-        IRR_D3D11_BLEND_CREATE(stateSet.BlendState, "BlendState");
-        if (FAILED(hr))
-        {
-            os::Printer::log("Could not create blend state.", ELL_ERROR);
-            return 0;
-        }
-
-        m_RenderStateSets[mode].set(key, stateSet);
-
-        core::map<u64, SRenderStateSet>::Node    *pNode = m_RenderStateSets[mode].find(key);
-        if (pNode == nullptr)
-        {
-            os::Printer::log("Could not find the render states.", ELL_ERROR);
-            return 0;
-        }
-
-        return &pNode->getValue();
-    }
-
-
-    CD3D11Driver::SRenderStateSet* CD3D11Driver::getOrCreateRenderStateSet(
-        E_RENDER_MODE mode, bool alpha, bool texture, bool alphaChannel, const SMaterial &material)
-    {
-        if (mode == ERM_2D)
-            return getOrCreateRenderStateSet2D(alpha, texture, alphaChannel);
-        else if (mode == ERM_3D)
-            return getOrCreateRenderStateSet3D(material);
-        else
-            return getOrCreateRenderStateSetOther(mode);
-    }
-
-
-    void CD3D11Driver::setRenderStatesStencilFillMode(bool alpha)
-    {
-        m_CurrentRenderMode = ERM_STENCIL_FILL;
-    }
-
-
-    void CD3D11Driver::setRenderStatesStencilShadowMode(bool zfail, u32 debugDataVisible)
-    {
-        m_CurrentRenderMode = zfail ? ERM_SHADOW_VOLUME_ZFAIL : ERM_SHADOW_VOLUME_ZPASS;
-    }
-
-
-    IVideoDriver* createDirectX11Driver(const SIrrlichtCreationParameters &params,
-                                        io::IFileSystem *io, HWND window)
-    {
-        const bool      pureSoftware    = false;
-        CD3D11Driver    *dx11           = new CD3D11Driver(params, io);
-
-        if (!dx11->initDriver(window, pureSoftware))
-        {
-            dx11->drop();
-            dx11 = 0;
-        }
-
-        return dx11;
-    }
-}     // end namespace video
+    } // end namespace video
 } // end namespace irr
 #endif // _IRR_COMPILE_WITH_DIRECT3D_11_

@@ -1484,7 +1484,7 @@ CD3D11Driver::setVSByVertexType如果需要使用下列带光照的VS
 4. 不要直接在CD3D11Driver::turnLightOn中设置m_LightConstantBuffer。
 
 # 74
-Git commit: 
+Git commit: Implement gouraud shading of VS for EVT_2TCOORDS by MiniMax-M2.7.
 1. 仿照EVT_STANDARD+gouraud shading实现的下列shader，为EVT_2TCOORDS增加gourand shading
     EVT_STANDARD_LIGHTING_POINT;
     EVT_STANDARD_LIGHTING_SPOT;
@@ -1499,10 +1499,72 @@ Delete the following code of S3DVertex.h
 
 # 75
 Git commit: 
+帮我分析下面d3d9的代码的功能，如果用d3d11实现，需要更改的是VS还是PS，以及具体的更改的方法。
+            {
+                D3DMATERIAL9    mat;
+                mat.Diffuse     = colorToD3D(material.DiffuseColor);
+                mat.Ambient     = colorToD3D(material.AmbientColor);
+                mat.Specular    = colorToD3D(material.SpecularColor);
+                mat.Emissive    = colorToD3D(material.EmissiveColor);
+                mat.Power       = material.Shininess;
+                m_pID3DDevice->SetMaterial(&mat);
+            }
 
+            {
+                m_pID3DDevice->SetRenderState(D3DRS_COLORVERTEX, (material.ColorMaterial != ECM_NONE));
+                m_pID3DDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE,
+                                              ((material.ColorMaterial == ECM_DIFFUSE) ||
+                                               (material.ColorMaterial == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE,
+                                              ((material.ColorMaterial == ECM_AMBIENT) ||
+                                               (material.ColorMaterial == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_EMISSIVEMATERIALSOURCE,
+                                              (material.ColorMaterial == ECM_EMISSIVE) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE,
+                                              (material.ColorMaterial == ECM_SPECULAR) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+            }
+
+根据前面分析的结果，我们需要更改下列的PS，使得PS可以支持
+1. 材质数据传入pixel shader（通过 Constant Buffer）,使得PS可以选择使用color
+// cbuffer 中定义材质
+cbuffer MaterialBuffer : register(b2)
+{
+    float4 DiffuseColor;
+    float4 AmbientColor;
+    float4 SpecularColor;
+    float4 EmissiveColor;
+    float  Shininess;
+    float3 Padding;
+    int    ColorMaterialMode; // 0=全部用材质, 1=用顶点颜色等
+};
+
+float4 PS_SOLID_1_LAYER(PS_INPUT_2TEX input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord0);
+    return float4(texColor.rgb * input.Color.rgb, texColor.a * input.Color.a);
+}
+
+float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+    return float4(texColor.rgb * input.Color.rgb, texColor.a * input.Color.a);
+}
+2. CD3D11Driver::setBasicRenderStates需要类似CD3D9Driver::setBasicRenderStates，把下列参数传递给PS
+               material.DiffuseColor
+               material.AmbientColor
+               material.SpecularColor
+               material.EmissiveColor
+               material.Shininess
 
 # 76
 Git commit: 
 
 # 77
+Git commit: 
+
+
+# 78
+Git commit: 
+
+# 79
 Git commit: 

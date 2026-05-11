@@ -580,6 +580,7 @@ private:
             ID3D11Buffer            *m_TempVertexBuffer;
             ID3D11Buffer            *m_TempIndexBuffer;
             ID3D11Buffer            *m_MatrixConstantBuffer;
+            ID3D11Buffer            *m_MaterialConstantBuffer;
             ID3D11Buffer            *m_LightConstantBuffer;
             u32                     m_TempVertexBufferSize;
             u32                     m_TempIndexBufferSize;

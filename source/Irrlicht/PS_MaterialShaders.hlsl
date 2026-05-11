@@ -43,6 +43,24 @@ Texture2D SphereMap : register(t0);
 
 SamplerState LinearSampler : register(s0);
 
+cbuffer MaterialBuffer : register(b2)
+{
+    float4 DiffuseColor;
+    float4 AmbientColor;
+    float4 SpecularColor;
+    float4 EmissiveColor;
+    float Shininess;
+    float ColorMaterialMode;
+    float2 Padding;
+};
+
+#define ECM_NONE              0
+#define ECM_DIFFUSE           1
+#define ECM_AMBIENT           2
+#define ECM_SPECULAR          3
+#define ECM_EMISSIVE          4
+#define ECM_DIFFUSE_AND_AMBIENT 5
+
 //==============================================================================
 // EMT_SOLID - Standard solid material, first texture * diffuse
 // ColorOp: D3DTOP_MODULATE, Tex * Diffuse
@@ -50,7 +68,34 @@ SamplerState LinearSampler : register(s0);
 float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
-    return float4(texColor.rgb * input.Color.rgb, texColor.a * input.Color.a);
+
+    float4 diffuse, ambient, specular, emissive;
+
+    if (ColorMaterialMode == ECM_DIFFUSE || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+        diffuse = input.Color;
+    else
+        diffuse = DiffuseColor;
+
+    if (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+        ambient = input.Color;
+    else
+        ambient = AmbientColor;
+
+    if (ColorMaterialMode == ECM_SPECULAR)
+        specular = input.Color;
+    else
+        specular = SpecularColor;
+
+    if (ColorMaterialMode == ECM_EMISSIVE)
+        emissive = input.Color;
+    else
+        emissive = EmissiveColor;
+
+    float4 finalColor = texColor * diffuse;
+    finalColor.rgb *= ambient.rgb;
+    finalColor.rgb += emissive.rgb;
+
+    return float4(finalColor.rgb * input.Color.a, texColor.a * input.Color.a);
 }
 
 //==============================================================================
@@ -173,7 +218,34 @@ float4 PS_SOLID_LIGHTING_FLAT(PS_INPUT_BASIC input) : SV_TARGET
 float4 PS_SOLID_1_LAYER(PS_INPUT_2TEX input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord0);
-    return float4(texColor.rgb * input.Color.rgb, texColor.a * input.Color.a);
+
+    float4 diffuse, ambient, specular, emissive;
+
+    if (ColorMaterialMode == ECM_DIFFUSE || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+        diffuse = input.Color;
+    else
+        diffuse = DiffuseColor;
+
+    if (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+        ambient = input.Color;
+    else
+        ambient = AmbientColor;
+
+    if (ColorMaterialMode == ECM_SPECULAR)
+        specular = input.Color;
+    else
+        specular = SpecularColor;
+
+    if (ColorMaterialMode == ECM_EMISSIVE)
+        emissive = input.Color;
+    else
+        emissive = EmissiveColor;
+
+    float4 finalColor = texColor * diffuse;
+    finalColor.rgb *= ambient.rgb;
+    finalColor.rgb += emissive.rgb;
+
+    return float4(finalColor.rgb * input.Color.a, texColor.a * input.Color.a);
 }
 
 //==============================================================================
