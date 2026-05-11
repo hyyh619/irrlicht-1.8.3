@@ -1450,10 +1450,16 @@ namespace irr
             if (hwBufferD3D->indexBuffer)
             {
                 m_pID3DDeviceContext->DrawIndexed(mb->getIndexCount(), 0, 0);
+#ifdef _IRR_DUMP_DRAW_CALLS_
+                dumpDrawCall("drawHardwareBuffer", vType, scene::EPT_TRIANGLES, mb->getIndexType(), true, mb->getIndexCount());
+#endif
             }
             else
             {
                 m_pID3DDeviceContext->Draw(mb->getVertexCount(), 0);
+#ifdef _IRR_DUMP_DRAW_CALLS_
+                dumpDrawCall("drawHardwareBuffer", vType, scene::EPT_TRIANGLES, EIT_32BIT, true, mb->getVertexCount());
+#endif
             }
         }
 
