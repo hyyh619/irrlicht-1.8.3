@@ -3216,9 +3216,15 @@ namespace irr
 
             if (m_Material.Lighting)
             {
-                if (materialType == EMT_SOLID)
+                // We need to check if there is light.
+                u32 lightSize = Lights.size();
+
+                if (lightSize > 0 && m_CurSetLight != -1)
                 {
-                    materialType = EMT_SOLID_WITH_LIGHT;
+                    if (materialType == EMT_SOLID)
+                    {
+                        materialType = EMT_SOLID_WITH_LIGHT;
+                    }
                 }
             }
 
