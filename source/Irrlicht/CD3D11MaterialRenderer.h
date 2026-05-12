@@ -24,6 +24,7 @@ struct PS_INPUT_BASIC
     float4 Pos : SV_POSITION;
     float4 Color : COLOR;
     float2 TexCoord : TEXCOORD0;
+    float2 TexCoord2 : TEXCOORD1;
     float3 Normal : NORMAL;
     float3 WorldPos : WORLDPOS;
 };

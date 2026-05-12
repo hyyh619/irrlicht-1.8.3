@@ -1819,6 +1819,24 @@ Git commit: Move VS HLSL source code to CShader.cpp by MiniMax-M2.7.
 
 # 83
 Git commit: 
+下列在CD3D11Shader.cpp中定义的HLSL
+        static const char    VERTEX_SHADER_STANDARD[] =
+        static const char    VERTEX_SHADER_STANDARD_DIRECTIONAL[] =
+        static const char    VERTEX_SHADER_STANDARD_POINT[] =
+        static const char    VERTEX_SHADER_STANDARD_SPOT[] =
+1. 请给"struct VS_OUTPUT" 增加 "    float2 TexCoord2 : TEXCOORD1;"
+2. 在VS代码中请给TexCoord2赋予TexCoord一样的值
+3. 
+
+4. EMT_TRANSPARENT_REFLECTION_2_LAYER material描述如下
+            //! A transparent reflecting material with an optional additional non reflecting texture layer.
+            /** The reflection map should be set as first texture. The
+             * transparency depends on the alpha value in the vertex colors. A
+             * texture which will not reflect can be set as second texture.
+             * Please note that this material type is currently not 100%
+             * implemented in OpenGL. */
+            EMT_TRANSPARENT_REFLECTION_2_LAYER,
+5. 
 
 
 # 84
