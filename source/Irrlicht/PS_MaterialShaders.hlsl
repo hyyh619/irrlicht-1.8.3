@@ -22,7 +22,7 @@ struct PS_INPUT_2TEX
     float4 Color : COLOR;
     float2 TexCoord0 : TEXCOORD0;
     float2 TexCoord1 : TEXCOORD1;
-    float3 Normal : TEXCOORD2;
+    float3 Normal : NORMAL;
 };
 
 struct PS_INPUT_TANGENTS
@@ -30,7 +30,7 @@ struct PS_INPUT_TANGENTS
     float4 Pos : SV_POSITION;
     float4 Color : COLOR;
     float2 TexCoord : TEXCOORD0;
-    float3 Normal : TEXCOORD1;
+    float3 Normal : NORMAL;
     float3 Tangent : TEXCOORD2;
     float3 Binormal : TEXCOORD3;
 };
@@ -54,6 +54,19 @@ cbuffer MaterialBuffer : register(b2)
     float2 Padding;
 };
 
+cbuffer LightBuffer : register(b3)
+{
+    float4 LightDiffuse;
+    float4 LightSpecular;
+    float4 LightAmbient;
+    float3 LightDirection;
+    float LightRadius;
+    float LightAttenuation0;
+    float LightAttenuation1;
+    float LightAttenuation2;
+    float3 Padding2;
+};
+
 #define ECM_NONE              0
 #define ECM_DIFFUSE           1
 #define ECM_AMBIENT           2
@@ -64,36 +77,57 @@ cbuffer MaterialBuffer : register(b2)
 //==============================================================================
 // EMT_SOLID - Standard solid material, first texture * diffuse
 // ColorOp: D3DTOP_MODULATE, Tex * Diffuse
+// Based on D3D9 fixed-function lighting:
+// Diffuse = Material.DiffuseColor × Light.DiffuseColor × max(N·L, 0)
+// Specular = Material.SpecularColor × Light.SpecularColor × pow(max(R·V, 0), Material.Shininess)
+// Ambient = Material.AmbientColor × Light.AmbientColor
+// Emissive = Material.EmissiveColor
+// D3DTA_DIFFUSE = Diffuse + Specular + Ambient + Emissive
+// PixelColor = TextureColor(u,v) × D3DTA_DIFFUSE
 //==============================================================================
 float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
 
-    float4 diffuse, ambient, specular, emissive;
+    float3 nor = normalize(input.Normal);
+    float3 lightDir = normalize(-LightDirection);
+
+    float3 viewDir = normalize(float3(0.0, 0.0, 1.0));
+    float3 reflectDir = reflect(-lightDir, nor);
+
+    float nDotL = max(dot(nor, lightDir), 0.0);
+    float rDotV = max(dot(reflectDir, viewDir), 0.0);
+
+    float4 matDiffuse, matAmbient, matSpecular, matEmissive;
 
     if (ColorMaterialMode == ECM_DIFFUSE || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
-        diffuse = input.Color;
+        matDiffuse = input.Color;
     else
-        diffuse = DiffuseColor;
+        matDiffuse = DiffuseColor;
 
     if (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
-        ambient = input.Color;
+        matAmbient = input.Color;
     else
-        ambient = AmbientColor;
+        matAmbient = AmbientColor;
 
     if (ColorMaterialMode == ECM_SPECULAR)
-        specular = input.Color;
+        matSpecular = input.Color;
     else
-        specular = SpecularColor;
+        matSpecular = SpecularColor;
 
     if (ColorMaterialMode == ECM_EMISSIVE)
-        emissive = input.Color;
+        matEmissive = input.Color;
     else
-        emissive = EmissiveColor;
+        matEmissive = EmissiveColor;
 
-    float4 finalColor = texColor * diffuse;
-    finalColor.rgb *= ambient.rgb;
-    finalColor.rgb += emissive.rgb;
+    float4 diffuse = matDiffuse * LightDiffuseColor * nDotL;
+    float4 specular = matSpecular * LightSpecularColor * pow(rDotV, Shininess);
+    float4 ambient = matAmbient * LightAmbientColor;
+    float4 emissive = matEmissive;
+
+    float4 lightingResult = diffuse + specular + ambient + emissive;
+
+    float4 finalColor = texColor * lightingResult;
 
     return float4(finalColor.rgb * input.Color.a, texColor.a * input.Color.a);
 }
@@ -551,27 +585,27 @@ float4 PS_ONETEXTURE_BLEND(PS_INPUT_BASIC input) : SV_TARGET
 //==============================================================================
 // dummy for d3d11 compiler
 //==============================================================================
- struct VS_INPUT {
-     float3 Pos : POSITION;
-     float3 Normal : NORMAL;
-     float4 Color : COLOR;
-     float2 TexCoord : TEXCOORD0;
- };
- struct VS_OUTPUT {
-     float4 Pos : SV_POSITION;
-     float4 Color : COLOR;
-     float2 TexCoord : TEXCOORD0;
-     float3 Normal : TEXCOORD1;
- };
- cbuffer MatrixBuffer : register(b0) {
-     float4x4 WorldViewProj;
- };
- VS_OUTPUT main(VS_INPUT input) {
-     VS_OUTPUT output;
-     output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));
-     output.Color = input.Color;
-     output.TexCoord = input.TexCoord;
-     output.Normal = input.Normal;
-     return output;
- };
+struct VS_INPUT {
+    float3 Pos : POSITION;
+    float3 Normal : NORMAL;
+    float4 Color : COLOR;
+    float2 TexCoord : TEXCOORD0;
+};
+struct VS_OUTPUT {
+    float4 Pos : SV_POSITION;
+    float4 Color : COLOR;
+    float2 TexCoord : TEXCOORD0;
+    float3 Normal : NORMAL;
+};
+cbuffer MatrixBuffer : register(b0) {
+    float4x4 WorldViewProj;
+};
+VS_OUTPUT main(VS_INPUT input) {
+    VS_OUTPUT output;
+    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));
+    output.Color = input.Color;
+    output.TexCoord = input.TexCoord;
+    output.Normal = input.Normal;
+    return output;
+};
 #endif // __PS_MATERIAL_SHADERS_H__

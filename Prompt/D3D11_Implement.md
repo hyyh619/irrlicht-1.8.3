@@ -1701,13 +1701,73 @@ Git commit: Refine SetConstant slot name and material PS by MiniMax-M2.7.
 m_pID3DDeviceContext->PSSetConstantBuffers和m_pID3DDeviceContext->VSSetConstantBuffers的StartSlot和NumBuffers参数不要用数字，请用宏来替代
 
 # 79
-Git commit: 
+Git commit: Refine debug log functions by MiniMax-M2.7.
 像 static inline const char* getColorMaterialName(E_COLOR_MATERIAL mode)实现一样，
 把CD3D11Driver::getVertexTypeName, CD3D11Driver::getMaterialTypeName, CD3D11Driver::getLightTypeName, CD3D11Driver::getPrimitiveTypeName迁移到enum对应的头文件
 
-
 # 80
 Git commit: 
+d3d9配置了SMaterial material和SLight light，请问这两个颜色配置是如何影响到pixel color
+
+D3D9 固定功能光照公式
+Diffuse = Material.DiffuseColor × Light.DiffuseColor × max(N·L, 0)
+Specular = Material.SpecularColor × Light.SpecularColor × pow(max(R·V, 0), Material.Shininess)
+Ambient = Material.AmbientColor × Light.AmbientColor
+Emissive = Material.EmissiveColor
+D3DTA_DIFFUSE = Diffuse + Specular + Ambient + Emissive
+最终像素颜色（纹理阶段后）
+PixelColor = TextureColor(u,v) × D3DTA_DIFFUSE
+- N = 表面法线，L = 光源方向，R = 反射方向，V = 视点方向
+- (N·L) 和 (R·V) 是点积，控制光照强度分布
+请根据上面的结论和公式，帮我重写PS_SOLID
+1. 需要使用到光源常量和材质常量
+2. 需要根据材质的mode来判断是使用材质的颜色，还是input.Color
+3. 还需要加上纹理。
+float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+
+    float4 diffuse, ambient, specular, emissive;
+
+    if (ColorMaterialMode == ECM_DIFFUSE || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+        diffuse = input.Color;
+    else
+        diffuse = DiffuseColor;
+
+    if (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+        ambient = input.Color;
+    else
+        ambient = AmbientColor;
+
+    if (ColorMaterialMode == ECM_SPECULAR)
+        specular = input.Color;
+    else
+        specular = SpecularColor;
+
+    if (ColorMaterialMode == ECM_EMISSIVE)
+        emissive = input.Color;
+    else
+        emissive = EmissiveColor;
+
+    float3 nor = normalize(input.Normal);
+    float3 lightDir1 = normalize(LightDirection);
+    diffuse *= dot(nor, lightDir1);
+    float4 finalColor = texColor * diffuse;
+    //finalColor += ambient;
+    //finalColor += emissive;
+
+#if 0
+    return float4(finalColor.rgb * input.Color.a, texColor.a * input.Color.a);
+#else
+    return finalColor;
+#endif
+}
 
 # 81
+Git commit: 
+
+# 82
+Git commit: 
+
+# 83
 Git commit: 

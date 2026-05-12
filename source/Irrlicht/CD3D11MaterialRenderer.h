@@ -94,41 +94,29 @@ float4 PS_SOLID_COLOR_ONLY(PS_INPUT_BASIC input) : SV_TARGET
 float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
-
-    float4 diffuse, ambient, specular, emissive;
-
-    if (ColorMaterialMode == ECM_DIFFUSE || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
-        diffuse = input.Color;
-    else
-        diffuse = DiffuseColor;
-
-    if (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
-        ambient = input.Color;
-    else
-        ambient = AmbientColor;
-
-    if (ColorMaterialMode == ECM_SPECULAR)
-        specular = input.Color;
-    else
-        specular = SpecularColor;
-
-    if (ColorMaterialMode == ECM_EMISSIVE)
-        emissive = input.Color;
-    else
-        emissive = EmissiveColor;
-
     float3 nor = normalize(input.Normal);
-    float3 lightDir1 = normalize(LightDirection);
-    diffuse *= dot(nor, lightDir1);
-    float4 finalColor = texColor * diffuse;
-    //finalColor += ambient;
-    //finalColor += emissive;
-
-#if 0
+    float3 lightDir = normalize(-LightDirection);
+    float3 viewDir = normalize(float3(0.0, 0.0, 1.0));
+    float3 reflectDir = reflect(-lightDir, nor);
+    float nDotL = max(dot(nor, lightDir), 0.0);
+    float rDotV = max(dot(reflectDir, viewDir), 0.0);
+    // ColorMaterial模式判断
+    float4 matDiffuse = (ColorMaterialMode == ECM_DIFFUSE || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT) 
+                        ? input.Color : DiffuseColor;
+    float4 matAmbient = (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT) 
+                        ? input.Color : AmbientColor;
+    float4 matSpecular = (ColorMaterialMode == ECM_SPECULAR) 
+                        ? input.Color : SpecularColor;
+    float4 matEmissive = (ColorMaterialMode == ECM_EMISSIVE) 
+                        ? input.Color : EmissiveColor;
+    // D3D9光照公式
+    float4 diffuse = matDiffuse * LightDiffuse * nDotL;
+    float4 specular = matSpecular * LightSpecular* pow(rDotV, Shininess);
+    float4 ambient = matAmbient * LightAmbient;
+    float4 emissive = matEmissive;
+    float4 lightingResult = diffuse + specular + ambient + emissive;
+    float4 finalColor = texColor * lightingResult;
     return float4(finalColor.rgb * input.Color.a, texColor.a * input.Color.a);
-#else
-    return finalColor;
-#endif
 }
 
 float4 PS_SOLID_1_LAYER(PS_INPUT_2TEX input) : SV_TARGET
