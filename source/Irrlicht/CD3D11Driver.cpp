@@ -45,7 +45,7 @@ namespace irr
             m_TempIndexType(EIT_16BIT),
             m_RenderStateSets(),
             m_MaxTextureUnits(0), m_MaxUserClipPlanes(0), m_MaxMRTs(1), m_NumSetMRTs(1),
-            m_MaxLightDistance(0.f), m_CurSetLight(-1),
+            m_MaxLightDistance(0.f), m_CurSetLight(-1), m_nPsTexCount(0),
             m_ColorFormat(ECOLOR_FORMAT::ECF_A8R8G8B8), m_DeviceRemoved(false),
             m_DriverWasReset(true), m_OcclusionQuerySupport(false),
             m_AlphaToCoverageSupport(false), m_Params(params)
@@ -791,9 +791,6 @@ namespace irr
         {
             m_Material = material;
             OverrideMaterial.apply(m_Material);
-
-            m_nLastPsTexCount   = m_nPsTexCount;
-            m_nPsTexCount       = 0;
 
             for (u32 i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
             {
@@ -3362,6 +3359,9 @@ namespace irr
                 m_PreviousTexture[i]    = m_CurrentTexture[i];
                 m_PreviousSampler[i]    = m_CurrentSampler[i];
             }
+
+            m_nLastPsTexCount   = m_nPsTexCount;
+            m_nPsTexCount       = 0;
         }
 
 
