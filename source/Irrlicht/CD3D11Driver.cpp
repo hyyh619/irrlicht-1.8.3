@@ -385,6 +385,7 @@ namespace irr
         static const char    VERTEX_SHADER_RECTANGLE[] =
             "cbuffer MatrixBuffer : register(b0) {"
             "    float4x4 WorldViewProj;"
+            "    float4x4 World;"
             "};"
             "struct VS_INPUT {"
             "    float3 Pos : POSITION;"
@@ -434,6 +435,7 @@ namespace irr
             "};"
             "cbuffer MatrixBuffer : register(b0) {"
             "    float4x4 WorldViewProj;"
+            "    float4x4 World;"
             "};"
             "VS_OUTPUT main(VS_INPUT input) {"
             "    VS_OUTPUT output;"
@@ -520,7 +522,7 @@ namespace irr
             m_RectangleVertexShader(0), m_RectanglePixelShader(0), m_RectangleInputLayout(0),
             m_RectangleShaderInitialized(false),
             m_TempVertexBuffer(0), m_TempIndexBuffer(0), m_MatrixConstantBuffer(0),
-            m_MaterialConstantBuffer(0), m_LightConstantBuffer(0),
+            m_MaterialConstantBuffer(0), m_LightConstantBuffer(0), m_CameraConstantBuffer(0),
             m_TempVertexBufferSize(0), m_TempIndexBufferSize(0),
             m_TempIndexType(EIT_16BIT),
             m_RenderStateSets(),
@@ -723,6 +725,12 @@ namespace irr
             {
                 IRR_D3D11_BUFFER_RELEASE(m_MaterialConstantBuffer, "MaterialConstantBuffer");
                 m_MaterialConstantBuffer->Release();
+            }
+
+            if (m_CameraConstantBuffer)
+            {
+                IRR_D3D11_BUFFER_RELEASE(m_CameraConstantBuffer, "CameraConstantBuffer");
+                m_CameraConstantBuffer->Release();
             }
 
             for (u32 i = 0; i < ERM_RENDER_MODE_MAX; ++i)
@@ -1097,6 +1105,21 @@ namespace irr
             if (FAILED(hr))
             {
                 os::Printer::log("Could not create material constant buffer.", ELL_ERROR);
+                return false;
+            }
+
+            D3D11_BUFFER_DESC    cameraBufferDesc;
+            cameraBufferDesc.ByteWidth              = sizeof(core::vector3df) + 4;
+            cameraBufferDesc.Usage                  = D3D11_USAGE_DYNAMIC;
+            cameraBufferDesc.BindFlags              = D3D11_BIND_CONSTANT_BUFFER;
+            cameraBufferDesc.CPUAccessFlags         = D3D11_CPU_ACCESS_WRITE;
+            cameraBufferDesc.MiscFlags              = 0;
+            cameraBufferDesc.StructureByteStride    = 0;
+            hr                                      = m_pID3DDevice->CreateBuffer(&cameraBufferDesc, 0, &m_CameraConstantBuffer);
+            IRR_D3D11_BUFFER_CREATE(m_CameraConstantBuffer, "CameraConstantBuffer");
+            if (FAILED(hr))
+            {
+                os::Printer::log("Could not create camera constant buffer.", ELL_ERROR);
                 return false;
             }
 
@@ -3057,6 +3080,33 @@ namespace irr
         }
 
 
+        void CD3D11Driver::updateCameraConstantBuffer()
+        {
+            core::matrix4    viewMatrix = m_Matrices[ETS_VIEW];
+
+            float       *v      = viewMatrix.pointer();
+            float       camPosX = v[12];
+            float       camPosY = v[13];
+            float       camPosZ = v[14];
+
+            D3D11_MAPPED_SUBRESOURCE    mapped;
+
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_CameraConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+            {
+                float    *data = (float*)mapped.pData;
+
+                data[0] = camPosX;
+                data[1] = camPosY;
+                data[2] = camPosZ;
+
+                m_pID3DDeviceContext->Unmap(m_CameraConstantBuffer, 0);
+
+                ID3D11Buffer    *buffers[1] = {m_CameraConstantBuffer};
+                m_pID3DDeviceContext->PSSetConstantBuffers(PS_CAMERA_BUFFER_SLOT, 1, buffers);
+            }
+        }
+
+
         u32 CD3D11Driver::getMaximalDynamicLightAmount() const
         {
             return 32;
@@ -3637,7 +3687,7 @@ namespace irr
             {
                 for (u32 i = EMT_SOLID; i < EMT_MATERIAL_MAX; ++i)
                 {
-                    createMaterialPixelShader((E_MATERIAL_TYPE)i);
+                    createMaterialPixelShaders((E_MATERIAL_TYPE)i);
                 }
 
                 m_MaterialPSInitialized = true;
@@ -3711,6 +3761,11 @@ namespace irr
                 {
                     updateLightConstantBuffer(false);
                 }
+            }
+
+            if (m_Material.Lighting)
+            {
+                updateCameraConstantBuffer();
             }
 
             setPSTextureAndSamplerState();
@@ -4000,6 +4055,8 @@ namespace irr
                     return false;
             }
 
+            os::Printer::log("createBuiltInPixelShader", getVertexTypeName(type), ELL_INFORMATION);
+
             CD3D11Shader    *shader = new CD3D11Shader(this);
             if (!shader->compile(EDST_PIXEL, shaderSource, "main", "ps_4_0"))
             {
@@ -4029,7 +4086,7 @@ namespace irr
         }
 
 
-        bool CD3D11Driver::createMaterialPixelShader(E_MATERIAL_TYPE materialType)
+        bool CD3D11Driver::createMaterialPixelShaders(E_MATERIAL_TYPE materialType)
         {
             const char    *entryPoint = 0;
 
@@ -4097,6 +4154,8 @@ namespace irr
 
             CD3D11Shader    *shader = new CD3D11Shader(this);
             shader->setMaterialType(materialType);
+
+            os::Printer::log("createBuiltInPixelShader", getMaterialTypeName(materialType), ELL_INFORMATION);
 
             if (!shader->compile(EDST_PIXEL, PS_MaterialShaders_Part1, entryPoint, "ps_4_0", PS_MaterialShaders_Part2))
             {

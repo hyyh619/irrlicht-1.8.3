@@ -104,7 +104,7 @@ float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
     float3 nor = normalize(input.Normal);
     float3 lightDir = normalize(-LightDirection);
-    float3 viewDir = normalize(cameraPos - input.worldPos);
+    float3 viewDir = normalize(cameraPos - input.WorldPos);
     float3 reflectDir = reflect(-lightDir, nor);
     float nDotL = max(dot(nor, lightDir), 0.0);
     float rDotV = max(dot(reflectDir, viewDir), 0.0);
@@ -561,7 +561,8 @@ float4 PS_SOLID_LIGHTING_FLAT(PS_INPUT_BASIC input) : SV_TARGET
      float4 Pos : SV_POSITION;
      float4 Color : COLOR;
      float2 TexCoord : TEXCOORD0;
-     float3 Normal : TEXCOORD1;
+     float3 Normal : NORMAL;
+     float3 WorldPos : WORLDPOS;
  };
  cbuffer MatrixBuffer : register(b0) {
      float4x4 WorldViewProj;

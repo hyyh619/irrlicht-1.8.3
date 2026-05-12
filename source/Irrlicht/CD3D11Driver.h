@@ -28,11 +28,11 @@
 #include <dxgitype.h>
 #include <dxgi1_2.h>
 
-#define VS_MATRIX_BUFFER_SLOT      0
-#define VS_LIGHT_BUFFER_SLOT       1
-#define PS_LIGHT_BUFFER_SLOT       1
-#define PS_MATERIAL_BUFFER_SLOT    2
-#define PS_CAMERA_BUFFER_SLOT      3
+#define VS_MATRIX_BUFFER_SLOT       0
+#define VS_LIGHT_BUFFER_SLOT        1
+#define PS_LIGHT_BUFFER_SLOT        1
+#define PS_MATERIAL_BUFFER_SLOT     2
+#define PS_CAMERA_BUFFER_SLOT       3
 
 namespace irr
 {
@@ -489,12 +489,13 @@ private:
 
             bool createBuiltInVertexShader(E_VERTEX_TYPE type);
             bool createBuiltInPixelShader(E_VERTEX_TYPE type);
-            bool createMaterialPixelShader(E_MATERIAL_TYPE materialType);
+            bool createMaterialPixelShaders(E_MATERIAL_TYPE materialType);
             bool createInputLayout(E_VERTEX_TYPE type, ID3DBlob *shaderBlob);
             bool createRectangleShaders();
             void set2DRectangleShader();
             void updateMatrixConstantBuffer();
             void updateLightConstantBuffer(bool vsLighting);
+            void updateCameraConstantBuffer();
 
             u64 createRenderStateKey2D(bool alpha, bool texture, bool alphaChannel);
             void createRenderStateKey3D(const SMaterial &material, u64 &key1, u64 &key2);
@@ -580,6 +581,7 @@ private:
             ID3D11Buffer            *m_MatrixConstantBuffer;
             ID3D11Buffer            *m_MaterialConstantBuffer;
             ID3D11Buffer            *m_LightConstantBuffer;
+            ID3D11Buffer            *m_CameraConstantBuffer;
             u32                     m_TempVertexBufferSize;
             u32                     m_TempIndexBufferSize;
             E_INDEX_TYPE            m_TempIndexType;

@@ -1766,6 +1766,37 @@ float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
 
 # 81
 Git commit: 
+1. 在每次draw PS设置时，如果m_Material.Lighting开启，则获取当前camera position.
+2. 为camera position创建camera constant buffer
+3. 把camera constant buffer设置到PS slot PS_CAMERA_BUFFER_SLOT
+
+CD3D11Driver对象不能获取到m_SceneManager因此下列函数没法计算出cameraPos,能够通过m_Matrices[ETS_VIEW]（View矩阵）计算出当前的视线向量，直接传给m_CameraConstantBuffer
+        void CD3D11Driver::updateCameraConstantBuffer()
+        {
+            if (!m_SceneManager)
+                return;
+
+            irr::scene::ICameraSceneNode    *camera = m_SceneManager->getActiveCamera();
+            if (!camera)
+                return;
+
+            core::vector3df    camPos = camera->getPosition();
+
+            D3D11_MAPPED_SUBRESOURCE    mapped;
+            if (SUCCEEDED(m_pID3DDeviceContext->Map(m_CameraConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped)))
+            {
+                float    *data = (float*)mapped.pData;
+
+                data[0] = camPos.X;
+                data[1] = camPos.Y;
+                data[2] = camPos.Z;
+
+                m_pID3DDeviceContext->Unmap(m_CameraConstantBuffer, 0);
+
+                ID3D11Buffer    *buffers[1] = {m_CameraConstantBuffer};
+                m_pID3DDeviceContext->PSSetConstantBuffers(PS_CAMERA_BUFFER_SLOT, 1, buffers);
+            }
+        }
 
 # 82
 Git commit: 
