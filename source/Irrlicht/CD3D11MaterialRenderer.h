@@ -115,7 +115,7 @@ float4 PS_SOLID_WITH_LIGHT(PS_INPUT_BASIC input) : SV_TARGET
     float3 reflectDir = reflect(-lightDir, nor);
     float nDotL = max(dot(nor, lightDir), 0.0);
     float rDotV = max(dot(reflectDir, viewDir), 0.0);
-    // ColorMaterialÄ£Ê½ÅÐ¶Ï
+    // ColorMaterialÄ£Ê½ï¿½Ð¶ï¿½
     float4 matDiffuse = (ColorMaterialMode == ECM_DIFFUSE || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT) 
                         ? input.Color : DiffuseColor;
     float4 matAmbient = (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT) 
@@ -124,7 +124,7 @@ float4 PS_SOLID_WITH_LIGHT(PS_INPUT_BASIC input) : SV_TARGET
                         ? input.Color : SpecularColor;
     float4 matEmissive = (ColorMaterialMode == ECM_EMISSIVE) 
                         ? input.Color : EmissiveColor;
-    // D3D9¹âÕÕ¹«Ê½
+    // D3D9ï¿½ï¿½ï¿½Õ¹ï¿½Ê½
     float4 diffuse = matDiffuse * LightDiffuse * nDotL;
     float4 specular = matSpecular * LightSpecular* pow(rDotV, Shininess);
     float4 ambient = matAmbient * LightAmbient;
@@ -251,6 +251,33 @@ float4 PS_REFLECTION_2_LAYER(PS_INPUT_2TEX input) : SV_TARGET
     float4 layer0 = DiffuseTexture.Sample(LinearSampler, input.TexCoord0);
     float4 reflection = SphereMap.Sample(LinearSampler, input.TexCoord1);
     return layer0 * input.Color * reflection * 2.0;
+}
+
+float4 PS_REFLECTION_2_LAYER_WITH_LIGHT(PS_INPUT_2TEX input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord0);
+    float4 reflection = SphereMap.Sample(LinearSampler, input.TexCoord1);
+    float3 nor = normalize(input.Normal);
+    float3 lightDir = normalize(-LightDirection);
+    float3 viewDir = normalize(cameraPos - input.WorldPos);
+    float3 reflectDir = reflect(-lightDir, nor);
+    float nDotL = max(dot(nor, lightDir), 0.0);
+    float rDotV = max(dot(reflectDir, viewDir), 0.0);
+    float4 matDiffuse = (ColorMaterialMode == ECM_DIFFUSE || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+                        ? input.Color : DiffuseColor;
+    float4 matAmbient = (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+                        ? input.Color : AmbientColor;
+    float4 matSpecular = (ColorMaterialMode == ECM_SPECULAR)
+                        ? input.Color : SpecularColor;
+    float4 matEmissive = (ColorMaterialMode == ECM_EMISSIVE)
+                        ? input.Color : EmissiveColor;
+    float4 diffuse = matDiffuse * LightDiffuse * nDotL;
+    float4 specular = matSpecular * LightSpecular * pow(rDotV, Shininess);
+    float4 ambient = matAmbient * LightAmbient;
+    float4 emissive = matEmissive;
+    float4 lightingResult = diffuse + specular + ambient + emissive;
+    float4 baseColor = texColor * lightingResult;
+    return baseColor * reflection * 2.0;
 }
 
 float4 PS_TRANSPARENT_ADD_COLOR(PS_INPUT_BASIC input) : SV_TARGET

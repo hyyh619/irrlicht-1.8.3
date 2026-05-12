@@ -75,6 +75,10 @@ namespace irr
             /** The reflection map should be set as first texture. */
             EMT_REFLECTION_2_LAYER,
 
+            //! A reflecting material with an optional non reflecting texture layer, with lighting.
+            /** The reflection map should be set as first texture. */
+            EMT_REFLECTION_2_LAYER_WITH_LIGHT,
+
             //! A transparent material.
             /** Only the first texture is used. The new color is calculated
              * by simply adding the source color and the dest color. This
@@ -265,6 +269,7 @@ namespace irr
                 case EMT_DETAIL_MAP: return "EMT_DETAIL_MAP";
                 case EMT_SPHERE_MAP: return "EMT_SPHERE_MAP";
                 case EMT_REFLECTION_2_LAYER: return "EMT_REFLECTION_2_LAYER";
+                case EMT_REFLECTION_2_LAYER_WITH_LIGHT: return "EMT_REFLECTION_2_LAYER_WITH_LIGHT";
                 case EMT_TRANSPARENT_ADD_COLOR: return "EMT_TRANSPARENT_ADD_COLOR";
                 case EMT_TRANSPARENT_ALPHA_CHANNEL: return "EMT_TRANSPARENT_ALPHA_CHANNEL";
                 case EMT_TRANSPARENT_ALPHA_CHANNEL_REF: return "EMT_TRANSPARENT_ALPHA_CHANNEL_REF";

@@ -3222,6 +3222,10 @@ namespace irr
                     {
                         materialType = EMT_SOLID_WITH_LIGHT;
                     }
+                    else if (materialType == EMT_REFLECTION_2_LAYER)
+                    {
+                        materialType = EMT_REFLECTION_2_LAYER_WITH_LIGHT;
+                    }
                 }
             }
 
@@ -3628,6 +3632,8 @@ namespace irr
                 case EMT_SPHERE_MAP:                            entryPoint = "PS_SPHERE_MAP"; break;
 
                 case EMT_REFLECTION_2_LAYER:                    entryPoint = "PS_REFLECTION_2_LAYER"; break;
+
+                case EMT_REFLECTION_2_LAYER_WITH_LIGHT:         entryPoint = "PS_REFLECTION_2_LAYER_WITH_LIGHT"; break;
 
                 case EMT_TRANSPARENT_ADD_COLOR:                 entryPoint = "PS_TRANSPARENT_ADD_COLOR"; break;
 
