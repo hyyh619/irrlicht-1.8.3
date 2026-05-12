@@ -378,6 +378,35 @@ float4 PS_TRANSPARENT_ADD_COLOR(PS_INPUT_BASIC input) : SV_TARGET
 }
 
 //==============================================================================
+// EMT_TRANSPARENT_ADD_COLOR_WITH_LIGHT - Add source to dest with lighting
+//==============================================================================
+float4 PS_TRANSPARENT_ADD_COLOR_WITH_LIGHT(PS_INPUT_BASIC input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+    float3 nor = normalize(input.Normal);
+    float3 lightDir = normalize(-LightDirection);
+    float3 viewDir = normalize(cameraPos - input.WorldPos);
+    float3 reflectDir = reflect(-lightDir, nor);
+    float nDotL = max(dot(nor, lightDir), 0.0);
+    float rDotV = max(dot(reflectDir, viewDir), 0.0);
+    float4 matDiffuse = (ColorMaterialMode == ECM_DIFFUSE || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+                        ? input.Color : DiffuseColor;
+    float4 matAmbient = (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+                        ? input.Color : AmbientColor;
+    float4 matSpecular = (ColorMaterialMode == ECM_SPECULAR)
+                        ? input.Color : SpecularColor;
+    float4 matEmissive = (ColorMaterialMode == ECM_EMISSIVE)
+                        ? input.Color : EmissiveColor;
+    float4 diffuse = matDiffuse * LightDiffuse * nDotL;
+    float4 specular = matSpecular * LightSpecular * pow(rDotV, Shininess);
+    float4 ambient = matAmbient * LightAmbient;
+    float4 emissive = matEmissive;
+    float4 lightingResult = diffuse + specular + ambient + emissive;
+    float4 result = texColor * lightingResult;
+    return float4(result.rgb, texColor.a * input.Color.a);
+}
+
+//==============================================================================
 // EMT_TRANSPARENT_ALPHA_CHANNEL - Alpha blend with texture alpha
 // SrcBlend: D3DBLEND_SRCALPHA
 // DestBlend: D3DBLEND_INVSRCALPHA

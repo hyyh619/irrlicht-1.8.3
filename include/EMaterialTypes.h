@@ -90,6 +90,10 @@ namespace irr
              * particle effects. */
             EMT_TRANSPARENT_ADD_COLOR,
 
+            //! A transparent material with lighting.
+            /** Only the first texture is used. */
+            EMT_TRANSPARENT_ADD_COLOR_WITH_LIGHT,
+
             //! Makes the material transparent based on the texture alpha channel.
             /** The final color is blended together from the destination
              * color and the texture color, using the alpha channel value as
@@ -271,6 +275,7 @@ namespace irr
                 case EMT_REFLECTION_2_LAYER: return "EMT_REFLECTION_2_LAYER";
                 case EMT_REFLECTION_2_LAYER_WITH_LIGHT: return "EMT_REFLECTION_2_LAYER_WITH_LIGHT";
                 case EMT_TRANSPARENT_ADD_COLOR: return "EMT_TRANSPARENT_ADD_COLOR";
+                case EMT_TRANSPARENT_ADD_COLOR_WITH_LIGHT: return "EMT_TRANSPARENT_ADD_COLOR_WITH_LIGHT";
                 case EMT_TRANSPARENT_ALPHA_CHANNEL: return "EMT_TRANSPARENT_ALPHA_CHANNEL";
                 case EMT_TRANSPARENT_ALPHA_CHANNEL_REF: return "EMT_TRANSPARENT_ALPHA_CHANNEL_REF";
                 case EMT_TRANSPARENT_VERTEX_ALPHA: return "EMT_TRANSPARENT_VERTEX_ALPHA";

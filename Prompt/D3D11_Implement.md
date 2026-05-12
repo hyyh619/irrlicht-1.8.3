@@ -1828,7 +1828,7 @@ Git commit: Add texcoord2 to vs by MiniMax-M2.7.
 2. 在VS代码中请给TexCoord2赋予TexCoord一样的值
 
 # 84
-Git commit: 
+Git commit: Implement EMT_REFLECTION_2_LAYER_WITH_LIGHT PS by MiniMax-M2.7.
 1. 参考float4 PS_SOLID_WITH_LIGHT(PS_INPUT_BASIC input)的实现
 2. 参考D3D9 固定功能光照公式
 Diffuse = Material.DiffuseColor × Light.DiffuseColor × max(N·L, 0)
@@ -1845,6 +1845,18 @@ PixelColor = TextureColor(u,v) × D3DTA_DIFFUSE
 
 # 85
 Git commit: 
+1. 参考float4 PS_SOLID_WITH_LIGHT(PS_INPUT_BASIC input)的实现
+2. 参考D3D9 固定功能光照公式
+Diffuse = Material.DiffuseColor × Light.DiffuseColor × max(N·L, 0)
+Specular = Material.SpecularColor × Light.SpecularColor × pow(max(R·V, 0), Material.Shininess)
+Ambient = Material.AmbientColor × Light.AmbientColor
+Emissive = Material.EmissiveColor
+D3DTA_DIFFUSE = Diffuse + Specular + Ambient + Emissive
+最终像素颜色（纹理阶段后）
+PixelColor = TextureColor(u,v) × D3DTA_DIFFUSE
+- N = 表面法线，L = 光源方向，R = 反射方向，V = 视点方向
+- (N·L) 和 (R·V) 是点积，控制光照强度分布
+3. 请实现float4 PS_TRANSPARENT_ADD_COLOR(PS_INPUT_BASIC input)的光照版本，命名为PS_TRANSPARENT_ADD_COLOR_WITH_LIGHT
 
 
 # 86

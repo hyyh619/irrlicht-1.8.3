@@ -3108,7 +3108,7 @@ namespace irr
             E_VERTEX_TYPE    actualVType = vType;
 
             // We should check if there is lighting.
-            if (m_Material.Lighting)
+            if (0) // m_Material.Lighting)
             {
                 if (vType == EVT_STANDARD && m_Material.GouraudShading)
                 {
@@ -3225,6 +3225,10 @@ namespace irr
                     else if (materialType == EMT_REFLECTION_2_LAYER)
                     {
                         materialType = EMT_REFLECTION_2_LAYER_WITH_LIGHT;
+                    }
+                    else if (materialType == EMT_TRANSPARENT_ADD_COLOR)
+                    {
+                        materialType = EMT_TRANSPARENT_ADD_COLOR_WITH_LIGHT;
                     }
                 }
             }
@@ -3636,6 +3640,8 @@ namespace irr
                 case EMT_REFLECTION_2_LAYER_WITH_LIGHT:         entryPoint = "PS_REFLECTION_2_LAYER_WITH_LIGHT"; break;
 
                 case EMT_TRANSPARENT_ADD_COLOR:                 entryPoint = "PS_TRANSPARENT_ADD_COLOR"; break;
+
+                case EMT_TRANSPARENT_ADD_COLOR_WITH_LIGHT:      entryPoint = "PS_TRANSPARENT_ADD_COLOR_WITH_LIGHT"; break;
 
                 case EMT_TRANSPARENT_ALPHA_CHANNEL:             entryPoint = "PS_TRANSPARENT_ALPHA_CHANNEL"; break;
 
