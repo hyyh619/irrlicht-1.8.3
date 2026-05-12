@@ -138,6 +138,21 @@ private:
             D3D11_INPUT_ELEMENT_DESC    *m_InputLayoutDesc;
             u32                         m_InputLayoutElementCount;
         };
+
+        extern const char    VERTEX_SHADER_STANDARD[];
+        extern const char    VERTEX_SHADER_STANDARD_DIRECTIONAL[];
+        extern const char    VERTEX_SHADER_STANDARD_POINT[];
+        extern const char    VERTEX_SHADER_STANDARD_SPOT[];
+        extern const char    VERTEX_SHADER_2TCOORDS_DIRECTIONAL[];
+        extern const char    VERTEX_SHADER_2TCOORDS_POINT[];
+        extern const char    VERTEX_SHADER_2TCOORDS_SPOT[];
+        extern const char    VERTEX_SHADER_2TCOORDS[];
+        extern const char    VERTEX_SHADER_RECTANGLE[];
+        extern const char    PIXEL_SHADER_RECTANGLE[];
+        extern const char    VERTEX_SHADER_TANGENTS[];
+        extern const char    PIXEL_SHADER_STANDARD[];
+        extern const char    PIXEL_SHADER_2TCOORDS[];
+        extern const char    PIXEL_SHADER_TANGENTS[];
     } // end namespace video
 } // end namespace irr
 #endif // _IRR_COMPILE_WITH_DIRECT3D_11_
