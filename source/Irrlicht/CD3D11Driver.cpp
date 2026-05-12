@@ -3117,8 +3117,10 @@ namespace irr
                 {
                     const SLight    &light = getDynamicLight(m_CurSetLight);
 
-                    switch (light.Type)
+                    if (m_CurSetLight != -1)
                     {
+                        switch (light.Type)
+                        {
                         case ELT_POINT:
                             actualVType = EVT_STANDARD_LIGHTING_POINT;
                             break;
@@ -3134,6 +3136,7 @@ namespace irr
                         default:
                             os::Printer::log("setVSByVertexType", getLightTypeName(light.Type), ELL_ERROR);
                             break;
+                        }
                     }
                 }
                 else if (vType == EVT_2TCOORDS && m_Material.GouraudShading)

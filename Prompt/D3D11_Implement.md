@@ -1799,7 +1799,7 @@ CD3D11Driver对象不能获取到m_SceneManager因此下列函数没法计算出
         }
 
 # 82
-Git commit: 
+Git commit: Move VS HLSL source code to CShader.cpp by MiniMax-M2.7.
 把下面HLSL源代码定义迁移到CD3D11Shader.cpp文件中
         static const char    VERTEX_SHADER_STANDARD[] =
         static const char    VERTEX_SHADER_STANDARD_DIRECTIONAL[] =
