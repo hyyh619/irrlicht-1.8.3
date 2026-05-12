@@ -46,13 +46,26 @@ struct PS_INPUT_TANGENTS
     float3 Binormal : TEXCOORD3;
 };
 
-
 #define ECM_NONE              0
 #define ECM_DIFFUSE           1
 #define ECM_AMBIENT           2
 #define ECM_SPECULAR          3
 #define ECM_EMISSIVE          4
 #define ECM_DIFFUSE_AND_AMBIENT 5
+
+cbuffer LightBuffer : register(b1) {
+    float4 LightAmbient;
+    float4 LightDiffuse;
+    float4 LightSpecular;
+    float3 LightPosition;
+    float LightRadius;
+    float3 LightDirection;
+    float3 LightAttenuation;
+    float LightOuterCone;
+    float LightInnerCone;
+    float LightFalloff;
+    float LightType;
+};
 
 cbuffer MaterialBuffer : register(b2)
 {
@@ -63,18 +76,6 @@ cbuffer MaterialBuffer : register(b2)
     float Shininess;
     uint ColorMaterialMode;
     float2 Padding;
-};
-
-cbuffer LightBuffer : register(b3) {
-    float4 AmbientColorL;
-    float4 DiffuseColorL;
-    float4 SpecularColorL;
-    float3 LightPosL;
-    float LightRadiusL;
-    float3 LightDirL;
-    float3 AttenuationL;
-    float OuterConeL;
-    float InnerConeL;
 };
 
 Texture2D DiffuseTexture : register(t0);
@@ -117,7 +118,7 @@ float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
         emissive = EmissiveColor;
 
     float3 nor = normalize(input.Normal);
-    float3 lightDir1 = normalize(LightDirL);
+    float3 lightDir1 = normalize(LightDirection);
     diffuse *= dot(nor, lightDir1);
     float4 finalColor = texColor * diffuse;
     //finalColor += ambient;
@@ -434,7 +435,9 @@ float4 PS_ONETEXTURE_BLEND(PS_INPUT_BASIC input) : SV_TARGET
     float4 result = texColor * input.Color;
     return result;
 }
+)";
 
+        const char    PS_MaterialShaders_Part2[] = R"(
 //==============================================================================
 // EMT_SOLID_LIGHTING_GOURAUD - Solid with Gouraud shading (lighting interpolation)
 // Similar to EMT_SOLID but performs per-pixel lighting using interpolated normals
@@ -442,24 +445,6 @@ float4 PS_ONETEXTURE_BLEND(PS_INPUT_BASIC input) : SV_TARGET
 // Uses light data from LightBuffer cbuffer (register b1)
 // LightType: 0=Point, 1=Spot, 2=Directional
 //==============================================================================
-
-cbuffer LightBuffer : register(b1) {
-    float4 LightAmbient;
-    float4 LightDiffuse;
-    float4 LightSpecular;
-    float3 LightPosition;
-    float LightRadius;
-    float3 LightDirection;
-    float LightAttenuation;
-    float3 CameraPosition;
-    float LightOuterCone;
-    float LightInnerCone;
-    float LightFalloff;
-    float LightType;
-};
-
-
-
 float4 PS_SOLID_LIGHTING_GOURAUD(PS_INPUT_BASIC input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
@@ -509,9 +494,6 @@ float4 PS_SOLID_LIGHTING_GOURAUD(PS_INPUT_BASIC input) : SV_TARGET
 
     return float4(litColor.rgb, texColor.a * input.Color.a);
 }
-)";
-
-        const char    PS_MaterialShaders_Part2[] = R"(
 
 //==============================================================================
 // EMT_SOLID_LIGHTING_FLAT - Solid with Flat shading (constant per face lighting)

@@ -1526,13 +1526,13 @@ namespace irr
                     m_LastVertexType == EVT_STANDARD_LIGHTING_POINT)
                 {
                     ID3D11Buffer    *pBuffer = { nullptr };
-                    m_pID3DDeviceContext->VSSetConstantBuffers(1, 1, &pBuffer);
+                    m_pID3DDeviceContext->VSSetConstantBuffers(VS_LIGHT_BUFFER_SLOT, 1, &pBuffer);
                 }
 
                 if (m_LastMaterialType == EMT_SOLID_LIGHTING_GOURAUD)
                 {
                     ID3D11Buffer    *pBuffer = { nullptr };
-                    m_pID3DDeviceContext->PSSetConstantBuffers(1, 1, &pBuffer);
+                    m_pID3DDeviceContext->PSSetConstantBuffers(PS_LIGHT_BUFFER_SLOT, 1, &pBuffer);
                 }
             }
 
@@ -1588,7 +1588,7 @@ namespace irr
                     m_pID3DDeviceContext->Unmap(m_MaterialConstantBuffer, 0);
                 }
 
-                m_pID3DDeviceContext->PSSetConstantBuffers(2, 1, &m_MaterialConstantBuffer);
+                m_pID3DDeviceContext->PSSetConstantBuffers(PS_MATERIAL_BUFFER_SLOT, 1, &m_MaterialConstantBuffer);
             }
 
             if (resetAllRenderstates || lastMaterial.FogEnable != material.FogEnable)
@@ -2294,7 +2294,7 @@ namespace irr
                 m_pID3DDeviceContext->Unmap(m_MatrixConstantBuffer, 0);
             }
 
-            m_pID3DDeviceContext->VSSetConstantBuffers(0, 1, &m_MatrixConstantBuffer);
+            m_pID3DDeviceContext->VSSetConstantBuffers(VS_MATRIX_BUFFER_SLOT, 1, &m_MatrixConstantBuffer);
 
             const u32       vertexBufferSize    = sizeof(vtx);
             const u32       indexBufferSize     = sizeof(indices);
@@ -2451,7 +2451,7 @@ namespace irr
                 m_pID3DDeviceContext->Unmap(m_MatrixConstantBuffer, 0);
             }
 
-            m_pID3DDeviceContext->VSSetConstantBuffers(0, 1, &m_MatrixConstantBuffer);
+            m_pID3DDeviceContext->VSSetConstantBuffers(VS_MATRIX_BUFFER_SLOT, 1, &m_MatrixConstantBuffer);
 
             const u32       vertexBufferSize    = sizeof(vtx);
             const u32       indexBufferSize     = sizeof(indices);
@@ -2708,7 +2708,7 @@ namespace irr
                 m_pID3DDeviceContext->Unmap(m_MatrixConstantBuffer, 0);
             }
 
-            m_pID3DDeviceContext->VSSetConstantBuffers(0, 1, &m_MatrixConstantBuffer);
+            m_pID3DDeviceContext->VSSetConstantBuffers(VS_MATRIX_BUFFER_SLOT, 1, &m_MatrixConstantBuffer);
 
             const u32       vertexBufferSize    = vtx.size() * sizeof(S3DVertex);
             const u32       indexBufferSize     = indices.size() * sizeof(u16);
@@ -2852,7 +2852,7 @@ namespace irr
                 m_pID3DDeviceContext->Unmap(m_MatrixConstantBuffer, 0);
             }
 
-            m_pID3DDeviceContext->VSSetConstantBuffers(0, 1, &m_MatrixConstantBuffer);
+            m_pID3DDeviceContext->VSSetConstantBuffers(VS_MATRIX_BUFFER_SLOT, 1, &m_MatrixConstantBuffer);
 
             const u32       vertexBufferSize    = sizeof(vertices);
             const u32       indexBufferSize     = sizeof(indices);
@@ -3180,11 +3180,11 @@ namespace irr
                 ID3D11Buffer    *buffers[1] = {m_LightConstantBuffer};
                 if (vsLighting)
                 {
-                    m_pID3DDeviceContext->VSSetConstantBuffers(1, 1, buffers);
-                    m_pID3DDeviceContext->PSSetConstantBuffers(3, 1, buffers);
+                    m_pID3DDeviceContext->VSSetConstantBuffers(VS_LIGHT_BUFFER_SLOT, 1, buffers);
+                    m_pID3DDeviceContext->PSSetConstantBuffers(PS_LIGHT_BUFFER_SLOT, 1, buffers);
                 }
                 else
-                    m_pID3DDeviceContext->PSSetConstantBuffers(1, 1, buffers);
+                    m_pID3DDeviceContext->PSSetConstantBuffers(PS_LIGHT_BUFFER_SLOT, 1, buffers);
             }
 
             m_LastSetLight = m_CurSetLight;
@@ -4456,7 +4456,7 @@ namespace irr
                 m_pID3DDeviceContext->Unmap(m_MatrixConstantBuffer, 0);
             }
 
-            m_pID3DDeviceContext->VSSetConstantBuffers(0, 1, &m_MatrixConstantBuffer);
+            m_pID3DDeviceContext->VSSetConstantBuffers(VS_MATRIX_BUFFER_SLOT, 1, &m_MatrixConstantBuffer);
         }
 
 
