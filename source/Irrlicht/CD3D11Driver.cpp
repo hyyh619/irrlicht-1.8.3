@@ -40,13 +40,14 @@ namespace irr
             "};"
             "cbuffer MatrixBuffer : register(b0) {"
             "    float4x4 WorldViewProj;"
+            "    float4x4 World;"
             "};"
             "VS_OUTPUT main(VS_INPUT input) {"
             "    VS_OUTPUT output;"
             "    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));"
             "    output.Color = input.Color;"
             "    output.TexCoord = input.TexCoord;"
-            "    output.Normal = input.Normal;"
+            "    output.Normal = normalize(mul(input.Normal, (float3x3)transpose(World)));"
             "    return output;"
             "}";
 
@@ -363,6 +364,7 @@ namespace irr
             "};"
             "cbuffer MatrixBuffer : register(b0) {"
             "    float4x4 WorldViewProj;"
+            "    float4x4 World;"
             "};"
             "VS_OUTPUT main(VS_INPUT input) {"
             "    VS_OUTPUT output;"
@@ -370,7 +372,7 @@ namespace irr
             "    output.Color = input.Color;"
             "    output.TexCoord = input.TexCoord;"
             "    output.TexCoord2 = input.TexCoord2;"
-            "    output.Normal = input.Normal;"
+            "    output.Normal = normalize(mul(input.Normal, (float3x3)transpose(World)));"
             "    return output;"
             "}";
 
@@ -3602,6 +3604,11 @@ namespace irr
                 actualVType == EVT_2TCOORDS_LIGHTING_DIRECTIONAL)
             {
                 updateLightConstantBuffer(true);
+            }
+            else
+            {
+                if (m_Material.Lighting)
+                    updateLightConstantBuffer(false);
             }
         }
 

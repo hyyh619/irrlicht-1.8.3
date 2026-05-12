@@ -1706,7 +1706,8 @@ Git commit: Refine debug log functions by MiniMax-M2.7.
 把CD3D11Driver::getVertexTypeName, CD3D11Driver::getMaterialTypeName, CD3D11Driver::getLightTypeName, CD3D11Driver::getPrimitiveTypeName迁移到enum对应的头文件
 
 # 80
-Git commit: 
+good example
+Git commit: Fix pixel color calcualtion based on texture, material, light by MiniMax-M2.7.
 d3d9配置了SMaterial material和SLight light，请问这两个颜色配置是如何影响到pixel color
 
 D3D9 固定功能光照公式
