@@ -282,6 +282,7 @@ namespace irr
                 case EMT_SOLID_LIGHTING_GOURAUD: return "EMT_SOLID_LIGHTING_GOURAUD";
                 case EMT_SOLID_LIGHTING_FLAT: return "EMT_SOLID_LIGHTING_FLAT";
                 case EMT_2D_RECTANGLE: return "EMT_2D_RECTANGLE";
+                case EMT_SOLID_WITH_LIGHT: return "EMT_SOLID_WITH_LIGHT";
                 default: return "Unknown";
             }
         }
