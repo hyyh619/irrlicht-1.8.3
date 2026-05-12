@@ -3108,7 +3108,7 @@ namespace irr
             E_VERTEX_TYPE    actualVType = vType;
 
             // We should check if there is lighting.
-            if (0) // m_Material.Lighting)
+            if (m_Material.Lighting)
             {
                 if (vType == EVT_STANDARD && m_Material.GouraudShading)
                 {
@@ -3211,7 +3211,8 @@ namespace irr
                 m_MaterialPSInitialized = true;
             }
 
-            if (m_Material.Lighting)
+            // Based on d3d9 fix function TnL spec, we should not do lighting in PS
+            if (0) //m_Material.Lighting)
             {
                 // We need to check if there is light.
                 u32 lightSize = Lights.size();
