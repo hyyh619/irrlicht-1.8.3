@@ -3693,6 +3693,22 @@ namespace irr
                 m_MaterialPSInitialized = true;
             }
 
+            if (m_Material.Lighting)
+            {
+                if (materialType == EMT_SOLID)
+                {
+                    materialType = EMT_SOLID_WITH_LIGHT;
+                }
+            }
+
+            if (materialType == EMT_SOLID)
+            {
+                if (m_nPsTexCount == 0)
+                    materialType = EMT_SOLID_COLOR;
+                else if (m_nPsTexCount == 1 && vType == EVT_2TCOORDS)
+                    materialType = EMT_SOLID_1_LAYER;
+            }
+
             // if (materialType == EMT_TRANSPARENT_ADD_COLOR)
             //    os::Printer::log("hy", ELL_INFORMATION);
 
@@ -3721,12 +3737,6 @@ namespace irr
                             materialType = EMT_SOLID_LIGHTING_FLAT;
                         }
                     }
-
-#else
-                    if (m_nPsTexCount == 0)
-                        materialType = EMT_SOLID_COLOR;
-                    else if (m_nPsTexCount == 1 && vType == EVT_2TCOORDS)
-                        materialType = EMT_SOLID_1_LAYER;
 #endif
                 }
 
@@ -4147,6 +4157,8 @@ namespace irr
                 case EMT_SOLID_LIGHTING_FLAT:                   entryPoint = "PS_SOLID_LIGHTING_FLAT"; break;
 
                 case EMT_SOLID_1_LAYER:                         entryPoint = "PS_SOLID_1_LAYER"; break;
+
+                case EMT_SOLID_WITH_LIGHT:                      entryPoint = "PS_SOLID_WITH_LIGHT"; break;
 
                 default:
                     return false;

@@ -102,6 +102,12 @@ float4 PS_SOLID_COLOR_ONLY(PS_INPUT_BASIC input) : SV_TARGET
 float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+    return texColor * input.Color;
+}
+
+float4 PS_SOLID_WITH_LIGHT(PS_INPUT_BASIC input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
     float3 nor = normalize(input.Normal);
     float3 lightDir = normalize(-LightDirection);
     float3 viewDir = normalize(cameraPos - input.WorldPos);

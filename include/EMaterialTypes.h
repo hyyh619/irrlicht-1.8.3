@@ -197,6 +197,9 @@ namespace irr
             //! 2tex coordinates but there is one texture.
             EMT_SOLID_1_LAYER,
 
+            //! solid with lighting
+            EMT_SOLID_WITH_LIGHT,
+
             //! Solid material with Gouraud shading for lighting interpolation.
             EMT_SOLID_LIGHTING_GOURAUD,
 
