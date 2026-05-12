@@ -24,7 +24,7 @@ struct PS_INPUT_BASIC
     float4 Pos : SV_POSITION;
     float4 Color : COLOR;
     float2 TexCoord : TEXCOORD0;
-    float3 Normal : TEXCOORD1;
+    float3 Normal : NORMAL;
 };
 
 struct PS_INPUT_2TEX
@@ -33,7 +33,7 @@ struct PS_INPUT_2TEX
     float4 Color : COLOR;
     float2 TexCoord0 : TEXCOORD0;
     float2 TexCoord1 : TEXCOORD1;
-    float3 Normal : TEXCOORD2;
+    float3 Normal : NORMAL;
 };
 
 struct PS_INPUT_TANGENTS
@@ -41,7 +41,7 @@ struct PS_INPUT_TANGENTS
     float4 Pos : SV_POSITION;
     float4 Color : COLOR;
     float2 TexCoord : TEXCOORD0;
-    float3 Normal : TEXCOORD1;
+    float3 Normal : NORMAL;
     float3 Tangent : TEXCOORD2;
     float3 Binormal : TEXCOORD3;
 };
@@ -63,6 +63,18 @@ cbuffer MaterialBuffer : register(b2)
     float Shininess;
     uint ColorMaterialMode;
     float2 Padding;
+};
+
+cbuffer LightBuffer : register(b3) {
+    float4 AmbientColorL;
+    float4 DiffuseColorL;
+    float4 SpecularColorL;
+    float3 LightPosL;
+    float LightRadiusL;
+    float3 LightDirL;
+    float3 AttenuationL;
+    float OuterConeL;
+    float InnerConeL;
 };
 
 Texture2D DiffuseTexture : register(t0);
@@ -89,7 +101,6 @@ float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
     else
         diffuse = DiffuseColor;
 
-#if 1
     if (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
         ambient = input.Color;
     else
@@ -105,14 +116,16 @@ float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
     else
         emissive = EmissiveColor;
 
+    float3 nor = normalize(input.Normal);
+    float3 lightDir1 = normalize(LightDirL);
+    diffuse *= dot(nor, lightDir1);
     float4 finalColor = texColor * diffuse;
-    finalColor.rgb *= ambient.rgb;
-    finalColor.rgb += emissive.rgb;
+    //finalColor += ambient;
+    //finalColor += emissive;
 
+#if 0
     return float4(finalColor.rgb * input.Color.a, texColor.a * input.Color.a);
 #else
-    float4 finalColor = texColor * diffuse;
-
     return finalColor;
 #endif
 }
@@ -147,7 +160,11 @@ float4 PS_SOLID_1_LAYER(PS_INPUT_2TEX input) : SV_TARGET
     finalColor.rgb *= ambient.rgb;
     finalColor.rgb += emissive.rgb;
 
+#if 0
     return float4(finalColor.rgb * input.Color.a, texColor.a * input.Color.a);
+#else
+    return finalColor;
+#endif
 }
 
 float4 PS_SOLID_2_LAYER(PS_INPUT_2TEX input) : SV_TARGET

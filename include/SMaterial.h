@@ -200,6 +200,20 @@ namespace irr
             ECM_DIFFUSE_AND_AMBIENT
         };
 
+        static inline const char* getColorMaterialName(E_COLOR_MATERIAL mode)
+        {
+            switch (mode)
+            {
+                case ECM_NONE: return "ECM_NONE";
+                case ECM_DIFFUSE: return "ECM_DIFFUSE";
+                case ECM_AMBIENT: return "ECM_AMBIENT";
+                case ECM_EMISSIVE: return "ECM_EMISSIVE";
+                case ECM_SPECULAR: return "ECM_SPECULAR";
+                case ECM_DIFFUSE_AND_AMBIENT: return "ECM_DIFFUSE_AND_AMBIENT";
+                default: return "Unknown";
+            }
+        }
+
         //! Flags for the definition of the polygon offset feature
         /** These flags define whether the offset should be into the screen, or towards the eye. */
         enum E_POLYGON_OFFSET

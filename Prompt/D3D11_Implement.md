@@ -1498,7 +1498,7 @@ Delete the following code of S3DVertex.h
 
 
 # 75
-Git commit: 
+Git commit: Add material color to PS by MiniMax-M2.7.
 帮我分析下面d3d9的代码的功能，如果用d3d11实现，需要更改的是VS还是PS，以及具体的更改的方法。
             {
                 D3DMATERIAL9    mat;
@@ -1558,13 +1558,154 @@ float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
 
 # 76
 Git commit: 
+根据下面代码不同的ColorMaterial设置的d3d9渲染管线，请告诉我pixel color的计算公式
+            if (lastmaterial.ColorMaterial != material.ColorMaterial)
+            {
+                m_pID3DDevice->SetRenderState(D3DRS_COLORVERTEX, (material.ColorMaterial != ECM_NONE));
+                m_pID3DDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE,
+                                              ((material.ColorMaterial == ECM_DIFFUSE) ||
+                                               (material.ColorMaterial == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE,
+                                              ((material.ColorMaterial == ECM_AMBIENT) ||
+                                               (material.ColorMaterial == ECM_DIFFUSE_AND_AMBIENT)) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_EMISSIVEMATERIALSOURCE,
+                                              (material.ColorMaterial == ECM_EMISSIVE) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+                m_pID3DDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE,
+                                              (material.ColorMaterial == ECM_SPECULAR) ? D3DMCS_COLOR1 : D3DMCS_MATERIAL);
+            }
+
+根据前面的颜色公式重写下面的两个PS
+float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+
+    float4 diffuse, ambient, specular, emissive;
+
+    if (ColorMaterialMode == ECM_DIFFUSE || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+        diffuse = input.Color;
+    else
+        diffuse = DiffuseColor;
+
+    if (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+        ambient = input.Color;
+    else
+        ambient = AmbientColor;
+
+    if (ColorMaterialMode == ECM_SPECULAR)
+        specular = input.Color;
+    else
+        specular = SpecularColor;
+
+    if (ColorMaterialMode == ECM_EMISSIVE)
+        emissive = input.Color;
+    else
+        emissive = EmissiveColor;
+
+    float4 finalColor = texColor * diffuse;
+    finalColor.rgb *= ambient.rgb;
+    finalColor.rgb += emissive.rgb;
+
+    return float4(finalColor.rgb * input.Color.a, texColor.a * input.Color.a);
+}
+
+float4 PS_SOLID_1_LAYER(PS_INPUT_2TEX input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord0);
+
+    float4 diffuse, ambient, specular, emissive;
+
+    if (ColorMaterialMode == ECM_DIFFUSE || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+        diffuse = input.Color;
+    else
+        diffuse = DiffuseColor;
+
+    if (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT)
+        ambient = input.Color;
+    else
+        ambient = AmbientColor;
+
+    if (ColorMaterialMode == ECM_SPECULAR)
+        specular = input.Color;
+    else
+        specular = SpecularColor;
+
+    if (ColorMaterialMode == ECM_EMISSIVE)
+        emissive = input.Color;
+    else
+        emissive = EmissiveColor;
+
+    float4 finalColor = texColor * diffuse;
+    finalColor.rgb *= ambient.rgb;
+    finalColor.rgb += emissive.rgb;
+
+    return float4(finalColor.rgb * input.Color.a, texColor.a * input.Color.a);
+}
+
+注意标准光照公式 FinalColor = Emissive + Ambient×GlobalAmbient + Diffuse×(N·L) + Specular×(R·V)
+N代表PS输入的Normal向量，L表示入射光方向，R是光线的反射向量，V是视线向量
 
 # 77
 Git commit: 
 
+        // EVT_2TCOORDS with ELT_DIRECTIONAL Light Vertex Shader
+        static const char    VERTEX_SHADER_2TCOORDS_DIRECTIONAL[] =
+            "struct VS_INPUT {"
+            "    float3 Pos : POSITION;"
+            "    float3 Normal : NORMAL;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float2 TexCoord2 : TEXCOORD1;"
+            "};"
+            "struct VS_OUTPUT {"
+            "    float4 Pos : SV_POSITION;"
+            "    float4 Color : COLOR;"
+            "    float2 TexCoord : TEXCOORD0;"
+            "    float2 TexCoord2 : TEXCOORD1;"
+            "    float3 Normal : NORMAL;"
+            "    float3 WorldPos : TEXCOORD3;"
+            "};"
+            "cbuffer MatrixBuffer : register(b0) {"
+            "    float4x4 WorldViewProj;"
+            "    float4x4 World;"
+            "};"
+            "cbuffer LightBuffer : register(b1) {"
+            "    float4 AmbientColor;"
+            "    float4 DiffuseColor;"
+            "    float4 SpecularColor;"
+            "    float3 LightPos;"
+            "    float LightRadius;"
+            "    float3 LightDir;"
+            "    float3 Attenuation;"
+            "    float OuterCone;"
+            "    float InnerCone;"
+            "};"
+            "VS_OUTPUT main(VS_INPUT input) {"
+            "    VS_OUTPUT output;"
+            "    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));"
+            "    float4 worldPos = mul(float4(input.Pos, 1.0), transpose(World));"
+            "    output.WorldPos = worldPos.xyz;"
+            "    output.Normal = mul(input.Normal, (float3x3)World);"
+            "    output.TexCoord = input.TexCoord;"
+            "    output.TexCoord2 = input.TexCoord2;"
+            "    float3 normal = normalize(input.Normal);"
+            "    float diff = max(dot(normal, normalize(-LightDir.xyz)), 0.0);"
+            "    output.Color = float4(AmbientColor.rgb + DiffuseColor.rgb * diff, 1.0);"
+            "    return output;"
+            "}";
+上面这段VS编译报错如下，帮我修复
+C:\Development\Graphics\irrlicht-1.8.3\examples\07.Collision\Shader@0x00007FF9E05C7840(1,1031-1060): error X3025: global variables are implicitly constant, enable compatibility mode to allow modification
+
 
 # 78
 Git commit: 
+m_pID3DDeviceContext->PSSetConstantBuffers和m_pID3DDeviceContext->VSSetConstantBuffers的StartSlot和NumBuffers参数不要用数字，请用宏来替代
 
 # 79
+Git commit: 
+
+
+# 80
+Git commit: 
+
+# 81
 Git commit: 
