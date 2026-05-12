@@ -31,8 +31,8 @@
 #define VS_MATRIX_BUFFER_SLOT      0
 #define VS_LIGHT_BUFFER_SLOT       1
 #define PS_LIGHT_BUFFER_SLOT       1
-#define PS_LIGHT_BUFFER_SLOT_VS    3
 #define PS_MATERIAL_BUFFER_SLOT    2
+#define PS_CAMERA_BUFFER_SLOT      3
 
 namespace irr
 {

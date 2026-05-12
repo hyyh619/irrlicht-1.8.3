@@ -25,6 +25,7 @@ struct PS_INPUT_BASIC
     float4 Color : COLOR;
     float2 TexCoord : TEXCOORD0;
     float3 Normal : NORMAL;
+    float3 WorldPos : WORLDPOS;
 };
 
 struct PS_INPUT_2TEX
@@ -34,6 +35,7 @@ struct PS_INPUT_2TEX
     float2 TexCoord0 : TEXCOORD0;
     float2 TexCoord1 : TEXCOORD1;
     float3 Normal : NORMAL;
+    float3 WorldPos : WORLDPOS;
 };
 
 struct PS_INPUT_TANGENTS
@@ -44,6 +46,7 @@ struct PS_INPUT_TANGENTS
     float3 Normal : NORMAL;
     float3 Tangent : TEXCOORD2;
     float3 Binormal : TEXCOORD3;
+    float3 WorldPos : WORLDPOS;
 };
 
 #define ECM_NONE              0
@@ -78,6 +81,11 @@ cbuffer MaterialBuffer : register(b2)
     float2 Padding;
 };
 
+cbuffer CameraBuffer : register(b3)
+{
+    float3 cameraPos;
+};
+
 Texture2D DiffuseTexture : register(t0);
 Texture2D LightmapTexture : register(t1);
 Texture2D DetailTexture : register(t1);
@@ -96,7 +104,7 @@ float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
     float3 nor = normalize(input.Normal);
     float3 lightDir = normalize(-LightDirection);
-    float3 viewDir = normalize(float3(0.0, 0.0, 1.0));
+    float3 viewDir = normalize(cameraPos - input.worldPos);
     float3 reflectDir = reflect(-lightDir, nor);
     float nDotL = max(dot(nor, lightDir), 0.0);
     float rDotV = max(dot(reflectDir, viewDir), 0.0);
