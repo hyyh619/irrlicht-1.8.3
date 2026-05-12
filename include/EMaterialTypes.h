@@ -245,6 +245,43 @@ namespace irr
             "solid_lighting_flat",
             0
         };
+
+        static inline const c8* getMaterialTypeName(E_MATERIAL_TYPE materialType)
+        {
+            switch (materialType)
+            {
+                case EMT_SOLID: return "EMT_SOLID";
+                case EMT_SOLID_2_LAYER: return "EMT_SOLID_2_LAYER";
+                case EMT_LIGHTMAP: return "EMT_LIGHTMAP";
+                case EMT_LIGHTMAP_ADD: return "EMT_LIGHTMAP_ADD";
+                case EMT_LIGHTMAP_M2: return "EMT_LIGHTMAP_M2";
+                case EMT_LIGHTMAP_M4: return "EMT_LIGHTMAP_M4";
+                case EMT_LIGHTMAP_LIGHTING: return "EMT_LIGHTMAP_LIGHTING";
+                case EMT_LIGHTMAP_LIGHTING_M2: return "EMT_LIGHTMAP_LIGHTING_M2";
+                case EMT_LIGHTMAP_LIGHTING_M4: return "EMT_LIGHTMAP_LIGHTING_M4";
+                case EMT_DETAIL_MAP: return "EMT_DETAIL_MAP";
+                case EMT_SPHERE_MAP: return "EMT_SPHERE_MAP";
+                case EMT_REFLECTION_2_LAYER: return "EMT_REFLECTION_2_LAYER";
+                case EMT_TRANSPARENT_ADD_COLOR: return "EMT_TRANSPARENT_ADD_COLOR";
+                case EMT_TRANSPARENT_ALPHA_CHANNEL: return "EMT_TRANSPARENT_ALPHA_CHANNEL";
+                case EMT_TRANSPARENT_ALPHA_CHANNEL_REF: return "EMT_TRANSPARENT_ALPHA_CHANNEL_REF";
+                case EMT_TRANSPARENT_VERTEX_ALPHA: return "EMT_TRANSPARENT_VERTEX_ALPHA";
+                case EMT_TRANSPARENT_REFLECTION_2_LAYER: return "EMT_TRANSPARENT_REFLECTION_2_LAYER";
+                case EMT_NORMAL_MAP_SOLID: return "EMT_NORMAL_MAP_SOLID";
+                case EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR: return "EMT_NORMAL_MAP_TRANSPARENT_ADD_COLOR";
+                case EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA: return "EMT_NORMAL_MAP_TRANSPARENT_VERTEX_ALPHA";
+                case EMT_PARALLAX_MAP_SOLID: return "EMT_PARALLAX_MAP_SOLID";
+                case EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR: return "EMT_PARALLAX_MAP_TRANSPARENT_ADD_COLOR";
+                case EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA: return "EMT_PARALLAX_MAP_TRANSPARENT_VERTEX_ALPHA";
+                case EMT_ONETEXTURE_BLEND: return "EMT_ONETEXTURE_BLEND";
+                case EMT_SOLID_1_LAYER: return "EMT_SOLID_1_LAYER";
+                case EMT_SOLID_COLOR: return "EMT_SOLID_COLOR";
+                case EMT_SOLID_LIGHTING_GOURAUD: return "EMT_SOLID_LIGHTING_GOURAUD";
+                case EMT_SOLID_LIGHTING_FLAT: return "EMT_SOLID_LIGHTING_FLAT";
+                case EMT_2D_RECTANGLE: return "EMT_2D_RECTANGLE";
+                default: return "Unknown";
+            }
+        }
     } // end namespace video
 } // end namespace irr
 #endif // __E_MATERIAL_TYPES_H_INCLUDED__

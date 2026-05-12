@@ -34,6 +34,17 @@ namespace irr
             0
         };
 
+        static inline const c8* getLightTypeName(E_LIGHT_TYPE lightType)
+        {
+            switch (lightType)
+            {
+                case ELT_POINT: return "ELT_POINT";
+                case ELT_SPOT: return "ELT_SPOT";
+                case ELT_DIRECTIONAL: return "ELT_DIRECTIONAL";
+                default: return "?";
+            }
+        }
+
         //! structure for holding data describing a dynamic point light.
         /** Irrlicht supports point lights, spot lights, and directional lights.
          */

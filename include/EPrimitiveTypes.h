@@ -47,6 +47,25 @@ namespace irr
             //! The single vertices are expanded to quad billboards on the GPU.
             EPT_POINT_SPRITES
         };
+
+        static inline const c8* getPrimitiveTypeName(E_PRIMITIVE_TYPE pType)
+        {
+            switch (pType)
+            {
+                case EPT_POINTS: return "EPT_POINTS";
+                case EPT_LINE_STRIP: return "EPT_LINE_STRIP";
+                case EPT_LINE_LOOP: return "EPT_LINE_LOOP";
+                case EPT_LINES: return "EPT_LINES";
+                case EPT_TRIANGLE_STRIP: return "EPT_TRIANGLE_STRIP";
+                case EPT_TRIANGLE_FAN: return "EPT_TRIANGLE_FAN";
+                case EPT_TRIANGLES: return "EPT_TRIANGLES";
+                case EPT_QUAD_STRIP: return "EPT_QUAD_STRIP";
+                case EPT_QUADS: return "EPT_QUADS";
+                case EPT_POLYGON: return "EPT_POLYGON";
+                case EPT_POINT_SPRITES: return "EPT_POINT_SPRITES";
+                default: return "?";
+            }
+        }
     } // end namespace scene
 } // end namespace irr
 #endif

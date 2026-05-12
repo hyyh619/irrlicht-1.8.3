@@ -288,6 +288,24 @@ namespace irr
                     return sizeof(video::S3DVertex);
             }
         }
+
+        static inline const c8* getVertexTypeName(E_VERTEX_TYPE vType)
+        {
+            switch (vType)
+            {
+                case EVT_STANDARD: return "EVT_STANDARD";
+                case EVT_2TCOORDS: return "EVT_2TCOORDS";
+                case EVT_TANGENTS: return "EVT_TANGENTS";
+                case EVT_2D_RECTANGLE: return "EVT_2D_RECTANGLE";
+                case EVT_STANDARD_LIGHTING_DIRECTIONAL: return "EVT_STANDARD_LIGHTING_DIRECTIONAL";
+                case EVT_STANDARD_LIGHTING_SPOT: return "EVT_STANDARD_LIGHTING_SPOT";
+                case EVT_STANDARD_LIGHTING_POINT: return "EVT_STANDARD_LIGHTING_POINT";
+                case EVT_2TCOORDS_LIGHTING_DIRECTIONAL: return "EVT_2TCOORDS_LIGHTING_DIRECTIONAL";
+                case EVT_2TCOORDS_LIGHTING_SPOT: return "EVT_2TCOORDS_LIGHTING_SPOT";
+                case EVT_2TCOORDS_LIGHTING_POINT: return "EVT_2TCOORDS_LIGHTING_POINT";
+                default: return "?";
+            }
+        }
     } // end namespace video
 } // end namespace irr
 #endif

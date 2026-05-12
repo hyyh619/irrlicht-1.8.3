@@ -1697,11 +1697,13 @@ C:\Development\Graphics\irrlicht-1.8.3\examples\07.Collision\Shader@0x00007FF9E0
 
 
 # 78
-Git commit: 
+Git commit: Refine SetConstant slot name and material PS by MiniMax-M2.7.
 m_pID3DDeviceContext->PSSetConstantBuffers和m_pID3DDeviceContext->VSSetConstantBuffers的StartSlot和NumBuffers参数不要用数字，请用宏来替代
 
 # 79
 Git commit: 
+像 static inline const char* getColorMaterialName(E_COLOR_MATERIAL mode)实现一样，
+把CD3D11Driver::getVertexTypeName, CD3D11Driver::getMaterialTypeName, CD3D11Driver::getLightTypeName, CD3D11Driver::getPrimitiveTypeName迁移到enum对应的头文件
 
 
 # 80
