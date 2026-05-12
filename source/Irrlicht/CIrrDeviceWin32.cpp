@@ -36,25 +36,25 @@ namespace irr
 {
     namespace video
     {
-        #ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
+#ifdef _IRR_COMPILE_WITH_DIRECT3D_8_
         IVideoDriver* createDirectX8Driver(const irr::SIrrlichtCreationParameters &params,
-            io::IFileSystem *io, HWND window);
-    #endif
+                                           io::IFileSystem *io, HWND window);
+#endif
 
-        #ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
+#ifdef _IRR_COMPILE_WITH_DIRECT3D_9_
         IVideoDriver* createDirectX9Driver(const irr::SIrrlichtCreationParameters &params,
-            io::IFileSystem *io, HWND window);
-    #endif
+                                           io::IFileSystem *io, HWND window);
+#endif
 
-        #ifdef _IRR_COMPILE_WITH_DIRECT3D_11_
+#ifdef _IRR_COMPILE_WITH_DIRECT3D_11_
         IVideoDriver* createDirectX11Driver(const irr::SIrrlichtCreationParameters &params,
-            io::IFileSystem *io, HWND window);
-    #endif
+                                            io::IFileSystem *io, HWND window);
+#endif
 
-        #ifdef _IRR_COMPILE_WITH_OPENGL_
+#ifdef _IRR_COMPILE_WITH_OPENGL_
         IVideoDriver* createOpenGLDriver(const irr::SIrrlichtCreationParameters &params,
-            io::IFileSystem *io, CIrrDeviceWin32 *device);
-    #endif
+                                         io::IFileSystem *io, CIrrDeviceWin32 *device);
+#endif
     }
 } // end namespace irr
 
@@ -72,11 +72,11 @@ namespace irr
         {
             u32 Index;
 #ifdef _IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_
-            core::stringc        Name;
-            GUID                 guid;
-            LPDIRECTINPUTDEVICE8 lpdijoy;
-            DIDEVCAPS            devcaps;
-            u8                   axisValid[8];
+            core::stringc           Name;
+            GUID                    guid;
+            LPDIRECTINPUTDEVICE8    lpdijoy;
+            DIDEVCAPS               devcaps;
+            u8                      axisValid[8];
 #else
             JOYCAPS Caps;
 #endif
@@ -100,7 +100,7 @@ namespace irr
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_) && defined(_IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_)
             for (u32 joystick = 0; joystick < ActiveJoysticks.size(); ++joystick)
             {
-                LPDIRECTINPUTDEVICE8 dev = ActiveJoysticks[joystick].lpdijoy;
+                LPDIRECTINPUTDEVICE8    dev = ActiveJoysticks[joystick].lpdijoy;
                 if (dev)
                 {
                     dev->Unacquire();
@@ -117,7 +117,7 @@ namespace irr
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_) && defined(_IRR_COMPILE_WITH_DIRECTINPUT_JOYSTICK_)
         static BOOL CALLBACK EnumJoysticks(LPCDIDEVICEINSTANCE lpddi, LPVOID cp)
         {
-            SJoystickWin32Control *p = (SJoystickWin32Control*)cp;
+            SJoystickWin32Control    *p = (SJoystickWin32Control*)cp;
 
             p->directInputAddJoystick(lpddi);
             return DIENUM_CONTINUE;
@@ -125,13 +125,13 @@ namespace irr
         void directInputAddJoystick(LPCDIDEVICEINSTANCE lpddi)
         {
             // Get the GUID of the joystuck
-            const GUID guid = lpddi->guidInstance;
+            const GUID    guid = lpddi->guidInstance;
 
-            JoystickInfo activeJoystick;
+            JoystickInfo    activeJoystick;
 
-            activeJoystick.Index = ActiveJoysticks.size();
-            activeJoystick.guid  = guid;
-            activeJoystick.Name  = lpddi->tszProductName;
+            activeJoystick.Index    = ActiveJoysticks.size();
+            activeJoystick.guid     = guid;
+            activeJoystick.Name     = lpddi->tszProductName;
             if (FAILED(DirectInputDevice->CreateDevice(guid, &activeJoystick.lpdijoy, NULL)))
             {
                 os::Printer::log("Could not create DirectInput device", ELL_WARNING);
@@ -163,7 +163,7 @@ namespace irr
                 return;
             }
 
-            DIJOYSTATE2 info;
+            DIJOYSTATE2    info;
             if (FAILED(activeJoystick.lpdijoy->GetDeviceState(sizeof(info), &info)))
             {
                 os::Printer::log("Could not read DirectInput device state", ELL_WARNING);
@@ -178,7 +178,7 @@ namespace irr
             activeJoystick.axisValid[4] = (info.lRy != 0) ? 1 : 0;
             activeJoystick.axisValid[5] = (info.lRz != 0) ? 1 : 0;
 
-            int caxis = 0;
+            int    caxis = 0;
 
             for (u8 i = 0; i < 6; i++)
             {
@@ -203,23 +203,23 @@ namespace irr
             if (0 == ActiveJoysticks.size())
                 return;
 
-            u32         joystick;
-            DIJOYSTATE2 info;
+            u32             joystick;
+            DIJOYSTATE2     info;
 
             for (joystick = 0; joystick < ActiveJoysticks.size(); ++joystick)
             {
                 // needs to be reset for each joystick
                 // request ALL values and POV as continuous if possible
 
-                const DIDEVCAPS &caps = ActiveJoysticks[joystick].devcaps;
+                const DIDEVCAPS    &caps = ActiveJoysticks[joystick].devcaps;
                 // if no POV is available don't ask for POV values
 
                 if (!FAILED(ActiveJoysticks[joystick].lpdijoy->GetDeviceState(sizeof(info), &info)))
                 {
-                    SEvent event;
+                    SEvent    event;
 
-                    event.EventType              = irr::EET_JOYSTICK_INPUT_EVENT;
-                    event.JoystickEvent.Joystick = (u8)joystick;
+                    event.EventType                 = irr::EET_JOYSTICK_INPUT_EVENT;
+                    event.JoystickEvent.Joystick    = (u8)joystick;
 
                     event.JoystickEvent.POV = (u16)info.rgdwPOV[0];
                     // set to undefined if no POV value was returned or the value
@@ -230,13 +230,13 @@ namespace irr
                     for (int axis = 0; axis < SEvent::SJoystickEvent::NUMBER_OF_AXES; ++axis)
                         event.JoystickEvent.Axis[axis] = 0;
 
-                    u16 dxAxis  = 0;
-                    u16 irrAxis = 0;
+                    u16     dxAxis  = 0;
+                    u16     irrAxis = 0;
 
                     while (dxAxis < 6 && irrAxis < caps.dwAxes)
                     {
-                        bool axisFound = 0;
-                        s32  axisValue = 0;
+                        bool    axisFound   = 0;
+                        s32     axisValue   = 0;
 
                         switch (dxAxis)
                         {
@@ -281,7 +281,7 @@ namespace irr
 
                         if (axisFound)
                         {
-                            s32 val = axisValue - 32768;
+                            s32    val = axisValue - 32768;
 
                             if (val < -32767)
                                 val = -32767;
@@ -296,8 +296,8 @@ namespace irr
                         dxAxis++;
                     }
 
-                    u32  buttons      = 0;
-                    BYTE *bytebuttons = info.rgbButtons;
+                    u32     buttons         = 0;
+                    BYTE    *bytebuttons    = info.rgbButtons;
 
                     for (u16 i = 0; i < 32; i++)
                     {
@@ -317,26 +317,26 @@ namespace irr
             if (0 == ActiveJoysticks.size())
                 return;
 
-            u32       joystick;
-            JOYINFOEX info;
+            u32             joystick;
+            JOYINFOEX       info;
 
             for (joystick = 0; joystick < ActiveJoysticks.size(); ++joystick)
             {
                 // needs to be reset for each joystick
                 // request ALL values and POV as continuous if possible
-                info.dwSize  = sizeof(info);
-                info.dwFlags = JOY_RETURNALL | JOY_RETURNPOVCTS;
-                const JOYCAPS &caps = ActiveJoysticks[joystick].Caps;
+                info.dwSize     = sizeof(info);
+                info.dwFlags    = JOY_RETURNALL | JOY_RETURNPOVCTS;
+                const JOYCAPS    &caps = ActiveJoysticks[joystick].Caps;
                 // if no POV is available don't ask for POV values
                 if (!(caps.wCaps & JOYCAPS_HASPOV))
                     info.dwFlags &= ~(JOY_RETURNPOV | JOY_RETURNPOVCTS);
 
                 if (JOYERR_NOERROR == joyGetPosEx(ActiveJoysticks[joystick].Index, &info))
                 {
-                    SEvent event;
+                    SEvent    event;
 
-                    event.EventType              = irr::EET_JOYSTICK_INPUT_EVENT;
-                    event.JoystickEvent.Joystick = (u8)joystick;
+                    event.EventType                 = irr::EET_JOYSTICK_INPUT_EVENT;
+                    event.JoystickEvent.Joystick    = (u8)joystick;
 
                     event.JoystickEvent.POV = (u16)info.dwPOV;
                     // set to undefined if no POV value was returned or the value
@@ -396,13 +396,13 @@ namespace irr
 
             for (u32 joystick = 0; joystick < ActiveJoysticks.size(); ++joystick)
             {
-                JoystickInfo  &activeJoystick = ActiveJoysticks[joystick];
-                SJoystickInfo info;
-                info.Axes    = activeJoystick.devcaps.dwAxes;
-                info.Buttons = activeJoystick.devcaps.dwButtons;
-                info.Name    = activeJoystick.Name;
-                info.PovHat  = (activeJoystick.devcaps.dwPOVs  != 0)
-                    ? SJoystickInfo::POV_HAT_PRESENT : SJoystickInfo::POV_HAT_ABSENT;
+                JoystickInfo        &activeJoystick = ActiveJoysticks[joystick];
+                SJoystickInfo       info;
+                info.Axes       = activeJoystick.devcaps.dwAxes;
+                info.Buttons    = activeJoystick.devcaps.dwButtons;
+                info.Name       = activeJoystick.Name;
+                info.PovHat     = (activeJoystick.devcaps.dwPOVs  != 0)
+                                  ? SJoystickInfo::POV_HAT_PRESENT : SJoystickInfo::POV_HAT_ABSENT;
                 joystickInfo.push_back(info);
             }
 
@@ -411,26 +411,26 @@ namespace irr
             joystickInfo.clear();
             ActiveJoysticks.clear();
 
-            const u32 numberOfJoysticks = ::joyGetNumDevs();
-            JOYINFOEX info;
-            info.dwSize  = sizeof(info);
-            info.dwFlags = JOY_RETURNALL;
+            const u32       numberOfJoysticks = ::joyGetNumDevs();
+            JOYINFOEX       info;
+            info.dwSize     = sizeof(info);
+            info.dwFlags    = JOY_RETURNALL;
 
-            JoystickInfo  activeJoystick;
-            SJoystickInfo returnInfo;
+            JoystickInfo        activeJoystick;
+            SJoystickInfo       returnInfo;
 
             joystickInfo.reallocate(numberOfJoysticks);
             ActiveJoysticks.reallocate(numberOfJoysticks);
 
-            u32 joystick = 0;
+            u32    joystick = 0;
 
             for (; joystick < numberOfJoysticks; ++joystick)
             {
                 if (JOYERR_NOERROR == joyGetPosEx(joystick, &info)
                     &&
                     JOYERR_NOERROR == joyGetDevCaps(joystick,
-                    &activeJoystick.Caps,
-                    sizeof(activeJoystick.Caps)))
+                                                    &activeJoystick.Caps,
+                                                    sizeof(activeJoystick.Caps)))
                 {
                     activeJoystick.Index = joystick;
                     ActiveJoysticks.push_back(activeJoystick);
@@ -440,7 +440,7 @@ namespace irr
                     returnInfo.Buttons  = activeJoystick.Caps.wNumButtons;
                     returnInfo.Name     = activeJoystick.Caps.szPname;
                     returnInfo.PovHat   = ((activeJoystick.Caps.wCaps & JOYCAPS_HASPOV) == JOYCAPS_HASPOV)
-                        ? SJoystickInfo::POV_HAT_PRESENT : SJoystickInfo::POV_HAT_ABSENT;
+                                          ? SJoystickInfo::POV_HAT_PRESENT : SJoystickInfo::POV_HAT_ABSENT;
 
                     joystickInfo.push_back(returnInfo);
                 }
@@ -448,10 +448,10 @@ namespace irr
 
             for (joystick = 0; joystick < joystickInfo.size(); ++joystick)
             {
-                char logString[256];
+                char    logString[256];
                 sprintf(logString, "Found joystick %u, %u axes, %u buttons '%s'",
-                    joystick, joystickInfo[joystick].Axes,
-                    joystickInfo[joystick].Buttons, joystickInfo[joystick].Name.c_str());
+                        joystick, joystickInfo[joystick].Axes,
+                        joystickInfo[joystick].Buttons, joystickInfo[joystick].Name.c_str());
                 os::Printer::log(logString, ELL_INFORMATION);
             }
 
@@ -645,18 +645,18 @@ namespace
 {
     struct SEnvMapper
     {
-        HWND                 hWnd;
-        irr::CIrrDeviceWin32 *irrDev;
+        HWND                    hWnd;
+        irr::CIrrDeviceWin32    *irrDev;
     };
-    irr::core::list<SEnvMapper> EnvMap;
+    irr::core::list<SEnvMapper>    EnvMap;
 
-    HKL          KEYBOARD_INPUT_HKL      = 0;
-    unsigned int KEYBOARD_INPUT_CODEPAGE = 1252;
+    HKL             KEYBOARD_INPUT_HKL      = 0;
+    unsigned int    KEYBOARD_INPUT_CODEPAGE = 1252;
 }
 
 SEnvMapper* getEnvMapperFromHWnd(const HWND hWnd)
 {
-    irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
+    irr::core::list<SEnvMapper>::Iterator    it = EnvMap.begin();
 
     for (; it != EnvMap.end(); ++it)
         if ((*it).hWnd == hWnd)
@@ -668,7 +668,7 @@ SEnvMapper* getEnvMapperFromHWnd(const HWND hWnd)
 
 irr::CIrrDeviceWin32* getDeviceFromHWnd(const HWND hWnd)
 {
-    irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
+    irr::core::list<SEnvMapper>::Iterator    it = EnvMap.begin();
 
     for (; it != EnvMap.end(); ++it)
         if ((*it).hWnd == hWnd)
@@ -687,22 +687,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     #define WHEEL_DELTA 120
 #endif
 
-    irr::CIrrDeviceWin32 *dev = 0;
-    irr::SEvent          event;
+    irr::CIrrDeviceWin32    *dev = 0;
+    irr::SEvent             event;
 
-    static irr::s32 ClickCount = 0;
+    static irr::s32    ClickCount = 0;
     if (GetCapture() != hWnd && ClickCount > 0)
         ClickCount = 0;
 
 
     struct messageMap
     {
-        irr::s32 group;
-        UINT     winMessage;
-        irr::s32 irrMessage;
+        irr::s32    group;
+        UINT        winMessage;
+        irr::s32    irrMessage;
     };
 
-    static messageMap mouseMap[] =
+    static messageMap    mouseMap[] =
     {
         {0, WM_LBUTTONDOWN, irr::EMIE_LMOUSE_PRESSED_DOWN},
         {1, WM_LBUTTONUP,   irr::EMIE_LMOUSE_LEFT_UP},
@@ -716,7 +716,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     };
 
     // handle grouped events
-    messageMap *m = mouseMap;
+    messageMap    *m = mouseMap;
 
     while (m->group >= 0 && m->winMessage != message)
         m += 1;
@@ -738,12 +738,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
 
-        event.EventType          = irr::EET_MOUSE_INPUT_EVENT;
-        event.MouseInput.Event   = (irr::EMOUSE_INPUT_EVENT) m->irrMessage;
-        event.MouseInput.X       = (short)LOWORD(lParam);
-        event.MouseInput.Y       = (short)HIWORD(lParam);
-        event.MouseInput.Shift   = ((LOWORD(wParam) & MK_SHIFT) != 0);
-        event.MouseInput.Control = ((LOWORD(wParam) & MK_CONTROL) != 0);
+        event.EventType             = irr::EET_MOUSE_INPUT_EVENT;
+        event.MouseInput.Event      = (irr::EMOUSE_INPUT_EVENT) m->irrMessage;
+        event.MouseInput.X          = (short)LOWORD(lParam);
+        event.MouseInput.Y          = (short)HIWORD(lParam);
+        event.MouseInput.Shift      = ((LOWORD(wParam) & MK_SHIFT) != 0);
+        event.MouseInput.Control    = ((LOWORD(wParam) & MK_CONTROL) != 0);
         // left and right mouse buttons
         event.MouseInput.ButtonStates = wParam & (MK_LBUTTON | MK_RBUTTON);
         // middle and extra buttons
@@ -762,12 +762,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // wheel
         if (m->group == 3)
         {
-            POINT p; // fixed by jox
+            POINT    p; // fixed by jox
             p.x = 0; p.y = 0;
             ClientToScreen(hWnd, &p);
-            event.MouseInput.X    -= p.x;
-            event.MouseInput.Y    -= p.y;
-            event.MouseInput.Wheel = ((irr::f32)((short)HIWORD(wParam))) / (irr::f32)WHEEL_DELTA;
+            event.MouseInput.X      -= p.x;
+            event.MouseInput.Y      -= p.y;
+            event.MouseInput.Wheel  = ((irr::f32)((short)HIWORD(wParam))) / (irr::f32)WHEEL_DELTA;
         }
 
         dev = getDeviceFromHWnd(hWnd);
@@ -777,7 +777,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             if (event.MouseInput.Event >= irr::EMIE_LMOUSE_PRESSED_DOWN && event.MouseInput.Event <= irr::EMIE_MMOUSE_PRESSED_DOWN)
             {
-                const irr::u32 clicks = dev->checkSuccessiveClicks(event.MouseInput.X, event.MouseInput.Y, event.MouseInput.Event);
+                const irr::u32    clicks = dev->checkSuccessiveClicks(event.MouseInput.X, event.MouseInput.Y, event.MouseInput.Event);
                 if (clicks == 2)
                 {
                     event.MouseInput.Event = (irr::EMOUSE_INPUT_EVENT)(irr::EMIE_LMOUSE_DOUBLE_CLICK + event.MouseInput.Event - irr::EMIE_LMOUSE_PRESSED_DOWN);
@@ -798,7 +798,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         case WM_PAINT:
         {
-            PAINTSTRUCT ps;
+            PAINTSTRUCT    ps;
             BeginPaint(hWnd, &ps);
             EndPaint(hWnd, &ps);
         }
@@ -812,15 +812,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_KEYDOWN:
         case WM_KEYUP:
         {
-            BYTE allKeys[256];
+            BYTE    allKeys[256];
 
             memset(allKeys, 0, 256);
 
-            event.EventType            = irr::EET_KEY_INPUT_EVENT;
-            event.KeyInput.Key         = (irr::EKEY_CODE)wParam;
-            event.KeyInput.PressedDown = (message == WM_KEYDOWN || message == WM_SYSKEYDOWN);
+            event.EventType             = irr::EET_KEY_INPUT_EVENT;
+            event.KeyInput.Key          = (irr::EKEY_CODE)wParam;
+            event.KeyInput.PressedDown  = (message == WM_KEYDOWN || message == WM_SYSKEYDOWN);
 
-            constexpr UINT MY_MAPVK_VSC_TO_VK_EX = 3;  // MAPVK_VSC_TO_VK_EX should be in SDK according to MSDN, but isn't in mine.
+            constexpr UINT    MY_MAPVK_VSC_TO_VK_EX = 3; // MAPVK_VSC_TO_VK_EX should be in SDK according to MSDN, but isn't in mine.
             if (event.KeyInput.Key == irr::KEY_SHIFT)
             {
                 // this will fail on systems before windows NT/2000/XP, not sure _what_ will return there instead.
@@ -842,19 +842,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     event.KeyInput.Key = irr::KEY_RMENU;
             }
 
-            BOOL bRes = GetKeyboardState(allKeys);
+            BOOL    bRes = GetKeyboardState(allKeys);
 
-            event.KeyInput.Shift   = ((allKeys[VK_SHIFT] & 0x80) != 0);
-            event.KeyInput.Control = ((allKeys[VK_CONTROL] & 0x80) != 0);
+            event.KeyInput.Shift    = ((allKeys[VK_SHIFT] & 0x80) != 0);
+            event.KeyInput.Control  = ((allKeys[VK_CONTROL] & 0x80) != 0);
 
             // Handle unicode and deadkeys in a way that works since Windows 95 and nt4.0
             // Using ToUnicode instead would be shorter, but would to my knowledge not run on 95 and 98.
-            WORD       keyChars[2];
-            const UINT scanCode         = HIWORD(lParam);
-            const int  conversionResult = ToAsciiEx((UINT)wParam, scanCode, allKeys, keyChars, 0, KEYBOARD_INPUT_HKL);
+            WORD            keyChars[2];
+            const UINT      scanCode            = HIWORD(lParam);
+            const int       conversionResult    = ToAsciiEx((UINT)wParam, scanCode, allKeys, keyChars, 0, KEYBOARD_INPUT_HKL);
             if (conversionResult == 1)
             {
-                WORD unicodeChar;
+                WORD    unicodeChar;
                 MultiByteToWideChar(
                     KEYBOARD_INPUT_CODEPAGE,
                     MB_PRECOMPOSED,     // default
@@ -929,10 +929,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
 
         case WM_USER:
-            event.EventType           = irr::EET_USER_EVENT;
-            event.UserEvent.UserData1 = (irr::s32)wParam;
-            event.UserEvent.UserData2 = (irr::s32)lParam;
-            dev                       = getDeviceFromHWnd(hWnd);
+            event.EventType             = irr::EET_USER_EVENT;
+            event.UserEvent.UserData1   = (irr::s32)wParam;
+            event.UserEvent.UserData2   = (irr::s32)lParam;
+            dev                         = getDeviceFromHWnd(hWnd);
 
             if (dev)
                 dev->postEventFromUser(event);
@@ -965,7 +965,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 namespace irr
 {
-    //! constructor
+    // ! constructor
     CIrrDeviceWin32::CIrrDeviceWin32(const SIrrlichtCreationParameters &params)
         : CIrrDeviceStub(params), HWnd(0), ChangedToFullScreen(false), Resized(false),
         ExternalWindow(false), Win32CursorControl(0), JoyControl(0)
@@ -975,13 +975,13 @@ namespace irr
 #endif
 
         // get windows version and create OS operator
-        core::stringc winversion;
+        core::stringc    winversion;
         getWindowsVersion(winversion);
         Operator = new COSOperator(winversion);
         os::Printer::log(winversion.c_str(), ELL_INFORMATION);
 
         // get handle to exe file
-        HINSTANCE hInstance = GetModuleHandle(0);
+        HINSTANCE    hInstance = GetModuleHandle(0);
 
         // Store original desktop mode.
 
@@ -993,22 +993,22 @@ namespace irr
         // create the window if we need to and we do not use the null device
         if (!CreationParams.WindowId && CreationParams.DriverType != video::EDT_NULL)
         {
-            const fschar_t *ClassName = __TEXT("CIrrDeviceWin32");
+            const fschar_t    *ClassName = __TEXT("CIrrDeviceWin32");
 
             // Register Class
-            WNDCLASSEX wcex;
-            wcex.cbSize        = sizeof(WNDCLASSEX);
-            wcex.style         = CS_HREDRAW | CS_VREDRAW;
-            wcex.lpfnWndProc   = WndProc;
-            wcex.cbClsExtra    = 0;
-            wcex.cbWndExtra    = 0;
-            wcex.hInstance     = hInstance;
-            wcex.hIcon         = NULL;
-            wcex.hCursor       = 0; // LoadCursor(NULL, IDC_ARROW);
-            wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-            wcex.lpszMenuName  = 0;
-            wcex.lpszClassName = ClassName;
-            wcex.hIconSm       = 0;
+            WNDCLASSEX    wcex;
+            wcex.cbSize         = sizeof(WNDCLASSEX);
+            wcex.style          = CS_HREDRAW | CS_VREDRAW;
+            wcex.lpfnWndProc    = WndProc;
+            wcex.cbClsExtra     = 0;
+            wcex.cbWndExtra     = 0;
+            wcex.hInstance      = hInstance;
+            wcex.hIcon          = NULL;
+            wcex.hCursor        = 0; // LoadCursor(NULL, IDC_ARROW);
+            wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW + 1);
+            wcex.lpszMenuName   = 0;
+            wcex.lpszClassName  = ClassName;
+            wcex.hIconSm        = 0;
 
             // if there is an icon, load it
             wcex.hIcon = (HICON)LoadImage(hInstance, __TEXT("irrlicht.ico"), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
@@ -1017,24 +1017,24 @@ namespace irr
 
             // calculate client size
 
-            RECT clientSize;
-            clientSize.top    = 0;
-            clientSize.left   = 0;
-            clientSize.right  = CreationParams.WindowSize.Width;
-            clientSize.bottom = CreationParams.WindowSize.Height;
+            RECT    clientSize;
+            clientSize.top      = 0;
+            clientSize.left     = 0;
+            clientSize.right    = CreationParams.WindowSize.Width;
+            clientSize.bottom   = CreationParams.WindowSize.Height;
 
-            DWORD style = WS_POPUP;
+            DWORD    style = WS_POPUP;
 
             if (!CreationParams.Fullscreen)
                 style = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
 
             AdjustWindowRect(&clientSize, style, FALSE);
 
-            const s32 realWidth  = clientSize.right - clientSize.left;
-            const s32 realHeight = clientSize.bottom - clientSize.top;
+            const s32       realWidth   = clientSize.right - clientSize.left;
+            const s32       realHeight  = clientSize.bottom - clientSize.top;
 
-            s32 windowLeft = (GetSystemMetrics(SM_CXSCREEN) - realWidth) / 2;
-            s32 windowTop  = (GetSystemMetrics(SM_CYSCREEN) - realHeight) / 2;
+            s32     windowLeft  = (GetSystemMetrics(SM_CXSCREEN) - realWidth) / 2;
+            s32     windowTop   = (GetSystemMetrics(SM_CYSCREEN) - realHeight) / 2;
 
             if (windowLeft < 0)
                 windowLeft = 0;
@@ -1044,14 +1044,14 @@ namespace irr
 
             if (CreationParams.Fullscreen)
             {
-                windowLeft = 0;
-                windowTop  = 0;
+                windowLeft  = 0;
+                windowTop   = 0;
             }
 
             // create window
 
             HWnd = CreateWindow(ClassName, __TEXT(""), style, windowLeft, windowTop,
-                    realWidth, realHeight, NULL, NULL, hInstance, NULL);
+                                realWidth, realHeight, NULL, NULL, hInstance, NULL);
             CreationParams.WindowId = HWnd;
             //        CreationParams.WindowSize.Width = realWidth;
             //        CreationParams.WindowSize.Height = realHeight;
@@ -1069,19 +1069,19 @@ namespace irr
         {
             // attach external window
             HWnd = static_cast<HWND>(CreationParams.WindowId);
-            RECT r;
+            RECT    r;
             GetWindowRect(HWnd, &r);
-            CreationParams.WindowSize.Width  = r.right - r.left;
-            CreationParams.WindowSize.Height = r.bottom - r.top;
-            CreationParams.Fullscreen        = false;
-            ExternalWindow                   = true;
+            CreationParams.WindowSize.Width     = r.right - r.left;
+            CreationParams.WindowSize.Height    = r.bottom - r.top;
+            CreationParams.Fullscreen           = false;
+            ExternalWindow                      = true;
         }
 
         // create cursor control
 
-        Win32CursorControl = new CCursorControl(this, CreationParams.WindowSize, HWnd, CreationParams.Fullscreen);
-        CursorControl      = Win32CursorControl;
-        JoyControl         = new SJoystickWin32Control(this);
+        Win32CursorControl  = new CCursorControl(this, CreationParams.WindowSize, HWnd, CreationParams.Fullscreen);
+        CursorControl       = Win32CursorControl;
+        JoyControl          = new SJoystickWin32Control(this);
 
         // initialize doubleclicks with system values
         MouseMultiClicks.DoubleClickTime = GetDoubleClickTime();
@@ -1095,9 +1095,9 @@ namespace irr
 
         // register environment
 
-        SEnvMapper em;
-        em.irrDev = this;
-        em.hWnd   = HWnd;
+        SEnvMapper    em;
+        em.irrDev   = this;
+        em.hWnd     = HWnd;
         EnvMap.push_back(em);
 
         // set this as active window
@@ -1116,14 +1116,14 @@ namespace irr
     }
 
 
-    //! destructor
+    // ! destructor
     CIrrDeviceWin32::~CIrrDeviceWin32()
     {
         delete JoyControl;
 
         // unregister environment
 
-        irr::core::list<SEnvMapper>::Iterator it = EnvMap.begin();
+        irr::core::list<SEnvMapper>::Iterator    it = EnvMap.begin();
 
         for (; it != EnvMap.end(); ++it)
         {
@@ -1138,7 +1138,7 @@ namespace irr
     }
 
 
-    //! create the driver
+    // ! create the driver
     void CIrrDeviceWin32::createDriver()
     {
         switch (CreationParams.DriverType)
@@ -1154,7 +1154,7 @@ namespace irr
 
 #else
                 os::Printer::log("DIRECT3D8 Driver was not compiled into this dll. Try another one.", ELL_ERROR);
-#endif // _IRR_COMPILE_WITH_DIRECT3D_8_
+#endif      // _IRR_COMPILE_WITH_DIRECT3D_8_
 
                 break;
 
@@ -1169,7 +1169,7 @@ namespace irr
 
 #else
                 os::Printer::log("DIRECT3D9 Driver was not compiled into this dll. Try another one.", ELL_ERROR);
-#endif // _IRR_COMPILE_WITH_DIRECT3D_9_
+#endif      // _IRR_COMPILE_WITH_DIRECT3D_9_
 
                 break;
 
@@ -1184,7 +1184,7 @@ namespace irr
 
 #else
                 os::Printer::log("DIRECT3D11 Driver was not compiled into this dll. Try another one.", ELL_ERROR);
-#endif // _IRR_COMPILE_WITH_DIRECT3D_11_
+#endif      // _IRR_COMPILE_WITH_DIRECT3D_11_
 
                 break;
 
@@ -1238,7 +1238,7 @@ namespace irr
     }
 
 
-    //! runs the device. Returns false if device wants to be deleted
+    // ! runs the device. Returns false if device wants to be deleted
     bool CIrrDeviceWin32::run()
     {
         os::Timer::tick();
@@ -1258,16 +1258,16 @@ namespace irr
     }
 
 
-    //! Pause the current process for the minimum time allowed only to allow other processes to execute
+    // ! Pause the current process for the minimum time allowed only to allow other processes to execute
     void CIrrDeviceWin32::yield()
     {
         Sleep(1);
     }
 
-    //! Pause execution and let other processes to run for a specified amount of time.
+    // ! Pause execution and let other processes to run for a specified amount of time.
     void CIrrDeviceWin32::sleep(u32 timeMs, bool pauseTimer)
     {
-        const bool wasStopped = Timer ? Timer->isStopped() : true;
+        const bool    wasStopped = Timer ? Timer->isStopped() : true;
 
         if (pauseTimer && !wasStopped)
             Timer->stop();
@@ -1284,10 +1284,10 @@ namespace irr
         if (!Resized || !getVideoDriver())
             return;
 
-        RECT r;
+        RECT    r;
         GetClientRect(HWnd, &r);
 
-        char tmp[255];
+        char    tmp[255];
 
         if (r.right < 2 || r.bottom < 2)
         {
@@ -1307,36 +1307,36 @@ namespace irr
     }
 
 
-    //! sets the caption of the window
+    // ! sets the caption of the window
     void CIrrDeviceWin32::setWindowCaption(const wchar_t *text)
     {
         // We use SendMessage instead of SetText to ensure proper
         // function even in cases where the HWND was created in a different thread
-        DWORD_PTR dwResult;
+        DWORD_PTR    dwResult;
 
         SendMessageTimeoutW(HWnd, WM_SETTEXT, 0,
-            reinterpret_cast<LPARAM>(text),
-            SMTO_ABORTIFHUNG, 2000, &dwResult);
+                            reinterpret_cast<LPARAM>(text),
+                            SMTO_ABORTIFHUNG, 2000, &dwResult);
     }
 
 
-    //! presents a surface in the client area
+    // ! presents a surface in the client area
     bool CIrrDeviceWin32::present(video::IImage *image, void *windowId, core::rect<s32> *src)
     {
-        HWND hwnd = HWnd;
+        HWND    hwnd = HWnd;
 
         if (windowId)
             hwnd = static_cast<HWND>(windowId);
 
-        HDC dc = GetDC(hwnd);
+        HDC    dc = GetDC(hwnd);
 
         if (dc)
         {
-            RECT rect;
+            RECT    rect;
             GetClientRect(hwnd, &rect);
-            const void *memory = (const void*)image->lock();
+            const void    *memory = (const void*)image->lock();
 
-            BITMAPV4HEADER bi;
+            BITMAPV4HEADER    bi;
             ZeroMemory (&bi, sizeof(bi));
             bi.bV4Size          = sizeof(BITMAPINFOHEADER);
             bi.bV4BitCount      = (WORD)image->getBitsPerPixel();
@@ -1352,15 +1352,15 @@ namespace irr
             if (src)
             {
                 StretchDIBits(dc, 0, 0, rect.right, rect.bottom,
-                    src->UpperLeftCorner.X, src->UpperLeftCorner.Y,
-                    src->getWidth(), src->getHeight(),
-                    memory, (const BITMAPINFO*)(&bi), DIB_RGB_COLORS, SRCCOPY);
+                              src->UpperLeftCorner.X, src->UpperLeftCorner.Y,
+                              src->getWidth(), src->getHeight(),
+                              memory, (const BITMAPINFO*)(&bi), DIB_RGB_COLORS, SRCCOPY);
             }
             else
             {
                 StretchDIBits(dc, 0, 0, rect.right, rect.bottom,
-                    0, 0, image->getDimension().Width, image->getDimension().Height,
-                    memory, (const BITMAPINFO*)(&bi), DIB_RGB_COLORS, SRCCOPY);
+                              0, 0, image->getDimension().Width, image->getDimension().Height,
+                              memory, (const BITMAPINFO*)(&bi), DIB_RGB_COLORS, SRCCOPY);
             }
 
             image->unlock();
@@ -1372,10 +1372,10 @@ namespace irr
     }
 
 
-    //! notifies the device that it should close itself
+    // ! notifies the device that it should close itself
     void CIrrDeviceWin32::closeDevice()
     {
-        MSG msg;
+        MSG    msg;
 
         PeekMessage(&msg, NULL, WM_QUIT, WM_QUIT, PM_REMOVE);
         PostQuitMessage(0);
@@ -1383,8 +1383,8 @@ namespace irr
         if (!ExternalWindow)
         {
             DestroyWindow(HWnd);
-            const fschar_t *ClassName = __TEXT("CIrrDeviceWin32");
-            HINSTANCE      hInstance  = GetModuleHandle(0);
+            const fschar_t      *ClassName  = __TEXT("CIrrDeviceWin32");
+            HINSTANCE           hInstance   = GetModuleHandle(0);
             UnregisterClass(ClassName, hInstance);
         }
 
@@ -1392,7 +1392,7 @@ namespace irr
     }
 
 
-    //! returns if window is active. if not, nothing needs to be drawn
+    // ! returns if window is active. if not, nothing needs to be drawn
     bool CIrrDeviceWin32::isWindowActive() const
     {
         _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
@@ -1400,23 +1400,23 @@ namespace irr
     }
 
 
-    //! returns if window has focus
+    // ! returns if window has focus
     bool CIrrDeviceWin32::isWindowFocused() const
     {
-        const bool ret = (GetFocus() == HWnd);
+        const bool    ret = (GetFocus() == HWnd);
 
         _IRR_IMPLEMENT_MANAGED_MARSHALLING_BUGFIX;
         return ret;
     }
 
 
-    //! returns if window is minimized
+    // ! returns if window is minimized
     bool CIrrDeviceWin32::isWindowMinimized() const
     {
-        WINDOWPLACEMENT plc;
+        WINDOWPLACEMENT    plc;
 
         plc.length = sizeof(WINDOWPLACEMENT);
-        bool ret = false;
+        bool    ret = false;
         if (GetWindowPlacement(HWnd, &plc))
             ret = (plc.showCmd & SW_SHOWMINIMIZED) != 0;
 
@@ -1425,7 +1425,7 @@ namespace irr
     }
 
 
-    //! switches to fullscreen
+    // ! switches to fullscreen
     bool CIrrDeviceWin32::switchToFullScreen(bool reset)
     {
         if (!CreationParams.Fullscreen)
@@ -1443,7 +1443,7 @@ namespace irr
 
         // use default values from current setting
 
-        DEVMODE dm;
+        DEVMODE    dm;
         memset(&dm, 0, sizeof(dm));
         dm.dmSize = sizeof(dm);
 
@@ -1453,14 +1453,14 @@ namespace irr
         dm.dmBitsPerPel = CreationParams.Bits;
         dm.dmFields     = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY;
 
-        LONG res = ChangeDisplaySettings(&dm, CDS_FULLSCREEN);
+        LONG    res = ChangeDisplaySettings(&dm, CDS_FULLSCREEN);
         if (res != DISP_CHANGE_SUCCESSFUL)
         {   // try again without forcing display frequency
             dm.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
             res         = ChangeDisplaySettings(&dm, CDS_FULLSCREEN);
         }
 
-        bool ret = false;
+        bool    ret = false;
 
         switch (res)
         {
@@ -1499,29 +1499,29 @@ namespace irr
     }
 
 
-    //! returns the win32 cursor control
+    // ! returns the win32 cursor control
     CIrrDeviceWin32::CCursorControl* CIrrDeviceWin32::getWin32CursorControl()
     {
         return Win32CursorControl;
     }
 
 
-    //! \return Returns a pointer to a list with all video modes supported
-    //! by the gfx adapter.
+    // ! \return Returns a pointer to a list with all video modes supported
+    // ! by the gfx adapter.
     video::IVideoModeList* CIrrDeviceWin32::getVideoModeList()
     {
         if (!VideoModeList->getVideoModeCount())
         {
             // enumerate video modes.
-            DWORD   i = 0;
-            DEVMODE mode;
+            DWORD       i = 0;
+            DEVMODE     mode;
             memset(&mode, 0, sizeof(mode));
             mode.dmSize = sizeof(mode);
 
             while (EnumDisplaySettings(NULL, i, &mode))
             {
                 VideoModeList->addMode(core::dimension2d<u32>(mode.dmPelsWidth, mode.dmPelsHeight),
-                    mode.dmBitsPerPel);
+                                       mode.dmBitsPerPel);
 
                 ++i;
             }
@@ -1538,41 +1538,41 @@ namespace irr
     // depending on the SDK version and compilers some defines might be available
     // or not
 #ifndef PRODUCT_ULTIMATE
-#define PRODUCT_ULTIMATE     0x00000001
-#define PRODUCT_HOME_BASIC   0x00000002
-#define PRODUCT_HOME_PREMIUM 0x00000003
-#define PRODUCT_ENTERPRISE   0x00000004
-#define PRODUCT_HOME_BASIC_N 0x00000005
-#define PRODUCT_BUSINESS     0x00000006
-#define PRODUCT_STARTER      0x0000000B
+#define PRODUCT_ULTIMATE        0x00000001
+#define PRODUCT_HOME_BASIC      0x00000002
+#define PRODUCT_HOME_PREMIUM    0x00000003
+#define PRODUCT_ENTERPRISE      0x00000004
+#define PRODUCT_HOME_BASIC_N    0x00000005
+#define PRODUCT_BUSINESS        0x00000006
+#define PRODUCT_STARTER         0x0000000B
 #endif
 #ifndef PRODUCT_ULTIMATE_N
-#define PRODUCT_BUSINESS_N     0x00000010
-#define PRODUCT_HOME_PREMIUM_N 0x0000001A
-#define PRODUCT_ENTERPRISE_N   0x0000001B
-#define PRODUCT_ULTIMATE_N     0x0000001C
+#define PRODUCT_BUSINESS_N      0x00000010
+#define PRODUCT_HOME_PREMIUM_N  0x0000001A
+#define PRODUCT_ENTERPRISE_N    0x0000001B
+#define PRODUCT_ULTIMATE_N      0x0000001C
 #endif
 #ifndef PRODUCT_STARTER_N
 #define PRODUCT_STARTER_N 0x0000002F
 #endif
 #ifndef PRODUCT_PROFESSIONAL
-#define PRODUCT_PROFESSIONAL   0x00000030
-#define PRODUCT_PROFESSIONAL_N 0x00000031
+#define PRODUCT_PROFESSIONAL    0x00000030
+#define PRODUCT_PROFESSIONAL_N  0x00000031
 #endif
 #ifndef PRODUCT_ULTIMATE_E
-#define PRODUCT_STARTER_E      0x00000042
-#define PRODUCT_HOME_BASIC_E   0x00000043
-#define PRODUCT_HOME_PREMIUM_E 0x00000044
-#define PRODUCT_PROFESSIONAL_E 0x00000045
-#define PRODUCT_ENTERPRISE_E   0x00000046
-#define PRODUCT_ULTIMATE_E     0x00000047
+#define PRODUCT_STARTER_E       0x00000042
+#define PRODUCT_HOME_BASIC_E    0x00000043
+#define PRODUCT_HOME_PREMIUM_E  0x00000044
+#define PRODUCT_PROFESSIONAL_E  0x00000045
+#define PRODUCT_ENTERPRISE_E    0x00000046
+#define PRODUCT_ULTIMATE_E      0x00000047
 #endif
 
     void CIrrDeviceWin32::getWindowsVersion(core::stringc &out)
     {
-        OSVERSIONINFOEX osvi;
-        PGPI            pGPI;
-        BOOL            bOsVersionInfoEx;
+        OSVERSIONINFOEX     osvi;
+        PGPI                pGPI;
+        BOOL                bOsVersionInfoEx;
 
         ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
         osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
@@ -1616,7 +1616,7 @@ namespace irr
                 {
                     if (osvi.dwMajorVersion == 6)
                     {
-                        DWORD dwType;
+                        DWORD    dwType;
                         pGPI = (PGPI)GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "GetProductInfo");
                         pGPI(osvi.dwMajorVersion, osvi.dwMinorVersion, 0, 0, &dwType);
 
@@ -1691,15 +1691,15 @@ namespace irr
                 }
                 else
                 {
-                    HKEY  hKey;
-                    char  szProductType[80];
-                    DWORD dwBufLen;
+                    HKEY        hKey;
+                    char        szProductType[80];
+                    DWORD       dwBufLen;
 
                     RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                        __TEXT("SYSTEM\\CurrentControlSet\\Control\\ProductOptions"),
-                        0, KEY_QUERY_VALUE, &hKey);
+                                 __TEXT("SYSTEM\\CurrentControlSet\\Control\\ProductOptions"),
+                                 0, KEY_QUERY_VALUE, &hKey);
                     RegQueryValueEx(hKey, __TEXT("ProductType"), NULL, NULL,
-                        (LPBYTE) szProductType, &dwBufLen);
+                                    (LPBYTE) szProductType, &dwBufLen);
                     RegCloseKey(hKey);
 
                     if (_strcmpi("WINNT", szProductType) == 0)
@@ -1714,20 +1714,20 @@ namespace irr
 
                 // Display version, service pack (if any), and build number.
 
-                char tmp[255];
+                char    tmp[255];
 
                 if (osvi.dwMajorVersion <= 4)
                 {
                     sprintf(tmp, "version %lu.%lu %s (Build %lu)",
-                        osvi.dwMajorVersion,
-                        osvi.dwMinorVersion,
-                        irr::core::stringc(osvi.szCSDVersion).c_str(),
-                        osvi.dwBuildNumber & 0xFFFF);
+                            osvi.dwMajorVersion,
+                            osvi.dwMinorVersion,
+                            irr::core::stringc(osvi.szCSDVersion).c_str(),
+                            osvi.dwBuildNumber & 0xFFFF);
                 }
                 else
                 {
                     sprintf(tmp, "%s (Build %lu)", irr::core::stringc(osvi.szCSDVersion).c_str(),
-                        osvi.dwBuildNumber & 0xFFFF);
+                            osvi.dwBuildNumber & 0xFFFF);
                 }
 
                 out.append(tmp);
@@ -1763,19 +1763,19 @@ namespace irr
         }
     }
 
-    //! Notifies the device, that it has been resized
+    // ! Notifies the device, that it has been resized
     void CIrrDeviceWin32::OnResized()
     {
         Resized = true;
     }
 
-    //! Sets if the window should be resizable in windowed mode.
+    // ! Sets if the window should be resizable in windowed mode.
     void CIrrDeviceWin32::setResizable(bool resize)
     {
         if (ExternalWindow || !getVideoDriver() || CreationParams.Fullscreen)
             return;
 
-        LONG_PTR style = WS_POPUP;
+        LONG_PTR    style = WS_POPUP;
 
         if (!resize)
             style = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
@@ -1785,31 +1785,31 @@ namespace irr
         if (!SetWindowLongPtr(HWnd, GWL_STYLE, style))
             os::Printer::log("Could not change window style.");
 
-        RECT clientSize;
-        clientSize.top    = 0;
-        clientSize.left   = 0;
-        clientSize.right  = getVideoDriver()->getScreenSize().Width;
-        clientSize.bottom = getVideoDriver()->getScreenSize().Height;
+        RECT    clientSize;
+        clientSize.top      = 0;
+        clientSize.left     = 0;
+        clientSize.right    = getVideoDriver()->getScreenSize().Width;
+        clientSize.bottom   = getVideoDriver()->getScreenSize().Height;
 
         AdjustWindowRect(&clientSize, (DWORD)style, FALSE);
 
-        const s32 realWidth  = clientSize.right - clientSize.left;
-        const s32 realHeight = clientSize.bottom - clientSize.top;
+        const s32       realWidth   = clientSize.right - clientSize.left;
+        const s32       realHeight  = clientSize.bottom - clientSize.top;
 
-        const s32 windowLeft = (GetSystemMetrics(SM_CXSCREEN) - realWidth) / 2;
-        const s32 windowTop  = (GetSystemMetrics(SM_CYSCREEN) - realHeight) / 2;
+        const s32       windowLeft  = (GetSystemMetrics(SM_CXSCREEN) - realWidth) / 2;
+        const s32       windowTop   = (GetSystemMetrics(SM_CYSCREEN) - realHeight) / 2;
 
         SetWindowPos(HWnd, HWND_TOP, windowLeft, windowTop, realWidth, realHeight,
-            SWP_FRAMECHANGED | SWP_NOMOVE | SWP_SHOWWINDOW);
+                     SWP_FRAMECHANGED | SWP_NOMOVE | SWP_SHOWWINDOW);
 
         dynamic_cast<CCursorControl*>(CursorControl)->updateBorderSize(CreationParams.Fullscreen, resize);
     }
 
 
-    //! Minimizes the window.
+    // ! Minimizes the window.
     void CIrrDeviceWin32::minimizeWindow()
     {
-        WINDOWPLACEMENT wndpl;
+        WINDOWPLACEMENT    wndpl;
 
         wndpl.length = sizeof(WINDOWPLACEMENT);
         GetWindowPlacement(HWnd, &wndpl);
@@ -1818,10 +1818,10 @@ namespace irr
     }
 
 
-    //! Maximizes the window.
+    // ! Maximizes the window.
     void CIrrDeviceWin32::maximizeWindow()
     {
-        WINDOWPLACEMENT wndpl;
+        WINDOWPLACEMENT    wndpl;
 
         wndpl.length = sizeof(WINDOWPLACEMENT);
         GetWindowPlacement(HWnd, &wndpl);
@@ -1830,10 +1830,10 @@ namespace irr
     }
 
 
-    //! Restores the window to its original size.
+    // ! Restores the window to its original size.
     void CIrrDeviceWin32::restoreWindow()
     {
-        WINDOWPLACEMENT wndpl;
+        WINDOWPLACEMENT    wndpl;
 
         wndpl.length = sizeof(WINDOWPLACEMENT);
         GetWindowPlacement(HWnd, &wndpl);
@@ -1851,29 +1851,29 @@ namespace irr
     }
 
 
-    //! Set the current Gamma Value for the Display
+    // ! Set the current Gamma Value for the Display
     bool CIrrDeviceWin32::setGammaRamp(f32 red, f32 green, f32 blue, f32 brightness, f32 contrast)
     {
-        bool r;
-        u16  ramp[3][256];
+        bool    r;
+        u16     ramp[3][256];
 
         calculateGammaRamp(ramp[0], red, brightness, contrast);
         calculateGammaRamp(ramp[1], green, brightness, contrast);
         calculateGammaRamp(ramp[2], blue, brightness, contrast);
 
-        HDC dc = GetDC(0);
+        HDC    dc = GetDC(0);
         r = SetDeviceGammaRamp (dc, ramp) == TRUE;
         ReleaseDC(HWnd, dc);
         return r;
     }
 
-    //! Get the current Gamma Value for the Display
+    // ! Get the current Gamma Value for the Display
     bool CIrrDeviceWin32::getGammaRamp(f32 &red, f32 &green, f32 &blue, f32 &brightness, f32 &contrast)
     {
-        bool r;
-        u16  ramp[3][256];
+        bool    r;
+        u16     ramp[3][256];
 
-        HDC dc = GetDC(0);
+        HDC    dc = GetDC(0);
 
         r = GetDeviceGammaRamp (dc, ramp) == TRUE;
         ReleaseDC(HWnd, dc);
@@ -1885,17 +1885,17 @@ namespace irr
             calculateGammaFromRamp(blue, ramp[2]);
         }
 
-        brightness = 0.f;
-        contrast   = 0.f;
+        brightness  = 0.f;
+        contrast    = 0.f;
 
         return r;
     }
 
 
-    //! Process system events
+    // ! Process system events
     void CIrrDeviceWin32::handleSystemMessages()
     {
-        MSG msg;
+        MSG    msg;
 
         while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
@@ -1913,10 +1913,10 @@ namespace irr
     }
 
 
-    //! Remove all messages pending in the system message loop
+    // ! Remove all messages pending in the system message loop
     void CIrrDeviceWin32::clearSystemMessages()
     {
-        MSG msg;
+        MSG    msg;
 
         while (PeekMessage(&msg, NULL, WM_KEYFIRST, WM_KEYLAST, PM_REMOVE))
         {}
@@ -1929,8 +1929,8 @@ namespace irr
     void CIrrDeviceWin32::ReportLastWinApiError()
     {
         // (based on code from ovidiucucu from http://www.codeguru.com/forum/showthread.php?t=318721)
-        LPCTSTR     pszCaption = __TEXT("Windows SDK Error Report");
-        const DWORD dwError    = GetLastError();
+        LPCTSTR         pszCaption  = __TEXT("Windows SDK Error Report");
+        const DWORD     dwError     = GetLastError();
 
         if (NOERROR == dwError)
         {
@@ -1938,18 +1938,18 @@ namespace irr
         }
         else
         {
-            constexpr DWORD dwFormatControl = FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                FORMAT_MESSAGE_IGNORE_INSERTS |
-                FORMAT_MESSAGE_FROM_SYSTEM;
+            constexpr DWORD    dwFormatControl = FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                                                 FORMAT_MESSAGE_IGNORE_INSERTS |
+                                                 FORMAT_MESSAGE_FROM_SYSTEM;
 
-            LPVOID      pTextBuffer = NULL;
-            const DWORD dwCount     = FormatMessage(dwFormatControl,
-                    NULL,
-                    dwError,
-                    0,
-                    (LPTSTR) &pTextBuffer,
-                    0,
-                    NULL);
+            LPVOID          pTextBuffer = NULL;
+            const DWORD     dwCount     = FormatMessage(dwFormatControl,
+                                                        NULL,
+                                                        dwError,
+                                                        0,
+                                                        (LPTSTR) &pTextBuffer,
+                                                        0,
+                                                        NULL);
             if (0 != dwCount)
             {
                 MessageBox(NULL, (LPCTSTR)pTextBuffer, pszCaption, MB_OK | MB_ICONERROR);
@@ -1969,21 +1969,21 @@ namespace irr
         //
         // create the bitmaps needed for cursors from the texture
 
-        HDC     dc        = GetDC(hwnd);
-        HDC     andDc     = CreateCompatibleDC(dc);
-        HDC     xorDc     = CreateCompatibleDC(dc);
-        HBITMAP andBitmap = CreateCompatibleBitmap(dc, sourceRect.getWidth(), sourceRect.getHeight());
-        HBITMAP xorBitmap = CreateCompatibleBitmap(dc, sourceRect.getWidth(), sourceRect.getHeight());
+        HDC         dc          = GetDC(hwnd);
+        HDC         andDc       = CreateCompatibleDC(dc);
+        HDC         xorDc       = CreateCompatibleDC(dc);
+        HBITMAP     andBitmap   = CreateCompatibleBitmap(dc, sourceRect.getWidth(), sourceRect.getHeight());
+        HBITMAP     xorBitmap   = CreateCompatibleBitmap(dc, sourceRect.getWidth(), sourceRect.getHeight());
 
-        HBITMAP oldAndBitmap = (HBITMAP)SelectObject(andDc, andBitmap);
-        HBITMAP oldXorBitmap = (HBITMAP)SelectObject(xorDc, xorBitmap);
+        HBITMAP     oldAndBitmap    = (HBITMAP)SelectObject(andDc, andBitmap);
+        HBITMAP     oldXorBitmap    = (HBITMAP)SelectObject(xorDc, xorBitmap);
 
 
-        const video::ECOLOR_FORMAT format        = tex->getColorFormat();
-        const u32                  bytesPerPixel = video::IImage::getBitsPerPixelFromFormat(format) / 8;
-        const u32                  bytesLeftGap  = sourceRect.UpperLeftCorner.X * bytesPerPixel;
-        const u32                  bytesRightGap = tex->getPitch() - sourceRect.LowerRightCorner.X * bytesPerPixel;
-        const u8                   *data         = (const u8*)tex->lock(video::ETLM_READ_ONLY, 0);
+        const video::ECOLOR_FORMAT      format          = tex->getColorFormat();
+        const u32                       bytesPerPixel   = video::IImage::getBitsPerPixelFromFormat(format) / 8;
+        const u32                       bytesLeftGap    = sourceRect.UpperLeftCorner.X * bytesPerPixel;
+        const u32                       bytesRightGap   = tex->getPitch() - sourceRect.LowerRightCorner.X * bytesPerPixel;
+        const u8                        *data           = (const u8*)tex->lock(video::ETLM_READ_ONLY, 0);
 
         data += sourceRect.UpperLeftCorner.Y * tex->getPitch();
 
@@ -1993,7 +1993,7 @@ namespace irr
 
             for (s32 x = 0; x < sourceRect.getWidth(); ++x)
             {
-                video::SColor pixelCol;
+                video::SColor    pixelCol;
                 pixelCol.setData((const void*)data, format);
                 data += bytesPerPixel;
 
@@ -2024,14 +2024,14 @@ namespace irr
 
         // create the cursor
 
-        ICONINFO iconinfo;
-        iconinfo.fIcon    = false; // type is cursor not icon
-        iconinfo.xHotspot = hotspot.X;
-        iconinfo.yHotspot = hotspot.Y;
-        iconinfo.hbmMask  = andBitmap;
-        iconinfo.hbmColor = xorBitmap;
+        ICONINFO    iconinfo;
+        iconinfo.fIcon      = false; // type is cursor not icon
+        iconinfo.xHotspot   = hotspot.X;
+        iconinfo.yHotspot   = hotspot.Y;
+        iconinfo.hbmMask    = andBitmap;
+        iconinfo.hbmColor   = xorBitmap;
 
-        HCURSOR cursor = CreateIconIndirect(&iconinfo);
+        HCURSOR    cursor = CreateIconIndirect(&iconinfo);
 
         DeleteObject(andBitmap);
         DeleteObject(xorBitmap);
@@ -2091,13 +2091,13 @@ namespace irr
         if (!Cursors[ActiveIcon].Frames.empty() && Cursors[ActiveIcon].FrameTime)
         {
             // update animated cursors. This could also be done by X11 in case someone wants to figure that out (this way was just easier to implement)
-            const u32 now   = Device->getTimer()->getRealTime();
-            const u32 frame = ((now - ActiveIconStartTime) / Cursors[ActiveIcon].FrameTime) % Cursors[ActiveIcon].Frames.size();
+            const u32       now     = Device->getTimer()->getRealTime();
+            const u32       frame   = ((now - ActiveIconStartTime) / Cursors[ActiveIcon].FrameTime) % Cursors[ActiveIcon].Frames.size();
             SetCursor(Cursors[ActiveIcon].Frames[frame].IconHW);
         }
     }
 
-    //! Sets the active cursor icon
+    // ! Sets the active cursor icon
     void CIrrDeviceWin32::CCursorControl::setActiveIcon(gui::ECURSOR_ICON iconId)
     {
         if (iconId >= (s32)Cursors.size())
@@ -2110,21 +2110,21 @@ namespace irr
     }
 
 
-    //! Add a custom sprite as cursor icon.
+    // ! Add a custom sprite as cursor icon.
     gui::ECURSOR_ICON CIrrDeviceWin32::CCursorControl::addIcon(const gui::SCursorSprite &icon)
     {
         if (icon.SpriteId >= 0)
         {
-            CursorW32 cW32;
+            CursorW32    cW32;
             cW32.FrameTime = icon.SpriteBank->getSprites()[icon.SpriteId].frameTime;
 
             for (u32 i = 0; i < icon.SpriteBank->getSprites()[icon.SpriteId].Frames.size(); ++i)
             {
-                const irr::u32             texId    = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].textureNumber;
-                const irr::u32             rectId   = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].rectNumber;
-                const irr::core::rect<s32> rectIcon = icon.SpriteBank->getPositions()[rectId];
+                const irr::u32                  texId       = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].textureNumber;
+                const irr::u32                  rectId      = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].rectNumber;
+                const irr::core::rect<s32>      rectIcon    = icon.SpriteBank->getPositions()[rectId];
 
-                HCURSOR hc = Device->TextureToCursor(HWnd, icon.SpriteBank->getTexture(texId), rectIcon, icon.HotSpot);
+                HCURSOR    hc = Device->TextureToCursor(HWnd, icon.SpriteBank->getTexture(texId), rectIcon, icon.HotSpot);
                 cW32.Frames.push_back(CursorFrameW32(hc));
             }
 
@@ -2136,7 +2136,7 @@ namespace irr
     }
 
 
-    //! replace the given cursor icon.
+    // ! replace the given cursor icon.
     void CIrrDeviceWin32::CCursorControl::changeIcon(gui::ECURSOR_ICON iconId, const gui::SCursorSprite &icon)
     {
         if (iconId >= (s32)Cursors.size())
@@ -2147,16 +2147,16 @@ namespace irr
 
         if (icon.SpriteId >= 0)
         {
-            CursorW32 cW32;
+            CursorW32    cW32;
             cW32.FrameTime = icon.SpriteBank->getSprites()[icon.SpriteId].frameTime;
 
             for (u32 i = 0; i < icon.SpriteBank->getSprites()[icon.SpriteId].Frames.size(); ++i)
             {
-                const irr::u32             texId    = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].textureNumber;
-                const irr::u32             rectId   = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].rectNumber;
-                const irr::core::rect<s32> rectIcon = icon.SpriteBank->getPositions()[rectId];
+                const irr::u32                  texId       = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].textureNumber;
+                const irr::u32                  rectId      = icon.SpriteBank->getSprites()[icon.SpriteId].Frames[i].rectNumber;
+                const irr::core::rect<s32>      rectIcon    = icon.SpriteBank->getPositions()[rectId];
 
-                HCURSOR hc = Device->TextureToCursor(HWnd, icon.SpriteBank->getTexture(texId), rectIcon, icon.HotSpot);
+                HCURSOR    hc = Device->TextureToCursor(HWnd, icon.SpriteBank->getTexture(texId), rectIcon, icon.HotSpot);
                 cW32.Frames.push_back(CursorFrameW32(hc));
             }
 
@@ -2165,13 +2165,13 @@ namespace irr
     }
 
 
-    //! Return a system-specific size which is supported for cursors. Larger icons will fail, smaller icons might work.
+    // ! Return a system-specific size which is supported for cursors. Larger icons will fail, smaller icons might work.
     core::dimension2di CIrrDeviceWin32::CCursorControl::getSupportedIconSize() const
     {
-        core::dimension2di result;
+        core::dimension2di    result;
 
-        result.Width  = GetSystemMetrics(SM_CXCURSOR);
-        result.Height = GetSystemMetrics(SM_CYCURSOR);
+        result.Width    = GetSystemMetrics(SM_CXCURSOR);
+        result.Height   = GetSystemMetrics(SM_CYCURSOR);
 
         return result;
     }
