@@ -3716,30 +3716,6 @@ namespace irr
             // The draw has the same material type but it has different textures.
             if (m_LastMaterialType != materialType || m_nPsTexCount != m_nLastPsTexCount)
             {
-                if (materialType == EMT_SOLID)
-                {
-#if 0
-                    if (m_Material.Lighting == false)
-                    {
-                        if (m_nPsTexCount == 0)
-                            materialType = EMT_SOLID_COLOR;
-                        else if (m_nPsTexCount == 1 && vType == EVT_2TCOORDS)
-                            materialType = EMT_SOLID_1_LAYER;
-                    }
-                    else
-                    {
-                        if (m_Material.GouraudShading == true)
-                        {
-                            materialType = EMT_SOLID_LIGHTING_GOURAUD;
-                        }
-                        else
-                        {
-                            materialType = EMT_SOLID_LIGHTING_FLAT;
-                        }
-                    }
-#endif
-                }
-
                 bSetPs = true;
             }
 
