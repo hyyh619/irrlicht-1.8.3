@@ -1337,8 +1337,8 @@ namespace irr
                                                        E_VERTEX_TYPE vType, scene::E_PRIMITIVE_TYPE pType,
                                                        E_INDEX_TYPE iType, bool is3D)
         {
-            if (m_Material.GouraudShading == 1)
-                os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
+            //if (m_Material.GouraudShading == 1)
+            //    os::Printer::log("Could not create rasterizer state.", ELL_ERROR);
 
             setVSByVertexType(vType);
             setPSByMaterialType(vType, m_Material.MaterialType);
