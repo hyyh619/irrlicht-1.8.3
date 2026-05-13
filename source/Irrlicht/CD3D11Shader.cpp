@@ -168,7 +168,7 @@ const char    VERTEX_SHADER_STANDARD_DIRECTIONAL[] =
             "    float3 lightDistant = LightPos.xyz - worldPos.xyz;"
             "    float dist = length(lightDistant);"
             "    float3 lightDir = normalize(lightDistant);"
-            "    float3 viewDir = normalize(cameraPos - worldPos.xyz);"
+            "    float3 viewDir = cameraPos;"
             "    float NdotL = max(dot(normal, lightDir), 0.0);"
             "    float4 matDiffuse = (ColorMaterialMode == 1 || ColorMaterialMode == 5) ? input.Color : MaterialDiffuseColor;"
             "    float4 matAmbient = (ColorMaterialMode == 2 || ColorMaterialMode == 5) ? input.Color : MaterialAmbientColor;"
