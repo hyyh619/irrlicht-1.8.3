@@ -1,6 +1,7 @@
 import json
 import math
 import re
+import os
 from dataclasses import dataclass
 from typing import Any, Dict, List, Union
 
@@ -13,9 +14,15 @@ class ShaderVariable:
 
 
 @dataclass
+class FieldDefinition:
+    field_type: str
+    name: str
+    semantic: str
+
+@dataclass
 class StructDefinition:
     name: str
-    fields: Dict[str, str]
+    fields: List[FieldDefinition]
 
 
 class HLSLInterpreter:
@@ -51,16 +58,22 @@ class HLSLInterpreter:
             return None
         name = match.group(1)
         fields_str = match.group(2)
-        fields = {}
+        fields = []
         for line in fields_str.split(';'):
             line = line.strip()
             if not line:
                 continue
             parts = line.split(':')
             if len(parts) == 2:
-                field_name = parts[0].strip().split()[-1]
-                field_type = parts[1].strip()
-                fields[field_name] = field_type
+                type_and_name = parts[0].strip().split()
+                semantic = parts[1].strip()
+                if len(type_and_name) >= 2:
+                    field_type = type_and_name[0]
+                    field_name = type_and_name[-1]
+                else:
+                    field_type = type_and_name[0]
+                    field_name = ''
+                fields.append(FieldDefinition(field_type, field_name, semantic))
         return StructDefinition(name, fields)
 
     def parse_cbuffer(self, code: str) -> tuple:
@@ -189,6 +202,17 @@ class HLSLInterpreter:
             result.append(i_val - 2 * n_val * dot)
         return result
 
+    def find_top_level_comma(self, expr: str) -> int:
+        depth = 0
+        for i, char in enumerate(expr):
+            if char == '(':
+                depth += 1
+            elif char == ')':
+                depth -= 1
+            elif char == ',' and depth == 0:
+                return i
+        return -1
+
     def evaluate_expression(self, expr: str, local_vars: Dict[str, Any]) -> Any:
         expr = expr.strip()
         if not expr:
@@ -311,17 +335,6 @@ class HLSLInterpreter:
                         result.append(val)
                 return result
 
-        if '(' in expr and ')' in expr:
-            def find_top_level_comma(self, expr: str) -> int:
-        depth = 0
-        for i, char in enumerate(expr):
-            if char == '(':
-                depth += 1
-            elif char == ')':
-                depth -= 1
-            elif char == ',' and depth == 0:
-                return i
-        return -1
 
             if 'transpose' in expr:
                 match = re.search(r'transpose\s*\(([^)]+)\)', expr)
@@ -818,7 +831,6 @@ def main():
     }
     '''
 
-    import os
     script_dir = os.path.dirname(os.path.abspath(__file__))
     json_path = os.path.join(script_dir, 'test_data.json')
     data = interpreter.load_json(json_path)
