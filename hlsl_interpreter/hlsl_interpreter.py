@@ -21,9 +21,15 @@ class FieldDefinition:
     field_type: str
     name: str
     semantic: str
+    data: List[Any] = None
 
 @dataclass
 class StructDefinition:
+    name: str
+    fields: List[FieldDefinition]
+
+@dataclass
+class CbufferDefinition:
     name: str
     fields: List[FieldDefinition]
 
@@ -31,13 +37,61 @@ class StructDefinition:
 class HLSLInterpreter:
     def __init__(self):
         self.structs: Dict[str, StructDefinition] = {}
-        self.cbuffers: Dict[str, Dict[str, Any]] = {}
+        self.cbuffers: Dict[str, CbufferDefinition] = {}
         self.variables: Dict[str, Any] = {}
 
     def load_json(self, filepath: str):
         with open(filepath, 'r') as f:
             data = json.load(f)
         return data
+
+    def load_csv(self, filepath: str) -> List[List[str]]:
+        rows = []
+        with open(filepath, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    rows.append(line.split(','))
+        return rows
+
+    def get_type_size(self, field_type: str) -> int:
+        if 'float4x4' in field_type:
+            return 64
+        elif 'float4' in field_type:
+            return 16
+        elif 'float3' in field_type:
+            return 12
+        elif 'float2' in field_type:
+            return 8
+        elif 'uint' in field_type:
+            return 4
+        return 0
+
+    def parse_value_by_type(self, value_str: str, field_type: str) -> Any:
+        value_str = value_str.strip().strip('"')
+        if 'float4x4' in field_type:
+            parts = value_str.split(',')
+            if len(parts) >= 16:
+                matrix = []
+                for i in range(4):
+                    row = [float(parts[j]) for j in range(i*4, i*4+4)]
+                    matrix.append(row)
+                return matrix
+        elif 'float4' in field_type:
+            parts = value_str.split(',')
+            return [float(p) for p in parts[:4]]
+        elif 'float3' in field_type:
+            parts = value_str.split(',')
+            return [float(p) for p in parts[:3]]
+        elif 'float2' in field_type:
+            parts = value_str.split(',')
+            return [float(p) for p in parts[:2]]
+        elif 'uint' in field_type:
+            return int(value_str)
+        try:
+            return float(value_str)
+        except:
+            return value_str
 
     def parse_type(self, type_str: str) -> str:
         type_str = type_str.strip()
@@ -79,14 +133,13 @@ class HLSLInterpreter:
                 fields.append(FieldDefinition(field_type, field_name, semantic))
         return StructDefinition(name, fields)
 
-    def parse_cbuffer(self, code: str) -> tuple:
+    def parse_cbuffer(self, code: str) -> CbufferDefinition:
         match = re.search(r'cbuffer\s+(\w+)\s*:.*?\{([^}]+)\}', code, re.DOTALL)
         if not match:
-            return None, None
+            return None
         name = match.group(1)
-        members = {}
+        fields = []
         lines = code[match.start():match.end()].split('\n')[1:]
-        current_type = None
         for line in lines:
             line = line.strip().rstrip(';')
             if not line or line.startswith('}'):
@@ -94,10 +147,10 @@ class HLSLInterpreter:
             if any(t in line for t in DATA_TYPE_LIST):
                 parts = line.split()
                 if len(parts) >= 2:
-                    type_str = parts[0]
-                    var_name = parts[1]
-                    members[var_name] = type_str
-        return name, members
+                    field_type = parts[0]
+                    field_name = parts[1]
+                    fields.append(FieldDefinition(field_type, field_name, ''))
+        return CbufferDefinition(name, fields)
 
     def parse_function(self, code: str) -> tuple:
         match = re.search(r'(\w+)\s+(\w+)\s*\(([^)]*)\)\s*\{([^}]+(?:\{[^}]*\}[^}]*)*)\}', code, re.DOTALL)
@@ -502,59 +555,13 @@ class HLSLInterpreter:
             val = local_vars[name]
             return val
 
-        if name.startswith('LightPos.'):
-            field = name.split('.')[1]
-            return self.cbuffers.get('LightBuffer', {}).get('LightPos', [0, 0, 0, 0])
+        base_name = name.split('.')[0] if '.' in name else name
 
-        if name.startswith('Attenuation.'):
-            field = name.split('.')[1]
-            return self.cbuffers.get('LightBuffer', {}).get('Attenuation', [0, 0, 0])
-
-        if name.startswith('WorldViewProj'):
-            return self.cbuffers.get('MatrixBuffer', {}).get('WorldViewProj', [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]])
-
-        if name.startswith('World'):
-            return self.cbuffers.get('MatrixBuffer', {}).get('World', [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]])
-
-        if name.startswith('AmbientColor'):
-            return self.cbuffers.get('LightBuffer', {}).get('AmbientColor', [0,0,0,0])
-
-        if name.startswith('DiffuseColor'):
-            return self.cbuffers.get('LightBuffer', {}).get('DiffuseColor', [0,0,0,0])
-
-        if name.startswith('SpecularColor'):
-            return self.cbuffers.get('LightBuffer', {}).get('SpecularColor', [0,0,0,0])
-
-        if name.startswith('MaterialDiffuseColor'):
-            return self.cbuffers.get('MaterialBuffer', {}).get('MaterialDiffuseColor', [0,0,0,0])
-
-        if name.startswith('MaterialAmbientColor'):
-            return self.cbuffers.get('MaterialBuffer', {}).get('MaterialAmbientColor', [0,0,0,0])
-
-        if name.startswith('MaterialSpecularColor'):
-            return self.cbuffers.get('MaterialBuffer', {}).get('MaterialSpecularColor', [0,0,0,0])
-
-        if name.startswith('MaterialEmissiveColor'):
-            return self.cbuffers.get('MaterialBuffer', {}).get('MaterialEmissiveColor', [0,0,0,0])
-
-        if name.startswith('Shininess'):
-            return self.cbuffers.get('MaterialBuffer', {}).get('Shininess', 0)
-
-        if name.startswith('ColorMaterialMode'):
-            return self.cbuffers.get('MaterialBuffer', {}).get('ColorMaterialMode', 0)
-
-        if name.startswith('LightRadius'):
-            return self.cbuffers.get('LightBuffer', {}).get('LightRadius', 0)
-
-        if name.startswith('cameraPos'):
-            return self.cbuffers.get('CameraBuffer', {}).get('cameraPos', [0,0,0])
-
-        for cb_name, cb_data in self.cbuffers.items():
-            if name in cb_data:
-                return cb_data[name]
-
-        if name in self.variables:
-            return self.variables[name]
+        for cb_name, cb_def in self.cbuffers.items():
+            if isinstance(cb_def, CbufferDefinition):
+                for field in cb_def.fields:
+                    if field.name == base_name:
+                        return field.data if field.data is not None else 0
 
         if '.' in name:
             parts = name.split('.')
@@ -571,6 +578,9 @@ class HLSLInterpreter:
                     idx = ['x', 'y', 'z', 'w'].index(field)
                     return obj[idx] if idx < len(obj) else 0
             return obj
+
+        if name in self.variables:
+            return self.variables[name]
 
         try:
             if '.' in name:
@@ -722,6 +732,8 @@ class HLSLInterpreter:
         return local_vars.get('output') or local_vars.get('output.Color')
 
     def interpret(self, code: str, data: Dict[str, Any]):
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+
         struct_pattern = r'struct\s+\w+\s*\{[^}]+\}'
         for struct_match in re.finditer(struct_pattern, code):
             struct_def = self.parse_struct(struct_match.group())
@@ -730,31 +742,95 @@ class HLSLInterpreter:
 
         cbuffer_pattern = r'cbuffer\s+\w+[^}]+\}'
         for cb_match in re.finditer(cbuffer_pattern, code, re.DOTALL):
-            cb_name, cb_members = self.parse_cbuffer(cb_match.group())
-            if cb_name:
-                self.cbuffers[cb_name] = cb_members
+            cb_def = self.parse_cbuffer(cb_match.group())
+            if cb_def:
+                self.cbuffers[cb_def.name] = cb_def
 
-        for cb_name, values in data.items():
-            if cb_name == 'input':
-                continue
-            if isinstance(values, dict):
-                self.cbuffers[cb_name] = values
-            elif cb_name == 'WorldViewProj' or cb_name == 'World':
-                self.cbuffers['MatrixBuffer'] = self.cbuffers.get('MatrixBuffer', {})
-                self.cbuffers['MatrixBuffer'][cb_name] = values
+        for struct_name in self.structs:
+            csv_path = os.path.join(script_dir, f'{struct_name}.csv')
+            if os.path.exists(csv_path):
+                self.load_struct_data_from_csv(struct_name, csv_path)
 
-        if 'MatrixBuffer' not in self.cbuffers and 'WorldViewProj' in data:
-            self.cbuffers['MatrixBuffer'] = {
-                'WorldViewProj': data['WorldViewProj'],
-                'World': data['World']
-            }
-
-        for cb_name in ['LightBuffer', 'MaterialBuffer', 'CameraBuffer']:
-            if cb_name in data:
-                self.cbuffers[cb_name] = data[cb_name]
+        for cb_name in self.cbuffers:
+            csv_path = os.path.join(script_dir, f'{cb_name}.csv')
+            if os.path.exists(csv_path):
+                self.load_cbuffer_data_from_csv(cb_name, csv_path)
 
         result = self.execute_function(code, {}, data.get('input', {}))
         return result
+
+    def load_struct_data_from_csv(self, struct_name: str, csv_path: str):
+        if struct_name not in self.structs:
+            return
+        struct_def = self.structs[struct_name]
+        rows = self.load_csv(csv_path)
+        if not rows or len(rows) < 2:
+            return
+
+        header = rows[0]
+        data_rows = rows[1:]
+
+        field_col_indices = {}
+        for i, col in enumerate(header):
+            col_clean = col.strip()
+            if '.' in col_clean:
+                parts = col_clean.split('.')
+                base_name = parts[0]
+                suffix = parts[1]
+                if base_name not in field_col_indices:
+                    field_col_indices[base_name] = {}
+                field_col_indices[base_name][suffix] = i
+
+        for field in struct_def.fields:
+            if field.semantic in field_col_indices:
+                col_dict = field_col_indices[field.semantic]
+                values = []
+                for row in data_rows:
+                    if 'x' in col_dict and 'y' in col_dict and 'z' in col_dict and 'w' in col_dict:
+                        x = float(row[col_dict['x']].strip())
+                        y = float(row[col_dict['y']].strip())
+                        z = float(row[col_dict['z']].strip())
+                        w = float(row[col_dict['w']].strip())
+                        values.append([x, y, z, w])
+                    elif 'x' in col_dict and 'y' in col_dict and 'z' in col_dict:
+                        x = float(row[col_dict['x']].strip())
+                        y = float(row[col_dict['y']].strip())
+                        z = float(row[col_dict['z']].strip())
+                        values.append([x, y, z])
+                    elif 'x' in col_dict and 'y' in col_dict:
+                        x = float(row[col_dict['x']].strip())
+                        y = float(row[col_dict['y']].strip())
+                        values.append([x, y])
+                    else:
+                        val_str = row[col_dict['x']].strip().strip('"')
+                        values.append(self.parse_value_by_type(val_str, field.field_type))
+                field.data = values
+
+    def load_cbuffer_data_from_csv(self, cb_name: str, csv_path: str):
+        if cb_name not in self.cbuffers:
+            return
+        cb_def = self.cbuffers[cb_name]
+        rows = self.load_csv(csv_path)
+        if not rows or len(rows) < 2:
+            return
+
+        header = rows[0]
+        name_idx = header.index('Name') if 'Name' in header else -1
+        value_idx = header.index('Value') if 'Value' in header else -1
+
+        if name_idx == -1 or value_idx == -1:
+            return
+
+        for row in rows[1:]:
+            if len(row) <= max(name_idx, value_idx):
+                continue
+            var_name = row[name_idx].strip().strip('"')
+            value_str = row[value_idx].strip().strip('"')
+
+            for field in cb_def.fields:
+                if field.name == var_name:
+                    field.data = self.parse_value_by_type(value_str, field.field_type)
+                    break
 
 
 def main():
