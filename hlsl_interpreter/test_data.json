@@ -1,0 +1,26 @@
+{
+    "WorldViewProj": [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]],
+    "World": [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]],
+    "AmbientColor": [0.1, 0.1, 0.1, 1.0],
+    "DiffuseColor": [0.8, 0.8, 0.8, 1.0],
+    "SpecularColor": [1.0, 1.0, 1.0, 1.0],
+    "LightPos": [5.0, 5.0, 5.0, 0.0],
+    "LightRadius": 100.0,
+    "LightDir": [0.0, -1.0, 0.0],
+    "Attenuation": [1.0, 0.0, 0.0],
+    "OuterCone": 45.0,
+    "InnerCone": 30.0,
+    "MaterialDiffuseColor": [0.8, 0.5, 0.2, 1.0],
+    "MaterialAmbientColor": [0.2, 0.2, 0.2, 1.0],
+    "MaterialSpecularColor": [1.0, 1.0, 1.0, 1.0],
+    "MaterialEmissiveColor": [0.0, 0.0, 0.0, 1.0],
+    "Shininess": 32.0,
+    "ColorMaterialMode": 0,
+    "cameraPos": [0.0, 0.0, -5.0],
+    "input": {
+        "Pos": [1.0, 0.0, 0.0],
+        "Normal": [0.0, 1.0, 0.0],
+        "Color": [1.0, 0.0, 0.0, 1.0],
+        "TexCoord": [0.5, 0.5]
+    }
+}
