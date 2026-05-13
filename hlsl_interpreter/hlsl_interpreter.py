@@ -6,6 +6,9 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Union
 
 
+CBUFFER_TYPE_LIST = ['float4x4', 'float4', 'float3', 'float2', 'uint']
+
+
 @dataclass
 class ShaderVariable:
     name: str
@@ -82,13 +85,13 @@ class HLSLInterpreter:
             return None, None
         name = match.group(1)
         members = {}
-        lines = code[match.start():match.end()].split('\n')[2:]
+        lines = code[match.start():match.end()].split('\n')[1:]
         current_type = None
         for line in lines:
             line = line.strip().rstrip(';')
             if not line or line.startswith('}'):
                 continue
-            if any(t in line for t in ['float4x4', 'float4', 'float3', 'float2', 'uint']):
+            if any(t in line for t in CBUFFER_TYPE_LIST):
                 parts = line.split()
                 if len(parts) >= 2:
                     type_str = parts[0]
@@ -729,7 +732,7 @@ class HLSLInterpreter:
         for cb_match in re.finditer(cbuffer_pattern, code, re.DOTALL):
             cb_name, cb_members = self.parse_cbuffer(cb_match.group())
             if cb_name:
-                self.cbuffers[cb_name] = {}
+                self.cbuffers[cb_name] = cb_members
 
         for cb_name, values in data.items():
             if cb_name == 'input':

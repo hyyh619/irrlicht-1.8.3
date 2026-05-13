@@ -78,7 +78,7 @@ Git commit: Create hlsl interpreter code by MiniMax-M2.7.
 
 
 # 2
-Git commit: 
+Git commit: hlsl-inter: struct parser refine by MiniMax-M2.7.
 下列解析struct的函数，对于float3 Pos : POSITION; float3是数据类型名，Pos是HLSL里面用到的变量名，POSITION是语义名，用于与VS input layout对应，这三个名字都需要保存。因此重新构造一下StructDefinition
     struct VS_INPUT {
         float3 Pos : POSITION;
@@ -106,7 +106,33 @@ Git commit:
 
 # 3
 Git commit: 
+['float4x4', 'float4', 'float3', 'float2', 'uint']数据类型列表单独作为全局变量定义，方便其它函数使用。
+    def parse_cbuffer(self, code: str) -> tuple:
+        match = re.search(r'cbuffer\s+(\w+)\s*:.*?\{([^}]+)\}', code, re.DOTALL)
+        if not match:
+            return None, None
+        name = match.group(1)
+        members = {}
+        lines = code[match.start():match.end()].split('\n')[1:]
+        current_type = None
+        for line in lines:
+            line = line.strip().rstrip(';')
+            if not line or line.startswith('}'):
+                continue
+            if any(t in line for t in ['float4x4', 'float4', 'float3', 'float2', 'uint']):
+                parts = line.split()
+                if len(parts) >= 2:
+                    type_str = parts[0]
+                    var_name = parts[1]
+                    members[var_name] = type_str
+        return name, members
 
+self.cbuffers[cb_name]没有保存解析出来的cb_members
+        cbuffer_pattern = r'cbuffer\s+\w+[^}]+\}'
+        for cb_match in re.finditer(cbuffer_pattern, code, re.DOTALL):
+            cb_name, cb_members = self.parse_cbuffer(cb_match.group())
+            if cb_name:
+                self.cbuffers[cb_name] = {}
 
 # 4
 Git commit: 
