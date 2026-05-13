@@ -2602,15 +2602,43 @@ namespace irr
             m_LastSetLight = m_CurSetLight;
         }
 
+        core::vector3df getCameraPositionFromViewMatrix(const core::matrix4 &viewMatrix)
+        {
+            // 从视图矩阵提取相机位置
+            // viewMatrix 的逆矩阵的最后一列就是相机位置
+            core::matrix4 invView = viewMatrix;
+            invView.makeInverse();
+
+            // 逆矩阵的第四列 (M[12], M[13], M[14]) 就是相机在世界空间中的位置
+            // 因为 viewMatrix 将相机空间中的 (0,0,0,1) 变换到世界空间中的相机位置
+            float *v = invView.pointer();
+            return core::vector3df(v[12], v[13], v[14]);
+        }
+
+        core::vector3df getForwardFromViewMatrix(const core::matrix4 &viewMatrix)
+        {
+            // viewMatrix 的第三列是 zaxis（相机 forward 向量）
+            core::matrix4 mat = viewMatrix;
+            float *v = mat.pointer();
+            return core::vector3df(v[2], v[6], v[10]);
+        }
 
         void CD3D11Driver::updateCameraConstantBuffer()
         {
             core::matrix4    viewMatrix = m_Matrices[ETS_VIEW];
+            core::vector3df  cameraPos = getCameraPositionFromViewMatrix(viewMatrix);
+            core::vector3df  forward = getForwardFromViewMatrix(viewMatrix);
 
             float       *v      = viewMatrix.pointer();
+#if 0
             float       camPosX = v[12];
             float       camPosY = v[13];
             float       camPosZ = v[14];
+#else
+            float       camPosX = forward.X;
+            float       camPosY = forward.Y;
+            float       camPosZ = forward.Z;
+#endif
 
             D3D11_MAPPED_SUBRESOURCE    mapped;
 
