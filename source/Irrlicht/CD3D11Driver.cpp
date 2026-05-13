@@ -993,6 +993,7 @@ namespace irr
                 }
 
                 m_pID3DDeviceContext->PSSetConstantBuffers(PS_MATERIAL_BUFFER_SLOT, 1, &m_MaterialConstantBuffer);
+                m_pID3DDeviceContext->PSSetConstantBuffers(VS_MATERIAL_BUFFER_SLOT, 1, &m_MaterialConstantBuffer);
             }
 
             if (resetAllRenderstates || lastMaterial.FogEnable != material.FogEnable)
@@ -2618,6 +2619,7 @@ namespace irr
 
                 ID3D11Buffer    *buffers[1] = {m_CameraConstantBuffer};
                 m_pID3DDeviceContext->PSSetConstantBuffers(PS_CAMERA_BUFFER_SLOT, 1, buffers);
+                m_pID3DDeviceContext->VSSetConstantBuffers(VS_CAMERA_BUFFER_SLOT, 1, buffers);
             }
         }
 

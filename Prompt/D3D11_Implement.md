@@ -1844,7 +1844,7 @@ PixelColor = TextureColor(u,v) × D3DTA_DIFFUSE
 
 
 # 85
-Git commit: 
+Git commit: Implement EMT_TRANSPARENT_ADD_COLOR_WITH_LIGHT PS by MiniMax-M2.7.
 1. 参考float4 PS_SOLID_WITH_LIGHT(PS_INPUT_BASIC input)的实现
 2. 参考D3D9 固定功能光照公式
 Diffuse = Material.DiffuseColor × Light.DiffuseColor × max(N·L, 0)
@@ -1861,7 +1861,56 @@ PixelColor = TextureColor(u,v) × D3DTA_DIFFUSE
 
 # 86
 Git commit: 
-
+参考D3D9 固定功能光照公式
+Diffuse = Material.DiffuseColor × Light.DiffuseColor × max(N·L, 0)
+Specular = Material.SpecularColor × Light.SpecularColor × pow(max(R·V, 0), Material.Shininess)
+Ambient = Material.AmbientColor × Light.AmbientColor
+Emissive = Material.EmissiveColor
+D3DTA_DIFFUSE = Diffuse + Specular + Ambient + Emissive
+最终像素颜色（纹理阶段后）
+PixelColor = TextureColor(u,v) × D3DTA_DIFFUSE
+- N = 表面法线，L = 光源方向，R = 反射方向，V = 视点方向
+- (N·L) 和 (R·V) 是点积，控制光照强度分布
+1. 请给下列shader的实现加入material的处理,这些shader在CD3D11Shader.cpp
+        static const char    VERTEX_SHADER_STANDARD_DIRECTIONAL[] =
+        static const char    VERTEX_SHADER_STANDARD_POINT[] =
+        static const char    VERTEX_SHADER_STANDARD_SPOT[] =
+        static const char    VERTEX_SHADER_2TCOORDS_DIRECTIONAL[] =
+        static const char    VERTEX_SHADER_2TCOORDS_POINT[] =
+        static const char    VERTEX_SHADER_2TCOORDS_SPOT[] =
+2. material使用单独的cbuffer，定义如下，请绑定在vs constant slot 2上
+   cbuffer MaterialBuffer : register(b2)
+{
+    float4 MaterialDiffuseColor;
+    float4 MaterialAmbientColor;
+    float4 MaterialSpecularColor;
+    float4 MaterialEmissiveColor;
+    float Shininess;
+    uint ColorMaterialMode;
+    float2 Padding;
+};
+3. camera position使用单独的cbuffer，定义如下，绑定在vs constant slot 3上
+cbuffer CameraBuffer : register(b3)
+{
+    float3 cameraPos;
+};
+4. 通过camera position和当前vertex world postion可以计算出V
 
 # 87
+Git commit: 
+
+
+# 88
+Git commit: 
+
+
+# 89
+Git commit: 
+
+
+# 90
+Git commit: 
+
+
+# 91
 Git commit: 

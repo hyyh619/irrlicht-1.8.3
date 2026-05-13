@@ -30,6 +30,8 @@
 
 #define VS_MATRIX_BUFFER_SLOT       0
 #define VS_LIGHT_BUFFER_SLOT        1
+#define VS_MATERIAL_BUFFER_SLOT     2
+#define VS_CAMERA_BUFFER_SLOT       3
 #define PS_LIGHT_BUFFER_SLOT        1
 #define PS_MATERIAL_BUFFER_SLOT     2
 #define PS_CAMERA_BUFFER_SLOT       3
