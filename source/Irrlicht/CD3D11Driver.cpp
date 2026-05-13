@@ -993,7 +993,7 @@ namespace irr
                 }
 
                 m_pID3DDeviceContext->PSSetConstantBuffers(PS_MATERIAL_BUFFER_SLOT, 1, &m_MaterialConstantBuffer);
-                m_pID3DDeviceContext->PSSetConstantBuffers(VS_MATERIAL_BUFFER_SLOT, 1, &m_MaterialConstantBuffer);
+                m_pID3DDeviceContext->VSSetConstantBuffers(VS_MATERIAL_BUFFER_SLOT, 1, &m_MaterialConstantBuffer);
             }
 
             if (resetAllRenderstates || lastMaterial.FogEnable != material.FogEnable)
@@ -1494,13 +1494,20 @@ namespace irr
             if (is3D)
                 updateMatrixConstantBuffer();
 
+            u32 realVertexCount = 0;
             if (indexBuffer)
-                m_pID3DDeviceContext->DrawIndexed(primitiveCount * 3, 0, 0);
+            {
+                realVertexCount = primitiveCount * 3;
+                m_pID3DDeviceContext->DrawIndexed(realVertexCount, 0, 0);
+            }
             else
-                m_pID3DDeviceContext->Draw(vertexCount, 0);
+            {
+                realVertexCount = vertexCount;
+                m_pID3DDeviceContext->Draw(realVertexCount, 0);
+            }
 
 #ifdef _IRR_DUMP_DRAW_CALLS_
-            dumpDrawCall("draw2D3DVertexPrimitiveList", vType, pType, iType, is3D, vertexCount);
+            dumpDrawCall("draw2D3DVertexPrimitiveList", vType, pType, iType, is3D, realVertexCount);
 #endif
         }
 

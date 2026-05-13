@@ -1860,7 +1860,7 @@ PixelColor = TextureColor(u,v) × D3DTA_DIFFUSE
 
 
 # 86
-Git commit: 
+Git commit: Add material to VS by MiniMax-M2.7.
 参考D3D9 固定功能光照公式
 Diffuse = Material.DiffuseColor × Light.DiffuseColor × max(N·L, 0)
 Specular = Material.SpecularColor × Light.SpecularColor × pow(max(R·V, 0), Material.Shininess)
@@ -1898,6 +1898,42 @@ cbuffer CameraBuffer : register(b3)
 
 # 87
 Git commit: 
+float4 PS_SOLID_WITH_LIGHT(PS_INPUT_BASIC input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+    float3 nor = normalize(input.Normal);
+    float3 lightDir = normalize(-LightDirection);
+    float3 viewDir = normalize(cameraPos - input.WorldPos);
+    float3 reflectDir = reflect(-lightDir, nor);
+    float nDotL = max(dot(nor, lightDir), 0.0);
+    float rDotV = max(dot(reflectDir, viewDir), 0.0);
+    // ColorMaterialģʽ�ж�
+    float4 matDiffuse = (ColorMaterialMode == ECM_DIFFUSE || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT) 
+                        ? input.Color : DiffuseColor;
+    float4 matAmbient = (ColorMaterialMode == ECM_AMBIENT || ColorMaterialMode == ECM_DIFFUSE_AND_AMBIENT) 
+                        ? input.Color : AmbientColor;
+    float4 matSpecular = (ColorMaterialMode == ECM_SPECULAR) 
+                        ? input.Color : SpecularColor;
+    float4 matEmissive = (ColorMaterialMode == ECM_EMISSIVE) 
+                        ? input.Color : EmissiveColor;
+    // D3D9���չ�ʽ
+    float4 diffuse = matDiffuse * LightDiffuse * nDotL;
+    float4 specular = matSpecular * LightSpecular* pow(rDotV, Shininess);
+    float4 ambient = matAmbient * LightAmbient;
+    float4 emissive = matEmissive;
+    float4 lightingResult = diffuse + specular + ambient + emissive;
+    float4 finalColor = texColor * lightingResult;
+    return float4(finalColor.rgb * input.Color.a, texColor.a * input.Color.a);
+}
+像PS_SOLID_WITH_LIGHT一样，给下列VS代码添加ColorMaterialMode判断的代码来决定matDiffuse,matAmbient,matSpecular,matEmissive从input.Color还是从material获取
+        static const char    VERTEX_SHADER_STANDARD_DIRECTIONAL[] =
+        static const char    VERTEX_SHADER_STANDARD_POINT[] =
+        static const char    VERTEX_SHADER_STANDARD_SPOT[] =
+
+像PS_SOLID_WITH_LIGHT一样，给下列VS代码添加ColorMaterialMode判断的代码来决定matDiffuse,matAmbient,matSpecular,matEmissive从input.Color还是从material获取
+        static const char    VERTEX_SHADER_2TCOORDS_DIRECTIONAL[] =
+        static const char    VERTEX_SHADER_2TCOORDS_POINT[] =
+        static const char    VERTEX_SHADER_2TCOORDS_SPOT[] =
 
 
 # 88
