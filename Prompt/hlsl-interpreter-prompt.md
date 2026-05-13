@@ -105,7 +105,7 @@ Git commit: hlsl-inter: struct parser refine by MiniMax-M2.7.
         return StructDefinition(name, fields)
 
 # 3
-Git commit: 
+Git commit: Fix cbuffer/struct paser by MiniMax-M2.7.
 ['float4x4', 'float4', 'float3', 'float2', 'uint']数据类型列表单独作为全局变量定义，方便其它函数使用。
     def parse_cbuffer(self, code: str) -> tuple:
         match = re.search(r'cbuffer\s+(\w+)\s*:.*?\{([^}]+)\}', code, re.DOTALL)
@@ -136,7 +136,11 @@ self.cbuffers[cb_name]没有保存解析出来的cb_members
 
 # 4
 Git commit: 
-
+1. StructDefinition的list保存了解析出来的HLSL struct的每个成员。这些成员被存在FieldDefinition中，请为FieldDefinition创建一个保存数据的成员，该成员根据下列数据结构来保存实际的数据
+   DATA_TYPE_LIST = ['float4x4', 'float4', 'float3', 'float2', 'uint']
+2. 像StructDefinition一样，为cbuffer也定义一个类似的数据结构CbufferDefinition，记录变量名，变量类型，以及用于存储变量对应的数据的成员
+3. 根据self.cbuffers和self.struct的字典名字来查找对应的csv数据文件，然后给相应的成员变量初始化数据
+4. StructDefinition表示的是顶点或者像素，因此一个成员变量会对应多组数据，CbufferDefinition对应的常量，一个成员只对应一组数据
 
 # 5
 Git commit: 
@@ -147,4 +151,36 @@ Git commit:
 
 
 # 7
+Git commit: 
+
+
+# 8
+Git commit: 
+
+
+# 9
+Git commit: 
+
+
+# 10
+Git commit: 
+
+
+# 11
+Git commit: 
+
+
+# 12
+Git commit: 
+
+
+# 13
+Git commit: 
+
+
+# 14
+Git commit: 
+
+
+# 15
 Git commit: 

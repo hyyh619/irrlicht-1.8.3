@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Union
 
 
-CBUFFER_TYPE_LIST = ['float4x4', 'float4', 'float3', 'float2', 'uint']
+DATA_TYPE_LIST = ['float4x4', 'float4', 'float3', 'float2', 'uint']
 
 
 @dataclass
@@ -91,7 +91,7 @@ class HLSLInterpreter:
             line = line.strip().rstrip(';')
             if not line or line.startswith('}'):
                 continue
-            if any(t in line for t in CBUFFER_TYPE_LIST):
+            if any(t in line for t in DATA_TYPE_LIST):
                 parts = line.split()
                 if len(parts) >= 2:
                     type_str = parts[0]
