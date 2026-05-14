@@ -218,7 +218,7 @@ def execute_function(self, code: str, main_func: str, input_struct_name: str, ro
 2. execute_main_function不需要在内部自己解析struct来获取data,由executeVS和executePS获得执行的数据，然后把每次执行的数据传递给execute_main_function
 
 # 11
-Git commit: 
+Git commit: hlsl-inter: add missed data type by MiniMax-M2.7.
 DATA_TYPE_LIST = ['float4x4', 'float3x3',
                 'float4', 'float3', 'float2', 'float',
                 'uint4', 'uint3', 'uint2', 'uint',
@@ -234,6 +234,8 @@ DATA_TYPE_LIST = ['float4x4', 'float3x3',
 
 # 12
 Git commit: 
+1. evaluate_expression的每个执行分支都加一个打印输出其执行的操作和操作数，这个打印可以通过开关控制。
+2. execute_statement执行的每一条语句都打印出来，包括语句变量的输入数据和输出数据
 
 
 # 13
