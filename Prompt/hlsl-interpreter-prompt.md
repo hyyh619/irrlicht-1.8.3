@@ -183,9 +183,8 @@ load_cbuffer_data_from_csv打印data的代码如下，可以看到它直接打�
 Git commit: hlsl-inter: print struct data by MiniMax-M2.7.
 load_struct_data_from_csv在加载完strut数据后，请打印每个field的第一组数据
 
-
 # 8
-Git commit: 
+Git commit: Change HLSL cbuffer/struct data loading by MiniMax-M2.7.
 之前cbuffer/struct加载的数据是从test_data.json加载
 现在通过load_cbuffer_data_from_csv/load_struct_data_from_csv被存在HLSLInterpreter的cbuffers和structs中
 1. 因此下列代码不需要再加载data
@@ -207,7 +206,9 @@ Git commit:
    b. main_func: PS的main函数名字，PS解释执行从main函数开始
    c. ps_input: PS的像素输入数据结构名称，main函数的输入从这里获取数据
 4. interpret(self, code: str)只负责解析源代码中的cbuffer/struct，以及加载数据
-5. 调用executeVS/executePS来执行HLSL
+5. 调用executeVS来执行HLSL
+6. executeVS需要对vs_input的每一组数据执行
+7. executePS目前暂时不要调用执行，后续拓展解释器功能再调用
 
 # 10
 Git commit: 
