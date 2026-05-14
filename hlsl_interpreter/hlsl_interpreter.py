@@ -635,20 +635,14 @@ class HLSLInterpreter:
 
         return None
 
-    def execute_function(self, code: str, params: Dict[str, Any], input_data: Dict[str, Any]):
-        struct_match = re.search(r'struct\s+VS_INPUT\s*\{([^}]+)\}', code)
-        if struct_match:
-            vs_input_fields = {}
-            for line in struct_match.group(1).split(';'):
-                line = line.strip()
-                if not line:
-                    continue
-                parts = line.split(':')
-                if len(parts) == 2:
-                    type_and_name = parts[0].strip().split()
-                    if len(type_and_name) == 2:
-                        field_name = type_and_name[1]
-                        vs_input_fields[field_name] = type_and_name[0]
+    def execute_function(self, code: str, params: Dict[str, Any], row_index: int):
+        vs_input = self.structs.get('VS_INPUT')
+        if not vs_input:
+            return None
+
+        vs_input_fields = {}
+        for field in vs_input.fields:
+            vs_input_fields[field.name] = field.field_type
 
         struct_match_out = re.search(r'struct\s+VS_OUTPUT\s*\{([^}]+)\}', code)
         vs_output_fields = {}
@@ -671,18 +665,22 @@ class HLSLInterpreter:
         for p_name, p_val in params.items():
             local_vars[p_name] = p_val
 
-        for field_name, field_type in vs_input_fields.items():
-            if field_name in input_data:
-                local_vars[f'input.{field_name}'] = input_data[field_name]
+        for field in vs_input.fields:
+            if field.data and row_index < len(field.data):
+                local_vars[f'input.{field.name}'] = field.data[row_index]
 
         if 'input.Pos' in str(code):
-            local_vars['input.Pos'] = input_data.get('Pos', [0,0,0])
+            pos_field = next((f for f in vs_input.fields if f.name == 'Pos'), None)
+            local_vars['input.Pos'] = pos_field.data[row_index] if pos_field and pos_field.data and row_index < len(pos_field.data) else [0,0,0]
         if 'input.Normal' in str(code):
-            local_vars['input.Normal'] = input_data.get('Normal', [0,0,0])
+            normal_field = next((f for f in vs_input.fields if f.name == 'Normal'), None)
+            local_vars['input.Normal'] = normal_field.data[row_index] if normal_field and normal_field.data and row_index < len(normal_field.data) else [0,0,0]
         if 'input.Color' in str(code):
-            local_vars['input.Color'] = input_data.get('Color', [0,0,0,0])
+            color_field = next((f for f in vs_input.fields if f.name == 'Color'), None)
+            local_vars['input.Color'] = color_field.data[row_index] if color_field and color_field.data and row_index < len(color_field.data) else [0,0,0,0]
         if 'input.TexCoord' in str(code):
-            local_vars['input.TexCoord'] = input_data.get('TexCoord', [0,0])
+            tex_field = next((f for f in vs_input.fields if f.name == 'TexCoord'), None)
+            local_vars['input.TexCoord'] = tex_field.data[row_index] if tex_field and tex_field.data and row_index < len(tex_field.data) else [0,0]
 
         if vs_match:
             body = vs_match.group(1)
@@ -731,7 +729,7 @@ class HLSLInterpreter:
 
         return local_vars.get('output') or local_vars.get('output.Color')
 
-    def interpret(self, code: str, data: Dict[str, Any]):
+    def interpret(self, code: str):
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
         struct_pattern = r'struct\s+\w+\s*\{[^}]+\}'
@@ -756,8 +754,18 @@ class HLSLInterpreter:
             if os.path.exists(csv_path):
                 self.load_cbuffer_data_from_csv(cb_name, csv_path)
 
-        result = self.execute_function(code, {}, data.get('input', {}))
-        return result
+        vs_input = self.structs.get('VS_INPUT')
+        if vs_input:
+            num_rows = 0
+            for field in vs_input.fields:
+                if field.data:
+                    num_rows = max(num_rows, len(field.data))
+            results = []
+            for row_index in range(num_rows):
+                result = self.execute_function(code, {}, row_index)
+                results.append(result)
+            return results
+        return None
 
     def load_struct_data_from_csv(self, struct_name: str, csv_path: str):
         if struct_name not in self.structs:
@@ -965,30 +973,31 @@ def main():
     '''
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(script_dir, 'test_data.json')
-    data = interpreter.load_json(json_path)
-    result = interpreter.interpret(code, data)
+    results = interpreter.interpret(code)
 
     print("HLSL Interpreter Result:")
     print("=" * 40)
-    if result:
-        for key, value in result.items():
-            if isinstance(value, list):
-                if len(value) == 4:
-                    print(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}, {value[3]:.4f}]")
-                elif len(value) == 3:
-                    print(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}]")
-                elif len(value) == 2:
-                    print(f"{key}: [{value[0]:.4f}, {value[1]:.4f}]")
-                else:
-                    print(f"{key}: {value}")
-            else:
-                print(f"{key}: {value}")
+    if results:
+        for idx, result in enumerate(results):
+            print(f"\n--- Row {idx} ---")
+            if result:
+                for key, value in result.items():
+                    if isinstance(value, list):
+                        if len(value) == 4:
+                            print(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}, {value[3]:.4f}]")
+                        elif len(value) == 3:
+                            print(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}]")
+                        elif len(value) == 2:
+                            print(f"{key}: [{value[0]:.4f}, {value[1]:.4f}]")
+                        else:
+                            print(f"{key}: {value}")
+                    else:
+                        print(f"{key}: {value}")
     else:
         print("No result produced")
 
-    if result and 'Color' in result:
-        color = result['Color']
+    if results and results[-1] and 'Color' in results[-1]:
+        color = results[-1]['Color']
         if color and isinstance(color, list) and len(color) == 4:
             print("\nFinal Output Color (RGBA):")
             print(f"  R: {color[0]:.4f}")

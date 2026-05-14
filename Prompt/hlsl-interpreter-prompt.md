@@ -180,17 +180,34 @@ load_cbuffer_data_from_csv打印data的代码如下，可以看到它直接打�
                 print(f"  {f.name} ({f.field_type}): data={f.data}")
 
 # 7
-Git commit: 
+Git commit: hlsl-inter: print struct data by MiniMax-M2.7.
 load_struct_data_from_csv在加载完strut数据后，请打印每个field的第一组数据
 
 
 # 8
 Git commit: 
-
+之前cbuffer/struct加载的数据是从test_data.json加载
+现在通过load_cbuffer_data_from_csv/load_struct_data_from_csv被存在HLSLInterpreter的cbuffers和structs中
+1. 因此下列代码不需要再加载data
+    json_path = os.path.join(script_dir, 'test_data.json')
+    data = interpreter.load_json(json_path)
+    result = interpreter.interpret(code, data)
+2. execute_function也不需要data输入，而是直接查找cbuffers/structs中的对象来获取data
+3. HLSLInterpreter.interpret中的execute_function需要根据当前VS_INPUT struct有多少组数据，循环执行每组数据
 
 # 9
 Git commit: 
-
+1. HLSLInterpreter提供两个函数executeVS和executePS分别解释执行VS HLSL和PS HLSL
+2. executeVS()三个输入参数
+   a. code: HLSL源代码
+   b. main_func: VS的main函数名字，VS解释执行从main函数开始
+   c. vs_input: VS的顶点输入数据结构名称，main函数的输入从这里获取数据
+3. executePS()三个输入参数
+   a. code: HLSL源代码
+   b. main_func: PS的main函数名字，PS解释执行从main函数开始
+   c. ps_input: PS的像素输入数据结构名称，main函数的输入从这里获取数据
+4. interpret(self, code: str)只负责解析源代码中的cbuffer/struct，以及加载数据
+5. 调用executeVS/executePS来执行HLSL
 
 # 10
 Git commit: 
@@ -213,4 +230,20 @@ Git commit:
 
 
 # 15
+Git commit: 
+
+
+# 16
+Git commit: 
+
+
+# 17
+Git commit: 
+
+
+# 18
+Git commit: 
+
+
+# 19
 Git commit: 
