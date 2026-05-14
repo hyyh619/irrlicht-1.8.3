@@ -474,6 +474,31 @@ class HLSLInterpreter:
                         return None
                     return max(a, b)
 
+            if 'mul' in expr:
+                depth = 0
+                comma_pos = -1
+                for i, char in enumerate(expr):
+                    if char == '(':
+                        depth += 1
+                    elif char == ')':
+                        depth -= 1
+                    elif char == ',' and depth == 0:
+                        comma_pos = i
+                        break
+                if comma_pos > 0:
+                    arg1 = expr[3:comma_pos].strip()
+                    arg2 = expr[comma_pos+1:].strip().rstrip(')')
+                    left = self.evaluate_expression(arg1, local_vars)
+                    right = self.evaluate_expression(arg2, local_vars)
+                    if left is None or right is None:
+                        return None
+                    if isinstance(left, list) and isinstance(right, list):
+                        if len(left) == 4 and len(right) == 4:
+                            return self.mul_matrix_vector(right, left)
+                        elif len(left) == 3 and len(right) == 3:
+                            return self.mul_matrix_vector(right, left)
+                    return None
+
             if 'pow' in expr:
                 match = re.match(r'pow\s*\(([^,]+),\s*([^)]+)\)', expr)
                 if match:
@@ -550,6 +575,11 @@ class HLSLInterpreter:
             return True
         if name == 'false':
             return False
+
+        try:
+            return float(name)
+        except ValueError:
+            pass
 
         if name in local_vars:
             val = local_vars[name]
@@ -635,64 +665,58 @@ class HLSLInterpreter:
 
         return None
 
-    def execute_function(self, code: str, params: Dict[str, Any], row_index: int):
-        vs_input = self.structs.get('VS_INPUT')
-        if not vs_input:
+    def execute_function(self, code: str, main_func: str, input_struct_name: str, row_index: int):
+        input_struct = self.structs.get(input_struct_name)
+        if not input_struct:
             return None
 
-        vs_input_fields = {}
-        for field in vs_input.fields:
-            vs_input_fields[field.name] = field.field_type
+        input_fields = {}
+        for field in input_struct.fields:
+            input_fields[field.name] = field.field_type
 
-        struct_match_out = re.search(r'struct\s+VS_OUTPUT\s*\{([^}]+)\}', code)
-        vs_output_fields = {}
-        if struct_match_out:
-            for line in struct_match_out.group(1).split(';'):
-                line = line.strip()
-                if not line:
-                    continue
-                parts = line.split(':')
-                if len(parts) == 2:
-                    type_and_name = parts[0].strip().split()
-                    if len(type_and_name) == 2:
-                        vs_output_fields[type_and_name[1]] = type_and_name[0]
+        func_signature_pattern = r'(\w+)\s+' + re.escape(main_func) + r'\s*\(\s*(\w+)\s+input\s*\)'
+        func_signature_match = re.search(func_signature_pattern, code)
+        if not func_signature_match:
+            return None
 
-        vs_match = re.search(r'VS_OUTPUT\s+main\s*\(\s*VS_INPUT\s+input\s*\)\s*\{(.*?)\n\s*\};?\s*$', code, re.DOTALL)
-        if not vs_match:
-            vs_match = re.search(r'VS_OUTPUT\s+main\s*\(\s*VS_INPUT\s+input\s*\)\s*\{(.*?)^', code, re.DOTALL | re.MULTILINE)
+        output_struct_name = func_signature_match.group(1)
+        input_struct_name_from_func = func_signature_match.group(2)
+
+        if output_struct_name not in self.structs:
+            return None
+
+        output_struct = self.structs[output_struct_name]
+        output_fields = {}
+        for field in output_struct.fields:
+            output_fields[field.name] = field.field_type
+
+        func_signature = rf'{output_struct_name}\s+{main_func}\s*\(\s*{input_struct_name_from_func}\s+input\s*\)'
+        func_start = re.search(func_signature, code)
+        if not func_start:
+            return None
+
+        open_brace_pos = func_start.end()
+        brace_depth = 1
+        pos = open_brace_pos
+        while pos < len(code) and brace_depth > 0:
+            if code[pos] == '{':
+                brace_depth += 1
+            elif code[pos] == '}':
+                brace_depth -= 1
+            pos += 1
+
+        body = code[open_brace_pos+1:pos-1].strip()
+        if body.startswith('{') and body.endswith('}'):
+            body = body[1:-1].strip()
 
         local_vars = {}
-        for p_name, p_val in params.items():
-            local_vars[p_name] = p_val
 
-        for field in vs_input.fields:
+        for field in input_struct.fields:
             if field.data and row_index < len(field.data):
                 local_vars[f'input.{field.name}'] = field.data[row_index]
 
-        if 'input.Pos' in str(code):
-            pos_field = next((f for f in vs_input.fields if f.name == 'Pos'), None)
-            local_vars['input.Pos'] = pos_field.data[row_index] if pos_field and pos_field.data and row_index < len(pos_field.data) else [0,0,0]
-        if 'input.Normal' in str(code):
-            normal_field = next((f for f in vs_input.fields if f.name == 'Normal'), None)
-            local_vars['input.Normal'] = normal_field.data[row_index] if normal_field and normal_field.data and row_index < len(normal_field.data) else [0,0,0]
-        if 'input.Color' in str(code):
-            color_field = next((f for f in vs_input.fields if f.name == 'Color'), None)
-            local_vars['input.Color'] = color_field.data[row_index] if color_field and color_field.data and row_index < len(color_field.data) else [0,0,0,0]
-        if 'input.TexCoord' in str(code):
-            tex_field = next((f for f in vs_input.fields if f.name == 'TexCoord'), None)
-            local_vars['input.TexCoord'] = tex_field.data[row_index] if tex_field and tex_field.data and row_index < len(tex_field.data) else [0,0]
-
-        if vs_match:
-            body = vs_match.group(1)
-        else:
-            func_match = re.search(r'VS_OUTPUT\s+main\s*\([^)]*\)\s*\{(.*?)return output;\s*\}', code, re.DOTALL)
-            if func_match:
-                body = func_match.group(1)
-            else:
-                return None
-
         output_obj = {}
-        for field in vs_output_fields:
+        for field in output_fields:
             output_obj[field] = None
 
         local_vars['output'] = output_obj
@@ -722,12 +746,14 @@ class HLSLInterpreter:
             if stmt:
                 statements.append(stmt)
 
+        ret_val = None
         for stmt in statements:
-            if 'return output' in stmt:
+            if 'return' in stmt and 'output' in stmt:
+                ret_val = local_vars.get('output')
                 continue
             self.execute_statement(stmt, local_vars)
 
-        return local_vars.get('output') or local_vars.get('output.Color')
+        return ret_val
 
     def interpret(self, code: str):
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -754,18 +780,24 @@ class HLSLInterpreter:
             if os.path.exists(csv_path):
                 self.load_cbuffer_data_from_csv(cb_name, csv_path)
 
-        vs_input = self.structs.get('VS_INPUT')
-        if vs_input:
-            num_rows = 0
-            for field in vs_input.fields:
-                if field.data:
-                    num_rows = max(num_rows, len(field.data))
-            results = []
-            for row_index in range(num_rows):
-                result = self.execute_function(code, {}, row_index)
-                results.append(result)
-            return results
-        return None
+    def executeVS(self, code: str, main_func: str, vs_input: str):
+        input_struct = self.structs.get(vs_input)
+        if not input_struct:
+            return None
+
+        num_rows = 0
+        for field in input_struct.fields:
+            if field.data:
+                num_rows = max(num_rows, len(field.data))
+
+        results = []
+        for row_index in range(num_rows):
+            result = self.execute_function(code, main_func, vs_input, row_index)
+            results.append(result)
+        return results
+
+    def executePS(self, code: str, main_func: str, ps_input: str):
+        pass
 
     def load_struct_data_from_csv(self, struct_name: str, csv_path: str):
         if struct_name not in self.structs:
@@ -973,7 +1005,9 @@ def main():
     '''
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    results = interpreter.interpret(code)
+    interpreter.interpret(code)
+
+    results = interpreter.executeVS(code, "main", "VS_INPUT")
 
     print("HLSL Interpreter Result:")
     print("=" * 40)
