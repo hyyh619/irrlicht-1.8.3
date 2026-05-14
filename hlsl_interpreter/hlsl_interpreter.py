@@ -234,6 +234,19 @@ class HLSLInterpreter:
         if self.debug:
             print(msg)
 
+    def _format_float(self, val):
+        if isinstance(val, float):
+            return f"{val:.4f}"
+        if isinstance(val, list):
+            return [self._format_float(v) for v in val]
+        return val
+
+    def _format_msg(self, *args):
+        formatted = []
+        for arg in args:
+            formatted.append(self._format_float(arg))
+        return formatted
+
     def load_json(self, filepath: str):
         with open(filepath, 'r') as f:
             data = json.load(f)
@@ -1031,7 +1044,7 @@ class HLSLInterpreter:
             if val is None:
                 return None
             result = self.transpose_matrix(val)
-            self.debug_print(f"[FUNC] transpose({val}) = {result}")
+            self.debug_print(f"[FUNC] transpose({self._format_float(val)}) = {self._format_float(result)}")
             return result
 
         elif func_name == 'normalize':
@@ -1042,7 +1055,7 @@ class HLSLInterpreter:
                 return None
             if isinstance(val, list):
                 result = self.normalize_vec(val)
-                self.debug_print(f"[FUNC] normalize({val}) = {result}")
+                self.debug_print(f"[FUNC] normalize({self._format_float(val)}) = {self._format_float(result)}")
                 return result
             return val
 
@@ -1053,7 +1066,7 @@ class HLSLInterpreter:
             if val is None:
                 return None
             result = self.length_vec(val)
-            self.debug_print(f"[FUNC] length({val}) = {result}")
+            self.debug_print(f"[FUNC] length({self._format_float(val)}) = {self._format_float(result)}")
             return result
 
         elif func_name == 'dot':
@@ -1064,7 +1077,7 @@ class HLSLInterpreter:
             if a is None or b is None:
                 return None
             result = self.dot_product(a, b)
-            self.debug_print(f"[FUNC] dot({a}, {b}) = {result}")
+            self.debug_print(f"[FUNC] dot({self._format_float(a)}, {self._format_float(b)}) = {self._format_float(result)}")
             return result
 
         elif func_name == 'reflect':
@@ -1075,7 +1088,7 @@ class HLSLInterpreter:
             if I is None or N is None:
                 return None
             result = self.reflect_vec(I, N)
-            self.debug_print(f"[FUNC] reflect({I}, {N}) = {result}")
+            self.debug_print(f"[FUNC] reflect({self._format_float(I)}, {self._format_float(N)}) = {self._format_float(result)}")
             return result
 
         elif func_name == 'max':
@@ -1086,7 +1099,7 @@ class HLSLInterpreter:
             if a is None or b is None:
                 return None
             result = max(a, b)
-            self.debug_print(f"[FUNC] max({a}, {b}) = {result}")
+            self.debug_print(f"[FUNC] max({self._format_float(a)}, {self._format_float(b)}) = {self._format_float(result)}")
             return result
 
         elif func_name == 'min':
@@ -1097,7 +1110,7 @@ class HLSLInterpreter:
             if a is None or b is None:
                 return None
             result = min(a, b)
-            self.debug_print(f"[FUNC] min({a}, {b}) = {result}")
+            self.debug_print(f"[FUNC] min({self._format_float(a)}, {self._format_float(b)}) = {self._format_float(result)}")
             return result
 
         elif func_name == 'pow':
@@ -1108,7 +1121,7 @@ class HLSLInterpreter:
             if base is None or exp is None:
                 return None
             result = math.pow(base, exp)
-            self.debug_print(f"[FUNC] pow({base}, {exp}) = {result}")
+            self.debug_print(f"[FUNC] pow({self._format_float(base)}, {self._format_float(exp)}) = {self._format_float(result)}")
             return result
 
         elif func_name == 'abs':
@@ -1121,7 +1134,7 @@ class HLSLInterpreter:
                 result = [abs(v) for v in val]
             else:
                 result = abs(val)
-            self.debug_print(f"[FUNC] abs({val}) = {result}")
+            self.debug_print(f"[FUNC] abs({self._format_float(val)}) = {self._format_float(result)}")
             return result
 
         elif func_name == 'sin':
@@ -1134,7 +1147,7 @@ class HLSLInterpreter:
                 result = [math.sin(v) for v in val]
             else:
                 result = math.sin(val)
-            self.debug_print(f"[FUNC] sin({val}) = {result}")
+            self.debug_print(f"[FUNC] sin({self._format_float(val)}) = {self._format_float(result)}")
             return result
 
         elif func_name == 'cos':
@@ -1147,7 +1160,7 @@ class HLSLInterpreter:
                 result = [math.cos(v) for v in val]
             else:
                 result = math.cos(val)
-            self.debug_print(f"[FUNC] cos({val}) = {result}")
+            self.debug_print(f"[FUNC] cos({self._format_float(val)}) = {self._format_float(result)}")
             return result
 
         elif func_name == 'mul':
@@ -1160,11 +1173,11 @@ class HLSLInterpreter:
             if isinstance(left, list) and isinstance(right, list):
                 if len(left) == 4 and len(right) == 4:
                     result = self.mul_matrix_vector(right, left)
-                    self.debug_print(f"[FUNC] mul(left={left}, right={right}) = {result}")
+                    self.debug_print(f"[FUNC] mul(left={self._format_float(left)}, right={self._format_float(right)}) = {self._format_float(result)}")
                     return result
                 elif len(left) == 3 and len(right) == 3:
                     result = self.mul_matrix_vector(right, left)
-                    self.debug_print(f"[FUNC] mul(left={left}, right={right}) = {result}")
+                    self.debug_print(f"[FUNC] mul(left={self._format_float(left)}, right={self._format_float(right)}) = {self._format_float(result)}")
                     return result
             return None
 
@@ -1176,7 +1189,7 @@ class HLSLInterpreter:
                     result.extend(val)
                 else:
                     result.append(val)
-            self.debug_print(f"[FUNC] {func_name}(args={args}) = {result}")
+            self.debug_print(f"[FUNC] {func_name}(args={self._format_float(args)}) = {self._format_float(result)}")
             return result
 
         return None
