@@ -486,7 +486,7 @@ Git commit: hlsl-inter: add execution print for evaluate_syntax_tree by MiniMax-
     def execute_function_node(self, node: SyntaxTreeNode, local_vars: Dict[str, Any]) -> Any:
 
 # 17
-Git commit: 
+Git commit: hlsl-inter: fix vector multiplies matrix. We should use col major by MiniMax-M2.7.
 1. 前面为下列函数添加的打印也请用一个bool变量来控制是否打印
     def execute_binary_op(self, op: str, left: Any, right: Any) -> Any:
     def execute_unary_op(self, op: str, val: Any) -> Any:

@@ -1368,15 +1368,17 @@ class HLSLInterpreter:
                 statements.append(stmt)
 
         ret_val = None
+
+        self.debug_print(f"\n=== INPUT DATA ===")
+        for k, v in local_vars.items():
+            if k.startswith('input.') or k == 'output':
+                self.debug_print(f"  {k} = {v}")
+        self.debug_print(f"==================")
+
         for stmt in statements:
             if 'return' in stmt and 'output' in stmt:
                 ret_val = local_vars.get('output')
                 continue
-            self.debug_print(f"\n=== INPUT DATA ===")
-            for k, v in local_vars.items():
-                if k.startswith('input.') or k == 'output':
-                    self.debug_print(f"  {k} = {v}")
-            self.debug_print(f"==================")
             self.execute_statement(stmt, local_vars)
 
         return ret_val
