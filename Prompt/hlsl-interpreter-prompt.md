@@ -436,7 +436,7 @@ Git commit:
                 return inner
 
 # 14
-Git commit: 
+Git commit: hlsl-inter: add warning log for val none by MiniMax-M2.7.
 为evaluate_expression执行分支里的每处判断val为None时，增加一个警告打印
                 if val is None:
                     return None
@@ -444,6 +444,11 @@ Git commit:
 
 # 15
 Git commit: 
+execute_statement函数执行下面语句时，只执行了transpose(WorldViewProj), 并未执行float4(),mul()
+'output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj))'
+1. 这个问题应该是因为当前解释器在执行一条语句时采用的简单匹配，因此先匹配到transpose，执行完毕后就直接赋值给了output.pos
+2. 对于一个HLSL，我们应该根据其执行的操作符的优先级构造语法树，然后按照语法树节点来挨个执行这条语句的所有操作
+3. 请加入语法树模块，负责分析一条语句构造语法树，然后基于该语法树执行所有操作
 
 
 # 16
@@ -459,4 +464,36 @@ Git commit:
 
 
 # 19
+Git commit: 
+
+
+# 20
+Git commit: 
+
+
+# 21
+Git commit: 
+
+
+# 22
+Git commit: 
+
+
+# 23
+Git commit: 
+
+
+# 24
+Git commit: 
+
+
+# 25
+Git commit: 
+
+
+# 26
+Git commit: 
+
+
+# 27
 Git commit: 
