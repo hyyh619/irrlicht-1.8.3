@@ -240,15 +240,6 @@ Git commit: hlsl-inter: add eval print for debugging by MiniMax-M2.7.
 
 # 13
 Git commit: 
-'mul(float4(input.Pos, 1.0), transpose(WorldViewProj))'
-evaluate_expression处理上面这个expression时，没法走进下面这个分支处理
-            if 'mul' in expr:
-                self.debug_print(f"[EVAL] MUL: {expr}")
-看起来是
-if re.match(r'float[234]\s*\(', expr):就没通过。
-1. 请修复上述问题
-2. 告诉我if re.match(r'float[234]\s*\(', expr):这个判断时用来做什么作用
-
 告诉我下面这段代码的作用，给这段代码添加注释，尤其是if re.match(r'float[234]\s*\(', expr)这个语句匹配的是什么字符串
         if re.match(r'float[234]\s*\(', expr):
             self.debug_print(f"[EVAL] FLOAT234: {expr}")
@@ -446,6 +437,9 @@ if re.match(r'float[234]\s*\(', expr):就没通过。
 
 # 14
 Git commit: 
+为evaluate_expression执行分支里的每处判断val为None时，增加一个警告打印
+                if val is None:
+                    return None
 
 
 # 15

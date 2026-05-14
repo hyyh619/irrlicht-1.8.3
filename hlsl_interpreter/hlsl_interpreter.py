@@ -522,6 +522,7 @@ class HLSLInterpreter:
             if match:
                 val = self.get_value(match.group(1), local_vars)
                 if val is None:
+                    self.debug_print(f"[EVAL] WARNING: val is None for {expr}")
                     return None
                 result = self.transpose_matrix(val)
                 self.debug_print(f"[EVAL] TRANSPOSE result: {result}")
@@ -536,6 +537,7 @@ class HLSLInterpreter:
             if match:
                 val = self.get_value(match.group(1), local_vars)
                 if val is None:
+                    self.debug_print(f"[EVAL] WARNING: val is None for {expr}")
                     return None
                 if isinstance(val, list):
                     result = self.normalize_vec(val)
@@ -552,6 +554,7 @@ class HLSLInterpreter:
             if match:
                 val = self.get_value(match.group(1), local_vars)
                 if val is None:
+                    self.debug_print(f"[EVAL] WARNING: val is None for {expr}")
                     return None
                 result = self.length_vec(val)
                 self.debug_print(f"[EVAL] LENGTH result: {result}")
@@ -579,6 +582,7 @@ class HLSLInterpreter:
                 a = self.evaluate_expression(arg1, local_vars)
                 b = self.evaluate_expression(arg2, local_vars)
                 if a is None or b is None:
+                    self.debug_print(f"[EVAL] WARNING: arg is None for DOT: a={a}, b={b}")
                     return None
                 result = self.dot_product(a, b)
                 self.debug_print(f"[EVAL] DOT result: {result}")
@@ -588,6 +592,7 @@ class HLSLInterpreter:
                 a = self.get_value(match.group(1), local_vars)
                 b = self.get_value(match.group(2), local_vars)
                 if a is None or b is None:
+                    self.debug_print(f"[EVAL] WARNING: arg is None for DOT: a={a}, b={b}")
                     return None
                 result = self.dot_product(a, b)
                 self.debug_print(f"[EVAL] DOT result: {result}")
@@ -603,6 +608,7 @@ class HLSLInterpreter:
                 I = self.get_value(match.group(1), local_vars)
                 N = self.get_value(match.group(2), local_vars)
                 if I is None or N is None:
+                    self.debug_print(f"[EVAL] WARNING: arg is None for REFLECT: I={I}, N={N}")
                     return None
                 result = self.reflect_vec(I, N)
                 self.debug_print(f"[EVAL] REFLECT result: {result}")
@@ -629,6 +635,7 @@ class HLSLInterpreter:
                 a = self.evaluate_expression(arg1, local_vars)
                 b = self.evaluate_expression(arg2, local_vars)
                 if a is None or b is None:
+                    self.debug_print(f"[EVAL] WARNING: arg is None for MAX: a={a}, b={b}")
                     return None
                 result = max(a, b)
                 self.debug_print(f"[EVAL] MAX result: {result}")
@@ -655,6 +662,7 @@ class HLSLInterpreter:
                 left = self.evaluate_expression(arg1, local_vars)
                 right = self.evaluate_expression(arg2, local_vars)
                 if left is None or right is None:
+                    self.debug_print(f"[EVAL] WARNING: arg is None for MUL: left={left}, right={right}")
                     return None
                 if isinstance(left, list) and isinstance(right, list):
                     if len(left) == 4 and len(right) == 4:
@@ -677,6 +685,7 @@ class HLSLInterpreter:
                 base = self.evaluate_expression(match.group(1), local_vars)
                 exp = self.evaluate_expression(match.group(2), local_vars)
                 if base is None or exp is None:
+                    self.debug_print(f"[EVAL] WARNING: arg is None for POW: base={base}, exp={exp}")
                     return None
                 result = math.pow(base, exp)
                 self.debug_print(f"[EVAL] POW result: {result}")
@@ -732,6 +741,7 @@ class HLSLInterpreter:
                 left = self.evaluate_expression(parts[0], local_vars)
                 right = self.evaluate_expression(parts[1], local_vars)
                 if left is None or right is None:
+                    self.debug_print(f"[EVAL] WARNING: arg is None for SUB: left={left}, right={right}")
                     return None
                 if isinstance(left, list) and isinstance(right, list):
                     result = [l - r for l, r in zip(left, right)]
@@ -754,10 +764,12 @@ class HLSLInterpreter:
             parts = expr.split('+')
             result = self.evaluate_expression(parts[0], local_vars)
             if result is None:
+                self.debug_print(f"[EVAL] WARNING: result is None for ADD expression")
                 return None
             for p in parts[1:]:
                 right = self.evaluate_expression(p, local_vars)
                 if right is None:
+                    self.debug_print(f"[EVAL] WARNING: right is None for ADD at '{p}'")
                     return None
                 if isinstance(result, list) and isinstance(right, list):
                     result = [r + v for r, v in zip(result, right)]
