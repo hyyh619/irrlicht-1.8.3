@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Union
 
 
-DATA_TYPE_LIST = ['float4x4', 'float4', 'float3', 'float2', 'uint']
+DATA_TYPE_LIST = ['float4x4', 'float3x3', 'float4', 'float3', 'float2', 'float', 'uint']
 
 
 @dataclass
@@ -817,6 +817,7 @@ class HLSLInterpreter:
         header = rows[0]
         name_idx = header.index('Name') if 'Name' in header else -1
         value_idx = header.index('Value') if 'Value' in header else -1
+        type_idx = header.index('Type') if 'Type' in header else -1
 
         if name_idx == -1 or value_idx == -1:
             return
@@ -829,6 +830,7 @@ class HLSLInterpreter:
                 continue
             var_name = row[name_idx].strip().strip('"')
             value_str = row[value_idx].strip().strip('"') if value_idx < len(row) else ''
+            type_str = row[type_idx].strip().strip('"') if type_idx != -1 and type_idx < len(row) else ''
 
             # just skip null value string.
             # ['WorldViewProj', '', '0', 'float4x4 (column_major)']
@@ -843,9 +845,9 @@ class HLSLInterpreter:
                     row_idx = int(suffix[3:])
                     if base_name not in matrix_rows:
                         matrix_rows[base_name] = {}
-                    matrix_rows[base_name][row_idx] = value_str
+                    matrix_rows[base_name][row_idx] = (value_str, type_str)
             else:
-                scalar_vars[var_name] = value_str
+                scalar_vars[var_name] = (value_str, type_str)
 
         for field in cb_def.fields:
             if field.name in matrix_rows:
@@ -853,16 +855,35 @@ class HLSLInterpreter:
                 if all(i in row_dict for i in range(4)):
                     matrix = []
                     for i in range(4):
-                        parts = row_dict[i].split(',')
+                        value_str, type_str = row_dict[i]
+                        parts = value_str.split(',')
                         matrix.append([float(p.strip()) for p in parts[:4]])
                     field.data = matrix
             elif field.name in scalar_vars:
-                field.data = self.parse_value_by_type(scalar_vars[field.name], field.field_type)
+                value_str, type_str = scalar_vars[field.name]
+                field.data = self.parse_value_by_type(value_str, type_str)
 
-        for cb_n, cb_d in self.cbuffers.items():
-            print(f"Cbuffer {cb_n}:")
-            for f in cb_d.fields:
-                print(f"  {f.name} ({f.field_type}): data={f.data}")
+        cb_n = cb_name
+        cb_d = cb_def
+        print(f"Cbuffer {cb_n}:")
+        for f in cb_d.fields:
+            data = f.data
+            ft = f.field_type
+            if 'float4x4' in ft or 'float3x3' in ft:
+                print(f"  {f.name} ({ft}):")
+                for row in data:
+                    row_str = '  '.join(f"{v:12.5f}" for v in row)
+                    print(f"    [{row_str}]")
+            elif 'float4' in ft:
+                print(f"  {f.name} ({ft}): [{', '.join(f'{v:.5f}' for v in data)}]")
+            elif 'float3' in ft:
+                print(f"  {f.name} ({ft}): [{', '.join(f'{v:.5f}' for v in data)}]")
+            elif 'float2' in ft:
+                print(f"  {f.name} ({ft}): [{', '.join(f'{v:.5f}' for v in data)}]")
+            elif 'uint' in ft or 'int' in ft:
+                print(f"  {f.name} ({ft}): {data}")
+            else:
+                print(f"  {f.name} ({ft}): {data}")
 
 
 def main():

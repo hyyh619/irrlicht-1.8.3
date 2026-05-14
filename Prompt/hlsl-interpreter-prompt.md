@@ -143,7 +143,7 @@ Git commit: hlsl-inter: load data from .csv to cbuffer and vertex input by MiniM
 4. StructDefinition表示的是顶点或者像素，因此一个成员变量会对应多组数据，CbufferDefinition对应的常量，一个成员只对应一组数据
 
 # 5
-Git commit: 
+Git commit: cbuffer parser should load both vector and matrix by MiniMax-M2.7.
 cbuffer对应的csv文件如果data type是float4x4,其数据格式如下
 WorldViewProj,,0,float4x4 (column_major)
 WorldViewProj.row0,"1.03104, 0.00, -0.05065, 24.85304",,float4
@@ -157,10 +157,27 @@ SpecularColor,"1.00, 1.00, 1.00, 1.00",32,float4
 请加入矩阵类型数据处理
 
 
-
 # 6
 Git commit: 
+load_cbuffer_data_from_csv直接储存的value string，请根据csv每行数据最后的data type把字符串转换成对应的数据类型。
+每行数据的样例如下：
+WorldViewProj.row0,"1.03104, 0.00, -0.05065, 24.85304",,float4
+LightRadius,"600.00",60,float
+ColorMaterialMode,"1",68,uint
+load_cbuffer_data_from_csv保存数据的代码如下，请按前面的要求修改。
+                    matrix_rows[base_name][row_idx] = value_str
+            else:
+                scalar_vars[var_name] = value_str
 
+load_cbuffer_data_from_csv打印data的代码如下，可以看到它直接打印数据，没有做打印的格式化
+请按照数据类型分行，
+1. 'float4x4', 'float3x3', 这种矩阵类型的数据，matrix row就打印一行，上下行的每列数据都要对齐
+2. 'float4', 'float3', 'float2', 这种向量类型的数据，就直接打印一行
+3. 'float', 'uint'，这种单数据类型打印一行
+        for cb_n, cb_d in self.cbuffers.items():
+            print(f"Cbuffer {cb_n}:")
+            for f in cb_d.fields:
+                print(f"  {f.name} ({f.field_type}): data={f.data}")
 
 # 7
 Git commit: 
