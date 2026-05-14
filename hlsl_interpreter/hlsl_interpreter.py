@@ -10,7 +10,8 @@ from typing import Any, Dict, List, Union
 DATA_TYPE_LIST = ['float4x4', 'float3x3',
                 'float4', 'float3', 'float2', 'float',
                 'uint4', 'uint3', 'uint2', 'uint',
-                'int4', 'int3', 'int2', 'int']
+                'int4', 'int3', 'int2', 'int',
+                'bool']
 
 
 @dataclass

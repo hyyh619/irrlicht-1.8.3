@@ -211,7 +211,7 @@ Git commit: Create executeVS/executePS to execute the VS/PS code by MiniMax-M2.7
 7. executePS目前暂时不要调用执行，后续拓展解释器功能再调用
 
 # 10
-Git commit: 
+Git commit: hlsl-inter: refine execute_function by MiniMax-M2.7.
 重构execute_function
 def execute_function(self, code: str, main_func: str, input_struct_name: str, row_index: int)
 1. execute_function作为普通执行任何VS/PS main函数，改名为execute_main_function
@@ -219,6 +219,17 @@ def execute_function(self, code: str, main_func: str, input_struct_name: str, ro
 
 # 11
 Git commit: 
+DATA_TYPE_LIST = ['float4x4', 'float3x3',
+                'float4', 'float3', 'float2', 'float',
+                'uint4', 'uint3', 'uint2', 'uint',
+                'int4', 'int3', 'int2', 'int',
+                'bool']
+1. get_type_size函数根据DATA_TYPE_LIST提供的type来返回size
+2. parse_type, parse_value_by_type函数根据DATA_TYPE_LIST补全缺乏的type
+3. execute_statement函数下列判断请使用DATA_TYPE_LIST
+           if stmt.startswith('float4 ') or stmt.startswith('float3 ') or stmt.startswith('float ') or stmt.startswith('float2 ') or stmt.startswith('int ') or stmt.startswith('uint ') or stmt.startswith('bool '):
+            match = re.match(r'(?:float4|float3|float2|float|int|uint|bool)\s+(\w+)\s*=\s*(.+?);?$', stmt)
+4. load_cbuffer_data_from_csv打印cbuffer的data，也按照DATA_TYPE_LIST补齐缺乏的数据类型打印
 
 
 # 12
