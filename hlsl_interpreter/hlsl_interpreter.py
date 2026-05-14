@@ -472,6 +472,14 @@ class HLSLInterpreter:
                 self.debug_print(f"[EVAL] UNARY SUB result: -{val} = {result}")
                 return result
 
+        # =====================================================================
+        # 向量构造函数: float2/float3/float4
+        # 正则 r'float[234]\s*\(' 匹配以下形式的字符串:
+        #   - "float2("  -> 创建二维向量
+        #   - "float3("  -> 创建三维向量
+        #   - "float4("  -> 创建四维向量
+        # 例如: "float3(1.0, 2.0, 3.0)" 或 "float4(float3(1,2,3), 4.0)"
+        # =====================================================================
         if re.match(r'float[234]\s*\(', expr):
             self.debug_print(f"[EVAL] FLOAT234: {expr}")
             match = re.match(r'float[234]\s*\(([^)]+)\)', expr)
@@ -480,6 +488,8 @@ class HLSLInterpreter:
                 args = []
                 depth = 0
                 current_arg = ''
+                # 手动解析参数，处理嵌套括号的情况
+                # 例如: float3(float2(1,2), 3, 4) 会被正确解析
                 for char in args_str:
                     if char == ',' and depth == 0:
                         args.append(current_arg.strip())
@@ -492,6 +502,7 @@ class HLSLInterpreter:
                         current_arg += char
                 if current_arg.strip():
                     args.append(current_arg.strip())
+                # 对每个参数递归求值并展平嵌套列表
                 result = []
                 for arg in args:
                     val = self.evaluate_expression(arg, local_vars)
@@ -502,7 +513,9 @@ class HLSLInterpreter:
                 self.debug_print(f"[EVAL] FLOAT234 result: {result}")
                 return result
 
-
+        # =====================================================================
+            # 矩阵运算: transpose - 转置矩阵
+            # =====================================================================
             if 'transpose' in expr:
                 self.debug_print(f"[EVAL] TRANSPOSE: {expr}")
                 match = re.search(r'transpose\s*\(([^)]+)\)', expr)
@@ -514,6 +527,9 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] TRANSPOSE result: {result}")
                     return result
 
+            # =====================================================================
+            # normalize - 归一化向量
+            # =====================================================================
             if 'normalize' in expr:
                 self.debug_print(f"[EVAL] NORMALIZE: {expr}")
                 match = re.search(r'normalize\s*\(([^)]+)\)', expr)
@@ -527,6 +543,9 @@ class HLSLInterpreter:
                         return result
                     return val
 
+            # =====================================================================
+            # length - 计算向量长度
+            # =====================================================================
             if 'length' in expr:
                 self.debug_print(f"[EVAL] LENGTH: {expr}")
                 match = re.search(r'length\s*\(([^)]+)\)', expr)
@@ -538,6 +557,10 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] LENGTH result: {result}")
                     return result
 
+            # =====================================================================
+            # dot - 向量点积
+            # 手动解析逗号位置（处理嵌套括号）
+            # =====================================================================
             if 'dot' in expr:
                 self.debug_print(f"[EVAL] DOT: {expr}")
                 depth = 0
@@ -570,6 +593,9 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] DOT result: {result}")
                     return result
 
+            # =====================================================================
+            # reflect - 反射向量计算 (I - 2 * dot(N, I) * N)
+            # =====================================================================
             if 'reflect' in expr:
                 self.debug_print(f"[EVAL] REFLECT: {expr}")
                 match = re.match(r'reflect\s*\(([^,]+),\s*([^)]+)\)', expr)
@@ -582,6 +608,9 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] REFLECT result: {result}")
                     return result
 
+            # =====================================================================
+            # max - 取两个值中的最大值
+            # =====================================================================
             if 'max' in expr:
                 self.debug_print(f"[EVAL] MAX: {expr}")
                 depth = 0
@@ -605,6 +634,9 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] MAX result: {result}")
                     return result
 
+            # =====================================================================
+            # mul - 矩阵乘法 (矩阵 × 向量, 支持 4x4 和 3x3)
+            # =====================================================================
             if 'mul' in expr:
                 self.debug_print(f"[EVAL] MUL: {expr}")
                 depth = 0
@@ -618,7 +650,7 @@ class HLSLInterpreter:
                         comma_pos = i
                         break
                 if comma_pos > 0:
-                    arg1 = expr[3:comma_pos].strip()
+                    arg1 = expr[4:comma_pos].strip()
                     arg2 = expr[comma_pos+1:].strip().rstrip(')')
                     left = self.evaluate_expression(arg1, local_vars)
                     right = self.evaluate_expression(arg2, local_vars)
@@ -635,6 +667,9 @@ class HLSLInterpreter:
                             return result
                     return None
 
+            # =====================================================================
+            # pow - 幂运算
+            # =====================================================================
             if 'pow' in expr:
                 self.debug_print(f"[EVAL] POW: {expr}")
                 match = re.match(r'pow\s*\(([^,]+),\s*([^)]+)\)', expr)
@@ -647,6 +682,10 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] POW result: {result}")
                     return result
 
+            # =====================================================================
+            # 类型转换和向量分量访问 (swizzle: .x, .y, .z, .w)
+            # 匹配形式: (value).component 或 (type)expression
+            # =====================================================================
             match = re.match(r'\(([^)]+)\)\s*(.+)', expr)
             if match:
                 self.debug_print(f"[EVAL] CAST/SWIZZLE: {expr}")
