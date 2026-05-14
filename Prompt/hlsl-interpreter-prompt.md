@@ -233,7 +233,7 @@ DATA_TYPE_LIST = ['float4x4', 'float3x3',
 
 
 # 12
-Git commit: 
+Git commit: hlsl-inter: add eval print for debugging by MiniMax-M2.7.
 1. evaluate_expression的每个执行分支都加一个打印输出其执行的操作和操作数，这个打印可以通过开关控制。
 2. execute_statement执行的每一条语句都打印出来，包括语句变量的输入数据和输出数据
 
