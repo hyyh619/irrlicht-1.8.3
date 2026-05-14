@@ -1284,7 +1284,7 @@ class HLSLInterpreter:
                 if 'output' not in local_vars:
                     local_vars['output'] = {}
                 local_vars['output'][field_name] = value
-                self.debug_print(f"[STMT] {stmt} => output.{field_name} = {value}")
+                self.debug_print(f"[STMT] {stmt} => output.{field_name} = {self._format_float(value)}")
                 return None
 
         if '=' in stmt and stmt.count('=') == 1:
