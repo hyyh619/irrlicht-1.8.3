@@ -23,14 +23,35 @@ class SyntaxTreeNode:
         self.args = args if args is not None else []
 
     def __repr__(self):
+        return self._pretty(0)
+
+    def _pretty(self, indent: int) -> str:
+        prefix = "  " * indent
         if self.node_type == 'function':
-            return f"Function({self.value}, args={self.args})"
+            lines = [f"Function({self.value})"]
+            for i, arg in enumerate(self.args):
+                lines.append(f"{prefix}  arg[{i}]:")
+                lines.append(arg._pretty(indent + 2))
+            return "\n".join(lines)
         elif self.node_type == 'binary_op':
-            return f"BinaryOp({self.value}, left={self.left}, right={self.right})"
+            lines = [f"BinaryOp({self.value})"]
+            lines.append(f"{prefix}  left:")
+            lines.append(self.left._pretty(indent + 2))
+            lines.append(f"{prefix}  right:")
+            lines.append(self.right._pretty(indent + 2))
+            return "\n".join(lines)
         elif self.node_type == 'unary_op':
-            return f"UnaryOp({self.value}, child={self.left})"
+            lines = [f"UnaryOp({self.value})"]
+            lines.append(f"{prefix}  child:")
+            lines.append(self.left._pretty(indent + 2))
+            return "\n".join(lines)
+        elif self.node_type == 'cast':
+            lines = [f"Cast({self.value})"]
+            lines.append(f"{prefix}  inner:")
+            lines.append(self.left._pretty(indent + 2))
+            return "\n".join(lines)
         else:
-            return f"Value({self.value})"
+            return f"{prefix}Value({self.value})"
 
 
 class SyntaxTreeParser:
@@ -523,6 +544,7 @@ class HLSLInterpreter:
         if re.match(r'\w+\s*\(', expr) and expr.strip().endswith(')'):
             if not any(op in expr for op in ['+', '-', '*', '/', '==', '!=', '<', '>', '<=', '>=', '||', '&&']):
                 tree = self.syntax_parser.parse(expr)
+                self.debug_print(f"[SYNTAX TREE]\n{tree}")
                 return self.evaluate_syntax_tree(tree, local_vars)
 
         if expr.startswith('return '):

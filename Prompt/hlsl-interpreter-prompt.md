@@ -465,6 +465,18 @@ execute_statement函数执行下面语句时，只执行了transpose(WorldViewPr
                 tree = self.syntax_parser.parse(expr)
                 return self.evaluate_syntax_tree(tree, local_vars)
 
+下列生成的打印'Function:'根据在tree的几级子节点加上缩进
+Function: mul
+  arg[0]:
+Function: float4
+      arg[0]:
+        Value: input.Pos
+      arg[1]:
+        Value: 1.0
+  arg[1]:
+Function: transpose
+      arg[0]:
+        Value: WorldViewProj
 
 # 16
 Git commit: 
