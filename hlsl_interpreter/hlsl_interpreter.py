@@ -458,13 +458,13 @@ class HLSLInterpreter:
             if isinstance(val, bool):
                 result = not val
             result = not bool(val)
-        self.debug_print(f"[UNARY OP] operand={val}, op={op}, result={result}")
+        self.debug_print(f"[UNARY OP] operand={self._format_float(val)}, op={op}, result={self._format_float(result)}")
         return result
 
     def execute_binary_op(self, op: str, left: Any, right: Any) -> Any:
         if left is None or right is None:
             result = None
-            self.debug_print(f"[BINARY OP] left={left}, right={right}, op={op}, result={result}")
+            self.debug_print(f"[BINARY OP] left={self._format_float(left)}, right={self._format_float(right)}, op={op}, result={self._format_float(result)}")
             return None
         if op == '+':
             if isinstance(left, list) and isinstance(right, list):
@@ -492,7 +492,7 @@ class HLSLInterpreter:
             result = (left, right)
         else:
             result = None
-        self.debug_print(f"[BINARY OP] left={left}, right={right}, op={op}, result={result}")
+        self.debug_print(f"[BINARY OP] left={self._format_float(left)}, right={self._format_float(right)}, op={op}, result={self._format_float(result)}")
         return result
 
     def transpose_matrix(self, m: List[List[float]]) -> List[List[float]]:
