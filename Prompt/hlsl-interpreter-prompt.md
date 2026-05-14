@@ -479,12 +479,14 @@ Function: transpose
         Value: WorldViewProj
 
 # 16
-Git commit: 
+Git commit: hlsl-inter: add execution print for evaluate_syntax_tree by MiniMax-M2.7
 为下列函数执行具体某个操作符时，打印其操作数，操作符，以及结果
     def execute_binary_op(self, op: str, left: Any, right: Any) -> Any:
     def execute_unary_op(self, op: str, val: Any) -> Any:
     def execute_function_node(self, node: SyntaxTreeNode, local_vars: Dict[str, Any]) -> Any:
 
+# 17
+Git commit: 
 1. 前面为下列函数添加的打印也请用一个bool变量来控制是否打印
     def execute_binary_op(self, op: str, left: Any, right: Any) -> Any:
     def execute_unary_op(self, op: str, val: Any) -> Any:
@@ -492,10 +494,6 @@ Git commit:
 2. evaluate_expression打印生成的syntax tree也用一个bool变量控制是否打印
 3. 函数def mul_matrix_vector(self, m: List[List[float]], v: List[float]) -> List[float]:的实现是vector乘以矩阵的行。而我们这个解释器里向量都是行向量，右乘矩阵，需要乘以矩阵的列，不是行。请修改
 4. 请检查其他地方的矩阵和向量的乘法，是否都是行向量，乘以矩阵的列
-
-# 17
-Git commit: 
-
 
 # 18
 Git commit: 
