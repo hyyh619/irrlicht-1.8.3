@@ -497,6 +497,10 @@ Git commit: hlsl-inter: fix vector multiplies matrix. We should use col major by
 
 # 18
 Git commit: 
+下面函数如果打印的操作数和结果是float4x4/float3x3这种矩阵数据，那么matrix row就打印一行，上下行的每列数据都要对齐
+def execute_function_node
+def execute_unary_op
+def execute_binary_op
 
 
 # 19

@@ -238,8 +238,29 @@ class HLSLInterpreter:
         if isinstance(val, float):
             return f"{val:.4f}"
         if isinstance(val, list):
+            if val and isinstance(val[0], list):
+                return self._format_matrix(val)
             return [self._format_float(v) for v in val]
         return val
+
+    def _format_matrix(self, val):
+        if not val or not isinstance(val[0], list):
+            return str(val)
+        formatted = [[self._format_float(v) for v in row] for row in val]
+        col_widths = [0] * len(formatted[0])
+        for row in formatted:
+            for j, cell in enumerate(row):
+                col_widths[j] = max(col_widths[j], len(cell))
+        lines = []
+        for row in formatted:
+            cells = [cell.rjust(col_widths[j]) for j, cell in enumerate(row)]
+            lines.append("[" + " ".join(cells) + "]")
+        return "\n".join(lines)
+
+    def _format_value(self, val):
+        if isinstance(val, list) and val and isinstance(val[0], list):
+            return self._format_matrix(val)
+        return self._format_float(val)
 
     def _format_msg(self, *args):
         formatted = []
@@ -458,13 +479,13 @@ class HLSLInterpreter:
             if isinstance(val, bool):
                 result = not val
             result = not bool(val)
-        self.debug_print(f"[UNARY OP] operand={self._format_float(val)}, op={op}, result={self._format_float(result)}")
+        self.debug_print(f"[UNARY OP] operand={self._format_value(val)}, op={op}, result={self._format_value(result)}")
         return result
 
     def execute_binary_op(self, op: str, left: Any, right: Any) -> Any:
         if left is None or right is None:
             result = None
-            self.debug_print(f"[BINARY OP] left={self._format_float(left)}, right={self._format_float(right)}, op={op}, result={self._format_float(result)}")
+            self.debug_print(f"[BINARY OP] left={self._format_value(left)}, right={self._format_value(right)}, op={op}, result={self._format_value(result)}")
             return None
         if op == '+':
             if isinstance(left, list) and isinstance(right, list):
@@ -1044,7 +1065,7 @@ class HLSLInterpreter:
             if val is None:
                 return None
             result = self.transpose_matrix(val)
-            self.debug_print(f"[FUNC] transpose({self._format_float(val)}) = {self._format_float(result)}")
+            self.debug_print(f"[FUNC] transpose(\n{self._format_value(val)}) =\n{self._format_value(result)}")
             return result
 
         elif func_name == 'normalize':
@@ -1173,11 +1194,11 @@ class HLSLInterpreter:
             if isinstance(left, list) and isinstance(right, list):
                 if len(left) == 4 and len(right) == 4:
                     result = self.mul_matrix_vector(right, left)
-                    self.debug_print(f"[FUNC] mul(left={self._format_float(left)}, right={self._format_float(right)}) = {self._format_float(result)}")
+                    self.debug_print(f"[FUNC] mul(\nleft={self._format_value(left)},\nright={self._format_value(right)}) =\n{self._format_value(result)}")
                     return result
                 elif len(left) == 3 and len(right) == 3:
                     result = self.mul_matrix_vector(right, left)
-                    self.debug_print(f"[FUNC] mul(left={self._format_float(left)}, right={self._format_float(right)}) = {self._format_float(result)}")
+                    self.debug_print(f"[FUNC] mul(\nleft={self._format_value(left)},\nright={self._format_value(right)}) =\n{self._format_value(result)}")
                     return result
             return None
 
