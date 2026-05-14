@@ -61,13 +61,33 @@ class HLSLInterpreter:
     def get_type_size(self, field_type: str) -> int:
         if 'float4x4' in field_type:
             return 64
+        elif 'float3x3' in field_type:
+            return 36
         elif 'float4' in field_type:
             return 16
         elif 'float3' in field_type:
             return 12
         elif 'float2' in field_type:
             return 8
+        elif 'float' in field_type:
+            return 4
+        elif 'uint4' in field_type:
+            return 16
+        elif 'uint3' in field_type:
+            return 12
+        elif 'uint2' in field_type:
+            return 8
         elif 'uint' in field_type:
+            return 4
+        elif 'int4' in field_type:
+            return 16
+        elif 'int3' in field_type:
+            return 12
+        elif 'int2' in field_type:
+            return 8
+        elif 'int' in field_type:
+            return 4
+        elif 'bool' in field_type:
             return 4
         return 0
 
@@ -81,6 +101,14 @@ class HLSLInterpreter:
                     row = [float(parts[j]) for j in range(i*4, i*4+4)]
                     matrix.append(row)
                 return matrix
+        elif 'float3x3' in field_type:
+            parts = value_str.split(',')
+            if len(parts) >= 9:
+                matrix = []
+                for i in range(3):
+                    row = [float(parts[j]) for j in range(i*3, i*3+3)]
+                    matrix.append(row)
+                return matrix
         elif 'float4' in field_type:
             parts = value_str.split(',')
             return [float(p) for p in parts[:4]]
@@ -90,8 +118,30 @@ class HLSLInterpreter:
         elif 'float2' in field_type:
             parts = value_str.split(',')
             return [float(p) for p in parts[:2]]
+        elif 'uint4' in field_type:
+            parts = value_str.split(',')
+            return [int(p) for p in parts[:4]]
+        elif 'uint3' in field_type:
+            parts = value_str.split(',')
+            return [int(p) for p in parts[:3]]
+        elif 'uint2' in field_type:
+            parts = value_str.split(',')
+            return [int(p) for p in parts[:2]]
         elif 'uint' in field_type:
             return int(value_str)
+        elif 'int4' in field_type:
+            parts = value_str.split(',')
+            return [int(p) for p in parts[:4]]
+        elif 'int3' in field_type:
+            parts = value_str.split(',')
+            return [int(p) for p in parts[:3]]
+        elif 'int2' in field_type:
+            parts = value_str.split(',')
+            return [int(p) for p in parts[:2]]
+        elif 'int' in field_type:
+            return int(value_str)
+        elif 'bool' in field_type:
+            return value_str.lower() in ('true', '1', 'yes')
         try:
             return float(value_str)
         except:
@@ -99,15 +149,35 @@ class HLSLInterpreter:
 
     def parse_type(self, type_str: str) -> str:
         type_str = type_str.strip()
+        if type_str in DATA_TYPE_LIST:
+            return type_str
         if type_str.startswith('float'):
             if 'x3' in type_str:
                 return 'float3x3'
             elif 'x4' in type_str:
                 return 'float4x4'
+            elif type_str == 'float':
+                return 'float'
             return 'float'
         elif type_str.startswith('int'):
+            if type_str == 'int':
+                return 'int'
+            elif '2' in type_str:
+                return 'int2'
+            elif '3' in type_str:
+                return 'int3'
+            elif '4' in type_str:
+                return 'int4'
             return 'int'
         elif type_str.startswith('uint'):
+            if type_str == 'uint':
+                return 'uint'
+            elif '2' in type_str:
+                return 'uint2'
+            elif '3' in type_str:
+                return 'uint3'
+            elif '4' in type_str:
+                return 'uint4'
             return 'uint'
         elif type_str.startswith('bool'):
             return 'bool'
@@ -640,13 +710,14 @@ class HLSLInterpreter:
         if not stmt:
             return None
 
-        if stmt.startswith('float4 ') or stmt.startswith('float3 ') or stmt.startswith('float ') or stmt.startswith('float2 ') or stmt.startswith('int ') or stmt.startswith('uint ') or stmt.startswith('bool '):
-            match = re.match(r'(?:float4|float3|float2|float|int|uint|bool)\s+(\w+)\s*=\s*(.+?);?$', stmt)
-            if match:
-                var_name = match.group(1)
-                value = self.evaluate_expression(match.group(2), local_vars)
-                local_vars[var_name] = value
-                return None
+        type_pattern = '|'.join(DATA_TYPE_LIST)
+        pattern = rf'^({type_pattern})\s+(\w+)\s*=\s*(.+?);?$'
+        match = re.match(pattern, stmt)
+        if match:
+            var_name = match.group(2)
+            value = self.evaluate_expression(match.group(3), local_vars)
+            local_vars[var_name] = value
+            return None
 
         if 'output.' in stmt or 'output[' in stmt:
             match = re.match(r'output\.(\w+)\s*=\s*(.+)', stmt)
@@ -919,7 +990,12 @@ class HLSLInterpreter:
         for f in cb_d.fields:
             data = f.data
             ft = f.field_type
-            if 'float4x4' in ft or 'float3x3' in ft:
+            if 'float4x4' in ft:
+                print(f"  {f.name} ({ft}):")
+                for row in data:
+                    row_str = '  '.join(f"{v:12.5f}" for v in row)
+                    print(f"    [{row_str}]")
+            elif 'float3x3' in ft:
                 print(f"  {f.name} ({ft}):")
                 for row in data:
                     row_str = '  '.join(f"{v:12.5f}" for v in row)
@@ -930,7 +1006,25 @@ class HLSLInterpreter:
                 print(f"  {f.name} ({ft}): [{', '.join(f'{v:.5f}' for v in data)}]")
             elif 'float2' in ft:
                 print(f"  {f.name} ({ft}): [{', '.join(f'{v:.5f}' for v in data)}]")
-            elif 'uint' in ft or 'int' in ft:
+            elif 'float' in ft:
+                print(f"  {f.name} ({ft}): {data:.5f}")
+            elif 'uint4' in ft:
+                print(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
+            elif 'uint3' in ft:
+                print(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
+            elif 'uint2' in ft:
+                print(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
+            elif 'uint' in ft:
+                print(f"  {f.name} ({ft}): {data}")
+            elif 'int4' in ft:
+                print(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
+            elif 'int3' in ft:
+                print(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
+            elif 'int2' in ft:
+                print(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
+            elif 'int' in ft:
+                print(f"  {f.name} ({ft}): {data}")
+            elif 'bool' in ft:
                 print(f"  {f.name} ({ft}): {data}")
             else:
                 print(f"  {f.name} ({ft}): {data}")
