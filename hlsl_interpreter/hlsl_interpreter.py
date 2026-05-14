@@ -435,41 +435,52 @@ class HLSLInterpreter:
         return ret_type, func_name, params, body
 
     def execute_unary_op(self, op: str, val: Any) -> Any:
+        result = val
         if op == '-':
             if isinstance(val, (int, float)):
-                return -val
+                result = -val
             elif isinstance(val, list):
-                return [-v for v in val]
+                result = [-v for v in val]
         elif op == '!':
             if isinstance(val, bool):
-                return not val
-            return not bool(val)
-        return val
+                result = not val
+            result = not bool(val)
+        print(f"[UNARY OP] operand={val}, op={op}, result={result}")
+        return result
 
     def execute_binary_op(self, op: str, left: Any, right: Any) -> Any:
         if left is None or right is None:
+            result = None
+            print(f"[BINARY OP] left={left}, right={right}, op={op}, result={result}")
             return None
         if op == '+':
             if isinstance(left, list) and isinstance(right, list):
-                return [l + r for l, r in zip(left, right)]
-            return left + right
+                result = [l + r for l, r in zip(left, right)]
+            else:
+                result = left + right
         elif op == '-':
             if isinstance(left, list) and isinstance(right, list):
-                return [l - r for l, r in zip(left, right)]
-            return left - right
+                result = [l - r for l, r in zip(left, right)]
+            else:
+                result = left - right
         elif op == '*':
             if isinstance(left, list) and isinstance(right, (int, float)):
-                return [v * right for v in left]
-            if isinstance(right, list) and isinstance(left, (int, float)):
-                return [v * left for v in right]
-            return left * right
+                result = [v * right for v in left]
+            elif isinstance(right, list) and isinstance(left, (int, float)):
+                result = [v * left for v in right]
+            else:
+                result = left * right
         elif op == '/':
             if isinstance(left, list):
-                return [v / right for v in left]
-            return left / right
+                result = [v / right for v in left]
+            else:
+                result = left / right
         elif op == '.':
-            return (left, right)
-        return None
+            result = (left, right)
+        else:
+            result = None
+        print(f"[BINARY OP] left={left}, right={right}, op={op}, result={result}")
+        return result
 
     def transpose_matrix(self, m: List[List[float]]) -> List[List[float]]:
         if len(m) == 4:
@@ -1016,7 +1027,9 @@ class HLSLInterpreter:
             val = self.evaluate_syntax_tree(args[0], local_vars)
             if val is None:
                 return None
-            return self.transpose_matrix(val)
+            result = self.transpose_matrix(val)
+            print(f"[FUNC] transpose({val}) = {result}")
+            return result
 
         elif func_name == 'normalize':
             if len(args) != 1:
@@ -1025,7 +1038,9 @@ class HLSLInterpreter:
             if val is None:
                 return None
             if isinstance(val, list):
-                return self.normalize_vec(val)
+                result = self.normalize_vec(val)
+                print(f"[FUNC] normalize({val}) = {result}")
+                return result
             return val
 
         elif func_name == 'length':
@@ -1034,7 +1049,9 @@ class HLSLInterpreter:
             val = self.evaluate_syntax_tree(args[0], local_vars)
             if val is None:
                 return None
-            return self.length_vec(val)
+            result = self.length_vec(val)
+            print(f"[FUNC] length({val}) = {result}")
+            return result
 
         elif func_name == 'dot':
             if len(args) != 2:
@@ -1043,7 +1060,9 @@ class HLSLInterpreter:
             b = self.evaluate_syntax_tree(args[1], local_vars)
             if a is None or b is None:
                 return None
-            return self.dot_product(a, b)
+            result = self.dot_product(a, b)
+            print(f"[FUNC] dot({a}, {b}) = {result}")
+            return result
 
         elif func_name == 'reflect':
             if len(args) != 2:
@@ -1052,7 +1071,9 @@ class HLSLInterpreter:
             N = self.evaluate_syntax_tree(args[1], local_vars)
             if I is None or N is None:
                 return None
-            return self.reflect_vec(I, N)
+            result = self.reflect_vec(I, N)
+            print(f"[FUNC] reflect({I}, {N}) = {result}")
+            return result
 
         elif func_name == 'max':
             if len(args) != 2:
@@ -1061,7 +1082,9 @@ class HLSLInterpreter:
             b = self.evaluate_syntax_tree(args[1], local_vars)
             if a is None or b is None:
                 return None
-            return max(a, b)
+            result = max(a, b)
+            print(f"[FUNC] max({a}, {b}) = {result}")
+            return result
 
         elif func_name == 'min':
             if len(args) != 2:
@@ -1070,7 +1093,9 @@ class HLSLInterpreter:
             b = self.evaluate_syntax_tree(args[1], local_vars)
             if a is None or b is None:
                 return None
-            return min(a, b)
+            result = min(a, b)
+            print(f"[FUNC] min({a}, {b}) = {result}")
+            return result
 
         elif func_name == 'pow':
             if len(args) != 2:
@@ -1079,7 +1104,9 @@ class HLSLInterpreter:
             exp = self.evaluate_syntax_tree(args[1], local_vars)
             if base is None or exp is None:
                 return None
-            return math.pow(base, exp)
+            result = math.pow(base, exp)
+            print(f"[FUNC] pow({base}, {exp}) = {result}")
+            return result
 
         elif func_name == 'abs':
             if len(args) != 1:
@@ -1088,8 +1115,11 @@ class HLSLInterpreter:
             if val is None:
                 return None
             if isinstance(val, list):
-                return [abs(v) for v in val]
-            return abs(val)
+                result = [abs(v) for v in val]
+            else:
+                result = abs(val)
+            print(f"[FUNC] abs({val}) = {result}")
+            return result
 
         elif func_name == 'sin':
             if len(args) != 1:
@@ -1098,8 +1128,11 @@ class HLSLInterpreter:
             if val is None:
                 return None
             if isinstance(val, list):
-                return [math.sin(v) for v in val]
-            return math.sin(val)
+                result = [math.sin(v) for v in val]
+            else:
+                result = math.sin(val)
+            print(f"[FUNC] sin({val}) = {result}")
+            return result
 
         elif func_name == 'cos':
             if len(args) != 1:
@@ -1108,8 +1141,11 @@ class HLSLInterpreter:
             if val is None:
                 return None
             if isinstance(val, list):
-                return [math.cos(v) for v in val]
-            return math.cos(val)
+                result = [math.cos(v) for v in val]
+            else:
+                result = math.cos(val)
+            print(f"[FUNC] cos({val}) = {result}")
+            return result
 
         elif func_name == 'mul':
             if len(args) != 2:
@@ -1120,9 +1156,13 @@ class HLSLInterpreter:
                 return None
             if isinstance(left, list) and isinstance(right, list):
                 if len(left) == 4 and len(right) == 4:
-                    return self.mul_matrix_vector(right, left)
+                    result = self.mul_matrix_vector(right, left)
+                    print(f"[FUNC] mul(left={left}, right={right}) = {result}")
+                    return result
                 elif len(left) == 3 and len(right) == 3:
-                    return self.mul_matrix_vector(right, left)
+                    result = self.mul_matrix_vector(right, left)
+                    print(f"[FUNC] mul(left={left}, right={right}) = {result}")
+                    return result
             return None
 
         elif func_name in ['float2', 'float3', 'float4']:
@@ -1133,6 +1173,7 @@ class HLSLInterpreter:
                     result.extend(val)
                 else:
                     result.append(val)
+            print(f"[FUNC] {func_name}(args={args}) = {result}")
             return result
 
         return None

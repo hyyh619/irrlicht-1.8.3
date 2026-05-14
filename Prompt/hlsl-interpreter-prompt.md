@@ -443,7 +443,7 @@ Git commit: hlsl-inter: add warning log for val none by MiniMax-M2.7.
 
 
 # 15
-Git commit: 
+Git commit: hlsl-inter: create syntax tree for expr evalution by MiniMax-M2.7.
 execute_statement函数执行下面语句时，只执行了transpose(WorldViewProj), 并未执行float4(),mul()
 'output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj))'
 1. 这个问题应该是因为当前解释器在执行一条语句时采用的简单匹配，因此先匹配到transpose，执行完毕后就直接赋值给了output.pos
@@ -480,7 +480,18 @@ Function: transpose
 
 # 16
 Git commit: 
+为下列函数执行具体某个操作符时，打印其操作数，操作符，以及结果
+    def execute_binary_op(self, op: str, left: Any, right: Any) -> Any:
+    def execute_unary_op(self, op: str, val: Any) -> Any:
+    def execute_function_node(self, node: SyntaxTreeNode, local_vars: Dict[str, Any]) -> Any:
 
+1. 前面为下列函数添加的打印也请用一个bool变量来控制是否打印
+    def execute_binary_op(self, op: str, left: Any, right: Any) -> Any:
+    def execute_unary_op(self, op: str, val: Any) -> Any:
+    def execute_function_node(self, node: SyntaxTreeNode, local_vars: Dict[str, Any]) -> Any:
+2. evaluate_expression打印生成的syntax tree也用一个bool变量控制是否打印
+3. 函数def mul_matrix_vector(self, m: List[List[float]], v: List[float]) -> List[float]:的实现是vector乘以矩阵的行。而我们这个解释器里向量都是行向量，右乘矩阵，需要乘以矩阵的列，不是行。请修改
+4. 请检查其他地方的矩阵和向量的乘法，是否都是行向量，乘以矩阵的列
 
 # 17
 Git commit: 
