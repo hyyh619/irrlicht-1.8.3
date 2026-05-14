@@ -44,6 +44,11 @@ class HLSLInterpreter:
         self.structs: Dict[str, StructDefinition] = {}
         self.cbuffers: Dict[str, CbufferDefinition] = {}
         self.variables: Dict[str, Any] = {}
+        self.debug = True
+
+    def debug_print(self, msg: str):
+        if self.debug:
+            print(msg)
 
     def load_json(self, filepath: str):
         with open(filepath, 'r') as f:
@@ -355,89 +360,120 @@ class HLSLInterpreter:
             return self.evaluate_expression(expr[7:], local_vars)
 
         if '||' in expr:
+            self.debug_print(f"[EVAL] OR: {expr}")
             parts = expr.split('||')
             for p in parts:
                 val = self.evaluate_expression(p.strip(), local_vars)
                 if val:
+                    self.debug_print(f"[EVAL] OR result: True")
                     return True
+            self.debug_print(f"[EVAL] OR result: False")
             return False
 
         if '&&' in expr:
+            self.debug_print(f"[EVAL] AND: {expr}")
             parts = expr.split('&&')
             for p in parts:
                 val = self.evaluate_expression(p.strip(), local_vars)
                 if not val:
+                    self.debug_print(f"[EVAL] AND result: False")
                     return False
+            self.debug_print(f"[EVAL] AND result: True")
             return True
 
         if '?' in expr and expr.count('?') == 1 and expr.count(':') == 1:
+            self.debug_print(f"[EVAL] TERNARY: {expr}")
             match = re.match(r'(.+?)\s*\?\s*(.+?)\s*:\s*(.+)', expr)
             if match:
                 cond = self.evaluate_expression(match.group(1), local_vars)
                 if cond:
+                    self.debug_print(f"[EVAL] TERNARY true branch")
                     return self.evaluate_expression(match.group(2), local_vars)
                 else:
+                    self.debug_print(f"[EVAL] TERNARY false branch")
                     return self.evaluate_expression(match.group(3), local_vars)
 
         if '<=' in expr and not re.search(r'[<>=!<]=', expr[:-2]):
+            self.debug_print(f"[EVAL] LTE: {expr}")
             match = re.match(r'(.+?)\s*<=\s*(.+)', expr)
             if match:
                 left = self.evaluate_expression(match.group(1), local_vars)
                 right = self.evaluate_expression(match.group(2), local_vars)
+                self.debug_print(f"[EVAL] LTE result: {left} <= {right} = {left <= right}")
                 return left <= right
 
         if '>=' in expr and not re.search(r'[<>][>=]', expr):
+            self.debug_print(f"[EVAL] GTE: {expr}")
             match = re.match(r'(.+?)\s*>=\s*(.+)', expr)
             if match:
                 left = self.evaluate_expression(match.group(1), local_vars)
                 right = self.evaluate_expression(match.group(2), local_vars)
+                self.debug_print(f"[EVAL] GTE result: {left} >= {right} = {left >= right}")
                 return left >= right
 
         if '<' in expr and not re.search(r'<=', expr):
+            self.debug_print(f"[EVAL] LT: {expr}")
             match = re.match(r'(.+?)\s*<\s*(.+)', expr)
             if match:
                 left = self.evaluate_expression(match.group(1), local_vars)
                 right = self.evaluate_expression(match.group(2), local_vars)
+                self.debug_print(f"[EVAL] LT result: {left} < {right} = {left < right}")
                 return left < right
 
         if '>' in expr and not re.search(r'>=', expr):
+            self.debug_print(f"[EVAL] GT: {expr}")
             match = re.match(r'(.+?)\s*>\s*(.+)', expr)
             if match:
                 left = self.evaluate_expression(match.group(1), local_vars)
                 right = self.evaluate_expression(match.group(2), local_vars)
+                self.debug_print(f"[EVAL] GT result: {left} > {right} = {left > right}")
                 return left > right
 
         if '==' in expr:
+            self.debug_print(f"[EVAL] EQ: {expr}")
             match = re.match(r'(.+?)\s*==\s*(.+)', expr)
             if match:
                 left = self.evaluate_expression(match.group(1), local_vars)
                 right = self.evaluate_expression(match.group(2), local_vars)
+                self.debug_print(f"[EVAL] EQ result: {left} == {right} = {left == right}")
                 return left == right
 
         if '!=' in expr:
+            self.debug_print(f"[EVAL] NEQ: {expr}")
             match = re.match(r'(.+?)\s*!=\s*(.+)', expr)
             if match:
                 left = self.evaluate_expression(match.group(1), local_vars)
                 right = self.evaluate_expression(match.group(2), local_vars)
+                self.debug_print(f"[EVAL] NEQ result: {left} != {right} = {left != right}")
                 return left != right
 
         if re.match(r'-\s*\w', expr):
+            self.debug_print(f"[EVAL] UNARY NEG: {expr}")
             match = re.match(r'-\s*(\w+)', expr)
             if match:
                 val = self.get_value(match.group(1), local_vars)
-                return self.execute_unary_op('-', val)
+                result = self.execute_unary_op('-', val)
+                self.debug_print(f"[EVAL] UNARY NEG result: -{val} = {result}")
+                return result
 
         if expr.startswith('!'):
+            self.debug_print(f"[EVAL] NOT: {expr}")
             val = self.evaluate_expression(expr[1:], local_vars)
-            return self.execute_unary_op('!', val)
+            result = self.execute_unary_op('!', val)
+            self.debug_print(f"[EVAL] NOT result: not {val} = {result}")
+            return result
 
         if expr.startswith('-') and len(expr) > 1 and expr[1] != ' ':
+            self.debug_print(f"[EVAL] UNARY SUB: {expr}")
             match = re.match(r'-(.+)', expr)
             if match:
                 val = self.evaluate_expression(match.group(1), local_vars)
-                return self.execute_unary_op('-', val)
+                result = self.execute_unary_op('-', val)
+                self.debug_print(f"[EVAL] UNARY SUB result: -{val} = {result}")
+                return result
 
         if re.match(r'float[234]\s*\(', expr):
+            self.debug_print(f"[EVAL] FLOAT234: {expr}")
             match = re.match(r'float[234]\s*\(([^)]+)\)', expr)
             if match:
                 args_str = match.group(1)
@@ -463,36 +499,47 @@ class HLSLInterpreter:
                         result.extend(val)
                     else:
                         result.append(val)
+                self.debug_print(f"[EVAL] FLOAT234 result: {result}")
                 return result
 
 
             if 'transpose' in expr:
+                self.debug_print(f"[EVAL] TRANSPOSE: {expr}")
                 match = re.search(r'transpose\s*\(([^)]+)\)', expr)
                 if match:
                     val = self.get_value(match.group(1), local_vars)
                     if val is None:
                         return None
-                    return self.transpose_matrix(val)
+                    result = self.transpose_matrix(val)
+                    self.debug_print(f"[EVAL] TRANSPOSE result: {result}")
+                    return result
 
             if 'normalize' in expr:
+                self.debug_print(f"[EVAL] NORMALIZE: {expr}")
                 match = re.search(r'normalize\s*\(([^)]+)\)', expr)
                 if match:
                     val = self.get_value(match.group(1), local_vars)
                     if val is None:
                         return None
                     if isinstance(val, list):
-                        return self.normalize_vec(val)
+                        result = self.normalize_vec(val)
+                        self.debug_print(f"[EVAL] NORMALIZE result: {result}")
+                        return result
                     return val
 
             if 'length' in expr:
+                self.debug_print(f"[EVAL] LENGTH: {expr}")
                 match = re.search(r'length\s*\(([^)]+)\)', expr)
                 if match:
                     val = self.get_value(match.group(1), local_vars)
                     if val is None:
                         return None
-                    return self.length_vec(val)
+                    result = self.length_vec(val)
+                    self.debug_print(f"[EVAL] LENGTH result: {result}")
+                    return result
 
             if 'dot' in expr:
+                self.debug_print(f"[EVAL] DOT: {expr}")
                 depth = 0
                 comma_pos = -1
                 for i, char in enumerate(expr):
@@ -510,25 +557,33 @@ class HLSLInterpreter:
                     b = self.evaluate_expression(arg2, local_vars)
                     if a is None or b is None:
                         return None
-                    return self.dot_product(a, b)
+                    result = self.dot_product(a, b)
+                    self.debug_print(f"[EVAL] DOT result: {result}")
+                    return result
                 match = re.match(r'dot\s*\(([^,]+),\s*([^)]+)\)', expr)
                 if match:
                     a = self.get_value(match.group(1), local_vars)
                     b = self.get_value(match.group(2), local_vars)
                     if a is None or b is None:
                         return None
-                    return self.dot_product(a, b)
+                    result = self.dot_product(a, b)
+                    self.debug_print(f"[EVAL] DOT result: {result}")
+                    return result
 
             if 'reflect' in expr:
+                self.debug_print(f"[EVAL] REFLECT: {expr}")
                 match = re.match(r'reflect\s*\(([^,]+),\s*([^)]+)\)', expr)
                 if match:
                     I = self.get_value(match.group(1), local_vars)
                     N = self.get_value(match.group(2), local_vars)
                     if I is None or N is None:
                         return None
-                    return self.reflect_vec(I, N)
+                    result = self.reflect_vec(I, N)
+                    self.debug_print(f"[EVAL] REFLECT result: {result}")
+                    return result
 
             if 'max' in expr:
+                self.debug_print(f"[EVAL] MAX: {expr}")
                 depth = 0
                 comma_pos = -1
                 for i, char in enumerate(expr):
@@ -546,9 +601,12 @@ class HLSLInterpreter:
                     b = self.evaluate_expression(arg2, local_vars)
                     if a is None or b is None:
                         return None
-                    return max(a, b)
+                    result = max(a, b)
+                    self.debug_print(f"[EVAL] MAX result: {result}")
+                    return result
 
             if 'mul' in expr:
+                self.debug_print(f"[EVAL] MUL: {expr}")
                 depth = 0
                 comma_pos = -1
                 for i, char in enumerate(expr):
@@ -568,22 +626,30 @@ class HLSLInterpreter:
                         return None
                     if isinstance(left, list) and isinstance(right, list):
                         if len(left) == 4 and len(right) == 4:
-                            return self.mul_matrix_vector(right, left)
+                            result = self.mul_matrix_vector(right, left)
+                            self.debug_print(f"[EVAL] MUL result: {result}")
+                            return result
                         elif len(left) == 3 and len(right) == 3:
-                            return self.mul_matrix_vector(right, left)
+                            result = self.mul_matrix_vector(right, left)
+                            self.debug_print(f"[EVAL] MUL result: {result}")
+                            return result
                     return None
 
             if 'pow' in expr:
+                self.debug_print(f"[EVAL] POW: {expr}")
                 match = re.match(r'pow\s*\(([^,]+),\s*([^)]+)\)', expr)
                 if match:
                     base = self.evaluate_expression(match.group(1), local_vars)
                     exp = self.evaluate_expression(match.group(2), local_vars)
                     if base is None or exp is None:
                         return None
-                    return math.pow(base, exp)
+                    result = math.pow(base, exp)
+                    self.debug_print(f"[EVAL] POW result: {result}")
+                    return result
 
             match = re.match(r'\(([^)]+)\)\s*(.+)', expr)
             if match:
+                self.debug_print(f"[EVAL] CAST/SWIZZLE: {expr}")
                 inner = self.evaluate_expression(match.group(1), local_vars)
                 rest = match.group(2).strip()
                 if rest.startswith('.'):
@@ -592,25 +658,36 @@ class HLSLInterpreter:
                         return inner[1]
                     if isinstance(inner, list) and field in ['x', 'y', 'z', 'w']:
                         idx = ['x', 'y', 'z', 'w'].index(field)
-                        return inner[idx] if idx < len(inner) else 0
+                        result = inner[idx] if idx < len(inner) else 0
+                        self.debug_print(f"[EVAL] SWIZZLE .{field} result: {result}")
+                        return result
+                    self.debug_print(f"[EVAL] CAST result: {inner}")
                     return inner
+                self.debug_print(f"[EVAL] Expression result: {inner}")
                 return inner
 
         if '*' in expr:
+            self.debug_print(f"[EVAL] MUL: {expr}")
             parts = expr.split('*')
             if len(parts) == 2:
                 left = self.evaluate_expression(parts[0], local_vars)
                 right = self.evaluate_expression(parts[1], local_vars)
-                return self.execute_binary_op('*', left, right)
+                result = self.execute_binary_op('*', left, right)
+                self.debug_print(f"[EVAL] MUL result: {left} * {right} = {result}")
+                return result
 
         if '/' in expr:
+            self.debug_print(f"[EVAL] DIV: {expr}")
             parts = expr.split('/')
             if len(parts) == 2:
                 left = self.evaluate_expression(parts[0], local_vars)
                 right = self.evaluate_expression(parts[1], local_vars)
-                return self.execute_binary_op('/', left, right)
+                result = self.execute_binary_op('/', left, right)
+                self.debug_print(f"[EVAL] DIV result: {left} / {right} = {result}")
+                return result
 
         if '-' in expr:
+            self.debug_print(f"[EVAL] SUB: {expr}")
             parts = expr.split('-', 1)
             if len(parts) == 2 and parts[0].strip():
                 left = self.evaluate_expression(parts[0], local_vars)
@@ -618,14 +695,23 @@ class HLSLInterpreter:
                 if left is None or right is None:
                     return None
                 if isinstance(left, list) and isinstance(right, list):
-                    return [l - r for l, r in zip(left, right)]
+                    result = [l - r for l, r in zip(left, right)]
+                    self.debug_print(f"[EVAL] SUB result: {result}")
+                    return result
                 elif isinstance(left, list) and isinstance(right, (int, float)):
-                    return [v - right for v in left]
+                    result = [v - right for v in left]
+                    self.debug_print(f"[EVAL] SUB result: {result}")
+                    return result
                 elif isinstance(right, list) and isinstance(left, (int, float)):
-                    return [left - v for v in right]
-                return left - right
+                    result = [left - v for v in right]
+                    self.debug_print(f"[EVAL] SUB result: {result}")
+                    return result
+                result = left - right
+                self.debug_print(f"[EVAL] SUB result: {left} - {right} = {result}")
+                return result
 
         if '+' in expr:
+            self.debug_print(f"[EVAL] ADD: {expr}")
             parts = expr.split('+')
             result = self.evaluate_expression(parts[0], local_vars)
             if result is None:
@@ -638,9 +724,13 @@ class HLSLInterpreter:
                     result = [r + v for r, v in zip(result, right)]
                 else:
                     result = result + right
+            self.debug_print(f"[EVAL] ADD result: {result}")
             return result
 
-        return self.get_value(expr, local_vars)
+        self.debug_print(f"[EVAL] GET_VALUE: {expr}")
+        result = self.get_value(expr, local_vars)
+        self.debug_print(f"[EVAL] GET_VALUE result: {result}")
+        return result
 
     def get_value(self, name: str, local_vars: Dict[str, Any]) -> Any:
         name = name.strip()
@@ -710,6 +800,9 @@ class HLSLInterpreter:
         if not stmt:
             return None
 
+        self.debug_print(f"\n[STMT] Executing: {stmt}")
+        input_snapshot = {k: v for k, v in local_vars.items() if k.startswith('input.') or k == 'output'}
+
         type_pattern = '|'.join(DATA_TYPE_LIST)
         pattern = rf'^({type_pattern})\s+(\w+)\s*=\s*(.+?);?$'
         match = re.match(pattern, stmt)
@@ -717,6 +810,7 @@ class HLSLInterpreter:
             var_name = match.group(2)
             value = self.evaluate_expression(match.group(3), local_vars)
             local_vars[var_name] = value
+            self.debug_print(f"[STMT] {stmt} => {var_name} = {value}")
             return None
 
         if 'output.' in stmt or 'output[' in stmt:
@@ -728,6 +822,7 @@ class HLSLInterpreter:
                 if 'output' not in local_vars:
                     local_vars['output'] = {}
                 local_vars['output'][field_name] = value
+                self.debug_print(f"[STMT] {stmt} => output.{field_name} = {value}")
                 return None
 
         if '=' in stmt and stmt.count('=') == 1:
@@ -736,8 +831,10 @@ class HLSLInterpreter:
                 var_name = match.group(1)
                 value = self.evaluate_expression(match.group(2), local_vars)
                 local_vars[var_name] = value
+                self.debug_print(f"[STMT] {stmt} => {var_name} = {value}")
                 return None
 
+        self.debug_print(f"[STMT] {stmt} => (no assignment)")
         return None
 
     def execute_main_function(self, code: str, main_func: str, input_struct_name: str, row_index: int, data: Dict[str, Any]):
@@ -826,6 +923,11 @@ class HLSLInterpreter:
             if 'return' in stmt and 'output' in stmt:
                 ret_val = local_vars.get('output')
                 continue
+            self.debug_print(f"\n=== INPUT DATA ===")
+            for k, v in local_vars.items():
+                if k.startswith('input.') or k == 'output':
+                    self.debug_print(f"  {k} = {v}")
+            self.debug_print(f"==================")
             self.execute_statement(stmt, local_vars)
 
         return ret_val

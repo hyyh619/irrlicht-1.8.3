@@ -240,6 +240,7 @@ Git commit:
 
 # 13
 Git commit: 
+'mul(float4(input.Pos, 1.0), transpose(WorldViewProj))'
 
 
 # 14
