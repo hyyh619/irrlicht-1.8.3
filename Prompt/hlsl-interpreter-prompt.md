@@ -181,6 +181,7 @@ load_cbuffer_data_from_csv打印data的代码如下，可以看到它直接打�
 
 # 7
 Git commit: 
+load_struct_data_from_csv在加载完strut数据后，请打印每个field的第一组数据
 
 
 # 8

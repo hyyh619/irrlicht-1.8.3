@@ -805,6 +805,7 @@ class HLSLInterpreter:
                         val_str = row[col_dict['x']].strip().strip('"')
                         values.append(self.parse_value_by_type(val_str, field.field_type))
                 field.data = values
+                print(f"Field '{field.semantic}' ({field.field_type}): {values[0] if values else 'N/A'}")
 
     def load_cbuffer_data_from_csv(self, cb_name: str, csv_path: str):
         if cb_name not in self.cbuffers:
