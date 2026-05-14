@@ -194,8 +194,8 @@ Git commit: Change HLSL cbuffer/struct data loading by MiniMax-M2.7.
 2. execute_function也不需要data输入，而是直接查找cbuffers/structs中的对象来获取data
 3. HLSLInterpreter.interpret中的execute_function需要根据当前VS_INPUT struct有多少组数据，循环执行每组数据
 
-# 9
-Git commit: 
+# 9 several loops to create some debug_test*.py.
+Git commit: Create executeVS/executePS to execute the VS/PS code by MiniMax-M2.7.
 1. HLSLInterpreter提供两个函数executeVS和executePS分别解释执行VS HLSL和PS HLSL
 2. executeVS()三个输入参数
    a. code: HLSL源代码
@@ -212,7 +212,10 @@ Git commit:
 
 # 10
 Git commit: 
-
+重构execute_function
+def execute_function(self, code: str, main_func: str, input_struct_name: str, row_index: int)
+1. execute_function作为普通执行任何VS/PS main函数，改名为execute_main_function
+2. execute_main_function不需要在内部自己解析struct来获取data,由executeVS和executePS获得执行的数据，然后把每次执行的数据传递给execute_main_function
 
 # 11
 Git commit: 

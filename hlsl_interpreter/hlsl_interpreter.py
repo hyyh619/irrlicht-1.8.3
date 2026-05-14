@@ -7,7 +7,10 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Union
 
 
-DATA_TYPE_LIST = ['float4x4', 'float3x3', 'float4', 'float3', 'float2', 'float', 'uint']
+DATA_TYPE_LIST = ['float4x4', 'float3x3',
+                'float4', 'float3', 'float2', 'float',
+                'uint4', 'uint3', 'uint2', 'uint',
+                'int4', 'int3', 'int2', 'int']
 
 
 @dataclass
@@ -665,9 +668,10 @@ class HLSLInterpreter:
 
         return None
 
-    def execute_function(self, code: str, main_func: str, input_struct_name: str, row_index: int):
+    def execute_main_function(self, code: str, main_func: str, input_struct_name: str, row_index: int, data: Dict[str, Any]):
         input_struct = self.structs.get(input_struct_name)
         if not input_struct:
+            print(f"Cannot find input_struct: {input_struct_name}\n")
             return None
 
         input_fields = {}
@@ -709,11 +713,10 @@ class HLSLInterpreter:
         if body.startswith('{') and body.endswith('}'):
             body = body[1:-1].strip()
 
-        local_vars = {}
+        local_vars = {'data': data}
 
-        for field in input_struct.fields:
-            if field.data and row_index < len(field.data):
-                local_vars[f'input.{field.name}'] = field.data[row_index]
+        for field_name, field_value in data.items():
+            local_vars[f'input.{field_name}'] = field_value
 
         output_obj = {}
         for field in output_fields:
@@ -783,6 +786,7 @@ class HLSLInterpreter:
     def executeVS(self, code: str, main_func: str, vs_input: str):
         input_struct = self.structs.get(vs_input)
         if not input_struct:
+            print(f"Cannot find vs input: {vs_input}\n")
             return None
 
         num_rows = 0
@@ -792,7 +796,11 @@ class HLSLInterpreter:
 
         results = []
         for row_index in range(num_rows):
-            result = self.execute_function(code, main_func, vs_input, row_index)
+            data = {}
+            for field in input_struct.fields:
+                if field.data and row_index < len(field.data):
+                    data[field.name] = field.data[row_index]
+            result = self.execute_main_function(code, main_func, vs_input, row_index, data)
             results.append(result)
         return results
 
