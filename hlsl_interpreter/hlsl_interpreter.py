@@ -514,196 +514,196 @@ class HLSLInterpreter:
                 return result
 
         # =====================================================================
-            # 矩阵运算: transpose - 转置矩阵
-            # =====================================================================
-            if 'transpose' in expr:
-                self.debug_print(f"[EVAL] TRANSPOSE: {expr}")
-                match = re.search(r'transpose\s*\(([^)]+)\)', expr)
-                if match:
-                    val = self.get_value(match.group(1), local_vars)
-                    if val is None:
-                        return None
-                    result = self.transpose_matrix(val)
-                    self.debug_print(f"[EVAL] TRANSPOSE result: {result}")
-                    return result
-
-            # =====================================================================
-            # normalize - 归一化向量
-            # =====================================================================
-            if 'normalize' in expr:
-                self.debug_print(f"[EVAL] NORMALIZE: {expr}")
-                match = re.search(r'normalize\s*\(([^)]+)\)', expr)
-                if match:
-                    val = self.get_value(match.group(1), local_vars)
-                    if val is None:
-                        return None
-                    if isinstance(val, list):
-                        result = self.normalize_vec(val)
-                        self.debug_print(f"[EVAL] NORMALIZE result: {result}")
-                        return result
-                    return val
-
-            # =====================================================================
-            # length - 计算向量长度
-            # =====================================================================
-            if 'length' in expr:
-                self.debug_print(f"[EVAL] LENGTH: {expr}")
-                match = re.search(r'length\s*\(([^)]+)\)', expr)
-                if match:
-                    val = self.get_value(match.group(1), local_vars)
-                    if val is None:
-                        return None
-                    result = self.length_vec(val)
-                    self.debug_print(f"[EVAL] LENGTH result: {result}")
-                    return result
-
-            # =====================================================================
-            # dot - 向量点积
-            # 手动解析逗号位置（处理嵌套括号）
-            # =====================================================================
-            if 'dot' in expr:
-                self.debug_print(f"[EVAL] DOT: {expr}")
-                depth = 0
-                comma_pos = -1
-                for i, char in enumerate(expr):
-                    if char == '(':
-                        depth += 1
-                    elif char == ')':
-                        depth -= 1
-                    elif char == ',' and depth == 0:
-                        comma_pos = i
-                        break
-                if comma_pos > 0:
-                    arg1 = expr[4:comma_pos].strip()
-                    arg2 = expr[comma_pos+1:].strip().rstrip(')')
-                    a = self.evaluate_expression(arg1, local_vars)
-                    b = self.evaluate_expression(arg2, local_vars)
-                    if a is None or b is None:
-                        return None
-                    result = self.dot_product(a, b)
-                    self.debug_print(f"[EVAL] DOT result: {result}")
-                    return result
-                match = re.match(r'dot\s*\(([^,]+),\s*([^)]+)\)', expr)
-                if match:
-                    a = self.get_value(match.group(1), local_vars)
-                    b = self.get_value(match.group(2), local_vars)
-                    if a is None or b is None:
-                        return None
-                    result = self.dot_product(a, b)
-                    self.debug_print(f"[EVAL] DOT result: {result}")
-                    return result
-
-            # =====================================================================
-            # reflect - 反射向量计算 (I - 2 * dot(N, I) * N)
-            # =====================================================================
-            if 'reflect' in expr:
-                self.debug_print(f"[EVAL] REFLECT: {expr}")
-                match = re.match(r'reflect\s*\(([^,]+),\s*([^)]+)\)', expr)
-                if match:
-                    I = self.get_value(match.group(1), local_vars)
-                    N = self.get_value(match.group(2), local_vars)
-                    if I is None or N is None:
-                        return None
-                    result = self.reflect_vec(I, N)
-                    self.debug_print(f"[EVAL] REFLECT result: {result}")
-                    return result
-
-            # =====================================================================
-            # max - 取两个值中的最大值
-            # =====================================================================
-            if 'max' in expr:
-                self.debug_print(f"[EVAL] MAX: {expr}")
-                depth = 0
-                comma_pos = -1
-                for i, char in enumerate(expr):
-                    if char == '(':
-                        depth += 1
-                    elif char == ')':
-                        depth -= 1
-                    elif char == ',' and depth == 0:
-                        comma_pos = i
-                        break
-                if comma_pos > 0:
-                    arg1 = expr[4:comma_pos].strip()
-                    arg2 = expr[comma_pos+1:].strip().rstrip(')')
-                    a = self.evaluate_expression(arg1, local_vars)
-                    b = self.evaluate_expression(arg2, local_vars)
-                    if a is None or b is None:
-                        return None
-                    result = max(a, b)
-                    self.debug_print(f"[EVAL] MAX result: {result}")
-                    return result
-
-            # =====================================================================
-            # mul - 矩阵乘法 (矩阵 × 向量, 支持 4x4 和 3x3)
-            # =====================================================================
-            if 'mul' in expr:
-                self.debug_print(f"[EVAL] MUL: {expr}")
-                depth = 0
-                comma_pos = -1
-                for i, char in enumerate(expr):
-                    if char == '(':
-                        depth += 1
-                    elif char == ')':
-                        depth -= 1
-                    elif char == ',' and depth == 0:
-                        comma_pos = i
-                        break
-                if comma_pos > 0:
-                    arg1 = expr[4:comma_pos].strip()
-                    arg2 = expr[comma_pos+1:].strip().rstrip(')')
-                    left = self.evaluate_expression(arg1, local_vars)
-                    right = self.evaluate_expression(arg2, local_vars)
-                    if left is None or right is None:
-                        return None
-                    if isinstance(left, list) and isinstance(right, list):
-                        if len(left) == 4 and len(right) == 4:
-                            result = self.mul_matrix_vector(right, left)
-                            self.debug_print(f"[EVAL] MUL result: {result}")
-                            return result
-                        elif len(left) == 3 and len(right) == 3:
-                            result = self.mul_matrix_vector(right, left)
-                            self.debug_print(f"[EVAL] MUL result: {result}")
-                            return result
-                    return None
-
-            # =====================================================================
-            # pow - 幂运算
-            # =====================================================================
-            if 'pow' in expr:
-                self.debug_print(f"[EVAL] POW: {expr}")
-                match = re.match(r'pow\s*\(([^,]+),\s*([^)]+)\)', expr)
-                if match:
-                    base = self.evaluate_expression(match.group(1), local_vars)
-                    exp = self.evaluate_expression(match.group(2), local_vars)
-                    if base is None or exp is None:
-                        return None
-                    result = math.pow(base, exp)
-                    self.debug_print(f"[EVAL] POW result: {result}")
-                    return result
-
-            # =====================================================================
-            # 类型转换和向量分量访问 (swizzle: .x, .y, .z, .w)
-            # 匹配形式: (value).component 或 (type)expression
-            # =====================================================================
-            match = re.match(r'\(([^)]+)\)\s*(.+)', expr)
+        # 矩阵运算: transpose - 转置矩阵
+        # =====================================================================
+        if 'transpose' in expr:
+            self.debug_print(f"[EVAL] TRANSPOSE: {expr}")
+            match = re.search(r'transpose\s*\(([^)]+)\)', expr)
             if match:
-                self.debug_print(f"[EVAL] CAST/SWIZZLE: {expr}")
-                inner = self.evaluate_expression(match.group(1), local_vars)
-                rest = match.group(2).strip()
-                if rest.startswith('.'):
-                    field = rest[1:]
-                    if isinstance(inner, tuple):
-                        return inner[1]
-                    if isinstance(inner, list) and field in ['x', 'y', 'z', 'w']:
-                        idx = ['x', 'y', 'z', 'w'].index(field)
-                        result = inner[idx] if idx < len(inner) else 0
-                        self.debug_print(f"[EVAL] SWIZZLE .{field} result: {result}")
+                val = self.get_value(match.group(1), local_vars)
+                if val is None:
+                    return None
+                result = self.transpose_matrix(val)
+                self.debug_print(f"[EVAL] TRANSPOSE result: {result}")
+                return result
+
+        # =====================================================================
+        # normalize - 归一化向量
+        # =====================================================================
+        if 'normalize' in expr:
+            self.debug_print(f"[EVAL] NORMALIZE: {expr}")
+            match = re.search(r'normalize\s*\(([^)]+)\)', expr)
+            if match:
+                val = self.get_value(match.group(1), local_vars)
+                if val is None:
+                    return None
+                if isinstance(val, list):
+                    result = self.normalize_vec(val)
+                    self.debug_print(f"[EVAL] NORMALIZE result: {result}")
+                    return result
+                return val
+
+        # =====================================================================
+        # length - 计算向量长度
+        # =====================================================================
+        if 'length' in expr:
+            self.debug_print(f"[EVAL] LENGTH: {expr}")
+            match = re.search(r'length\s*\(([^)]+)\)', expr)
+            if match:
+                val = self.get_value(match.group(1), local_vars)
+                if val is None:
+                    return None
+                result = self.length_vec(val)
+                self.debug_print(f"[EVAL] LENGTH result: {result}")
+                return result
+
+        # =====================================================================
+        # dot - 向量点积
+        # 手动解析逗号位置（处理嵌套括号）
+        # =====================================================================
+        if 'dot' in expr:
+            self.debug_print(f"[EVAL] DOT: {expr}")
+            depth = 0
+            comma_pos = -1
+            for i, char in enumerate(expr):
+                if char == '(':
+                    depth += 1
+                elif char == ')':
+                    depth -= 1
+                elif char == ',' and depth == 0:
+                    comma_pos = i
+                    break
+            if comma_pos > 0:
+                arg1 = expr[4:comma_pos].strip()
+                arg2 = expr[comma_pos+1:].strip().rstrip(')')
+                a = self.evaluate_expression(arg1, local_vars)
+                b = self.evaluate_expression(arg2, local_vars)
+                if a is None or b is None:
+                    return None
+                result = self.dot_product(a, b)
+                self.debug_print(f"[EVAL] DOT result: {result}")
+                return result
+            match = re.match(r'dot\s*\(([^,]+),\s*([^)]+)\)', expr)
+            if match:
+                a = self.get_value(match.group(1), local_vars)
+                b = self.get_value(match.group(2), local_vars)
+                if a is None or b is None:
+                    return None
+                result = self.dot_product(a, b)
+                self.debug_print(f"[EVAL] DOT result: {result}")
+                return result
+
+        # =====================================================================
+        # reflect - 反射向量计算 (I - 2 * dot(N, I) * N)
+        # =====================================================================
+        if 'reflect' in expr:
+            self.debug_print(f"[EVAL] REFLECT: {expr}")
+            match = re.match(r'reflect\s*\(([^,]+),\s*([^)]+)\)', expr)
+            if match:
+                I = self.get_value(match.group(1), local_vars)
+                N = self.get_value(match.group(2), local_vars)
+                if I is None or N is None:
+                    return None
+                result = self.reflect_vec(I, N)
+                self.debug_print(f"[EVAL] REFLECT result: {result}")
+                return result
+
+        # =====================================================================
+        # max - 取两个值中的最大值
+        # =====================================================================
+        if 'max' in expr:
+            self.debug_print(f"[EVAL] MAX: {expr}")
+            depth = 0
+            comma_pos = -1
+            for i, char in enumerate(expr):
+                if char == '(':
+                    depth += 1
+                elif char == ')':
+                    depth -= 1
+                elif char == ',' and depth == 0:
+                    comma_pos = i
+                    break
+            if comma_pos > 0:
+                arg1 = expr[4:comma_pos].strip()
+                arg2 = expr[comma_pos+1:].strip().rstrip(')')
+                a = self.evaluate_expression(arg1, local_vars)
+                b = self.evaluate_expression(arg2, local_vars)
+                if a is None or b is None:
+                    return None
+                result = max(a, b)
+                self.debug_print(f"[EVAL] MAX result: {result}")
+                return result
+
+        # =====================================================================
+        # mul - 矩阵乘法 (矩阵 × 向量, 支持 4x4 和 3x3)
+        # =====================================================================
+        if 'mul' in expr:
+            self.debug_print(f"[EVAL] MUL: {expr}")
+            depth = 0
+            comma_pos = -1
+            for i, char in enumerate(expr):
+                if char == '(':
+                    depth += 1
+                elif char == ')':
+                    depth -= 1
+                elif char == ',' and depth == 0:
+                    comma_pos = i
+                    break
+            if comma_pos > 0:
+                arg1 = expr[4:comma_pos].strip()
+                arg2 = expr[comma_pos+1:].strip().rstrip(')')
+                left = self.evaluate_expression(arg1, local_vars)
+                right = self.evaluate_expression(arg2, local_vars)
+                if left is None or right is None:
+                    return None
+                if isinstance(left, list) and isinstance(right, list):
+                    if len(left) == 4 and len(right) == 4:
+                        result = self.mul_matrix_vector(right, left)
+                        self.debug_print(f"[EVAL] MUL result: {result}")
                         return result
-                    self.debug_print(f"[EVAL] CAST result: {inner}")
-                    return inner
-                self.debug_print(f"[EVAL] Expression result: {inner}")
+                    elif len(left) == 3 and len(right) == 3:
+                        result = self.mul_matrix_vector(right, left)
+                        self.debug_print(f"[EVAL] MUL result: {result}")
+                        return result
+                return None
+
+        # =====================================================================
+        # pow - 幂运算
+        # =====================================================================
+        if 'pow' in expr:
+            self.debug_print(f"[EVAL] POW: {expr}")
+            match = re.match(r'pow\s*\(([^,]+),\s*([^)]+)\)', expr)
+            if match:
+                base = self.evaluate_expression(match.group(1), local_vars)
+                exp = self.evaluate_expression(match.group(2), local_vars)
+                if base is None or exp is None:
+                    return None
+                result = math.pow(base, exp)
+                self.debug_print(f"[EVAL] POW result: {result}")
+                return result
+
+        # =====================================================================
+        # 类型转换和向量分量访问 (swizzle: .x, .y, .z, .w)
+        # 匹配形式: (value).component 或 (type)expression
+        # =====================================================================
+        match = re.match(r'\(([^)]+)\)\s*(.+)', expr)
+        if match:
+            self.debug_print(f"[EVAL] CAST/SWIZZLE: {expr}")
+            inner = self.evaluate_expression(match.group(1), local_vars)
+            rest = match.group(2).strip()
+            if rest.startswith('.'):
+                field = rest[1:]
+                if isinstance(inner, tuple):
+                    return inner[1]
+                if isinstance(inner, list) and field in ['x', 'y', 'z', 'w']:
+                    idx = ['x', 'y', 'z', 'w'].index(field)
+                    result = inner[idx] if idx < len(inner) else 0
+                    self.debug_print(f"[EVAL] SWIZZLE .{field} result: {result}")
+                    return result
+                self.debug_print(f"[EVAL] CAST result: {inner}")
                 return inner
+            self.debug_print(f"[EVAL] Expression result: {inner}")
+            return inner
 
         if '*' in expr:
             self.debug_print(f"[EVAL] MUL: {expr}")

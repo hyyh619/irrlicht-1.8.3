@@ -241,7 +241,208 @@ Git commit: hlsl-inter: add eval print for debugging by MiniMax-M2.7.
 # 13
 Git commit: 
 'mul(float4(input.Pos, 1.0), transpose(WorldViewProj))'
+evaluate_expression处理上面这个expression时，没法走进下面这个分支处理
+            if 'mul' in expr:
+                self.debug_print(f"[EVAL] MUL: {expr}")
+看起来是
+if re.match(r'float[234]\s*\(', expr):就没通过。
+1. 请修复上述问题
+2. 告诉我if re.match(r'float[234]\s*\(', expr):这个判断时用来做什么作用
 
+告诉我下面这段代码的作用，给这段代码添加注释，尤其是if re.match(r'float[234]\s*\(', expr)这个语句匹配的是什么字符串
+        if re.match(r'float[234]\s*\(', expr):
+            self.debug_print(f"[EVAL] FLOAT234: {expr}")
+            match = re.match(r'float[234]\s*\(([^)]+)\)', expr)
+            if match:
+                args_str = match.group(1)
+                args = []
+                depth = 0
+                current_arg = ''
+                for char in args_str:
+                    if char == ',' and depth == 0:
+                        args.append(current_arg.strip())
+                        current_arg = ''
+                    else:
+                        if char == '(':
+                            depth += 1
+                        elif char == ')':
+                            depth -= 1
+                        current_arg += char
+                if current_arg.strip():
+                    args.append(current_arg.strip())
+                result = []
+                for arg in args:
+                    val = self.evaluate_expression(arg, local_vars)
+                    if isinstance(val, list):
+                        result.extend(val)
+                    else:
+                        result.append(val)
+                self.debug_print(f"[EVAL] FLOAT234 result: {result}")
+                return result
+
+
+            if 'transpose' in expr:
+                self.debug_print(f"[EVAL] TRANSPOSE: {expr}")
+                match = re.search(r'transpose\s*\(([^)]+)\)', expr)
+                if match:
+                    val = self.get_value(match.group(1), local_vars)
+                    if val is None:
+                        return None
+                    result = self.transpose_matrix(val)
+                    self.debug_print(f"[EVAL] TRANSPOSE result: {result}")
+                    return result
+
+            if 'normalize' in expr:
+                self.debug_print(f"[EVAL] NORMALIZE: {expr}")
+                match = re.search(r'normalize\s*\(([^)]+)\)', expr)
+                if match:
+                    val = self.get_value(match.group(1), local_vars)
+                    if val is None:
+                        return None
+                    if isinstance(val, list):
+                        result = self.normalize_vec(val)
+                        self.debug_print(f"[EVAL] NORMALIZE result: {result}")
+                        return result
+                    return val
+
+            if 'length' in expr:
+                self.debug_print(f"[EVAL] LENGTH: {expr}")
+                match = re.search(r'length\s*\(([^)]+)\)', expr)
+                if match:
+                    val = self.get_value(match.group(1), local_vars)
+                    if val is None:
+                        return None
+                    result = self.length_vec(val)
+                    self.debug_print(f"[EVAL] LENGTH result: {result}")
+                    return result
+
+            if 'dot' in expr:
+                self.debug_print(f"[EVAL] DOT: {expr}")
+                depth = 0
+                comma_pos = -1
+                for i, char in enumerate(expr):
+                    if char == '(':
+                        depth += 1
+                    elif char == ')':
+                        depth -= 1
+                    elif char == ',' and depth == 0:
+                        comma_pos = i
+                        break
+                if comma_pos > 0:
+                    arg1 = expr[4:comma_pos].strip()
+                    arg2 = expr[comma_pos+1:].strip().rstrip(')')
+                    a = self.evaluate_expression(arg1, local_vars)
+                    b = self.evaluate_expression(arg2, local_vars)
+                    if a is None or b is None:
+                        return None
+                    result = self.dot_product(a, b)
+                    self.debug_print(f"[EVAL] DOT result: {result}")
+                    return result
+                match = re.match(r'dot\s*\(([^,]+),\s*([^)]+)\)', expr)
+                if match:
+                    a = self.get_value(match.group(1), local_vars)
+                    b = self.get_value(match.group(2), local_vars)
+                    if a is None or b is None:
+                        return None
+                    result = self.dot_product(a, b)
+                    self.debug_print(f"[EVAL] DOT result: {result}")
+                    return result
+
+            if 'reflect' in expr:
+                self.debug_print(f"[EVAL] REFLECT: {expr}")
+                match = re.match(r'reflect\s*\(([^,]+),\s*([^)]+)\)', expr)
+                if match:
+                    I = self.get_value(match.group(1), local_vars)
+                    N = self.get_value(match.group(2), local_vars)
+                    if I is None or N is None:
+                        return None
+                    result = self.reflect_vec(I, N)
+                    self.debug_print(f"[EVAL] REFLECT result: {result}")
+                    return result
+
+            if 'max' in expr:
+                self.debug_print(f"[EVAL] MAX: {expr}")
+                depth = 0
+                comma_pos = -1
+                for i, char in enumerate(expr):
+                    if char == '(':
+                        depth += 1
+                    elif char == ')':
+                        depth -= 1
+                    elif char == ',' and depth == 0:
+                        comma_pos = i
+                        break
+                if comma_pos > 0:
+                    arg1 = expr[4:comma_pos].strip()
+                    arg2 = expr[comma_pos+1:].strip().rstrip(')')
+                    a = self.evaluate_expression(arg1, local_vars)
+                    b = self.evaluate_expression(arg2, local_vars)
+                    if a is None or b is None:
+                        return None
+                    result = max(a, b)
+                    self.debug_print(f"[EVAL] MAX result: {result}")
+                    return result
+
+            if 'mul' in expr:
+                self.debug_print(f"[EVAL] MUL: {expr}")
+                depth = 0
+                comma_pos = -1
+                for i, char in enumerate(expr):
+                    if char == '(':
+                        depth += 1
+                    elif char == ')':
+                        depth -= 1
+                    elif char == ',' and depth == 0:
+                        comma_pos = i
+                        break
+                if comma_pos > 0:
+                    arg1 = expr[4:comma_pos].strip()
+                    arg2 = expr[comma_pos+1:].strip().rstrip(')')
+                    left = self.evaluate_expression(arg1, local_vars)
+                    right = self.evaluate_expression(arg2, local_vars)
+                    if left is None or right is None:
+                        return None
+                    if isinstance(left, list) and isinstance(right, list):
+                        if len(left) == 4 and len(right) == 4:
+                            result = self.mul_matrix_vector(right, left)
+                            self.debug_print(f"[EVAL] MUL result: {result}")
+                            return result
+                        elif len(left) == 3 and len(right) == 3:
+                            result = self.mul_matrix_vector(right, left)
+                            self.debug_print(f"[EVAL] MUL result: {result}")
+                            return result
+                    return None
+
+            if 'pow' in expr:
+                self.debug_print(f"[EVAL] POW: {expr}")
+                match = re.match(r'pow\s*\(([^,]+),\s*([^)]+)\)', expr)
+                if match:
+                    base = self.evaluate_expression(match.group(1), local_vars)
+                    exp = self.evaluate_expression(match.group(2), local_vars)
+                    if base is None or exp is None:
+                        return None
+                    result = math.pow(base, exp)
+                    self.debug_print(f"[EVAL] POW result: {result}")
+                    return result
+
+            match = re.match(r'\(([^)]+)\)\s*(.+)', expr)
+            if match:
+                self.debug_print(f"[EVAL] CAST/SWIZZLE: {expr}")
+                inner = self.evaluate_expression(match.group(1), local_vars)
+                rest = match.group(2).strip()
+                if rest.startswith('.'):
+                    field = rest[1:]
+                    if isinstance(inner, tuple):
+                        return inner[1]
+                    if isinstance(inner, list) and field in ['x', 'y', 'z', 'w']:
+                        idx = ['x', 'y', 'z', 'w'].index(field)
+                        result = inner[idx] if idx < len(inner) else 0
+                        self.debug_print(f"[EVAL] SWIZZLE .{field} result: {result}")
+                        return result
+                    self.debug_print(f"[EVAL] CAST result: {inner}")
+                    return inner
+                self.debug_print(f"[EVAL] Expression result: {inner}")
+                return inner
 
 # 14
 Git commit: 
