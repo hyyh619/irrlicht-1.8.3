@@ -1,3 +1,4 @@
+import csv
 import json
 import math
 import re
@@ -48,10 +49,9 @@ class HLSLInterpreter:
     def load_csv(self, filepath: str) -> List[List[str]]:
         rows = []
         with open(filepath, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if line:
-                    rows.append(line.split(','))
+            reader = csv.reader(f)
+            for row in reader:
+                rows.append(row)
         return rows
 
     def get_type_size(self, field_type: str) -> int:
@@ -821,16 +821,48 @@ class HLSLInterpreter:
         if name_idx == -1 or value_idx == -1:
             return
 
+        matrix_rows = {}
+        scalar_vars = {}
+
         for row in rows[1:]:
             if len(row) <= max(name_idx, value_idx):
                 continue
             var_name = row[name_idx].strip().strip('"')
-            value_str = row[value_idx].strip().strip('"')
+            value_str = row[value_idx].strip().strip('"') if value_idx < len(row) else ''
 
-            for field in cb_def.fields:
-                if field.name == var_name:
-                    field.data = self.parse_value_by_type(value_str, field.field_type)
-                    break
+            # just skip null value string.
+            # ['WorldViewProj', '', '0', 'float4x4 (column_major)']
+            if value_str == '':
+                continue
+
+            if '.' in var_name:
+                parts = var_name.split('.')
+                base_name = parts[0]
+                suffix = parts[1]
+                if suffix.startswith('row'):
+                    row_idx = int(suffix[3:])
+                    if base_name not in matrix_rows:
+                        matrix_rows[base_name] = {}
+                    matrix_rows[base_name][row_idx] = value_str
+            else:
+                scalar_vars[var_name] = value_str
+
+        for field in cb_def.fields:
+            if field.name in matrix_rows:
+                row_dict = matrix_rows[field.name]
+                if all(i in row_dict for i in range(4)):
+                    matrix = []
+                    for i in range(4):
+                        parts = row_dict[i].split(',')
+                        matrix.append([float(p.strip()) for p in parts[:4]])
+                    field.data = matrix
+            elif field.name in scalar_vars:
+                field.data = self.parse_value_by_type(scalar_vars[field.name], field.field_type)
+
+        for cb_n, cb_d in self.cbuffers.items():
+            print(f"Cbuffer {cb_n}:")
+            for f in cb_d.fields:
+                print(f"  {f.name} ({f.field_type}): data={f.data}")
 
 
 def main():

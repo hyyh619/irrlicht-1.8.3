@@ -135,7 +135,7 @@ self.cbuffers[cb_name]没有保存解析出来的cb_members
                 self.cbuffers[cb_name] = {}
 
 # 4
-Git commit: 
+Git commit: hlsl-inter: load data from .csv to cbuffer and vertex input by MiniMax-M2.7.
 1. StructDefinition的list保存了解析出来的HLSL struct的每个成员。这些成员被存在FieldDefinition中，请为FieldDefinition创建一个保存数据的成员，该成员根据下列数据结构来保存实际的数据
    DATA_TYPE_LIST = ['float4x4', 'float4', 'float3', 'float2', 'uint']
 2. 像StructDefinition一样，为cbuffer也定义一个类似的数据结构CbufferDefinition，记录变量名，变量类型，以及用于存储变量对应的数据的成员
@@ -144,6 +144,18 @@ Git commit:
 
 # 5
 Git commit: 
+cbuffer对应的csv文件如果data type是float4x4,其数据格式如下
+WorldViewProj,,0,float4x4 (column_major)
+WorldViewProj.row0,"1.03104, 0.00, -0.05065, 24.85304",,float4
+WorldViewProj.row1,"0.00476, 1.37295, 0.09699, -98.08849",,float4
+WorldViewProj.row2,"0.04896, -0.07058, 0.99664, 125.7131",,float4
+WorldViewProj.row3,"0.04895, -0.07055, 0.99631, 126.6712",,float4
+但是load_cbuffer_data_from_csv只能处理非矩阵类型数据
+AmbientColor,"0.00, 0.00, 0.00, 0.00",0,float4
+DiffuseColor,"1.00, 1.00, 1.00, 1.00",16,float4
+SpecularColor,"1.00, 1.00, 1.00, 1.00",32,float4
+请加入矩阵类型数据处理
+
 
 
 # 6
