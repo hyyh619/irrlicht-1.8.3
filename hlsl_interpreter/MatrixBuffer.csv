@@ -1,8 +1,11 @@
 Name,Value,Byte Offset,Type
-MaterialDiffuseColor,"0.80, 0.80, 0.80, 1.00",0,float4
-MaterialAmbientColor,"0.80, 0.80, 0.80, 1.00",16,float4
-MaterialSpecularColor,"1.00, 1.00, 1.00, 1.00",32,float4
-MaterialEmissiveColor,"0.00, 0.00, 0.00, 0.00",48,float4
-Shininess,"0.00",64,float
-ColorMaterialMode,"0",68,uint
-Padding,"-1.99840E+18, -1.99840E+18",72,float2
+WorldViewProj,,0,float4x4 (column_major)
+WorldViewProj.row0,"-10.31043, 0.00, 0.50652, -26.95237",,float4
+WorldViewProj.row1,"-0.04765, 13.72952, -0.96992, -97.84178",,float4
+WorldViewProj.row2,"-0.48962, -0.70577, -9.96639, 128.24821",,float4
+WorldViewProj.row3,"-0.48946, -0.70554, -9.96306, 129.20546",,float4
+World,,64,float4x4 (column_major)
+World.row0,"-4.37114E-07, 0.00, 10.00, -75.00",,float4
+World.row1,"0.00, 10.00, 0.00, -66.00",,float4
+World.row2,"-10.00, 0.00, -4.37114E-07, -80.00",,float4
+World.row3,"0.00, 0.00, 0.00, 1.00",,float4

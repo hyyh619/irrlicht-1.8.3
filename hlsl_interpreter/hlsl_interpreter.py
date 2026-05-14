@@ -445,13 +445,13 @@ class HLSLInterpreter:
             if isinstance(val, bool):
                 result = not val
             result = not bool(val)
-        print(f"[UNARY OP] operand={val}, op={op}, result={result}")
+        self.debug_print(f"[UNARY OP] operand={val}, op={op}, result={result}")
         return result
 
     def execute_binary_op(self, op: str, left: Any, right: Any) -> Any:
         if left is None or right is None:
             result = None
-            print(f"[BINARY OP] left={left}, right={right}, op={op}, result={result}")
+            self.debug_print(f"[BINARY OP] left={left}, right={right}, op={op}, result={result}")
             return None
         if op == '+':
             if isinstance(left, list) and isinstance(right, list):
@@ -479,7 +479,7 @@ class HLSLInterpreter:
             result = (left, right)
         else:
             result = None
-        print(f"[BINARY OP] left={left}, right={right}, op={op}, result={result}")
+        self.debug_print(f"[BINARY OP] left={left}, right={right}, op={op}, result={result}")
         return result
 
     def transpose_matrix(self, m: List[List[float]]) -> List[List[float]]:
@@ -492,9 +492,12 @@ class HLSLInterpreter:
     def mul_matrix_vector(self, m: List[List[float]], v: List[float]) -> List[float]:
         if not v or any(x is None for x in v):
             return [0, 0, 0, 0]
+        if not m:
+            return [0, 0, 0, 0]
+        num_cols = len(m[0]) if m else 0
         result = []
-        for row in m:
-            s = sum(row[i] * v[i] for i in range(len(v)))
+        for j in range(num_cols):
+            s = sum(v[i] * m[i][j] for i in range(len(v)))
             result.append(s)
         return result
 
@@ -1028,7 +1031,7 @@ class HLSLInterpreter:
             if val is None:
                 return None
             result = self.transpose_matrix(val)
-            print(f"[FUNC] transpose({val}) = {result}")
+            self.debug_print(f"[FUNC] transpose({val}) = {result}")
             return result
 
         elif func_name == 'normalize':
@@ -1039,7 +1042,7 @@ class HLSLInterpreter:
                 return None
             if isinstance(val, list):
                 result = self.normalize_vec(val)
-                print(f"[FUNC] normalize({val}) = {result}")
+                self.debug_print(f"[FUNC] normalize({val}) = {result}")
                 return result
             return val
 
@@ -1050,7 +1053,7 @@ class HLSLInterpreter:
             if val is None:
                 return None
             result = self.length_vec(val)
-            print(f"[FUNC] length({val}) = {result}")
+            self.debug_print(f"[FUNC] length({val}) = {result}")
             return result
 
         elif func_name == 'dot':
@@ -1061,7 +1064,7 @@ class HLSLInterpreter:
             if a is None or b is None:
                 return None
             result = self.dot_product(a, b)
-            print(f"[FUNC] dot({a}, {b}) = {result}")
+            self.debug_print(f"[FUNC] dot({a}, {b}) = {result}")
             return result
 
         elif func_name == 'reflect':
@@ -1072,7 +1075,7 @@ class HLSLInterpreter:
             if I is None or N is None:
                 return None
             result = self.reflect_vec(I, N)
-            print(f"[FUNC] reflect({I}, {N}) = {result}")
+            self.debug_print(f"[FUNC] reflect({I}, {N}) = {result}")
             return result
 
         elif func_name == 'max':
@@ -1083,7 +1086,7 @@ class HLSLInterpreter:
             if a is None or b is None:
                 return None
             result = max(a, b)
-            print(f"[FUNC] max({a}, {b}) = {result}")
+            self.debug_print(f"[FUNC] max({a}, {b}) = {result}")
             return result
 
         elif func_name == 'min':
@@ -1094,7 +1097,7 @@ class HLSLInterpreter:
             if a is None or b is None:
                 return None
             result = min(a, b)
-            print(f"[FUNC] min({a}, {b}) = {result}")
+            self.debug_print(f"[FUNC] min({a}, {b}) = {result}")
             return result
 
         elif func_name == 'pow':
@@ -1105,7 +1108,7 @@ class HLSLInterpreter:
             if base is None or exp is None:
                 return None
             result = math.pow(base, exp)
-            print(f"[FUNC] pow({base}, {exp}) = {result}")
+            self.debug_print(f"[FUNC] pow({base}, {exp}) = {result}")
             return result
 
         elif func_name == 'abs':
@@ -1118,7 +1121,7 @@ class HLSLInterpreter:
                 result = [abs(v) for v in val]
             else:
                 result = abs(val)
-            print(f"[FUNC] abs({val}) = {result}")
+            self.debug_print(f"[FUNC] abs({val}) = {result}")
             return result
 
         elif func_name == 'sin':
@@ -1131,7 +1134,7 @@ class HLSLInterpreter:
                 result = [math.sin(v) for v in val]
             else:
                 result = math.sin(val)
-            print(f"[FUNC] sin({val}) = {result}")
+            self.debug_print(f"[FUNC] sin({val}) = {result}")
             return result
 
         elif func_name == 'cos':
@@ -1144,7 +1147,7 @@ class HLSLInterpreter:
                 result = [math.cos(v) for v in val]
             else:
                 result = math.cos(val)
-            print(f"[FUNC] cos({val}) = {result}")
+            self.debug_print(f"[FUNC] cos({val}) = {result}")
             return result
 
         elif func_name == 'mul':
@@ -1157,11 +1160,11 @@ class HLSLInterpreter:
             if isinstance(left, list) and isinstance(right, list):
                 if len(left) == 4 and len(right) == 4:
                     result = self.mul_matrix_vector(right, left)
-                    print(f"[FUNC] mul(left={left}, right={right}) = {result}")
+                    self.debug_print(f"[FUNC] mul(left={left}, right={right}) = {result}")
                     return result
                 elif len(left) == 3 and len(right) == 3:
                     result = self.mul_matrix_vector(right, left)
-                    print(f"[FUNC] mul(left={left}, right={right}) = {result}")
+                    self.debug_print(f"[FUNC] mul(left={left}, right={right}) = {result}")
                     return result
             return None
 
@@ -1173,7 +1176,7 @@ class HLSLInterpreter:
                     result.extend(val)
                 else:
                     result.append(val)
-            print(f"[FUNC] {func_name}(args={args}) = {result}")
+            self.debug_print(f"[FUNC] {func_name}(args={args}) = {result}")
             return result
 
         return None

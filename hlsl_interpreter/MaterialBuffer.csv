@@ -1,8 +1,8 @@
 Name,Value,Byte Offset,Type
 MaterialDiffuseColor,"0.80, 0.80, 0.80, 1.00",0,float4
-MaterialAmbientColor,"1.00, 1.00, 1.00, 1.00",16,float4
-MaterialSpecularColor,"0.00, 0.00, 0.00, 1.00",32,float4
-MaterialEmissiveColor,"0.30588, 0.30588, 0.30588, 1.00",48,float4
+MaterialAmbientColor,"0.80, 0.80, 0.80, 1.00",16,float4
+MaterialSpecularColor,"1.00, 1.00, 1.00, 1.00",32,float4
+MaterialEmissiveColor,"0.00, 0.00, 0.00, 0.00",48,float4
 Shininess,"0.00",64,float
-ColorMaterialMode,"1",68,uint
+ColorMaterialMode,"0",68,uint
 Padding,"-1.99840E+18, -1.99840E+18",72,float2
