@@ -450,6 +450,21 @@ execute_statement函数执行下面语句时，只执行了transpose(WorldViewPr
 2. 对于一个HLSL，我们应该根据其执行的操作符的优先级构造语法树，然后按照语法树节点来挨个执行这条语句的所有操作
 3. 请加入语法树模块，负责分析一条语句构造语法树，然后基于该语法树执行所有操作
 
+打印下面生成的syntax tree
+    def evaluate_expression(self, expr: str, local_vars: Dict[str, Any]) -> Any:
+        expr = expr.strip()
+        if not expr:
+            return None
+
+        if expr == 'return':
+            return None
+
+        # Check if expression is a simple function call or needs syntax tree parsing
+        if re.match(r'\w+\s*\(', expr) and expr.strip().endswith(')'):
+            if not any(op in expr for op in ['+', '-', '*', '/', '==', '!=', '<', '>', '<=', '>=', '||', '&&']):
+                tree = self.syntax_parser.parse(expr)
+                return self.evaluate_syntax_tree(tree, local_vars)
+
 
 # 16
 Git commit: 

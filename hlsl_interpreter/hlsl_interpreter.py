@@ -3,8 +3,8 @@ import json
 import math
 import re
 import os
-from dataclasses import dataclass
-from typing import Any, Dict, List, Union
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Union, Optional
 
 
 DATA_TYPE_LIST = ['float4x4', 'float3x3',
@@ -12,6 +12,168 @@ DATA_TYPE_LIST = ['float4x4', 'float3x3',
                 'uint4', 'uint3', 'uint2', 'uint',
                 'int4', 'int3', 'int2', 'int',
                 'bool']
+
+
+class SyntaxTreeNode:
+    def __init__(self, node_type: str, value: Any = None, left: Optional['SyntaxTreeNode'] = None, right: Optional['SyntaxTreeNode'] = None, args: Optional[List['SyntaxTreeNode']] = None):
+        self.node_type = node_type
+        self.value = value
+        self.left = left
+        self.right = right
+        self.args = args if args is not None else []
+
+    def __repr__(self):
+        if self.node_type == 'function':
+            return f"Function({self.value}, args={self.args})"
+        elif self.node_type == 'binary_op':
+            return f"BinaryOp({self.value}, left={self.left}, right={self.right})"
+        elif self.node_type == 'unary_op':
+            return f"UnaryOp({self.value}, child={self.left})"
+        else:
+            return f"Value({self.value})"
+
+
+class SyntaxTreeParser:
+    def __init__(self):
+        self.operators = {
+            '||': 1, '&&': 2,
+            '==': 3, '!=': 3,
+            '<': 4, '>': 4, '<=': 4, '>=': 4,
+            '+': 5, '-': 5,
+            '*': 6, '/': 6,
+        }
+
+    def parse(self, expr: str) -> SyntaxTreeNode:
+        expr = expr.strip()
+        return self._parse_expression(expr)
+
+    def _find_top_level_operator(self, expr: str) -> Optional[tuple]:
+        depth = 0
+        for i in range(len(expr) - 1, -1, -1):
+            char = expr[i]
+            if char == ')':
+                depth += 1
+            elif char == '(':
+                depth -= 1
+            elif depth == 0:
+                if i >= 1:
+                    two_char = expr[i-1:i+1]
+                    if two_char in self.operators:
+                        return (i-1, two_char)
+                if char in self.operators:
+                    return (i, char)
+        return None
+
+    def _parse_expression(self, expr: str) -> SyntaxTreeNode:
+        expr = expr.strip()
+        if not expr:
+            return SyntaxTreeNode('value', None)
+
+        cast_match = re.match(r'\((\w+)\)\s*(.+)', expr, re.DOTALL)
+        if cast_match:
+            cast_type = cast_match.group(1)
+            rest = cast_match.group(2).strip()
+            inner_node = self._parse_expression(rest)
+            if inner_node.node_type == 'value':
+                return inner_node
+            return SyntaxTreeNode('cast', cast_type, inner_node)
+
+        if expr.startswith('(') and expr.endswith(')'):
+            inner = expr[1:-1].strip()
+            paren_depth = 0
+            is_proper_paren = True
+            for j, c in enumerate(inner):
+                if c == '(':
+                    paren_depth += 1
+                elif c == ')':
+                    paren_depth -= 1
+                if paren_depth < 0:
+                    is_proper_paren = False
+                    break
+            if is_proper_paren:
+                return self._parse_expression(inner)
+
+        op_info = self._find_top_level_operator(expr)
+        if op_info:
+            pos, op = op_info
+            if op in ['||', '&&', '==', '!=', '<', '>', '<=', '>=', '+', '-', '*', '/']:
+                left_expr = expr[:pos].strip()
+                right_expr = expr[pos+len(op):].strip()
+                left_node = self._parse_expression(left_expr)
+                right_node = self._parse_expression(right_expr)
+                return SyntaxTreeNode('binary_op', op, left_node, right_node)
+
+        if re.match(r'float[234]\s*\(', expr):
+            return self._parse_function_call(expr)
+
+        if re.match(r'\w+\s*\(', expr):
+            return self._parse_function_call(expr)
+
+        return SyntaxTreeNode('value', expr)
+
+    def _parse_function_call(self, expr: str) -> SyntaxTreeNode:
+        expr = expr.strip()
+        if expr.startswith('('):
+            match = re.match(r'\((\w+)\)\s*(.+)', expr, re.DOTALL)
+            if match:
+                cast_type = match.group(1)
+                rest = match.group(2).strip()
+                inner_node = self._parse_expression(rest)
+                if inner_node.node_type == 'value':
+                    return inner_node
+                return SyntaxTreeNode('cast', cast_type, inner_node)
+
+        match = re.match(r'^(\w+)\s*\(', expr)
+        if not match:
+            return SyntaxTreeNode('value', expr)
+
+        func_name = match.group(1)
+
+        depth = 0
+        paren_start = -1
+        for i, char in enumerate(expr):
+            if char == '(':
+                depth += 1
+                if depth == 1:
+                    paren_start = i
+            elif char == ')':
+                depth -= 1
+                if depth == 0:
+                    args_str = expr[paren_start+1:i]
+                    if func_name in ['transpose', 'normalize', 'length', 'reflect', 'pow', 'max', 'abs', 'sin', 'cos', 'dot']:
+                        inner_node = self._parse_expression(args_str.strip())
+                        return SyntaxTreeNode('function', func_name, args=[inner_node])
+                    elif func_name in ['mul', 'float2', 'float3', 'float4']:
+                        args = self._split_args(args_str)
+                        arg_nodes = [self._parse_expression(arg.strip()) for arg in args]
+                        return SyntaxTreeNode('function', func_name, args=arg_nodes)
+                    args = self._split_args(args_str)
+                    arg_nodes = [self._parse_expression(arg.strip()) for arg in args]
+                    return SyntaxTreeNode('function', func_name, args=arg_nodes)
+
+        return SyntaxTreeNode('value', expr)
+
+    def _split_args(self, args_str: str) -> List[str]:
+        if not args_str.strip():
+            return []
+        args = []
+        depth = 0
+        current = ''
+        for char in args_str:
+            if char == '(':
+                depth += 1
+                current += char
+            elif char == ')':
+                depth -= 1
+                current += char
+            elif char == ',' and depth == 0:
+                args.append(current.strip())
+                current = ''
+            else:
+                current += char
+        if current.strip():
+            args.append(current.strip())
+        return args
 
 
 @dataclass
@@ -45,6 +207,7 @@ class HLSLInterpreter:
         self.cbuffers: Dict[str, CbufferDefinition] = {}
         self.variables: Dict[str, Any] = {}
         self.debug = True
+        self.syntax_parser = SyntaxTreeParser()
 
     def debug_print(self, msg: str):
         if self.debug:
@@ -356,6 +519,12 @@ class HLSLInterpreter:
         if expr == 'return':
             return None
 
+        # Check if expression is a simple function call or needs syntax tree parsing
+        if re.match(r'\w+\s*\(', expr) and expr.strip().endswith(')'):
+            if not any(op in expr for op in ['+', '-', '*', '/', '==', '!=', '<', '>', '<=', '>=', '||', '&&']):
+                tree = self.syntax_parser.parse(expr)
+                return self.evaluate_syntax_tree(tree, local_vars)
+
         if expr.startswith('return '):
             return self.evaluate_expression(expr[7:], local_vars)
 
@@ -514,9 +683,9 @@ class HLSLInterpreter:
                 return result
 
         # =====================================================================
-        # 矩阵运算: transpose - 转置矩阵
+        # 矩阵运算: transpose - 转置矩阵 (only if transpose is the main operation)
         # =====================================================================
-        if 'transpose' in expr:
+        if re.match(r'transpose\s*\(', expr):
             self.debug_print(f"[EVAL] TRANSPOSE: {expr}")
             match = re.search(r'transpose\s*\(([^)]+)\)', expr)
             if match:
@@ -782,6 +951,169 @@ class HLSLInterpreter:
         result = self.get_value(expr, local_vars)
         self.debug_print(f"[EVAL] GET_VALUE result: {result}")
         return result
+
+    def evaluate_syntax_tree(self, node: SyntaxTreeNode, local_vars: Dict[str, Any]) -> Any:
+        if node is None:
+            return None
+
+        if node.node_type == 'value':
+            if node.value is None:
+                return None
+            return self.get_value(node.value, local_vars)
+
+        elif node.node_type == 'binary_op':
+            left = self.evaluate_syntax_tree(node.left, local_vars)
+            right = self.evaluate_syntax_tree(node.right, local_vars)
+            return self.execute_binary_op(node.value, left, right)
+
+        elif node.node_type == 'unary_op':
+            child = self.evaluate_syntax_tree(node.left, local_vars)
+            return self.execute_unary_op(node.value, child)
+
+        elif node.node_type == 'function':
+            return self.execute_function_node(node, local_vars)
+
+        elif node.node_type == 'cast':
+            inner = self.evaluate_syntax_tree(node.left, local_vars)
+            if inner is None:
+                return None
+            cast_type = node.value
+            if cast_type == 'float3x3' and isinstance(inner, list) and len(inner) == 4:
+                return [row[:3] for row in inner[:3]]
+            return inner
+
+        return None
+
+    def execute_function_node(self, node: SyntaxTreeNode, local_vars: Dict[str, Any]) -> Any:
+        func_name = node.value
+        args = node.args
+
+        if func_name == 'transpose':
+            if len(args) != 1:
+                return None
+            val = self.evaluate_syntax_tree(args[0], local_vars)
+            if val is None:
+                return None
+            return self.transpose_matrix(val)
+
+        elif func_name == 'normalize':
+            if len(args) != 1:
+                return None
+            val = self.evaluate_syntax_tree(args[0], local_vars)
+            if val is None:
+                return None
+            if isinstance(val, list):
+                return self.normalize_vec(val)
+            return val
+
+        elif func_name == 'length':
+            if len(args) != 1:
+                return None
+            val = self.evaluate_syntax_tree(args[0], local_vars)
+            if val is None:
+                return None
+            return self.length_vec(val)
+
+        elif func_name == 'dot':
+            if len(args) != 2:
+                return None
+            a = self.evaluate_syntax_tree(args[0], local_vars)
+            b = self.evaluate_syntax_tree(args[1], local_vars)
+            if a is None or b is None:
+                return None
+            return self.dot_product(a, b)
+
+        elif func_name == 'reflect':
+            if len(args) != 2:
+                return None
+            I = self.evaluate_syntax_tree(args[0], local_vars)
+            N = self.evaluate_syntax_tree(args[1], local_vars)
+            if I is None or N is None:
+                return None
+            return self.reflect_vec(I, N)
+
+        elif func_name == 'max':
+            if len(args) != 2:
+                return None
+            a = self.evaluate_syntax_tree(args[0], local_vars)
+            b = self.evaluate_syntax_tree(args[1], local_vars)
+            if a is None or b is None:
+                return None
+            return max(a, b)
+
+        elif func_name == 'min':
+            if len(args) != 2:
+                return None
+            a = self.evaluate_syntax_tree(args[0], local_vars)
+            b = self.evaluate_syntax_tree(args[1], local_vars)
+            if a is None or b is None:
+                return None
+            return min(a, b)
+
+        elif func_name == 'pow':
+            if len(args) != 2:
+                return None
+            base = self.evaluate_syntax_tree(args[0], local_vars)
+            exp = self.evaluate_syntax_tree(args[1], local_vars)
+            if base is None or exp is None:
+                return None
+            return math.pow(base, exp)
+
+        elif func_name == 'abs':
+            if len(args) != 1:
+                return None
+            val = self.evaluate_syntax_tree(args[0], local_vars)
+            if val is None:
+                return None
+            if isinstance(val, list):
+                return [abs(v) for v in val]
+            return abs(val)
+
+        elif func_name == 'sin':
+            if len(args) != 1:
+                return None
+            val = self.evaluate_syntax_tree(args[0], local_vars)
+            if val is None:
+                return None
+            if isinstance(val, list):
+                return [math.sin(v) for v in val]
+            return math.sin(val)
+
+        elif func_name == 'cos':
+            if len(args) != 1:
+                return None
+            val = self.evaluate_syntax_tree(args[0], local_vars)
+            if val is None:
+                return None
+            if isinstance(val, list):
+                return [math.cos(v) for v in val]
+            return math.cos(val)
+
+        elif func_name == 'mul':
+            if len(args) != 2:
+                return None
+            left = self.evaluate_syntax_tree(args[0], local_vars)
+            right = self.evaluate_syntax_tree(args[1], local_vars)
+            if left is None or right is None:
+                return None
+            if isinstance(left, list) and isinstance(right, list):
+                if len(left) == 4 and len(right) == 4:
+                    return self.mul_matrix_vector(right, left)
+                elif len(left) == 3 and len(right) == 3:
+                    return self.mul_matrix_vector(right, left)
+            return None
+
+        elif func_name in ['float2', 'float3', 'float4']:
+            result = []
+            for arg in args:
+                val = self.evaluate_syntax_tree(arg, local_vars)
+                if isinstance(val, list):
+                    result.extend(val)
+                else:
+                    result.append(val)
+            return result
+
+        return None
 
     def get_value(self, name: str, local_vars: Dict[str, Any]) -> Any:
         name = name.strip()
