@@ -20,18 +20,20 @@ class SyntaxTreeNode:
     """
     HLSL语法树节点基类
     用于表示HLSL表达式解析后的语法树结构
-    node_type: 节点类型 - 'value'(值), 'function'(函数), 'binary_op'(二元操作), 
-                          'unary_op'(一元操作), 'cast'(类型转换)
+    node_type: 节点类型 - 'value'(值), 'function'(函数), 'binary_op'(二元操作),
+                           'unary_op'(一元操作), 'cast'(类型转换), 'ternary'(三元条件)
     value: 节点值 - 变量名/函数名/操作符/类型名
-    left: 左子节点 (用于二元/一元操作)
-    right: 右子节点 (用于二元操作)
+    left: 左子节点 (用于二元/一元操作或三元条件)
+    right: 右子节点 (用于二元操作或三元真的表达式)
+    third_child: 第三子节点 (用于三元条件假的表达式)
     args: 函数参数列表 (用于函数调用)
     """
-    def __init__(self, node_type: str, value: Any = None, left: Optional['SyntaxTreeNode'] = None, right: Optional['SyntaxTreeNode'] = None, args: Optional[List['SyntaxTreeNode']] = None, line_number: int = 0):
+    def __init__(self, node_type: str, value: Any = None, left: Optional['SyntaxTreeNode'] = None, right: Optional['SyntaxTreeNode'] = None, third_child: Optional['SyntaxTreeNode'] = None, args: Optional[List['SyntaxTreeNode']] = None, line_number: int = 0):
         self.node_type = node_type
         self.value = value
         self.left = left
         self.right = right
+        self.third_child = third_child
         self.args = args if args is not None else []
         self.line_number = line_number
 
@@ -66,6 +68,15 @@ class SyntaxTreeNode:
             lines = [f"Cast({self.value})"]
             lines.append(f"{prefix}  inner:")
             lines.append(self.left._pretty(indent + 2))
+            return "\n".join(lines)
+        elif self.node_type == 'ternary':
+            lines = [f"Ternary({self.value})"]
+            lines.append(f"{prefix}  condition:")
+            lines.append(self.left._pretty(indent + 2))
+            lines.append(f"{prefix}  true_expr:")
+            lines.append(self.right._pretty(indent + 2))
+            lines.append(f"{prefix}  false_expr:")
+            lines.append(self.third_child._pretty(indent + 2))
             return "\n".join(lines)
         else:
             return f"{prefix}Value({self.value})"
@@ -121,13 +132,14 @@ class SyntaxTreeParser:
     def _parse_expression(self, expr: str) -> SyntaxTreeNode:
         """
         将HLSL表达式字符串解析为语法树节点。
-        
+
         解析顺序(从高优先级到低优先级):
         1. 类型转换: (float3x3)expr - 将表达式转换为指定类型
         2. 括号表达式: (expr) - 括号包围的表达式
-        3. 二元运算符: + - * / == != < > <= >= && ||
-        4. 函数调用: func(args) - 如normalize(), mul(), transpose()等
-        5. 变量/常量值: 标识符或数字字面量
+        3. 三元运算符: a ? b : c - 条件表达式
+        4. 二元运算符: + - * / == != < > <= >= && ||
+        5. 函数调用: func(args) - 如normalize(), mul(), transpose()等
+        6. 变量/常量值: 标识符或数字字面量
         """
         expr = expr.strip()
         if not expr:
@@ -169,7 +181,44 @@ class SyntaxTreeParser:
                 return self._parse_expression(inner)
 
         # =====================================================================
-        # 第三步: 二元运算符 - 从右向左查找优先级最低的运算符
+        # 第三步: 三元运算符 - 匹配 a ? b : c 模式
+        # 三元运算符优先级最低，在所有二元运算符之后处理
+        # =====================================================================
+        ternary_pos = -1
+        depth = 0
+        for i, char in enumerate(expr):
+            if char == '(':
+                depth += 1
+            elif char == ')':
+                depth -= 1
+            elif char == '?' and depth == 0:
+                ternary_pos = i
+                break
+
+        if ternary_pos >= 0:
+            colon_pos = -1
+            depth = 0
+            for i in range(ternary_pos + 1, len(expr)):
+                char = expr[i]
+                if char == '(':
+                    depth += 1
+                elif char == ')':
+                    depth -= 1
+                elif char == ':' and depth == 0:
+                    colon_pos = i
+                    break
+
+            if colon_pos >= 0:
+                cond_expr = expr[:ternary_pos].strip()
+                true_expr = expr[ternary_pos+1:colon_pos].strip()
+                false_expr = expr[colon_pos+1:].strip()
+                cond_node = self._parse_expression(cond_expr)
+                true_node = self._parse_expression(true_expr)
+                false_node = self._parse_expression(false_expr)
+                return SyntaxTreeNode('ternary', '?', cond_node, true_node, false_node)
+
+        # =====================================================================
+        # 第四步: 二元运算符 - 从右向左查找优先级最低的运算符
         # 支持: 逻辑或(||)、逻辑与(&&)、比较(== != < > <= >=)、
         #       算术(+ -)、乘除(* /)
         # =====================================================================
@@ -185,7 +234,7 @@ class SyntaxTreeParser:
                 return SyntaxTreeNode('binary_op', op, left_node, right_node)
 
         # =====================================================================
-        # 第四步: 函数调用 - 匹配函数名后跟括号
+        # 第五步: 函数调用 - 匹配函数名后跟括号
         # float[234]构造函数: float2(...), float3(...), float4(...)
         # 普通函数调用: normalize(...), mul(...), transpose(...)等
         # =====================================================================
@@ -196,7 +245,7 @@ class SyntaxTreeParser:
             return self._parse_function_call(expr)
 
         # =====================================================================
-        # 第五步: 变量/常量值 - 标识符、字符串或数字
+        # 第六步: 变量/常量值 - 标识符、字符串或数字
         # 到达这里说明表达式不包含运算符和函数调用
         # =====================================================================
         return SyntaxTreeNode('value', expr)
@@ -633,11 +682,19 @@ class HLSLInterpreter:
         if op == '+':
             if isinstance(left, list) and isinstance(right, list):
                 result = [l + r for l, r in zip(left, right)]
+            elif isinstance(left, list) and isinstance(right, (int, float)):
+                result = [v + right for v in left]
+            elif isinstance(right, list) and isinstance(left, (int, float)):
+                result = [left + v for v in right]
             else:
                 result = left + right
         elif op == '-':
             if isinstance(left, list) and isinstance(right, list):
                 result = [l - r for l, r in zip(left, right)]
+            elif isinstance(left, list) and isinstance(right, (int, float)):
+                result = [v - right for v in left]
+            elif isinstance(right, list) and isinstance(left, (int, float)):
+                result = [left - v for v in right]
             else:
                 result = left - right
         elif op == '*':
@@ -645,15 +702,35 @@ class HLSLInterpreter:
                 result = [v * right for v in left]
             elif isinstance(right, list) and isinstance(left, (int, float)):
                 result = [v * left for v in right]
+            elif isinstance(left, list) and isinstance(right, list):
+                result = [l * r for l, r in zip(left, right)]
             else:
                 result = left * right
         elif op == '/':
-            if isinstance(left, list):
+            if isinstance(left, list) and isinstance(right, (int, float)):
                 result = [v / right for v in left]
+            elif isinstance(left, list) and isinstance(right, list):
+                result = [l / r for l, r in zip(left, right)]
             else:
                 result = left / right
         elif op == '.':
             result = (left, right)
+        elif op == '==':
+            result = left == right
+        elif op == '!=':
+            result = left != right
+        elif op == '<':
+            result = left < right
+        elif op == '>':
+            result = left > right
+        elif op == '<=':
+            result = left <= right
+        elif op == '>=':
+            result = left >= right
+        elif op == '&&':
+            result = bool(left and right)
+        elif op == '||':
+            result = bool(left or right)
         else:
             result = None
         self.debug_print(f"[BINARY OP] left={self._format_float(left)}, right={self._format_float(right)}, op={op}, result={self._format_float(result)}")
@@ -776,443 +853,12 @@ class HLSLInterpreter:
         if expr == 'return':
             return None
 
-        # 简单函数调用(无复杂运算符)使用语法树解析
-        if re.match(r'\w+\s*\(', expr) and expr.strip().endswith(')'):
-            if not any(op in expr for op in ['+', '-', '*', '/', '==', '!=', '<', '>', '<=', '>=', '||', '&&']):
-                tree = self.syntax_parser.parse(expr)
-                self.debug_print(f"[SYNTAX TREE]\n{tree}")
-                return self.evaluate_syntax_tree(tree, local_vars)
-
         if expr.startswith('return '):
             return self.evaluate_expression(expr[7:], local_vars)
 
-        # 逻辑或: a || b
-        if '||' in expr:
-            self.debug_print(f"[EVAL] OR: {expr}")
-            parts = expr.split('||')
-            for p in parts:
-                val = self.evaluate_expression(p.strip(), local_vars)
-                if val:
-                    self.debug_print(f"[EVAL] OR result: True")
-                    return True
-            self.debug_print(f"[EVAL] OR result: False")
-            return False
-
-        # 逻辑与: a && b
-        if '&&' in expr:
-            self.debug_print(f"[EVAL] AND: {expr}")
-            parts = expr.split('&&')
-            for p in parts:
-                val = self.evaluate_expression(p.strip(), local_vars)
-                if not val:
-                    self.debug_print(f"[EVAL] AND result: False")
-                    return False
-            self.debug_print(f"[EVAL] AND result: True")
-            return True
-
-        # 三元运算符: a ? b : c
-        if '?' in expr and expr.count('?') == 1 and expr.count(':') == 1:
-            self.debug_print(f"[EVAL] TERNARY: {expr}")
-            match = re.match(r'(.+?)\s*\?\s*(.+?)\s*:\s*(.+)', expr)
-            if match:
-                cond = self.evaluate_expression(match.group(1), local_vars)
-                if cond:
-                    self.debug_print(f"[EVAL] TERNARY true branch")
-                    return self.evaluate_expression(match.group(2), local_vars)
-                else:
-                    self.debug_print(f"[EVAL] TERNARY false branch")
-                    return self.evaluate_expression(match.group(3), local_vars)
-
-        # 小于等于: <=
-        if '<=' in expr and not re.search(r'[<>=!<]=', expr[:-2]):
-            self.debug_print(f"[EVAL] LTE: {expr}")
-            match = re.match(r'(.+?)\s*<=\s*(.+)', expr)
-            if match:
-                left = self.evaluate_expression(match.group(1), local_vars)
-                right = self.evaluate_expression(match.group(2), local_vars)
-                self.debug_print(f"[EVAL] LTE result: {self._format_value(left)} <= {self._format_value(right)} = {left <= right}")
-                return left <= right
-
-        # 大于等于: >=
-        if '>=' in expr and not re.search(r'[<>][>=]', expr):
-            self.debug_print(f"[EVAL] GTE: {expr}")
-            match = re.match(r'(.+?)\s*>=\s*(.+)', expr)
-            if match:
-                left = self.evaluate_expression(match.group(1), local_vars)
-                right = self.evaluate_expression(match.group(2), local_vars)
-                self.debug_print(f"[EVAL] GTE result: {self._format_value(left)} >= {self._format_value(right)} = {left >= right}")
-                return left >= right
-
-        # 小于: <
-        if '<' in expr and not re.search(r'<=', expr):
-            self.debug_print(f"[EVAL] LT: {expr}")
-            match = re.match(r'(.+?)\s*<\s*(.+)', expr)
-            if match:
-                left = self.evaluate_expression(match.group(1), local_vars)
-                right = self.evaluate_expression(match.group(2), local_vars)
-                self.debug_print(f"[EVAL] LT result: {self._format_value(left)} < {self._format_value(right)} = {left < right}")
-                return left < right
-
-        # 大于: >
-        if '>' in expr and not re.search(r'>=', expr):
-            self.debug_print(f"[EVAL] GT: {expr}")
-            match = re.match(r'(.+?)\s*>\s*(.+)', expr)
-            if match:
-                left = self.evaluate_expression(match.group(1), local_vars)
-                right = self.evaluate_expression(match.group(2), local_vars)
-                self.debug_print(f"[EVAL] GT result: {self._format_value(left)} > {self._format_value(right)} = {left > right}")
-                return left > right
-
-        # 等于: ==
-        if '==' in expr:
-            self.debug_print(f"[EVAL] EQ: {expr}")
-            match = re.match(r'(.+?)\s*==\s*(.+)', expr)
-            if match:
-                left = self.evaluate_expression(match.group(1), local_vars)
-                right = self.evaluate_expression(match.group(2), local_vars)
-                self.debug_print(f"[EVAL] EQ result: {self._format_value(left)} == {self._format_value(right)} = {left == right}")
-                return left == right
-
-        # 不等于: !=
-        if '!=' in expr:
-            self.debug_print(f"[EVAL] NEQ: {expr}")
-            match = re.match(r'(.+?)\s*!=\s*(.+)', expr)
-            if match:
-                left = self.evaluate_expression(match.group(1), local_vars)
-                right = self.evaluate_expression(match.group(2), local_vars)
-                self.debug_print(f"[EVAL] NEQ result: {self._format_value(left)} != {self._format_value(right)} = {left != right}")
-                return left != right
-
-        # 一元负号: -variable
-        if re.match(r'-\s*\w', expr):
-            self.debug_print(f"[EVAL] UNARY NEG: {expr}")
-            match = re.match(r'-\s*(\w+)', expr)
-            if match:
-                val = self.get_value(match.group(1), local_vars)
-                result = self.execute_unary_op('-', val)
-                self.debug_print(f"[EVAL] UNARY NEG result: -{val} = {self._format_value(result)}")
-                return result
-
-        # 逻辑非: !expr
-        if expr.startswith('!'):
-            self.debug_print(f"[EVAL] NOT: {expr}")
-            val = self.evaluate_expression(expr[1:], local_vars)
-            result = self.execute_unary_op('!', val)
-            self.debug_print(f"[EVAL] NOT result: not {val} = {self._format_value(result)}")
-            return result
-
-        # 一元减号: -expression
-        if expr.startswith('-') and len(expr) > 1 and expr[1] != ' ':
-            self.debug_print(f"[EVAL] UNARY SUB: {expr}")
-            match = re.match(r'-(.+)', expr)
-            if match:
-                val = self.evaluate_expression(match.group(1), local_vars)
-                result = self.execute_unary_op('-', val)
-                self.debug_print(f"[EVAL] UNARY SUB result: -{val} = {self._format_value(result)}")
-                return result
-
-        # 向量构造函数: float2/float3/float4
-        if re.match(r'float[234]\s*\(', expr):
-            self.debug_print(f"[EVAL] FLOAT234: {expr}")
-            match = re.match(r'float[234]\s*\(([^)]+)\)', expr)
-            if match:
-                args_str = match.group(1)
-                args = []
-                depth = 0
-                current_arg = ''
-                for char in args_str:
-                    if char == ',' and depth == 0:
-                        args.append(current_arg.strip())
-                        current_arg = ''
-                    else:
-                        if char == '(':
-                            depth += 1
-                        elif char == ')':
-                            depth -= 1
-                        current_arg += char
-                if current_arg.strip():
-                    args.append(current_arg.strip())
-                result = []
-                for arg in args:
-                    val = self.evaluate_expression(arg, local_vars)
-                    if isinstance(val, list):
-                        result.extend(val)
-                    else:
-                        result.append(val)
-                self.debug_print(f"[EVAL] FLOAT234 result: {self._format_value(result)}")
-                return result
-
-        # =====================================================================
-        # 矩阵运算: transpose - 转置矩阵 (only if transpose is the main operation)
-        # =====================================================================
-        if re.match(r'transpose\s*\(', expr):
-            self.debug_print(f"[EVAL] TRANSPOSE: {expr}")
-            match = re.search(r'transpose\s*\(([^)]+)\)', expr)
-            if match:
-                val = self.get_value(match.group(1), local_vars)
-                if val is None:
-                    self.debug_print(f"[EVAL] WARNING: val is None for {expr}")
-                    return None
-                result = self.transpose_matrix(val)
-                self.debug_print(f"[EVAL] TRANSPOSE result: {self._format_value(result)}")
-                return result
-
-        # =====================================================================
-        # normalize - 归一化向量
-        # =====================================================================
-        if 'normalize' in expr:
-            self.debug_print(f"[EVAL] NORMALIZE: {expr}")
-            match = re.search(r'normalize\s*\(([^)]+)\)', expr)
-            if match:
-                val = self.get_value(match.group(1), local_vars)
-                if val is None:
-                    self.debug_print(f"[EVAL] WARNING: val is None for {expr}")
-                    return None
-                if isinstance(val, list):
-                    result = self.normalize_vec(val)
-                    self.debug_print(f"[EVAL] NORMALIZE result: {self._format_value(result)}")
-                    return result
-                return val
-
-        # =====================================================================
-        # length - 计算向量长度
-        # =====================================================================
-        if 'length' in expr:
-            self.debug_print(f"[EVAL] LENGTH: {expr}")
-            match = re.search(r'length\s*\(([^)]+)\)', expr)
-            if match:
-                val = self.get_value(match.group(1), local_vars)
-                if val is None:
-                    self.debug_print(f"[EVAL] WARNING: val is None for {expr}")
-                    return None
-                result = self.length_vec(val)
-                self.debug_print(f"[EVAL] LENGTH result: {self._format_value(result)}")
-                return result
-
-        # =====================================================================
-        # dot - 向量点积
-        # 手动解析逗号位置（处理嵌套括号）
-        # =====================================================================
-        if 'dot' in expr:
-            self.debug_print(f"[EVAL] DOT: {expr}")
-            depth = 0
-            comma_pos = -1
-            for i, char in enumerate(expr):
-                if char == '(':
-                    depth += 1
-                elif char == ')':
-                    depth -= 1
-                elif char == ',' and depth == 0:
-                    comma_pos = i
-                    break
-            if comma_pos > 0:
-                arg1 = expr[4:comma_pos].strip()
-                arg2 = expr[comma_pos+1:].strip().rstrip(')')
-                a = self.evaluate_expression(arg1, local_vars)
-                b = self.evaluate_expression(arg2, local_vars)
-                if a is None or b is None:
-                    self.debug_print(f"[EVAL] WARNING: arg is None for DOT: a={a}, b={b}")
-                    return None
-                result = self.dot_product(a, b)
-                self.debug_print(f"[EVAL] DOT result: {self._format_value(result)}")
-                return result
-            match = re.match(r'dot\s*\(([^,]+),\s*([^)]+)\)', expr)
-            if match:
-                a = self.get_value(match.group(1), local_vars)
-                b = self.get_value(match.group(2), local_vars)
-                if a is None or b is None:
-                    self.debug_print(f"[EVAL] WARNING: arg is None for DOT: a={a}, b={b}")
-                    return None
-                result = self.dot_product(a, b)
-                self.debug_print(f"[EVAL] DOT result: {self._format_value(result)}")
-                return result
-
-        # =====================================================================
-        # reflect - 反射向量计算 (I - 2 * dot(N, I) * N)
-        # =====================================================================
-        if 'reflect' in expr:
-            self.debug_print(f"[EVAL] REFLECT: {expr}")
-            match = re.match(r'reflect\s*\(([^,]+),\s*([^)]+)\)', expr)
-            if match:
-                I = self.get_value(match.group(1), local_vars)
-                N = self.get_value(match.group(2), local_vars)
-                if I is None or N is None:
-                    self.debug_print(f"[EVAL] WARNING: arg is None for REFLECT: I={I}, N={N}")
-                    return None
-                result = self.reflect_vec(I, N)
-                self.debug_print(f"[EVAL] REFLECT result: {self._format_value(result)}")
-                return result
-
-        # =====================================================================
-        # max - 取两个值中的最大值
-        # =====================================================================
-        if 'max' in expr:
-            self.debug_print(f"[EVAL] MAX: {expr}")
-            depth = 0
-            comma_pos = -1
-            for i, char in enumerate(expr):
-                if char == '(':
-                    depth += 1
-                elif char == ')':
-                    depth -= 1
-                elif char == ',' and depth == 0:
-                    comma_pos = i
-                    break
-            if comma_pos > 0:
-                arg1 = expr[4:comma_pos].strip()
-                arg2 = expr[comma_pos+1:].strip().rstrip(')')
-                a = self.evaluate_expression(arg1, local_vars)
-                b = self.evaluate_expression(arg2, local_vars)
-                if a is None or b is None:
-                    self.debug_print(f"[EVAL] WARNING: arg is None for MAX: a={a}, b={b}")
-                    return None
-                result = max(a, b)
-                self.debug_print(f"[EVAL] MAX result: {self._format_value(result)}")
-                return result
-
-        # =====================================================================
-        # mul - 矩阵乘法 (矩阵 × 向量, 支持 4x4 和 3x3)
-        # =====================================================================
-        if 'mul' in expr:
-            self.debug_print(f"[EVAL] MUL: {expr}")
-            depth = 0
-            comma_pos = -1
-            for i, char in enumerate(expr):
-                if char == '(':
-                    depth += 1
-                elif char == ')':
-                    depth -= 1
-                elif char == ',' and depth == 0:
-                    comma_pos = i
-                    break
-            if comma_pos > 0:
-                arg1 = expr[4:comma_pos].strip()
-                arg2 = expr[comma_pos+1:].strip().rstrip(')')
-                left = self.evaluate_expression(arg1, local_vars)
-                right = self.evaluate_expression(arg2, local_vars)
-                if left is None or right is None:
-                    self.debug_print(f"[EVAL] WARNING: arg is None for MUL: left={self._format_value(left)}, right={self._format_value(right)}")
-                    return None
-                if isinstance(left, list) and isinstance(right, list):
-                    if len(left) == 4 and len(right) == 4:
-                        result = self.mul_matrix_vector(right, left)
-                        self.debug_print(f"[EVAL] MUL result: {self._format_value(result)}")
-                        return result
-                    elif len(left) == 3 and len(right) == 3:
-                        result = self.mul_matrix_vector(right, left)
-                        self.debug_print(f"[EVAL] MUL result: {self._format_value(result)}")
-                        return result
-                return None
-
-        # 幂运算: pow(base, exp)
-        if 'pow' in expr:
-            self.debug_print(f"[EVAL] POW: {expr}")
-            match = re.match(r'pow\s*\(([^,]+),\s*([^)]+)\)', expr)
-            if match:
-                base = self.evaluate_expression(match.group(1), local_vars)
-                exp = self.evaluate_expression(match.group(2), local_vars)
-                if base is None or exp is None:
-                    self.debug_print(f"[EVAL] WARNING: arg is None for POW: base={base}, exp={exp}")
-                    return None
-                result = math.pow(base, exp)
-                self.debug_print(f"[EVAL] POW result: {self._format_value(result)}")
-                return result
-
-        # =====================================================================
-        # 类型转换和向量分量访问 (swizzle: .x, .y, .z, .w)
-        # 匹配形式: (value).component 或 (type)expression
-        # =====================================================================
-        match = re.match(r'\(([^)]+)\)\s*(.+)', expr)
-        if match:
-            self.debug_print(f"[EVAL] CAST/SWIZZLE: {expr}")
-            inner = self.evaluate_expression(match.group(1), local_vars)
-            rest = match.group(2).strip()
-            if rest.startswith('.'):
-                field = rest[1:]
-                if isinstance(inner, tuple):
-                    return inner[1]
-                if isinstance(inner, list) and field in ['x', 'y', 'z', 'w']:
-                    idx = ['x', 'y', 'z', 'w'].index(field)
-                    result = inner[idx] if idx < len(inner) else 0
-                    self.debug_print(f"[EVAL] SWIZZLE .{field} result: {self._format_value(result)}")
-                    return result
-                self.debug_print(f"[EVAL] CAST result: {inner}")
-                return inner
-            self.debug_print(f"[EVAL] Expression result: {inner}")
-            return inner
-
-        # 乘法: a * b
-        if '*' in expr:
-            self.debug_print(f"[EVAL] MUL: {expr}")
-            parts = expr.split('*')
-            if len(parts) == 2:
-                left = self.evaluate_expression(parts[0], local_vars)
-                right = self.evaluate_expression(parts[1], local_vars)
-                result = self.execute_binary_op('*', left, right)
-                self.debug_print(f"[EVAL] MUL result: {self._format_value(left)} * {self._format_value(right)} = {self._format_value(result)}")
-                return result
-
-        # 除法: a / b
-        if '/' in expr:
-            self.debug_print(f"[EVAL] DIV: {expr}")
-            parts = expr.split('/')
-            if len(parts) == 2:
-                left = self.evaluate_expression(parts[0], local_vars)
-                right = self.evaluate_expression(parts[1], local_vars)
-                result = self.execute_binary_op('/', left, right)
-                self.debug_print(f"[EVAL] DIV result: {self._format_value(left)} / {self._format_value(right)} = {self._format_value(result)}")
-                return result
-
-        # 减法: a - b
-        if '-' in expr:
-            self.debug_print(f"[EVAL] SUB: {expr}")
-            parts = expr.split('-', 1)
-            if len(parts) == 2 and parts[0].strip():
-                left = self.evaluate_expression(parts[0], local_vars)
-                right = self.evaluate_expression(parts[1], local_vars)
-                if left is None or right is None:
-                    self.debug_print(f"[EVAL] WARNING: arg is None for SUB: left={self._format_value(left)}, right={self._format_value(right)}")
-                    return None
-                if isinstance(left, list) and isinstance(right, list):
-                    result = [l - r for l, r in zip(left, right)]
-                    self.debug_print(f"[EVAL] SUB result: {self._format_value(result)}")
-                    return result
-                elif isinstance(left, list) and isinstance(right, (int, float)):
-                    result = [v - right for v in left]
-                    self.debug_print(f"[EVAL] SUB result: {self._format_value(result)}")
-                    return result
-                elif isinstance(right, list) and isinstance(left, (int, float)):
-                    result = [left - v for v in right]
-                    self.debug_print(f"[EVAL] SUB result: {self._format_value(result)}")
-                    return result
-                result = left - right
-                self.debug_print(f"[EVAL] SUB result: {self._format_value(left)} - {self._format_value(right)} = {self._format_value(result)}")
-                return result
-
-        # 加法: a + b
-        if '+' in expr:
-            self.debug_print(f"[EVAL] ADD: {expr}")
-            parts = expr.split('+')
-            result = self.evaluate_expression(parts[0], local_vars)
-            if result is None:
-                self.debug_print(f"[EVAL] WARNING: result is None for ADD expression")
-                return None
-            for p in parts[1:]:
-                right = self.evaluate_expression(p, local_vars)
-                if right is None:
-                    self.debug_print(f"[EVAL] WARNING: right is None for ADD at '{p}'")
-                    return None
-                if isinstance(result, list) and isinstance(right, list):
-                    result = [r + v for r, v in zip(result, right)]
-                else:
-                    result = result + right
-            self.debug_print(f"[EVAL] ADD result: {self._format_value(result)}")
-            return result
-
-        self.debug_print(f"[EVAL] GET_VALUE: {expr}")
-        result = self.get_value(expr, local_vars)
-        self.debug_print(f"[EVAL] GET_VALUE result: {self._format_value(result)}")
-        return result
+        # 使用语法树解析器处理所有表达式（包括三元运算符）
+        tree = self.syntax_parser.parse(expr)
+        return self.evaluate_syntax_tree(tree, local_vars)
 
     def evaluate_syntax_tree(self, node: SyntaxTreeNode, local_vars: Dict[str, Any]) -> Any:
         """
@@ -1240,6 +886,13 @@ class HLSLInterpreter:
 
         elif node.node_type == 'function':
             return self.execute_function_node(node, local_vars)
+
+        elif node.node_type == 'ternary':
+            cond = self.evaluate_syntax_tree(node.left, local_vars)
+            if cond:
+                return self.evaluate_syntax_tree(node.right, local_vars)
+            else:
+                return self.evaluate_syntax_tree(node.third_child, local_vars)
 
         elif node.node_type == 'cast':
             inner = self.evaluate_syntax_tree(node.left, local_vars)
