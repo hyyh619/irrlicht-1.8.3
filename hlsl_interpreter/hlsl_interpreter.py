@@ -1248,6 +1248,12 @@ class HLSLInterpreter:
             # float3x3转换: 从4x4矩阵提取前3x3
             if cast_type == 'float3x3' and isinstance(inner, list) and len(inner) == 4:
                 return [row[:3] for row in inner[:3]]
+            # float2x2转换: 从4x4矩阵提取前2x2
+            if cast_type == 'float2x2' and isinstance(inner, list) and len(inner) == 4:
+                return [row[:2] for row in inner[:2]]
+            # float2x2转换: 从3x3矩阵提取前2x2
+            if cast_type == 'float2x2' and isinstance(inner, list) and len(inner) == 3:
+                return [row[:2] for row in inner[:2]]
             return inner
 
         return None

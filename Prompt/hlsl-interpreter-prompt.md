@@ -514,16 +514,28 @@ Git commit: hlsl-inter: add comments to SyntaxTreeParser._parse_expression by Mi
 
 
 # 20
-Git commit: 
+Git commit: hlsl-inter: add comments for the whole code by MiniMax-M2.7.
 1. 给hlsl_interpreter.py的所有class, struct, function和function内部的关键代码增加注释
 2. 已经有注释的就不用添加
 
 # 21
 Git commit: 
+evaluate_syntax_tree处理cast的分支如下
+        elif node.node_type == 'cast':
+            inner = self.evaluate_syntax_tree(node.left, local_vars)
+            if inner is None:
+                return None
+            cast_type = node.value
+            # float3x3转换: 从4x4矩阵提取前3x3
+            if cast_type == 'float3x3' and isinstance(inner, list) and len(inner) == 4:
+                return [row[:3] for row in inner[:3]]
+增加下列cast
+1. float4x4->float2x2, float3x3->float2x2
 
 
 # 22
 Git commit: 
+给函数execute_function_node的每一个分支加上注释
 
 
 # 23
@@ -567,4 +579,15 @@ Git commit:
 
 
 # 33
+Git commit: 
+
+# 34
+Git commit: 
+
+
+# 35
+Git commit: 
+
+
+# 36
 Git commit: 
