@@ -1293,7 +1293,7 @@ class HLSLInterpreter:
             var_name = match.group(2)
             value = self.evaluate_expression(match.group(3), local_vars)
             local_vars[var_name] = value
-            self.debug_print(f"[STMT] {stmt} => {var_name} = {value}")
+            self.debug_print(f"[STMT] {stmt} => {var_name} = {self._format_value(value)}")
             return None
 
         if 'output.' in stmt or 'output[' in stmt:
