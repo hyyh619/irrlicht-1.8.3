@@ -829,7 +829,7 @@ class HLSLInterpreter:
             if match:
                 left = self.evaluate_expression(match.group(1), local_vars)
                 right = self.evaluate_expression(match.group(2), local_vars)
-                self.debug_print(f"[EVAL] LTE result: {left} <= {right} = {left <= right}")
+                self.debug_print(f"[EVAL] LTE result: {self._format_value(left)} <= {self._format_value(right)} = {left <= right}")
                 return left <= right
 
         # 大于等于: >=
@@ -839,7 +839,7 @@ class HLSLInterpreter:
             if match:
                 left = self.evaluate_expression(match.group(1), local_vars)
                 right = self.evaluate_expression(match.group(2), local_vars)
-                self.debug_print(f"[EVAL] GTE result: {left} >= {right} = {left >= right}")
+                self.debug_print(f"[EVAL] GTE result: {self._format_value(left)} >= {self._format_value(right)} = {left >= right}")
                 return left >= right
 
         # 小于: <
@@ -849,7 +849,7 @@ class HLSLInterpreter:
             if match:
                 left = self.evaluate_expression(match.group(1), local_vars)
                 right = self.evaluate_expression(match.group(2), local_vars)
-                self.debug_print(f"[EVAL] LT result: {left} < {right} = {left < right}")
+                self.debug_print(f"[EVAL] LT result: {self._format_value(left)} < {self._format_value(right)} = {left < right}")
                 return left < right
 
         # 大于: >
@@ -859,7 +859,7 @@ class HLSLInterpreter:
             if match:
                 left = self.evaluate_expression(match.group(1), local_vars)
                 right = self.evaluate_expression(match.group(2), local_vars)
-                self.debug_print(f"[EVAL] GT result: {left} > {right} = {left > right}")
+                self.debug_print(f"[EVAL] GT result: {self._format_value(left)} > {self._format_value(right)} = {left > right}")
                 return left > right
 
         # 等于: ==
@@ -869,7 +869,7 @@ class HLSLInterpreter:
             if match:
                 left = self.evaluate_expression(match.group(1), local_vars)
                 right = self.evaluate_expression(match.group(2), local_vars)
-                self.debug_print(f"[EVAL] EQ result: {left} == {right} = {left == right}")
+                self.debug_print(f"[EVAL] EQ result: {self._format_value(left)} == {self._format_value(right)} = {left == right}")
                 return left == right
 
         # 不等于: !=
@@ -879,7 +879,7 @@ class HLSLInterpreter:
             if match:
                 left = self.evaluate_expression(match.group(1), local_vars)
                 right = self.evaluate_expression(match.group(2), local_vars)
-                self.debug_print(f"[EVAL] NEQ result: {left} != {right} = {left != right}")
+                self.debug_print(f"[EVAL] NEQ result: {self._format_value(left)} != {self._format_value(right)} = {left != right}")
                 return left != right
 
         # 一元负号: -variable
@@ -889,7 +889,7 @@ class HLSLInterpreter:
             if match:
                 val = self.get_value(match.group(1), local_vars)
                 result = self.execute_unary_op('-', val)
-                self.debug_print(f"[EVAL] UNARY NEG result: -{val} = {result}")
+                self.debug_print(f"[EVAL] UNARY NEG result: -{val} = {self._format_value(result)}")
                 return result
 
         # 逻辑非: !expr
@@ -897,7 +897,7 @@ class HLSLInterpreter:
             self.debug_print(f"[EVAL] NOT: {expr}")
             val = self.evaluate_expression(expr[1:], local_vars)
             result = self.execute_unary_op('!', val)
-            self.debug_print(f"[EVAL] NOT result: not {val} = {result}")
+            self.debug_print(f"[EVAL] NOT result: not {val} = {self._format_value(result)}")
             return result
 
         # 一元减号: -expression
@@ -907,7 +907,7 @@ class HLSLInterpreter:
             if match:
                 val = self.evaluate_expression(match.group(1), local_vars)
                 result = self.execute_unary_op('-', val)
-                self.debug_print(f"[EVAL] UNARY SUB result: -{val} = {result}")
+                self.debug_print(f"[EVAL] UNARY SUB result: -{val} = {self._format_value(result)}")
                 return result
 
         # 向量构造函数: float2/float3/float4
@@ -938,7 +938,7 @@ class HLSLInterpreter:
                         result.extend(val)
                     else:
                         result.append(val)
-                self.debug_print(f"[EVAL] FLOAT234 result: {result}")
+                self.debug_print(f"[EVAL] FLOAT234 result: {self._format_value(result)}")
                 return result
 
         # =====================================================================
@@ -953,7 +953,7 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] WARNING: val is None for {expr}")
                     return None
                 result = self.transpose_matrix(val)
-                self.debug_print(f"[EVAL] TRANSPOSE result: {result}")
+                self.debug_print(f"[EVAL] TRANSPOSE result: {self._format_value(result)}")
                 return result
 
         # =====================================================================
@@ -969,7 +969,7 @@ class HLSLInterpreter:
                     return None
                 if isinstance(val, list):
                     result = self.normalize_vec(val)
-                    self.debug_print(f"[EVAL] NORMALIZE result: {result}")
+                    self.debug_print(f"[EVAL] NORMALIZE result: {self._format_value(result)}")
                     return result
                 return val
 
@@ -985,7 +985,7 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] WARNING: val is None for {expr}")
                     return None
                 result = self.length_vec(val)
-                self.debug_print(f"[EVAL] LENGTH result: {result}")
+                self.debug_print(f"[EVAL] LENGTH result: {self._format_value(result)}")
                 return result
 
         # =====================================================================
@@ -1013,7 +1013,7 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] WARNING: arg is None for DOT: a={a}, b={b}")
                     return None
                 result = self.dot_product(a, b)
-                self.debug_print(f"[EVAL] DOT result: {result}")
+                self.debug_print(f"[EVAL] DOT result: {self._format_value(result)}")
                 return result
             match = re.match(r'dot\s*\(([^,]+),\s*([^)]+)\)', expr)
             if match:
@@ -1023,7 +1023,7 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] WARNING: arg is None for DOT: a={a}, b={b}")
                     return None
                 result = self.dot_product(a, b)
-                self.debug_print(f"[EVAL] DOT result: {result}")
+                self.debug_print(f"[EVAL] DOT result: {self._format_value(result)}")
                 return result
 
         # =====================================================================
@@ -1039,7 +1039,7 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] WARNING: arg is None for REFLECT: I={I}, N={N}")
                     return None
                 result = self.reflect_vec(I, N)
-                self.debug_print(f"[EVAL] REFLECT result: {result}")
+                self.debug_print(f"[EVAL] REFLECT result: {self._format_value(result)}")
                 return result
 
         # =====================================================================
@@ -1066,7 +1066,7 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] WARNING: arg is None for MAX: a={a}, b={b}")
                     return None
                 result = max(a, b)
-                self.debug_print(f"[EVAL] MAX result: {result}")
+                self.debug_print(f"[EVAL] MAX result: {self._format_value(result)}")
                 return result
 
         # =====================================================================
@@ -1090,16 +1090,16 @@ class HLSLInterpreter:
                 left = self.evaluate_expression(arg1, local_vars)
                 right = self.evaluate_expression(arg2, local_vars)
                 if left is None or right is None:
-                    self.debug_print(f"[EVAL] WARNING: arg is None for MUL: left={left}, right={right}")
+                    self.debug_print(f"[EVAL] WARNING: arg is None for MUL: left={self._format_value(left)}, right={self._format_value(right)}")
                     return None
                 if isinstance(left, list) and isinstance(right, list):
                     if len(left) == 4 and len(right) == 4:
                         result = self.mul_matrix_vector(right, left)
-                        self.debug_print(f"[EVAL] MUL result: {result}")
+                        self.debug_print(f"[EVAL] MUL result: {self._format_value(result)}")
                         return result
                     elif len(left) == 3 and len(right) == 3:
                         result = self.mul_matrix_vector(right, left)
-                        self.debug_print(f"[EVAL] MUL result: {result}")
+                        self.debug_print(f"[EVAL] MUL result: {self._format_value(result)}")
                         return result
                 return None
 
@@ -1114,7 +1114,7 @@ class HLSLInterpreter:
                     self.debug_print(f"[EVAL] WARNING: arg is None for POW: base={base}, exp={exp}")
                     return None
                 result = math.pow(base, exp)
-                self.debug_print(f"[EVAL] POW result: {result}")
+                self.debug_print(f"[EVAL] POW result: {self._format_value(result)}")
                 return result
 
         # =====================================================================
@@ -1133,7 +1133,7 @@ class HLSLInterpreter:
                 if isinstance(inner, list) and field in ['x', 'y', 'z', 'w']:
                     idx = ['x', 'y', 'z', 'w'].index(field)
                     result = inner[idx] if idx < len(inner) else 0
-                    self.debug_print(f"[EVAL] SWIZZLE .{field} result: {result}")
+                    self.debug_print(f"[EVAL] SWIZZLE .{field} result: {self._format_value(result)}")
                     return result
                 self.debug_print(f"[EVAL] CAST result: {inner}")
                 return inner
@@ -1148,7 +1148,7 @@ class HLSLInterpreter:
                 left = self.evaluate_expression(parts[0], local_vars)
                 right = self.evaluate_expression(parts[1], local_vars)
                 result = self.execute_binary_op('*', left, right)
-                self.debug_print(f"[EVAL] MUL result: {left} * {right} = {result}")
+                self.debug_print(f"[EVAL] MUL result: {self._format_value(left)} * {self._format_value(right)} = {self._format_value(result)}")
                 return result
 
         # 除法: a / b
@@ -1159,7 +1159,7 @@ class HLSLInterpreter:
                 left = self.evaluate_expression(parts[0], local_vars)
                 right = self.evaluate_expression(parts[1], local_vars)
                 result = self.execute_binary_op('/', left, right)
-                self.debug_print(f"[EVAL] DIV result: {left} / {right} = {result}")
+                self.debug_print(f"[EVAL] DIV result: {self._format_value(left)} / {self._format_value(right)} = {self._format_value(result)}")
                 return result
 
         # 减法: a - b
@@ -1170,22 +1170,22 @@ class HLSLInterpreter:
                 left = self.evaluate_expression(parts[0], local_vars)
                 right = self.evaluate_expression(parts[1], local_vars)
                 if left is None or right is None:
-                    self.debug_print(f"[EVAL] WARNING: arg is None for SUB: left={left}, right={right}")
+                    self.debug_print(f"[EVAL] WARNING: arg is None for SUB: left={self._format_value(left)}, right={self._format_value(right)}")
                     return None
                 if isinstance(left, list) and isinstance(right, list):
                     result = [l - r for l, r in zip(left, right)]
-                    self.debug_print(f"[EVAL] SUB result: {result}")
+                    self.debug_print(f"[EVAL] SUB result: {self._format_value(result)}")
                     return result
                 elif isinstance(left, list) and isinstance(right, (int, float)):
                     result = [v - right for v in left]
-                    self.debug_print(f"[EVAL] SUB result: {result}")
+                    self.debug_print(f"[EVAL] SUB result: {self._format_value(result)}")
                     return result
                 elif isinstance(right, list) and isinstance(left, (int, float)):
                     result = [left - v for v in right]
-                    self.debug_print(f"[EVAL] SUB result: {result}")
+                    self.debug_print(f"[EVAL] SUB result: {self._format_value(result)}")
                     return result
                 result = left - right
-                self.debug_print(f"[EVAL] SUB result: {left} - {right} = {result}")
+                self.debug_print(f"[EVAL] SUB result: {self._format_value(left)} - {self._format_value(right)} = {self._format_value(result)}")
                 return result
 
         # 加法: a + b
@@ -1205,12 +1205,12 @@ class HLSLInterpreter:
                     result = [r + v for r, v in zip(result, right)]
                 else:
                     result = result + right
-            self.debug_print(f"[EVAL] ADD result: {result}")
+            self.debug_print(f"[EVAL] ADD result: {self._format_value(result)}")
             return result
 
         self.debug_print(f"[EVAL] GET_VALUE: {expr}")
         result = self.get_value(expr, local_vars)
-        self.debug_print(f"[EVAL] GET_VALUE result: {result}")
+        self.debug_print(f"[EVAL] GET_VALUE result: {self._format_value(result)}")
         return result
 
     def evaluate_syntax_tree(self, node: SyntaxTreeNode, local_vars: Dict[str, Any]) -> Any:
@@ -2083,7 +2083,7 @@ def main():
         float3 Pos : POSITION;
         float3 Normal : NORMAL;
         float4 Color : COLOR;
-        float2 TexCoord : TEXCOORD0;
+        float2 TexCoord : TEXCOORD;
     };
     struct VS_OUTPUT {
         float4 Pos : SV_POSITION;
