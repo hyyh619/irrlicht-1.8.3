@@ -159,7 +159,7 @@ class SyntaxTreeParser:
         expr: 表达式字符串
         返回: '.' 位置索引，或 -1 表示未找到
 
-        规则: 找到最右边的 '.'，必须不在括号内，且左右都有内容
+        规则: 找到最右边的 '.'，必须不在括号内，左边是标识符，右边也是标识符
         """
         depth = 0
         candidates = []
@@ -174,7 +174,7 @@ class SyntaxTreeParser:
                 if i > 0 and i < len(expr) - 1:
                     left_char = expr[i - 1]
                     right_char = expr[i + 1]
-                    if not left_char.isspace() and not right_char.isspace():
+                    if left_char.isalpha() and right_char.isalnum():
                         candidates.append(i)
             i += 1
 

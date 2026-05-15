@@ -677,6 +677,29 @@ BinaryOp(*)
             };
 3. 请在解析'.'操作符时根据上面的描述分成两类操作，一类是获取向量的某个分量，一类是获取struct的某个成员变量。
 
+1. 从最新的语法树打印来看，处理下面这个语句时，把浮点数1.0的'.'也当成了操作符来处理。请修复这个问题
+[STMT] Executing: output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj))
+[SYNTAX TREE]
+Function(mul)
+  arg[0]:
+Function(float4)
+      arg[0]:
+BinaryOp(.)
+          left:
+            Value(input)
+          right:
+            Value(Pos)
+      arg[1]:
+BinaryOp(.)
+          left:
+            Value(1)
+          right:
+            Value(0)
+  arg[1]:
+Function(transpose)
+      arg[0]:
+        Value(WorldViewProj)
+
 # 30
 Git commit: 
 
