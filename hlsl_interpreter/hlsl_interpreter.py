@@ -1140,6 +1140,48 @@ class HLSLInterpreter:
 
         return None
 
+    def apply_swizzle(self, obj: Any, swizzle: str) -> Any:
+        """
+        对向量应用swizzle操作
+        obj: 向量对象(列表)
+        swizzle: swizzle模式字符串，如 'xyz', 'xxx', 'xxyy', 'xz' 等
+        返回: 应用swizzle后的结果
+        """
+        if obj is None:
+            return None
+
+        if not isinstance(obj, list):
+            if swizzle == 'x':
+                return obj
+            return None
+
+        valid_chars = {'x': 0, 'y': 1, 'z': 2, 'w': 3}
+        result = []
+        for c in swizzle:
+            if c.lower() in valid_chars:
+                idx = valid_chars[c.lower()]
+                if idx < len(obj):
+                    result.append(obj[idx])
+                else:
+                    result.append(0)
+            elif c in 'rgb':
+                idx = {'r': 0, 'g': 1, 'b': 2}[c]
+                if idx < len(obj):
+                    result.append(obj[idx])
+                else:
+                    result.append(0)
+
+        if len(result) == 1:
+            return result[0]
+
+        numeric_types = (int, float)
+        if all(isinstance(v, numeric_types) for v in result):
+            if all(isinstance(v, int) for v in result):
+                return [int(v) for v in result]
+            return result
+
+        return result
+
     def get_value(self, name: str, local_vars: Dict[str, Any]) -> Any:
         """
         获取变量或常量的值
@@ -1161,6 +1203,39 @@ class HLSLInterpreter:
         except ValueError:
             pass
 
+        # 检查是否包含swizzle操作 (如 LightPos.xyz, LightPos.xxx, input.Pos.xy)
+        if '.' in name:
+            parts = name.split('.')
+            if len(parts) >= 2:
+                base_name = parts[0]
+                swizzle_str = parts[1]
+
+                # 判断是否为swizzle模式（全是xyzwrgb组成的字符串）
+                if swizzle_str and all(c in 'xyzwrgb' for c in swizzle_str.lower()):
+                    obj = local_vars.get(base_name)
+                    if obj is None:
+                        obj = self.variables.get(base_name)
+                    if obj is not None:
+                        return self.apply_swizzle(obj, swizzle_str)
+
+                    # 尝试从cbuffer获取
+                    for cb_name, cb_def in self.cbuffers.items():
+                        if isinstance(cb_def, CbufferDefinition):
+                            for field in cb_def.fields:
+                                if field.name == base_name:
+                                    if field.data is not None:
+                                        return self.apply_swizzle(field.data, swizzle_str)
+                                    return 0
+
+                    # 检查是否在output对象中
+                    if base_name in local_vars:
+                        obj = local_vars[base_name]
+                        if isinstance(obj, dict):
+                            return self.apply_swizzle(obj.get(swizzle_str), swizzle_str) if isinstance(obj.get(swizzle_str), list) else self.apply_swizzle(obj, swizzle_str)
+                        return self.apply_swizzle(obj, swizzle_str)
+
+                    return 0
+
         # 局部变量查找
         if name in local_vars:
             val = local_vars[name]
@@ -1174,25 +1249,6 @@ class HLSLInterpreter:
                 for field in cb_def.fields:
                     if field.name == base_name:
                         return field.data if field.data is not None else 0
-
-        # 结构体字段访问(如 input.xyz, output.x)
-        if '.' in name:
-            parts = name.split('.')
-            obj = local_vars.get(parts[0])
-            if obj is None:
-                obj = self.variables.get(parts[0])
-            if obj is not None and len(parts) > 1:
-                field = parts[1]
-                # xyz/rgb分量访问
-                if field == 'xyz' and isinstance(obj, list) and len(obj) >= 3:
-                    return obj[:3]
-                if field == 'rgb' and isinstance(obj, list) and len(obj) >= 3:
-                    return obj[:3]
-                # xyzw分量访问
-                if field in ['x', 'y', 'z', 'w'] and isinstance(obj, list):
-                    idx = ['x', 'y', 'z', 'w'].index(field)
-                    return obj[idx] if idx < len(obj) else 0
-            return obj
 
         # 全局变量查找
         if name in self.variables:

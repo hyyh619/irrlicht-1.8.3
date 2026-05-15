@@ -625,6 +625,17 @@ BinaryOp(+)
 
 # 29
 Git commit: 
+float3 lightDir = LightPos.xyz - worldPos.xyz;
+对于上面这条语句hlsl_interpreter.py处理时没有考虑对下列vector类型的变量进行swizzle处理。例如LightPos.xyz就是获得LightPos向量的x,y,z分量
+1. vector向量的类型有：float4,float3,float2,int4,int3,int2,uint4,uint3,uint2
+2. swizzle需要支持访问向量的任意分量，假设LightPos = float4(1.0, 0.9, 0.8, 0.7)
+    a. LightPos.x返回浮点数1.0，LightPos.y返回0.9，以此类推
+    b. LightPos.xyz返回一个3维向量(1.0, 0.9, 0.8)，LightPos.yz返回一个2维向量(0.9, 0.8)
+    c. swizzle还需要支持重复某个分量，或者乱序访问例如
+       LightPos.xxx返回一个3维向量，其中每个分量都是x分量的值，因此其返回(1.0，1.0，1.0)
+       LightPos.xxyy返回一个4维向量，该向量前两个分量是x的值，后两个分量是y的值，因此其返回(1.0, 1.0, 0.9, 0.9)
+       LightPos.zxz返回一个3维向量，(0.8, 1.0, 0.8)
+请给HLSL解释执行添加swizzle功能
 
 
 # 30
