@@ -858,6 +858,7 @@ class HLSLInterpreter:
 
         # 使用语法树解析器处理所有表达式（包括三元运算符）
         tree = self.syntax_parser.parse(expr)
+        self.debug_print(f"[SYNTAX TREE]\n{tree}")
         return self.evaluate_syntax_tree(tree, local_vars)
 
     def evaluate_syntax_tree(self, node: SyntaxTreeNode, local_vars: Dict[str, Any]) -> Any:
@@ -1808,7 +1809,7 @@ def main():
         float3 diffuse = matDiffuse.rgb * DiffuseColor.rgb * NdotL;
         float3 R = reflect(lightDir, normal);
         float RdotV = max(dot(R, viewDir), 0.0);
-        float3 specular = matSpecular.rgb * SpecularColor.rgb * pow(RdotV, Shininess);
+        float3 specular = RdotV > 0.0 ? matSpecular.rgb * SpecularColor.rgb * pow(RdotV, Shininess) : float3(0.0, 0.0, 0.0);
         float3 ambient = matAmbient.rgb * AmbientColor.rgb;
         float3 emissive = matEmissive.rgb;
         float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist);
