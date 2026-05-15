@@ -27,12 +27,13 @@ class SyntaxTreeNode:
     right: 右子节点 (用于二元操作)
     args: 函数参数列表 (用于函数调用)
     """
-    def __init__(self, node_type: str, value: Any = None, left: Optional['SyntaxTreeNode'] = None, right: Optional['SyntaxTreeNode'] = None, args: Optional[List['SyntaxTreeNode']] = None):
+    def __init__(self, node_type: str, value: Any = None, left: Optional['SyntaxTreeNode'] = None, right: Optional['SyntaxTreeNode'] = None, args: Optional[List['SyntaxTreeNode']] = None, line_number: int = 0):
         self.node_type = node_type
         self.value = value
         self.left = left
         self.right = right
         self.args = args if args is not None else []
+        self.line_number = line_number
 
     def __repr__(self):
         return self._pretty(0)
@@ -1272,6 +1273,7 @@ class HLSLInterpreter:
         # 计算矩阵的转置，将行列互换
         if func_name == 'transpose':
             if len(args) != 1:
+                self.debug_print(f"[ERROR] transpose requires 1 arg, got {len(args)} at line {node.line_number}")
                 return None
             val = self.evaluate_syntax_tree(args[0], local_vars)
             if val is None:
@@ -1284,6 +1286,7 @@ class HLSLInterpreter:
         # 将输入向量缩放到单位长度，即长度为1
         elif func_name == 'normalize':
             if len(args) != 1:
+                self.debug_print(f"[ERROR] normalize requires 1 arg, got {len(args)} at line {node.line_number}")
                 return None
             val = self.evaluate_syntax_tree(args[0], local_vars)
             if val is None:
@@ -1298,6 +1301,7 @@ class HLSLInterpreter:
         # 计算向量的欧几里得长度(模)
         elif func_name == 'length':
             if len(args) != 1:
+                self.debug_print(f"[ERROR] length requires 1 arg, got {len(args)} at line {node.line_number}")
                 return None
             val = self.evaluate_syntax_tree(args[0], local_vars)
             if val is None:
@@ -1310,6 +1314,7 @@ class HLSLInterpreter:
         # 计算两个向量的点积，结果为标量
         elif func_name == 'dot':
             if len(args) != 2:
+                self.debug_print(f"[ERROR] dot requires 2 args, got {len(args)} at line {node.line_number}")
                 return None
             a = self.evaluate_syntax_tree(args[0], local_vars)
             b = self.evaluate_syntax_tree(args[1], local_vars)
@@ -1323,6 +1328,7 @@ class HLSLInterpreter:
         # 计算光线关于法向量的反射向量，公式: R = I - 2 * N * dot(I, N)
         elif func_name == 'reflect':
             if len(args) != 2:
+                self.debug_print(f"[ERROR] reflect requires 2 args, got {len(args)} at line {node.line_number}")
                 return None
             I = self.evaluate_syntax_tree(args[0], local_vars)
             N = self.evaluate_syntax_tree(args[1], local_vars)
@@ -1336,6 +1342,7 @@ class HLSLInterpreter:
         # 返回两个值中的较大者
         elif func_name == 'max':
             if len(args) != 2:
+                self.debug_print(f"[ERROR] max requires 2 args, got {len(args)} at line {node.line_number}")
                 return None
             a = self.evaluate_syntax_tree(args[0], local_vars)
             b = self.evaluate_syntax_tree(args[1], local_vars)
@@ -1349,6 +1356,7 @@ class HLSLInterpreter:
         # 返回两个值中的较小者
         elif func_name == 'min':
             if len(args) != 2:
+                self.debug_print(f"[ERROR] min requires 2 args, got {len(args)} at line {node.line_number}")
                 return None
             a = self.evaluate_syntax_tree(args[0], local_vars)
             b = self.evaluate_syntax_tree(args[1], local_vars)
@@ -1362,6 +1370,7 @@ class HLSLInterpreter:
         # 计算base的exp次幂，即 base ^ exp
         elif func_name == 'pow':
             if len(args) != 2:
+                self.debug_print(f"[ERROR] pow requires 2 args, got {len(args)} at line {node.line_number}")
                 return None
             base = self.evaluate_syntax_tree(args[0], local_vars)
             exp = self.evaluate_syntax_tree(args[1], local_vars)
@@ -1375,6 +1384,7 @@ class HLSLInterpreter:
         # 返回数值的绝对值，对列表则对每个元素取绝对值
         elif func_name == 'abs':
             if len(args) != 1:
+                self.debug_print(f"[ERROR] abs requires 1 arg, got {len(args)} at line {node.line_number}")
                 return None
             val = self.evaluate_syntax_tree(args[0], local_vars)
             if val is None:
@@ -1390,6 +1400,7 @@ class HLSLInterpreter:
         # 计算弧度的正弦值，对列表则对每个元素计算
         elif func_name == 'sin':
             if len(args) != 1:
+                self.debug_print(f"[ERROR] sin requires 1 arg, got {len(args)} at line {node.line_number}")
                 return None
             val = self.evaluate_syntax_tree(args[0], local_vars)
             if val is None:
@@ -1405,6 +1416,7 @@ class HLSLInterpreter:
         # 计算弧度的余弦值，对列表则对每个元素计算
         elif func_name == 'cos':
             if len(args) != 1:
+                self.debug_print(f"[ERROR] cos requires 1 arg, got {len(args)} at line {node.line_number}")
                 return None
             val = self.evaluate_syntax_tree(args[0], local_vars)
             if val is None:
@@ -1420,6 +1432,7 @@ class HLSLInterpreter:
         # 执行4x4或3x3矩阵乘法运算
         elif func_name == 'mul':
             if len(args) != 2:
+                self.debug_print(f"[ERROR] mul requires 2 args, got {len(args)} at line {node.line_number}")
                 return None
             left = self.evaluate_syntax_tree(args[0], local_vars)
             right = self.evaluate_syntax_tree(args[1], local_vars)

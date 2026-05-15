@@ -556,6 +556,13 @@ Git commit: hlsl-inter: refine output golden check code by MiniMax-M2.7.
 
 # 25
 Git commit: 
+给evaluate_syntax_tree所有判断len(args)的地方，如果不满足操作要求，返回None之前都加上一个error打印
+            if len(args) != 2:
+                return None
+就加上一个打印,这个打印需要包括当前的行号和处理的操作是什么
+            if len(args) != 2:
+                self.debug_print()
+                return None
 
 
 # 26
