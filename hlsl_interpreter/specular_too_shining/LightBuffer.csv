@@ -1,0 +1,10 @@
+Name,Value,Byte Offset,Type
+AmbientColor,"0.00, 0.00, 0.00, 0.00",0,float4
+DiffuseColor,"1.00, 1.00, 1.00, 1.00",16,float4
+SpecularColor,"1.00, 1.00, 1.00, 1.00",32,float4
+LightPos,"-60.00, 100.00, 400.00",48,float3
+LightRadius,"600.00",60,float
+LightDir,"0.00, 0.00, 1.00",64,float3
+Attenuation,"0.00167, 0.00, 45.00",80,float3
+OuterCone,"0.00",92,float
+InnerCone,"2.00",96,float
