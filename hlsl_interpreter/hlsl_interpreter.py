@@ -95,6 +95,7 @@ class SyntaxTreeParser:
             '<': 4, '>': 4, '<=': 4, '>=': 4,
             '+': 5, '-': 5,
             '*': 6, '/': 6,
+            '.': 7
         }
 
     def parse(self, expr: str) -> SyntaxTreeNode:
@@ -117,6 +118,7 @@ class SyntaxTreeParser:
         '||': 1, '&&': 2, '==': 3, '!=': 3,
         '<': 4, '>': 4, '<=': 4, '>=': 4,
         '+': 5, '-': 5, '*': 6, '/': 6
+        '.': 7 (分量访问，如 Attenuation.x)
 
         规则: 找到优先级最低的运算符，如果有多个同优先级的运算符，返回最右边的那个
         """
@@ -149,6 +151,37 @@ class SyntaxTreeParser:
             if c[0] == rightmost and c[2] == min_prec:
                 return (c[0], c[1])
         return None
+
+    def _find_top_level_dot(self, expr: str) -> int:
+        """
+        查找表达式中顶层分量访问运算符 '.' 的位置
+        用于处理向量分量访问，如 Attenuation.x, color.rgb, vec.yzw
+        expr: 表达式字符串
+        返回: '.' 位置索引，或 -1 表示未找到
+
+        规则: 找到最右边的 '.'，必须不在括号内，且左右都有内容
+        """
+        depth = 0
+        candidates = []
+        i = 0
+        while i < len(expr):
+            char = expr[i]
+            if char == '(':
+                depth += 1
+            elif char == ')':
+                depth -= 1
+            elif char == '.' and depth == 0:
+                if i > 0 and i < len(expr) - 1:
+                    left_char = expr[i - 1]
+                    right_char = expr[i + 1]
+                    if not left_char.isspace() and not right_char.isspace():
+                        candidates.append(i)
+            i += 1
+
+        if not candidates:
+            return -1
+
+        return candidates[-1]
 
     def _parse_expression(self, expr: str) -> SyntaxTreeNode:
         """
@@ -202,7 +235,21 @@ class SyntaxTreeParser:
                 return self._parse_expression(inner)
 
         # =====================================================================
-        # 第三步: 三元运算符 - 匹配 a ? b : c 模式
+        # 第三步: 分量访问运算符 (.) - 处理向量分量访问
+        # 例如: Attenuation.x, vec.yzw, color.rgb
+        # 分量访问优先级最高，优于所有其他运算符
+        # =====================================================================
+        dot_pos = self._find_top_level_dot(expr)
+        if dot_pos >= 0:
+            left_expr = expr[:dot_pos].strip()
+            right_expr = expr[dot_pos+1:].strip()
+            if left_expr and right_expr:
+                left_node = self._parse_expression(left_expr)
+                right_node = self._parse_expression(right_expr)
+                return SyntaxTreeNode('binary_op', '.', left_node, right_node)
+
+        # =====================================================================
+        # 第四步: 三元运算符 - 匹配 a ? b : c 模式
         # 三元运算符优先级最低，在所有二元运算符之后处理
         # =====================================================================
         ternary_pos = -1
@@ -249,13 +296,12 @@ class SyntaxTreeParser:
             if op in ['||', '&&', '==', '!=', '<', '>', '<=', '>=', '+', '-', '*', '/']:
                 left_expr = expr[:pos].strip()
                 right_expr = expr[pos+len(op):].strip()
-                # 递归解析左右操作数
                 left_node = self._parse_expression(left_expr)
                 right_node = self._parse_expression(right_expr)
                 return SyntaxTreeNode('binary_op', op, left_node, right_node)
 
         # =====================================================================
-        # 第五步: 函数调用 - 匹配函数名后跟括号
+        # 第六步: 函数调用 - 匹配函数名后跟括号
         # float[234]构造函数: float2(...), float3(...), float4(...)
         # 普通函数调用: normalize(...), mul(...), transpose(...)等
         # =====================================================================
@@ -735,6 +781,44 @@ class HLSLInterpreter:
             else:
                 result = left / right
         elif op == '.':
+            if isinstance(left, list) and isinstance(right, str):
+                field = right.strip()
+                if field == 'x':
+                    idx = 0
+                    return left[idx] if idx < len(left) else 0
+                elif field == 'y':
+                    idx = 1
+                    return left[idx] if idx < len(left) else 0
+                elif field == 'z':
+                    idx = 2
+                    return left[idx] if idx < len(left) else 0
+                elif field == 'w':
+                    idx = 3
+                    return left[idx] if idx < len(left) else 0
+                elif field == 'r':
+                    idx = 0
+                    return left[idx] if idx < len(left) else 0
+                elif field == 'g':
+                    idx = 1
+                    return left[idx] if idx < len(left) else 0
+                elif field == 'b':
+                    idx = 2
+                    return left[idx] if idx < len(left) else 0
+                elif field == 'a':
+                    idx = 3
+                    return left[idx] if idx < len(left) else 0
+                elif field in ['xy', 'yz', 'xz', 'xyz', 'xyzw', 'rgb', 'rgba', 'rg', 'gb']:
+                    indices = []
+                    for c in field:
+                        if c == 'x': indices.append(0)
+                        elif c == 'y': indices.append(1)
+                        elif c == 'z': indices.append(2)
+                        elif c == 'w': indices.append(3)
+                        elif c == 'r': indices.append(0)
+                        elif c == 'g': indices.append(1)
+                        elif c == 'b': indices.append(2)
+                        elif c == 'a': indices.append(3)
+                    return [left[i] for i in indices if i < len(left)]
             result = (left, right)
         elif op == '==':
             result = left == right

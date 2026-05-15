@@ -625,6 +625,44 @@ BinaryOp(+)
 
 # 29
 Git commit: 
+从hlsl_interpreter.py执行以下的语句来看，目前构造语法树的时候，已经考虑运算符的优先级。但是缺乏'.'运算符导致，
+1. Attenuation是一个float3，Attenuation.x表示使用float3向量的第一个成员值。
+2. 对于float4, xyzw分别表示其向量里的第一个元素，第二个元素，第三个元素，第四个元素。float3,float2以此类推
+3. 对于float4, rgba分别表示其向量里的第一个元素，第二个元素，第三个元素，第四个元素。float3,float2以此类推
+4. 请增加一个运算符'.'表示获取某个向量里面的元素。该运算符的优先级最高。
+5. 通过增加该运算符，Attenuation.x， Attenuation.y，Attenuation.z分别获取float3向量的第一，第二，第三个元素。
+[STMT] Executing: float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist)
+[SYNTAX TREE]
+BinaryOp(/)
+  left:
+    Value(1.0)
+  right:
+BinaryOp(+)
+      left:
+BinaryOp(+)
+          left:
+            Value(Attenuation.x)
+          right:
+BinaryOp(*)
+              left:
+                Value(Attenuation.y)
+              right:
+                Value(dist)
+      right:
+BinaryOp(*)
+          left:
+BinaryOp(*)
+              left:
+                Value(Attenuation.z)
+              right:
+                Value(dist)
+          right:
+            Value(dist)
+[BINARY OP] left=['0.0017', '0.0000', '45.0000'], right=498.6748, op=*, result=['0.8328', '0.0000', '22440.3666']
+[BINARY OP] left=['0.0017', '0.0000', '45.0000'], right=['0.8328', '0.0000', '22440.3666'], op=+, result=['0.8345', '0.0000', '22485.3666']
+[BINARY OP] left=['0.0017', '0.0000', '45.0000'], right=498.6748, op=*, result=['0.8328', '0.0000', '22440.3666']
+[BINARY OP] left=['0.8328', '0.0000', '22440.3666'], right=498.6748, op=*, result=['415.2899', '0.0000', '11190445.5770']       
+[BINARY OP] left=['0.8345', '0.0000', '22485.3666'], right=['415.2899', '0.0000', '11190445.5770'], op=+, result=['416.1243', '0.0000', '11212930.9436']
 
 
 # 30
