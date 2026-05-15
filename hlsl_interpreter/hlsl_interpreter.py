@@ -235,10 +235,10 @@ class SyntaxTreeParser:
                 depth -= 1
                 if depth == 0:
                     args_str = expr[paren_start+1:i]
-                    if func_name in ['transpose', 'normalize', 'length', 'reflect', 'pow', 'max', 'abs', 'sin', 'cos', 'dot']:
+                    if func_name in ['transpose', 'normalize', 'length', 'abs', 'sin', 'cos', 'tan']:
                         inner_node = self._parse_expression(args_str.strip())
                         return SyntaxTreeNode('function', func_name, args=[inner_node])
-                    elif func_name in ['mul', 'float2', 'float3', 'float4']:
+                    elif func_name in ['mul', 'reflect', 'pow', 'max', 'min', 'dot', 'float2', 'float3', 'float4']:
                         args = self._split_args(args_str)
                         arg_nodes = [self._parse_expression(arg.strip()) for arg in args]
                         return SyntaxTreeNode('function', func_name, args=arg_nodes)
@@ -2135,6 +2135,7 @@ def main():
     };
     VS_OUTPUT main(VS_INPUT input) {
         VS_OUTPUT output;
+        float NdotL = max(dot(normal, lightDir), 0.0);
         output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));
         float4 worldPos = mul(float4(input.Pos, 1.0), transpose(World));
         float3 nor = normalize(input.Normal);

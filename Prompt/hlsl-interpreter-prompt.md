@@ -555,7 +555,7 @@ Git commit: hlsl-inter: refine output golden check code by MiniMax-M2.7.
 
 
 # 25
-Git commit: 
+Git commit: hlsl-inter: add error log for arg checking by MiniMax-M2.7.
 给evaluate_syntax_tree所有判断len(args)的地方，如果不满足操作要求，返回None之前都加上一个error打印
             if len(args) != 2:
                 return None
@@ -567,7 +567,14 @@ Git commit:
 
 # 26
 Git commit: 
-
+SyntaxTreeParser._parse_expression没有看到对max/min/dot float NdotL = max(dot(normal, lightDir), 0.0)
+[STMT] Executing: float NdotL = max(dot(normal, lightDir), 0.0)
+[SYNTAX TREE]
+Function(max)
+  arg[0]:
+Function(dot)
+      arg[0]:
+        Value(normal, lightDir)
 
 # 27
 Git commit: 
