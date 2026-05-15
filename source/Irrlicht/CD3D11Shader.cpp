@@ -118,7 +118,7 @@ const char    VERTEX_SHADER_STANDARD_DIRECTIONAL[] =
             "    float3 Pos : POSITION;"
             "    float3 Normal : NORMAL;"
             "    float4 Color : COLOR;"
-            "    float2 TexCoord : TEXCOORD0;"
+            "    float2 TexCoord : TEXCOORD;"
             "};"
             "struct VS_OUTPUT {"
             "    float4 Pos : SV_POSITION;"
