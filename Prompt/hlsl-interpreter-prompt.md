@@ -700,6 +700,19 @@ Function(transpose)
       arg[0]:
         Value(WorldViewProj)
 
+从hlsl_interpreter.py执行SyntaxTreeParser的parse为下面的HLSL语句构造语法树
+output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj))
+output.Pos是对于struct结构数据output获得其Pos，就是获取VS_OUTPUT的Pos成员变量
+            struct VS_OUTPUT {
+                float4 Pos : SV_POSITION;
+                float4 Color : COLOR;
+                float2 TexCoord : TEXCOORD0;
+                float2 TexCoord2 : TEXCOORD1;
+                float3 Normal : NORMAL;
+                float3 WorldPos : WORLDPOS;
+            };
+因此不要把这类'.'当成操作符，而是应该把output.Pos作为一个整体通过get_value来获取其数据
+
 # 30
 Git commit: 
 

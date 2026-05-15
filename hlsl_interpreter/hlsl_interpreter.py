@@ -160,6 +160,11 @@ class SyntaxTreeParser:
         返回: '.' 位置索引，或 -1 表示未找到
 
         规则: 找到最右边的 '.'，必须不在括号内，左边是标识符，右边也是标识符
+
+        重要：区分结构体字段访问（如 output.Pos）和向量分量访问（如 Attenuation.x）
+        - output.Pos 应该作为整体通过 get_value 获取，不拆分
+        - Attenuation.x 应该拆分为二元操作符处理
+        判断方法：右边是向量分量名（x,y,z,w,r,g,b,a 或它们的组合如 xyz,rgb,xyzw）才是分量访问
         """
         depth = 0
         candidates = []
@@ -181,7 +186,19 @@ class SyntaxTreeParser:
         if not candidates:
             return -1
 
-        return candidates[-1]
+        valid_components = {'x', 'y', 'z', 'w', 'r', 'g', 'b', 'a',
+                            'xy', 'yz', 'xz', 'xyz', 'xyzw', 'rgb', 'rgba', 'rg', 'gb'}
+
+        for pos in reversed(candidates):
+            right_start = pos + 1
+            right_end = right_start
+            while right_end < len(expr) and (expr[right_end].isalnum() or expr[right_end] == '_'):
+                right_end += 1
+            right_part = expr[right_start:right_end]
+            if right_part.lower() in valid_components:
+                return pos
+
+        return -1
 
     def _parse_expression(self, expr: str) -> SyntaxTreeNode:
         """
