@@ -577,15 +577,13 @@ Function(dot)
         Value(normal, lightDir)
 
 # 27
-Git commit: 
+Git commit: hlsl-inter: make all go to syntax tree and executed by MiniMax-M2.7.
 hlsl_interpreter.py在解释执行下列语句时，没有使用语法树处理，导致不能得到正确的结果。请通过SyntaxTreeParser来处理和evaluate_syntax_tree执行
         float4 matDiffuse = (ColorMaterialMode == 1 || ColorMaterialMode == 5) ? input.Color : MaterialDiffuseColor;
         float4 matAmbient = (ColorMaterialMode == 2 || ColorMaterialMode == 5) ? input.Color : MaterialAmbientColor;
         float4 matSpecular = (ColorMaterialMode == 3) ? input.Color : MaterialSpecularColor;
         float4 matEmissive = (ColorMaterialMode == 4) ? input.Color : MaterialEmissiveColor;
         float3 diffuse = matDiffuse.rgb * DiffuseColor.rgb * NdotL;
-
-
 
 
 # 28
