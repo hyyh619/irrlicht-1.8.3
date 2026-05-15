@@ -519,7 +519,7 @@ Git commit: hlsl-inter: add comments for the whole code by MiniMax-M2.7.
 2. 已经有注释的就不用添加
 
 # 21
-Git commit: 
+Git commit: hlsl-inter: add float4x4->float2x2, float3x3->float2x2 cast by MiniMax-M2.7.
 evaluate_syntax_tree处理cast的分支如下
         elif node.node_type == 'cast':
             inner = self.evaluate_syntax_tree(node.left, local_vars)
@@ -534,7 +534,7 @@ evaluate_syntax_tree处理cast的分支如下
 
 
 # 22
-Git commit: 
+Git commit: hlsl-inter: add comments for each branch of execute_function_node by MiniMax-M2.7.
 给函数execute_function_node的每一个分支加上注释
 
 
