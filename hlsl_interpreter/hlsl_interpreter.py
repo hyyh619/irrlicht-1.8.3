@@ -95,7 +95,6 @@ class SyntaxTreeParser:
             '<': 4, '>': 4, '<=': 4, '>=': 4,
             '+': 5, '-': 5,
             '*': 6, '/': 6,
-            '.': 7
         }
 
     def parse(self, expr: str) -> SyntaxTreeNode:
@@ -118,7 +117,6 @@ class SyntaxTreeParser:
         '||': 1, '&&': 2, '==': 3, '!=': 3,
         '<': 4, '>': 4, '<=': 4, '>=': 4,
         '+': 5, '-': 5, '*': 6, '/': 6
-        '.': 7 (分量访问，如 Attenuation.x)
 
         规则: 找到优先级最低的运算符，如果有多个同优先级的运算符，返回最右边的那个
         """
@@ -152,54 +150,6 @@ class SyntaxTreeParser:
                 return (c[0], c[1])
         return None
 
-    def _find_top_level_dot(self, expr: str) -> int:
-        """
-        查找表达式中顶层分量访问运算符 '.' 的位置
-        用于处理向量分量访问，如 Attenuation.x, color.rgb, vec.yzw
-        expr: 表达式字符串
-        返回: '.' 位置索引，或 -1 表示未找到
-
-        规则: 找到最右边的 '.'，必须不在括号内，左边是标识符，右边也是标识符
-
-        重要：区分结构体字段访问（如 output.Pos）和向量分量访问（如 Attenuation.x）
-        - output.Pos 应该作为整体通过 get_value 获取，不拆分
-        - Attenuation.x 应该拆分为二元操作符处理
-        判断方法：右边是向量分量名（x,y,z,w,r,g,b,a 或它们的组合如 xyz,rgb,xyzw）才是分量访问
-        """
-        depth = 0
-        candidates = []
-        i = 0
-        while i < len(expr):
-            char = expr[i]
-            if char == '(':
-                depth += 1
-            elif char == ')':
-                depth -= 1
-            elif char == '.' and depth == 0:
-                if i > 0 and i < len(expr) - 1:
-                    left_char = expr[i - 1]
-                    right_char = expr[i + 1]
-                    if left_char.isalpha() and right_char.isalnum():
-                        candidates.append(i)
-            i += 1
-
-        if not candidates:
-            return -1
-
-        valid_components = {'x', 'y', 'z', 'w', 'r', 'g', 'b', 'a',
-                            'xy', 'yz', 'xz', 'xyz', 'xyzw', 'rgb', 'rgba', 'rg', 'gb'}
-
-        for pos in reversed(candidates):
-            right_start = pos + 1
-            right_end = right_start
-            while right_end < len(expr) and (expr[right_end].isalnum() or expr[right_end] == '_'):
-                right_end += 1
-            right_part = expr[right_start:right_end]
-            if right_part.lower() in valid_components:
-                return pos
-
-        return -1
-
     def _parse_expression(self, expr: str) -> SyntaxTreeNode:
         """
         将HLSL表达式字符串解析为语法树节点。
@@ -207,11 +157,10 @@ class SyntaxTreeParser:
         解析顺序(从高优先级到低优先级):
         1. 类型转换: (float3x3)expr - 将表达式转换为指定类型
         2. 括号表达式: (expr) - 括号包围的表达式
-        3. 分量访问: expr.component - 如 Attenuation.x, vec.xyz, color.rgb (优先级最高)
-        4. 三元运算符: a ? b : c - 条件表达式
-        5. 二元运算符: + - * / == != < > <= >= && ||
-        6. 函数调用: func(args) - 如normalize(), mul(), transpose()等
-        7. 变量/常量值: 标识符或数字字面量
+        3. 三元运算符: a ? b : c - 条件表达式
+        4. 二元运算符: + - * / == != < > <= >= && ||
+        5. 函数调用: func(args) - 如normalize(), mul(), transpose()等
+        6. 变量/常量值: 标识符或数字字面量
         """
         expr = expr.strip()
         if not expr:
@@ -253,21 +202,7 @@ class SyntaxTreeParser:
                 return self._parse_expression(inner)
 
         # =====================================================================
-        # 第三步: 分量访问运算符 (.) - 处理向量分量访问
-        # 例如: Attenuation.x, vec.yzw, color.rgb
-        # 分量访问优先级最高，优于所有其他运算符
-        # =====================================================================
-        dot_pos = self._find_top_level_dot(expr)
-        if dot_pos >= 0:
-            left_expr = expr[:dot_pos].strip()
-            right_expr = expr[dot_pos+1:].strip()
-            if left_expr and right_expr:
-                left_node = self._parse_expression(left_expr)
-                right_node = self._parse_expression(right_expr)
-                return SyntaxTreeNode('binary_op', '.', left_node, right_node)
-
-        # =====================================================================
-        # 第四步: 三元运算符 - 匹配 a ? b : c 模式
+        # 第三步: 三元运算符 - 匹配 a ? b : c 模式
         # 三元运算符优先级最低，在所有二元运算符之后处理
         # =====================================================================
         ternary_pos = -1
@@ -314,12 +249,13 @@ class SyntaxTreeParser:
             if op in ['||', '&&', '==', '!=', '<', '>', '<=', '>=', '+', '-', '*', '/']:
                 left_expr = expr[:pos].strip()
                 right_expr = expr[pos+len(op):].strip()
+                # 递归解析左右操作数
                 left_node = self._parse_expression(left_expr)
                 right_node = self._parse_expression(right_expr)
                 return SyntaxTreeNode('binary_op', op, left_node, right_node)
 
         # =====================================================================
-        # 第六步: 函数调用 - 匹配函数名后跟括号
+        # 第五步: 函数调用 - 匹配函数名后跟括号
         # float[234]构造函数: float2(...), float3(...), float4(...)
         # 普通函数调用: normalize(...), mul(...), transpose(...)等
         # =====================================================================
@@ -799,25 +735,7 @@ class HLSLInterpreter:
             else:
                 result = left / right
         elif op == '.':
-            if isinstance(left, list):
-                field = right.strip() if isinstance(right, str) else right
-                if isinstance(field, str) and field in ['x', 'y', 'z', 'w', 'r', 'g', 'b', 'a', 'xy', 'yz', 'xz', 'xyz', 'xyzw', 'rgb', 'rgba', 'rg', 'gb']:
-                    component_map = {'x': 0, 'y': 1, 'z': 2, 'w': 3, 'r': 0, 'g': 1, 'b': 2, 'a': 3}
-                    if len(field) == 1:
-                        idx = component_map[field]
-                        result = left[idx] if idx < len(left) else 0
-                    else:
-                        indices = [component_map[c] for c in field]
-                        result = [left[i] for i in indices if i < len(left)]
-                else:
-                    result = None
-            elif isinstance(left, dict):
-                if isinstance(right, str) and right in left:
-                    result = left[right]
-                else:
-                    result = None
-            else:
-                result = None
+            result = (left, right)
         elif op == '==':
             result = left == right
         elif op == '!=':
@@ -1222,6 +1140,48 @@ class HLSLInterpreter:
 
         return None
 
+    def apply_swizzle(self, obj: Any, swizzle: str) -> Any:
+        """
+        对向量应用swizzle操作
+        obj: 向量对象(列表)
+        swizzle: swizzle模式字符串，如 'xyz', 'xxx', 'xxyy', 'xz' 等
+        返回: 应用swizzle后的结果
+        """
+        if obj is None:
+            return None
+
+        if not isinstance(obj, list):
+            if swizzle == 'x':
+                return obj
+            return None
+
+        valid_chars = {'x': 0, 'y': 1, 'z': 2, 'w': 3}
+        result = []
+        for c in swizzle:
+            if c.lower() in valid_chars:
+                idx = valid_chars[c.lower()]
+                if idx < len(obj):
+                    result.append(obj[idx])
+                else:
+                    result.append(0)
+            elif c in 'rgb':
+                idx = {'r': 0, 'g': 1, 'b': 2}[c]
+                if idx < len(obj):
+                    result.append(obj[idx])
+                else:
+                    result.append(0)
+
+        if len(result) == 1:
+            return result[0]
+
+        numeric_types = (int, float)
+        if all(isinstance(v, numeric_types) for v in result):
+            if all(isinstance(v, int) for v in result):
+                return [int(v) for v in result]
+            return result
+
+        return result
+
     def get_value(self, name: str, local_vars: Dict[str, Any]) -> Any:
         """
         获取变量或常量的值
@@ -1243,6 +1203,39 @@ class HLSLInterpreter:
         except ValueError:
             pass
 
+        # 检查是否包含swizzle操作 (如 LightPos.xyz, LightPos.xxx, input.Pos.xy)
+        if '.' in name:
+            parts = name.split('.')
+            if len(parts) >= 2:
+                base_name = parts[0]
+                swizzle_str = parts[1]
+
+                # 判断是否为swizzle模式（全是xyzwrgb组成的字符串）
+                if swizzle_str and all(c in 'xyzwrgb' for c in swizzle_str.lower()):
+                    obj = local_vars.get(base_name)
+                    if obj is None:
+                        obj = self.variables.get(base_name)
+                    if obj is not None:
+                        return self.apply_swizzle(obj, swizzle_str)
+
+                    # 尝试从cbuffer获取
+                    for cb_name, cb_def in self.cbuffers.items():
+                        if isinstance(cb_def, CbufferDefinition):
+                            for field in cb_def.fields:
+                                if field.name == base_name:
+                                    if field.data is not None:
+                                        return self.apply_swizzle(field.data, swizzle_str)
+                                    return 0
+
+                    # 检查是否在output对象中
+                    if base_name in local_vars:
+                        obj = local_vars[base_name]
+                        if isinstance(obj, dict):
+                            return self.apply_swizzle(obj.get(swizzle_str), swizzle_str) if isinstance(obj.get(swizzle_str), list) else self.apply_swizzle(obj, swizzle_str)
+                        return self.apply_swizzle(obj, swizzle_str)
+
+                    return 0
+
         # 局部变量查找
         if name in local_vars:
             val = local_vars[name]
@@ -1256,27 +1249,6 @@ class HLSLInterpreter:
                 for field in cb_def.fields:
                     if field.name == base_name:
                         return field.data if field.data is not None else 0
-
-        # 结构体字段访问(如 input.Pos, output.Color)
-        if '.' in name:
-            parts = name.split('.')
-            obj = local_vars.get(parts[0])
-            if obj is None:
-                obj = self.variables.get(parts[0])
-            if obj is not None and len(parts) > 1:
-                field = parts[1]
-                if isinstance(obj, list):
-                    if field == 'xyz' and len(obj) >= 3:
-                        return obj[:3]
-                    if field == 'rgb' and len(obj) >= 3:
-                        return obj[:3]
-                    if field in ['x', 'y', 'z', 'w'] and isinstance(obj, list):
-                        idx = ['x', 'y', 'z', 'w'].index(field)
-                        return obj[idx] if idx < len(obj) else 0
-                elif isinstance(obj, dict):
-                    if field in obj:
-                        return obj[field]
-            return obj
 
         # 全局变量查找
         if name in self.variables:
