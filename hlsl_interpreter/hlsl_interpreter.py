@@ -1925,6 +1925,161 @@ class HLSLInterpreter:
             else:
                 print(f"  {f.name} ({ft}): {data}")
 
+    def load_vs_output_golden_from_csv(self, csv_path: str):
+        """
+        从CSV文件加载VS_OUTPUT的golden数据
+        csv_path: CSV文件路径
+        """
+        if "VS_OUTPUT" not in self.structs:
+            print("Error: VS_OUTPUT struct not defined")
+            return False
+
+        vs_output_def = self.structs["VS_OUTPUT"]
+        rows = self.load_csv(csv_path)
+        if not rows or len(rows) < 2:
+            print(f"Error: CSV file {csv_path} is empty or has no data rows")
+            return False
+
+        header = rows[0]
+        data_rows = rows[1:]
+
+        field_col_indices = {}
+        for i, col in enumerate(header):
+            col_clean = col.strip()
+            if '.' in col_clean:
+                parts = col_clean.split('.')
+                base_name = parts[0]
+                suffix = parts[1]
+                if base_name not in field_col_indices:
+                    field_col_indices[base_name] = {}
+                field_col_indices[base_name][suffix] = i
+
+        for field in vs_output_def.fields:
+            if field.semantic in field_col_indices:
+                col_dict = field_col_indices[field.semantic]
+                values = []
+                for row in data_rows:
+                    try:
+                        if 'x' in col_dict and 'y' in col_dict and 'z' in col_dict and 'w' in col_dict:
+                            x = float(row[col_dict['x']].strip())
+                            y = float(row[col_dict['y']].strip())
+                            z = float(row[col_dict['z']].strip())
+                            w = float(row[col_dict['w']].strip())
+                            values.append([x, y, z, w])
+                        elif 'x' in col_dict and 'y' in col_dict and 'z' in col_dict:
+                            x = float(row[col_dict['x']].strip())
+                            y = float(row[col_dict['y']].strip())
+                            z = float(row[col_dict['z']].strip())
+                            values.append([x, y, z])
+                        elif 'x' in col_dict and 'y' in col_dict:
+                            x = float(row[col_dict['x']].strip())
+                            y = float(row[col_dict['y']].strip())
+                            values.append([x, y])
+                        else:
+                            val_str = row[col_dict['x']].strip().strip('"')
+                            values.append(self.parse_value_by_type(val_str, field.field_type))
+                    except (ValueError, IndexError) as e:
+                        print(f"Warning: Failed to parse {field.semantic} at row: {e}")
+                        values.append(None)
+                field.data = values
+
+        print(f"Loaded {len(data_rows)} golden data rows for VS_OUTPUT")
+        return True
+
+    def compare_vs_output_with_golden(self, hlsl_output: List[Dict], float_tolerance: float = 0.0001) -> bool:
+        """
+        比较HLSL执行结果与VS_OUTPUT的golden数据
+        hlsl_output: executeVS返回的输出结构体字典列表
+        float_tolerance: 浮点类型数据的比较误差容忍度
+        返回: True表示所有数据匹配, False表示存在不匹配
+        """
+        if "VS_OUTPUT" not in self.structs:
+            print("Error: VS_OUTPUT struct not found")
+            return False
+
+        vs_output_def = self.structs["VS_OUTPUT"]
+        golden_data = {}
+
+        for field in vs_output_def.fields:
+            if field.data:
+                golden_data[field.semantic] = field.data
+
+        num_golden_rows = 0
+        for field_data in golden_data.values():
+            if field_data:
+                num_golden_rows = max(num_golden_rows, len(field_data))
+
+        if not hlsl_output:
+            print("Error: No HLSL output to compare")
+            return False
+
+        if len(hlsl_output) != num_golden_rows:
+            print(f"Error: Row count mismatch - HLSL output has {len(hlsl_output)} rows, golden has {num_golden_rows} rows")
+            return False
+
+        all_match = True
+        semantic_to_field = {
+            'SV_POSITION': 'Pos',
+            'COLOR': 'Color',
+            'TEXCOORD0': 'TexCoord',
+            'TEXCOORD1': 'TexCoord2',
+            'NORMAL': 'Normal',
+            'WORLDPOS': 'WorldPos'
+        }
+
+        field_type_map = {}
+        for field in vs_output_def.fields:
+            field_type_map[field.semantic] = field.field_type
+
+        for row_idx in range(len(hlsl_output)):
+            output_row = hlsl_output[row_idx]
+            for semantic, golden_values in golden_data.items():
+                if row_idx >= len(golden_values):
+                    continue
+
+                field_name = semantic_to_field.get(semantic, semantic)
+                if field_name not in output_row:
+                    continue
+
+                output_value = output_row[field_name]
+                golden_value = golden_values[row_idx]
+
+                if output_value is None or golden_value is None:
+                    continue
+
+                field_type = field_type_map.get(semantic, '')
+
+                if isinstance(output_value, list) and isinstance(golden_value, list):
+                    if len(output_value) != len(golden_value):
+                        print(f"Error: Row {row_idx}, {field_name}: length mismatch output={len(output_value)} golden={len(golden_value)}")
+                        all_match = False
+                        continue
+
+                    is_float = 'float' in field_type
+                    for comp_idx in range(len(output_value)):
+                        out_comp = output_value[comp_idx]
+                        gold_comp = golden_value[comp_idx]
+
+                        if is_float:
+                            if isinstance(out_comp, float) and isinstance(gold_comp, float):
+                                if abs(out_comp - gold_comp) > float_tolerance:
+                                    print(f"Error: Row {row_idx}, {field_name}[{comp_idx}]: output={out_comp:.6f} golden={gold_comp:.6f} diff={abs(out_comp - gold_comp):.6f} > tolerance={float_tolerance}")
+                                    all_match = False
+                            elif out_comp != gold_comp:
+                                print(f"Error: Row {row_idx}, {field_name}[{comp_idx}]: output={out_comp} golden={gold_comp} (float comparison failed)")
+                                all_match = False
+                        else:
+                            if out_comp != gold_comp:
+                                print(f"Error: Row {row_idx}, {field_name}[{comp_idx}]: output={out_comp} golden={gold_comp} (strict equality failed)")
+                                all_match = False
+
+        if all_match:
+            print("Comparison PASSED: All output data matches golden data within tolerance")
+        else:
+            print("Comparison FAILED: Some output data does not match golden data")
+
+        return all_match
+
 
 def main():
     interpreter = HLSLInterpreter()
@@ -2006,6 +2161,10 @@ def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     interpreter.interpret(code)
 
+    golden_csv_path = os.path.join(script_dir, 'VS_OUTPUT.csv')
+    if os.path.exists(golden_csv_path):
+        interpreter.load_vs_output_golden_from_csv(golden_csv_path)
+
     results = interpreter.executeVS(code, "main", "VS_INPUT")
 
     print("HLSL Interpreter Result:")
@@ -2039,6 +2198,11 @@ def main():
             print(f"  A: {color[3]:.4f}")
         else:
             print(f"\nColor result: {color}")
+
+    print("\n" + "=" * 40)
+    print("Comparing with golden data...")
+    print("=" * 40)
+    interpreter.compare_vs_output_with_golden(results, float_tolerance=0.001)
 
 
 if __name__ == '__main__':

@@ -540,10 +540,19 @@ Git commit: hlsl-inter: add comments for each branch of execute_function_node by
 
 # 23
 Git commit: 
+1. struct VS_OUTPUT的golden数据通过csv文件提供了。请加载该数据
+2. 增加一个最后结果比对的函数，该函数功能如下
+   a. 每一组VS_INPUT数据通过解析执行完HLSL后会得到一组OUTPUT数据
+   b. 执行HLSL得到的OUTPUT数据与VS_OUTPUT的golden csv文件的对应组数据进行比对
+   c. 如果是浮点类型数据比对，那么允许有一定的误差，这个误差值可以调整。如果OUTPUT的field的数据和golden数据之间的差值超过误差，则打印error
+   d. 如果是其它数据类型比对，则要求严格相等，如果不等，则打印error
 
 
 # 24
 Git commit: 
+1. compare_vs_output_with_golden增加一个输入参数，告知compare_vs_output_with_golden使用的OUTPUT struct是那一个，不要直接默认使用"VS_OUTPUT"
+2. 不要通过函数内部自定义的semantic_to_field来获得field name，直接通过获得的vs_output_def来获取field name
+3. 
 
 
 # 25
