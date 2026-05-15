@@ -95,8 +95,6 @@ class SyntaxTreeParser:
             cast_type = cast_match.group(1)
             rest = cast_match.group(2).strip()
             inner_node = self._parse_expression(rest)
-            if inner_node.node_type == 'value':
-                return inner_node
             return SyntaxTreeNode('cast', cast_type, inner_node)
 
         if expr.startswith('(') and expr.endswith(')'):

@@ -505,18 +505,11 @@ def execute_binary_op
 
 # 19
 Git commit: 
-float3 normal = normalize(mul(nor, (float3x3)World));
+1. float3 normal = normalize(mul(nor, (float3x3)World));
 上面这行HLSL代码中(float3x3)World的意思是从4x4 World矩阵中取前3行x前3列的3x3矩阵出来。
-而语法树打印的tree里没有看到float3x3这个操作，请增加相应处理
-[STMT] Executing: float3 normal = normalize(mul(nor, (float3x3)World))
-[SYNTAX TREE]
-Function(normalize)
-  arg[0]:
-Function(mul)
-      arg[0]:
-        Value(nor)
-      arg[1]:
-        Value(World)
+self.syntax_parser.parse(expr)生成的语法树里没有看到float3x3这个操作，请增加float3x3相应处理
+
+2. 给class SyntaxTreeParser的_parse_expression内的代码添加注释
 
 
 # 20
