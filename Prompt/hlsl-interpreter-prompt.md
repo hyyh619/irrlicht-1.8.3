@@ -504,17 +504,19 @@ def execute_binary_op
 
 
 # 19
-Git commit: 
+Git commit: hlsl-inter: add float3x3 cast to syntax tree by MiniMax-M2.7.
 1. float3 normal = normalize(mul(nor, (float3x3)World));
 上面这行HLSL代码中(float3x3)World的意思是从4x4 World矩阵中取前3行x前3列的3x3矩阵出来。
 self.syntax_parser.parse(expr)生成的语法树里没有看到float3x3这个操作，请增加float3x3相应处理
 
+Git commit: hlsl-inter: add comments to SyntaxTreeParser._parse_expression by MiniMax-M2.7.
 2. 给class SyntaxTreeParser的_parse_expression内的代码添加注释
 
 
 # 20
 Git commit: 
-
+1. 给hlsl_interpreter.py的所有class, struct, function和function内部的关键代码增加注释
+2. 已经有注释的就不用添加
 
 # 21
 Git commit: 
