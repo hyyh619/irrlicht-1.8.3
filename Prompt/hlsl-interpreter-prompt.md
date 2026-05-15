@@ -664,6 +664,18 @@ BinaryOp(*)
 [BINARY OP] left=['0.8328', '0.0000', '22440.3666'], right=498.6748, op=*, result=['415.2899', '0.0000', '11190445.5770']       
 [BINARY OP] left=['0.8345', '0.0000', '22485.3666'], right=['415.2899', '0.0000', '11190445.5770'], op=+, result=['416.1243', '0.0000', '11212930.9436']
 
+1. 新增的'.'操作符获取xyzw/rgba只对float4,float3,float2,int4,int3,int2,uint4,uint3,uint2等类型变量有效。
+2. 对于struct结构数据，例如ouptut/input来说，'.'是获取struct内部的某个变量例如
+   output.Pos就是获取VS_OUTPUT的Pos成员变量
+            struct VS_OUTPUT {
+                float4 Pos : SV_POSITION;
+                float4 Color : COLOR;
+                float2 TexCoord : TEXCOORD0;
+                float2 TexCoord2 : TEXCOORD1;
+                float3 Normal : NORMAL;
+                float3 WorldPos : WORLDPOS;
+            };
+3. 请在解析'.'操作符时根据上面的描述分成两类操作，一类是获取向量的某个分量，一类是获取struct的某个成员变量。
 
 # 30
 Git commit: 

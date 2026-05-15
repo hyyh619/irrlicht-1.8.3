@@ -190,10 +190,11 @@ class SyntaxTreeParser:
         解析顺序(从高优先级到低优先级):
         1. 类型转换: (float3x3)expr - 将表达式转换为指定类型
         2. 括号表达式: (expr) - 括号包围的表达式
-        3. 三元运算符: a ? b : c - 条件表达式
-        4. 二元运算符: + - * / == != < > <= >= && ||
-        5. 函数调用: func(args) - 如normalize(), mul(), transpose()等
-        6. 变量/常量值: 标识符或数字字面量
+        3. 分量访问: expr.component - 如 Attenuation.x, vec.xyz, color.rgb (优先级最高)
+        4. 三元运算符: a ? b : c - 条件表达式
+        5. 二元运算符: + - * / == != < > <= >= && ||
+        6. 函数调用: func(args) - 如normalize(), mul(), transpose()等
+        7. 变量/常量值: 标识符或数字字面量
         """
         expr = expr.strip()
         if not expr:
@@ -781,45 +782,25 @@ class HLSLInterpreter:
             else:
                 result = left / right
         elif op == '.':
-            if isinstance(left, list) and isinstance(right, str):
-                field = right.strip()
-                if field == 'x':
-                    idx = 0
-                    return left[idx] if idx < len(left) else 0
-                elif field == 'y':
-                    idx = 1
-                    return left[idx] if idx < len(left) else 0
-                elif field == 'z':
-                    idx = 2
-                    return left[idx] if idx < len(left) else 0
-                elif field == 'w':
-                    idx = 3
-                    return left[idx] if idx < len(left) else 0
-                elif field == 'r':
-                    idx = 0
-                    return left[idx] if idx < len(left) else 0
-                elif field == 'g':
-                    idx = 1
-                    return left[idx] if idx < len(left) else 0
-                elif field == 'b':
-                    idx = 2
-                    return left[idx] if idx < len(left) else 0
-                elif field == 'a':
-                    idx = 3
-                    return left[idx] if idx < len(left) else 0
-                elif field in ['xy', 'yz', 'xz', 'xyz', 'xyzw', 'rgb', 'rgba', 'rg', 'gb']:
-                    indices = []
-                    for c in field:
-                        if c == 'x': indices.append(0)
-                        elif c == 'y': indices.append(1)
-                        elif c == 'z': indices.append(2)
-                        elif c == 'w': indices.append(3)
-                        elif c == 'r': indices.append(0)
-                        elif c == 'g': indices.append(1)
-                        elif c == 'b': indices.append(2)
-                        elif c == 'a': indices.append(3)
-                    return [left[i] for i in indices if i < len(left)]
-            result = (left, right)
+            if isinstance(left, list):
+                field = right.strip() if isinstance(right, str) else right
+                if isinstance(field, str) and field in ['x', 'y', 'z', 'w', 'r', 'g', 'b', 'a', 'xy', 'yz', 'xz', 'xyz', 'xyzw', 'rgb', 'rgba', 'rg', 'gb']:
+                    component_map = {'x': 0, 'y': 1, 'z': 2, 'w': 3, 'r': 0, 'g': 1, 'b': 2, 'a': 3}
+                    if len(field) == 1:
+                        idx = component_map[field]
+                        result = left[idx] if idx < len(left) else 0
+                    else:
+                        indices = [component_map[c] for c in field]
+                        result = [left[i] for i in indices if i < len(left)]
+                else:
+                    result = None
+            elif isinstance(left, dict):
+                if isinstance(right, str) and right in left:
+                    result = left[right]
+                else:
+                    result = None
+            else:
+                result = None
         elif op == '==':
             result = left == right
         elif op == '!=':
@@ -1259,7 +1240,7 @@ class HLSLInterpreter:
                     if field.name == base_name:
                         return field.data if field.data is not None else 0
 
-        # 结构体字段访问(如 input.xyz, output.x)
+        # 结构体字段访问(如 input.Pos, output.Color)
         if '.' in name:
             parts = name.split('.')
             obj = local_vars.get(parts[0])
@@ -1267,15 +1248,17 @@ class HLSLInterpreter:
                 obj = self.variables.get(parts[0])
             if obj is not None and len(parts) > 1:
                 field = parts[1]
-                # xyz/rgb分量访问
-                if field == 'xyz' and isinstance(obj, list) and len(obj) >= 3:
-                    return obj[:3]
-                if field == 'rgb' and isinstance(obj, list) and len(obj) >= 3:
-                    return obj[:3]
-                # xyzw分量访问
-                if field in ['x', 'y', 'z', 'w'] and isinstance(obj, list):
-                    idx = ['x', 'y', 'z', 'w'].index(field)
-                    return obj[idx] if idx < len(obj) else 0
+                if isinstance(obj, list):
+                    if field == 'xyz' and len(obj) >= 3:
+                        return obj[:3]
+                    if field == 'rgb' and len(obj) >= 3:
+                        return obj[:3]
+                    if field in ['x', 'y', 'z', 'w'] and isinstance(obj, list):
+                        idx = ['x', 'y', 'z', 'w'].index(field)
+                        return obj[idx] if idx < len(obj) else 0
+                elif isinstance(obj, dict):
+                    if field in obj:
+                        return obj[field]
             return obj
 
         # 全局变量查找
