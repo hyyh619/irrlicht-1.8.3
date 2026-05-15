@@ -496,7 +496,7 @@ Git commit: hlsl-inter: fix vector multiplies matrix. We should use col major by
 4. 请检查其他地方的矩阵和向量的乘法，是否都是行向量，乘以矩阵的列
 
 # 18
-Git commit: 
+Git commit: hlsl-inter: format matrix print by MiniMax-M2.7.
 下面函数如果打印的操作数和结果是float4x4/float3x3这种矩阵数据，那么matrix row就打印一行，上下行的每列数据都要对齐
 def execute_function_node
 def execute_unary_op
@@ -505,6 +505,18 @@ def execute_binary_op
 
 # 19
 Git commit: 
+float3 normal = normalize(mul(nor, (float3x3)World));
+上面这行HLSL代码中(float3x3)World的意思是从4x4 World矩阵中取前3行x前3列的3x3矩阵出来。
+而语法树打印的tree里没有看到float3x3这个操作，请增加相应处理
+[STMT] Executing: float3 normal = normalize(mul(nor, (float3x3)World))
+[SYNTAX TREE]
+Function(normalize)
+  arg[0]:
+Function(mul)
+      arg[0]:
+        Value(nor)
+      arg[1]:
+        Value(World)
 
 
 # 20
@@ -536,4 +548,28 @@ Git commit:
 
 
 # 27
+Git commit: 
+
+
+# 28
+Git commit: 
+
+
+# 29
+Git commit: 
+
+
+# 30
+Git commit: 
+
+
+# 31
+Git commit: 
+
+
+# 32
+Git commit: 
+
+
+# 33
 Git commit: 
