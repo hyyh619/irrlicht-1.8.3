@@ -539,7 +539,7 @@ Git commit: hlsl-inter: add comments for each branch of execute_function_node by
 
 
 # 23
-Git commit: 
+Git commit: hlsl-inter: add golden data and compare between output and golden data by MiniMax-M2.7.
 1. struct VS_OUTPUT的golden数据通过csv文件提供了。请加载该数据
 2. 增加一个最后结果比对的函数，该函数功能如下
    a. 每一组VS_INPUT数据通过解析执行完HLSL后会得到一组OUTPUT数据
@@ -552,7 +552,6 @@ Git commit:
 Git commit: 
 1. compare_vs_output_with_golden增加一个输入参数，告知compare_vs_output_with_golden使用的OUTPUT struct是那一个，不要直接默认使用"VS_OUTPUT"
 2. 不要通过函数内部自定义的semantic_to_field来获得field name，直接通过获得的vs_output_def来获取field name
-3. 
 
 
 # 25

@@ -1986,23 +1986,26 @@ class HLSLInterpreter:
         print(f"Loaded {len(data_rows)} golden data rows for VS_OUTPUT")
         return True
 
-    def compare_vs_output_with_golden(self, hlsl_output: List[Dict], float_tolerance: float = 0.0001) -> bool:
+    def compare_vs_output_with_golden(self, hlsl_output: List[Dict], output_struct_name: str = "VS_OUTPUT", float_tolerance: float = 0.0001) -> bool:
         """
-        比较HLSL执行结果与VS_OUTPUT的golden数据
+        比较HLSL执行结果与golden数据
         hlsl_output: executeVS返回的输出结构体字典列表
+        output_struct_name: 输出结构体名称，用于获取field name (默认"VS_OUTPUT")
         float_tolerance: 浮点类型数据的比较误差容忍度
         返回: True表示所有数据匹配, False表示存在不匹配
         """
-        if "VS_OUTPUT" not in self.structs:
-            print("Error: VS_OUTPUT struct not found")
+        if output_struct_name not in self.structs:
+            print(f"Error: {output_struct_name} struct not found")
             return False
 
-        vs_output_def = self.structs["VS_OUTPUT"]
+        vs_output_def = self.structs[output_struct_name]
         golden_data = {}
+        semantic_to_field = {}
 
         for field in vs_output_def.fields:
             if field.data:
                 golden_data[field.semantic] = field.data
+            semantic_to_field[field.semantic] = field.name
 
         num_golden_rows = 0
         for field_data in golden_data.values():
@@ -2018,15 +2021,6 @@ class HLSLInterpreter:
             return False
 
         all_match = True
-        semantic_to_field = {
-            'SV_POSITION': 'Pos',
-            'COLOR': 'Color',
-            'TEXCOORD0': 'TexCoord',
-            'TEXCOORD1': 'TexCoord2',
-            'NORMAL': 'Normal',
-            'WORLDPOS': 'WorldPos'
-        }
-
         field_type_map = {}
         for field in vs_output_def.fields:
             field_type_map[field.semantic] = field.field_type
@@ -2202,7 +2196,7 @@ def main():
     print("\n" + "=" * 40)
     print("Comparing with golden data...")
     print("=" * 40)
-    interpreter.compare_vs_output_with_golden(results, float_tolerance=0.001)
+    interpreter.compare_vs_output_with_golden(results)
 
 
 if __name__ == '__main__':
