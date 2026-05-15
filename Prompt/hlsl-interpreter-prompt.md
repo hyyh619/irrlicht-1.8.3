@@ -566,7 +566,7 @@ Git commit: hlsl-inter: add error log for arg checking by MiniMax-M2.7.
 
 
 # 26
-Git commit: 
+Git commit: hlsl-inter: fix wrong arg number of max/dot function by ying.
 SyntaxTreeParser._parse_expression没有看到对max/min/dot float NdotL = max(dot(normal, lightDir), 0.0)
 [STMT] Executing: float NdotL = max(dot(normal, lightDir), 0.0)
 [SYNTAX TREE]

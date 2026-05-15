@@ -2135,7 +2135,6 @@ def main():
     };
     VS_OUTPUT main(VS_INPUT input) {
         VS_OUTPUT output;
-        float NdotL = max(dot(normal, lightDir), 0.0);
         output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));
         float4 worldPos = mul(float4(input.Pos, 1.0), transpose(World));
         float3 nor = normalize(input.Normal);
