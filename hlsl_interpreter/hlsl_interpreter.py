@@ -21,7 +21,7 @@ class SyntaxTreeNode:
     HLSL语法树节点基类
     用于表示HLSL表达式解析后的语法树结构
     node_type: 节点类型 - 'value'(值), 'function'(函数), 'binary_op'(二元操作),
-                           'unary_op'(一元操作), 'cast'(类型转换), 'ternary'(三元条件)
+                            'unary_op'(一元操作), 'cast'(类型转换), 'ternary'(三元条件)
     value: 节点值 - 变量名/函数名/操作符/类型名
     left: 左子节点 (用于二元/一元操作或三元条件)
     right: 右子节点 (用于二元操作或三元真的表达式)
@@ -108,25 +108,46 @@ class SyntaxTreeParser:
 
     def _find_top_level_operator(self, expr: str) -> Optional[tuple]:
         """
-        从右向左查找表达式中优先级最低的运算符(处于括号外的顶层运算符)
+        查找表达式中优先级最低的运算符(处于括号外的顶层运算符)
         用于实现运算符优先级解析
         expr: 表达式字符串
         返回: (位置, 运算符) 元组，或None
+
+        运算符优先级(数字越小优先级越低):
+        '||': 1, '&&': 2, '==': 3, '!=': 3,
+        '<': 4, '>': 4, '<=': 4, '>=': 4,
+        '+': 5, '-': 5, '*': 6, '/': 6
+
+        规则: 找到优先级最低的运算符，如果有多个同优先级的运算符，返回最右边的那个
         """
         depth = 0
-        for i in range(len(expr) - 1, -1, -1):
+        candidates = []
+        i = 0
+        while i < len(expr):
             char = expr[i]
-            if char == ')':
+            if char == '(':
                 depth += 1
-            elif char == '(':
+            elif char == ')':
                 depth -= 1
             elif depth == 0:
                 if i >= 1:
                     two_char = expr[i-1:i+1]
                     if two_char in self.operators:
-                        return (i-1, two_char)
+                        candidates.append((i-1, two_char, self.operators[two_char]))
+                        i += 1
+                        continue
                 if char in self.operators:
-                    return (i, char)
+                    candidates.append((i, char, self.operators[char]))
+            i += 1
+
+        if not candidates:
+            return None
+
+        min_prec = min(c[2] for c in candidates)
+        rightmost = max(c[0] for c in candidates if c[2] == min_prec)
+        for c in candidates:
+            if c[0] == rightmost and c[2] == min_prec:
+                return (c[0], c[1])
         return None
 
     def _parse_expression(self, expr: str) -> SyntaxTreeNode:

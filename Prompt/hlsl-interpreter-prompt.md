@@ -588,6 +588,39 @@ hlsl_interpreter.py在解释执行下列语句时，没有使用语法树处理�
 
 # 28
 Git commit: 
+从hlsl_interpreter.py执行以下的语句来看，目前构造语法树的时候，没有考虑运算符的优先级。例如'+'的优先级低于'*'。而从下面输出的语法树来看，先执行的是加法，然后才执行乘法。
+例如：
+先执行了Attenuation.x + Attenuation.y，然后再乘以dist。实际应该是先执行Attenuation.y * dist，然后再加上Attenuation.x。请修复运算符优先级问题
+[STMT] Executing: float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist)
+[SYNTAX TREE]
+BinaryOp(/)
+  left:
+    Value(1.0)
+  right:
+BinaryOp(*)
+      left:
+BinaryOp(*)
+          left:
+BinaryOp(+)
+              left:
+BinaryOp(*)
+                  left:
+BinaryOp(+)
+                      left:
+                        Value(Attenuation.x)
+                      right:
+                        Value(Attenuation.y)
+                  right:
+                    Value(dist)
+              right:
+                Value(Attenuation.z)
+      right:
+        Value(dist)
+[BINARY OP] left=['0.0017', '0.0000', '45.0000'], right=['0.0017', '0.0000', '45.0000'], op=+, result=['0.0033', '0.0000', '90.0000']
+[BINARY OP] left=['0.0033', '0.0000', '90.0000'], right=498.6748, op=*, result=['1.6656', '0.0000', '44880.7331']
+[BINARY OP] left=['1.6656', '0.0000', '44880.7331'], right=['0.0017', '0.0000', '45.0000'], op=+, result=['1.6672', '0.0000', '44925.7331']   
+[BINARY OP] left=['1.6672', '0.0000', '44925.7331'], right=498.6748, op=*, result=['831.4125', '0.0000', '22403331.5206']
+[BINARY OP] left=['831.4125', '0.0000', '22403331.5206'], right=498.6748, op=*, result=['414604.4850', '0.0000', '11171977139.9078']
 
 
 # 29
