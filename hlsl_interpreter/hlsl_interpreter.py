@@ -86,19 +86,40 @@ class SyntaxTreeParser:
         return None
 
     def _parse_expression(self, expr: str) -> SyntaxTreeNode:
+        """
+        将HLSL表达式字符串解析为语法树节点。
+        
+        解析顺序(从高优先级到低优先级):
+        1. 类型转换: (float3x3)expr - 将表达式转换为指定类型
+        2. 括号表达式: (expr) - 括号包围的表达式
+        3. 二元运算符: + - * / == != < > <= >= && ||
+        4. 函数调用: func(args) - 如normalize(), mul(), transpose()等
+        5. 变量/常量值: 标识符或数字字面量
+        """
         expr = expr.strip()
         if not expr:
             return SyntaxTreeNode('value', None)
 
+        # =====================================================================
+        # 第一步: 类型转换 (cast) - 匹配模式 (type)expression
+        # 例如: (float3x3)World - 将4x4矩阵转换为3x3矩阵
+        #       (float4)vec3 - 将vec3扩展为vec4
+        # =====================================================================
         cast_match = re.match(r'\((\w+)\)\s*(.+)', expr, re.DOTALL)
         if cast_match:
-            cast_type = cast_match.group(1)
-            rest = cast_match.group(2).strip()
-            inner_node = self._parse_expression(rest)
+            cast_type = cast_match.group(1)    # 转换目标类型，如float3x3
+            rest = cast_match.group(2).strip()   # 类型声明之后的部分
+            inner_node = self._parse_expression(rest)  # 递归解析内部表达式
             return SyntaxTreeNode('cast', cast_type, inner_node)
 
+        # =====================================================================
+        # 第二步: 括号表达式 - 检查是否被括号包围
+        # 例如: (a + b) - 外层括号只是分组，不改变语义
+        # 注意: 需要检查括号是否平衡，防止误匹配如 (a) + (b)
+        # =====================================================================
         if expr.startswith('(') and expr.endswith(')'):
             inner = expr[1:-1].strip()
+            # 遍历内部内容，检查括号是否平衡
             paren_depth = 0
             is_proper_paren = True
             for j, c in enumerate(inner):
@@ -106,28 +127,45 @@ class SyntaxTreeParser:
                     paren_depth += 1
                 elif c == ')':
                     paren_depth -= 1
+                # 如果在遍历过程中深度变为负数，说明括号不平衡
                 if paren_depth < 0:
                     is_proper_paren = False
                     break
+            # 只有当内部括号都平衡时，才将外层括号视为分组
             if is_proper_paren:
                 return self._parse_expression(inner)
 
+        # =====================================================================
+        # 第三步: 二元运算符 - 从右向左查找优先级最低的运算符
+        # 支持: 逻辑或(||)、逻辑与(&&)、比较(== != < > <= >=)、
+        #       算术(+ -)、乘除(* /)
+        # =====================================================================
         op_info = self._find_top_level_operator(expr)
         if op_info:
             pos, op = op_info
             if op in ['||', '&&', '==', '!=', '<', '>', '<=', '>=', '+', '-', '*', '/']:
                 left_expr = expr[:pos].strip()
                 right_expr = expr[pos+len(op):].strip()
+                # 递归解析左右操作数
                 left_node = self._parse_expression(left_expr)
                 right_node = self._parse_expression(right_expr)
                 return SyntaxTreeNode('binary_op', op, left_node, right_node)
 
+        # =====================================================================
+        # 第四步: 函数调用 - 匹配函数名后跟括号
+        # float[234]构造函数: float2(...), float3(...), float4(...)
+        # 普通函数调用: normalize(...), mul(...), transpose(...)等
+        # =====================================================================
         if re.match(r'float[234]\s*\(', expr):
             return self._parse_function_call(expr)
 
         if re.match(r'\w+\s*\(', expr):
             return self._parse_function_call(expr)
 
+        # =====================================================================
+        # 第五步: 变量/常量值 - 标识符、字符串或数字
+        # 到达这里说明表达式不包含运算符和函数调用
+        # =====================================================================
         return SyntaxTreeNode('value', expr)
 
     def _parse_function_call(self, expr: str) -> SyntaxTreeNode:
