@@ -380,17 +380,28 @@ class HLSLInterpreter:
     HLSL解释器 - 解析和执行HLSL着色器代码
     支持: 结构体定义、cbuffer定义、函数解析、表达式求值
     """
-    def __init__(self):
+
+    def __init__(self, log_to_file: bool = True, log_file_path: str = "hlsl_interpreter.log"):
         self.structs: Dict[str, StructDefinition] = {}      # 解析的结构体定义
         self.cbuffers: Dict[str, CbufferDefinition] = {}    # 解析的cbuffer定义
         self.variables: Dict[str, Any] = {}                 # 全局变量
         self.debug = True                                    # 调试模式开关
         self.syntax_parser = SyntaxTreeParser()             # 语法树解析器
+        self.log_to_file = log_to_file                      # 是否输出到文件
+        self.log_file_path = log_file_path                 # 日志文件路径
+
+    def log_output(self, *args, **kwargs):
+        """输出到stdout和日志文件"""
+        msg = ' '.join(str(arg) for arg in args)
+        print(*args, **kwargs)
+        if self.log_to_file and self.log_file_path:
+            with open(self.log_file_path, 'a', encoding='utf-8') as f:
+                f.write(msg + '\n')
 
     def debug_print(self, msg: str):
         """调试打印"""
         if self.debug:
-            print(msg)
+            self.log_output(msg)
 
     def _format_float(self, val):
         """
@@ -1336,7 +1347,7 @@ class HLSLInterpreter:
         """
         input_struct = self.structs.get(input_struct_name)
         if not input_struct:
-            print(f"Cannot find input_struct: {input_struct_name}\n")
+            self.log_output(f"Cannot find input_struct: {input_struct_name}\n")
             return None
 
         input_fields = {}
@@ -1480,7 +1491,7 @@ class HLSLInterpreter:
         """
         input_struct = self.structs.get(vs_input)
         if not input_struct:
-            print(f"Cannot find vs input: {vs_input}\n")
+            self.log_output(f"Cannot find vs input: {vs_input}\n")
             return None
 
         # 统计行数
@@ -1558,7 +1569,7 @@ class HLSLInterpreter:
                         val_str = row[col_dict['x']].strip().strip('"')
                         values.append(self.parse_value_by_type(val_str, field.field_type))
                 field.data = values
-                print(f"Field '{field.semantic}' ({field.field_type}): {values[0] if values else 'N/A'}")
+                self.log_output(f"Field '{field.semantic}' ({field.field_type}): {values[0] if values else 'N/A'}")
 
     def load_cbuffer_data_from_csv(self, cb_name: str, csv_path: str):
         """
@@ -1626,48 +1637,48 @@ class HLSLInterpreter:
         # 打印cbuffer内容
         cb_n = cb_name
         cb_d = cb_def
-        print(f"Cbuffer {cb_n}:")
+        self.log_output(f"Cbuffer {cb_n}:")
         for f in cb_d.fields:
             data = f.data
             ft = f.field_type
             if 'float4x4' in ft:
-                print(f"  {f.name} ({ft}):")
+                self.log_output(f"  {f.name} ({ft}):")
                 for row in data:
                     row_str = '  '.join(f"{v:12.5f}" for v in row)
-                    print(f"    [{row_str}]")
+                    self.log_output(f"    [{row_str}]")
             elif 'float3x3' in ft:
-                print(f"  {f.name} ({ft}):")
+                self.log_output(f"  {f.name} ({ft}):")
                 for row in data:
                     row_str = '  '.join(f"{v:12.5f}" for v in row)
-                    print(f"    [{row_str}]")
+                    self.log_output(f"    [{row_str}]")
             elif 'float4' in ft:
-                print(f"  {f.name} ({ft}): [{', '.join(f'{v:.5f}' for v in data)}]")
+                self.log_output(f"  {f.name} ({ft}): [{', '.join(f'{v:.5f}' for v in data)}]")
             elif 'float3' in ft:
-                print(f"  {f.name} ({ft}): [{', '.join(f'{v:.5f}' for v in data)}]")
+                self.log_output(f"  {f.name} ({ft}): [{', '.join(f'{v:.5f}' for v in data)}]")
             elif 'float2' in ft:
-                print(f"  {f.name} ({ft}): [{', '.join(f'{v:.5f}' for v in data)}]")
+                self.log_output(f"  {f.name} ({ft}): [{', '.join(f'{v:.5f}' for v in data)}]")
             elif 'float' in ft:
-                print(f"  {f.name} ({ft}): {data:.5f}")
+                self.log_output(f"  {f.name} ({ft}): {data:.5f}")
             elif 'uint4' in ft:
-                print(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
+                self.log_output(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
             elif 'uint3' in ft:
-                print(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
+                self.log_output(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
             elif 'uint2' in ft:
-                print(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
+                self.log_output(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
             elif 'uint' in ft:
-                print(f"  {f.name} ({ft}): {data}")
+                self.log_output(f"  {f.name} ({ft}): {data}")
             elif 'int4' in ft:
-                print(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
+                self.log_output(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
             elif 'int3' in ft:
-                print(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
+                self.log_output(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
             elif 'int2' in ft:
-                print(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
+                self.log_output(f"  {f.name} ({ft}): [{', '.join(str(v) for v in data)}]")
             elif 'int' in ft:
-                print(f"  {f.name} ({ft}): {data}")
+                self.log_output(f"  {f.name} ({ft}): {data}")
             elif 'bool' in ft:
-                print(f"  {f.name} ({ft}): {data}")
+                self.log_output(f"  {f.name} ({ft}): {data}")
             else:
-                print(f"  {f.name} ({ft}): {data}")
+                self.log_output(f"  {f.name} ({ft}): {data}")
 
     def load_vs_output_golden_from_csv(self, csv_path: str):
         """
@@ -1675,13 +1686,13 @@ class HLSLInterpreter:
         csv_path: CSV文件路径
         """
         if "VS_OUTPUT" not in self.structs:
-            print("Error: VS_OUTPUT struct not defined")
+            self.log_output("Error: VS_OUTPUT struct not defined")
             return False
 
         vs_output_def = self.structs["VS_OUTPUT"]
         rows = self.load_csv(csv_path)
         if not rows or len(rows) < 2:
-            print(f"Error: CSV file {csv_path} is empty or has no data rows")
+            self.log_output(f"Error: CSV file {csv_path} is empty or has no data rows")
             return False
 
         header = rows[0]
@@ -1723,11 +1734,11 @@ class HLSLInterpreter:
                             val_str = row[col_dict['x']].strip().strip('"')
                             values.append(self.parse_value_by_type(val_str, field.field_type))
                     except (ValueError, IndexError) as e:
-                        print(f"Warning: Failed to parse {field.semantic} at row: {e}")
+                        self.log_output(f"Warning: Failed to parse {field.semantic} at row: {e}")
                         values.append(None)
                 field.data = values
 
-        print(f"Loaded {len(data_rows)} golden data rows for VS_OUTPUT")
+        self.log_output(f"Loaded {len(data_rows)} golden data rows for VS_OUTPUT")
         return True
 
     def compare_vs_output_with_golden(self, hlsl_output: List[Dict], output_struct_name: str = "VS_OUTPUT", float_tolerance: float = 0.0001) -> bool:
@@ -1739,7 +1750,7 @@ class HLSLInterpreter:
         返回: True表示所有数据匹配, False表示存在不匹配
         """
         if output_struct_name not in self.structs:
-            print(f"Error: {output_struct_name} struct not found")
+            self.log_output(f"Error: {output_struct_name} struct not found")
             return False
 
         vs_output_def = self.structs[output_struct_name]
@@ -1757,11 +1768,11 @@ class HLSLInterpreter:
                 num_golden_rows = max(num_golden_rows, len(field_data))
 
         if not hlsl_output:
-            print("Error: No HLSL output to compare")
+            self.log_output("Error: No HLSL output to compare")
             return False
 
         if len(hlsl_output) != num_golden_rows:
-            print(f"Error: Row count mismatch - HLSL output has {len(hlsl_output)} rows, golden has {num_golden_rows} rows")
+            self.log_output(f"Error: Row count mismatch - HLSL output has {len(hlsl_output)} rows, golden has {num_golden_rows} rows")
             return False
 
         all_match = True
@@ -1789,7 +1800,7 @@ class HLSLInterpreter:
 
                 if isinstance(output_value, list) and isinstance(golden_value, list):
                     if len(output_value) != len(golden_value):
-                        print(f"Error: Row {row_idx}, {field_name}: length mismatch output={len(output_value)} golden={len(golden_value)}")
+                        self.log_output(f"Error: Row {row_idx}, {field_name}: length mismatch output={len(output_value)} golden={len(golden_value)}")
                         all_match = False
                         continue
 
@@ -1801,20 +1812,20 @@ class HLSLInterpreter:
                         if is_float:
                             if isinstance(out_comp, float) and isinstance(gold_comp, float):
                                 if abs(out_comp - gold_comp) > float_tolerance:
-                                    print(f"Error: Row {row_idx}, {field_name}[{comp_idx}]: output={out_comp:.6f} golden={gold_comp:.6f} diff={abs(out_comp - gold_comp):.6f} > tolerance={float_tolerance}")
+                                    self.log_output(f"Error: Row {row_idx}, {field_name}[{comp_idx}]: output={out_comp:.6f} golden={gold_comp:.6f} diff={abs(out_comp - gold_comp):.6f} > tolerance={float_tolerance}")
                                     all_match = False
                             elif out_comp != gold_comp:
-                                print(f"Error: Row {row_idx}, {field_name}[{comp_idx}]: output={out_comp} golden={gold_comp} (float comparison failed)")
+                                self.log_output(f"Error: Row {row_idx}, {field_name}[{comp_idx}]: output={out_comp} golden={gold_comp} (float comparison failed)")
                                 all_match = False
                         else:
                             if out_comp != gold_comp:
-                                print(f"Error: Row {row_idx}, {field_name}[{comp_idx}]: output={out_comp} golden={gold_comp} (strict equality failed)")
+                                self.log_output(f"Error: Row {row_idx}, {field_name}[{comp_idx}]: output={out_comp} golden={gold_comp} (strict equality failed)")
                                 all_match = False
 
         if all_match:
-            print("Comparison PASSED: All output data matches golden data within tolerance")
+            self.log_output("Comparison PASSED: All output data matches golden data within tolerance")
         else:
-            print("Comparison FAILED: Some output data does not match golden data")
+            self.log_output("Comparison FAILED: Some output data does not match golden data")
 
         return all_match
 
@@ -1905,41 +1916,41 @@ def main():
 
     results = interpreter.executeVS(code, "main", "VS_INPUT")
 
-    print("HLSL Interpreter Result:")
-    print("=" * 40)
+    interpreter.log_output("HLSL Interpreter Result:")
+    interpreter.log_output("=" * 40)
     if results:
         for idx, result in enumerate(results):
-            print(f"\n--- Row {idx} ---")
+            interpreter.log_output(f"\n--- Row {idx} ---")
             if result:
                 for key, value in result.items():
                     if isinstance(value, list):
                         if len(value) == 4:
-                            print(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}, {value[3]:.4f}]")
+                            interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}, {value[3]:.4f}]")
                         elif len(value) == 3:
-                            print(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}]")
+                            interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}]")
                         elif len(value) == 2:
-                            print(f"{key}: [{value[0]:.4f}, {value[1]:.4f}]")
+                            interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}]")
                         else:
-                            print(f"{key}: {value}")
+                            interpreter.log_output(f"{key}: {value}")
                     else:
-                        print(f"{key}: {value}")
+                        interpreter.log_output(f"{key}: {value}")
     else:
-        print("No result produced")
+        interpreter.log_output("No result produced")
 
     if results and results[-1] and 'Color' in results[-1]:
         color = results[-1]['Color']
         if color and isinstance(color, list) and len(color) == 4:
-            print("\nFinal Output Color (RGBA):")
-            print(f"  R: {color[0]:.4f}")
-            print(f"  G: {color[1]:.4f}")
-            print(f"  B: {color[2]:.4f}")
-            print(f"  A: {color[3]:.4f}")
+            interpreter.log_output("\nFinal Output Color (RGBA):")
+            interpreter.log_output(f"  R: {color[0]:.4f}")
+            interpreter.log_output(f"  G: {color[1]:.4f}")
+            interpreter.log_output(f"  B: {color[2]:.4f}")
+            interpreter.log_output(f"  A: {color[3]:.4f}")
         else:
-            print(f"\nColor result: {color}")
+            interpreter.log_output(f"\nColor result: {color}")
 
-    print("\n" + "=" * 40)
-    print("Comparing with golden data...")
-    print("=" * 40)
+    interpreter.log_output("\n" + "=" * 40)
+    interpreter.log_output("Comparing with golden data...")
+    interpreter.log_output("=" * 40)
     interpreter.compare_vs_output_with_golden(results)
 
 
