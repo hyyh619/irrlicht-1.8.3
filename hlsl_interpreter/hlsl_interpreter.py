@@ -1268,6 +1268,8 @@ class HLSLInterpreter:
         func_name = node.value
         args = node.args
 
+        # transpose: 矩阵转置函数
+        # 计算矩阵的转置，将行列互换
         if func_name == 'transpose':
             if len(args) != 1:
                 return None
@@ -1278,6 +1280,8 @@ class HLSLInterpreter:
             self.debug_print(f"[FUNC] transpose(\n{self._format_value(val)}) =\n{self._format_value(result)}")
             return result
 
+        # normalize: 向量归一化函数
+        # 将输入向量缩放到单位长度，即长度为1
         elif func_name == 'normalize':
             if len(args) != 1:
                 return None
@@ -1290,6 +1294,8 @@ class HLSLInterpreter:
                 return result
             return val
 
+        # length: 向量长度函数
+        # 计算向量的欧几里得长度(模)
         elif func_name == 'length':
             if len(args) != 1:
                 return None
@@ -1300,6 +1306,8 @@ class HLSLInterpreter:
             self.debug_print(f"[FUNC] length({self._format_float(val)}) = {self._format_float(result)}")
             return result
 
+        # dot: 向量点积函数
+        # 计算两个向量的点积，结果为标量
         elif func_name == 'dot':
             if len(args) != 2:
                 return None
@@ -1311,6 +1319,8 @@ class HLSLInterpreter:
             self.debug_print(f"[FUNC] dot({self._format_float(a)}, {self._format_float(b)}) = {self._format_float(result)}")
             return result
 
+        # reflect: 反射向量函数
+        # 计算光线关于法向量的反射向量，公式: R = I - 2 * N * dot(I, N)
         elif func_name == 'reflect':
             if len(args) != 2:
                 return None
@@ -1322,6 +1332,8 @@ class HLSLInterpreter:
             self.debug_print(f"[FUNC] reflect({self._format_float(I)}, {self._format_float(N)}) = {self._format_float(result)}")
             return result
 
+        # max: 最大值函数
+        # 返回两个值中的较大者
         elif func_name == 'max':
             if len(args) != 2:
                 return None
@@ -1333,6 +1345,8 @@ class HLSLInterpreter:
             self.debug_print(f"[FUNC] max({self._format_float(a)}, {self._format_float(b)}) = {self._format_float(result)}")
             return result
 
+        # min: 最小值函数
+        # 返回两个值中的较小者
         elif func_name == 'min':
             if len(args) != 2:
                 return None
@@ -1344,6 +1358,8 @@ class HLSLInterpreter:
             self.debug_print(f"[FUNC] min({self._format_float(a)}, {self._format_float(b)}) = {self._format_float(result)}")
             return result
 
+        # pow: 幂函数
+        # 计算base的exp次幂，即 base ^ exp
         elif func_name == 'pow':
             if len(args) != 2:
                 return None
@@ -1355,6 +1371,8 @@ class HLSLInterpreter:
             self.debug_print(f"[FUNC] pow({self._format_float(base)}, {self._format_float(exp)}) = {self._format_float(result)}")
             return result
 
+        # abs: 绝对值函数
+        # 返回数值的绝对值，对列表则对每个元素取绝对值
         elif func_name == 'abs':
             if len(args) != 1:
                 return None
@@ -1368,6 +1386,8 @@ class HLSLInterpreter:
             self.debug_print(f"[FUNC] abs({self._format_float(val)}) = {self._format_float(result)}")
             return result
 
+        # sin: 正弦函数
+        # 计算弧度的正弦值，对列表则对每个元素计算
         elif func_name == 'sin':
             if len(args) != 1:
                 return None
@@ -1381,6 +1401,8 @@ class HLSLInterpreter:
             self.debug_print(f"[FUNC] sin({self._format_float(val)}) = {self._format_float(result)}")
             return result
 
+        # cos: 余弦函数
+        # 计算弧度的余弦值，对列表则对每个元素计算
         elif func_name == 'cos':
             if len(args) != 1:
                 return None
@@ -1394,6 +1416,8 @@ class HLSLInterpreter:
             self.debug_print(f"[FUNC] cos({self._format_float(val)}) = {self._format_float(result)}")
             return result
 
+        # mul: 矩阵乘法函数
+        # 执行4x4或3x3矩阵乘法运算
         elif func_name == 'mul':
             if len(args) != 2:
                 return None
@@ -1412,6 +1436,8 @@ class HLSLInterpreter:
                     return result
             return None
 
+        # float2/float3/float4: 向量构造函数
+        # 将参数展平合并为指定长度的向量
         elif func_name in ['float2', 'float3', 'float4']:
             # 向量构造函数: 将参数展平合并
             result = []
