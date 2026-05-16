@@ -18,6 +18,17 @@
             ]
         },
         {
+            "name": "Python hlsl_interpreter",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "hlsl_interpreter.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/hlsl_interpreter",
+            "args": [
+                "wrong_constant_attenuation.json",
+            ]
+        },
+        {
             "name": "(lldb) Launch 01.HelloWorld",
             "type": "cppdbg",
             "request": "launch",
