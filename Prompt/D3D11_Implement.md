@@ -1938,8 +1938,20 @@ float4 PS_SOLID_WITH_LIGHT(PS_INPUT_BASIC input) : SV_TARGET
 
 # 88
 Git commit: 
-
-
+ying: this bug is found by hlsl-interpreter. I found that attenuation is too small which causes all colors to zero.
+d3d11 shader定义constant buffer时，需要做padding对齐吗？例如下面的定义
+float3 LightDir和float3 Attenuation之间没有满足16bytes对齐，是否需要添加padding bytes
+            "cbuffer LightBuffer : register(b1) {"
+            "    float4 AmbientColor;"
+            "    float4 DiffuseColor;"
+            "    float4 SpecularColor;"
+            "    float3 LightPos;"
+            "    float LightRadius;"
+            "    float3 LightDir;"
+            "    float3 Attenuation;"
+            "    float OuterCone;"
+            "    float InnerCone;"
+            "};"
 
 # 89
 Git commit: 
@@ -1950,4 +1962,20 @@ Git commit:
 
 
 # 91
+Git commit: 
+
+
+# 92
+Git commit: 
+
+
+# 93
+Git commit: 
+
+
+# 94
+Git commit: 
+
+
+# 95
 Git commit: 

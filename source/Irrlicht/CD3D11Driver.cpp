@@ -2577,15 +2577,17 @@ namespace irr
                 data[16]    = light.Direction.X;
                 data[17]    = light.Direction.Y;
                 data[18]    = light.Direction.Z;
-                data[19]    = light.Attenuation.X;
+                data[19]    = 0.0f;  // padding
 
-                data[20]    = light.Attenuation.Y;
-                data[21]    = light.Attenuation.Z;
-                data[22]    = light.OuterCone;
-                data[23]    = light.InnerCone;
+                data[20]    = light.Attenuation.X;
+                data[21]    = light.Attenuation.Y;
+                data[22]    = light.Attenuation.Z;
+                data[23]    = 0.0f;  // padding
+                data[24]    = light.OuterCone;
+                data[25]    = light.InnerCone;
 
-                data[24]    = light.Falloff;
-                data[25]    = (float)light.Type;
+                data[26]    = light.Falloff;
+                data[27]    = (float)light.Type;
 
                 m_pID3DDeviceContext->Unmap(m_LightConstantBuffer, 0);
 
