@@ -1882,9 +1882,10 @@ def main():
     if len(sys.argv) < 2:
         print("Usage: python hlsl_interpreter.py <config.json>")
         print("Config JSON should contain: hlsl_file_path, csv_folder_path, log_file_path")
-        sys.exit(1)
+        config_path = './wrong_constant_attenuation.json'
+    else:
+        config_path = sys.argv[1]
 
-    config_path = sys.argv[1]
     if not os.path.exists(config_path):
         print(f"Error: Config file not found: {config_path}")
         sys.exit(1)

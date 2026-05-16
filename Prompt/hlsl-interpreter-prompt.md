@@ -786,7 +786,7 @@ Git commit: hlsl-inter: add execution time print by MiniMax-M2.7.
 
 
 # 33
-Git commit: 
+Git commit: hlsl-inter: add json configure to load hlsl source code, cbuffer/input/output data and log path by MiniMax-M2.7.
 class HLSLInterpreter目前是直接读取code字符串来解释执行HLSL，执行HLSL所需要的input,output,constant buffer等数据都是从hlsl_interpreter.py的执行目录，请做以下修改
 1. 使用json文件输入当前要执行的HLSL文件的路径，要加载的csv文件所在的文件夹路径，输出的log文件路径
 2. HLSLInterpreter不要把code字符串作为参数输入，采用输入HLSL的文件路径，读取文件来获得需要执行的HLSL
