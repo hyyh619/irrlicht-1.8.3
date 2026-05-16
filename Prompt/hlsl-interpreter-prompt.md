@@ -775,7 +775,7 @@ Git commit: hlsl-inter: optimize log file by MiniMax-M2.7.
 
 
 # 32
-Git commit: 
+Git commit: hlsl-inter: add execution time print by MiniMax-M2.7.
 给HLSLInterpreter添加一个计时器，统计其执行时间。
 1. 统计interpreter.interpret(code)执行时间
 2. 统计interpreter.load_vs_output_golden_from_csv(golden_csv_path)执行时间
@@ -787,6 +787,11 @@ Git commit:
 
 # 33
 Git commit: 
+class HLSLInterpreter目前是直接读取code字符串来解释执行HLSL，执行HLSL所需要的input,output,constant buffer等数据都是从hlsl_interpreter.py的执行目录，请做以下修改
+1. 使用json文件输入当前要执行的HLSL文件的路径，要加载的csv文件所在的文件夹路径，输出的log文件路径
+2. HLSLInterpreter不要把code字符串作为参数输入，采用输入HLSL的文件路径，读取文件来获得需要执行的HLSL
+3. HLSLInterpreter不要默认读取当前目录下的csv，把csv所在的路径通过参数输入，根据输入路径读取参数
+
 
 # 34
 Git commit: 

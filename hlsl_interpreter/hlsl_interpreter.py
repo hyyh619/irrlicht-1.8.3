@@ -396,6 +396,7 @@ class HLSLInterpreter:
         self._eval_counter = 0                              # evaluate_syntax_tree执行计数器
         self._should_print = True                           # 当前是否应该打印
         self._log_file = None                               # 日志文件句柄
+        self.hlsl_code = None                               # 加载的HLSL代码
         if self.log_to_file and self.log_file_path:
             self._log_file = open(self.log_file_path, self.log_file_mode, encoding='utf-8')
 
@@ -1480,12 +1481,23 @@ class HLSLInterpreter:
 
         return ret_val
 
-    def interpret(self, code: str):
+    def interpret(self, hlsl_file_path: str, csv_folder_path: str = None):
         """
         解释HLSL代码 - 解析结构体和cbuffer定义
-        code: HLSL源代码
+        hlsl_file_path: HLSL文件路径
+        csv_folder_path: CSV文件夹路径（如果为None则不加载CSV数据）
         """
-        script_dir = os.path.dirname(os.path.abspath(__file__))
+        if not os.path.exists(hlsl_file_path):
+            self.log_output(f"Error: HLSL file not found: {hlsl_file_path}")
+            return
+
+        with open(hlsl_file_path, 'r', encoding='utf-8') as f:
+            self.hlsl_code = f.read()
+
+        code = self.hlsl_code
+
+        if csv_folder_path is None:
+            csv_folder_path = os.path.dirname(hlsl_file_path)
 
         # 解析struct定义
         struct_pattern = r'struct\s+\w+\s*\{[^}]+\}'
@@ -1503,24 +1515,26 @@ class HLSLInterpreter:
 
         # 从CSV加载struct数据
         for struct_name in self.structs:
-            csv_path = os.path.join(script_dir, f'{struct_name}.csv')
+            csv_path = os.path.join(csv_folder_path, f'{struct_name}.csv')
             if os.path.exists(csv_path):
                 self.load_struct_data_from_csv(struct_name, csv_path)
 
         # 从CSV加载cbuffer数据
         for cb_name in self.cbuffers:
-            csv_path = os.path.join(script_dir, f'{cb_name}.csv')
+            csv_path = os.path.join(csv_folder_path, f'{cb_name}.csv')
             if os.path.exists(csv_path):
                 self.load_cbuffer_data_from_csv(cb_name, csv_path)
 
-    def executeVS(self, code: str, main_func: str, vs_input: str):
+    def executeVS(self, main_func: str, vs_input: str, code: str = None):
         """
         执行顶点着色器
-        code: HLSL代码
         main_func: 入口函数名
         vs_input: 输入结构体名
+        code: HLSL代码（如果为None则使用self.hlsl_code）
         返回: 输出结构体字典列表
         """
+        if code is None:
+            code = self.hlsl_code
         input_struct = self.structs.get(vs_input)
         if not input_struct:
             self.log_output(f"Cannot find vs input: {vs_input}\n")
@@ -1863,97 +1877,54 @@ class HLSLInterpreter:
 
 
 def main():
-    interpreter = HLSLInterpreter(log_file_mode='w', print_sequence=100)
+    import sys
 
-    code = '''
-    struct VS_INPUT {
-        float3 Pos : POSITION;
-        float3 Normal : NORMAL;
-        float4 Color : COLOR;
-        float2 TexCoord : TEXCOORD;
-    };
-    struct VS_OUTPUT {
-        float4 Pos : SV_POSITION;
-        float4 Color : COLOR;
-        float2 TexCoord : TEXCOORD0;
-        float2 TexCoord2 : TEXCOORD1;
-        float3 Normal : NORMAL;
-        float3 WorldPos : WORLDPOS;
-    };
-    cbuffer MatrixBuffer : register(b0) {
-        float4x4 WorldViewProj;
-        float4x4 World;
-    };
-    cbuffer LightBuffer : register(b1) {
-        float4 AmbientColor;
-        float4 DiffuseColor;
-        float4 SpecularColor;
-        float3 LightPos;
-        float LightRadius;
-        float3 LightDir;
-        float3 Attenuation;
-        float OuterCone;
-        float InnerCone;
-    };
-    cbuffer MaterialBuffer : register(b2) {
-        float4 MaterialDiffuseColor;
-        float4 MaterialAmbientColor;
-        float4 MaterialSpecularColor;
-        float4 MaterialEmissiveColor;
-        float Shininess;
-        uint ColorMaterialMode;
-        float2 Padding;
-    };
-    cbuffer CameraBuffer : register(b3) {
-        float3 cameraPos;
-    };
-    VS_OUTPUT main(VS_INPUT input) {
-        VS_OUTPUT output;
-        output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));
-        float4 worldPos = mul(float4(input.Pos, 1.0), transpose(World));
-        float3 nor = normalize(input.Normal);
-        float3 normal = normalize(mul(nor, (float3x3)World));
-        output.WorldPos = worldPos.xyz;
-        output.Normal = normal;
-        output.TexCoord = input.TexCoord;
-        output.TexCoord2 = input.TexCoord;
-        float3 lightDistant = LightPos.xyz - worldPos.xyz;
-        float dist = length(lightDistant);
-        float3 lightDir = normalize(lightDistant);
-        float3 viewDir = cameraPos;
-        float NdotL = max(dot(normal, lightDir), 0.0);
-        float4 matDiffuse = (ColorMaterialMode == 1 || ColorMaterialMode == 5) ? input.Color : MaterialDiffuseColor;
-        float4 matAmbient = (ColorMaterialMode == 2 || ColorMaterialMode == 5) ? input.Color : MaterialAmbientColor;
-        float4 matSpecular = (ColorMaterialMode == 3) ? input.Color : MaterialSpecularColor;
-        float4 matEmissive = (ColorMaterialMode == 4) ? input.Color : MaterialEmissiveColor;
-        float3 diffuse = matDiffuse.rgb * DiffuseColor.rgb * NdotL;
-        float3 R = reflect(lightDir, normal);
-        float RdotV = max(dot(R, viewDir), 0.0);
-        float3 specular = RdotV > 0.0 ? matSpecular.rgb * SpecularColor.rgb * pow(RdotV, Shininess) : float3(0.0, 0.0, 0.0);
-        float3 ambient = matAmbient.rgb * AmbientColor.rgb;
-        float3 emissive = matEmissive.rgb;
-        float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist);
-        float cond = dist <= LightRadius ? 1.0 : 0.0;
-        output.Color = float4((ambient + diffuse * att + specular * att + emissive) * cond, 1.0);
-        return output;
-    }
-    '''
+    if len(sys.argv) < 2:
+        print("Usage: python hlsl_interpreter.py <config.json>")
+        print("Config JSON should contain: hlsl_file_path, csv_folder_path, log_file_path")
+        sys.exit(1)
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    config_path = sys.argv[1]
+    if not os.path.exists(config_path):
+        print(f"Error: Config file not found: {config_path}")
+        sys.exit(1)
+
+    config = {}
+    with open(config_path, 'r', encoding='utf-8') as f:
+        config = json.load(f)
+
+    hlsl_file_path = config.get('hlsl_file_path', '')
+    csv_folder_path = config.get('csv_folder_path', '')
+    log_file_path = config.get('log_file_path', 'hlsl_interpreter.log')
+
+    if not hlsl_file_path:
+        print("Error: hlsl_file_path not specified in config")
+        sys.exit(1)
+
+    if not os.path.exists(hlsl_file_path):
+        print(f"Error: HLSL file not found: {hlsl_file_path}")
+        sys.exit(1)
+
+    if csv_folder_path and not os.path.exists(csv_folder_path):
+        print(f"Error: CSV folder not found: {csv_folder_path}")
+        sys.exit(1)
+
+    interpreter = HLSLInterpreter(log_to_file=True, log_file_path=log_file_path, log_file_mode='w', print_sequence=100)
+
     total_start = time.time()
 
     interpret_start = time.time()
-    interpreter.interpret(code)
+    interpreter.interpret(hlsl_file_path, csv_folder_path)
     interpret_time = time.time() - interpret_start
 
-    golden_csv_path = os.path.join(script_dir, 'VS_OUTPUT.csv')
+    golden_csv_path = os.path.join(csv_folder_path, 'VS_OUTPUT.csv') if csv_folder_path else None
     load_golden_start = time.time()
-    if os.path.exists(golden_csv_path):
+    if golden_csv_path and os.path.exists(golden_csv_path):
         interpreter.load_vs_output_golden_from_csv(golden_csv_path)
     load_golden_time = time.time() - load_golden_start
 
     execute_start = time.time()
-    results = interpreter.executeVS(code, "main", "VS_INPUT")
+    results = interpreter.executeVS("main", "VS_INPUT")
     execute_time = time.time() - execute_start
 
     interpreter.log_output("HLSL Interpreter Result:")
@@ -2000,7 +1971,7 @@ def main():
     interpreter.log_output("\n" + "=" * 40)
     interpreter.log_output("Timing Summary:")
     interpreter.log_output("=" * 40)
-    interpreter.log_output(f"interpreter.interpret(code):        {interpret_time:.4f}s")
+    interpreter.log_output(f"interpreter.interpret():             {interpret_time:.4f}s")
     interpreter.log_output(f"interpreter.load_vs_output_golden_from_csv(): {load_golden_time:.4f}s")
     interpreter.log_output(f"interpreter.executeVS():           {execute_time:.4f}s")
     interpreter.log_output(f"compare_vs_output_with_golden():    {compare_time:.4f}s")
