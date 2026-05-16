@@ -382,17 +382,18 @@ class HLSLInterpreter:
     支持: 结构体定义、cbuffer定义、函数解析、表达式求值
     """
 
-    def __init__(self, log_to_file: bool = True, log_file_path: str = "hlsl_interpreter.log", print_sequence: int = 1, log_file_mode: str = 'a'):
+    def __init__(self, log_to_file: bool = True, log_file_path: str = "hlsl_interpreter.log", print_sequence: int = 1, log_file_mode: str = 'a', printSyntaxTree: bool = True, print_interpreter_result: bool = True):
         self.structs: Dict[str, StructDefinition] = {}      # 解析的结构体定义
         self.cbuffers: Dict[str, CbufferDefinition] = {}    # 解析的cbuffer定义
         self.variables: Dict[str, Any] = {}                 # 全局变量
         self.debug = True                                   # 调试模式开关
-        self.printSyntaxTree = True                         # 打印语法树开关
+        self.printSyntaxTree = printSyntaxTree              # 打印语法树开关
         self.syntax_parser = SyntaxTreeParser()             # 语法树解析器
         self.log_to_file = log_to_file                      # 是否输出到文件
         self.log_file_path = log_file_path                  # 日志文件路径
         self.log_file_mode = log_file_mode                  # 文件模式: 'a'=追加, 'w'=覆盖
         self.print_sequence = max(1, print_sequence)        # 打印间隔频率
+        self.print_interpreter_result = print_interpreter_result  # 是否打印HLSL Interpreter Result
         self._eval_counter = 0                              # evaluate_syntax_tree执行计数器
         self._should_print = True                           # 当前是否应该打印
         self._log_file = None                               # 日志文件句柄
@@ -1938,6 +1939,9 @@ def main():
     log_file_path = config.get('log_file_path', 'hlsl_interpreter.log')
     log_file_mode = config.get('log_file_mode', 'a')
     print_sequence = config.get('print_sequence', 1)
+    log_to_file = config.get('log_to_file', True)
+    printSyntaxTree = config.get('printSyntaxTree', True)
+    print_interpreter_result = config.get('print_interpreter_result', True)
 
     if not hlsl_file_path:
         print("Error: hlsl_file_path not specified in config")
@@ -1951,7 +1955,13 @@ def main():
         print(f"Error: CSV folder not found: {csv_folder_path}")
         sys.exit(1)
 
-    interpreter = HLSLInterpreter(log_to_file=True, log_file_path=log_file_path, log_file_mode=log_file_mode, print_sequence=print_sequence)
+    interpreter = HLSLInterpreter(
+        log_to_file=log_to_file,
+        log_file_path=log_file_path,
+        log_file_mode=log_file_mode,
+        print_sequence=print_sequence,
+        printSyntaxTree=printSyntaxTree,
+        print_interpreter_result=print_interpreter_result)
 
     total_start = time.time()
 
@@ -1969,39 +1979,40 @@ def main():
     results = interpreter.executeVS("main", "VS_INPUT")
     execute_time = time.time() - execute_start
 
-    interpreter.log_output("HLSL Interpreter Result:")
-    interpreter.log_output("=" * 40)
-    if results:
-        for idx, result in enumerate(results):
-            interpreter.log_output(f"\n--- Row {idx} ---")
-            if result:
-                for key, value in result.items():
-                    if isinstance(value, list):
-                        if len(value) == 4:
-                            interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}, {value[3]:.4f}]")
-                        elif len(value) == 3:
-                            interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}]")
-                        elif len(value) == 2:
-                            interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}]")
+    if interpreter.print_interpreter_result:
+        interpreter.log_output("HLSL Interpreter Result:")
+        interpreter.log_output("=" * 40)
+        if results:
+            for idx, result in enumerate(results):
+                interpreter.log_output(f"\n--- Row {idx} ---")
+                if result:
+                    for key, value in result.items():
+                        if isinstance(value, list):
+                            if len(value) == 4:
+                                interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}, {value[3]:.4f}]")
+                            elif len(value) == 3:
+                                interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}]")
+                            elif len(value) == 2:
+                                interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}]")
+                            else:
+                                interpreter.log_output(f"{key}: {value}")
                         else:
                             interpreter.log_output(f"{key}: {value}")
-                    else:
-                        interpreter.log_output(f"{key}: {value}")
-    else:
-        interpreter.log_output("No result produced")
-
-    if results and results[-1] and 'Color' in results[-1]:
-        color = results[-1]['Color']
-        if color and isinstance(color, list) and len(color) == 4:
-            interpreter.log_output("\nFinal Output Color (RGBA):")
-            interpreter.log_output(f"  R: {color[0]:.4f}")
-            interpreter.log_output(f"  G: {color[1]:.4f}")
-            interpreter.log_output(f"  B: {color[2]:.4f}")
-            interpreter.log_output(f"  A: {color[3]:.4f}")
         else:
-            interpreter.log_output(f"\nColor result: {color}")
+            interpreter.log_output("No result produced")
 
-    interpreter.log_output("\n" + "=" * 40)
+        if results and results[-1] and 'Color' in results[-1]:
+            color = results[-1]['Color']
+            if color and isinstance(color, list) and len(color) == 4:
+                interpreter.log_output("\nFinal Output Color (RGBA):")
+                interpreter.log_output(f"  R: {color[0]:.4f}")
+                interpreter.log_output(f"  G: {color[1]:.4f}")
+                interpreter.log_output(f"  B: {color[2]:.4f}")
+                interpreter.log_output(f"  A: {color[3]:.4f}")
+            else:
+                interpreter.log_output(f"\nColor result: {color}")
+
+        interpreter.log_output("\n" + "=" * 40)
     interpreter.log_output("Comparing with golden data...")
     interpreter.log_output("=" * 40)
     compare_start = time.time()
