@@ -1688,12 +1688,14 @@ class HLSLInterpreter:
             return False
 
         all_match = True
+        passed_count = 0
         field_type_map = {}
         for field in vs_output_def.fields:
             field_type_map[field.semantic] = field.field_type
 
         for row_idx in range(len(hlsl_output)):
             output_row = hlsl_output[row_idx]
+            row_match = True
             for semantic, golden_values in golden_data.items():
                 if row_idx >= len(golden_values):
                     continue
@@ -1713,7 +1715,7 @@ class HLSLInterpreter:
                 if isinstance(output_value, list) and isinstance(golden_value, list):
                     if len(output_value) != len(golden_value):
                         print(f"Error: Row {row_idx}, {field_name}: length mismatch output={len(output_value)} golden={len(golden_value)}")
-                        all_match = False
+                        row_match = False
                         continue
 
                     is_float = 'float' in field_type
@@ -1725,15 +1727,21 @@ class HLSLInterpreter:
                             if isinstance(out_comp, float) and isinstance(gold_comp, float):
                                 if abs(out_comp - gold_comp) > float_tolerance:
                                     print(f"Error: Row {row_idx}, {field_name}[{comp_idx}]: output={out_comp:.6f} golden={gold_comp:.6f} diff={abs(out_comp - gold_comp):.6f} > tolerance={float_tolerance}")
-                                    all_match = False
+                                    row_match = False
                             elif out_comp != gold_comp:
                                 print(f"Error: Row {row_idx}, {field_name}[{comp_idx}]: output={out_comp} golden={gold_comp} (float comparison failed)")
-                                all_match = False
+                                row_match = False
                         else:
                             if out_comp != gold_comp:
                                 print(f"Error: Row {row_idx}, {field_name}[{comp_idx}]: output={out_comp} golden={gold_comp} (strict equality failed)")
-                                all_match = False
+                                row_match = False
 
+            if row_match:
+                passed_count += 1
+            else:
+                all_match = False
+
+        print(f"Total PASSED rows: {passed_count}/{num_golden_rows}")
         if all_match:
             print("Comparison PASSED: All output data matches golden data within tolerance")
         else:
