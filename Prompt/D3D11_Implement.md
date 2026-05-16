@@ -1955,6 +1955,32 @@ float3 LightDir和float3 Attenuation之间没有满足16bytes对齐，是否需�
 
 # 89
 Git commit: 
+把CD3D11Shader.cpp里面所有
+            "cbuffer LightBuffer : register(b1) {"
+            "    float4 AmbientColor;"
+            "    float4 DiffuseColor;"
+            "    float4 SpecularColor;"
+            "    float3 LightPos;"
+            "    float LightRadius;"
+            "    float3 LightDir;"
+            "    float3 Attenuation;"
+            "    float OuterCone;"
+            "    float InnerCone;"
+            "};"
+都改为
+            "cbuffer LightBuffer : register(b1) {"
+            "    float4 AmbientColor;"
+            "    float4 DiffuseColor;"
+            "    float4 SpecularColor;"
+            "    float3 LightPos;"
+            "    float LightRadius;"
+            "    float3 LightDir;"
+            "    float padding0;"
+            "    float3 Attenuation;"
+            "    float padding1;"
+            "    float OuterCone;"
+            "    float InnerCone;"
+            "};"
 
 
 # 90
