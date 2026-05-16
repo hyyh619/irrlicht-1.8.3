@@ -1,5 +1,7 @@
 {
     "hlsl_file_path": "./specular_too_shining/specular_too_shining.hlsl",
     "csv_folder_path": "./specular_too_shining/",
-    "log_file_path": "./specular_too_shining/output.log"
+    "log_file_path": "./specular_too_shining/output.log",
+    "log_file_mode": "w",
+    "print_sequence": 1
 }

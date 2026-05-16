@@ -1905,6 +1905,8 @@ def main():
     hlsl_file_path = config.get('hlsl_file_path', '')
     csv_folder_path = config.get('csv_folder_path', '')
     log_file_path = config.get('log_file_path', 'hlsl_interpreter.log')
+    log_file_mode = config.get('log_file_mode', 'a')
+    print_sequence = config.get('print_sequence', 1)
 
     if not hlsl_file_path:
         print("Error: hlsl_file_path not specified in config")
@@ -1918,7 +1920,7 @@ def main():
         print(f"Error: CSV folder not found: {csv_folder_path}")
         sys.exit(1)
 
-    interpreter = HLSLInterpreter(log_to_file=True, log_file_path=log_file_path, log_file_mode='w', print_sequence=100)
+    interpreter = HLSLInterpreter(log_to_file=True, log_file_path=log_file_path, log_file_mode=log_file_mode, print_sequence=print_sequence)
 
     total_start = time.time()
 

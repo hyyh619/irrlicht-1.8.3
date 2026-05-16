@@ -795,6 +795,8 @@ class HLSLInterpreter目前是直接读取code字符串来解释执行HLSL，执
 
 # 34
 Git commit: 
+hlsl_interpreter.py的HLSLInterpreter创建时使用参数决定log_file_mode和print_sequence，请把输入参数改成与hlsl源码文件，csv数据文件路径一样，加入到json文件中，从json文件中读取log_file_mode和print_sequence参数
+    interpreter = HLSLInterpreter(log_to_file=True, log_file_path=log_file_path, log_file_mode='w', print_sequence=100)
 
 
 # 35
