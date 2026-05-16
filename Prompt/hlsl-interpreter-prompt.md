@@ -800,7 +800,9 @@ hlsl_interpreter.py的HLSLInterpreter创建时使用参数决定log_file_mode和
 
 
 # 35
-Git commit: 
+Git commit: hlsl-inter: fix wrong function body generation by ying.
+MiniMax-M2.7 cannot find the root cause. 实际问题是body没有正常去除大括弧，导致无法识别语句
+
 ./hlsl_interpreter/hlsl_interpreter.py的execute_main_function函数在读取了hlsl源文件加载成字符串后，通过下面代码切分成HLSL一条条语句。看起来下面的代码不能正确的切分语句。导致把加载HLSL源代码当成了一条语句执行导致执行失败。
         for char in body:
             if char == '{':
@@ -824,6 +826,10 @@ Git commit:
 
 # 36
 Git commit: 
+为hlsl_interpreter.py的json配置文件增加控制log输出的配置项
+1. 增加是否打印语法树的控制， self.printSyntaxTree改成用json configure配置
+2. 增加是否输出到文件的控制， self.log_to_file改成用json configure配置
+3. 增加是否打印输出HLSL Interpreter Result的控制
 
 
 # 37
