@@ -61,7 +61,7 @@ VS_OUTPUT main(VS_INPUT input) {
     float3 diffuse = matDiffuse.rgb * DiffuseColor.rgb * NdotL;
     float3 R = reflect(lightDir, normal);
     float RdotV = max(dot(R, viewDir), 0.0);
-    float3 specular = RdotV > 0.0 ? matSpecular.rgb * SpecularColor.rgb * pow(RdotV, Shininess) : float3(0.0, 0.0, 0.0);
+    float3 specular = matSpecular.rgb * SpecularColor.rgb * pow(RdotV, Shininess);
     float3 ambient = matAmbient.rgb * AmbientColor.rgb;
     float3 emissive = matEmissive.rgb;
     float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist);
