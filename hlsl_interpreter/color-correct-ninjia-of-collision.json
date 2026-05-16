@@ -1,0 +1,10 @@
+{
+    "hlsl_file_path": "./color-correct-ninjia-of-collision/VERTEX_SHADER_STANDARD_POINT.hlsl",
+    "csv_folder_path": "./color-correct-ninjia-of-collision/",
+    "log_file_path": "./color-correct-ninjia-of-collision/output.log",
+    "log_file_mode": "w",
+    "print_sequence": 100,
+    "log_to_file": true,
+    "printSyntaxTree": false,
+    "print_interpreter_result": false
+}

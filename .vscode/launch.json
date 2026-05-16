@@ -25,7 +25,7 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/hlsl_interpreter",
             "args": [
-                "wrong_constant_attenuation.json",
+                "color-correct-ninjia-of-collision.json",
             ]
         },
         {
