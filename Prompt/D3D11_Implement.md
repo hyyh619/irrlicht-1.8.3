@@ -1954,7 +1954,7 @@ float3 LightDir和float3 Attenuation之间没有满足16bytes对齐，是否需�
             "};"
 
 # 89
-Git commit: 
+Git commit: add padding to constant buffer by MiniMax-M2.7.
 把CD3D11Shader.cpp里面所有
             "cbuffer LightBuffer : register(b1) {"
             "    float4 AmbientColor;"
@@ -1985,6 +1985,10 @@ Git commit:
 
 # 90
 Git commit: 
+把CD3D11Shader.cpp里面所有
+            "    float3 specular = matSpecular.rgb * SpecularColor.rgb * pow(RdotV, Shininess);"
+都改为
+            "    float3 specular = RdotV > 0.0 ? matSpecular.rgb * SpecularColor.rgb * pow(RdotV, Shininess) : float3(0.0, 0.0, 0.0);"
 
 
 # 91
