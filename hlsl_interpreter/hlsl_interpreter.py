@@ -1357,6 +1357,58 @@ class HLSLInterpreter:
         self.debug_print(f"[STMT] {stmt} => (no assignment)")
         return None
 
+    def GenerateStmts(self, code: str):
+        statements = []
+        current_stmt = []
+        brace_count = 0
+        paren_count = 0
+        in_string = False
+        string_char = None
+
+        for char in code:
+            if char == '{':
+                brace_count += 1
+                if brace_count > 0:
+                    current_stmt.append(char)
+            elif char == '}':
+                if brace_count > 0:
+                    current_stmt.append(char)
+                brace_count -= 1
+                if brace_count == 0 and current_stmt:
+                    stmt = ''.join(current_stmt).strip()
+                    if stmt:
+                        statements.append(stmt)
+                    current_stmt = []
+            elif char == '(':
+                paren_count += 1
+                current_stmt.append(char)
+            elif char == ')':
+                paren_count -= 1
+                current_stmt.append(char)
+            elif char in '"\'':
+                if not in_string:
+                    in_string = True
+                    string_char = char
+                elif char == string_char:
+                    in_string = False
+                    string_char = None
+                current_stmt.append(char)
+            elif char == ';' and brace_count == 0 and paren_count == 0 and not in_string:
+                stmt = ''.join(current_stmt).strip()
+                if stmt:
+                    statements.append(stmt)
+                current_stmt = []
+            else:
+                current_stmt.append(char)
+
+        if current_stmt:
+            stmt = ''.join(current_stmt).strip()
+            if stmt:
+                statements.append(stmt)
+
+        return statements
+
+
     def execute_main_function(self, code: str, main_func: str, input_struct_name: str, row_index: int, data: Dict[str, Any]):
         """
         执行HLSL main函数
@@ -1411,8 +1463,10 @@ class HLSLInterpreter:
             pos += 1
 
         body = code[open_brace_pos+1:pos-1].strip()
-        if body.startswith('{') and body.endswith('}'):
-            body = body[1:-1].strip()
+        if body.startswith('{'):
+            body = body[1:].strip()
+        if body.endswith('}'):
+            body = body[:-1].strip()
 
         # 初始化局部变量
         local_vars = {'data': data}
@@ -1428,30 +1482,7 @@ class HLSLInterpreter:
         local_vars['output'] = output_obj
 
         # 分割语句
-        statements = []
-        current_stmt = []
-        brace_count = 0
-        in_string = False
-
-        for char in body:
-            if char == '{':
-                brace_count += 1
-                current_stmt.append(char)
-            elif char == '}':
-                brace_count -= 1
-                current_stmt.append(char)
-            elif char == ';' and brace_count == 0 and not in_string:
-                stmt = ''.join(current_stmt).strip()
-                if stmt:
-                    statements.append(stmt)
-                current_stmt = []
-            else:
-                current_stmt.append(char)
-
-        if current_stmt:
-            stmt = ''.join(current_stmt).strip()
-            if stmt:
-                statements.append(stmt)
+        statements = self.GenerateStmts(body)
 
         ret_val = None
 

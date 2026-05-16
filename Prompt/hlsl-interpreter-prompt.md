@@ -794,13 +794,32 @@ class HLSLInterpreter目前是直接读取code字符串来解释执行HLSL，执
 
 
 # 34
-Git commit: 
+Git commit: hlsl-inter: move log_file_mode and print_sequence to config file by MiniMax-M2.7.
 hlsl_interpreter.py的HLSLInterpreter创建时使用参数决定log_file_mode和print_sequence，请把输入参数改成与hlsl源码文件，csv数据文件路径一样，加入到json文件中，从json文件中读取log_file_mode和print_sequence参数
     interpreter = HLSLInterpreter(log_to_file=True, log_file_path=log_file_path, log_file_mode='w', print_sequence=100)
 
 
 # 35
 Git commit: 
+./hlsl_interpreter/hlsl_interpreter.py的execute_main_function函数在读取了hlsl源文件加载成字符串后，通过下面代码切分成HLSL一条条语句。看起来下面的代码不能正确的切分语句。导致把加载HLSL源代码当成了一条语句执行导致执行失败。
+        for char in body:
+            if char == '{':
+                brace_count += 1
+                current_stmt.append(char)
+            elif char == '}':
+                brace_count -= 1
+                current_stmt.append(char)
+            elif char == ';' and brace_count == 0 and not in_string:
+                stmt = ''.join(current_stmt).strip()
+                if stmt:
+                    statements.append(stmt)
+                current_stmt = []
+            else:
+                current_stmt.append(char)
+例如加载./hlsl_interpreter/constant_buffer_attenuation_wrong/VERTEX_SHADER_STANDARD_POINT.hlsl后得到的body如下，看起来上述代码不能正确切分
+“
+'{\n    VS_OUTPUT output;\n    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));\n    float4 worldPos = mul(float4(input.Pos, 1.0), transpose(World));\n    float3 nor = normalize(input.Normal);\n    float3 normal = normalize(mul(nor, (float3x3)World));\n    output.WorldPos = worldPos.xyz;\n    output.Normal = normal;\n    output.TexCoord = input.TexCoord;\n    output.TexCoord2 = input.TexCoord;\n    float3 lightDistant = LightPos.xyz - worldPos.xyz;\n    float dist = length(lightDistant);\n    float3 lightDir = normalize(lightDistant);\n    float3 viewDir = cameraPos;\n    float NdotL = max(dot(normal, lightDir), 0.0);\n    float4 matDiffuse = (ColorMaterialMode == 1 || ColorMaterialMode == 5) ? input.Color : MaterialDiffuseColor;\n    float4 matAmbient = (ColorMaterialMode == 2 || ColorMaterialMode == 5) ? input.Color : MaterialAmbientColor;\n    float4 matSpecular = (ColorMaterialMode == 3) ? input.Color : MaterialSpecularColor;\n    float4 matEmissive = (ColorMaterialMode == 4) ? input.Color : MaterialEmissiveColor;\n    float3 diffuse = matDiffuse.rgb * DiffuseColor.rgb * NdotL;\n    float3 R = reflect(lightDir, normal);\n    float RdotV = max(dot(R, viewDir), 0.0);\n    float3 specular = RdotV > 0.0 ? matSpecular.rgb * SpecularColor.rgb * pow(RdotV, Shininess) : float3(0.0, 0.0, 0.0);\n    float3 ambient = matAmbient.rgb * AmbientColor.rgb;\n    float3 emissive = matEmissive.rgb;\n    float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist);\n    float cond = dist <= LightRadius ? 1.0 : 0.0;\n    output.Color = float4((ambient + diffuse * att + specular * att + emissive) * cond, 1.0);\n    return output;'
+”
 
 
 # 36
