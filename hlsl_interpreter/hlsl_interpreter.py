@@ -3,6 +3,7 @@ import json
 import math
 import re
 import os
+import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Union, Optional
 
@@ -1862,7 +1863,7 @@ class HLSLInterpreter:
 
 
 def main():
-    interpreter = HLSLInterpreter(log_file_mode='w', print_sequence=4)
+    interpreter = HLSLInterpreter(log_file_mode='w', print_sequence=100)
 
     code = '''
     struct VS_INPUT {
@@ -1939,13 +1940,21 @@ def main():
     '''
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
+    total_start = time.time()
+
+    interpret_start = time.time()
     interpreter.interpret(code)
+    interpret_time = time.time() - interpret_start
 
     golden_csv_path = os.path.join(script_dir, 'VS_OUTPUT.csv')
+    load_golden_start = time.time()
     if os.path.exists(golden_csv_path):
         interpreter.load_vs_output_golden_from_csv(golden_csv_path)
+    load_golden_time = time.time() - load_golden_start
 
+    execute_start = time.time()
     results = interpreter.executeVS(code, "main", "VS_INPUT")
+    execute_time = time.time() - execute_start
 
     interpreter.log_output("HLSL Interpreter Result:")
     interpreter.log_output("=" * 40)
@@ -1982,7 +1991,20 @@ def main():
     interpreter.log_output("\n" + "=" * 40)
     interpreter.log_output("Comparing with golden data...")
     interpreter.log_output("=" * 40)
+    compare_start = time.time()
     interpreter.compare_vs_output_with_golden(results)
+    compare_time = time.time() - compare_start
+
+    total_time = time.time() - total_start
+
+    interpreter.log_output("\n" + "=" * 40)
+    interpreter.log_output("Timing Summary:")
+    interpreter.log_output("=" * 40)
+    interpreter.log_output(f"interpreter.interpret(code):        {interpret_time:.4f}s")
+    interpreter.log_output(f"interpreter.load_vs_output_golden_from_csv(): {load_golden_time:.4f}s")
+    interpreter.log_output(f"interpreter.executeVS():           {execute_time:.4f}s")
+    interpreter.log_output(f"compare_vs_output_with_golden():    {compare_time:.4f}s")
+    interpreter.log_output(f"Total execution time:               {total_time:.4f}s")
 
 
 if __name__ == '__main__':
