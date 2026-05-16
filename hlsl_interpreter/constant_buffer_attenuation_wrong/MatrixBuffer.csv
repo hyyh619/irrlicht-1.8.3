@@ -1,9 +1,9 @@
 Name,Value,Byte Offset,Type
 WorldViewProj,,0,float4x4 (column_major)
-WorldViewProj.row0,"-10.10769, 0.00, 2.09667, -46.4238",,float4
-WorldViewProj.row1,"-0.89286, 13.04295, -4.3043, -52.3581",,float4
-WorldViewProj.row2,"-1.92536, -3.1949, -9.28183, 136.73895",,float4
-WorldViewProj.row3,"-1.92472, -3.19383, -9.27873, 137.69337",,float4
+WorldViewProj.row0,"-10.32286, 0.00, -4.51227E-07, -20.64573",,float4
+WorldViewProj.row1,"9.89083E-08, 13.57655, -2.26276, -80.36185",,float4
+WorldViewProj.row2,"4.31310E-07, -1.64454, -9.86723, 135.50043",,float4
+WorldViewProj.row3,"4.31166E-07, -1.64399, -9.86394, 136.45526",,float4
 World,,64,float4x4 (column_major)
 World.row0,"-4.37114E-07, 0.00, 10.00, -75.00",,float4
 World.row1,"0.00, 10.00, 0.00, -66.00",,float4
