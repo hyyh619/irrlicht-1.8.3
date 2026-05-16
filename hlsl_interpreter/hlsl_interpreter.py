@@ -381,7 +381,7 @@ class HLSLInterpreter:
     支持: 结构体定义、cbuffer定义、函数解析、表达式求值
     """
 
-    def __init__(self, log_to_file: bool = True, log_file_path: str = "hlsl_interpreter.log", print_sequence: int = 1):
+    def __init__(self, log_to_file: bool = True, log_file_path: str = "hlsl_interpreter.log", print_sequence: int = 1, log_file_mode: str = 'a'):
         self.structs: Dict[str, StructDefinition] = {}      # 解析的结构体定义
         self.cbuffers: Dict[str, CbufferDefinition] = {}    # 解析的cbuffer定义
         self.variables: Dict[str, Any] = {}                 # 全局变量
@@ -390,17 +390,27 @@ class HLSLInterpreter:
         self.syntax_parser = SyntaxTreeParser()             # 语法树解析器
         self.log_to_file = log_to_file                      # 是否输出到文件
         self.log_file_path = log_file_path                  # 日志文件路径
+        self.log_file_mode = log_file_mode                  # 文件模式: 'a'=追加, 'w'=覆盖
         self.print_sequence = max(1, print_sequence)        # 打印间隔频率
         self._eval_counter = 0                              # evaluate_syntax_tree执行计数器
         self._should_print = True                           # 当前是否应该打印
+        self._log_file = None                               # 日志文件句柄
+        if self.log_to_file and self.log_file_path:
+            self._log_file = open(self.log_file_path, self.log_file_mode, encoding='utf-8')
+
+    def __del__(self):
+        """对象销毁时关闭日志文件"""
+        if self._log_file:
+            self._log_file.close()
+            self._log_file = None
 
     def log_output(self, *args, **kwargs):
         """输出到stdout和日志文件"""
         msg = ' '.join(str(arg) for arg in args)
         print(*args, **kwargs)
-        if self.log_to_file and self.log_file_path:
-            with open(self.log_file_path, 'a', encoding='utf-8') as f:
-                f.write(msg + '\n')
+        if self.log_to_file and self._log_file:
+            self._log_file.write(msg + '\n')
+            self._log_file.flush()
 
     def debug_print(self, msg: str):
         """调试打印"""
@@ -1852,7 +1862,7 @@ class HLSLInterpreter:
 
 
 def main():
-    interpreter = HLSLInterpreter(print_sequence=4)
+    interpreter = HLSLInterpreter(log_file_mode='w', print_sequence=4)
 
     code = '''
     struct VS_INPUT {

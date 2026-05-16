@@ -714,7 +714,7 @@ output.Pos是对于struct结构数据output获得其Pos，就是获取VS_OUTPUT�
 因此不要把这类'.'当成操作符，而是应该把output.Pos作为一个整体通过get_value来获取其数据
 
 # 30
-Git commit: 
+Git commit: hlsl-inter: add print controller to make syntax tree log and evaluate_syntax_tree log controlled by MiniMax-M2.7.
 hlsl_interpreter.py的self.evaluate_syntax_tree每次执行时，会打印详细的HLSL指令的计算过程，打印的例子如下
 [STMT] Executing: float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist)
 [SYNTAX TREE]
@@ -757,6 +757,21 @@ print_sequency=200，意味着每执行self.evaluate_syntax_tree 200次，打印
 
 # 31
 Git commit: 
+在class HLSLInterpreter中每次debug打印如果要写出到文件就调用log_output，但是log_output每次写一条消息到文件中都需要打开文件写入再关闭。
+    def log_output(self, *args, **kwargs):
+        """输出到stdout和日志文件"""
+        msg = ' '.join(str(arg) for arg in args)
+        print(*args, **kwargs)
+        if self.log_to_file and self.log_file_path:
+            with open(self.log_file_path, 'a', encoding='utf-8') as f:
+                f.write(msg + '\n')
+
+    def debug_print(self, msg: str):
+        """调试打印"""
+        if self.debug and self._should_print:
+            self.log_output(msg)
+1. 请不要在log_output中每次都打开文件写入再关闭，改成在HLSLInterpreter初始化时直接打开文件，在HLSLInterpreter对象销毁时关闭
+2. 创建一个控制变量，来决定HLSLInterpreter log文件是否用覆盖写还是添加写。
 
 
 # 32
