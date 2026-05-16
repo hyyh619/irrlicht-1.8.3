@@ -381,15 +381,18 @@ class HLSLInterpreter:
     支持: 结构体定义、cbuffer定义、函数解析、表达式求值
     """
 
-    def __init__(self, log_to_file: bool = True, log_file_path: str = "hlsl_interpreter.log"):
+    def __init__(self, log_to_file: bool = True, log_file_path: str = "hlsl_interpreter.log", print_sequence: int = 1):
         self.structs: Dict[str, StructDefinition] = {}      # 解析的结构体定义
         self.cbuffers: Dict[str, CbufferDefinition] = {}    # 解析的cbuffer定义
         self.variables: Dict[str, Any] = {}                 # 全局变量
         self.debug = True                                   # 调试模式开关
-        self.printSyntaxTree = False                        # 打印语法树开关
+        self.printSyntaxTree = True                         # 打印语法树开关
         self.syntax_parser = SyntaxTreeParser()             # 语法树解析器
         self.log_to_file = log_to_file                      # 是否输出到文件
         self.log_file_path = log_file_path                  # 日志文件路径
+        self.print_sequence = max(1, print_sequence)        # 打印间隔频率
+        self._eval_counter = 0                              # evaluate_syntax_tree执行计数器
+        self._should_print = True                           # 当前是否应该打印
 
     def log_output(self, *args, **kwargs):
         """输出到stdout和日志文件"""
@@ -401,7 +404,7 @@ class HLSLInterpreter:
 
     def debug_print(self, msg: str):
         """调试打印"""
-        if self.debug:
+        if self.debug and self._should_print:
             self.log_output(msg)
 
     def _format_float(self, val):
@@ -891,10 +894,13 @@ class HLSLInterpreter:
 
         # 使用语法树解析器处理所有表达式（包括三元运算符）
         tree = self.syntax_parser.parse(expr)
+
+        # Print syntax tree
         if self.printSyntaxTree == True:
             self.debug_print(f"[SYNTAX TREE]\n{tree}")
 
-        return self.evaluate_syntax_tree(tree, local_vars)
+        result = self.evaluate_syntax_tree(tree, local_vars)
+        return result
 
     def evaluate_syntax_tree(self, node: SyntaxTreeNode, local_vars: Dict[str, Any]) -> Any:
         """
@@ -903,6 +909,7 @@ class HLSLInterpreter:
         local_vars: 局部变量字典
         返回: 求值结果
         """
+
         if node is None:
             return None
 
@@ -1436,6 +1443,13 @@ class HLSLInterpreter:
 
         ret_val = None
 
+        self._eval_counter += 1
+        self._should_print = ((self._eval_counter - 1) % self.print_sequence == 0)
+
+        self.debug_print(f"******************************************************")
+        self.debug_print(f"**************Begin {self._eval_counter}**************")
+        self.debug_print(f"******************************************************\n")
+
         self.debug_print(f"\n=== INPUT DATA ===")
         for k, v in local_vars.items():
             if k.startswith('input.') or k == 'output':
@@ -1448,6 +1462,10 @@ class HLSLInterpreter:
                 ret_val = local_vars.get('output')
                 continue
             self.execute_statement(stmt, local_vars)
+
+        self.debug_print(f"******************************************************")
+        self.debug_print(f"**************End {self._eval_counter}**************")
+        self.debug_print(f"******************************************************\n")
 
         return ret_val
 
@@ -1834,7 +1852,7 @@ class HLSLInterpreter:
 
 
 def main():
-    interpreter = HLSLInterpreter()
+    interpreter = HLSLInterpreter(print_sequence=4)
 
     code = '''
     struct VS_INPUT {
