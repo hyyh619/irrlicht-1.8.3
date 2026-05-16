@@ -385,10 +385,11 @@ class HLSLInterpreter:
         self.structs: Dict[str, StructDefinition] = {}      # 解析的结构体定义
         self.cbuffers: Dict[str, CbufferDefinition] = {}    # 解析的cbuffer定义
         self.variables: Dict[str, Any] = {}                 # 全局变量
-        self.debug = True                                    # 调试模式开关
+        self.debug = True                                   # 调试模式开关
+        self.printSyntaxTree = False                        # 打印语法树开关
         self.syntax_parser = SyntaxTreeParser()             # 语法树解析器
         self.log_to_file = log_to_file                      # 是否输出到文件
-        self.log_file_path = log_file_path                 # 日志文件路径
+        self.log_file_path = log_file_path                  # 日志文件路径
 
     def log_output(self, *args, **kwargs):
         """输出到stdout和日志文件"""
@@ -890,7 +891,9 @@ class HLSLInterpreter:
 
         # 使用语法树解析器处理所有表达式（包括三元运算符）
         tree = self.syntax_parser.parse(expr)
-        self.debug_print(f"[SYNTAX TREE]\n{tree}")
+        if self.printSyntaxTree == True:
+            self.debug_print(f"[SYNTAX TREE]\n{tree}")
+
         return self.evaluate_syntax_tree(tree, local_vars)
 
     def evaluate_syntax_tree(self, node: SyntaxTreeNode, local_vars: Dict[str, Any]) -> Any:

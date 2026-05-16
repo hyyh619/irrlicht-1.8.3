@@ -715,6 +715,44 @@ output.Pos是对于struct结构数据output获得其Pos，就是获取VS_OUTPUT�
 
 # 30
 Git commit: 
+hlsl_interpreter.py的self.evaluate_syntax_tree每次执行时，会打印详细的HLSL指令的计算过程，打印的例子如下
+[STMT] Executing: float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist)
+[SYNTAX TREE]
+BinaryOp(/)
+  left:
+    Value(1.0)
+  right:
+BinaryOp(+)
+      left:
+BinaryOp(+)
+          left:
+            Value(Attenuation.x)
+          right:
+BinaryOp(*)
+              left:
+                Value(Attenuation.y)
+              right:
+                Value(dist)
+      right:
+BinaryOp(*)
+          left:
+BinaryOp(*)
+              left:
+                Value(Attenuation.z)
+              right:
+                Value(dist)
+          right:
+            Value(dist)
+[BINARY OP] left=0.0000, right=498.6749, op=*, result=0.0000
+[BINARY OP] left=0.0017, right=0.0000, op=+, result=0.0017
+[BINARY OP] left=45.0000, right=498.6749, op=*, result=22440.3694
+[BINARY OP] left=22440.3694, right=498.6749, op=*, result=11190448.3832
+[BINARY OP] left=0.0017, right=11190448.3832, op=+, result=11190448.3849
+[BINARY OP] left=1.0000, right=11190448.3849, op=/, result=0.0000
+[STMT] float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist) => att = 0.0000
+请增加一个控制变量，使得self.evaluate_syntax_tree不需要每次都打印，可以根据用户配置的print_sequency值，来间隔打印。
+例如print_sequency=2，意味着每执行self.evaluate_syntax_tree两次，打印其中的log一次
+print_sequency=200，意味着每执行self.evaluate_syntax_tree 200次，打印其中的log一次
 
 
 # 31
