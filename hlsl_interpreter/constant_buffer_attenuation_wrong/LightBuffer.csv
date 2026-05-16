@@ -5,8 +5,6 @@ SpecularColor,"1.00, 1.00, 1.00, 1.00",32,float4
 LightPos,"-60.00, 100.00, 400.00",48,float3
 LightRadius,"600.00",60,float
 LightDir,"0.00, 0.00, 1.00",64,float3
-padding0,"0.00",76,float
-Attenuation,"0.00, 0.00167, 0.00",80,float3
-padding1,"0.00",92,float
-OuterCone,"45.00",96,float
-InnerCone,"0.00",100,float
+Attenuation,"0.00167, 0.00, 45.00",80,float3
+OuterCone,"0.00",92,float
+InnerCone,"2.00",96,float

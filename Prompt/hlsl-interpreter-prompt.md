@@ -756,7 +756,7 @@ print_sequency=200，意味着每执行self.evaluate_syntax_tree 200次，打印
 
 
 # 31
-Git commit: 
+Git commit: hlsl-inter: optimize log file by MiniMax-M2.7.
 在class HLSLInterpreter中每次debug打印如果要写出到文件就调用log_output，但是log_output每次写一条消息到文件中都需要打开文件写入再关闭。
     def log_output(self, *args, **kwargs):
         """输出到stdout和日志文件"""
@@ -776,6 +776,13 @@ Git commit:
 
 # 32
 Git commit: 
+给HLSLInterpreter添加一个计时器，统计其执行时间。
+1. 统计interpreter.interpret(code)执行时间
+2. 统计interpreter.load_vs_output_golden_from_csv(golden_csv_path)执行时间
+3. 统计results = interpreter.executeVS(code, "main", "VS_INPUT")执行时间
+4. 统计最后的结果比对执行时间
+5. 计算执行总时间
+6. 把上述时间打印出来
 
 
 # 33
