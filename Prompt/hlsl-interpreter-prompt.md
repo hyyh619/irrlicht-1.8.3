@@ -983,7 +983,10 @@ Git commit: hlsl-inter: add thread workers to run multithreads on VS by MiniMax-
 
 
 # 45
-Git commit: 
+Git commit: hlsl-inter: add function cache to improve performance by MiniMax-M2.7.
+
+hy: MiniMax-M2.7这次做得比较好，找出GIL问题是多线程无法提速的根本。主动增加了function cache提升从executeVS执行9秒到7秒。
+
 HLSLInterpreter的self.max_workers也采用json配置的方式。如果没有json配置项，默认值为1
 
 

@@ -423,7 +423,7 @@ class HLSLInterpreter:
         self.structs: Dict[str, StructDefinition] = {}      # 解析的结构体定义
         self.cbuffers: Dict[str, CbufferDefinition] = {}    # 解析的cbuffer定义
         self.variables: Dict[str, Any] = {}                 # 全局变量
-        self.debug = False # 调试模式开关
+        self.debug = True                                   # 调试模式开关
         self.printSyntaxTree = printSyntaxTree              # 打印语法树开关
         self.syntax_parser = SyntaxTreeParser()             # 语法树解析器
         self.log_to_file = log_to_file                      # 是否输出到文件
