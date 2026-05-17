@@ -857,13 +857,44 @@ BinaryOp(<)
 
 
 # 38
-Git commit: 
+Git commit: hlsl-inter: add tolerance configure by MiniMax-M2.7.
 下面compare_vs_output_with_golden的输入参数float_tolerance也采用json文件配置的方式
 interpreter.compare_vs_output_with_golden(results)
 
 
 # 39
 Git commit: 
+为hlsl_interpreter.py的这段代码添加注释，主要是关键的判断分支
+        depth = 0
+        candidates = []
+        i = 0
+        while i < len(expr):
+            char = expr[i]
+            if char == '(':
+                depth += 1
+            elif char == ')':
+                depth -= 1
+            elif depth == 0:
+                if i >= 1:
+                    two_char = expr[i-1:i+1]
+                    if two_char in self.operators:
+                        candidates.append((i-1, two_char, self.operators[two_char]))
+                        i += 1
+                        continue
+
+                two_char = expr[i:i+2]
+                if char in self.operators and not (i >= 1 and two_char in self.operators):
+                    candidates.append((i, char, self.operators[char]))
+            i += 1
+
+        if not candidates:
+            return None
+
+        min_prec = min(c[2] for c in candidates)
+        rightmost = max(c[0] for c in candidates if c[2] == min_prec)
+        for c in candidates:
+            if c[0] == rightmost and c[2] == min_prec:
+                return (c[0], c[1])
 
 
 # 40
