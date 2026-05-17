@@ -1,0 +1,12 @@
+{
+    "hlsl_file_path": "./color-correct-ninjia-of-collision-if-cond-multi-stmts/vs_if_cond.hlsl",
+    "csv_folder_path": "./color-correct-ninjia-of-collision-if-cond-multi-stmts/",
+    "log_file_path": "./color-correct-ninjia-of-collision-if-cond-multi-stmts/output.log",
+    "log_to_file": true,
+    "printSyntaxTree": true,
+    "print_interpreter_result": true,
+    "print_sequence": 1,
+    "float_tolerance": 0.005,
+    "execute_count": 1,
+    "log_file_mode": "w"
+}

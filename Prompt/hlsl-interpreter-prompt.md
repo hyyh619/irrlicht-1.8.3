@@ -926,7 +926,7 @@ HLSLInterpreter分割下列语句
 
 
 # 42
-Git commit: 
+Git commit: hlsl-inter: refine if-cond-else execute_if_statement. We should merge if/else statements before executing by MiniMax-M2.7.
 
 hy: MiniMax-M2.7错误的删除以下语句导致execute_main_function没有返回执行结果
                  if 'return' in stmt and 'output' in stmt:
