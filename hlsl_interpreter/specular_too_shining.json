@@ -10,5 +10,6 @@
     "execute_count": 9,
     "max_workers": 1,
     "primitive_topology": 4,
+    "mesh_view_enabled": true,
     "log_file_mode": "w"
 }

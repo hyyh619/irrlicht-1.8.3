@@ -38,11 +38,11 @@ class MeshView:
         self._root = None
         self._canvas = None
         self._running = False
-        self._rotation_x = 30
-        self._rotation_y = 45
-        self._scale = 1.0
+        self._rotation_x = 0 # 30
+        self._rotation_y = 0 # 45
+        self._scale = 0.2
         self._offset_x = 0
-        self._offset_y = 0
+        self._offset_y = 140
         self._last_mouse = None
         self._info_label = None
         self._bounds = None
@@ -285,6 +285,26 @@ class MeshView:
         self._rotation_x += 15
         self._draw_mesh()
 
+    def _pan_left(self):
+        """向左平移"""
+        self._offset_x -= 20
+        self._draw_mesh()
+
+    def _pan_right(self):
+        """向右平移"""
+        self._offset_x += 20
+        self._draw_mesh()
+
+    def _pan_up(self):
+        """向上平移"""
+        self._offset_y -= 20
+        self._draw_mesh()
+
+    def _pan_down(self):
+        """向下平移"""
+        self._offset_y += 20
+        self._draw_mesh()
+
     def _reset_view(self):
         """重置视图"""
         self._rotation_x = 30
@@ -322,6 +342,12 @@ class MeshView:
         ttk.Button(controls_frame, text="↻", width=3, command=self._rotate_cw).pack(side=tk.LEFT, padx=1)
         ttk.Button(controls_frame, text="↑", width=3, command=self._rotate_up).pack(side=tk.LEFT, padx=1)
         ttk.Button(controls_frame, text="↓", width=3, command=self._rotate_down).pack(side=tk.LEFT, padx=1)
+
+        ttk.Label(controls_frame, text="Pan:").pack(side=tk.LEFT, padx=5)
+        ttk.Button(controls_frame, text="◀", width=3, command=self._pan_left).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="▶", width=3, command=self._pan_right).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="▲", width=3, command=self._pan_up).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="▼", width=3, command=self._pan_down).pack(side=tk.LEFT, padx=1)
 
         ttk.Button(controls_frame, text="Reset", command=self._reset_view).pack(side=tk.LEFT, padx=5)
         ttk.Button(controls_frame, text="Close", command=self._root.destroy).pack(side=tk.RIGHT, padx=5)
