@@ -1944,6 +1944,8 @@ def main():
     log_to_file = config.get('log_to_file', True)
     printSyntaxTree = config.get('printSyntaxTree', True)
     print_interpreter_result = config.get('print_interpreter_result', True)
+    float_tolerance = config.get('float_tolerance', 0.0001)
+    output_struct_name = config.get('output_struct_name', 'VS_OUTPUT')
 
     if not hlsl_file_path:
         print("Error: hlsl_file_path not specified in config")
@@ -2018,7 +2020,7 @@ def main():
     interpreter.log_output("Comparing with golden data...")
     interpreter.log_output("=" * 40)
     compare_start = time.time()
-    interpreter.compare_vs_output_with_golden(results)
+    interpreter.compare_vs_output_with_golden(results, output_struct_name=output_struct_name, float_tolerance=float_tolerance)
     compare_time = time.time() - compare_start
 
     total_time = time.time() - total_start

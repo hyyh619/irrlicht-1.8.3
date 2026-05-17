@@ -833,7 +833,10 @@ Git commit:
 
 
 # 37
-Git commit: 
+Git commit: hlsl-inter: MiniMax-M2.7 fixes two char operator issue failed. I have to fix it by my hand.
+
+MiniMax-M2.7: 并不能完全修复。提供了两个char的运算符的判断，但是没有考虑到检测到"<"后，取[i-1:i+1]实际取出的是" <"，导致错误依旧。
+
 hlsl_interpreter.py生成语法树的函数SyntaxTreeParser.parse没有正确的处理语句“float cond = dist <= LightRadius ? 1.0 : 0.0”。
 它把操作符“<=”识别成“<”操作符，导致后续常量名LightRadius被错误识别成"= LightRadius"，无法加载到正确的数据。请修复该问题
 [STMT] Executing: float cond = dist <= LightRadius ? 1.0 : 0.0
@@ -855,6 +858,8 @@ BinaryOp(<)
 
 # 38
 Git commit: 
+下面compare_vs_output_with_golden的输入参数float_tolerance也采用json文件配置的方式
+interpreter.compare_vs_output_with_golden(results)
 
 
 # 39

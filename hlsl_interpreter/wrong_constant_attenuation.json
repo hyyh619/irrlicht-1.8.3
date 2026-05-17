@@ -2,9 +2,10 @@
     "hlsl_file_path": "./constant_buffer_attenuation_wrong/VERTEX_SHADER_STANDARD_POINT.hlsl",
     "csv_folder_path": "./constant_buffer_attenuation_wrong/",
     "log_file_path": "./constant_buffer_attenuation_wrong/output.log",
-    "log_file_mode": "w",
-    "print_sequence": 1,
     "log_to_file": true,
     "printSyntaxTree": true,
-    "print_interpreter_result": true 
+    "print_interpreter_result": true,
+    "print_sequence": 1,
+    "float_tolerance": 0.0001,
+    "log_file_mode": "w"
 }
