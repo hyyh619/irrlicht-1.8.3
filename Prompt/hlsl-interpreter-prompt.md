@@ -957,6 +957,12 @@ execute_if_statement执行一遍。
 
 # 43
 Git commit: 
+HLSLInterpreter在执行下列语句
+output.Color.r = 0.8;
+没办法正确的对output.Color的r channel通道赋值0.8
+[STMT] Executing: output.Color.r = 0.8
+[STMT] output.Color.r = 0.8 => (no assignment)
+请修复上述问题
 
 
 # 44
