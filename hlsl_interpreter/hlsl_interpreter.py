@@ -1593,12 +1593,13 @@ class HLSLInterpreter:
             if os.path.exists(csv_path):
                 self.load_cbuffer_data_from_csv(cb_name, csv_path)
 
-    def executeVS(self, main_func: str, vs_input: str, code: str = None):
+    def executeVS(self, main_func: str, vs_input: str, code: str = None, execute_count: int = None):
         """
         执行顶点着色器
         main_func: 入口函数名
         vs_input: 输入结构体名
         code: HLSL代码（如果为None则使用self.hlsl_code）
+        execute_count: 执行次数（如果为None则使用input_struct.fields计算行数）
         返回: 输出结构体字典列表
         """
         if code is None:
@@ -1608,14 +1609,15 @@ class HLSLInterpreter:
             self.log_output(f"Cannot find vs input: {vs_input}\n")
             return None
 
-        # 统计行数
-        num_rows = 0
-        for field in input_struct.fields:
-            if field.data:
-                num_rows = max(num_rows, len(field.data))
+        if execute_count is None:
+            num_rows = 0
+            for field in input_struct.fields:
+                if field.data:
+                    num_rows = max(num_rows, len(field.data))
+            execute_count = num_rows
 
         results = []
-        for row_index in range(num_rows):
+        for row_index in range(execute_count):
             data = {}
             for field in input_struct.fields:
                 if field.data and row_index < len(field.data):
@@ -1855,12 +1857,13 @@ class HLSLInterpreter:
         self.log_output(f"Loaded {len(data_rows)} golden data rows for VS_OUTPUT")
         return True
 
-    def compare_vs_output_with_golden(self, hlsl_output: List[Dict], output_struct_name: str = "VS_OUTPUT", float_tolerance: float = 0.0001) -> bool:
+    def compare_vs_output_with_golden(self, hlsl_output: List[Dict], output_struct_name: str = "VS_OUTPUT", float_tolerance: float = 0.0001, execute_count: int = None) -> bool:
         """
         比较HLSL执行结果与golden数据
         hlsl_output: executeVS返回的输出结构体字典列表
         output_struct_name: 输出结构体名称，用于获取field name (默认"VS_OUTPUT")
         float_tolerance: 浮点类型数据的比较误差容忍度
+        execute_count: 执行次数（如果为None则使用golden数据计算行数）
         返回: True表示所有数据匹配, False表示存在不匹配
         """
         if output_struct_name not in self.structs:
@@ -1880,6 +1883,9 @@ class HLSLInterpreter:
         for field_data in golden_data.values():
             if field_data:
                 num_golden_rows = max(num_golden_rows, len(field_data))
+
+        if execute_count is not None:
+            num_golden_rows = execute_count
 
         if not hlsl_output:
             self.log_output("Error: No HLSL output to compare")
@@ -1980,6 +1986,7 @@ def main():
     print_interpreter_result = config.get('print_interpreter_result', True)
     float_tolerance = config.get('float_tolerance', 0.0001)
     output_struct_name = config.get('output_struct_name', 'VS_OUTPUT')
+    execute_count = config.get('execute_count', None)
 
     if not hlsl_file_path:
         print("Error: hlsl_file_path not specified in config")
@@ -2014,7 +2021,7 @@ def main():
     load_golden_time = time.time() - load_golden_start
 
     execute_start = time.time()
-    results = interpreter.executeVS("main", "VS_INPUT")
+    results = interpreter.executeVS("main", "VS_INPUT", execute_count=execute_count)
     execute_time = time.time() - execute_start
 
     if interpreter.print_interpreter_result:
@@ -2054,7 +2061,7 @@ def main():
     interpreter.log_output("Comparing with golden data...")
     interpreter.log_output("=" * 40)
     compare_start = time.time()
-    interpreter.compare_vs_output_with_golden(results, output_struct_name=output_struct_name, float_tolerance=float_tolerance)
+    interpreter.compare_vs_output_with_golden(results, output_struct_name=output_struct_name, float_tolerance=float_tolerance, execute_count=execute_count)
     compare_time = time.time() - compare_start
 
     total_time = time.time() - total_start

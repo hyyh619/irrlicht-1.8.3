@@ -898,7 +898,12 @@ Git commit: hlsl-inter: add comments for _find_top_level_operator by MiniMax-M2.
 
 
 # 40
-Git commit: 
+Git commit:
+1. 为函数executeVS增加一个输入参数execute_count，该输入参数决定执行多少次input data的处理
+2. 不要再通过input_struct.fields中的field获取最大的数据行数来决定处理多少次input data
+3. compare_vs_output_with_golden比较输出数据和golden数据时，也使用该输入参数。
+4. 输入参数execute_count也通过json configure配置，如果json没有该配置项，则默认通过计算input data csv的行数来获得
+
 
 
 # 41
