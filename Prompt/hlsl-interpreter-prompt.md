@@ -1004,7 +1004,7 @@ Git commit: hlsl-inter: add primitive topology configure by MiniMax-M2.7.
 
 
 # 47
-Git commit: 
+Git commit: hlsl-inter: create mesh view gui to show mesh of vertex data by MiniMax-M2.7.
 创建一个新的python文件，该文件主要用于显示3维图形的顶点组成的mesh view。类似renderdoc提供的mesh view。
 1. 创建一个MeshView对象
 2. 该MeshView对象接受输入的顶点数据，顶点数据包括了三维坐标，normal向量，颜色
@@ -1015,6 +1015,7 @@ Git commit:
 
 # 48
 Git commit: 
+为hlsl_interpreter.py的MeshView对象enable创建一个Json配置项，控制MeshView是否开启显示
 
 
 # 49
@@ -1022,4 +1023,40 @@ Git commit:
 
 
 # 50
+Git commit: 
+
+
+# 51
+Git commit: 
+
+
+# 52
+Git commit: 
+
+
+# 53
+Git commit: 
+
+
+# 54
+Git commit: 
+
+
+# 55
+Git commit: 
+
+
+# 56
+Git commit: 
+
+
+# 57
+Git commit: 
+
+
+# 58
+Git commit: 
+
+
+# 59
 Git commit: 

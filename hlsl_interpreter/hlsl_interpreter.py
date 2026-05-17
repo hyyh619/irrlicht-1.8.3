@@ -2391,6 +2391,10 @@ def main():
     interpreter.log_output(f"compare_vs_output_with_golden():    {compare_time:.4f}s")
     interpreter.log_output(f"Total execution time:               {total_time:.4f}s")
 
+    user_input = input("\nEnter 'x' to exit: ")
+    if user_input.strip().lower() == 'x':
+        pass
+
 
 if __name__ == '__main__':
     main()
