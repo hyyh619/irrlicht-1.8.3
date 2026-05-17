@@ -436,6 +436,7 @@ class HLSLInterpreter:
         self._log_file = None                               # 日志文件句柄
         self.hlsl_code = None                               # 加载的HLSL代码
         self.max_workers = max_workers                       # 线程池最大工作线程数
+        self._parsed_func_cache = {}                         # 解析过的函数体缓存
         if self.log_to_file and self.log_file_path:
             self._log_file = open(self.log_file_path, self.log_file_mode, encoding='utf-8')
 
@@ -1648,28 +1649,36 @@ class HLSLInterpreter:
         for field in output_struct.fields:
             output_fields[field.name] = field.field_type
 
-        # 定位main函数体
         func_signature = rf'{output_struct_name}\s+{main_func}\s*\(\s*{input_struct_name_from_func}\s+input\s*\)'
-        func_start = re.search(func_signature, code)
-        if not func_start:
-            return None
 
-        # 提取函数体(处理嵌套大括号)
-        open_brace_pos = func_start.end()
-        brace_depth = 1
-        pos = open_brace_pos
-        while pos < len(code) and brace_depth > 0:
-            if code[pos] == '{':
-                brace_depth += 1
-            elif code[pos] == '}':
-                brace_depth -= 1
-            pos += 1
+        cache_key = f"{output_struct_name}_{main_func}_{input_struct_name_from_func}"
+        if cache_key in self._parsed_func_cache:
+            cached = self._parsed_func_cache[cache_key]
+            body = cached['body']
+            statements = cached['statements']
+        else:
+            func_start = re.search(func_signature, code)
+            if not func_start:
+                return None
 
-        body = code[open_brace_pos+1:pos-1].strip()
-        if body.startswith('{'):
-            body = body[1:].strip()
-        if body.endswith('}'):
-            body = body[:-1].strip()
+            open_brace_pos = func_start.end()
+            brace_depth = 1
+            pos = open_brace_pos
+            while pos < len(code) and brace_depth > 0:
+                if code[pos] == '{':
+                    brace_depth += 1
+                elif code[pos] == '}':
+                    brace_depth -= 1
+                pos += 1
+
+            body = code[open_brace_pos+1:pos-1].strip()
+            if body.startswith('{'):
+                body = body[1:].strip()
+            if body.endswith('}'):
+                body = body[:-1].strip()
+
+            statements = self.GenerateStmts(body)
+            self._parsed_func_cache[cache_key] = {'body': body, 'statements': statements}
 
         # 初始化局部变量
         local_vars = {'data': data}
@@ -1683,9 +1692,6 @@ class HLSLInterpreter:
         for field in output_fields:
             output_obj[field] = None
         local_vars['output'] = output_obj
-
-        # 分割语句
-        statements = self.GenerateStmts(body)
 
         ret_val = None
 
