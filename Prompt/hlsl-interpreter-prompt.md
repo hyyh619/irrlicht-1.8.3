@@ -906,7 +906,7 @@ Git commit: hlsl-inter: add vs execution count for debugging by MiniMax-M2.7.
 
 
 # 41
-Git commit: 
+Git commit: hlsl-inter: now we can execute if-cond-else correctly, but there is something not good enough by MiniMax-M2.7.
 hlsl_interpreter.py解释执行HLSL时，没有支持if-condition-else语句，例如下面的语句，请支持条件判断语句的解释执行
 VS_OUTPUT main(VS_INPUT input) {
     VS_OUTPUT output;
@@ -927,6 +927,25 @@ HLSLInterpreter分割下列语句
 
 # 42
 Git commit: 
+    if (LightRadius < 600.0)
+        output.Color = float4(0.8, 0.0, 0.0, 1.0);
+    else
+        output.Color = float4(0.0, 0.8, 0.0, 1.0);
+执行上述if-cond-else语句时，HLSLInterpreter是先执行
+    if (LightRadius < 600.0)
+        output.Color = float4(0.8, 0.0, 0.0, 1.0);
+然后条件不满足再合并
+    if (LightRadius < 600.0)
+        output.Color = float4(0.8, 0.0, 0.0, 1.0);
+和
+    else
+        output.Color = float4(0.0, 0.8, 0.0, 1.0);
+再在
+execute_if_statement执行一遍。
+请改为在执行下面这段语句前
+    if (LightRadius < 600.0)
+        output.Color = float4(0.8, 0.0, 0.0, 1.0);
+先检查是否有else语句，如果有就先合并，再调用execute_if_statement执行。
 
 
 # 43
