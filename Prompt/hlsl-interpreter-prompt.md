@@ -1015,6 +1015,7 @@ Git commit: hlsl-inter: create mesh view gui to show mesh of vertex data by Mini
 
 # 48
 Git commit: hlsl-inter: add rotate/scale/reset button by MiniMax-M2.7.
+Git commit: hlsl-inter: add move button by MiniMax-M2.7.
 1. MeshView的显示界面请提供一个缩放和旋转的按钮来控制当前显示的Mesh
 2. Mesh的绘制请使用线框图wireframe
 3. Mesh请根据当前窗口大小放大显示，尽量能够占满当前窗口
@@ -1022,6 +1023,12 @@ Git commit: hlsl-inter: add rotate/scale/reset button by MiniMax-M2.7.
 
 # 49
 Git commit: 
+为mesh_view.py添加下述功能
+1. 按照输入vertex数据顺序，挨个渲染顶点和线框，每次渲染一个顶点，连接一个线，渲染的间隔时间通过json配置
+2. 为MeshView增加一个动画播放，暂停，下一步和上一步按钮来控制当前模型的渲染
+3. 按下播放按钮，MeshView就从头开始渲染Mesh
+4. 按下暂停按钮，MeshView就暂停当前的渲染，再按一次就继续渲染
+5. 在暂停时，通过按下一步和上一步按钮来渲染下一个顶点，或者回到上一个顶点
 
 
 # 50

@@ -6,6 +6,8 @@ import tkinter as tk
 from tkinter import ttk
 import threading
 import math
+import json
+import os
 from typing import List, Tuple, Optional
 
 
@@ -46,6 +48,30 @@ class MeshView:
         self._last_mouse = None
         self._info_label = None
         self._bounds = None
+        self._current_index = 0
+        self._is_playing = False
+        self._is_paused = False
+        self._animation_job = None
+        self._animation_interval = 100
+        self._play_btn = None
+        self._pause_btn = None
+        self._next_btn = None
+        self._prev_btn = None
+        self._step_label = None
+        self._load_animation_config()
+
+    def _load_animation_config(self):
+        """从配置文件加载动画配置"""
+        config_path = os.path.join(os.path.dirname(__file__), "animation_config.json")
+        if os.path.exists(config_path):
+            try:
+                with open(config_path, 'r') as f:
+                    config = json.load(f)
+                    self._animation_interval = config.get("interval_ms", 100)
+            except:
+                self._animation_interval = 100
+        else:
+            self._animation_interval = 100
 
     def set_vertices(self, vertices: List[VertexData]):
         """设置顶点数据"""
@@ -60,6 +86,13 @@ class MeshView:
         """清空顶点数据"""
         self.vertices = []
         self._bounds = None
+        self._current_index = 0
+        self._is_playing = False
+        self._is_paused = False
+        if self._animation_job:
+            self._canvas.after_cancel(self._animation_job)
+            self._animation_job = None
+        self._update_button_states()
 
     def add_vertex(self, position: List[float], normal: List[float] = None, color: List[float] = None):
         """添加单个顶点"""
@@ -195,6 +228,10 @@ class MeshView:
 
     def _draw_mesh(self):
         """绘制mesh到画布"""
+        self._draw_mesh_animated(len(self.vertices))
+
+    def _draw_mesh_animated(self, count: int = None):
+        """绘制动画mesh到画布，只渲染前count个元素"""
         if not self._canvas or not self.vertices:
             return
 
@@ -207,8 +244,10 @@ class MeshView:
             p = self._transform_vertex(v.position)
             transformed.append((p, v.color))
 
-        self._draw_mesh_wireframe(transformed, width, height)
+        if count is None:
+            count = self._current_index + 1
 
+        self._draw_mesh_wireframe(transformed[:count], width, height)
         self._update_info()
 
     def _update_info(self):
@@ -314,6 +353,73 @@ class MeshView:
         self._offset_y = 0
         self._draw_mesh()
 
+    def _play_animation(self):
+        """从开头开始播放动画"""
+        if not self.vertices:
+            return
+        self._current_index = 0
+        self._is_playing = True
+        self._is_paused = False
+        self._update_button_states()
+        self._run_animation_step()
+
+    def _pause_animation(self):
+        """暂停/继续动画"""
+        if self._is_paused:
+            self._is_paused = False
+            self._run_animation_step()
+        else:
+            self._is_paused = True
+        self._update_button_states()
+
+    def _next_step(self):
+        """渲染下一个顶点/线"""
+        if not self.vertices:
+            return
+        max_index = len(self.vertices) - 1
+        if self._current_index < max_index:
+            self._current_index += 1
+        self._draw_mesh_animated()
+        self._update_step_label()
+
+    def _prev_step(self):
+        """回到上一个顶点/线"""
+        if not self.vertices:
+            return
+        if self._current_index > 0:
+            self._current_index -= 1
+        self._draw_mesh_animated()
+        self._update_step_label()
+
+    def _run_animation_step(self):
+        """执行动画单步"""
+        if not self._is_playing or self._is_paused:
+            return
+        if self._current_index < len(self.vertices) - 1:
+            self._current_index += 1
+            self._draw_mesh_animated()
+            self._update_step_label()
+            self._animation_job = self._canvas.after(self._animation_interval, self._run_animation_step)
+        else:
+            self._is_playing = False
+            self._update_button_states()
+
+    def _update_button_states(self):
+        """更新按钮状态"""
+        if self._play_btn:
+            self._play_btn.config(state=tk.NORMAL if not self._is_playing else tk.DISABLED)
+        if self._pause_btn:
+            self._pause_btn.config(state=tk.NORMAL if self._is_playing or self._current_index > 0 else tk.DISABLED)
+        if self._next_btn:
+            self._next_btn.config(state=tk.NORMAL if self._is_paused else tk.DISABLED)
+        if self._prev_btn:
+            self._prev_btn.config(state=tk.NORMAL if self._is_paused and self._current_index > 0 else tk.DISABLED)
+
+    def _update_step_label(self):
+        """更新步骤显示"""
+        if self._step_label:
+            self._step_label.config(text=f"Step: {self._current_index + 1}/{len(self.vertices)}")
+
     def show(self, blocking: bool = False):
         """
         显示MeshView窗口
@@ -350,6 +456,21 @@ class MeshView:
         ttk.Button(controls_frame, text="▼", width=3, command=self._pan_down).pack(side=tk.LEFT, padx=1)
 
         ttk.Button(controls_frame, text="Reset", command=self._reset_view).pack(side=tk.LEFT, padx=5)
+
+        anim_frame = ttk.Frame(controls_frame)
+        anim_frame.pack(side=tk.LEFT, padx=10)
+        ttk.Label(anim_frame, text="Animation:").pack(side=tk.LEFT, padx=2)
+        self._play_btn = ttk.Button(anim_frame, text="Play", width=5, command=self._play_animation)
+        self._play_btn.pack(side=tk.LEFT, padx=1)
+        self._pause_btn = ttk.Button(anim_frame, text="Pause", width=5, command=self._pause_animation, state=tk.DISABLED)
+        self._pause_btn.pack(side=tk.LEFT, padx=1)
+        self._prev_btn = ttk.Button(anim_frame, text="Prev", width=5, command=self._prev_step, state=tk.DISABLED)
+        self._prev_btn.pack(side=tk.LEFT, padx=1)
+        self._next_btn = ttk.Button(anim_frame, text="Next", width=5, command=self._next_step, state=tk.DISABLED)
+        self._next_btn.pack(side=tk.LEFT, padx=1)
+        self._step_label = ttk.Label(anim_frame, text="Step: 0/0", width=12)
+        self._step_label.pack(side=tk.LEFT, padx=5)
+
         ttk.Button(controls_frame, text="Close", command=self._root.destroy).pack(side=tk.RIGHT, padx=5)
 
         self._canvas = tk.Canvas(main_frame, bg="black", width=780, height=520)
@@ -365,6 +486,7 @@ class MeshView:
         self._info_label.pack(side=tk.BOTTOM, fill=tk.X, pady=2)
 
         self._draw_mesh()
+        self._update_step_label()
         self._running = True
 
         if blocking:
@@ -389,6 +511,9 @@ class MeshView:
     def close(self):
         """关闭窗口"""
         self._running = False
+        if self._animation_job:
+            self._canvas.after_cancel(self._animation_job)
+            self._animation_job = None
         if self._root:
             try:
                 self._root.quit()
