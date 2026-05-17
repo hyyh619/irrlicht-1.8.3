@@ -1357,6 +1357,11 @@ class HLSLInterpreter:
         self.debug_print(f"\n[STMT] Executing: {stmt}")
         input_snapshot = {k: v for k, v in local_vars.items() if k.startswith('input.') or k == 'output'}
 
+        # if-else条件语句处理
+        if stmt.startswith('if '):
+            self.execute_if_statement(stmt, local_vars)
+            return None
+
         # 变量声明语句: float4 pos = ...;
         type_pattern = '|'.join(DATA_TYPE_LIST)
         pattern = rf'^({type_pattern})\s+(\w+)\s*=\s*(.+?);?$'
@@ -1393,6 +1398,81 @@ class HLSLInterpreter:
 
         self.debug_print(f"[STMT] {stmt} => (no assignment)")
         return None
+
+    def execute_if_statement(self, stmt: str, local_vars: Dict[str, Any]):
+        """
+        执行if-else条件语句
+        stmt: if语句字符串
+        local_vars: 局部变量字典
+        """
+        stmt = stmt.strip()
+
+        if_match = re.match(r'if\s*\((.+?)\)\s*(.+)$', stmt, re.DOTALL)
+        if not if_match:
+            return
+
+        condition_expr = if_match.group(1).strip()
+        then_branch = if_match.group(2).strip()
+
+        cond_value = self.evaluate_expression(condition_expr, local_vars)
+        self.debug_print(f"[IF] condition: {condition_expr} => {cond_value}")
+
+        if cond_value:
+            if then_branch.startswith('{'):
+                self.execute_block(then_branch, local_vars)
+            elif not then_branch.startswith('else'):
+                self.execute_statement(then_branch, local_vars)
+        else:
+            else_pos = self.find_else_branch(then_branch)
+            if else_pos >= 0:
+                else_branch = then_branch[else_pos:].strip()
+                if else_branch.startswith('else'):
+                    else_branch = else_branch[4:].strip()
+                    if else_branch.startswith('{'):
+                        self.execute_block(else_branch, local_vars)
+                    else:
+                        self.execute_statement(else_branch, local_vars)
+
+    def find_else_branch(self, stmt: str) -> int:
+        """
+        查找else分支的起始位置(不在嵌套括号内)
+        stmt: 语句字符串
+        返回: else关键字位置，或-1表示未找到
+        """
+        depth = 0
+        pos = 0
+        while pos < len(stmt):
+            char = stmt[pos]
+            if char == '(':
+                depth += 1
+            elif char == ')':
+                depth -= 1
+            elif char == '{':
+                depth += 1
+            elif char == '}':
+                depth -= 1
+            elif depth == 0 and stmt[pos:pos+4] == 'else':
+                return pos
+            pos += 1
+        return -1
+
+    def execute_block(self, block: str, local_vars: Dict[str, Any]):
+        """
+        执行语句块(被大括号包围的语句列表)
+        block: 语句块字符串
+        local_vars: 局部变量字典
+        """
+        block = block.strip()
+        if not block.startswith('{') or not block.endswith('}'):
+            return
+
+        inner = block[1:-1].strip()
+        if not inner:
+            return
+
+        statements = self.GenerateStmts(inner)
+        for stmt in statements:
+            self.execute_statement(stmt, local_vars)
 
     def GenerateStmts(self, code: str):
         statements = []
@@ -1537,11 +1617,19 @@ class HLSLInterpreter:
         self.debug_print(f"==================")
 
         # 顺序执行语句
-        for stmt in statements:
+        for i, stmt in enumerate(statements):
             if 'return' in stmt and 'output' in stmt:
                 ret_val = local_vars.get('output')
                 continue
-            self.execute_statement(stmt, local_vars)
+            if stmt.startswith('else'):
+                if i > 0 and statements[i-1].startswith('if'):
+                    full_if_stmt = statements[i-1] + '\n' + stmt
+                    self.execute_statement(full_if_stmt, local_vars)
+                    statements[i] = None
+                else:
+                    self.execute_statement(stmt, local_vars)
+            else:
+                self.execute_statement(stmt, local_vars)
 
         self.debug_print(f"******************************************************")
         self.debug_print(f"**************End {self._eval_counter}**************")

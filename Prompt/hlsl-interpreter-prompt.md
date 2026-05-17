@@ -905,9 +905,24 @@ Git commit: hlsl-inter: add vs execution count for debugging by MiniMax-M2.7.
 4. 输入参数execute_count也通过json configure配置，如果json没有该配置项，则默认通过计算input data csv的行数来获得
 
 
-
 # 41
 Git commit: 
+hlsl_interpreter.py解释执行HLSL时，没有支持if-condition-else语句，例如下面的语句，请支持条件判断语句的解释执行
+VS_OUTPUT main(VS_INPUT input) {
+    VS_OUTPUT output;
+    if (LightRadius < 600.0)
+        output.Color = float4(0.8, 0.0, 0.0, 1.0);
+    else
+        output.Color = float4(0.0, 0.8, 0.0, 1.0);
+
+
+HLSLInterpreter分割下列语句
+'VS_OUTPUT output;\n    if (LightRadius < 600.0)\n        output.Color = float4(0.8, 0.0, 0.0, 1.0);\n    else\n        output.Color = float4(0.0, 0.8, 0.0, 1.0);\n    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));\n    output.WorldPos = output.Pos.xyz;\n    output.Normal = input.Normal;\n    output.TexCoord = input.TexCoord;\n    output.TexCoord2 = input.TexCoord;\n    return output;'
+获得结果如下
+['VS_OUTPUT output', 'if (LightRadius < 600.0)\n        output.Color = float4(0.8, 0.0, 0.0, 1.0)', 'else\n        output.Color = float4(0.0, 0.8, 0.0, 1.0)', 'output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj))', 'output.WorldPos = output.Pos.xyz', 'output.Normal = input.Normal', 'output.TexCoord = input.TexCoord', 'output.TexCoord2 = input.TexCoord', 'return output']
+
+从结果看statements = self.GenerateStmts(body)把if-condition-else语句识别成了两条语句，后续没有构建有效的语法树执行。
+
 
 
 # 42
