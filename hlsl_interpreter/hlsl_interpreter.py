@@ -1278,10 +1278,26 @@ class HLSLInterpreter:
             parts = name.split('.')
             if len(parts) >= 2:
                 base_name = parts[0]
-                swizzle_str = parts[1]
 
                 # 判断是否为swizzle模式（全是xyzwrgb组成的字符串）
-                if swizzle_str and all(c in 'xyzwrgb' for c in swizzle_str.lower()):
+                # 对于 input.Color.g, parts = ['input', 'Color', 'g']
+                # 只有当最后一部分是纯swizzle字符时，才认为是swizzle操作
+                last_part = parts[-1]
+                is_single_swizzle = len(parts) == 2 and last_part and all(c in 'xyzwrgb' for c in last_part.lower())
+                is_multi_swizzle = len(parts) == 2 and last_part and all(c in 'xyzwrgb' for c in last_part.lower()) and len(last_part) > 1
+
+                if is_single_swizzle or is_multi_swizzle:
+                    # 两级访问: input.Pos 或 input.Color.rgb
+                    swizzle_str = last_part
+                    # 先检查 base_name + '.' + swizzle_str 是否直接存在
+                    full_swizzle_name = f'{base_name}.{swizzle_str}'
+                    if full_swizzle_name in local_vars:
+                        obj = local_vars[full_swizzle_name]
+                        if isinstance(obj, (int, float)):
+                            return obj
+                        if isinstance(obj, list):
+                            return obj
+
                     obj = local_vars.get(base_name)
                     if obj is None:
                         obj = self.variables.get(base_name)
@@ -1305,6 +1321,51 @@ class HLSLInterpreter:
                         return self.apply_swizzle(obj, swizzle_str)
 
                     return 0
+                else:
+                    # 多级访问: input.Color.g (Color不是纯swizzle字符)
+                    if len(parts) == 2:
+                        # 两级访问但不是swizzle模式: input.Color
+                        # 直接查local_vars中是否存在 'input.Color'
+                        full_name = f'{base_name}.{parts[1]}'
+                        if full_name in local_vars:
+                            return local_vars[full_name]
+                        # 检查 base_name 是否在local_vars中作为dict
+                        if base_name in local_vars:
+                            obj = local_vars[base_name]
+                            if isinstance(obj, dict):
+                                return obj.get(parts[1], 0)
+                            elif isinstance(obj, list):
+                                # base_name是列表(比如input.Pos是float3),parts[1]是访问其元素
+                                idx_map = {'x': 0, 'y': 1, 'z': 2, 'w': 3, 'r': 0, 'g': 1, 'b': 2, 'a': 3}
+                                if parts[1].lower() in idx_map:
+                                    idx = idx_map[parts[1].lower()]
+                                    return obj[idx] if idx < len(obj) else 0
+                        # 检查cbuffer
+                        for cb_name, cb_def in self.cbuffers.items():
+                            if isinstance(cb_def, CbufferDefinition):
+                                for field in cb_def.fields:
+                                    if field.name == base_name:
+                                        if field.data is not None:
+                                            return self.apply_swizzle(field.data, parts[1])
+                                        return 0
+                        return 0
+                    elif len(parts) == 3:
+                        # input.Color.g -> 获取 input.Color, 然后对结果应用 .g
+                        # 直接查找 input.Color 是否在local_vars中
+                        full_name = f'{base_name}.{parts[1]}'  # 'input.Color'
+                        if full_name in local_vars:
+                            base_val = local_vars[full_name]
+                        else:
+                            base_val = self.get_value(f'{base_name}.{parts[1]}', local_vars)
+                        if isinstance(base_val, list):
+                            idx_map = {'x': 0, 'y': 1, 'z': 2, 'w': 3, 'r': 0, 'g': 1, 'b': 2, 'a': 3}
+                            swizzle_ch = parts[2].lower()
+                            if swizzle_ch in idx_map:
+                                return base_val[idx_map[swizzle_ch]] if idx_map[swizzle_ch] < len(base_val) else 0
+                        return 0
+                    else:
+                        # 超过3级,递归处理
+                        return self.get_value('.'.join(parts[1:]), local_vars)
 
         # 局部变量查找
         if name in local_vars:
@@ -1358,7 +1419,7 @@ class HLSLInterpreter:
         input_snapshot = {k: v for k, v in local_vars.items() if k.startswith('input.') or k == 'output'}
 
         # if-else条件语句处理
-        if stmt.startswith('if '):
+        if stmt.startswith('if'):
             self.execute_if_statement(stmt, local_vars)
             return None
 
@@ -1373,17 +1434,40 @@ class HLSLInterpreter:
             self.debug_print(f"[STMT] {stmt} => {var_name} = {self._format_value(value)}")
             return None
 
-        # output字段赋值: output.Color = ...;
-        if 'output.' in stmt or 'output[' in stmt:
-            match = re.match(r'output\.(\w+)\s*=\s*(.+)', stmt)
+        # output字段赋值: output.Color = ...; 或 output.Color.r = ...;
+        if 'output.' in stmt:
+            # 匹配 output.field.swizzle = value 或 output.field = value
+            match = re.match(r'output\.(\w+)(?:\.([xyzwrgba]+))?\s*=\s*(.+)', stmt)
             if match:
                 field_name = match.group(1)
-                value_expr = match.group(2).rstrip(';').strip()
+                swizzle = match.group(2)
+                value_expr = match.group(3).rstrip(';').strip()
                 value = self.evaluate_expression(value_expr, local_vars)
+
                 if 'output' not in local_vars:
                     local_vars['output'] = {}
-                local_vars['output'][field_name] = value
-                self.debug_print(f"[STMT] {stmt} => output.{field_name} = {self._format_float(value)}")
+
+                if swizzle is None:
+                    local_vars['output'][field_name] = value
+                else:
+                    if field_name not in local_vars['output']:
+                        local_vars['output'][field_name] = [0.0, 0.0, 0.0, 0.0]
+                    current = local_vars['output'][field_name]
+                    if not isinstance(current, list):
+                        current = [current, 0.0, 0.0, 0.0]
+
+                    swizzle_map = {'x': 0, 'y': 1, 'z': 2, 'w': 3, 'r': 0, 'g': 1, 'b': 2, 'a': 3}
+                    if isinstance(value, list):
+                        for i, ch in enumerate(swizzle.lower()):
+                            if ch in swizzle_map and i < len(value):
+                                current[swizzle_map[ch]] = value[i]
+                    else:
+                        ch = swizzle.lower()[0] if swizzle else 'x'
+                        if ch in swizzle_map:
+                            current[swizzle_map[ch]] = value
+
+                    local_vars['output'][field_name] = current
+                self.debug_print(f"[STMT] {stmt} => output.{field_name}" + (f".{swizzle}" if swizzle else "") + f" = {self._format_float(value)}")
                 return None
 
         # 一般赋值语句: var = ...;
@@ -1630,7 +1714,7 @@ class HLSLInterpreter:
                 continue
 
             # 检查是否是if语句，且下一条是else
-            if stmt.startswith('if '):
+            if stmt.startswith('if'):
                 next_i = i + 1
                 # 查找下一个非None的语句
                 while next_i < len(statements) and statements[next_i] is None:
