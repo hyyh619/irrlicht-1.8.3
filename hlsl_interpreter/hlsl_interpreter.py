@@ -1617,19 +1617,36 @@ class HLSLInterpreter:
         self.debug_print(f"==================")
 
         # 顺序执行语句
-        for i, stmt in enumerate(statements):
+        i = 0
+        while i < len(statements):
+            stmt = statements[i]
+            if stmt is None:
+                i += 1
+                continue
+
             if 'return' in stmt and 'output' in stmt:
                 ret_val = local_vars.get('output')
+                i += 1
                 continue
-            if stmt.startswith('else'):
-                if i > 0 and statements[i-1].startswith('if'):
-                    full_if_stmt = statements[i-1] + '\n' + stmt
-                    self.execute_statement(full_if_stmt, local_vars)
-                    statements[i] = None
+
+            # 检查是否是if语句，且下一条是else
+            if stmt.startswith('if '):
+                next_i = i + 1
+                # 查找下一个非None的语句
+                while next_i < len(statements) and statements[next_i] is None:
+                    next_i += 1
+                
+                if next_i < len(statements) and statements[next_i].startswith('else'):
+                    # 合并if和else为完整语句
+                    full_if_stmt = stmt + '\n' + statements[next_i]
+                    self.execute_if_statement(full_if_stmt, local_vars)
+                    statements[next_i] = None  # 标记else已处理
                 else:
-                    self.execute_statement(stmt, local_vars)
+                    self.execute_if_statement(stmt, local_vars)
             else:
                 self.execute_statement(stmt, local_vars)
+
+            i += 1
 
         self.debug_print(f"******************************************************")
         self.debug_print(f"**************End {self._eval_counter}**************")

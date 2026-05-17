@@ -835,7 +835,7 @@ Git commit:
 # 37
 Git commit: hlsl-inter: MiniMax-M2.7 fixes two char operator issue failed. I have to fix it by my hand.
 
-MiniMax-M2.7: 并不能完全修复。提供了两个char的运算符的判断，但是没有考虑到检测到"<"后，取[i-1:i+1]实际取出的是" <"，导致错误依旧。
+hy: MiniMax-M2.7并不能完全修复。提供了两个char的运算符的判断，但是没有考虑到检测到"<"后，取[i-1:i+1]实际取出的是" <"，导致错误依旧。
 
 hlsl_interpreter.py生成语法树的函数SyntaxTreeParser.parse没有正确的处理语句“float cond = dist <= LightRadius ? 1.0 : 0.0”。
 它把操作符“<=”识别成“<”操作符，导致后续常量名LightRadius被错误识别成"= LightRadius"，无法加载到正确的数据。请修复该问题
@@ -927,6 +927,13 @@ HLSLInterpreter分割下列语句
 
 # 42
 Git commit: 
+
+hy: MiniMax-M2.7错误的删除以下语句导致execute_main_function没有返回执行结果
+                 if 'return' in stmt and 'output' in stmt:
+                ret_val = local_vars.get('output')
+                i += 1
+                continue
+
     if (LightRadius < 600.0)
         output.Color = float4(0.8, 0.0, 0.0, 1.0);
     else
@@ -945,7 +952,7 @@ execute_if_statement执行一遍。
 请改为在执行下面这段语句前
     if (LightRadius < 600.0)
         output.Color = float4(0.8, 0.0, 0.0, 1.0);
-先检查是否有else语句，如果有就先合并，再调用execute_if_statement执行。
+先检查是否有else语句，如果有就先合并为完整语句if (LightRadius < 600.0)\n    output.Color = float4(0.8, 0.0, 0.0, 1.0);\nelse\n    output.Color = float4(0.0, 0.8, 0.0, 1.0);后执行
 
 
 # 43
