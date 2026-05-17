@@ -1,0 +1,11 @@
+Name,Value,Byte Offset,Type
+WorldViewProj,,0,float4x4 (column_major)
+WorldViewProj.row0,"-9.97837, 0.00, 2.64455, -53.01363",,float4
+WorldViewProj.row1,"-0.22319, 13.73622, -0.84213, -99.84389",,float4
+WorldViewProj.row2,"-2.55755, -0.63318, -9.65011, 119.57797",,float4
+WorldViewProj.row3,"-2.5567, -0.63296, -9.6469, 120.5381",,float4
+World,,64,float4x4 (column_major)
+World.row0,"-4.37114E-07, 0.00, 10.00, -75.00",,float4
+World.row1,"0.00, 10.00, 0.00, -66.00",,float4
+World.row2,"-10.00, 0.00, -4.37114E-07, -80.00",,float4
+World.row3,"0.00, 0.00, 0.00, 1.00",,float4
