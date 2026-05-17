@@ -863,7 +863,7 @@ interpreter.compare_vs_output_with_golden(results)
 
 
 # 39
-Git commit: 
+Git commit: hlsl-inter: add comments for _find_top_level_operator by MiniMax-M2.7.
 为hlsl_interpreter.py的这段代码添加注释，主要是关键的判断分支
         depth = 0
         candidates = []
