@@ -51,6 +51,7 @@ VS_OUTPUT main(VS_INPUT input) {
     {
         output.Color = float4(0.0, 0.0, 0.0, 1.0);
         output.Color.r = 0.8;
+        output.Color.g = input.Color.b;
     }
     output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));
     output.WorldPos = output.Pos.xyz;
