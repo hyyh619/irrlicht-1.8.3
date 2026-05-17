@@ -834,6 +834,23 @@ Git commit:
 
 # 37
 Git commit: 
+hlsl_interpreter.py生成语法树的函数SyntaxTreeParser.parse没有正确的处理语句“float cond = dist <= LightRadius ? 1.0 : 0.0”。
+它把操作符“<=”识别成“<”操作符，导致后续常量名LightRadius被错误识别成"= LightRadius"，无法加载到正确的数据。请修复该问题
+[STMT] Executing: float cond = dist <= LightRadius ? 1.0 : 0.0
+[SYNTAX TREE]
+Ternary(?)
+  condition:
+BinaryOp(<)
+      left:
+        Value(dist)
+      right:
+        Value(= LightRadius)
+  true_expr:
+    Value(1.0)
+  false_expr:
+    Value(0.0)
+[BINARY OP] left=496.1198, right=0.0000, op=<, result=False
+[STMT] float cond = dist <= LightRadius ? 1.0 : 0.0 => cond = 0.0000
 
 
 # 38
@@ -841,4 +858,48 @@ Git commit:
 
 
 # 39
+Git commit: 
+
+
+# 40
+Git commit: 
+
+
+# 41
+Git commit: 
+
+
+# 42
+Git commit: 
+
+
+# 43
+Git commit: 
+
+
+# 44
+Git commit: 
+
+
+# 45
+Git commit: 
+
+
+# 46
+Git commit: 
+
+
+# 47
+Git commit: 
+
+
+# 48
+Git commit: 
+
+
+# 49
+Git commit: 
+
+
+# 50
 Git commit: 

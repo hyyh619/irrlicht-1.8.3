@@ -137,7 +137,9 @@ class SyntaxTreeParser:
                         candidates.append((i-1, two_char, self.operators[two_char]))
                         i += 1
                         continue
-                if char in self.operators:
+
+                two_char = expr[i:i+2]
+                if char in self.operators and not (i >= 1 and two_char in self.operators):
                     candidates.append((i, char, self.operators[char]))
             i += 1
 
