@@ -8,6 +8,12 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Union, Optional
 
+try:
+    from mesh_view import MeshView, VertexData
+    MESHVIEW_AVAILABLE = True
+except ImportError:
+    MESHVIEW_AVAILABLE = False
+
 
 DATA_TYPE_LIST = [
     'float4x4', 'float3x3',  # 矩阵类型
@@ -446,6 +452,8 @@ class HLSLInterpreter:
         self.max_workers = max_workers                       # 线程池最大工作线程数
         self._parsed_func_cache = {}                         # 解析过的函数体缓存
         self.primitive_topology = primitive_topology         # 图元拓扑类型
+        self._mesh_view = None                               # MeshView实例
+        self._mesh_view_enabled = False                      # 是否启用MeshView
         if self.log_to_file and self.log_file_path:
             self._log_file = open(self.log_file_path, self.log_file_mode, encoding='utf-8')
 
@@ -454,6 +462,77 @@ class HLSLInterpreter:
         if self._log_file:
             self._log_file.close()
             self._log_file = None
+
+    def enable_mesh_view(self, enable: bool = True):
+        """
+        启用或禁用MeshView
+        enable: 是否启用MeshView
+        """
+        if enable and not MESHVIEW_AVAILABLE:
+            self.log_output("Warning: MeshView not available (tkinter may not be installed)")
+            return
+        self._mesh_view_enabled = enable
+        if enable and self._mesh_view is None:
+            self._mesh_view = MeshView(title="HLSL Interpreter Mesh View")
+        self.log_output(f"MeshView {'enabled' if enable else 'disabled'}")
+
+    def show_input_mesh(self, vs_input: str, row_index: int = None):
+        """
+        显示当前输入的mesh数据
+        vs_input: 输入结构体名
+        row_index: 指定行索引，如果为None则显示所有行
+        """
+        if not self._mesh_view_enabled or not MESHVIEW_AVAILABLE:
+            return
+
+        input_struct = self.structs.get(vs_input)
+        if not input_struct:
+            self.log_output(f"Cannot find vs input struct: {vs_input}")
+            return
+
+        positions = []
+        normals = []
+        colors = []
+
+        num_rows = 0
+        for field in input_struct.fields:
+            if field.data:
+                num_rows = max(num_rows, len(field.data))
+
+        if row_index is not None:
+            num_rows = min(row_index + 1, num_rows)
+            row_start = row_index
+            row_end = row_index + 1
+        else:
+            row_start = 0
+            row_end = num_rows
+
+        for field in input_struct.fields:
+            if not field.data:
+                continue
+            if 'pos' in field.name.lower() or 'position' in field.name.lower() or field.semantic.upper() == 'POSITION':
+                for i in range(row_start, min(row_end, len(field.data))):
+                    pos = field.data[i]
+                    if isinstance(pos, list) and len(pos) >= 3:
+                        positions.append(pos[:3])
+            elif 'normal' in field.name.lower() or field.semantic.upper() == 'NORMAL':
+                for i in range(row_start, min(row_end, len(field.data))):
+                    norm = field.data[i]
+                    if isinstance(norm, list) and len(norm) >= 3:
+                        normals.append(norm[:3])
+            elif 'color' in field.name.lower() or field.semantic.upper() == 'COLOR':
+                for i in range(row_start, min(row_end, len(field.data))):
+                    col = field.data[i]
+                    if isinstance(col, list) and len(col) >= 4:
+                        colors.append(col[:4])
+
+        if positions:
+            self._mesh_view.clear()
+            self._mesh_view.set_primitive_topology(self.primitive_topology)
+            self._mesh_view.set_input_data(positions, normals if normals else None, colors if colors else None)
+            self._mesh_view.show(blocking=False)
+        else:
+            self.log_output(f"No position data found in {vs_input}")
 
     def log_output(self, *args, **kwargs):
         """输出到stdout和日志文件"""
@@ -2214,6 +2293,7 @@ def main():
     execute_count = config.get('execute_count', None)
     max_workers = config.get('max_workers', 1)
     primitive_topology = config.get('primitive_topology', D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+    mesh_view_enabled = config.get('mesh_view_enabled', False)
 
     if not hlsl_file_path:
         print("Error: hlsl_file_path not specified in config")
@@ -2237,6 +2317,9 @@ def main():
         max_workers=max_workers,
         primitive_topology=primitive_topology)
 
+    if mesh_view_enabled:
+        interpreter.enable_mesh_view(True)
+
     total_start = time.time()
 
     interpret_start = time.time()
@@ -2248,6 +2331,10 @@ def main():
     if golden_csv_path and os.path.exists(golden_csv_path):
         interpreter.load_vs_output_golden_from_csv(golden_csv_path)
     load_golden_time = time.time() - load_golden_start
+
+    if mesh_view_enabled:
+        interpreter.log_output("Displaying input mesh before executeVS...")
+        interpreter.show_input_mesh("VS_INPUT")
 
     execute_start = time.time()
     results = interpreter.executeVS("main", "VS_INPUT", execute_count=execute_count)

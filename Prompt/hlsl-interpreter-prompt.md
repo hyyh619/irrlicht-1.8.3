@@ -991,7 +991,7 @@ HLSLInterpreter的self.max_workers也采用json配置的方式。如果没有jso
 
 
 # 46
-Git commit: 
+Git commit: hlsl-inter: add primitive topology configure by MiniMax-M2.7.
 为hlsl_interpreter.py的json config增加一个配置项，指定当前执行的vertex会组成什么primitive topology种类
 请定义出primitive种类包括
         D3D_PRIMITIVE_TOPOLOGY_UNDEFINED	= 0,
@@ -1005,6 +1005,12 @@ Git commit:
 
 # 47
 Git commit: 
+创建一个新的python文件，该文件主要用于显示3维图形的顶点组成的mesh view。类似renderdoc提供的mesh view。
+1. 创建一个MeshView对象
+2. 该MeshView对象接受输入的顶点数据，顶点数据包括了三维坐标，normal向量，颜色
+3. 该MeshView对象接受primitive topology信息用于构造Mesh显示
+4. 该MeshView需要创建一个图形界面用于显示，MeshView根据输入的顶点坐标和primitive topology信息构造对应的mesh
+5. 这个MeshView对象在hlsl_interpreter.py里创建，在执行executeVS前，输入当前interpreter解释出来的input.Pos, input.Normal, input.Color等数据，然后显示在GUI界面中
 
 
 # 48
