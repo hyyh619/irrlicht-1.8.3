@@ -956,7 +956,10 @@ execute_if_statement执行一遍。
 
 
 # 43
-Git commit: 
+Git commit: hlsl-inter: fix issues,
+1. select the g channel of input.Color and correctly assign it to the b channel of output.Color
+2. cannot correctly assign 0.8 to the r channel of output.Color
+by MiniMax-M2.7.
 HLSLInterpreter在执行下列语句
 output.Color.r = 0.8;
 output.Color.b = input.Color.g
