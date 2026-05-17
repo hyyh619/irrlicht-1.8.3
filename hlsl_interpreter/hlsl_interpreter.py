@@ -17,6 +17,14 @@ DATA_TYPE_LIST = [
     'bool'  # 布尔类型
 ]
 
+D3D_PRIMITIVE_TOPOLOGY_UNDEFINED = 0
+D3D_PRIMITIVE_TOPOLOGY_POINTLIST = 1
+D3D_PRIMITIVE_TOPOLOGY_LINELIST = 2
+D3D_PRIMITIVE_TOPOLOGY_LINESTRIP = 3
+D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST = 4
+D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP = 5
+D3D_PRIMITIVE_TOPOLOGY_TRIANGLEFAN = 6
+
 
 class SyntaxTreeNode:
     """
@@ -419,7 +427,7 @@ class HLSLInterpreter:
     支持: 结构体定义、cbuffer定义、函数解析、表达式求值
     """
 
-    def __init__(self, log_to_file: bool = True, log_file_path: str = "hlsl_interpreter.log", print_sequence: int = 1, log_file_mode: str = 'a', printSyntaxTree: bool = True, print_interpreter_result: bool = True, max_workers: int = 1):
+    def __init__(self, log_to_file: bool = True, log_file_path: str = "hlsl_interpreter.log", print_sequence: int = 1, log_file_mode: str = 'a', printSyntaxTree: bool = True, print_interpreter_result: bool = True, max_workers: int = 1, primitive_topology: int = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST):
         self.structs: Dict[str, StructDefinition] = {}      # 解析的结构体定义
         self.cbuffers: Dict[str, CbufferDefinition] = {}    # 解析的cbuffer定义
         self.variables: Dict[str, Any] = {}                 # 全局变量
@@ -437,6 +445,7 @@ class HLSLInterpreter:
         self.hlsl_code = None                               # 加载的HLSL代码
         self.max_workers = max_workers                       # 线程池最大工作线程数
         self._parsed_func_cache = {}                         # 解析过的函数体缓存
+        self.primitive_topology = primitive_topology         # 图元拓扑类型
         if self.log_to_file and self.log_file_path:
             self._log_file = open(self.log_file_path, self.log_file_mode, encoding='utf-8')
 
@@ -2204,6 +2213,7 @@ def main():
     output_struct_name = config.get('output_struct_name', 'VS_OUTPUT')
     execute_count = config.get('execute_count', None)
     max_workers = config.get('max_workers', 1)
+    primitive_topology = config.get('primitive_topology', D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
 
     if not hlsl_file_path:
         print("Error: hlsl_file_path not specified in config")
@@ -2224,7 +2234,8 @@ def main():
         print_sequence=print_sequence,
         printSyntaxTree=printSyntaxTree,
         print_interpreter_result=print_interpreter_result,
-        max_workers=max_workers)
+        max_workers=max_workers,
+        primitive_topology=primitive_topology)
 
     total_start = time.time()
 

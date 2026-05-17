@@ -992,6 +992,15 @@ HLSLInterpreter的self.max_workers也采用json配置的方式。如果没有jso
 
 # 46
 Git commit: 
+为hlsl_interpreter.py的json config增加一个配置项，指定当前执行的vertex会组成什么primitive topology种类
+请定义出primitive种类包括
+        D3D_PRIMITIVE_TOPOLOGY_UNDEFINED	= 0,
+        D3D_PRIMITIVE_TOPOLOGY_POINTLIST	= 1,
+        D3D_PRIMITIVE_TOPOLOGY_LINELIST	= 2,
+        D3D_PRIMITIVE_TOPOLOGY_LINESTRIP	= 3,
+        D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST	= 4,
+        D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP	= 5,
+        D3D_PRIMITIVE_TOPOLOGY_TRIANGLEFAN	= 6,
 
 
 # 47
