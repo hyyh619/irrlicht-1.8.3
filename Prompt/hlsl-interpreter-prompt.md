@@ -1015,7 +1015,9 @@ Git commit: hlsl-inter: create mesh view gui to show mesh of vertex data by Mini
 
 # 48
 Git commit: 
-为hlsl_interpreter.py的MeshView对象enable创建一个Json配置项，控制MeshView是否开启显示
+1. MeshView的显示界面请提供一个缩放和旋转的按钮来控制当前显示的Mesh
+2. Mesh的绘制请使用线框图wireframe
+3. Mesh请根据当前窗口大小放大显示，尽量能够占满当前窗口
 
 
 # 49

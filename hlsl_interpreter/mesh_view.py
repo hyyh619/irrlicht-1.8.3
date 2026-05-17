@@ -5,6 +5,7 @@ MeshView - 3D Mesh Visualization Tool
 import tkinter as tk
 from tkinter import ttk
 import threading
+import math
 from typing import List, Tuple, Optional
 
 
@@ -37,17 +38,19 @@ class MeshView:
         self._root = None
         self._canvas = None
         self._running = False
-        self._rotation_x = 0
-        self._rotation_y = 0
-        self._scale = 50
+        self._rotation_x = 30
+        self._rotation_y = 45
+        self._scale = 1.0
         self._offset_x = 0
         self._offset_y = 0
         self._last_mouse = None
         self._info_label = None
+        self._bounds = None
 
     def set_vertices(self, vertices: List[VertexData]):
         """设置顶点数据"""
         self.vertices = vertices
+        self._compute_bounds()
 
     def set_primitive_topology(self, primitive_topology: int):
         """设置图元拓扑类型"""
@@ -56,10 +59,12 @@ class MeshView:
     def clear(self):
         """清空顶点数据"""
         self.vertices = []
+        self._bounds = None
 
     def add_vertex(self, position: List[float], normal: List[float] = None, color: List[float] = None):
         """添加单个顶点"""
         self.vertices.append(VertexData(position, normal, color))
+        self._compute_bounds()
 
     def set_input_data(self, positions: List[List[float]], normals: List[List[float]] = None, colors: List[List[float]] = None):
         """
@@ -73,10 +78,35 @@ class MeshView:
             normal = normals[i] if normals and i < len(normals) else None
             color = colors[i] if colors and i < len(colors) else None
             self.vertices.append(VertexData(pos, normal, color))
+        self._compute_bounds()
+
+    def _compute_bounds(self):
+        """计算顶点边界框"""
+        if not self.vertices:
+            self._bounds = None
+            return
+
+        min_x = min_y = min_z = float('inf')
+        max_x = max_y = max_z = float('-inf')
+
+        for v in self.vertices:
+            x, y, z = v.position[0], v.position[1], v.position[2]
+            min_x = min(min_x, x)
+            max_x = max(max_x, x)
+            min_y = min(min_y, y)
+            max_y = max(max_y, y)
+            min_z = min(min_z, z)
+            max_z = max(max_z, z)
+
+        center = [(min_x + max_x) / 2, (min_y + max_y) / 2, (min_z + max_z) / 2]
+        size = max(max_x - min_x, max_y - min_y, max_z - min_z)
+        if size < 0.001:
+            size = 1
+
+        self._bounds = (center, size)
 
     def _transform_vertex(self, v: List[float]) -> Tuple[float, float, float]:
         """应用旋转变换到顶点"""
-        import math
         x, y, z = v[0], v[1], v[2]
 
         ang_x = math.radians(self._rotation_x)
@@ -92,14 +122,18 @@ class MeshView:
 
         return x2, y1, z2
 
-    def _project(self, v: Tuple[float, float, float]) -> Tuple[float, float]:
+    def _project(self, v: Tuple[float, float, float], width: float, height: float) -> Tuple[float, float]:
         """将3D点投影到2D画布"""
         x, y, z = v
-        if z == 0:
-            z = 0.001
-        factor = self._scale / (z + 200)
-        proj_x = x * factor + self._offset_x
-        proj_y = -y * factor + self._offset_y
+
+        margin = 40
+        usable_width = width - 2 * margin
+        usable_height = height - 2 * margin
+
+        scale = self._scale * min(usable_width, usable_height) / 2.0
+
+        proj_x = x * scale + width / 2 + self._offset_x
+        proj_y = -y * scale + height / 2 + self._offset_y
         return proj_x, proj_y
 
     def _color_to_hex(self, color: List[float]) -> str:
@@ -113,8 +147,51 @@ class MeshView:
             g = int(min(255, max(0, color[1] * 255)))
             b = int(min(255, max(0, color[2] * 255)))
         else:
-            r = g = b = 128
+            r = g = b = 200
         return f'#{r:02x}{g:02x}{b:02x}'
+
+    def _draw_mesh_wireframe(self, transformed: list, width: float, height: float):
+        """绘制wireframe线框"""
+        if self.primitive_topology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST:
+            for i in range(0, len(transformed) - 2, 3):
+                pts = transformed[i:i+3]
+                color = self._color_to_hex(pts[0][1])
+                proj_pts = [self._project(p, width, height) for p, c in pts]
+                self._canvas.create_line(proj_pts[0][0], proj_pts[0][1], proj_pts[1][0], proj_pts[1][1], fill=color, width=1)
+                self._canvas.create_line(proj_pts[1][0], proj_pts[1][1], proj_pts[2][0], proj_pts[2][1], fill=color, width=1)
+                self._canvas.create_line(proj_pts[2][0], proj_pts[2][1], proj_pts[0][0], proj_pts[0][1], fill=color, width=1)
+
+        elif self.primitive_topology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP:
+            for i in range(len(transformed) - 2):
+                pts = transformed[i:i+3]
+                color = self._color_to_hex(pts[0][1])
+                proj_pts = [self._project(p, width, height) for p, c in pts]
+                self._canvas.create_line(proj_pts[0][0], proj_pts[0][1], proj_pts[1][0], proj_pts[1][1], fill=color, width=1)
+                self._canvas.create_line(proj_pts[1][0], proj_pts[1][1], proj_pts[2][0], proj_pts[2][1], fill=color, width=1)
+                self._canvas.create_line(proj_pts[2][0], proj_pts[2][1], proj_pts[0][0], proj_pts[0][1], fill=color, width=1)
+
+        elif self.primitive_topology == D3D_PRIMITIVE_TOPOLOGY_LINELIST:
+            for i in range(0, len(transformed) - 1, 2):
+                p1, c1 = transformed[i]
+                p2, c2 = transformed[i+1]
+                proj1 = self._project(p1, width, height)
+                proj2 = self._project(p2, width, height)
+                color = self._color_to_hex(c1)
+                self._canvas.create_line(proj1[0], proj1[1], proj2[0], proj2[1], fill=color, width=2)
+
+        elif self.primitive_topology == D3D_PRIMITIVE_TOPOLOGY_LINESTRIP:
+            for i in range(len(transformed) - 1):
+                p1, c1 = transformed[i]
+                p2, c2 = transformed[i+1]
+                proj1 = self._project(p1, width, height)
+                proj2 = self._project(p2, width, height)
+                color = self._color_to_hex(c1)
+                self._canvas.create_line(proj1[0], proj1[1], proj2[0], proj2[1], fill=color, width=2)
+
+        elif self.primitive_topology == D3D_PRIMITIVE_TOPOLOGY_POINTLIST:
+            for p, c in transformed:
+                proj = self._project(p, width, height)
+                self._canvas.create_oval(proj[0]-4, proj[1]-4, proj[0]+4, proj[1]+4, fill=self._color_to_hex(c), outline='white')
 
     def _draw_mesh(self):
         """绘制mesh到画布"""
@@ -124,69 +201,13 @@ class MeshView:
         self._canvas.delete("all")
         width = int(self._canvas.cget('width'))
         height = int(self._canvas.cget('height'))
-        self._offset_x = width / 2
-        self._offset_y = height / 2
 
         transformed = []
         for v in self.vertices:
             p = self._transform_vertex(v.position)
             transformed.append((p, v.color))
 
-        if self.primitive_topology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST:
-            for i in range(0, len(transformed) - 2, 3):
-                pts = transformed[i:i+3]
-                color = self._color_to_hex(pts[0][1])
-                points = []
-                for p, c in pts:
-                    proj = self._project(p)
-                    points.extend(proj)
-                self._canvas.create_polygon(points, fill=color, outline='', stipple='gray25', width=1)
-                for p, c in pts:
-                    proj = self._project(p)
-                    self._canvas.create_oval(proj[0]-3, proj[1]-3, proj[0]+3, proj[1]+3, fill=self._color_to_hex(c), outline='white')
-
-        elif self.primitive_topology == D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP:
-            for i in range(len(transformed) - 2):
-                pts = transformed[i:i+3]
-                color = self._color_to_hex(pts[0][1])
-                points = []
-                for p, c in pts:
-                    proj = self._project(p)
-                    points.extend(proj)
-                self._canvas.create_polygon(points, fill=color, outline='', stipple='gray25', width=1)
-                for p, c in pts:
-                    proj = self._project(p)
-                    self._canvas.create_oval(proj[0]-3, proj[1]-3, proj[0]+3, proj[1]+3, fill=self._color_to_hex(c), outline='white')
-
-        elif self.primitive_topology == D3D_PRIMITIVE_TOPOLOGY_LINELIST:
-            for i in range(0, len(transformed) - 1, 2):
-                p1, c1 = transformed[i]
-                p2, c2 = transformed[i+1]
-                proj1 = self._project(p1)
-                proj2 = self._project(p2)
-                color = self._color_to_hex(c1)
-                self._canvas.create_line(proj1[0], proj1[1], proj2[0], proj2[1], fill=color, width=2)
-                self._canvas.create_oval(proj1[0]-3, proj1[1]-3, proj1[0]+3, proj1[1]+3, fill=color, outline='white')
-                self._canvas.create_oval(proj2[0]-3, proj2[1]-3, proj2[0]+3, proj2[1]+3, fill=color, outline='white')
-
-        elif self.primitive_topology == D3D_PRIMITIVE_TOPOLOGY_LINESTRIP:
-            for i in range(len(transformed) - 1):
-                p1, c1 = transformed[i]
-                p2, c2 = transformed[i+1]
-                proj1 = self._project(p1)
-                proj2 = self._project(p2)
-                color = self._color_to_hex(c1)
-                self._canvas.create_line(proj1[0], proj1[1], proj2[0], proj2[1], fill=color, width=2)
-                self._canvas.create_oval(proj1[0]-3, proj1[1]-3, proj1[0]+3, proj1[1]+3, fill=color, outline='white')
-            if transformed:
-                p, c = transformed[-1]
-                proj = self._project(p)
-                self._canvas.create_oval(proj[0]-3, proj[1]-3, proj[0]+3, proj[1]+3, fill=self._color_to_hex(c), outline='white')
-
-        elif self.primitive_topology == D3D_PRIMITIVE_TOPOLOGY_POINTLIST:
-            for p, c in transformed:
-                proj = self._project(p)
-                self._canvas.create_oval(proj[0]-4, proj[1]-4, proj[0]+4, proj[1]+4, fill=self._color_to_hex(c), outline='white')
+        self._draw_mesh_wireframe(transformed, width, height)
 
         self._update_info()
 
@@ -202,7 +223,7 @@ class MeshView:
                 D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP: "Triangle Strip",
                 D3D_PRIMITIVE_TOPOLOGY_TRIANGLEFAN: "Triangle Fan",
             }
-            info = f"Vertices: {len(self.vertices)} | Topology: {topo_names.get(self.primitive_topology, 'Unknown')} | Rot: ({self._rotation_x:.1f}, {self._rotation_y:.1f})"
+            info = f"Vertices: {len(self.vertices)} | Topology: {topo_names.get(self.primitive_topology, 'Unknown')} | Zoom: {self._scale:.2f}x"
             self._info_label.config(text=info)
 
     def _on_mouse_drag(self, event):
@@ -225,11 +246,52 @@ class MeshView:
             self._scale *= 1.1
         else:
             self._scale *= 0.9
-        self._scale = max(5, min(500, self._scale))
+        self._scale = max(0.1, min(50, self._scale))
         self._draw_mesh()
 
     def _on_resize(self, event):
         """处理窗口大小改变"""
+        self._draw_mesh()
+
+    def _zoom_in(self):
+        """放大"""
+        self._scale *= 1.2
+        self._scale = min(50, self._scale)
+        self._draw_mesh()
+
+    def _zoom_out(self):
+        """缩小"""
+        self._scale *= 0.8
+        self._scale = max(0.1, self._scale)
+        self._draw_mesh()
+
+    def _rotate_cw(self):
+        """顺时针旋转"""
+        self._rotation_y += 15
+        self._draw_mesh()
+
+    def _rotate_ccw(self):
+        """逆时针旋转"""
+        self._rotation_y -= 15
+        self._draw_mesh()
+
+    def _rotate_up(self):
+        """向上旋转"""
+        self._rotation_x -= 15
+        self._draw_mesh()
+
+    def _rotate_down(self):
+        """向下旋转"""
+        self._rotation_x += 15
+        self._draw_mesh()
+
+    def _reset_view(self):
+        """重置视图"""
+        self._rotation_x = 30
+        self._rotation_y = 45
+        self._scale = 1.0
+        self._offset_x = 0
+        self._offset_y = 0
         self._draw_mesh()
 
     def show(self, blocking: bool = False):
@@ -248,10 +310,23 @@ class MeshView:
         main_frame = ttk.Frame(self._root)
         main_frame.pack(fill=tk.BOTH, expand=True)
 
-        self._info_label = ttk.Label(main_frame, text="Vertices: 0 | Topology: None", font=("Consolas", 10))
-        self._info_label.pack(side=tk.BOTTOM, fill=tk.X, pady=2)
+        controls_frame = ttk.Frame(main_frame)
+        controls_frame.pack(side=tk.TOP, fill=tk.X, pady=2)
 
-        self._canvas = tk.Canvas(main_frame, bg="black", width=780, height=560)
+        ttk.Label(controls_frame, text="Zoom:").pack(side=tk.LEFT, padx=2)
+        ttk.Button(controls_frame, text="+", width=3, command=self._zoom_in).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="-", width=3, command=self._zoom_out).pack(side=tk.LEFT, padx=1)
+
+        ttk.Label(controls_frame, text="Rotate:").pack(side=tk.LEFT, padx=5)
+        ttk.Button(controls_frame, text="↺", width=3, command=self._rotate_ccw).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="↻", width=3, command=self._rotate_cw).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="↑", width=3, command=self._rotate_up).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="↓", width=3, command=self._rotate_down).pack(side=tk.LEFT, padx=1)
+
+        ttk.Button(controls_frame, text="Reset", command=self._reset_view).pack(side=tk.LEFT, padx=5)
+        ttk.Button(controls_frame, text="Close", command=self._root.destroy).pack(side=tk.RIGHT, padx=5)
+
+        self._canvas = tk.Canvas(main_frame, bg="black", width=780, height=520)
         self._canvas.pack(fill=tk.BOTH, expand=True)
 
         self._canvas.bind("<Button-1>", lambda e: self._on_mouse_drag(e))
@@ -260,13 +335,8 @@ class MeshView:
         self._canvas.bind("<MouseWheel>", lambda e: self._on_mouse_wheel(e))
         self._root.bind("<Configure>", lambda e: self._on_resize(e))
 
-        controls_frame = ttk.Frame(main_frame)
-        controls_frame.pack(side=tk.TOP, fill=tk.X, pady=2)
-
-        ttk.Label(controls_frame, text="Drag to rotate | Scroll to zoom").pack(side=tk.LEFT, padx=5)
-
-        ttk.Button(controls_frame, text="Reset View", command=self._reset_view).pack(side=tk.RIGHT, padx=5)
-        ttk.Button(controls_frame, text="Close", command=self._root.destroy).pack(side=tk.RIGHT, padx=5)
+        self._info_label = ttk.Label(main_frame, text="Vertices: 0 | Topology: None", font=("Consolas", 10))
+        self._info_label.pack(side=tk.BOTTOM, fill=tk.X, pady=2)
 
         self._draw_mesh()
         self._running = True
@@ -275,13 +345,6 @@ class MeshView:
             self._root.mainloop()
         else:
             threading.Thread(target=self._root.mainloop, daemon=True).start()
-
-    def _reset_view(self):
-        """重置视图"""
-        self._rotation_x = 0
-        self._rotation_y = 0
-        self._scale = 50
-        self._draw_mesh()
 
     def hide(self):
         """隐藏窗口"""
