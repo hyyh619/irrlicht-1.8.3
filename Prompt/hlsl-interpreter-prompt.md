@@ -970,6 +970,16 @@ output.Color.b = input.Color.g
 
 # 44
 Git commit: 
+函数executeVS因为是对多组数据，执行相同的HLSL程序，代码如下
+        for row_index in range(execute_count):
+            data = {}
+            for field in input_struct.fields:
+                if field.data and row_index < len(field.data):
+                    data[field.name] = field.data[row_index]
+            result = self.execute_main_function(code, main_func, vs_input, row_index, data)
+            results.append(result)
+1. 创建一个多线程池，能够以多线程方式执行execute_count要求的数量的数据
+2. results结果不能使用append这种乱序的方式添加，需要按照输入的数据的排序写出
 
 
 # 45

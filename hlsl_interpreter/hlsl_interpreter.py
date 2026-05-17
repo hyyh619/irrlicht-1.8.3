@@ -4,6 +4,7 @@ import math
 import re
 import os
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Union, Optional
 
@@ -434,6 +435,7 @@ class HLSLInterpreter:
         self._should_print = True                           # 当前是否应该打印
         self._log_file = None                               # 日志文件句柄
         self.hlsl_code = None                               # 加载的HLSL代码
+        self.max_workers = 4                                # 线程池最大工作线程数
         if self.log_to_file and self.log_file_path:
             self._log_file = open(self.log_file_path, self.log_file_mode, encoding='utf-8')
 
@@ -1805,14 +1807,31 @@ class HLSLInterpreter:
                     num_rows = max(num_rows, len(field.data))
             execute_count = num_rows
 
-        results = []
-        for row_index in range(execute_count):
-            data = {}
-            for field in input_struct.fields:
-                if field.data and row_index < len(field.data):
-                    data[field.name] = field.data[row_index]
-            result = self.execute_main_function(code, main_func, vs_input, row_index, data)
-            results.append(result)
+        if self.max_workers > 1:
+            def execute_row(row_index: int):
+                data = {}
+                for field in input_struct.fields:
+                    if field.data and row_index < len(field.data):
+                        data[field.name] = field.data[row_index]
+                result = self.execute_main_function(code, main_func, vs_input, row_index, data)
+                return row_index, result
+
+            results = [None] * execute_count
+            with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+                futures = [executor.submit(execute_row, i) for i in range(execute_count)]
+                for future in futures:
+                    idx, result = future.result()
+                    results[idx] = result
+        else:
+            results = []
+            for row_index in range(execute_count):
+                data = {}
+                for field in input_struct.fields:
+                    if field.data and row_index < len(field.data):
+                        data[field.name] = field.data[row_index]
+                result = self.execute_main_function(code, main_func, vs_input, row_index, data)
+                results.append(result)
+
         return results
 
     def executePS(self, code: str, main_func: str, ps_input: str):
