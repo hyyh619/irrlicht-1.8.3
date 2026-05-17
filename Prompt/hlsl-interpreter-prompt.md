@@ -969,7 +969,7 @@ output.Color.b = input.Color.g
 
 
 # 44
-Git commit: 
+Git commit: hlsl-inter: add thread workers to run multithreads on VS by MiniMax-M2.7.
 函数executeVS因为是对多组数据，执行相同的HLSL程序，代码如下
         for row_index in range(execute_count):
             data = {}
@@ -984,6 +984,7 @@ Git commit:
 
 # 45
 Git commit: 
+HLSLInterpreter的self.max_workers也采用json配置的方式。如果没有json配置项，默认值为1
 
 
 # 46

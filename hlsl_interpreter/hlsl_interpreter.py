@@ -419,11 +419,11 @@ class HLSLInterpreter:
     支持: 结构体定义、cbuffer定义、函数解析、表达式求值
     """
 
-    def __init__(self, log_to_file: bool = True, log_file_path: str = "hlsl_interpreter.log", print_sequence: int = 1, log_file_mode: str = 'a', printSyntaxTree: bool = True, print_interpreter_result: bool = True):
+    def __init__(self, log_to_file: bool = True, log_file_path: str = "hlsl_interpreter.log", print_sequence: int = 1, log_file_mode: str = 'a', printSyntaxTree: bool = True, print_interpreter_result: bool = True, max_workers: int = 1):
         self.structs: Dict[str, StructDefinition] = {}      # 解析的结构体定义
         self.cbuffers: Dict[str, CbufferDefinition] = {}    # 解析的cbuffer定义
         self.variables: Dict[str, Any] = {}                 # 全局变量
-        self.debug = True                                   # 调试模式开关
+        self.debug = False # 调试模式开关
         self.printSyntaxTree = printSyntaxTree              # 打印语法树开关
         self.syntax_parser = SyntaxTreeParser()             # 语法树解析器
         self.log_to_file = log_to_file                      # 是否输出到文件
@@ -435,7 +435,7 @@ class HLSLInterpreter:
         self._should_print = True                           # 当前是否应该打印
         self._log_file = None                               # 日志文件句柄
         self.hlsl_code = None                               # 加载的HLSL代码
-        self.max_workers = 4                                # 线程池最大工作线程数
+        self.max_workers = max_workers                       # 线程池最大工作线程数
         if self.log_to_file and self.log_file_path:
             self._log_file = open(self.log_file_path, self.log_file_mode, encoding='utf-8')
 
@@ -1816,6 +1816,7 @@ class HLSLInterpreter:
                 result = self.execute_main_function(code, main_func, vs_input, row_index, data)
                 return row_index, result
 
+            print(f"Run thread workers")
             results = [None] * execute_count
             with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
                 futures = [executor.submit(execute_row, i) for i in range(execute_count)]
@@ -1823,6 +1824,7 @@ class HLSLInterpreter:
                     idx, result = future.result()
                     results[idx] = result
         else:
+            print(f"Run single thread")
             results = []
             for row_index in range(execute_count):
                 data = {}
@@ -2195,6 +2197,7 @@ def main():
     float_tolerance = config.get('float_tolerance', 0.0001)
     output_struct_name = config.get('output_struct_name', 'VS_OUTPUT')
     execute_count = config.get('execute_count', None)
+    max_workers = config.get('max_workers', 1)
 
     if not hlsl_file_path:
         print("Error: hlsl_file_path not specified in config")
@@ -2214,7 +2217,8 @@ def main():
         log_file_mode=log_file_mode,
         print_sequence=print_sequence,
         printSyntaxTree=printSyntaxTree,
-        print_interpreter_result=print_interpreter_result)
+        print_interpreter_result=print_interpreter_result,
+        max_workers=max_workers)
 
     total_start = time.time()
 
