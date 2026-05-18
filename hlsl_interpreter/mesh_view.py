@@ -22,6 +22,8 @@ D3D_PRIMITIVE_TOPOLOGY_TRIANGLEFAN = 6
 MESH_VIEW_ROTATION_INIT_X = 0
 MESH_VIEW_ROTATION_INIT_Y = 0
 MESH_VIEW_SCALE_INIT = 0.2
+MESH_VIEW_MIN_SCALE = 0.01
+MESH_VIEW_MAX_SCALE = 50
 MESH_VIEW_OFFSET_X = 0
 MESH_VIEW_OFFSET_Y = 180
 
@@ -327,7 +329,7 @@ class MeshView:
             self._scale *= 1.1
         else:
             self._scale *= 0.9
-        self._scale = max(0.1, min(50, self._scale))
+        self._scale = max(MESH_VIEW_MIN_SCALE, min(MESH_VIEW_MAX_SCALE, self._scale))
         self._draw_mesh()
 
     def _on_resize(self, event):
@@ -337,13 +339,13 @@ class MeshView:
     def _zoom_in(self):
         """放大"""
         self._scale *= 1.2
-        self._scale = min(50, self._scale)
+        self._scale = min(MESH_VIEW_MAX_SCALE, self._scale)
         self._draw_mesh()
 
     def _zoom_out(self):
         """缩小"""
         self._scale *= 0.8
-        self._scale = max(0.1, self._scale)
+        self._scale = max(MESH_VIEW_MIN_SCALE, self._scale)
         self._draw_mesh()
 
     def _rotate_cw(self):

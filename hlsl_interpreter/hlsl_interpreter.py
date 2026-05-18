@@ -452,7 +452,8 @@ class HLSLInterpreter:
         self.max_workers = max_workers                       # 线程池最大工作线程数
         self._parsed_func_cache = {}                         # 解析过的函数体缓存
         self.primitive_topology = primitive_topology         # 图元拓扑类型
-        self._mesh_view = None                               # MeshView实例
+        self._mesh_view = None                               # MeshView实例(用于显示输入)
+        self._result_mesh_view = None                        # MeshView实例(用于显示结果)
         self._mesh_view_enabled = False                      # 是否启用MeshView
         if self.log_to_file and self.log_file_path:
             self._log_file = open(self.log_file_path, self.log_file_mode, encoding='utf-8')
@@ -473,7 +474,8 @@ class HLSLInterpreter:
             return
         self._mesh_view_enabled = enable
         if enable and self._mesh_view is None:
-            self._mesh_view = MeshView(title="HLSL Interpreter Mesh View")
+            self._mesh_view = MeshView(title="HLSL Interpreter - Input Mesh")
+            self._result_mesh_view = MeshView(title="HLSL Interpreter - Output Mesh (executeVS Result)")
         self.log_output(f"MeshView {'enabled' if enable else 'disabled'}")
 
     def show_input_mesh(self, vs_input: str, row_index: int = None):
@@ -533,6 +535,53 @@ class HLSLInterpreter:
             self._mesh_view.show(blocking=False)
         else:
             self.log_output(f"No position data found in {vs_input}")
+
+    def show_result_mesh(self, results: List[Dict[str, Any]], output_struct_name: str = None):
+        """
+        显示executeVS执行完毕后的results mesh数据
+        results: executeVS返回的输出结构体字典列表
+        output_struct_name: 输出结构体名(可选)
+        """
+        if not self._mesh_view_enabled or not MESHVIEW_AVAILABLE:
+            return
+
+        if not results:
+            self.log_output("No results to display in result mesh view")
+            return
+
+        positions = []
+        normals = []
+        colors = []
+
+        # not pos keywords
+        notPosWords = ['worldpos']
+
+        for result in results:
+            if not result:
+                continue
+            for key, value in result.items():
+                key_lower = key.lower()
+                if 'pos' in key_lower or 'position' in key_lower or key.upper() == 'SV_POSITION':
+                    if key_lower in notPosWords:
+                        continue
+
+                    if isinstance(value, list) and len(value) >= 3:
+                        positions.append(value[:3])
+                elif 'normal' in key_lower:
+                    if isinstance(value, list) and len(value) >= 3:
+                        normals.append(value[:3])
+                elif 'color' in key_lower:
+                    if isinstance(value, list) and len(value) >= 4:
+                        colors.append(value[:4])
+
+        if positions:
+            self._result_mesh_view.clear()
+            self._result_mesh_view.set_primitive_topology(self.primitive_topology)
+            self._result_mesh_view.set_input_data(positions, normals if normals else None, colors if colors else None)
+            self._result_mesh_view.show(blocking=False)
+            self.log_output(f"Result mesh displayed: {len(positions)} vertices")
+        else:
+            self.log_output("No position data found in results")
 
     def log_output(self, *args, **kwargs):
         """输出到stdout和日志文件"""
@@ -2339,6 +2388,10 @@ def main():
     execute_start = time.time()
     results = interpreter.executeVS("main", "VS_INPUT", execute_count=execute_count)
     execute_time = time.time() - execute_start
+
+    if mesh_view_enabled and results:
+        interpreter.log_output("Displaying result mesh after executeVS...")
+        interpreter.show_result_mesh(results)
 
     if interpreter.print_interpreter_result:
         interpreter.log_output("HLSL Interpreter Result:")

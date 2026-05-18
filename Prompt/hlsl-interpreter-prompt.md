@@ -1032,13 +1032,17 @@ Git commit: hlsl-inter: create animation of rendering vertex by MiniMax-M2.7.
 
 
 # 50
-Git commit: 
+Git commit: hlsl-inter: add normal vector show of MeshView by MiniMax-M2.7.
 为mesh_view.py添加下述功能
 1. 显示mesh的每个顶点的normal向量
 
 
 # 51
 Git commit: 
+1. 我们需要创建两个独立的MeshView显示UI，一个用于显示输入的vertex，已经创建，不需要修改
+2. 另一个MeshView的UI用于显示用于显示executeVS执行完毕后的结果results
+3. 请在HLSLInterpreter中创建一个新的MeshView对象，用于显示executeVS执行完毕后的results
+4. 请把executeVS执行完毕后的results的三维坐标，normal向量，颜色信息送给MeshView显示
 
 
 # 52
@@ -1070,4 +1074,36 @@ Git commit:
 
 
 # 59
+Git commit: 
+
+
+# 60
+Git commit: 
+
+
+# 61
+Git commit: 
+
+
+# 62
+Git commit: 
+
+
+# 63
+Git commit: 
+
+
+# 64
+Git commit: 
+
+
+# 65
+Git commit: 
+
+
+# 66
+Git commit: 
+
+
+# 67
 Git commit: 
