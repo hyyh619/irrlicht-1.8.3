@@ -19,6 +19,12 @@ D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST = 4
 D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP = 5
 D3D_PRIMITIVE_TOPOLOGY_TRIANGLEFAN = 6
 
+MESH_VIEW_ROTATION_INIT_X = 0
+MESH_VIEW_ROTATION_INIT_Y = 0
+MESH_VIEW_SCALE_INIT = 0.2
+MESH_VIEW_OFFSET_X = 0
+MESH_VIEW_OFFSET_Y = 180
+
 
 class VertexData:
     """顶点数据结构"""
@@ -40,11 +46,11 @@ class MeshView:
         self._root = None
         self._canvas = None
         self._running = False
-        self._rotation_x = 0 # 30
-        self._rotation_y = 0 # 45
-        self._scale = 0.2
-        self._offset_x = 0
-        self._offset_y = 140
+        self._rotation_x = MESH_VIEW_ROTATION_INIT_X # 30
+        self._rotation_y = MESH_VIEW_ROTATION_INIT_Y # 45
+        self._scale = MESH_VIEW_SCALE_INIT
+        self._offset_x = MESH_VIEW_OFFSET_X
+        self._offset_y = MESH_VIEW_OFFSET_Y
         self._last_mouse = None
         self._info_label = None
         self._bounds = None
@@ -382,11 +388,11 @@ class MeshView:
 
     def _reset_view(self):
         """重置视图"""
-        self._rotation_x = 30
-        self._rotation_y = 45
-        self._scale = 1.0
-        self._offset_x = 0
-        self._offset_y = 0
+        self._rotation_x = MESH_VIEW_ROTATION_INIT_X #30
+        self._rotation_y = MESH_VIEW_ROTATION_INIT_Y #45
+        self._scale = MESH_VIEW_SCALE_INIT
+        self._offset_x = MESH_VIEW_OFFSET_X
+        self._offset_y = MESH_VIEW_OFFSET_Y
         self._draw_mesh()
 
     def _toggle_normals(self):
@@ -472,7 +478,7 @@ class MeshView:
 
         self._root = tk.Tk()
         self._root.title(self.title)
-        self._root.geometry("800x600")
+        self._root.geometry("1280x600")
 
         main_frame = ttk.Frame(self._root)
         main_frame.pack(fill=tk.BOTH, expand=True)
