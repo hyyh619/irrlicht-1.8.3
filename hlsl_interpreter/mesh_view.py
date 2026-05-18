@@ -58,6 +58,8 @@ class MeshView:
         self._next_btn = None
         self._prev_btn = None
         self._step_label = None
+        self._show_normals = False
+        self._normals_var = None
         self._load_animation_config()
 
     def _load_animation_config(self):
@@ -226,6 +228,40 @@ class MeshView:
                 proj = self._project(p, width, height)
                 self._canvas.create_oval(proj[0]-4, proj[1]-4, proj[0]+4, proj[1]+4, fill=self._color_to_hex(c), outline='white')
 
+        if self._show_normals:
+            self._draw_normals(transformed, width, height)
+
+    def _draw_normals(self, transformed: list, width: float, height: float):
+        """绘制顶点法线向量"""
+        if not self.vertices:
+            return
+
+        normal_scale = 0.1 * (self._bounds[1] if self._bounds else 1.0)
+
+        for i, (pos, color) in enumerate(transformed):
+            if i < len(self.vertices):
+                normal = self.vertices[i].normal
+                if normal:
+                    nx, ny, nz = normal[0], normal[1], normal[2]
+                    length = (nx*nx + ny*ny + nz*nz) ** 0.5
+                    if length > 0.0001:
+                        nx, ny, nz = nx/length, ny/length, nz/length
+                    end_pos = (
+                        pos[0] + nx * normal_scale,
+                        pos[1] + ny * normal_scale,
+                        pos[2] + nz * normal_scale
+                    )
+                    start_proj = self._project(pos, width, height)
+                    end_proj = self._project(end_pos, width, height)
+                    r = int(min(255, max(0, (nx * 0.5 + 0.5) * 255)))
+                    g = int(min(255, max(0, (ny * 0.5 + 0.5) * 255)))
+                    b = int(min(255, max(0, (nz * 0.5 + 0.5) * 255)))
+                    color_hex = f'#{r:02x}{g:02x}{b:02x}'
+                    self._canvas.create_line(start_proj[0], start_proj[1], end_proj[0], end_proj[1],
+                                             fill=color_hex, width=1)
+                    self._canvas.create_oval(end_proj[0]-2, end_proj[1]-2, end_proj[0]+2, end_proj[1]+2,
+                                             fill=color_hex, outline='')
+
     def _draw_mesh(self):
         """绘制mesh到画布"""
         self._draw_mesh_animated(len(self.vertices))
@@ -353,6 +389,11 @@ class MeshView:
         self._offset_y = 0
         self._draw_mesh()
 
+    def _toggle_normals(self):
+        """切换法线显示"""
+        self._show_normals = self._normals_var.get()
+        self._draw_mesh()
+
     def _play_animation(self):
         """从开头开始播放动画"""
         if not self.vertices:
@@ -456,6 +497,10 @@ class MeshView:
         ttk.Button(controls_frame, text="▼", width=3, command=self._pan_down).pack(side=tk.LEFT, padx=1)
 
         ttk.Button(controls_frame, text="Reset", command=self._reset_view).pack(side=tk.LEFT, padx=5)
+
+        self._normals_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(controls_frame, text="Show Normals", variable=self._normals_var,
+                        command=self._toggle_normals).pack(side=tk.LEFT, padx=5)
 
         anim_frame = ttk.Frame(controls_frame)
         anim_frame.pack(side=tk.LEFT, padx=10)

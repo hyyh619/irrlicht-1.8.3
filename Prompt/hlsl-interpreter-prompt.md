@@ -1022,7 +1022,7 @@ Git commit: hlsl-inter: add move button by MiniMax-M2.7.
 4. 为MeshView增加一个平移当前模型的按钮
 
 # 49
-Git commit: 
+Git commit: hlsl-inter: create animation of rendering vertex by MiniMax-M2.7.
 为mesh_view.py添加下述功能
 1. 按照输入vertex数据顺序，挨个渲染顶点和线框，每次渲染一个顶点，连接一个线，渲染的间隔时间通过json配置
 2. 为MeshView增加一个动画播放，暂停，下一步和上一步按钮来控制当前模型的渲染
@@ -1033,6 +1033,8 @@ Git commit:
 
 # 50
 Git commit: 
+为mesh_view.py添加下述功能
+1. 显示mesh的每个顶点的normal向量
 
 
 # 51
