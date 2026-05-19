@@ -1046,9 +1046,10 @@ Git commit: hlsl-inter: add vs output mesh view by MiniMax-M2.7.
 
 
 # 52
-Git commit: 
+Git commit: hlsl-inter: add two windows to show both input and results of executeVS by MiniMax-M2.7.
 1. 给mesh_view.py的MeshView的UI界面创建两个显示窗口，一个用于输入的vertex显示，一个用于executeVS输出的results显示
 2. HLSLInterpreter不需要创建单独的_result_mesh_view来显示executeVS的results，直接使用MeshView.set_output_vertices来传入results并显示
+3. mesh_view.py的_sync_view_vars改成选择不同的显示窗口，勾选就是选择input显示窗口，不勾选就是选择results显示窗口。平移，缩放，旋转，播放，暂停等按钮根据_sync_view_vars的选择来决定对哪个窗口生效。
 
 
 # 53

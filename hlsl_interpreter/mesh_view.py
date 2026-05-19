@@ -77,7 +77,7 @@ class MeshView:
         self._step_label = None
         self._show_normals = False
         self._normals_var = None
-        self._sync_view_vars = None
+        self._active_view_var = None
         self._load_animation_config()
 
     @property
@@ -88,12 +88,6 @@ class MeshView:
     def vertices(self, value):
         self.input_vertices = value
         self._compute_input_bounds()
-        if self._sync_view_vars.get():
-            self._output_rotation_x = self._input_rotation_x
-            self._output_rotation_y = self._input_rotation_y
-            self._output_scale = self._input_scale
-            self._output_offset_x = self._input_offset_x
-            self._output_offset_y = self._input_offset_y
 
     def _load_animation_config(self):
         """从配置文件加载动画配置"""
@@ -523,11 +517,9 @@ class MeshView:
         if self._last_mouse:
             dx = event.x - self._last_mouse[0]
             dy = event.y - self._last_mouse[1]
-            self._input_rotation_y += dx * 0.5
-            self._input_rotation_x += dy * 0.5
-            if self._sync_view_vars.get():
-                self._output_rotation_x = self._input_rotation_x
-                self._output_rotation_y = self._input_rotation_y
+            if self._active_view_var.get():
+                self._input_rotation_y += dx * 0.5
+                self._input_rotation_x += dy * 0.5
             self._draw_mesh()
         self._last_mouse = (event.x, event.y)
 
@@ -536,11 +528,9 @@ class MeshView:
         if self._last_mouse:
             dx = event.x - self._last_mouse[0]
             dy = event.y - self._last_mouse[1]
-            self._output_rotation_y += dx * 0.5
-            self._output_rotation_x += dy * 0.5
-            if self._sync_view_vars.get():
-                self._input_rotation_x = self._output_rotation_x
-                self._input_rotation_y = self._output_rotation_y
+            if not self._active_view_var.get():
+                self._output_rotation_y += dx * 0.5
+                self._output_rotation_x += dy * 0.5
             self._draw_mesh()
         self._last_mouse = (event.x, event.y)
 
@@ -550,24 +540,22 @@ class MeshView:
 
     def _on_mouse_wheel_input(self, event):
         """处理输入画布鼠标滚轮缩放"""
-        if event.delta > 0:
-            self._input_scale *= 1.1
-        else:
-            self._input_scale *= 0.9
-        self._input_scale = max(MESH_VIEW_MIN_SCALE, min(MESH_VIEW_MAX_SCALE, self._input_scale))
-        if self._sync_view_vars.get():
-            self._output_scale = self._input_scale
+        if self._active_view_var.get():
+            if event.delta > 0:
+                self._input_scale *= 1.1
+            else:
+                self._input_scale *= 0.9
+            self._input_scale = max(MESH_VIEW_MIN_SCALE, min(MESH_VIEW_MAX_SCALE, self._input_scale))
         self._draw_mesh()
 
     def _on_mouse_wheel_output(self, event):
         """处理输出画布鼠标滚轮缩放"""
-        if event.delta > 0:
-            self._output_scale *= 1.1
-        else:
-            self._output_scale *= 0.9
-        self._output_scale = max(MESH_VIEW_MIN_SCALE, min(MESH_VIEW_MAX_SCALE, self._output_scale))
-        if self._sync_view_vars.get():
-            self._input_scale = self._output_scale
+        if not self._active_view_var.get():
+            if event.delta > 0:
+                self._output_scale *= 1.1
+            else:
+                self._output_scale *= 0.9
+            self._output_scale = max(MESH_VIEW_MIN_SCALE, min(MESH_VIEW_MAX_SCALE, self._output_scale))
         self._draw_mesh()
 
     def _on_resize(self, event):
@@ -575,89 +563,103 @@ class MeshView:
         self._draw_mesh()
 
     def _zoom_in(self):
-        """放大"""
-        self._input_scale *= 1.2
-        self._input_scale = min(MESH_VIEW_MAX_SCALE, self._input_scale)
-        if self._sync_view_vars.get():
-            self._output_scale = self._input_scale
+        """放大当前活动视图"""
+        if self._active_view_var.get():
+            self._input_scale *= 1.2
+            self._input_scale = min(MESH_VIEW_MAX_SCALE, self._input_scale)
+        else:
+            self._output_scale *= 1.2
+            self._output_scale = min(MESH_VIEW_MAX_SCALE, self._output_scale)
         self._draw_mesh()
 
     def _zoom_out(self):
-        """缩小"""
-        self._input_scale *= 0.8
-        self._input_scale = max(MESH_VIEW_MIN_SCALE, self._input_scale)
-        if self._sync_view_vars.get():
-            self._output_scale = self._input_scale
+        """缩小当前活动视图"""
+        if self._active_view_var.get():
+            self._input_scale *= 0.8
+            self._input_scale = max(MESH_VIEW_MIN_SCALE, self._input_scale)
+        else:
+            self._output_scale *= 0.8
+            self._output_scale = max(MESH_VIEW_MIN_SCALE, self._output_scale)
         self._draw_mesh()
 
     def _rotate_cw(self):
-        """顺时针旋转"""
-        self._input_rotation_y += 15
-        if self._sync_view_vars.get():
-            self._output_rotation_y = self._input_rotation_y
+        """顺时针旋转当前活动视图"""
+        if self._active_view_var.get():
+            self._input_rotation_y += 15
+        else:
+            self._output_rotation_y += 15
         self._draw_mesh()
 
     def _rotate_ccw(self):
-        """逆时针旋转"""
-        self._input_rotation_y -= 15
-        if self._sync_view_vars.get():
-            self._output_rotation_y = self._input_rotation_y
+        """逆时针旋转当前活动视图"""
+        if self._active_view_var.get():
+            self._input_rotation_y -= 15
+        else:
+            self._output_rotation_y -= 15
         self._draw_mesh()
 
     def _rotate_up(self):
-        """向上旋转"""
-        self._input_rotation_x -= 15
-        if self._sync_view_vars.get():
-            self._output_rotation_x = self._input_rotation_x
+        """向上旋转当前活动视图"""
+        if self._active_view_var.get():
+            self._input_rotation_x -= 15
+        else:
+            self._output_rotation_x -= 15
         self._draw_mesh()
 
     def _rotate_down(self):
-        """向下旋转"""
-        self._input_rotation_x += 15
-        if self._sync_view_vars.get():
-            self._output_rotation_x = self._input_rotation_x
+        """向下旋转当前活动视图"""
+        if self._active_view_var.get():
+            self._input_rotation_x += 15
+        else:
+            self._output_rotation_x += 15
         self._draw_mesh()
 
     def _pan_left(self):
-        """向左平移"""
-        self._input_offset_x -= 20
-        if self._sync_view_vars.get():
-            self._output_offset_x = self._input_offset_x
+        """向左平移当前活动视图"""
+        if self._active_view_var.get():
+            self._input_offset_x -= 20
+        else:
+            self._output_offset_x -= 20
         self._draw_mesh()
 
     def _pan_right(self):
-        """向右平移"""
-        self._input_offset_x += 20
-        if self._sync_view_vars.get():
-            self._output_offset_x = self._input_offset_x
+        """向右平移当前活动视图"""
+        if self._active_view_var.get():
+            self._input_offset_x += 20
+        else:
+            self._output_offset_x += 20
         self._draw_mesh()
 
     def _pan_up(self):
-        """向上平移"""
-        self._input_offset_y -= 20
-        if self._sync_view_vars.get():
-            self._output_offset_y = self._input_offset_y
+        """向上平移当前活动视图"""
+        if self._active_view_var.get():
+            self._input_offset_y -= 20
+        else:
+            self._output_offset_y -= 20
         self._draw_mesh()
 
     def _pan_down(self):
-        """向下平移"""
-        self._input_offset_y += 20
-        if self._sync_view_vars.get():
-            self._output_offset_y = self._input_offset_y
+        """向下平移当前活动视图"""
+        if self._active_view_var.get():
+            self._input_offset_y += 20
+        else:
+            self._output_offset_y += 20
         self._draw_mesh()
 
     def _reset_view(self):
-        """重置视图"""
-        self._input_rotation_x = MESH_VIEW_ROTATION_INIT_X
-        self._input_rotation_y = MESH_VIEW_ROTATION_INIT_Y
-        self._input_scale = MESH_VIEW_SCALE_INIT
-        self._input_offset_x = MESH_VIEW_OFFSET_X
-        self._input_offset_y = MESH_VIEW_OFFSET_Y
-        self._output_rotation_x = MESH_VIEW_ROTATION_INIT_X
-        self._output_rotation_y = MESH_VIEW_ROTATION_INIT_Y
-        self._output_scale = MESH_VIEW_SCALE_INIT
-        self._output_offset_x = MESH_VIEW_OFFSET_X
-        self._output_offset_y = MESH_VIEW_OFFSET_Y
+        """重置当前活动视图"""
+        if self._active_view_var.get():
+            self._input_rotation_x = MESH_VIEW_ROTATION_INIT_X
+            self._input_rotation_y = MESH_VIEW_ROTATION_INIT_Y
+            self._input_scale = MESH_VIEW_SCALE_INIT
+            self._input_offset_x = MESH_VIEW_OFFSET_X
+            self._input_offset_y = MESH_VIEW_OFFSET_Y
+        else:
+            self._output_rotation_x = MESH_VIEW_ROTATION_INIT_X
+            self._output_rotation_y = MESH_VIEW_ROTATION_INIT_Y
+            self._output_scale = MESH_VIEW_SCALE_INIT
+            self._output_offset_x = MESH_VIEW_OFFSET_X
+            self._output_offset_y = MESH_VIEW_OFFSET_Y
         self._draw_mesh()
 
     def _toggle_normals(self):
@@ -665,14 +667,19 @@ class MeshView:
         self._show_normals = self._normals_var.get()
         self._draw_mesh()
 
-    def _toggle_sync_view(self):
-        """切换同步视图"""
-        if self._sync_view_vars.get():
-            self._output_rotation_x = self._input_rotation_x
-            self._output_rotation_y = self._input_rotation_y
-            self._output_scale = self._input_scale
-            self._output_offset_x = self._input_offset_x
-            self._output_offset_y = self._input_offset_y
+    def _get_active_view_props(self):
+        """获取当前活动视图的属性引用"""
+        if self._active_view_var.get():
+            return self._input_rotation_x, self._input_rotation_y, self._input_scale, self._input_offset_x, self._input_offset_y
+        else:
+            return self._output_rotation_x, self._output_rotation_y, self._output_scale, self._output_offset_x, self._output_offset_y
+
+    def _set_active_view_props(self, rot_x, rot_y, scale, offset_x, offset_y):
+        """设置当前活动视图的属性"""
+        if self._active_view_var.get():
+            self._input_rotation_x, self._input_rotation_y, self._input_scale, self._input_offset_x, self._input_offset_y = rot_x, rot_y, scale, offset_x, offset_y
+        else:
+            self._output_rotation_x, self._output_rotation_y, self._output_scale, self._output_offset_x, self._output_offset_y = rot_x, rot_y, scale, offset_x, offset_y
 
     def _play_animation(self):
         """从开头开始播放动画"""
@@ -756,7 +763,7 @@ class MeshView:
         self._root.title(self.title)
         self._root.geometry("1400x700")
 
-        self._sync_view_vars = tk.BooleanVar(value=True)
+        self._active_view_var = tk.BooleanVar(value=True)
 
         main_frame = ttk.Frame(self._root)
         main_frame.pack(fill=tk.BOTH, expand=True)
@@ -764,9 +771,9 @@ class MeshView:
         controls_frame = ttk.Frame(main_frame)
         controls_frame.pack(side=tk.TOP, fill=tk.X, pady=2)
 
-        ttk.Label(controls_frame, text="View:").pack(side=tk.LEFT, padx=2)
-        ttk.Checkbutton(controls_frame, text="Sync Input/Output", variable=self._sync_view_vars,
-                        command=self._toggle_sync_view).pack(side=tk.LEFT, padx=5)
+        ttk.Label(controls_frame, text="Active:").pack(side=tk.LEFT, padx=2)
+        ttk.Radiobutton(controls_frame, text="Input", variable=self._active_view_var, value=True).pack(side=tk.LEFT, padx=2)
+        ttk.Radiobutton(controls_frame, text="Output", variable=self._active_view_var, value=False).pack(side=tk.LEFT, padx=2)
 
         ttk.Separator(controls_frame, orient=tk.VERTICAL).pack(side=tk.LEFT, fill=tk.Y, padx=5)
 
