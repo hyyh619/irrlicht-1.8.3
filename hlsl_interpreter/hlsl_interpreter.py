@@ -452,8 +452,7 @@ class HLSLInterpreter:
         self.max_workers = max_workers                       # 线程池最大工作线程数
         self._parsed_func_cache = {}                         # 解析过的函数体缓存
         self.primitive_topology = primitive_topology         # 图元拓扑类型
-        self._mesh_view = None                               # MeshView实例(用于显示输入)
-        self._result_mesh_view = None                        # MeshView实例(用于显示结果)
+        self._mesh_view = None                               # MeshView实例(用于显示输入和输出)
         self._mesh_view_enabled = False                      # 是否启用MeshView
         if self.log_to_file and self.log_file_path:
             self._log_file = open(self.log_file_path, self.log_file_mode, encoding='utf-8')
@@ -474,8 +473,8 @@ class HLSLInterpreter:
             return
         self._mesh_view_enabled = enable
         if enable and self._mesh_view is None:
-            self._mesh_view = MeshView(title="HLSL Interpreter - Input Mesh")
-            self._result_mesh_view = MeshView(title="HLSL Interpreter - Output Mesh (executeVS Result)")
+            self._mesh_view = MeshView(title="HLSL Interpreter - Input/Output Mesh")
+
         self.log_output(f"MeshView {'enabled' if enable else 'disabled'}")
 
     def show_input_mesh(self, vs_input: str, row_index: int = None):
@@ -575,10 +574,10 @@ class HLSLInterpreter:
                         colors.append(value[:4])
 
         if positions:
-            self._result_mesh_view.clear()
-            self._result_mesh_view.set_primitive_topology(self.primitive_topology)
-            self._result_mesh_view.set_input_data(positions, normals if normals else None, colors if colors else None)
-            self._result_mesh_view.show(blocking=False)
+            # self._mesh_view.clear()
+            self._mesh_view.set_primitive_topology(self.primitive_topology)
+            self._mesh_view.set_output_data(positions, normals if normals else None, colors if colors else None)
+            self._mesh_view.show(blocking=False)
             self.log_output(f"Result mesh displayed: {len(positions)} vertices")
         else:
             self.log_output("No position data found in results")

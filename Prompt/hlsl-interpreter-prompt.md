@@ -1038,7 +1038,7 @@ Git commit: hlsl-inter: add normal vector show of MeshView by MiniMax-M2.7.
 
 
 # 51
-Git commit: 
+Git commit: hlsl-inter: add vs output mesh view by MiniMax-M2.7.
 1. 我们需要创建两个独立的MeshView显示UI，一个用于显示输入的vertex，已经创建，不需要修改
 2. 另一个MeshView的UI用于显示用于显示executeVS执行完毕后的结果results
 3. 请在HLSLInterpreter中创建一个新的MeshView对象，用于显示executeVS执行完毕后的results
@@ -1047,6 +1047,8 @@ Git commit:
 
 # 52
 Git commit: 
+1. 给mesh_view.py的MeshView的UI界面创建两个显示窗口，一个用于输入的vertex显示，一个用于executeVS输出的results显示
+2. HLSLInterpreter不需要创建单独的_result_mesh_view来显示executeVS的results，直接使用MeshView.set_output_vertices来传入results并显示
 
 
 # 53
