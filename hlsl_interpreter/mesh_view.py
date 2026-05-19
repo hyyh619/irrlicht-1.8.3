@@ -493,8 +493,8 @@ class MeshView:
         if count is None:
             count = self._current_index + 1
 
-        self._draw_mesh_wireframe_input(input_transformed[:len(self.input_vertices)], input_width, input_height)
-        self._draw_mesh_wireframe_output(output_transformed[:len(self.output_vertices)], output_width, output_height)
+        self._draw_mesh_wireframe_input(input_transformed[:count], input_width, input_height)
+        self._draw_mesh_wireframe_output(output_transformed[:count], output_width, output_height)
         self._update_info()
 
     def _update_info(self):
@@ -709,6 +709,7 @@ class MeshView:
             self._current_index += 1
         self._draw_mesh_animated()
         self._update_step_label()
+        self._update_button_states()
 
     def _prev_step(self):
         """回到上一个顶点/线"""
@@ -718,6 +719,7 @@ class MeshView:
             self._current_index -= 1
         self._draw_mesh_animated()
         self._update_step_label()
+        self._update_button_states()
 
     def _run_animation_step(self):
         """执行动画单步"""
@@ -739,10 +741,11 @@ class MeshView:
             self._play_btn.config(state=tk.NORMAL if not self._is_playing else tk.DISABLED)
         if self._pause_btn:
             self._pause_btn.config(state=tk.NORMAL if self._is_playing or self._current_index > 0 else tk.DISABLED)
+        can_step = self._is_paused or self._current_index > 0
         if self._next_btn:
-            self._next_btn.config(state=tk.NORMAL if self._is_paused else tk.DISABLED)
+            self._next_btn.config(state=tk.NORMAL if can_step else tk.DISABLED)
         if self._prev_btn:
-            self._prev_btn.config(state=tk.NORMAL if self._is_paused and self._current_index > 0 else tk.DISABLED)
+            self._prev_btn.config(state=tk.NORMAL if can_step and self._current_index > 0 else tk.DISABLED)
 
     def _update_step_label(self):
         """更新步骤显示"""

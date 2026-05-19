@@ -1054,6 +1054,8 @@ Git commit: hlsl-inter: add two windows to show both input and results of execut
 
 # 53
 Git commit: 
+mesh_view.py创建了两个窗口分别显示input和results，但是播放，暂停等按钮对Input和results窗口无效，没有实现下面的这个功能
+显示窗口按照输入vertex数据顺序，挨个渲染顶点和线框，每次渲染一个顶点，连接一个线，渲染的间隔时间通过json配置
 
 
 # 54
