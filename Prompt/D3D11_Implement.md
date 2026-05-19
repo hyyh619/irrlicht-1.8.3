@@ -1993,6 +1993,8 @@ Git commit:
 
 # 91
 Git commit: 
+1. 帮我统计一下git eaf611daf4fe179564a844b75fedb3140d7843f1以后一共有多少提交，其中hlsl-inter是多少，其它是多少，如果提交里只有.md文件，没有源代码文件，那么跳过该次统计
+2. 请根据以上统计出来的提交，帮我写两份开发文档，分别是：irrlicht-1.8.3的d3d11 video driver开发文档和hlsl解释器的开发文档
 
 
 # 92
