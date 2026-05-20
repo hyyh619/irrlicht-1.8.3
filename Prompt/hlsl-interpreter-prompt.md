@@ -1084,6 +1084,10 @@ SyntaxTreeParser没有patterns对象，但是你在SyntaxTreeParser的函数中�
 
 # 56
 Git commit: 
+下列问题不好直接用functools cache来加速
+在 SyntaxTreeParser 类上使用 @cache 装饰器来缓存 parse 方法。但是 parse 方法是实例方法，直接使用 @cache 会有问题，因为 self 不可哈希
+hlsl_interpreter.py调用SyntaxTreeParser下列函数，请用functools的cache来加速parse执行
+        tree = self.syntax_parser.parse(expr)
 
 
 # 57
