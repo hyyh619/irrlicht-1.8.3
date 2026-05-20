@@ -1108,11 +1108,22 @@ float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist *
 经过review，发现
 _find_top_level_operator_cached被重写，并且写的不正确，使用老的实现版本，可以正确运行
 Fix后，执行executeVS时间从~7.3s提升到~4.9s
-Git commit: 
+Git commit: hlsl-inter: fix _find_top_level_operator_cached wrong implementation which causes crash when parsing "float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist)".
+by ying.
 
 
 # 59
 Git commit: 
+对于HLSLInterpreter的log_output,输出到文件的代码
+1. 不要每次log_output都直接写出到文件中，使用一个cache来缓存需要写出到文件的字符串。缓存满了以后再输出。
+2. 缓存大小可以配置，默认大小设置成10MB
+    def log_output(self, *args, **kwargs):
+        """输出到stdout和日志文件"""
+        msg = ' '.join(str(arg) for arg in args)
+        print(*args, **kwargs)
+        if self.log_to_file and self._log_file:
+            self._log_file.write(msg + '\n')
+            self._log_file.flush()
 
 
 # 60

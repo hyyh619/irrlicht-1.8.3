@@ -69,7 +69,16 @@ class HLSLInterpreter:
     支持: 结构体定义、cbuffer定义、函数解析、表达式求值
     """
 
-    def __init__(self, log_to_file: bool = True, log_file_path: str = "hlsl_interpreter.log", print_sequence: int = 1, log_file_mode: str = 'a', printSyntaxTree: bool = True, print_interpreter_result: bool = True, max_workers: int = 1, primitive_topology: int = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST):
+    def __init__(self,
+                log_to_file: bool = True,
+                log_file_path: str = "hlsl_interpreter.log",
+                print_sequence: int = 1,
+                log_file_mode: str = 'a',
+                printSyntaxTree: bool = True,
+                print_interpreter_result: bool = True,
+                max_workers: int = 1,
+                primitive_topology: int = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+                log_cache_size: int = 10 * 1024 * 1024):
         self.structs: Dict[str, StructDefinition] = {}      # 解析的结构体定义
         self.cbuffers: Dict[str, CbufferDefinition] = {}    # 解析的cbuffer定义
         self.variables: Dict[str, Any] = {}                 # 全局变量
@@ -90,6 +99,9 @@ class HLSLInterpreter:
         self.primitive_topology = primitive_topology         # 图元拓扑类型
         self._mesh_view = None                               # MeshView实例(用于显示输入和输出)
         self._mesh_view_enabled = False                      # 是否启用MeshView
+        self._log_cache = []                                 # 日志缓存
+        self._log_cache_size = log_cache_size                # 日志缓存大小(字节)
+        self._log_cache_bytes = 0                            # 当前缓存已用字节数
 
         # 预编译的正则表达式模式字典
         type_pattern = '|'.join(DATA_TYPE_LIST)
@@ -127,6 +139,8 @@ class HLSLInterpreter:
 
     def __del__(self):
         """对象销毁时关闭日志文件"""
+        if self._log_cache:
+            self._flush_log_cache()
         if self._log_file:
             self._log_file.close()
             self._log_file = None
@@ -250,13 +264,24 @@ class HLSLInterpreter:
         else:
             self.log_output("No position data found in results")
 
+    def _flush_log_cache(self):
+        """将缓存中的日志写入文件"""
+        if self._log_cache and self._log_file:
+            self._log_file.write(''.join(self._log_cache))
+            self._log_file.flush()
+            self._log_cache = []
+            self._log_cache_bytes = 0
+
     def log_output(self, *args, **kwargs):
         """输出到stdout和日志文件"""
         msg = ' '.join(str(arg) for arg in args)
         print(*args, **kwargs)
         if self.log_to_file and self._log_file:
-            self._log_file.write(msg + '\n')
-            self._log_file.flush()
+            msg_bytes = (msg + '\n').encode('utf-8')
+            if self._log_cache_bytes + len(msg_bytes) >= self._log_cache_size:
+                self._flush_log_cache()
+            self._log_cache.append(msg + '\n')
+            self._log_cache_bytes += len(msg_bytes)
 
     def debug_print(self, msg: str):
         """调试打印"""
