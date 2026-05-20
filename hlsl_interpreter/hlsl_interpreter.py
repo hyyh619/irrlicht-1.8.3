@@ -355,37 +355,13 @@ class HLSLInterpreter:
         field_type: HLSL类型名，如 float4x4, float3, int
         返回: 类型占用的字节数
         """
-        if 'float4x4' in field_type:
-            return 64  # 4x4矩阵 = 16 floats * 4 bytes
-        elif 'float3x3' in field_type:
-            return 36  # 3x3矩阵 = 9 floats * 4 bytes
-        elif 'float4' in field_type:
-            return 16  # 4 floats * 4 bytes
-        elif 'float3' in field_type:
-            return 12  # 3 floats * 4 bytes
-        elif 'float2' in field_type:
-            return 8   # 2 floats * 4 bytes
-        elif 'float' in field_type:
-            return 4   # 1 float * 4 bytes
-        elif 'uint4' in field_type:
-            return 16
-        elif 'uint3' in field_type:
-            return 12
-        elif 'uint2' in field_type:
-            return 8
-        elif 'uint' in field_type:
-            return 4
-        elif 'int4' in field_type:
-            return 16
-        elif 'int3' in field_type:
-            return 12
-        elif 'int2' in field_type:
-            return 8
-        elif 'int' in field_type:
-            return 4
-        elif 'bool' in field_type:
-            return 4
-        return 0
+        return self._TYPE_SIZE_MAP.get(field_type, 0)
+
+    _TYPE_SIZE_MAP = {
+        'float4x4': 64, 'float3x3': 36, 'float4': 16, 'float3': 12,
+        'float2': 8, 'float': 4, 'uint4': 16, 'uint3': 12, 'uint2': 8,
+        'uint': 4, 'int4': 16, 'int3': 12, 'int2': 8, 'int': 4, 'bool': 4
+    }
 
     def parse_value_by_type(self, value_str: str, field_type: str) -> Any:
         """
@@ -395,59 +371,51 @@ class HLSLInterpreter:
         返回: 解析后的值
         """
         value_str = value_str.strip().strip('"')
-        if 'float4x4' in field_type:
-            parts = value_str.split(',')
-            if len(parts) >= 16:
-                matrix = []
-                for i in range(4):
-                    row = [float(parts[j]) for j in range(i*4, i*4+4)]
-                    matrix.append(row)
-                return matrix
-        elif 'float3x3' in field_type:
-            parts = value_str.split(',')
-            if len(parts) >= 9:
-                matrix = []
-                for i in range(3):
-                    row = [float(parts[j]) for j in range(i*3, i*3+3)]
-                    matrix.append(row)
-                return matrix
-        elif 'float4' in field_type:
-            parts = value_str.split(',')
-            return [float(p) for p in parts[:4]]
-        elif 'float3' in field_type:
-            parts = value_str.split(',')
-            return [float(p) for p in parts[:3]]
-        elif 'float2' in field_type:
-            parts = value_str.split(',')
-            return [float(p) for p in parts[:2]]
-        elif 'uint4' in field_type:
-            parts = value_str.split(',')
-            return [int(p) for p in parts[:4]]
-        elif 'uint3' in field_type:
-            parts = value_str.split(',')
-            return [int(p) for p in parts[:3]]
-        elif 'uint2' in field_type:
-            parts = value_str.split(',')
-            return [int(p) for p in parts[:2]]
-        elif 'uint' in field_type:
-            return int(value_str)
-        elif 'int4' in field_type:
-            parts = value_str.split(',')
-            return [int(p) for p in parts[:4]]
-        elif 'int3' in field_type:
-            parts = value_str.split(',')
-            return [int(p) for p in parts[:3]]
-        elif 'int2' in field_type:
-            parts = value_str.split(',')
-            return [int(p) for p in parts[:2]]
-        elif 'int' in field_type:
-            return int(value_str)
-        elif 'bool' in field_type:
-            return value_str.lower() in ('true', '1', 'yes')
+        handler = self._PARSE_TYPE_HANDLERS.get(field_type)
+        if handler:
+            return handler(self, value_str)
         try:
             return float(value_str)
         except:
             return value_str
+
+    def _parse_float4x4(self, value_str):
+        parts = value_str.split(',')
+        if len(parts) >= 16:
+            return [[float(parts[j]) for j in range(i*4, i*4+4)] for i in range(4)]
+        return None
+
+    def _parse_float3x3(self, value_str):
+        parts = value_str.split(',')
+        if len(parts) >= 9:
+            return [[float(parts[j]) for j in range(i*3, i*3+3)] for i in range(3)]
+        return None
+
+    def _parse_float_vector(self, value_str, count):
+        return [float(p) for p in value_str.split(',')[:count]]
+
+    def _parse_int_vector(self, value_str, count):
+        return [int(p) for p in value_str.split(',')[:count]]
+
+    def _parse_bool(self, value_str):
+        return value_str.lower() in ('true', '1', 'yes')
+
+    _PARSE_TYPE_HANDLERS = {
+        'float4x4': _parse_float4x4,
+        'float3x3': _parse_float3x3,
+        'float4': lambda s, v: s._parse_float_vector(v, 4),
+        'float3': lambda s, v: s._parse_float_vector(v, 3),
+        'float2': lambda s, v: s._parse_float_vector(v, 2),
+        'uint4': lambda s, v: s._parse_int_vector(v, 4),
+        'uint3': lambda s, v: s._parse_int_vector(v, 3),
+        'uint2': lambda s, v: s._parse_int_vector(v, 2),
+        'uint': lambda s, v: int(v),
+        'int4': lambda s, v: s._parse_int_vector(v, 4),
+        'int3': lambda s, v: s._parse_int_vector(v, 3),
+        'int2': lambda s, v: s._parse_int_vector(v, 2),
+        'int': lambda s, v: int(v),
+        'bool': _parse_bool,
+    }
 
     def parse_type(self, type_str: str) -> str:
         """
@@ -573,17 +541,12 @@ class HLSLInterpreter:
         op: 运算符 '-' 或 '!'
         val: 操作数
         """
-        result = val
         if op == '-':
-            if isinstance(val, (int, float)):
-                result = -val
-            elif isinstance(val, list):
-                result = [-v for v in val]
-        elif op == '!':
-            if isinstance(val, bool):
-                result = not val
+            result = [-v for v in val] if isinstance(val, list) else (-val if isinstance(val, (int, float)) else val)
+        else:
             result = not bool(val)
-        self.debug_print(f"[UNARY OP] operand={self._format_value(val)}, op={op}, result={self._format_value(result)}")
+        if self.debug and self._should_print:
+            self.debug_print(f"[UNARY OP] operand={self._format_value(val)}, op={op}, result={self._format_value(result)}")
         return result
 
     def execute_binary_op(self, op: str, left: Any, right: Any) -> Any:
@@ -659,11 +622,8 @@ class HLSLInterpreter:
         m: 输入矩阵(4x4或3x3)
         返回: 转置后的矩阵
         """
-        if len(m) == 4:
-            return [[m[j][i] for j in range(4)] for i in range(4)]
-        elif len(m) == 3:
-            return [[m[j][i] for j in range(3)] for i in range(3)]
-        return m
+        n = len(m)
+        return [[m[j][i] for j in range(n)] for i in range(n)]
 
     def mul_matrix_vector(self, m: List[List[float]], v: List[float]) -> List[float]:
         """
@@ -676,12 +636,7 @@ class HLSLInterpreter:
             return [0, 0, 0, 0]
         if not m:
             return [0, 0, 0, 0]
-        num_cols = len(m[0]) if m else 0
-        result = []
-        for j in range(num_cols):
-            s = sum(v[i] * m[i][j] for i in range(len(v)))
-            result.append(s)
-        return result
+        return [sum(v[i] * m[i][j] for i in range(len(v))) for j in range(len(m[0]))]
 
     def mul_matrix_matrix(self, a: List[List[float]], b: List[List[float]]) -> List[List[float]]:
         """
@@ -690,12 +645,7 @@ class HLSLInterpreter:
         返回: 结果矩阵
         """
         n = len(a)
-        result = [[0.0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
+        return [[sum(a[i][k] * b[k][j] for k in range(n)) for j in range(n)] for i in range(n)]
 
     def length_vec(self, v: List[float]) -> float:
         """计算向量长度(模)"""
@@ -1053,36 +1003,27 @@ class HLSLInterpreter:
             return None
 
         if not isinstance(obj, list):
-            if swizzle == 'x':
-                return obj
-            return None
+            return obj if swizzle == 'x' else None
 
-        valid_chars = {'x': 0, 'y': 1, 'z': 2, 'w': 3}
         result = []
         for c in swizzle:
-            if c.lower() in valid_chars:
-                idx = valid_chars[c.lower()]
-                if idx < len(obj):
-                    result.append(obj[idx])
-                else:
-                    result.append(0)
+            if c.lower() in self._SWIZZLE_MAP:
+                idx = self._SWIZZLE_MAP[c.lower()]
+                result.append(obj[idx] if idx < len(obj) else 0)
             elif c in 'rgb':
                 idx = {'r': 0, 'g': 1, 'b': 2}[c]
-                if idx < len(obj):
-                    result.append(obj[idx])
-                else:
-                    result.append(0)
+                result.append(obj[idx] if idx < len(obj) else 0)
 
         if len(result) == 1:
             return result[0]
 
         numeric_types = (int, float)
         if all(isinstance(v, numeric_types) for v in result):
-            if all(isinstance(v, int) for v in result):
-                return [int(v) for v in result]
-            return result
+            return [int(v) for v in result] if all(isinstance(v, int) for v in result) else result
 
         return result
+
+    _SWIZZLE_MAP = {'x': 0, 'y': 1, 'z': 2, 'w': 3}
 
     def get_value(self, name: str, local_vars: Dict[str, Any]) -> Any:
         """
@@ -1398,8 +1339,7 @@ class HLSLInterpreter:
         for char in code:
             if char == '{':
                 brace_count += 1
-                if brace_count > 0:
-                    current_stmt.append(char)
+                current_stmt.append(char)
             elif char == '}':
                 if brace_count > 0:
                     current_stmt.append(char)

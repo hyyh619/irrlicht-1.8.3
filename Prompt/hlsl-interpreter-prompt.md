@@ -1127,7 +1127,8 @@ Git commit: hlsl-inter: add a log cache to store msg and flush all cache content
 
 
 # 60
-Git commit: 
+Git commit:
+1. Review hlsl_interpreter.py的代码，看一下哪些代码可以优化执行速度
 
 
 # 61
