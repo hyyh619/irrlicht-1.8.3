@@ -1060,6 +1060,14 @@ mesh_view.py创建了两个窗口分别显示input和results，但是播放，�
 
 # 54
 Git commit: 
+hlsl_interpreter.py等待用户输入增加两个输入处理
+1. 如果MeshView UI已经关闭，用户输入o就重新打开UI
+2. 用户输入r，则先清空interpreter.executeVS生成的results，再重新执行interpreter.executeVS一遍
+
+MeshView.close只是隐藏UI界面，用户输入'o'后重新显示UI
+MeshView UI的真正销毁放在MeshView对象被销毁时执行
+
+hlsl_interpreter.py在等待用户输入时，只有输入x才直接退出，如果用户输入其它的，则处理完相应的用户输入后，回到等待用户输入
 
 
 # 55

@@ -816,7 +816,7 @@ class MeshView:
         self._step_label = ttk.Label(anim_frame, text="Step: 0/0", width=12)
         self._step_label.pack(side=tk.LEFT, padx=5)
 
-        ttk.Button(controls_frame, text="Close", command=self._root.destroy).pack(side=tk.RIGHT, padx=5)
+        ttk.Button(controls_frame, text="Close", command=self.hide).pack(side=tk.RIGHT, padx=5)
 
         canvas_frame = ttk.Frame(main_frame)
         canvas_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=2)

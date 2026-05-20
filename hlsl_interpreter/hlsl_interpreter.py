@@ -1942,6 +1942,9 @@ class HLSLInterpreter:
             self.log_output(f"Cannot find vs input: {vs_input}\n")
             return None
 
+        # clear eval counter
+        self._eval_counter = 0
+
         if execute_count is None:
             num_rows = 0
             for field in input_struct.fields:
@@ -2443,9 +2446,47 @@ def main():
     interpreter.log_output(f"compare_vs_output_with_golden():    {compare_time:.4f}s")
     interpreter.log_output(f"Total execution time:               {total_time:.4f}s")
 
-    user_input = input("\nEnter 'x' to exit: ")
-    if user_input.strip().lower() == 'x':
-        pass
+    while True:
+        user_input = input("\nEnter 'x' to exit, 'o' to open MeshView, 'r' to rerun executeVS: ")
+        user_input = user_input.strip().lower()
+        if user_input == 'x':
+            interpreter._mesh_view.close()
+            break
+        elif user_input == 'o':
+            if interpreter._mesh_view:
+                interpreter._mesh_view.show(blocking=False)
+                interpreter.log_output("MeshView reopened")
+        elif user_input == 'r':
+            results = []
+            execute_start = time.time()
+            results = interpreter.executeVS("main", "VS_INPUT", execute_count=execute_count)
+            execute_time = time.time() - execute_start
+            interpreter.log_output(f"Re-executed executeVS in {execute_time:.4f}s")
+            if mesh_view_enabled and results:
+                interpreter.log_output("Displaying result mesh after re-execution...")
+                interpreter.show_result_mesh(results)
+            if interpreter.print_interpreter_result:
+                interpreter.log_output("HLSL Interpreter Result (re-run):")
+                interpreter.log_output("=" * 40)
+                if results:
+                    for idx, result in enumerate(results):
+                        interpreter.log_output(f"\n--- Row {idx} ---")
+                        if result:
+                            for key, value in result.items():
+                                if isinstance(value, list):
+                                    if len(value) == 4:
+                                        interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}, {value[3]:.4f}]")
+                                    elif len(value) == 3:
+                                        interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}]")
+                                    elif len(value) == 2:
+                                        interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}]")
+                                    else:
+                                        interpreter.log_output(f"{key}: {value}")
+                                else:
+                                    interpreter.log_output(f"{key}: {value}")
+                else:
+                    interpreter.log_output("No result produced")
+                interpreter.log_output("=" * 40)
 
 
 if __name__ == '__main__':
