@@ -1,5 +1,6 @@
 import re
-from typing import Any, Dict, List, Optional
+from functools import lru_cache
+from typing import Any, Dict, List, Optional, Tuple
 
 
 _COMPILED_PATTERNS: Dict[str, re.Pattern] = {
@@ -8,6 +9,103 @@ _COMPILED_PATTERNS: Dict[str, re.Pattern] = {
     'function_call': re.compile(r'\w+\s*\('),
     'function_call_format': re.compile(r'^(\w+)\s*\('),
 }
+
+_OPERATORS: Dict[str, int] = {
+    '||': 1, '&&': 2,
+    '==': 3, '!=': 3,
+    '<': 4, '>': 4, '<=': 4, '>=': 4,
+    '+': 5, '-': 5,
+    '*': 6, '/': 6,
+}
+
+
+@lru_cache(maxsize=256)
+def _split_args_cached(args_str: str) -> Tuple[str, ...]:
+    if not args_str.strip():
+        return ()
+    args = []
+    depth = 0
+    current = ''
+    for char in args_str:
+        if char == '(':
+            depth += 1
+            current += char
+        elif char == ')':
+            depth -= 1
+            current += char
+        elif char == ',' and depth == 0:
+            args.append(current.strip())
+            current = ''
+        else:
+            current += char
+    if current.strip():
+        args.append(current.strip())
+    return tuple(args)
+
+
+@lru_cache(maxsize=256)
+def _find_top_level_operator_cached(expr: str) -> Optional[Tuple[int, str]]:
+    candidates = []
+    i = 0
+    while i < len(expr):
+        char = expr[i]
+
+        if char == '(':
+            i += 1
+            continue
+        elif char == ')':
+            i += 1
+            continue
+
+        if i >= 1:
+            two_char = expr[i-1:i+1]
+            if two_char in _OPERATORS:
+                candidates.append((i-1, two_char, _OPERATORS[two_char]))
+                i += 1
+                continue
+
+        two_char = expr[i:i+2]
+        if char in _OPERATORS and not (i >= 1 and two_char in _OPERATORS):
+            candidates.append((i, char, _OPERATORS[char]))
+
+        i += 1
+
+    if not candidates:
+        return None
+
+    min_prec = min(c[2] for c in candidates)
+    rightmost = max(c[0] for c in candidates if c[2] == min_prec)
+    for c in candidates:
+        if c[0] == rightmost and c[2] == min_prec:
+            return (c[0], c[1])
+    return None
+
+
+@lru_cache(maxsize=256)
+def _is_proper_paren(inner: str) -> bool:
+    paren_depth = 0
+    for c in inner:
+        if c == '(':
+            paren_depth += 1
+        elif c == ')':
+            paren_depth -= 1
+        if paren_depth < 0:
+            return False
+    return True
+
+
+@lru_cache(maxsize=256)
+def _find_ternary_colon(expr: str, start: int) -> int:
+    depth = 0
+    for i in range(start, len(expr)):
+        char = expr[i]
+        if char == '(':
+            depth += 1
+        elif char == ')':
+            depth -= 1
+        elif char == ':' and depth == 0:
+            return i
+    return -1
 
 
 class SyntaxTreeNode:
@@ -79,54 +177,14 @@ class SyntaxTreeParser:
     支持: 类型转换、括号表达式、二元运算符、函数调用、变量引用
     """
     def __init__(self):
-        self.operators = {
-            '||': 1, '&&': 2,
-            '==': 3, '!=': 3,
-            '<': 4, '>': 4, '<=': 4, '>=': 4,
-            '+': 5, '-': 5,
-            '*': 6, '/': 6,
-        }
+        pass
 
     def parse(self, expr: str) -> SyntaxTreeNode:
         expr = expr.strip()
         return self._parse_expression(expr)
 
-    def _find_top_level_operator(self, expr: str) -> Optional[tuple]:
-        depth = 0
-        candidates = []
-        i = 0
-        while i < len(expr):
-            char = expr[i]
-
-            if char == '(':
-                depth += 1
-
-            elif char == ')':
-                depth -= 1
-
-            elif depth == 0:
-                if i >= 1:
-                    two_char = expr[i-1:i+1]
-                    if two_char in self.operators:
-                        candidates.append((i-1, two_char, self.operators[two_char]))
-                        i += 1
-                        continue
-
-                two_char = expr[i:i+2]
-                if char in self.operators and not (i >= 1 and two_char in self.operators):
-                    candidates.append((i, char, self.operators[char]))
-
-            i += 1
-
-        if not candidates:
-            return None
-
-        min_prec = min(c[2] for c in candidates)
-        rightmost = max(c[0] for c in candidates if c[2] == min_prec)
-        for c in candidates:
-            if c[0] == rightmost and c[2] == min_prec:
-                return (c[0], c[1])
-        return None
+    def _find_top_level_operator(self, expr: str) -> Optional[Tuple[int, str]]:
+        return _find_top_level_operator_cached(expr)
 
     def _parse_expression(self, expr: str) -> SyntaxTreeNode:
         expr = expr.strip()
@@ -142,17 +200,7 @@ class SyntaxTreeParser:
 
         if expr.startswith('(') and expr.endswith(')'):
             inner = expr[1:-1].strip()
-            paren_depth = 0
-            is_proper_paren = True
-            for j, c in enumerate(inner):
-                if c == '(':
-                    paren_depth += 1
-                elif c == ')':
-                    paren_depth -= 1
-                if paren_depth < 0:
-                    is_proper_paren = False
-                    break
-            if is_proper_paren:
+            if _is_proper_paren(inner):
                 return self._parse_expression(inner)
 
         ternary_pos = -1
@@ -167,18 +215,7 @@ class SyntaxTreeParser:
                 break
 
         if ternary_pos >= 0:
-            colon_pos = -1
-            depth = 0
-            for i in range(ternary_pos + 1, len(expr)):
-                char = expr[i]
-                if char == '(':
-                    depth += 1
-                elif char == ')':
-                    depth -= 1
-                elif char == ':' and depth == 0:
-                    colon_pos = i
-                    break
-
+            colon_pos = _find_ternary_colon(expr, ternary_pos + 1)
             if colon_pos >= 0:
                 cond_expr = expr[:ternary_pos].strip()
                 true_expr = expr[ternary_pos+1:colon_pos].strip()
@@ -239,33 +276,12 @@ class SyntaxTreeParser:
                         inner_node = self._parse_expression(args_str.strip())
                         return SyntaxTreeNode('function', func_name, args=[inner_node])
                     elif func_name in ['mul', 'reflect', 'pow', 'max', 'min', 'dot', 'float2', 'float3', 'float4']:
-                        args = self._split_args(args_str)
-                        arg_nodes = [self._parse_expression(arg.strip()) for arg in args]
+                        arg_nodes = [self._parse_expression(arg.strip()) for arg in _split_args_cached(args_str)]
                         return SyntaxTreeNode('function', func_name, args=arg_nodes)
-                    args = self._split_args(args_str)
-                    arg_nodes = [self._parse_expression(arg.strip()) for arg in args]
+                    arg_nodes = [self._parse_expression(arg.strip()) for arg in _split_args_cached(args_str)]
                     return SyntaxTreeNode('function', func_name, args=arg_nodes)
 
         return SyntaxTreeNode('value', expr)
 
     def _split_args(self, args_str: str) -> List[str]:
-        if not args_str.strip():
-            return []
-        args = []
-        depth = 0
-        current = ''
-        for char in args_str:
-            if char == '(':
-                depth += 1
-                current += char
-            elif char == ')':
-                depth -= 1
-                current += char
-            elif char == ',' and depth == 0:
-                args.append(current.strip())
-                current = ''
-            else:
-                current += char
-        if current.strip():
-            args.append(current.strip())
-        return args
+        return list(_split_args_cached(args_str))

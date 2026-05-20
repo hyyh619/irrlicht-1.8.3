@@ -1091,12 +1091,14 @@ hlsl_interpreter.py调用SyntaxTreeParser下列函数，请用functools的cache�
 
 
 # 57
-Git commit: 
+Git commit: hlsl-inter: refine parser code of syntax tree. Move code to new python file. by MiniMax-M2.7.
 请把SyntaxTreeParser和SyntaxTreeNode从hlsl_interpreter.py挪到单独的一个python文件中，该python文件主要负责处理语法树的生成
 
 
 # 58
 Git commit: 
+1. Review hlsl_syntax_tree.py的代码，看一下哪些代码可以做成静态方法/独立函数
+2. 针对静态方法/独立函数增加functools cache来提升执行速度
 
 
 # 59
