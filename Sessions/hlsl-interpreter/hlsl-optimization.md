@@ -19,7 +19,11 @@ interpreter.executeVS():           7.3535s
 compare_vs_output_with_golden():    0.0182s
 Total execution time:               7.5974s
 
-## 3.
+## 3. cache parser functions
+_find_top_level_operator_cached
+_is_proper_paren
+_find_ternary_colon
+
 interpreter.interpret():             0.0703s
 interpreter.load_vs_output_golden_from_csv(): 0.0373s
 interpreter.executeVS():           4.8450s
@@ -31,3 +35,16 @@ interpreter.load_vs_output_golden_from_csv(): 0.0372s
 interpreter.executeVS():           4.9218s
 compare_vs_output_with_golden():    0.0175s
 Total execution time:               5.1734s
+
+## 4. Close syntax tree print
+interpreter.interpret():             0.1528s
+interpreter.load_vs_output_golden_from_csv(): 0.0346s
+interpreter.executeVS():           4.3066s
+compare_vs_output_with_golden():    0.0178s
+Total execution time:               4.6328s
+
+interpreter.interpret():             0.0703s
+interpreter.load_vs_output_golden_from_csv(): 0.0347s
+interpreter.executeVS():           4.4963s
+compare_vs_output_with_golden():    0.0175s
+Total execution time:               4.7444s

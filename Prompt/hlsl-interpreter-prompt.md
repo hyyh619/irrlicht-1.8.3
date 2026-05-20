@@ -1113,7 +1113,7 @@ by ying.
 
 
 # 59
-Git commit: 
+Git commit: hlsl-inter: add a log cache to store msg and flush all cache content to file if the cache is full by MiniMax-M2.7.
 对于HLSLInterpreter的log_output,输出到文件的代码
 1. 不要每次log_output都直接写出到文件中，使用一个cache来缓存需要写出到文件的字符串。缓存满了以后再输出。
 2. 缓存大小可以配置，默认大小设置成10MB
