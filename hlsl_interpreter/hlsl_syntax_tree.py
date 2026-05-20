@@ -45,28 +45,29 @@ def _split_args_cached(args_str: str) -> Tuple[str, ...]:
 
 @lru_cache(maxsize=256)
 def _find_top_level_operator_cached(expr: str) -> Optional[Tuple[int, str]]:
+    depth = 0
     candidates = []
     i = 0
     while i < len(expr):
         char = expr[i]
 
         if char == '(':
-            i += 1
-            continue
+            depth += 1
+
         elif char == ')':
-            i += 1
-            continue
+            depth -= 1
 
-        if i >= 1:
-            two_char = expr[i-1:i+1]
-            if two_char in _OPERATORS:
-                candidates.append((i-1, two_char, _OPERATORS[two_char]))
-                i += 1
-                continue
+        elif depth == 0:
+            if i >= 1:
+                two_char = expr[i-1:i+1]
+                if two_char in _OPERATORS:
+                    candidates.append((i-1, two_char, _OPERATORS[two_char]))
+                    i += 1
+                    continue
 
-        two_char = expr[i:i+2]
-        if char in _OPERATORS and not (i >= 1 and two_char in _OPERATORS):
-            candidates.append((i, char, _OPERATORS[char]))
+            two_char = expr[i:i+2]
+            if char in _OPERATORS and not (i >= 1 and two_char in _OPERATORS):
+                candidates.append((i, char, _OPERATORS[char]))
 
         i += 1
 

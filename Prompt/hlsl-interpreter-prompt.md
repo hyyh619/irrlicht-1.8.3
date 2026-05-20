@@ -1081,6 +1081,8 @@ Git commit:
 
 SyntaxTreeParser没有patterns对象，但是你在SyntaxTreeParser的函数中用到了patterns对象，请修复该问题
 
+优化后执行executeVS时间从~7.9s提升到~7.4s
+
 
 # 56
 Git commit: 
@@ -1096,9 +1098,17 @@ Git commit: hlsl-inter: refine parser code of syntax tree. Move code to new pyth
 
 
 # 58
-Git commit: 
+Git commit: hlsl-inter: optimize parser code. Move some functions to standalone functions and make them cached. But interpreter runs into crash. by MiniMax-M2.7.
 1. Review hlsl_syntax_tree.py的代码，看一下哪些代码可以做成静态方法/独立函数
 2. 针对静态方法/独立函数增加functools cache来提升执行速度
+
+优化完后：运行会crash，主要是解析下列语句出错
+float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist)
+
+经过review，发现
+_find_top_level_operator_cached被重写，并且写的不正确，使用老的实现版本，可以正确运行
+Fix后，执行executeVS时间从~7.3s提升到~4.9s
+Git commit: 
 
 
 # 59
