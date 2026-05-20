@@ -1092,6 +1092,7 @@ hlsl_interpreter.py调用SyntaxTreeParser下列函数，请用functools的cache�
 
 # 57
 Git commit: 
+请把SyntaxTreeParser和SyntaxTreeNode从hlsl_interpreter.py挪到单独的一个python文件中，该python文件主要负责处理语法树的生成
 
 
 # 58
