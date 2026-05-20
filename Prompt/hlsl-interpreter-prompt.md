@@ -1059,7 +1059,7 @@ mesh_view.py创建了两个窗口分别显示input和results，但是播放，�
 
 
 # 54
-Git commit: 
+Git commit: hlsl-inter: add user input 'o' and 'r'. 'o' means to open MeshView UI again. 'r' means to rerun executeVS again. by MiniMax-M2.7.
 hlsl_interpreter.py等待用户输入增加两个输入处理
 1. 如果MeshView UI已经关闭，用户输入o就重新打开UI
 2. 用户输入r，则先清空interpreter.executeVS生成的results，再重新执行interpreter.executeVS一遍
@@ -1072,6 +1072,14 @@ hlsl_interpreter.py在等待用户输入时，只有输入x才直接退出，如
 
 # 55
 Git commit: 
+对于HLSLInterpreter中用到的pattern，例如下列语句
+        type_pattern = '|'.join(DATA_TYPE_LIST)
+        pattern = rf'^({type_pattern})\s+(\w+)\s*=\s*(.+?);?$'
+不需要在每次执行execute_statement时创建该pattern，我们可以在HLSLInterpreter初始化时，把pattern创建，execute_statement需要时就直接调用已经创建的pattern。
+1. 请检查HLSLInterpreter用到的所有pattern，如果可以在HLSLInterpreter初始化时创建就挪到初始化创建
+2. 初始化创建的pattern，请用一个字典管理，pattern的Key请给一个有意义的名字，每个Pattern用到什么地方，请加一段注释
+
+SyntaxTreeParser没有patterns对象，但是你在SyntaxTreeParser的函数中用到了patterns对象，请修复该问题
 
 
 # 56
@@ -1119,4 +1127,44 @@ Git commit:
 
 
 # 67
+Git commit: 
+
+
+# 68
+Git commit: 
+
+
+# 69
+Git commit: 
+
+
+# 70
+Git commit: 
+
+
+# 71
+Git commit: 
+
+
+# 72
+Git commit: 
+
+
+# 73
+Git commit: 
+
+
+# 74
+Git commit: 
+
+
+# 75
+Git commit: 
+
+
+# 76
+Git commit: 
+
+
+# 77
 Git commit: 

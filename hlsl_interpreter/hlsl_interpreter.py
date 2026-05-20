@@ -23,6 +23,18 @@ DATA_TYPE_LIST = [
     'bool'  # 布尔类型
 ]
 
+# 预编译的正则表达式模式（供SyntaxTreeParser和HLSLInterpreter共用）
+_COMPILED_PATTERNS: Dict[str, re.Pattern] = {
+    # _parse_expression: 类型转换表达式，如 "(float3x3)World"
+    'type_cast': re.compile(r'\((\w+)\)\s*(.+)', re.DOTALL),
+    # _parse_expression: float2/3/4构造函数调用
+    'float_constructor': re.compile(r'float[234]\s*\('),
+    # _parse_expression / _parse_function_call: 通用函数调用
+    'function_call': re.compile(r'\w+\s*\('),
+    # _parse_function_call: 函数调用格式，如 "funcName(...)"
+    'function_call_format': re.compile(r'^(\w+)\s*\('),
+}
+
 D3D_PRIMITIVE_TOPOLOGY_UNDEFINED = 0
 D3D_PRIMITIVE_TOPOLOGY_POINTLIST = 1
 D3D_PRIMITIVE_TOPOLOGY_LINELIST = 2
@@ -223,7 +235,7 @@ class SyntaxTreeParser:
         # 例如: (float3x3)World - 将4x4矩阵转换为3x3矩阵
         #       (float4)vec3 - 将vec3扩展为vec4
         # =====================================================================
-        cast_match = re.match(r'\((\w+)\)\s*(.+)', expr, re.DOTALL)
+        cast_match = _COMPILED_PATTERNS['type_cast'].match(expr)
         if cast_match:
             cast_type = cast_match.group(1)    # 转换目标类型，如float3x3
             rest = cast_match.group(2).strip()   # 类型声明之后的部分
@@ -311,10 +323,10 @@ class SyntaxTreeParser:
         # float[234]构造函数: float2(...), float3(...), float4(...)
         # 普通函数调用: normalize(...), mul(...), transpose(...)等
         # =====================================================================
-        if re.match(r'float[234]\s*\(', expr):
+        if _COMPILED_PATTERNS['float_constructor'].match(expr):
             return self._parse_function_call(expr)
 
-        if re.match(r'\w+\s*\(', expr):
+        if _COMPILED_PATTERNS['function_call'].match(expr):
             return self._parse_function_call(expr)
 
         # =====================================================================
@@ -331,7 +343,7 @@ class SyntaxTreeParser:
         """
         expr = expr.strip()
         if expr.startswith('('):
-            match = re.match(r'\((\w+)\)\s*(.+)', expr, re.DOTALL)
+            match = _COMPILED_PATTERNS['type_cast'].match(expr)
             if match:
                 cast_type = match.group(1)
                 rest = match.group(2).strip()
@@ -340,7 +352,7 @@ class SyntaxTreeParser:
                     return inner_node
                 return SyntaxTreeNode('cast', cast_type, inner_node)
 
-        match = re.match(r'^(\w+)\s*\(', expr)
+        match = _COMPILED_PATTERNS['function_call_format'].match(expr)
         if not match:
             return SyntaxTreeNode('value', expr)
 
@@ -454,6 +466,38 @@ class HLSLInterpreter:
         self.primitive_topology = primitive_topology         # 图元拓扑类型
         self._mesh_view = None                               # MeshView实例(用于显示输入和输出)
         self._mesh_view_enabled = False                      # 是否启用MeshView
+
+        # 预编译的正则表达式模式字典
+        type_pattern = '|'.join(DATA_TYPE_LIST)
+        self.patterns: Dict[str, re.Pattern] = {
+            # execute_statement: 变量声明语句，如 "float4 pos = ...;"
+            'variable_declaration': re.compile(rf'^({type_pattern})\s+(\w+)\s*=\s*(.+?);?$'),
+
+            # execute_statement: output字段赋值语句，如 "output.Color = ...;" 或 "output.Color.r = ...;"
+            'output_field_assignment': re.compile(r'output\.(\w+)(?:\.([xyzwrgba]+))?\s*=\s*(.+)'),
+
+            # execute_statement: 一般赋值语句，如 "var = ...;"
+            'simple_assignment': re.compile(r'(\w+)\s*=\s*(.+?);?$'),
+
+            # execute_statement: if条件语句，如 "if(condition) { ... }"
+            'if_statement': re.compile(r'if\s*\((.+?)\)\s*(.+)$', re.DOTALL),
+
+            # parse_struct: 结构体定义，如 "struct VS_INPUT { ... }"
+            'struct_definition': re.compile(r'struct\s+(\w+)\s*\{([^}]+)\}'),
+
+            # parse_cbuffer: cbuffer定义，如 "cbuffer MyBuffer : register(b0) { ... }"
+            'cbuffer_definition': re.compile(r'cbuffer\s+(\w+)\s*:.*?\{([^}]+)\}', re.DOTALL),
+
+            # parse_function: 函数定义，如 "float4 main(VS_INPUT input) { ... }"
+            'function_definition': re.compile(r'(\w+)\s+(\w+)\s*\(([^)]*)\)\s*\{([^}]+(?:\{[^}]*\}[^}]*)*)\}', re.DOTALL),
+
+            # load_hlsl_code_from_file / executeVS: 查找struct定义（用于finditer）
+            'struct_finditer': re.compile(r'struct\s+\w+\s*\{[^}]+\}'),
+
+            # load_hlsl_code_from_file: 查找cbuffer定义（用于finditer）
+            'cbuffer_finditer': re.compile(r'cbuffer\s+\w+[^}]+\}'),
+        }
+
         if self.log_to_file and self.log_file_path:
             self._log_file = open(self.log_file_path, self.log_file_mode, encoding='utf-8')
 
@@ -803,7 +847,7 @@ class HLSLInterpreter:
         code: 结构体代码，如 "struct VS_INPUT { float3 Pos : POSITION; }"
         返回: StructDefinition对象
         """
-        match = re.search(r'struct\s+(\w+)\s*\{([^}]+)\}', code)
+        match = self.patterns['struct_definition'].search(code)
         if not match:
             return None
         name = match.group(1)
@@ -832,7 +876,7 @@ class HLSLInterpreter:
         code: cbuffer代码
         返回: CbufferDefinition对象
         """
-        match = re.search(r'cbuffer\s+(\w+)\s*:.*?\{([^}]+)\}', code, re.DOTALL)
+        match = self.patterns['cbuffer_definition'].search(code)
         if not match:
             return None
         name = match.group(1)
@@ -856,7 +900,7 @@ class HLSLInterpreter:
         code: 函数代码，如 "float4 main(VS_INPUT input) { ... }"
         返回: (返回类型, 函数名, 参数字典, 函数体) 元组
         """
-        match = re.search(r'(\w+)\s+(\w+)\s*\(([^)]*)\)\s*\{([^}]+(?:\{[^}]*\}[^}]*)*)\}', code, re.DOTALL)
+        match = self.patterns['function_definition'].search(code)
         if not match:
             return None, None, None, None
         ret_type = match.group(1)
@@ -1563,9 +1607,7 @@ class HLSLInterpreter:
             return None
 
         # 变量声明语句: float4 pos = ...;
-        type_pattern = '|'.join(DATA_TYPE_LIST)
-        pattern = rf'^({type_pattern})\s+(\w+)\s*=\s*(.+?);?$'
-        match = re.match(pattern, stmt)
+        match = self.patterns['variable_declaration'].match(stmt)
         if match:
             var_name = match.group(2)
             value = self.evaluate_expression(match.group(3), local_vars)
@@ -1575,8 +1617,7 @@ class HLSLInterpreter:
 
         # output字段赋值: output.Color = ...; 或 output.Color.r = ...;
         if 'output.' in stmt:
-            # 匹配 output.field.swizzle = value 或 output.field = value
-            match = re.match(r'output\.(\w+)(?:\.([xyzwrgba]+))?\s*=\s*(.+)', stmt)
+            match = self.patterns['output_field_assignment'].match(stmt)
             if match:
                 field_name = match.group(1)
                 swizzle = match.group(2)
@@ -1611,7 +1652,7 @@ class HLSLInterpreter:
 
         # 一般赋值语句: var = ...;
         if '=' in stmt and stmt.count('=') == 1:
-            match = re.match(r'(\w+)\s*=\s*(.+?);?$', stmt)
+            match = self.patterns['simple_assignment'].match(stmt)
             if match:
                 var_name = match.group(1)
                 value = self.evaluate_expression(match.group(2), local_vars)
@@ -1630,7 +1671,7 @@ class HLSLInterpreter:
         """
         stmt = stmt.strip()
 
-        if_match = re.match(r'if\s*\((.+?)\)\s*(.+)$', stmt, re.DOTALL)
+        if_match = self.patterns['if_statement'].match(stmt)
         if not if_match:
             return
 
@@ -1901,15 +1942,13 @@ class HLSLInterpreter:
             csv_folder_path = os.path.dirname(hlsl_file_path)
 
         # 解析struct定义
-        struct_pattern = r'struct\s+\w+\s*\{[^}]+\}'
-        for struct_match in re.finditer(struct_pattern, code):
+        for struct_match in self.patterns['struct_finditer'].finditer(code):
             struct_def = self.parse_struct(struct_match.group())
             if struct_def:
                 self.structs[struct_def.name] = struct_def
 
         # 解析cbuffer定义
-        cbuffer_pattern = r'cbuffer\s+\w+[^}]+\}'
-        for cb_match in re.finditer(cbuffer_pattern, code, re.DOTALL):
+        for cb_match in self.patterns['cbuffer_finditer'].finditer(code):
             cb_def = self.parse_cbuffer(cb_match.group())
             if cb_def:
                 self.cbuffers[cb_def.name] = cb_def
