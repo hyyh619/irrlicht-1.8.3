@@ -613,7 +613,7 @@ class MeshView:
                 D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP: "Triangle Strip",
                 D3D_PRIMITIVE_TOPOLOGY_TRIANGLEFAN: "Triangle Fan",
             }
-            info = f"Input: {len(self.input_vertices)} vertices | Output: {len(self.output_vertices)} vertices | Topology: {topo_names.get(self.primitive_topology, 'Unknown')} | Zoom: {self._input_scale:.2f}x"
+            info = f"Input: {len(self.input_vertices)} vertices | Output: {len(self.output_vertices)} vertices | Topology: {topo_names.get(self.primitive_topology, 'Unknown')} | Input Zoom: {self._input_scale:.2f}x | Result Zoom: {self._output_scale:.2f}x"
             self._info_label.config(text=info)
 
     def _on_mouse_drag_input(self, event):

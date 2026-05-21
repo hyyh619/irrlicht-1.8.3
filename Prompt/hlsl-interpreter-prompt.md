@@ -1158,6 +1158,8 @@ Git commit: hlsl-inter: create vertex object by MiniMax-M2.7.
 
 # 62
 Git commit: hlsl-inter: fix tk mainloop threading issue by MiniMax-M2.7.
+hy: It's a good fix.
+
 帮我修复hlsl_interpreter.py运行时的，下面这个报错问题
   File "c:\Python314\Lib\threading.py", line 1023, in run
     self._target(*self._args, **self._kwargs)
@@ -1177,7 +1179,9 @@ Git commit: hlsl-inter: move MeshView UI to a separate thread. by MiniMax-M2.7.
 
 
 # 64
-Git commit: 
+Git commit: hlsl-inter: fix MeshView close crash if mainloop had have exited. by MiniMax-M2.7.
+hy: It's a good fix.
+
 hlsl_interpreter.py退出时，遇到下面错误，请修复
 Exception has occurred: RuntimeError
 main thread is not in main loop
@@ -1193,9 +1197,11 @@ main thread is not in main loop
 RuntimeError: main thread is not in main loop
 
 
-
 # 65
 Git commit: 
+MeshView下面的状态栏显示了input顶点数量，output顶点数量，topology类型，zoom缩放的倍数，
+1. zoom缩放倍数表示的是input窗口的倍数，请改名
+2. 增加一个result窗口缩放倍数的状态显示
 
 
 # 66
