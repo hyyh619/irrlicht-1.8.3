@@ -1148,7 +1148,7 @@ by MiniMax-M2.7.
 
 
 # 61
-Git commit: 
+Git commit: hlsl-inter: create vertex object by MiniMax-M2.7.
 1. 在hlsl_interpreter.py创建一个顶点对象
 2. 顶点对象需要保存输入的顶点数据，包括坐标，颜色，法向量，纹理坐标等，所有input的内容
 3. 顶点对象需要保存经过executeVS计算后得到的输出的坐标，颜色，法向量，纹理坐标等，所有result的结果
@@ -1158,6 +1158,15 @@ Git commit:
 
 # 62
 Git commit: 
+帮我修复hlsl_interpreter.py运行时的，下面这个报错问题
+  File "c:\Python314\Lib\threading.py", line 1023, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Total execution time:               12.1799s  File "c:\Python314\Lib\tkinter\__init__.py", line 1613, in mainloop
+    self.tk.mainloop(n)
+    ~~~~~~~~~~~~~~~~^^^
+
+RuntimeError: Calling Tcl from different apartment
 
 
 # 63

@@ -850,10 +850,7 @@ class MeshView:
         self._update_step_label()
         self._running = True
 
-        if blocking:
-            self._root.mainloop()
-        else:
-            threading.Thread(target=self._root.mainloop, daemon=True).start()
+        self._root.mainloop()
 
     def hide(self):
         """隐藏窗口"""
