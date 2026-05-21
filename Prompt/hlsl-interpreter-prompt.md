@@ -1225,7 +1225,7 @@ MeshView的selected vertex info窗口增加以下功能
 4. 重新执行execute_main_function生成的打印都显示到selected vertex info窗口
 
 # 68
-Git commit: 
+Git commit: hlsl-inter: add window layout by MiniMax-M2.7.
 1. MeshView现在有4个窗口负责显示，增加一个可以调整窗口大小，以及窗口布局的功能。
 2. HLSLInterpreter executeVS执行时用到contant buffer数据也显示在selected vertex info窗口中，请显示在vertex数据的后面
 3. HLSLInterpreter executeVS执行的HLSL源代码也显示在selected vertex info窗口中，请显示在constant buffer数据后面
@@ -1233,6 +1233,40 @@ Git commit:
 
 # 69
 Git commit: 
+1. MeshView selected vertex info窗口增加滚动条
+2. MeshView的 selected vertex info和Vertex Shader Execution Log两个窗口显示的字体，增加一个调整字体大小功能
+3. MeshView最下面的状态栏现在看不到了，请恢复状态栏显示，input顶点数，output顶点数，topology，input窗口缩放倍数，output窗口缩放倍数
+
+修复mesh_view.py的下列问题
+Traceback (most recent call last):
+  File "c:\Python314\Lib\tkinter\__init__.py", line 2082, in __call__
+    return self.func(*args)
+           ~~~~~~~~~^^^^^^^
+  File "C:\Development\Graphics\irrlicht-1.8.3\hlsl_interpreter\mesh_view.py", line 1010, in _on_info_font_size_changed
+    self._vertex_info_inner_frame.config(font=("Consolas", size))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Python314\Lib\tkinter\__init__.py", line 1836, in configure
+    return self._configure('configure', cnf, kw)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Python314\Lib\tkinter\__init__.py", line 1826, in _configure
+    self.tk.call(_flatten((self._w, cmd)) + self._options(cnf))
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_tkinter.TclError: unknown option "-font"
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "c:\Python314\Lib\tkinter\__init__.py", line 2082, in __call__
+    return self.func(*args)
+           ~~~~~~~~~^^^^^^^
+  File "C:\Development\Graphics\irrlicht-1.8.3\hlsl_interpreter\mesh_view.py", line 1010, in _on_info_font_size_changed
+    self._vertex_info_inner_frame.config(font=("Consolas", size))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Python314\Lib\tkinter\__init__.py", line 1836, in configure
+    return self._configure('configure', cnf, kw)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Python314\Lib\tkinter\__init__.py", line 1826, in _configure
+    self.tk.call(_flatten((self._w, cmd)) + self._options(cnf))
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_tkinter.TclError: unknown option "-font"
 
 
 # 70

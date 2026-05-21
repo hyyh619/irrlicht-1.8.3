@@ -93,6 +93,10 @@ class MeshView:
         self._re_execute_btn = None
         self._vertex_shader_log = []
         self._vertex_shader_log_text = None
+        self._vertex_info_font_size = 12
+        self._shader_log_font_size = 12
+        self._vertex_info_scroll_y = None
+        self._vertex_info_inner_frame = None
         self._start_gui_thread()
 
     @property
@@ -218,15 +222,29 @@ class MeshView:
         self._re_execute_btn = ttk.Button(btn_frame, text="Re-execute Vertex Shader", command=self._on_re_execute_vertex, state=tk.DISABLED)
         self._re_execute_btn.pack(side=tk.LEFT, padx=2)
         ttk.Button(btn_frame, text="Clear Log", command=self._on_clear_shader_log).pack(side=tk.LEFT, padx=2)
+        ttk.Label(btn_frame, text="Info Font:").pack(side=tk.LEFT, padx=(10, 2))
+        self._info_font_size_var = tk.IntVar(value=self._vertex_info_font_size)
+        info_font_spin = ttk.Spinbox(btn_frame, from_=6, to=24, width=3, textvariable=self._info_font_size_var, command=self._on_info_font_size_changed)
+        info_font_spin.pack(side=tk.LEFT, padx=2)
+        ttk.Label(btn_frame, text="Log Font:").pack(side=tk.LEFT, padx=(10, 2))
+        self._log_font_size_var = tk.IntVar(value=self._shader_log_font_size)
+        log_font_spin = ttk.Spinbox(btn_frame, from_=6, to=24, width=3, textvariable=self._log_font_size_var, command=self._on_log_font_size_changed)
+        log_font_spin.pack(side=tk.LEFT, padx=2)
 
-        self._vertex_info_panel = tk.Canvas(info_inner, bg="#1a1a2e", width=300, height=350, highlightthickness=0)
-        self._vertex_info_panel.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        info_canvas_frame = ttk.Frame(info_inner)
+        info_canvas_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        self._vertex_info_scroll_y = ttk.Scrollbar(info_canvas_frame)
+        self._vertex_info_scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
+        self._vertex_info_inner_frame = tk.Canvas(info_canvas_frame, bg="#1a1a2e", highlightthickness=0, yscrollcommand=self._vertex_info_scroll_y.set)
+        self._vertex_info_inner_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self._vertex_info_scroll_y.config(command=self._vertex_info_inner_frame.yview)
+        self._vertex_info_panel = self._vertex_info_inner_frame
 
         log_label_frame = ttk.LabelFrame(right_paned, text="Vertex Shader Execution Log", padding=2)
         right_paned.add(log_label_frame)
         log_scroll = ttk.Scrollbar(log_label_frame)
         log_scroll.pack(side=tk.RIGHT, fill=tk.Y)
-        self._vertex_shader_log_text = tk.Text(log_label_frame, bg="#0d0d1a", fg="#00ff00", font=("Consolas", 8), height=8, wrap=tk.WORD, yscrollcommand=log_scroll.set)
+        self._vertex_shader_log_text = tk.Text(log_label_frame, bg="#0d0d1a", fg="#00ff00", font=("Consolas", self._shader_log_font_size), height=8, wrap=tk.WORD, yscrollcommand=log_scroll.set)
         self._vertex_shader_log_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         log_scroll.config(command=self._vertex_shader_log_text.yview)
 
@@ -755,68 +773,68 @@ class MeshView:
 
         self._vertex_info_panel.delete("all")
 
-        y_pos = 10
-        line_height = 20
+        font_size = self._vertex_info_font_size
+        line_height = font_size + 10
 
-        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 10), text="Selected Vertex Info")
-        y_pos += line_height * 2
+        self._vertex_info_panel.create_text(10, 10, anchor=tk.NW, fill="white", font=("Consolas", font_size), text="Selected Vertex Info")
+        y_pos = 10 + line_height * 2
 
         input_idx = self._selected_input_vertex_index
         output_idx = self._selected_output_vertex_index
 
         if input_idx is not None and input_idx < len(self.input_vertices):
             v = self.input_vertices[input_idx]
-            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#00ff00", font=("Consolas", 10), text=f"--- Input Vertex [{input_idx}] ---")
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#00ff00", font=("Consolas", font_size), text=f"--- Input Vertex [{input_idx}] ---")
             y_pos += line_height * 1.5
 
             pos = v.position
-            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 9), text=f"Position: ({pos[0]:.4f}, {pos[1]:.4f}, {pos[2]:.4f})")
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 1), text=f"Position: ({pos[0]:.4f}, {pos[1]:.4f}, {pos[2]:.4f})")
             y_pos += line_height
 
             if v.normal:
                 n = v.normal
-                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 9), text=f"Normal: ({n[0]:.4f}, {n[1]:.4f}, {n[2]:.4f})")
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 1), text=f"Normal: ({n[0]:.4f}, {n[1]:.4f}, {n[2]:.4f})")
                 y_pos += line_height
 
             if v.color:
                 c = v.color
-                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 9), text=f"Color: ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}, {c[3]:.4f})")
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 1), text=f"Color: ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}, {c[3]:.4f})")
                 y_pos += line_height
 
             y_pos += line_height
         else:
-            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="gray", font=("Consolas", 9), text="No Input Vertex Selected")
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="gray", font=("Consolas", font_size - 1), text="No Input Vertex Selected")
             y_pos += line_height * 2
 
         if output_idx is not None and output_idx < len(self.output_vertices):
             v = self.output_vertices[output_idx]
-            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#ff8800", font=("Consolas", 10), text=f"--- Output Vertex [{output_idx}] ---")
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#ff8800", font=("Consolas", font_size), text=f"--- Output Vertex [{output_idx}] ---")
             y_pos += line_height * 1.5
 
             pos = v.position
-            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 9), text=f"Position: ({pos[0]:.4f}, {pos[1]:.4f}, {pos[2]:.4f})")
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 1), text=f"Position: ({pos[0]:.4f}, {pos[1]:.4f}, {pos[2]:.4f})")
             y_pos += line_height
 
             if v.normal:
                 n = v.normal
-                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 9), text=f"Normal: ({n[0]:.4f}, {n[1]:.4f}, {n[2]:.4f})")
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 1), text=f"Normal: ({n[0]:.4f}, {n[1]:.4f}, {n[2]:.4f})")
                 y_pos += line_height
 
             if v.color:
                 c = v.color
-                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 9), text=f"Color: ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}, {c[3]:.4f})")
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 1), text=f"Color: ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}, {c[3]:.4f})")
                 y_pos += line_height
         else:
-            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="gray", font=("Consolas", 9), text="No Output Vertex Selected")
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="gray", font=("Consolas", font_size - 1), text="No Output Vertex Selected")
 
         cb_data = self._get_cbuffer_display_data()
         if cb_data:
             y_pos += line_height
-            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#00ffff", font=("Consolas", 10), text="--- Constant Buffer Data ---")
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#00ffff", font=("Consolas", font_size), text="--- Constant Buffer Data ---")
             y_pos += line_height * 1.5
 
             for cb_name, cb_info in cb_data.items():
-                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#00ffff", font=("Consolas", 9), text=f"[{cb_name}]")
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#00ffff", font=("Consolas", font_size - 1), text=f"[{cb_name}]")
                 y_pos += line_height
 
                 for field in cb_info.get('fields', []):
@@ -828,44 +846,50 @@ class MeshView:
                         continue
 
                     if 'float4x4' in field_type:
-                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"  {field_name} (float4x4):")
+                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 2), text=f"  {field_name} (float4x4):")
                         y_pos += line_height
                         for row_idx, row in enumerate(data):
                             row_str = '  '.join(f"{v:8.4f}" for v in row)
-                            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"    [{row_str}]")
+                            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 2), text=f"    [{row_str}]")
                             y_pos += line_height
                     elif 'float4' in field_type:
                         val_str = ', '.join(f"{v:.4f}" for v in data)
-                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"  {field_name} (float4): [{val_str}]")
+                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 2), text=f"  {field_name} (float4): [{val_str}]")
                         y_pos += line_height
                     elif 'float3' in field_type:
                         val_str = ', '.join(f"{v:.4f}" for v in data)
-                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"  {field_name} (float3): [{val_str}]")
+                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 2), text=f"  {field_name} (float3): [{val_str}]")
                         y_pos += line_height
                     elif 'float2' in field_type:
                         val_str = ', '.join(f"{v:.4f}" for v in data)
-                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"  {field_name} (float2): [{val_str}]")
+                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 2), text=f"  {field_name} (float2): [{val_str}]")
                         y_pos += line_height
                     elif 'float' in field_type:
-                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"  {field_name} (float): {data:.4f}")
+                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 2), text=f"  {field_name} (float): {data:.4f}")
                         y_pos += line_height
                     else:
-                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"  {field_name} ({field_type}): {data}")
+                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", font_size - 2), text=f"  {field_name} ({field_type}): {data}")
                         y_pos += line_height
 
         hlsl_code = self._get_hlsl_code_display()
         if hlsl_code:
             y_pos += line_height
-            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#ffff00", font=("Consolas", 10), text="--- HLSL Source Code ---")
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#ffff00", font=("Consolas", font_size), text="--- HLSL Source Code ---")
             y_pos += line_height * 1.5
 
             code_lines = hlsl_code.split('\n')
+            code_font_size = max(font_size - 3, 5)
+            code_line_height = font_size - 2
             for line in code_lines[:30]:
-                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#aaaaaa", font=("Consolas", 7), text=line[:80])
-                y_pos += line_height * 0.8
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#aaaaaa", font=("Consolas", code_font_size), text=line[:80])
+                y_pos += code_line_height
             if len(code_lines) > 30:
-                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="gray", font=("Consolas", 7), text=f"... ({len(code_lines) - 30} more lines)")
-                y_pos += line_height * 0.8
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="gray", font=("Consolas", code_font_size), text=f"... ({len(code_lines) - 30} more lines)")
+                y_pos += code_line_height
+
+        bbox = self._vertex_info_panel.bbox("all")
+        if bbox:
+            self._vertex_info_panel.configure(scrollregion=bbox)
 
     def set_hlsl_interpreter(self, interpreter, main_func: str = "main", input_struct: str = "VS_INPUT"):
         """设置HLSL解释器以支持重新执行顶点着色器"""
@@ -978,6 +1002,21 @@ class MeshView:
             self._vertex_shader_log_text.insert(tk.END, text + "\n")
             self._vertex_shader_log_text.see(tk.END)
 
+    def _on_info_font_size_changed(self):
+        """处理顶点信息面板字体大小变化"""
+        size = self._info_font_size_var.get()
+        self._vertex_info_font_size = size
+        if self._vertex_info_inner_frame:
+            self._vertex_info_inner_frame.config(font=("Consolas", size))
+        self._update_vertex_info_panel()
+
+    def _on_log_font_size_changed(self):
+        """处理着色器日志字体大小变化"""
+        size = self._log_font_size_var.get()
+        self._shader_log_font_size = size
+        if self._vertex_shader_log_text:
+            self._vertex_shader_log_text.config(font=("Consolas", size))
+
     def _on_mouse_wheel_input(self, event):
         """处理输入画布鼠标滚轮缩放"""
         if self._active_view_var.get():
@@ -1004,6 +1043,8 @@ class MeshView:
 
     def _on_layout_changed(self):
         """处理布局变更"""
+        if not hasattr(self, '_layout_var') or self._layout_var is None:
+            return
         layout = self._layout_var.get()
         if layout == "default":
             self._paned_window.delete(0, tk.END)
@@ -1028,16 +1069,32 @@ class MeshView:
             self._re_execute_btn = ttk.Button(btn_frame, text="Re-execute Vertex Shader", command=self._on_re_execute_vertex, state=tk.DISABLED)
             self._re_execute_btn.pack(side=tk.LEFT, padx=2)
             ttk.Button(btn_frame, text="Clear Log", command=self._on_clear_shader_log).pack(side=tk.LEFT, padx=2)
-            self._vertex_info_panel = tk.Canvas(info_inner, bg="#1a1a2e", width=300, height=350, highlightthickness=0)
-            self._vertex_info_panel.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+            ttk.Label(btn_frame, text="Info Font:").pack(side=tk.LEFT, padx=(10, 2))
+            self._info_font_size_var = tk.IntVar(value=self._vertex_info_font_size)
+            info_font_spin = ttk.Spinbox(btn_frame, from_=6, to=24, width=3, textvariable=self._info_font_size_var, command=self._on_info_font_size_changed)
+            info_font_spin.pack(side=tk.LEFT, padx=2)
+            ttk.Label(btn_frame, text="Log Font:").pack(side=tk.LEFT, padx=(10, 2))
+            self._log_font_size_var = tk.IntVar(value=self._shader_log_font_size)
+            log_font_spin = ttk.Spinbox(btn_frame, from_=6, to=24, width=3, textvariable=self._log_font_size_var, command=self._on_log_font_size_changed)
+            log_font_spin.pack(side=tk.LEFT, padx=2)
+            info_canvas_frame = ttk.Frame(info_inner)
+            info_canvas_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+            self._vertex_info_scroll_y = ttk.Scrollbar(info_canvas_frame)
+            self._vertex_info_scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
+            self._vertex_info_inner_frame = tk.Canvas(info_canvas_frame, bg="#1a1a2e", highlightthickness=0, yscrollcommand=self._vertex_info_scroll_y.set)
+            self._vertex_info_inner_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+            self._vertex_info_scroll_y.config(command=self._vertex_info_inner_frame.yview)
+            self._vertex_info_panel = self._vertex_info_inner_frame
             log_label_frame = ttk.LabelFrame(right_paned, text="Vertex Shader Execution Log", padding=2)
             right_paned.add(log_label_frame)
             log_scroll = ttk.Scrollbar(log_label_frame)
             log_scroll.pack(side=tk.RIGHT, fill=tk.Y)
-            self._vertex_shader_log_text = tk.Text(log_label_frame, bg="#0d0d1a", fg="#00ff00", font=("Consolas", 8), height=8, wrap=tk.WORD, yscrollcommand=log_scroll.set)
+            self._vertex_shader_log_text = tk.Text(log_label_frame, bg="#0d0d1a", fg="#00ff00", font=("Consolas", self._shader_log_font_size), height=8, wrap=tk.WORD, yscrollcommand=log_scroll.set)
             self._vertex_shader_log_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
             log_scroll.config(command=self._vertex_shader_log_text.yview)
             self._bind_canvas_events()
+            self._info_label = ttk.Label(self._root, text="Input: 0 vertices | Output: 0 vertices | Topology: None", font=("Consolas", 10))
+            self._info_label.place(relx=0, rely=1.0, anchor=tk.SW, relwidth=1.0)
 
         elif layout == "side-by-side":
             self._paned_window.delete(0, tk.END)
