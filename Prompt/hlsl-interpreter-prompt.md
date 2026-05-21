@@ -1215,7 +1215,9 @@ MeshView能够提供一个选中某个顶点的功能，
 
 
 # 67
-Git commit: 
+Git commit: hlsl-inter: add re-execute vs with selected vertex by MiniMax-M2.7.
+hy: the full function added by MiniMax-M2.7. It passed test after first coding by MiniMax-M2.7.
+
 MeshView的selected vertex info窗口增加以下功能
 1. selected vertex info窗口除了显示当前被选中的顶点外，同时显示该顶点执行的vertex shader语句
 2. 增加一个执行顶点按钮，针对选中的顶点，重新执行HLSLInterpreter的execute_main_function
@@ -1224,6 +1226,9 @@ MeshView的selected vertex info窗口增加以下功能
 
 # 68
 Git commit: 
+1. MeshView现在有4个窗口负责显示，增加一个可以调整窗口大小，以及窗口布局的功能。
+2. HLSLInterpreter executeVS执行时用到contant buffer数据也显示在selected vertex info窗口中，请显示在vertex数据的后面
+3. HLSLInterpreter executeVS执行的HLSL源代码也显示在selected vertex info窗口中，请显示在constant buffer数据后面
 
 
 # 69

@@ -188,21 +188,27 @@ class MeshView:
         canvas_frame = ttk.Frame(main_frame)
         canvas_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=2)
 
-        left_frame = ttk.Frame(canvas_frame)
-        left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self._paned_window = ttk.PanedWindow(canvas_frame, orient=tk.HORIZONTAL)
+        self._paned_window.pack(fill=tk.BOTH, expand=True)
 
-        input_frame = ttk.LabelFrame(left_frame, text="Input Vertices", padding=5)
-        input_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
+        left_paned = ttk.PanedWindow(self._paned_window, orient=tk.VERTICAL)
+        self._paned_window.add(left_paned)
+
+        input_frame = ttk.LabelFrame(left_paned, text="Input Vertices", padding=5)
+        left_paned.add(input_frame)
         self._input_canvas = tk.Canvas(input_frame, bg="#1a1a2e", width=500, height=520)
         self._input_canvas.pack(fill=tk.BOTH, expand=True)
 
-        output_frame = ttk.LabelFrame(left_frame, text="Output (VS Result)", padding=5)
-        output_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(5, 0))
+        output_frame = ttk.LabelFrame(left_paned, text="Output (VS Result)", padding=5)
+        left_paned.add(output_frame)
         self._output_canvas = tk.Canvas(output_frame, bg="#1a1a2e", width=500, height=520)
         self._output_canvas.pack(fill=tk.BOTH, expand=True)
 
-        info_frame = ttk.LabelFrame(canvas_frame, text="Selected Vertex Info", padding=5)
-        info_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(5, 0))
+        right_paned = ttk.PanedWindow(self._paned_window, orient=tk.VERTICAL)
+        self._paned_window.add(right_paned)
+
+        info_frame = ttk.LabelFrame(right_paned, text="Selected Vertex Info", padding=5)
+        right_paned.add(info_frame)
 
         info_inner = ttk.Frame(info_frame)
         info_inner.pack(fill=tk.BOTH, expand=True)
@@ -216,8 +222,8 @@ class MeshView:
         self._vertex_info_panel = tk.Canvas(info_inner, bg="#1a1a2e", width=300, height=350, highlightthickness=0)
         self._vertex_info_panel.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        log_label_frame = ttk.LabelFrame(info_inner, text="Vertex Shader Execution Log", padding=2)
-        log_label_frame.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True, pady=(2, 0))
+        log_label_frame = ttk.LabelFrame(right_paned, text="Vertex Shader Execution Log", padding=2)
+        right_paned.add(log_label_frame)
         log_scroll = ttk.Scrollbar(log_label_frame)
         log_scroll.pack(side=tk.RIGHT, fill=tk.Y)
         self._vertex_shader_log_text = tk.Text(log_label_frame, bg="#0d0d1a", fg="#00ff00", font=("Consolas", 8), height=8, wrap=tk.WORD, yscrollcommand=log_scroll.set)
@@ -803,6 +809,64 @@ class MeshView:
         else:
             self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="gray", font=("Consolas", 9), text="No Output Vertex Selected")
 
+        cb_data = self._get_cbuffer_display_data()
+        if cb_data:
+            y_pos += line_height
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#00ffff", font=("Consolas", 10), text="--- Constant Buffer Data ---")
+            y_pos += line_height * 1.5
+
+            for cb_name, cb_info in cb_data.items():
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#00ffff", font=("Consolas", 9), text=f"[{cb_name}]")
+                y_pos += line_height
+
+                for field in cb_info.get('fields', []):
+                    field_name = field['name']
+                    field_type = field['field_type']
+                    data = field['data']
+
+                    if data is None:
+                        continue
+
+                    if 'float4x4' in field_type:
+                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"  {field_name} (float4x4):")
+                        y_pos += line_height
+                        for row_idx, row in enumerate(data):
+                            row_str = '  '.join(f"{v:8.4f}" for v in row)
+                            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"    [{row_str}]")
+                            y_pos += line_height
+                    elif 'float4' in field_type:
+                        val_str = ', '.join(f"{v:.4f}" for v in data)
+                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"  {field_name} (float4): [{val_str}]")
+                        y_pos += line_height
+                    elif 'float3' in field_type:
+                        val_str = ', '.join(f"{v:.4f}" for v in data)
+                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"  {field_name} (float3): [{val_str}]")
+                        y_pos += line_height
+                    elif 'float2' in field_type:
+                        val_str = ', '.join(f"{v:.4f}" for v in data)
+                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"  {field_name} (float2): [{val_str}]")
+                        y_pos += line_height
+                    elif 'float' in field_type:
+                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"  {field_name} (float): {data:.4f}")
+                        y_pos += line_height
+                    else:
+                        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 8), text=f"  {field_name} ({field_type}): {data}")
+                        y_pos += line_height
+
+        hlsl_code = self._get_hlsl_code_display()
+        if hlsl_code:
+            y_pos += line_height
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#ffff00", font=("Consolas", 10), text="--- HLSL Source Code ---")
+            y_pos += line_height * 1.5
+
+            code_lines = hlsl_code.split('\n')
+            for line in code_lines[:30]:
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#aaaaaa", font=("Consolas", 7), text=line[:80])
+                y_pos += line_height * 0.8
+            if len(code_lines) > 30:
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="gray", font=("Consolas", 7), text=f"... ({len(code_lines) - 30} more lines)")
+                y_pos += line_height * 0.8
+
     def set_hlsl_interpreter(self, interpreter, main_func: str = "main", input_struct: str = "VS_INPUT"):
         """设置HLSL解释器以支持重新执行顶点着色器"""
         self._hlsl_interpreter = interpreter
@@ -810,6 +874,18 @@ class MeshView:
         self._hlsl_input_struct = input_struct
         if self._re_execute_btn:
             self._re_execute_btn.config(state=tk.NORMAL)
+
+    def _get_cbuffer_display_data(self):
+        """Get cbuffer data formatted for display"""
+        if not self._hlsl_interpreter:
+            return {}
+        return self._hlsl_interpreter.get_cbuffer_data()
+
+    def _get_hlsl_code_display(self):
+        """Get HLSL code for display"""
+        if not self._hlsl_interpreter:
+            return None
+        return self._hlsl_interpreter.get_last_executeVS_code()
 
     def _on_re_execute_vertex(self):
         """重新执行选中顶点的顶点着色器"""
@@ -925,6 +1001,156 @@ class MeshView:
     def _on_resize(self, event):
         """处理窗口大小改变"""
         self._draw_mesh()
+
+    def _on_layout_changed(self):
+        """处理布局变更"""
+        layout = self._layout_var.get()
+        if layout == "default":
+            self._paned_window.delete(0, tk.END)
+            left_paned = ttk.PanedWindow(self._paned_window, orient=tk.VERTICAL)
+            self._paned_window.add(left_paned)
+            input_frame = ttk.LabelFrame(left_paned, text="Input Vertices", padding=5)
+            left_paned.add(input_frame)
+            self._input_canvas = tk.Canvas(input_frame, bg="#1a1a2e", width=500, height=520)
+            self._input_canvas.pack(fill=tk.BOTH, expand=True)
+            output_frame = ttk.LabelFrame(left_paned, text="Output (VS Result)", padding=5)
+            left_paned.add(output_frame)
+            self._output_canvas = tk.Canvas(output_frame, bg="#1a1a2e", width=500, height=520)
+            self._output_canvas.pack(fill=tk.BOTH, expand=True)
+            right_paned = ttk.PanedWindow(self._paned_window, orient=tk.VERTICAL)
+            self._paned_window.add(right_paned)
+            info_frame = ttk.LabelFrame(right_paned, text="Selected Vertex Info", padding=5)
+            right_paned.add(info_frame)
+            info_inner = ttk.Frame(info_frame)
+            info_inner.pack(fill=tk.BOTH, expand=True)
+            btn_frame = ttk.Frame(info_inner)
+            btn_frame.pack(side=tk.TOP, fill=tk.X, pady=2)
+            self._re_execute_btn = ttk.Button(btn_frame, text="Re-execute Vertex Shader", command=self._on_re_execute_vertex, state=tk.DISABLED)
+            self._re_execute_btn.pack(side=tk.LEFT, padx=2)
+            ttk.Button(btn_frame, text="Clear Log", command=self._on_clear_shader_log).pack(side=tk.LEFT, padx=2)
+            self._vertex_info_panel = tk.Canvas(info_inner, bg="#1a1a2e", width=300, height=350, highlightthickness=0)
+            self._vertex_info_panel.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+            log_label_frame = ttk.LabelFrame(right_paned, text="Vertex Shader Execution Log", padding=2)
+            right_paned.add(log_label_frame)
+            log_scroll = ttk.Scrollbar(log_label_frame)
+            log_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+            self._vertex_shader_log_text = tk.Text(log_label_frame, bg="#0d0d1a", fg="#00ff00", font=("Consolas", 8), height=8, wrap=tk.WORD, yscrollcommand=log_scroll.set)
+            self._vertex_shader_log_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+            log_scroll.config(command=self._vertex_shader_log_text.yview)
+            self._bind_canvas_events()
+
+        elif layout == "side-by-side":
+            self._paned_window.delete(0, tk.END)
+            left_paned = ttk.PanedWindow(self._paned_window, orient=tk.VERTICAL)
+            self._paned_window.add(left_paned)
+            input_frame = ttk.LabelFrame(left_paned, text="Input Vertices", padding=5)
+            left_paned.add(input_frame)
+            self._input_canvas = tk.Canvas(input_frame, bg="#1a1a2e", width=500, height=520)
+            self._input_canvas.pack(fill=tk.BOTH, expand=True)
+            output_frame = ttk.LabelFrame(left_paned, text="Output (VS Result)", padding=5)
+            left_paned.add(output_frame)
+            self._output_canvas = tk.Canvas(output_frame, bg="#1a1a2e", width=500, height=520)
+            self._output_canvas.pack(fill=tk.BOTH, expand=True)
+            info_frame = ttk.LabelFrame(self._paned_window, text="Selected Vertex Info", padding=5)
+            self._paned_window.add(info_frame)
+            info_inner = ttk.Frame(info_frame)
+            info_inner.pack(fill=tk.BOTH, expand=True)
+            btn_frame = ttk.Frame(info_inner)
+            btn_frame.pack(side=tk.TOP, fill=tk.X, pady=2)
+            self._re_execute_btn = ttk.Button(btn_frame, text="Re-execute Vertex Shader", command=self._on_re_execute_vertex, state=tk.DISABLED)
+            self._re_execute_btn.pack(side=tk.LEFT, padx=2)
+            ttk.Button(btn_frame, text="Clear Log", command=self._on_clear_shader_log).pack(side=tk.LEFT, padx=2)
+            self._vertex_info_panel = tk.Canvas(info_inner, bg="#1a1a2e", width=300, height=350, highlightthickness=0)
+            self._vertex_info_panel.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+            log_label_frame = ttk.LabelFrame(info_inner, text="Vertex Shader Execution Log", padding=2)
+            log_label_frame.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True, pady=(2, 0))
+            log_scroll = ttk.Scrollbar(log_label_frame)
+            log_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+            self._vertex_shader_log_text = tk.Text(log_label_frame, bg="#0d0d1a", fg="#00ff00", font=("Consolas", 8), height=8, wrap=tk.WORD, yscrollcommand=log_scroll.set)
+            self._vertex_shader_log_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+            log_scroll.config(command=self._vertex_shader_log_text.yview)
+            self._bind_canvas_events()
+
+        elif layout == "stacked":
+            self._paned_window.delete(0, tk.END)
+            left_paned = ttk.PanedWindow(self._paned_window, orient=tk.VERTICAL)
+            self._paned_window.add(left_paned)
+            input_frame = ttk.LabelFrame(left_paned, text="Input Vertices", padding=5)
+            left_paned.add(input_frame)
+            self._input_canvas = tk.Canvas(input_frame, bg="#1a1a2e", width=500, height=520)
+            self._input_canvas.pack(fill=tk.BOTH, expand=True)
+            output_frame = ttk.LabelFrame(left_paned, text="Output (VS Result)", padding=5)
+            left_paned.add(output_frame)
+            self._output_canvas = tk.Canvas(output_frame, bg="#1a1a2e", width=500, height=520)
+            self._output_canvas.pack(fill=tk.BOTH, expand=True)
+            right_paned = ttk.PanedWindow(self._paned_window, orient=tk.VERTICAL)
+            self._paned_window.add(right_paned)
+            info_frame = ttk.LabelFrame(right_paned, text="Selected Vertex Info", padding=5)
+            right_paned.add(info_frame)
+            info_inner = ttk.Frame(info_frame)
+            info_inner.pack(fill=tk.BOTH, expand=True)
+            btn_frame = ttk.Frame(info_inner)
+            btn_frame.pack(side=tk.TOP, fill=tk.X, pady=2)
+            self._re_execute_btn = ttk.Button(btn_frame, text="Re-execute Vertex Shader", command=self._on_re_execute_vertex, state=tk.DISABLED)
+            self._re_execute_btn.pack(side=tk.LEFT, padx=2)
+            ttk.Button(btn_frame, text="Clear Log", command=self._on_clear_shader_log).pack(side=tk.LEFT, padx=2)
+            self._vertex_info_panel = tk.Canvas(info_inner, bg="#1a1a2e", width=300, height=350, highlightthickness=0)
+            self._vertex_info_panel.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+            log_label_frame = ttk.LabelFrame(right_paned, text="Vertex Shader Execution Log", padding=2)
+            right_paned.add(log_label_frame)
+            log_scroll = ttk.Scrollbar(log_label_frame)
+            log_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+            self._vertex_shader_log_text = tk.Text(log_label_frame, bg="#0d0d1a", fg="#00ff00", font=("Consolas", 8), height=8, wrap=tk.WORD, yscrollcommand=log_scroll.set)
+            self._vertex_shader_log_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+            log_scroll.config(command=self._vertex_shader_log_text.yview)
+            self._bind_canvas_events()
+
+        elif layout == "info-left":
+            self._paned_window.delete(0, tk.END)
+            left_paned = ttk.PanedWindow(self._paned_window, orient=tk.VERTICAL)
+            self._paned_window.add(left_paned)
+            info_frame = ttk.LabelFrame(left_paned, text="Selected Vertex Info", padding=5)
+            left_paned.add(info_frame)
+            info_inner = ttk.Frame(info_frame)
+            info_inner.pack(fill=tk.BOTH, expand=True)
+            btn_frame = ttk.Frame(info_inner)
+            btn_frame.pack(side=tk.TOP, fill=tk.X, pady=2)
+            self._re_execute_btn = ttk.Button(btn_frame, text="Re-execute Vertex Shader", command=self._on_re_execute_vertex, state=tk.DISABLED)
+            self._re_execute_btn.pack(side=tk.LEFT, padx=2)
+            ttk.Button(btn_frame, text="Clear Log", command=self._on_clear_shader_log).pack(side=tk.LEFT, padx=2)
+            self._vertex_info_panel = tk.Canvas(info_inner, bg="#1a1a2e", width=300, height=350, highlightthickness=0)
+            self._vertex_info_panel.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+            log_label_frame = ttk.LabelFrame(left_paned, text="Vertex Shader Execution Log", padding=2)
+            left_paned.add(log_label_frame)
+            log_scroll = ttk.Scrollbar(log_label_frame)
+            log_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+            self._vertex_shader_log_text = tk.Text(log_label_frame, bg="#0d0d1a", fg="#00ff00", font=("Consolas", 8), height=8, wrap=tk.WORD, yscrollcommand=log_scroll.set)
+            self._vertex_shader_log_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+            log_scroll.config(command=self._vertex_shader_log_text.yview)
+            right_paned = ttk.PanedWindow(self._paned_window, orient=tk.VERTICAL)
+            self._paned_window.add(right_paned)
+            input_frame = ttk.LabelFrame(right_paned, text="Input Vertices", padding=5)
+            right_paned.add(input_frame)
+            self._input_canvas = tk.Canvas(input_frame, bg="#1a1a2e", width=500, height=520)
+            self._input_canvas.pack(fill=tk.BOTH, expand=True)
+            output_frame = ttk.LabelFrame(right_paned, text="Output (VS Result)", padding=5)
+            right_paned.add(output_frame)
+            self._output_canvas = tk.Canvas(output_frame, bg="#1a1a2e", width=500, height=520)
+            self._output_canvas.pack(fill=tk.BOTH, expand=True)
+            self._bind_canvas_events()
+
+    def _bind_canvas_events(self):
+        """绑定画布事件"""
+        self._input_canvas.bind("<Button-1>", lambda e: self._on_mouse_drag_input(e))
+        self._input_canvas.bind("<B1-Motion>", lambda e: self._on_mouse_drag_input(e))
+        self._input_canvas.bind("<ButtonRelease-1>", lambda e: self._on_mouse_release(e))
+        self._input_canvas.bind("<MouseWheel>", lambda e: self._on_mouse_wheel_input(e))
+        self._input_canvas.bind("<Button-3>", lambda e: self._on_right_click_input(e))
+        self._output_canvas.bind("<Button-1>", lambda e: self._on_mouse_drag_output(e))
+        self._output_canvas.bind("<B1-Motion>", lambda e: self._on_mouse_drag_output(e))
+        self._output_canvas.bind("<ButtonRelease-1>", lambda e: self._on_mouse_release(e))
+        self._output_canvas.bind("<MouseWheel>", lambda e: self._on_mouse_wheel_output(e))
+        self._output_canvas.bind("<Button-3>", lambda e: self._on_right_click_output(e))
 
     def _zoom_in(self):
         """放大当前活动视图"""

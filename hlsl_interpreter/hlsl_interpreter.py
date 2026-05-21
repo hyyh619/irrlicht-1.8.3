@@ -1705,6 +1705,7 @@ class HLSLInterpreter:
         """
         if code is None:
             code = self.hlsl_code
+        self._last_executeVS_code = code
         input_struct = self.structs.get(vs_input)
         if not input_struct:
             self.log_output(f"Cannot find vs input: {vs_input}\n")
@@ -2095,6 +2096,38 @@ class HLSLInterpreter:
             self.log_output("Comparison FAILED: Some output data does not match golden data")
 
         return all_match
+
+    def get_cbuffer_data(self):
+        """
+        Get all cbuffer definitions and their data
+        Returns: dict of cbuffer_name -> {fields: [{name, field_type, data}, ...]}
+        """
+        result = {}
+        for cb_name, cb_def in self.cbuffers.items():
+            if isinstance(cb_def, CbufferDefinition):
+                fields_data = []
+                for field in cb_def.fields:
+                    fields_data.append({
+                        'name': field.name,
+                        'field_type': field.field_type,
+                        'data': field.data
+                    })
+                result[cb_name] = {'fields': fields_data}
+        return result
+
+    def get_hlsl_code(self):
+        """
+        Get the current HLSL code
+        Returns: str - the HLSL code
+        """
+        return self.hlsl_code
+
+    def get_last_executeVS_code(self):
+        """
+        Get the last code used in executeVS
+        Returns: str - the last code passed to executeVS, or None
+        """
+        return getattr(self, '_last_executeVS_code', None)
 
 
 def main():
