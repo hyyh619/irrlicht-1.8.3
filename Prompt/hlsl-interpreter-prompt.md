@@ -1170,7 +1170,7 @@ RuntimeError: Calling Tcl from different apartment
 
 
 # 63
-Git commit: 
+Git commit: hlsl-inter: move MeshView UI to a separate thread. by MiniMax-M2.7.
 请创建一个单独的线程用于运行MeshView，使得MeshView的显示不阻挡主线程的执行
 1. tk.Tk() 在这个线程创建
 2. self._root.mainloop()也在这个线程里面运行
@@ -1178,6 +1178,20 @@ Git commit:
 
 # 64
 Git commit: 
+hlsl_interpreter.py退出时，遇到下面错误，请修复
+Exception has occurred: RuntimeError
+main thread is not in main loop
+  File "C:\Development\Graphics\irrlicht-1.8.3\hlsl_interpreter\mesh_view.py", line 997, in close
+    self._root.after(0, _close)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Development\Graphics\irrlicht-1.8.3\hlsl_interpreter\hlsl_interpreter.py", line 2237, in main
+    interpreter._mesh_view.close()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Development\Graphics\irrlicht-1.8.3\hlsl_interpreter\hlsl_interpreter.py", line 2277, in <module>
+    main()
+    ~~~~^^
+RuntimeError: main thread is not in main loop
+
 
 
 # 65

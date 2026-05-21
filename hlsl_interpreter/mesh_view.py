@@ -80,6 +80,7 @@ class MeshView:
         self._active_view_var = None
         self._load_animation_config()
         self._gui_thread = None
+        self._gui_thread_alive = True
         self._gui_ready_event = threading.Event()
         self._start_gui_thread()
 
@@ -982,10 +983,14 @@ class MeshView:
         """关闭窗口"""
         self._running = False
         if self._animation_job:
-            self._root.after_cancel(self._animation_job)
+            if self._root:
+                try:
+                    self._root.after_cancel(self._animation_job)
+                except:
+                    pass
             self._animation_job = None
         if self._root:
-            def _close():
+            def _do_close():
                 try:
                     self._root.quit()
                     self._root.destroy()
@@ -994,4 +999,10 @@ class MeshView:
                 self._root = None
                 self._input_canvas = None
                 self._output_canvas = None
-            self._root.after(0, _close)
+            try:
+                self._root.after(0, _do_close)
+            except RuntimeError:
+                self._gui_thread_alive = False
+                self._root = None
+                self._input_canvas = None
+                self._output_canvas = None
