@@ -1282,7 +1282,7 @@ Git commit: hlsl-inter: update the commit information.
 
 
 # 72
-Git commit: 
+Git commit: hlsl-inter: update docs/HLSL_Interpreter_Development.md by MiniMax-M2.7.
 Review hlsl-inter的有效提交(有效提交是指包含源代码的提交)，根据review的信息，重写hlsl解释器的开发文档，新的开发文档覆盖docs/HLSL_Interpreter_Development.md的内容
 
 
