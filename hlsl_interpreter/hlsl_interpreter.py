@@ -2161,6 +2161,9 @@ def main():
     interpreter.interpret(hlsl_file_path, csv_folder_path)
     interpret_time = time.time() - interpret_start
 
+    if mesh_view_enabled and interpreter._mesh_view:
+        interpreter._mesh_view.set_hlsl_interpreter(interpreter, "main", "VS_INPUT")
+
     golden_csv_path = os.path.join(csv_folder_path, 'VS_OUTPUT.csv') if csv_folder_path else None
     load_golden_start = time.time()
     if golden_csv_path and os.path.exists(golden_csv_path):

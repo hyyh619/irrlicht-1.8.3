@@ -1205,7 +1205,9 @@ MeshView下面的状态栏显示了input顶点数量，output顶点数量，topo
 
 
 # 66
-Git commit: 
+Git commit: hlsl-inter: support vertex pick from input and result windows. by MiniMax-M2.7.
+hy: the full function added by MiniMax-M2.7. It passed test after first coding by MiniMax-M2.7.
+
 MeshView能够提供一个选中某个顶点的功能，
 1. 用户可以在input窗口或者result窗口选择任意的一个顶点
 2. 无论是选择的input顶点，还是result顶点，都在vertex_pool中找到对应的vertex对象
@@ -1214,7 +1216,11 @@ MeshView能够提供一个选中某个顶点的功能，
 
 # 67
 Git commit: 
-
+MeshView的selected vertex info窗口增加以下功能
+1. selected vertex info窗口除了显示当前被选中的顶点外，同时显示该顶点执行的vertex shader语句
+2. 增加一个执行顶点按钮，针对选中的顶点，重新执行HLSLInterpreter的execute_main_function
+3. 重新执行execute_main_function时，临时打开printSyntaxTree和print_sequence保证HLSL在解释执行时所有的输出都打印出来
+4. 重新执行execute_main_function生成的打印都显示到selected vertex info窗口
 
 # 68
 Git commit: 

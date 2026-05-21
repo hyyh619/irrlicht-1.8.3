@@ -87,6 +87,12 @@ class MeshView:
         self._vertex_info_panel = None
         self._input_vertex_projections = []
         self._output_vertex_projections = []
+        self._hlsl_interpreter = None
+        self._hlsl_main_func = "main"
+        self._hlsl_input_struct = "VS_INPUT"
+        self._re_execute_btn = None
+        self._vertex_shader_log = []
+        self._vertex_shader_log_text = None
         self._start_gui_thread()
 
     @property
@@ -197,8 +203,26 @@ class MeshView:
 
         info_frame = ttk.LabelFrame(canvas_frame, text="Selected Vertex Info", padding=5)
         info_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(5, 0))
-        self._vertex_info_panel = tk.Canvas(info_frame, bg="#1a1a2e", width=300, height=520, highlightthickness=0)
-        self._vertex_info_panel.pack(fill=tk.BOTH, expand=True)
+
+        info_inner = ttk.Frame(info_frame)
+        info_inner.pack(fill=tk.BOTH, expand=True)
+
+        btn_frame = ttk.Frame(info_inner)
+        btn_frame.pack(side=tk.TOP, fill=tk.X, pady=2)
+        self._re_execute_btn = ttk.Button(btn_frame, text="Re-execute Vertex Shader", command=self._on_re_execute_vertex, state=tk.DISABLED)
+        self._re_execute_btn.pack(side=tk.LEFT, padx=2)
+        ttk.Button(btn_frame, text="Clear Log", command=self._on_clear_shader_log).pack(side=tk.LEFT, padx=2)
+
+        self._vertex_info_panel = tk.Canvas(info_inner, bg="#1a1a2e", width=300, height=350, highlightthickness=0)
+        self._vertex_info_panel.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        log_label_frame = ttk.LabelFrame(info_inner, text="Vertex Shader Execution Log", padding=2)
+        log_label_frame.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True, pady=(2, 0))
+        log_scroll = ttk.Scrollbar(log_label_frame)
+        log_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        self._vertex_shader_log_text = tk.Text(log_label_frame, bg="#0d0d1a", fg="#00ff00", font=("Consolas", 8), height=8, wrap=tk.WORD, yscrollcommand=log_scroll.set)
+        self._vertex_shader_log_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        log_scroll.config(command=self._vertex_shader_log_text.yview)
 
         self._input_canvas.bind("<Button-1>", lambda e: self._on_mouse_drag_input(e))
         self._input_canvas.bind("<B1-Motion>", lambda e: self._on_mouse_drag_input(e))
@@ -778,6 +802,105 @@ class MeshView:
                 y_pos += line_height
         else:
             self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="gray", font=("Consolas", 9), text="No Output Vertex Selected")
+
+    def set_hlsl_interpreter(self, interpreter, main_func: str = "main", input_struct: str = "VS_INPUT"):
+        """设置HLSL解释器以支持重新执行顶点着色器"""
+        self._hlsl_interpreter = interpreter
+        self._hlsl_main_func = main_func
+        self._hlsl_input_struct = input_struct
+        if self._re_execute_btn:
+            self._re_execute_btn.config(state=tk.NORMAL)
+
+    def _on_re_execute_vertex(self):
+        """重新执行选中顶点的顶点着色器"""
+        if not self._hlsl_interpreter:
+            self._append_shader_log("Error: No HLSL Interpreter set. Call set_hlsl_interpreter() first.")
+            return
+
+        input_idx = self._selected_input_vertex_index
+        if input_idx is None or input_idx >= len(self.input_vertices):
+            self._append_shader_log("Error: No input vertex selected")
+            return
+
+        self._append_shader_log("=" * 50)
+        self._append_shader_log(f"Re-executing Vertex Shader for Input Vertex [{input_idx}]")
+        self._append_shader_log("=" * 50)
+
+        v = self.input_vertices[input_idx]
+        input_data = {
+            'POSITION': v.position,
+            'NORMAL': v.normal if v.normal else [0, 0, 1],
+            'COLOR': v.color if v.color else [1, 1, 1, 1]
+        }
+
+        old_print_syntax_tree = self._hlsl_interpreter.printSyntaxTree
+        old_print_sequence = self._hlsl_interpreter.print_sequence
+
+        self._hlsl_interpreter.printSyntaxTree = True
+        self._hlsl_interpreter.print_sequence = 1
+
+        captured_log = []
+        original_log_output = self._hlsl_interpreter.log_output
+
+        def capture_log(*args, **kwargs):
+            msg = ' '.join(str(arg) for arg in args)
+            captured_log.append(msg)
+            original_log_output(*args, **kwargs)
+
+        self._hlsl_interpreter.log_output = capture_log
+
+        try:
+            result = self._hlsl_interpreter.execute_main_function(
+                self._hlsl_interpreter.hlsl_code,
+                self._hlsl_main_func,
+                self._hlsl_input_struct,
+                input_idx,
+                input_data
+            )
+
+            for line in captured_log:
+                self._append_shader_log(line)
+
+            self._append_shader_log("")
+            self._append_shader_log("=== OUTPUT RESULT ===")
+            if result:
+                for key, value in result.items():
+                    if isinstance(value, list):
+                        if len(value) == 4:
+                            self._append_shader_log(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}, {value[3]:.4f}]")
+                        elif len(value) == 3:
+                            self._append_shader_log(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}]")
+                        else:
+                            self._append_shader_log(f"{key}: {value}")
+                    else:
+                        self._append_shader_log(f"{key}: {value}")
+            else:
+                self._append_shader_log("Result: None")
+
+        except Exception as e:
+            self._append_shader_log(f"Error during execution: {e}")
+
+        finally:
+            self._hlsl_interpreter.log_output = original_log_output
+            self._hlsl_interpreter.printSyntaxTree = old_print_syntax_tree
+            self._hlsl_interpreter.print_sequence = old_print_sequence
+
+        self._append_shader_log("=" * 50)
+        self._append_shader_log("Execution completed")
+        self._append_shader_log("=" * 50)
+
+    def _on_clear_shader_log(self):
+        """清除顶点着色器执行日志"""
+        self._vertex_shader_log = []
+        if self._vertex_shader_log_text:
+            self._vertex_shader_log_text.delete("1.0", tk.END)
+
+    def _append_shader_log(self, text: str):
+        """追加文本到顶点着色器日志"""
+        self._vertex_shader_log.append(text)
+        if self._vertex_shader_log_text:
+            self._vertex_shader_log_text.insert(tk.END, text + "\n")
+            self._vertex_shader_log_text.see(tk.END)
 
     def _on_mouse_wheel_input(self, event):
         """处理输入画布鼠标滚轮缩放"""
