@@ -1127,12 +1127,33 @@ Git commit: hlsl-inter: add a log cache to store msg and flush all cache content
 
 
 # 60
-Git commit:
-1. Review hlsl_interpreter.py的代码，看一下哪些代码可以优化执行速度
+Git commit: hlsl-inter: MiniMax-M2.7 review hlsl_interpreter.py and optimizes the code for performance.
+by MiniMax-M2.7.
+1. Review hlsl_interpreter.py的代码，看一下哪些代码可以优化执行
+
+已优化项：
+1. get_type_size() - 用字典查找替代多层if-elif chain，减少多次字符串比较
+2. parse_value_by_type() - 用handler字典分发到专用解析方法，避免重复的条件判断
+3. apply_swizzle() - 预定义_SWIZZLE_MAP类属性替代内层创建字典，移除冗余检查
+4. mul_matrix_vector() - 使用list comprehension合并循环，单行返回
+5. mul_matrix_matrix() - 使用list comprehension合并三层循环
+6. execute_unary_op() - 简化逻辑，使用条件表达式精简代码
+7. transpose_matrix() - 统一用len(m)获取矩阵维度，避免硬编码4/3分支
+8. GenerateStmts() - 移除冗余的if brace_count > 0检查（只在}时有效）
+这些优化主要通过以下方式提升性能：
+- 用字典查找替代多层if-elif（O(1) vs O(n)）
+- 用list comprehension替代显式循环（更高效的迭代）
+- 预计算静态映射表避免重复创建
+- 简化冗余条件判断
 
 
 # 61
 Git commit: 
+1. 在hlsl_interpreter.py创建一个顶点对象
+2. 顶点对象需要保存输入的顶点数据，包括坐标，颜色，法向量，纹理坐标等，所有input的内容
+3. 顶点对象需要保存经过executeVS计算后得到的输出的坐标，颜色，法向量，纹理坐标等，所有result的结果
+4. 创建一个顶点pool，根据输入顶点的顺序来保存所有顶点对象
+5. MeshView显示输入顶点和results的窗口的顶点数据从这个顶点pool来获得
 
 
 # 62

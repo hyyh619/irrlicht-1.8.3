@@ -50,6 +50,181 @@ class FieldDefinition:
     semantic: str       # 语义名称，如 POSITION, NORMAL
     data: List[Any] = None  # 字段数据值
 
+
+@dataclass
+class Vertex:
+    """顶点对象 - 保存输入和输出顶点数据"""
+    index: int = 0                          # 顶点索引（按输入顺序）
+    input_data: Dict[str, Any] = None      # 输入顶点数据（所有字段）
+    output_data: Dict[str, Any] = None     # 输出顶点数据（所有字段）
+    input_position: List[float] = None     # 输入坐标
+    input_normal: List[float] = None       # 输入法向量
+    input_color: List[float] = None        # 输入颜色
+    input_texcoord: List[float] = None    # 输入纹理坐标
+    output_position: List[float] = None    # 输出坐标
+    output_normal: List[float] = None      # 输出法向量
+    output_color: List[float] = None       # 输出颜色
+    output_texcoord: List[float] = None    # 输出纹理坐标
+
+    def __post_init__(self):
+        if self.input_data is None:
+            self.input_data = {}
+        if self.output_data is None:
+            self.output_data = {}
+
+
+class VertexPool:
+    """顶点池 - 根据输入顺序保存所有顶点对象"""
+
+    def __init__(self):
+        self.vertices: List[Vertex] = []
+        self._input_struct: Optional[StructDefinition] = None
+        self._output_struct: Optional[StructDefinition] = None
+
+    def clear(self):
+        """清空顶点池"""
+        self.vertices.clear()
+
+    def set_input_struct(self, struct: StructDefinition):
+        """设置输入结构体定义"""
+        self._input_struct = struct
+
+    def set_output_struct(self, struct: StructDefinition):
+        """设置输出结构体定义"""
+        self._output_struct = struct
+
+    def add_vertex(self, vertex: Vertex):
+        """添加顶点到池中"""
+        self.vertices.append(vertex)
+
+    def get_vertex(self, index: int) -> Optional[Vertex]:
+        """根据索引获取顶点"""
+        if 0 <= index < len(self.vertices):
+            return self.vertices[index]
+        return None
+
+    def get_input_positions(self) -> List[List[float]]:
+        """获取所有输入坐标"""
+        return [v.input_position for v in self.vertices if v.input_position]
+
+    def get_input_normals(self) -> List[List[float]]:
+        """获取所有输入法向量"""
+        return [v.input_normal for v in self.vertices if v.input_normal]
+
+    def get_input_colors(self) -> List[List[float]]:
+        """获取所有输入颜色"""
+        return [v.input_color for v in self.vertices if v.input_color]
+
+    def get_output_positions(self) -> List[List[float]]:
+        """获取所有输出坐标"""
+        return [v.output_position for v in self.vertices if v.output_position]
+
+    def get_output_normals(self) -> List[List[float]]:
+        """获取所有输出法向量"""
+        return [v.output_normal for v in self.vertices if v.output_normal]
+
+    def get_output_colors(self) -> List[List[float]]:
+        """获取所有输出颜色"""
+        return [v.output_color for v in self.vertices if v.output_color]
+
+    def build_from_input(self, vs_input: str, input_data: Dict[str, Any], row_index: int):
+        """
+        根据输入数据构建顶点
+        vs_input: 输入结构体名
+        input_data: 输入数据字典
+        row_index: 行索引
+        """
+        input_struct = self._input_struct
+        if not input_struct:
+            return
+
+        vertex = Vertex(index=row_index, input_data=dict(input_data))
+
+        for field in input_struct.fields:
+            field_name_lower = field.name.lower()
+            field_semantic_upper = field.semantic.upper()
+            value = input_data.get(field.name)
+
+            if value is None:
+                continue
+
+            if 'pos' in field_name_lower or 'position' in field_name_lower or field_semantic_upper == 'POSITION':
+                if isinstance(value, list) and len(value) >= 3:
+                    vertex.input_position = value[:3]
+            elif 'normal' in field_name_lower or field_semantic_upper == 'NORMAL':
+                if isinstance(value, list) and len(value) >= 3:
+                    vertex.input_normal = value[:3]
+            elif 'color' in field_name_lower or field_semantic_upper == 'COLOR':
+                if isinstance(value, list) and len(value) >= 4:
+                    vertex.input_color = value[:4]
+                elif isinstance(value, list) and len(value) >= 3:
+                    vertex.input_color = value[:3] + [1.0]
+            elif 'texcoord' in field_name_lower or 'uv' in field_name_lower or field_semantic_upper == 'TEXCOORD':
+                if isinstance(value, list):
+                    vertex.input_texcoord = value[:2] if len(value) >= 2 else value
+
+        self.add_vertex(vertex)
+
+    def update_output(self, row_index: int, result: Dict[str, Any]):
+        """
+        更新顶点的输出数据
+        row_index: 行索引
+        result: 输出结果字典
+        """
+        if row_index >= len(self.vertices):
+            return
+
+        vertex = self.vertices[row_index]
+        vertex.output_data = dict(result) if result else {}
+
+        output_struct = self._output_struct
+        if not output_struct:
+            for key, value in result.items() if result else {}.items():
+                key_lower = key.lower()
+                if 'pos' in key_lower or 'position' in key_lower or key.upper() == 'SV_POSITION':
+                    if isinstance(value, list) and len(value) >= 3:
+                        vertex.output_position = value[:3]
+                elif 'normal' in key_lower:
+                    if isinstance(value, list) and len(value) >= 3:
+                        vertex.output_normal = value[:3]
+                elif 'color' in key_lower:
+                    if isinstance(value, list) and len(value) >= 4:
+                        vertex.output_color = value[:4]
+                    elif isinstance(value, list) and len(value) >= 3:
+                        vertex.output_color = value[:3] + [1.0]
+                elif 'texcoord' in key_lower or 'uv' in key_lower:
+                    if isinstance(value, list):
+                        vertex.output_texcoord = value[:2] if len(value) >= 2 else value
+            return
+
+        for field in output_struct.fields:
+            field_name_lower = field.name.lower()
+            field_semantic_upper = field.semantic.upper()
+            value = result.get(field.name) if result else None
+
+            if value is None:
+                continue
+
+            if 'pos' in field_name_lower or 'position' in field_name_lower or field_semantic_upper == 'POSITION' or field_semantic_upper == 'SV_POSITION':
+                if isinstance(value, list) and len(value) >= 3:
+                    vertex.output_position = value[:3]
+            elif 'normal' in field_name_lower or field_semantic_upper == 'NORMAL':
+                if isinstance(value, list) and len(value) >= 3:
+                    vertex.output_normal = value[:3]
+            elif 'color' in field_name_lower or field_semantic_upper == 'COLOR':
+                if isinstance(value, list) and len(value) >= 4:
+                    vertex.output_color = value[:4]
+                elif isinstance(value, list) and len(value) >= 3:
+                    vertex.output_color = value[:3] + [1.0]
+            elif 'texcoord' in field_name_lower or 'uv' in field_name_lower or field_semantic_upper == 'TEXCOORD':
+                if isinstance(value, list):
+                    vertex.output_texcoord = value[:2] if len(value) >= 2 else value
+
+    def get_count(self) -> int:
+        """获取顶点数量"""
+        return len(self.vertices)
+
+
 @dataclass
 class StructDefinition:
     """HLSL结构体定义"""
@@ -99,6 +274,7 @@ class HLSLInterpreter:
         self.primitive_topology = primitive_topology         # 图元拓扑类型
         self._mesh_view = None                               # MeshView实例(用于显示输入和输出)
         self._mesh_view_enabled = False                      # 是否启用MeshView
+        self.vertex_pool = VertexPool()                       # 顶点池
         self._log_cache = []                                 # 日志缓存
         self._log_cache_size = log_cache_size                # 日志缓存大小(字节)
         self._log_cache_bytes = 0                            # 当前缓存已用字节数
@@ -173,14 +349,15 @@ class HLSLInterpreter:
             self.log_output(f"Cannot find vs input struct: {vs_input}")
             return
 
-        positions = []
-        normals = []
-        colors = []
+        positions = self.vertex_pool.get_input_positions()
+        normals = self.vertex_pool.get_input_normals()
+        colors = self.vertex_pool.get_input_colors()
 
-        num_rows = 0
-        for field in input_struct.fields:
-            if field.data:
-                num_rows = max(num_rows, len(field.data))
+        if not positions:
+            self.log_output(f"No input vertices in vertex pool")
+            return
+
+        num_rows = len(positions)
 
         if row_index is not None:
             num_rows = min(row_index + 1, num_rows)
@@ -190,29 +367,14 @@ class HLSLInterpreter:
             row_start = 0
             row_end = num_rows
 
-        for field in input_struct.fields:
-            if not field.data:
-                continue
-            if 'pos' in field.name.lower() or 'position' in field.name.lower() or field.semantic.upper() == 'POSITION':
-                for i in range(row_start, min(row_end, len(field.data))):
-                    pos = field.data[i]
-                    if isinstance(pos, list) and len(pos) >= 3:
-                        positions.append(pos[:3])
-            elif 'normal' in field.name.lower() or field.semantic.upper() == 'NORMAL':
-                for i in range(row_start, min(row_end, len(field.data))):
-                    norm = field.data[i]
-                    if isinstance(norm, list) and len(norm) >= 3:
-                        normals.append(norm[:3])
-            elif 'color' in field.name.lower() or field.semantic.upper() == 'COLOR':
-                for i in range(row_start, min(row_end, len(field.data))):
-                    col = field.data[i]
-                    if isinstance(col, list) and len(col) >= 4:
-                        colors.append(col[:4])
+        positions = positions[row_start:row_end]
+        normals = normals[row_start:row_end] if normals and len(normals) >= row_end else None
+        colors = colors[row_start:row_end] if colors and len(colors) >= row_end else None
 
         if positions:
             self._mesh_view.clear()
             self._mesh_view.set_primitive_topology(self.primitive_topology)
-            self._mesh_view.set_input_data(positions, normals if normals else None, colors if colors else None)
+            self._mesh_view.set_input_data(positions, normals, colors)
             self._mesh_view.show(blocking=False)
         else:
             self.log_output(f"No position data found in {vs_input}")
@@ -226,37 +388,15 @@ class HLSLInterpreter:
         if not self._mesh_view_enabled or not MESHVIEW_AVAILABLE:
             return
 
-        if not results:
-            self.log_output("No results to display in result mesh view")
+        positions = self.vertex_pool.get_output_positions()
+        normals = self.vertex_pool.get_output_normals()
+        colors = self.vertex_pool.get_output_colors()
+
+        if not positions:
+            self.log_output("No output vertices in vertex pool")
             return
 
-        positions = []
-        normals = []
-        colors = []
-
-        # not pos keywords
-        notPosWords = ['worldpos']
-
-        for result in results:
-            if not result:
-                continue
-            for key, value in result.items():
-                key_lower = key.lower()
-                if 'pos' in key_lower or 'position' in key_lower or key.upper() == 'SV_POSITION':
-                    if key_lower in notPosWords:
-                        continue
-
-                    if isinstance(value, list) and len(value) >= 3:
-                        positions.append(value[:3])
-                elif 'normal' in key_lower:
-                    if isinstance(value, list) and len(value) >= 3:
-                        normals.append(value[:3])
-                elif 'color' in key_lower:
-                    if isinstance(value, list) and len(value) >= 4:
-                        colors.append(value[:4])
-
         if positions:
-            # self._mesh_view.clear()
             self._mesh_view.set_primitive_topology(self.primitive_topology)
             self._mesh_view.set_output_data(positions, normals if normals else None, colors if colors else None)
             self._mesh_view.show(blocking=False)
@@ -1570,6 +1710,18 @@ class HLSLInterpreter:
             self.log_output(f"Cannot find vs input: {vs_input}\n")
             return None
 
+        output_struct_name = None
+        func_signature_pattern = r'(\w+)\s+' + re.escape(main_func) + r'\s*\(\s*(\w+)\s+input\s*\)'
+        func_signature_match = re.search(func_signature_pattern, code)
+        if func_signature_match:
+            output_struct_name = func_signature_match.group(1)
+
+        output_struct = self.structs.get(output_struct_name) if output_struct_name else None
+
+        self.vertex_pool.clear()
+        self.vertex_pool.set_input_struct(input_struct)
+        self.vertex_pool.set_output_struct(output_struct)
+
         # clear eval counter
         self._eval_counter = 0
 
@@ -1586,7 +1738,9 @@ class HLSLInterpreter:
                 for field in input_struct.fields:
                     if field.data and row_index < len(field.data):
                         data[field.name] = field.data[row_index]
+                self.vertex_pool.build_from_input(vs_input, data, row_index)
                 result = self.execute_main_function(code, main_func, vs_input, row_index, data)
+                self.vertex_pool.update_output(row_index, result)
                 return row_index, result
 
             print(f"Run thread workers")
@@ -1604,7 +1758,9 @@ class HLSLInterpreter:
                 for field in input_struct.fields:
                     if field.data and row_index < len(field.data):
                         data[field.name] = field.data[row_index]
+                self.vertex_pool.build_from_input(vs_input, data, row_index)
                 result = self.execute_main_function(code, main_func, vs_input, row_index, data)
+                self.vertex_pool.update_output(row_index, result)
                 results.append(result)
 
         return results
@@ -2011,13 +2167,13 @@ def main():
         interpreter.load_vs_output_golden_from_csv(golden_csv_path)
     load_golden_time = time.time() - load_golden_start
 
-    if mesh_view_enabled:
-        interpreter.log_output("Displaying input mesh before executeVS...")
-        interpreter.show_input_mesh("VS_INPUT")
-
     execute_start = time.time()
     results = interpreter.executeVS("main", "VS_INPUT", execute_count=execute_count)
     execute_time = time.time() - execute_start
+
+    if mesh_view_enabled:
+        interpreter.log_output("Displaying input mesh before executeVS...")
+        interpreter.show_input_mesh("VS_INPUT")
 
     if mesh_view_enabled and results:
         interpreter.log_output("Displaying result mesh after executeVS...")
