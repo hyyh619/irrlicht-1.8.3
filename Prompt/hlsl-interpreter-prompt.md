@@ -1288,6 +1288,7 @@ Review hlsl-inter的有效提交(有效提交是指包含源代码的提交)，�
 
 # 73
 Git commit: 
+选择了顶点后，Re-execute Vertex Shader按钮是灰色，无法点击重新运行选择的顶点
 
 
 # 74

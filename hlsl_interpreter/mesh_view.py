@@ -802,9 +802,15 @@ class MeshView:
                 y_pos += line_height
 
             y_pos += line_height
+
+            if self._re_execute_btn:
+                self._re_execute_btn.config(state=tk.NORMAL)
         else:
             self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="gray", font=("Consolas", font_size - 1), text="No Input Vertex Selected")
             y_pos += line_height * 2
+
+            if self._re_execute_btn:
+                self._re_execute_btn.config(state=tk.DISABLED)
 
         if output_idx is not None and output_idx < len(self.output_vertices):
             v = self.output_vertices[output_idx]
