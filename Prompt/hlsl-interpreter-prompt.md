@@ -1240,7 +1240,7 @@ Git commit: hlsl-inter: add font size adjustment and scrollbar for information a
 
 
 # 70
-Git commit:
+Git commit: hlsl-inter: fix "_tkinter.TclError: unknown option "-font"" error by MiniMax-M2.7.
 修复mesh_view.py的下列问题
 Traceback (most recent call last):
   File "c:\Python314\Lib\tkinter\__init__.py", line 2082, in __call__
@@ -1276,6 +1276,9 @@ _tkinter.TclError: unknown option "-font"
 
 # 71
 Git commit: 
+1. 帮我统计一下git提交eaf611daf4fe179564a844b75fedb3140d7843f1到f0f5f722b2b908e802794e4baf4067d01626ca05之间一共有多少提交，其中hlsl-inter是多少，如果提交里只有.md文件，没有源代码文件，那么跳过该次统计
+2. 请根据以上统计出来的提交，帮我更新docs/HLSL_Interpreter_Development.md文档
+3. 根据hlsl-inter的有效提交(包含源代码的提交)，更新docs/HLSL_Interpreter_Development.md的内容
 
 
 # 72
@@ -1299,4 +1302,44 @@ Git commit:
 
 
 # 77
+Git commit: 
+
+
+# 78
+Git commit: 
+
+
+# 79
+Git commit: 
+
+
+# 80
+Git commit: 
+
+
+# 81
+Git commit: 
+
+
+# 82
+Git commit: 
+
+
+# 83
+Git commit: 
+
+
+# 84
+Git commit: 
+
+
+# 85
+Git commit: 
+
+
+# 86
+Git commit: 
+
+
+# 87
 Git commit: 

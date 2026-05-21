@@ -5,7 +5,9 @@
 This document describes the development history and technical details of the HLSL Interpreter - a Python-based tool that parses and executes HLSL (High-Level Shading Language) vertex shader code for debugging and validation purposes in the Irrlicht Engine D3D11 driver development.
 
 **Development Timeline**: 49 implementation sessions (April-May 2026)
-**Total Commits**: 87 (skipping 46 pure documentation commits)
+**Total Commits (all projects)**: 301 (from eaf611da to f0f5f72)
+**hlsl-inter Commits**: 120 (from commits with "hlsl-inter:" prefix)
+**hlsl-inter Effective Commits**: 107 (excluding commits with only .md files)
 **Main Files**: `hlsl_interpreter.py` (~2452 lines), `mesh_view.py` (~883 lines)
 
 ---
