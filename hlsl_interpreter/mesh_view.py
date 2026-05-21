@@ -79,6 +79,9 @@ class MeshView:
         self._normals_var = None
         self._active_view_var = None
         self._load_animation_config()
+        self._gui_thread = None
+        self._gui_ready_event = threading.Event()
+        self._start_gui_thread()
 
     @property
     def vertices(self):
@@ -101,6 +104,106 @@ class MeshView:
                 self._animation_interval = 100
         else:
             self._animation_interval = 100
+
+    def _start_gui_thread(self):
+        """启动单独的GUI线程"""
+        self._gui_thread = threading.Thread(target=self._gui_thread_run, daemon=True)
+        self._gui_thread.start()
+
+    def _gui_thread_run(self):
+        """在单独线程中运行tkinter主循环"""
+        self._root = tk.Tk()
+        self._root.title(self.title)
+        self._root.geometry("1400x700")
+        self._setup_ui()
+        self._gui_ready_event.set()
+        self._root.mainloop()
+
+    def _setup_ui(self):
+        """设置UI组件（在GUI线程中调用）"""
+        self._active_view_var = tk.BooleanVar(value=True)
+
+        main_frame = ttk.Frame(self._root)
+        main_frame.pack(fill=tk.BOTH, expand=True)
+
+        controls_frame = ttk.Frame(main_frame)
+        controls_frame.pack(side=tk.TOP, fill=tk.X, pady=2)
+
+        ttk.Label(controls_frame, text="Active:").pack(side=tk.LEFT, padx=2)
+        ttk.Radiobutton(controls_frame, text="Input", variable=self._active_view_var, value=True).pack(side=tk.LEFT, padx=2)
+        ttk.Radiobutton(controls_frame, text="Output", variable=self._active_view_var, value=False).pack(side=tk.LEFT, padx=2)
+
+        ttk.Separator(controls_frame, orient=tk.VERTICAL).pack(side=tk.LEFT, fill=tk.Y, padx=5)
+
+        ttk.Label(controls_frame, text="Zoom:").pack(side=tk.LEFT, padx=2)
+        ttk.Button(controls_frame, text="+", width=3, command=self._zoom_in).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="-", width=3, command=self._zoom_out).pack(side=tk.LEFT, padx=1)
+
+        ttk.Label(controls_frame, text="Rotate:").pack(side=tk.LEFT, padx=5)
+        ttk.Button(controls_frame, text="↺", width=3, command=self._rotate_ccw).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="↻", width=3, command=self._rotate_cw).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="↑", width=3, command=self._rotate_up).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="↓", width=3, command=self._rotate_down).pack(side=tk.LEFT, padx=1)
+
+        ttk.Label(controls_frame, text="Pan:").pack(side=tk.LEFT, padx=5)
+        ttk.Button(controls_frame, text="◀", width=3, command=self._pan_left).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="▶", width=3, command=self._pan_right).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="▲", width=3, command=self._pan_up).pack(side=tk.LEFT, padx=1)
+        ttk.Button(controls_frame, text="▼", width=3, command=self._pan_down).pack(side=tk.LEFT, padx=1)
+
+        ttk.Button(controls_frame, text="Reset", command=self._reset_view).pack(side=tk.LEFT, padx=5)
+
+        self._normals_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(controls_frame, text="Show Normals", variable=self._normals_var,
+                        command=self._toggle_normals).pack(side=tk.LEFT, padx=5)
+
+        anim_frame = ttk.Frame(controls_frame)
+        anim_frame.pack(side=tk.LEFT, padx=10)
+        ttk.Label(anim_frame, text="Animation:").pack(side=tk.LEFT, padx=2)
+        self._play_btn = ttk.Button(anim_frame, text="Play", width=5, command=self._play_animation)
+        self._play_btn.pack(side=tk.LEFT, padx=1)
+        self._pause_btn = ttk.Button(anim_frame, text="Pause", width=5, command=self._pause_animation, state=tk.DISABLED)
+        self._pause_btn.pack(side=tk.LEFT, padx=1)
+        self._prev_btn = ttk.Button(anim_frame, text="Prev", width=5, command=self._prev_step, state=tk.DISABLED)
+        self._prev_btn.pack(side=tk.LEFT, padx=1)
+        self._next_btn = ttk.Button(anim_frame, text="Next", width=5, command=self._next_step, state=tk.DISABLED)
+        self._next_btn.pack(side=tk.LEFT, padx=1)
+        self._step_label = ttk.Label(anim_frame, text="Step: 0/0", width=12)
+        self._step_label.pack(side=tk.LEFT, padx=5)
+
+        ttk.Button(controls_frame, text="Close", command=self.hide).pack(side=tk.RIGHT, padx=5)
+
+        canvas_frame = ttk.Frame(main_frame)
+        canvas_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=2)
+
+        input_frame = ttk.LabelFrame(canvas_frame, text="Input Vertices", padding=5)
+        input_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
+        self._input_canvas = tk.Canvas(input_frame, bg="#1a1a2e", width=600, height=520)
+        self._input_canvas.pack(fill=tk.BOTH, expand=True)
+
+        output_frame = ttk.LabelFrame(canvas_frame, text="Output (VS Result)", padding=5)
+        output_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(5, 0))
+        self._output_canvas = tk.Canvas(output_frame, bg="#1a1a2e", width=600, height=520)
+        self._output_canvas.pack(fill=tk.BOTH, expand=True)
+
+        self._input_canvas.bind("<Button-1>", lambda e: self._on_mouse_drag_input(e))
+        self._input_canvas.bind("<B1-Motion>", lambda e: self._on_mouse_drag_input(e))
+        self._input_canvas.bind("<ButtonRelease-1>", lambda e: self._on_mouse_release(e))
+        self._input_canvas.bind("<MouseWheel>", lambda e: self._on_mouse_wheel_input(e))
+
+        self._output_canvas.bind("<Button-1>", lambda e: self._on_mouse_drag_output(e))
+        self._output_canvas.bind("<B1-Motion>", lambda e: self._on_mouse_drag_output(e))
+        self._output_canvas.bind("<ButtonRelease-1>", lambda e: self._on_mouse_release(e))
+        self._output_canvas.bind("<MouseWheel>", lambda e: self._on_mouse_wheel_output(e))
+
+        self._root.bind("<Configure>", lambda e: self._on_resize(e))
+
+        self._info_label = ttk.Label(main_frame, text="Input: 0 vertices | Output: 0 vertices | Topology: None", font=("Consolas", 10))
+        self._info_label.pack(side=tk.BOTTOM, fill=tk.X, pady=2)
+
+        self._draw_mesh()
+        self._update_step_label()
+        self._running = True
 
     def set_vertices(self, vertices: List[VertexData]):
         """设置顶点数据（输入顶点）"""
@@ -130,7 +233,7 @@ class MeshView:
         self._current_index = 0
         self._is_playing = False
         self._is_paused = False
-        if self._animation_job:
+        if self._animation_job and self._root:
             self._root.after_cancel(self._animation_job)
             self._animation_job = None
         self._update_button_states()
@@ -725,6 +828,8 @@ class MeshView:
         """执行动画单步"""
         if not self._is_playing or self._is_paused:
             return
+        if not self._root:
+            return
         max_index = max(len(self.input_vertices), len(self.output_vertices)) - 1
         if self._current_index < max_index:
             self._current_index += 1
@@ -756,17 +861,21 @@ class MeshView:
     def show(self, blocking: bool = False):
         """
         显示MeshView窗口（双窗口：左侧输入，右侧输出）
-        blocking: 如果为True，则阻塞直到窗口关闭
+        blocking: 如果为True，则阻塞直到窗口关闭（已废弃，仅为兼容）
         """
-        if self._root is not None:
+        if self._root is None:
+            self._gui_ready_event.wait()
+        if self._root:
             self._root.deiconify()
-            return
+            self._schedule_draw()
 
-        self._root = tk.Tk()
-        self._root.title(self.title)
-        self._root.geometry("1400x700")
+    def _schedule_draw(self):
+        """在主线程中调度绘制"""
+        if self._root:
+            self._root.after(0, self._draw_mesh)
 
-        self._active_view_var = tk.BooleanVar(value=True)
+    def _create_ui(self):
+        """创建UI组件（在GUI线程中调用）"""
 
         main_frame = ttk.Frame(self._root)
         main_frame.pack(fill=tk.BOTH, expand=True)
@@ -850,17 +959,20 @@ class MeshView:
         self._update_step_label()
         self._running = True
 
-        self._root.mainloop()
-
     def hide(self):
         """隐藏窗口"""
         if self._root:
             self._root.withdraw()
 
     def update(self):
-        """更新显示"""
+        """更新显示（在GUI线程中执行）"""
         if self._root and self._running:
-            self._draw_mesh()
+            self._root.after(0, self._draw_mesh)
+
+    def _schedule_draw(self):
+        """在主线程中调度绘制"""
+        if self._root:
+            self._root.after(0, self._draw_mesh)
 
     def is_visible(self) -> bool:
         """检查窗口是否可见"""
@@ -873,11 +985,13 @@ class MeshView:
             self._root.after_cancel(self._animation_job)
             self._animation_job = None
         if self._root:
-            try:
-                self._root.quit()
-                self._root.destroy()
-            except:
-                pass
-            self._root = None
-            self._input_canvas = None
-            self._output_canvas = None
+            def _close():
+                try:
+                    self._root.quit()
+                    self._root.destroy()
+                except:
+                    pass
+                self._root = None
+                self._input_canvas = None
+                self._output_canvas = None
+            self._root.after(0, _close)

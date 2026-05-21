@@ -1157,7 +1157,7 @@ Git commit: hlsl-inter: create vertex object by MiniMax-M2.7.
 
 
 # 62
-Git commit: 
+Git commit: hlsl-inter: fix tk mainloop threading issue by MiniMax-M2.7.
 帮我修复hlsl_interpreter.py运行时的，下面这个报错问题
   File "c:\Python314\Lib\threading.py", line 1023, in run
     self._target(*self._args, **self._kwargs)
@@ -1171,6 +1171,9 @@ RuntimeError: Calling Tcl from different apartment
 
 # 63
 Git commit: 
+请创建一个单独的线程用于运行MeshView，使得MeshView的显示不阻挡主线程的执行
+1. tk.Tk() 在这个线程创建
+2. self._root.mainloop()也在这个线程里面运行
 
 
 # 64

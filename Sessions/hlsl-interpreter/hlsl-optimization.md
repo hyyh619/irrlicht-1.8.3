@@ -48,3 +48,17 @@ interpreter.load_vs_output_golden_from_csv(): 0.0347s
 interpreter.executeVS():           4.4963s
 compare_vs_output_with_golden():    0.0175s
 Total execution time:               4.7444s
+
+## 5. Create vertex object
+git commit: hlsl-inter: create vertex object by MiniMax-M2.7.
+interpreter.interpret():             0.1886s
+interpreter.load_vs_output_golden_from_csv(): 0.0401s
+interpreter.executeVS():           5.0643s
+compare_vs_output_with_golden():    0.0306s
+Total execution time:               5.4550s
+
+interpreter.interpret():             0.0920s
+interpreter.load_vs_output_golden_from_csv(): 0.0390s
+interpreter.executeVS():           5.0451s
+compare_vs_output_with_golden():    0.0298s
+Total execution time:               5.3428s
