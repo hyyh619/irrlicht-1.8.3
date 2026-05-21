@@ -82,6 +82,11 @@ class MeshView:
         self._gui_thread = None
         self._gui_thread_alive = True
         self._gui_ready_event = threading.Event()
+        self._selected_input_vertex_index = None
+        self._selected_output_vertex_index = None
+        self._vertex_info_panel = None
+        self._input_vertex_projections = []
+        self._output_vertex_projections = []
         self._start_gui_thread()
 
     @property
@@ -115,7 +120,7 @@ class MeshView:
         """在单独线程中运行tkinter主循环"""
         self._root = tk.Tk()
         self._root.title(self.title)
-        self._root.geometry("1400x700")
+        self._root.geometry("1700x700")
         self._setup_ui()
         self._gui_ready_event.set()
         self._root.mainloop()
@@ -177,25 +182,35 @@ class MeshView:
         canvas_frame = ttk.Frame(main_frame)
         canvas_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=2)
 
-        input_frame = ttk.LabelFrame(canvas_frame, text="Input Vertices", padding=5)
+        left_frame = ttk.Frame(canvas_frame)
+        left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        input_frame = ttk.LabelFrame(left_frame, text="Input Vertices", padding=5)
         input_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
-        self._input_canvas = tk.Canvas(input_frame, bg="#1a1a2e", width=600, height=520)
+        self._input_canvas = tk.Canvas(input_frame, bg="#1a1a2e", width=500, height=520)
         self._input_canvas.pack(fill=tk.BOTH, expand=True)
 
-        output_frame = ttk.LabelFrame(canvas_frame, text="Output (VS Result)", padding=5)
+        output_frame = ttk.LabelFrame(left_frame, text="Output (VS Result)", padding=5)
         output_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(5, 0))
-        self._output_canvas = tk.Canvas(output_frame, bg="#1a1a2e", width=600, height=520)
+        self._output_canvas = tk.Canvas(output_frame, bg="#1a1a2e", width=500, height=520)
         self._output_canvas.pack(fill=tk.BOTH, expand=True)
+
+        info_frame = ttk.LabelFrame(canvas_frame, text="Selected Vertex Info", padding=5)
+        info_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(5, 0))
+        self._vertex_info_panel = tk.Canvas(info_frame, bg="#1a1a2e", width=300, height=520, highlightthickness=0)
+        self._vertex_info_panel.pack(fill=tk.BOTH, expand=True)
 
         self._input_canvas.bind("<Button-1>", lambda e: self._on_mouse_drag_input(e))
         self._input_canvas.bind("<B1-Motion>", lambda e: self._on_mouse_drag_input(e))
         self._input_canvas.bind("<ButtonRelease-1>", lambda e: self._on_mouse_release(e))
         self._input_canvas.bind("<MouseWheel>", lambda e: self._on_mouse_wheel_input(e))
+        self._input_canvas.bind("<Button-3>", lambda e: self._on_right_click_input(e))
 
         self._output_canvas.bind("<Button-1>", lambda e: self._on_mouse_drag_output(e))
         self._output_canvas.bind("<B1-Motion>", lambda e: self._on_mouse_drag_output(e))
         self._output_canvas.bind("<ButtonRelease-1>", lambda e: self._on_mouse_release(e))
         self._output_canvas.bind("<MouseWheel>", lambda e: self._on_mouse_wheel_output(e))
+        self._output_canvas.bind("<Button-3>", lambda e: self._on_right_click_output(e))
 
         self._root.bind("<Configure>", lambda e: self._on_resize(e))
 
@@ -599,6 +614,17 @@ class MeshView:
 
         self._draw_mesh_wireframe_input(input_transformed[:count], input_width, input_height)
         self._draw_mesh_wireframe_output(output_transformed[:count], output_width, output_height)
+
+        if self._selected_input_vertex_index is not None and self._selected_input_vertex_index < len(input_transformed):
+            p, c = input_transformed[self._selected_input_vertex_index]
+            proj = self._project_input(p, input_width, input_height)
+            self._input_canvas.create_oval(proj[0]-8, proj[1]-8, proj[0]+8, proj[1]+8, outline="#00ff00", width=2)
+
+        if self._selected_output_vertex_index is not None and self._selected_output_vertex_index < len(output_transformed):
+            p, c = output_transformed[self._selected_output_vertex_index]
+            proj = self._project_output(p, output_width, output_height)
+            self._output_canvas.create_oval(proj[0]-8, proj[1]-8, proj[0]+8, proj[1]+8, outline="#ff8800", width=2)
+
         self._update_info()
 
     def _update_info(self):
@@ -641,6 +667,117 @@ class MeshView:
     def _on_mouse_release(self, event):
         """处理鼠标释放"""
         self._last_mouse = None
+
+    def _on_right_click_input(self, event):
+        """处理输入画布右键点击选择顶点"""
+        if not self.input_vertices:
+            return
+
+        input_width = int(self._input_canvas.cget('width'))
+        input_height = int(self._input_canvas.cget('height'))
+
+        min_dist = float('inf')
+        nearest_idx = None
+
+        for i, v in enumerate(self.input_vertices):
+            p = self._transform_vertex_input(v.position)
+            proj = self._project_input(p, input_width, input_height)
+            dist = ((event.x - proj[0]) ** 2 + (event.y - proj[1]) ** 2) ** 0.5
+            if dist < min_dist and dist < 20:
+                min_dist = dist
+                nearest_idx = i
+
+        if nearest_idx is not None:
+            self._selected_input_vertex_index = nearest_idx
+            self._selected_output_vertex_index = nearest_idx
+            self._draw_mesh()
+            self._update_vertex_info_panel()
+
+    def _on_right_click_output(self, event):
+        """处理输出画布右键点击选择顶点"""
+        if not self.output_vertices:
+            return
+
+        output_width = int(self._output_canvas.cget('width'))
+        output_height = int(self._output_canvas.cget('height'))
+
+        min_dist = float('inf')
+        nearest_idx = None
+
+        for i, v in enumerate(self.output_vertices):
+            p = self._transform_vertex_output(v.position)
+            proj = self._project_output(p, output_width, output_height)
+            dist = ((event.x - proj[0]) ** 2 + (event.y - proj[1]) ** 2) ** 0.5
+            if dist < min_dist and dist < 20:
+                min_dist = dist
+                nearest_idx = i
+
+        if nearest_idx is not None:
+            self._selected_output_vertex_index = nearest_idx
+            self._selected_input_vertex_index = nearest_idx
+            self._draw_mesh()
+            self._update_vertex_info_panel()
+
+    def _update_vertex_info_panel(self):
+        """更新顶点信息面板"""
+        if not self._vertex_info_panel:
+            return
+
+        self._vertex_info_panel.delete("all")
+
+        y_pos = 10
+        line_height = 20
+
+        self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 10), text="Selected Vertex Info")
+        y_pos += line_height * 2
+
+        input_idx = self._selected_input_vertex_index
+        output_idx = self._selected_output_vertex_index
+
+        if input_idx is not None and input_idx < len(self.input_vertices):
+            v = self.input_vertices[input_idx]
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#00ff00", font=("Consolas", 10), text=f"--- Input Vertex [{input_idx}] ---")
+            y_pos += line_height * 1.5
+
+            pos = v.position
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 9), text=f"Position: ({pos[0]:.4f}, {pos[1]:.4f}, {pos[2]:.4f})")
+            y_pos += line_height
+
+            if v.normal:
+                n = v.normal
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 9), text=f"Normal: ({n[0]:.4f}, {n[1]:.4f}, {n[2]:.4f})")
+                y_pos += line_height
+
+            if v.color:
+                c = v.color
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 9), text=f"Color: ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}, {c[3]:.4f})")
+                y_pos += line_height
+
+            y_pos += line_height
+        else:
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="gray", font=("Consolas", 9), text="No Input Vertex Selected")
+            y_pos += line_height * 2
+
+        if output_idx is not None and output_idx < len(self.output_vertices):
+            v = self.output_vertices[output_idx]
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="#ff8800", font=("Consolas", 10), text=f"--- Output Vertex [{output_idx}] ---")
+            y_pos += line_height * 1.5
+
+            pos = v.position
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 9), text=f"Position: ({pos[0]:.4f}, {pos[1]:.4f}, {pos[2]:.4f})")
+            y_pos += line_height
+
+            if v.normal:
+                n = v.normal
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 9), text=f"Normal: ({n[0]:.4f}, {n[1]:.4f}, {n[2]:.4f})")
+                y_pos += line_height
+
+            if v.color:
+                c = v.color
+                self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="white", font=("Consolas", 9), text=f"Color: ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}, {c[3]:.4f})")
+                y_pos += line_height
+        else:
+            self._vertex_info_panel.create_text(10, y_pos, anchor=tk.NW, fill="gray", font=("Consolas", 9), text="No Output Vertex Selected")
 
     def _on_mouse_wheel_input(self, event):
         """处理输入画布鼠标滚轮缩放"""

@@ -1198,7 +1198,7 @@ RuntimeError: main thread is not in main loop
 
 
 # 65
-Git commit: 
+Git commit: hlsl-inter: add output zoom status by MiniMax-M2.7.
 MeshView下面的状态栏显示了input顶点数量，output顶点数量，topology类型，zoom缩放的倍数，
 1. zoom缩放倍数表示的是input窗口的倍数，请改名
 2. 增加一个result窗口缩放倍数的状态显示
@@ -1206,6 +1206,10 @@ MeshView下面的状态栏显示了input顶点数量，output顶点数量，topo
 
 # 66
 Git commit: 
+MeshView能够提供一个选中某个顶点的功能，
+1. 用户可以在input窗口或者result窗口选择任意的一个顶点
+2. 无论是选择的input顶点，还是result顶点，都在vertex_pool中找到对应的vertex对象
+3. 在MeshView UI界面的右边增加一个窗口显示选择的选择的顶点数据，包括输入数据和输出数据
 
 
 # 67
