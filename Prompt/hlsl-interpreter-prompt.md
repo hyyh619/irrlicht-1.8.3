@@ -1232,11 +1232,15 @@ Git commit: hlsl-inter: add window layout by MiniMax-M2.7.
 
 
 # 69
-Git commit: 
+Git commit: hlsl-inter: add font size adjustment and scrollbar for information and log windows by MiniMax-M2.7.
 1. MeshView selected vertex info窗口增加滚动条
 2. MeshView的 selected vertex info和Vertex Shader Execution Log两个窗口显示的字体，增加一个调整字体大小功能
 3. MeshView最下面的状态栏现在看不到了，请恢复状态栏显示，input顶点数，output顶点数，topology，input窗口缩放倍数，output窗口缩放倍数
 
+
+
+# 70
+Git commit:
 修复mesh_view.py的下列问题
 Traceback (most recent call last):
   File "c:\Python314\Lib\tkinter\__init__.py", line 2082, in __call__
@@ -1268,9 +1272,6 @@ Traceback (most recent call last):
     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 _tkinter.TclError: unknown option "-font"
 
-
-# 70
-Git commit: 
 
 
 # 71

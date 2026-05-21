@@ -1006,8 +1006,6 @@ class MeshView:
         """处理顶点信息面板字体大小变化"""
         size = self._info_font_size_var.get()
         self._vertex_info_font_size = size
-        if self._vertex_info_inner_frame:
-            self._vertex_info_inner_frame.config(font=("Consolas", size))
         self._update_vertex_info_panel()
 
     def _on_log_font_size_changed(self):
