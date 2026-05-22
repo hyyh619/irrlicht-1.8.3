@@ -200,12 +200,12 @@ class MeshView:
 
         input_frame = ttk.LabelFrame(left_paned, text="Input Vertices", padding=5)
         left_paned.add(input_frame)
-        self._input_canvas = tk.Canvas(input_frame, bg="#1a1a2e", width=500, height=520)
+        self._input_canvas = tk.Canvas(input_frame, bg="#1a1a2e", width=1000, height=320)
         self._input_canvas.pack(fill=tk.BOTH, expand=True)
 
         output_frame = ttk.LabelFrame(left_paned, text="Output (VS Result)", padding=5)
         left_paned.add(output_frame)
-        self._output_canvas = tk.Canvas(output_frame, bg="#1a1a2e", width=500, height=520)
+        self._output_canvas = tk.Canvas(output_frame, bg="#1a1a2e", width=1000, height=320)
         self._output_canvas.pack(fill=tk.BOTH, expand=True)
 
         right_paned = ttk.PanedWindow(self._paned_window, orient=tk.VERTICAL)
@@ -590,9 +590,9 @@ class MeshView:
                     b = int(min(255, max(0, (nz * 0.5 + 0.5) * 255)))
                     color_hex = f'#{r:02x}{g:02x}{b:02x}'
                     self._input_canvas.create_line(start_proj[0], start_proj[1], end_proj[0], end_proj[1],
-                                             fill=color_hex, width=1)
+                                            fill=color_hex, width=1)
                     self._input_canvas.create_oval(end_proj[0]-2, end_proj[1]-2, end_proj[0]+2, end_proj[1]+2,
-                                             fill=color_hex, outline='')
+                                            fill=color_hex, outline='')
 
     def _draw_normals_output(self, transformed: list, width: float, height: float):
         """绘制输出顶点法线向量"""
@@ -621,9 +621,9 @@ class MeshView:
                     b = int(min(255, max(0, (nz * 0.5 + 0.5) * 255)))
                     color_hex = f'#{r:02x}{g:02x}{b:02x}'
                     self._output_canvas.create_line(start_proj[0], start_proj[1], end_proj[0], end_proj[1],
-                                             fill=color_hex, width=1)
+                                            fill=color_hex, width=1)
                     self._output_canvas.create_oval(end_proj[0]-2, end_proj[1]-2, end_proj[0]+2, end_proj[1]+2,
-                                             fill=color_hex, outline='')
+                                            fill=color_hex, outline='')
 
     def _draw_mesh(self):
         """绘制mesh到画布"""
