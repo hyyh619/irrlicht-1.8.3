@@ -1287,12 +1287,20 @@ Review hlsl-inter的有效提交(有效提交是指包含源代码的提交)，�
 
 
 # 73
-Git commit: 
+Git commit: hlsl-inter: fix deactive button issue of re-execute-Vertex-Shader button by MiniMax-M2.7.
 选择了顶点后，Re-execute Vertex Shader按钮是灰色，无法点击重新运行选择的顶点
 
 
 # 74
 Git commit: 
+MeshView的函数_on_re_execute_vertex在构造下列input data时，使用固定的名称，这个导致HLSL解释执行时找不到对应的input data
+        input_data = {
+            'POSITION': v.position,
+            'NORMAL': v.normal if v.normal else [0, 0, 1],
+            'COLOR': v.color if v.color else [1, 1, 1, 1]
+        }
+例如下列语句解释执行时需要的是input.Pos,但是输入的是input.POSITION，请根据HLSLInterpreter的input_struct结构来获取名称。
+Executing: output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj))
 
 
 # 75

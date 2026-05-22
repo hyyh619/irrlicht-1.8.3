@@ -933,11 +933,20 @@ class MeshView:
         self._append_shader_log("=" * 50)
 
         v = self.input_vertices[input_idx]
-        input_data = {
-            'POSITION': v.position,
-            'NORMAL': v.normal if v.normal else [0, 0, 1],
-            'COLOR': v.color if v.color else [1, 1, 1, 1]
-        }
+        input_struct = self._hlsl_interpreter.structs.get(self._hlsl_input_struct)
+        if not input_struct:
+            self._append_shader_log(f"Error: Cannot find input struct '{self._hlsl_input_struct}'")
+            return
+
+        input_data = {}
+        for field in input_struct.fields:
+            semantic_lower = field.semantic.lower() if field.semantic else ''
+            if 'pos' in semantic_lower or 'position' in semantic_lower or semantic_lower == 'sv_position':
+                input_data[field.name] = v.position
+            elif 'normal' in semantic_lower:
+                input_data[field.name] = v.normal if v.normal else [0, 0, 1]
+            elif 'color' in semantic_lower:
+                input_data[field.name] = v.color if v.color else [1, 1, 1, 1]
 
         old_print_syntax_tree = self._hlsl_interpreter.printSyntaxTree
         old_print_sequence = self._hlsl_interpreter.print_sequence
