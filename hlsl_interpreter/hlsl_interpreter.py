@@ -61,10 +61,12 @@ class Vertex:
     input_normal: List[float] = None       # 输入法向量
     input_color: List[float] = None        # 输入颜色
     input_texcoord: List[float] = None    # 输入纹理坐标
+    input_texcoord2: List[float] = None   # 输入第二纹理坐标
     output_position: List[float] = None    # 输出坐标
     output_normal: List[float] = None      # 输出法向量
     output_color: List[float] = None       # 输出颜色
     output_texcoord: List[float] = None    # 输出纹理坐标
+    output_texcoord2: List[float] = None   # 输出第二纹理坐标
 
     def __post_init__(self):
         if self.input_data is None:
@@ -115,6 +117,14 @@ class VertexPool:
         """获取所有输入颜色"""
         return [v.input_color for v in self.vertices if v.input_color]
 
+    def get_input_texcoords(self) -> List[List[float]]:
+        """获取所有输入纹理坐标"""
+        return [v.input_texcoord for v in self.vertices if v.input_texcoord]
+
+    def get_input_texcoords2(self) -> List[List[float]]:
+        """获取所有输入第二纹理坐标"""
+        return [v.input_texcoord2 for v in self.vertices if v.input_texcoord2]
+
     def get_output_positions(self) -> List[List[float]]:
         """获取所有输出坐标"""
         return [v.output_position for v in self.vertices if v.output_position]
@@ -126,6 +136,14 @@ class VertexPool:
     def get_output_colors(self) -> List[List[float]]:
         """获取所有输出颜色"""
         return [v.output_color for v in self.vertices if v.output_color]
+
+    def get_output_texcoords(self) -> List[List[float]]:
+        """获取所有输出纹理坐标"""
+        return [v.output_texcoord for v in self.vertices if v.output_texcoord]
+
+    def get_output_texcoords2(self) -> List[List[float]]:
+        """获取所有输出第二纹理坐标"""
+        return [v.output_texcoord2 for v in self.vertices if v.output_texcoord2]
 
     def build_from_input(self, vs_input: str, input_data: Dict[str, Any], row_index: int):
         """
@@ -159,9 +177,12 @@ class VertexPool:
                     vertex.input_color = value[:4]
                 elif isinstance(value, list) and len(value) >= 3:
                     vertex.input_color = value[:3] + [1.0]
-            elif 'texcoord' in field_name_lower or 'uv' in field_name_lower or field_semantic_upper == 'TEXCOORD':
+            elif 'texcoord' in field_name_lower or 'uv' in field_name_lower or field_semantic_upper.startswith('TEXCOORD'):
                 if isinstance(value, list):
-                    vertex.input_texcoord = value[:2] if len(value) >= 2 else value
+                    if 'texcoord2' in field_name_lower or 'texcoord1' in field_name_lower or field_semantic_upper == 'TEXCOORD1':
+                        vertex.input_texcoord2 = value[:2] if len(value) >= 2 else value
+                    else:
+                        vertex.input_texcoord = value[:2] if len(value) >= 2 else value
 
         self.add_vertex(vertex)
 
@@ -194,7 +215,10 @@ class VertexPool:
                         vertex.output_color = value[:3] + [1.0]
                 elif 'texcoord' in key_lower or 'uv' in key_lower:
                     if isinstance(value, list):
-                        vertex.output_texcoord = value[:2] if len(value) >= 2 else value
+                        if 'texcoord2' in key_lower or 'texcoord1' in key_lower:
+                            vertex.output_texcoord2 = value[:2] if len(value) >= 2 else value
+                        else:
+                            vertex.output_texcoord = value[:2] if len(value) >= 2 else value
             return
 
         for field in output_struct.fields:
@@ -216,9 +240,12 @@ class VertexPool:
                     vertex.output_color = value[:4]
                 elif isinstance(value, list) and len(value) >= 3:
                     vertex.output_color = value[:3] + [1.0]
-            elif 'texcoord' in field_name_lower or 'uv' in field_name_lower or field_semantic_upper == 'TEXCOORD':
+            elif 'texcoord' in field_name_lower or 'uv' in field_name_lower or field_semantic_upper.startswith('TEXCOORD'):
                 if isinstance(value, list):
-                    vertex.output_texcoord = value[:2] if len(value) >= 2 else value
+                    if 'texcoord2' in field_name_lower or 'texcoord1' in field_name_lower or field_semantic_upper == 'TEXCOORD1':
+                        vertex.output_texcoord2 = value[:2] if len(value) >= 2 else value
+                    else:
+                        vertex.output_texcoord = value[:2] if len(value) >= 2 else value
 
     def get_count(self) -> int:
         """获取顶点数量"""
@@ -352,6 +379,8 @@ class HLSLInterpreter:
         positions = self.vertex_pool.get_input_positions()
         normals = self.vertex_pool.get_input_normals()
         colors = self.vertex_pool.get_input_colors()
+        texcoords = self.vertex_pool.get_input_texcoords()
+        texcoords2 = self.vertex_pool.get_input_texcoords2()
 
         if not positions:
             self.log_output(f"No input vertices in vertex pool")
@@ -370,11 +399,13 @@ class HLSLInterpreter:
         positions = positions[row_start:row_end]
         normals = normals[row_start:row_end] if normals and len(normals) >= row_end else None
         colors = colors[row_start:row_end] if colors and len(colors) >= row_end else None
+        texcoords = texcoords[row_start:row_end] if texcoords and len(texcoords) >= row_end else None
+        texcoords2 = texcoords2[row_start:row_end] if texcoords2 and len(texcoords2) >= row_end else None
 
         if positions:
             self._mesh_view.clear()
             self._mesh_view.set_primitive_topology(self.primitive_topology)
-            self._mesh_view.set_input_data(positions, normals, colors)
+            self._mesh_view.set_input_data(positions, normals, colors, texcoords, texcoords2)
             self._mesh_view.show(blocking=False)
         else:
             self.log_output(f"No position data found in {vs_input}")
@@ -391,6 +422,8 @@ class HLSLInterpreter:
         positions = self.vertex_pool.get_output_positions()
         normals = self.vertex_pool.get_output_normals()
         colors = self.vertex_pool.get_output_colors()
+        texcoords = self.vertex_pool.get_output_texcoords()
+        texcoords2 = self.vertex_pool.get_output_texcoords2()
 
         if not positions:
             self.log_output("No output vertices in vertex pool")
@@ -398,7 +431,7 @@ class HLSLInterpreter:
 
         if positions:
             self._mesh_view.set_primitive_topology(self.primitive_topology)
-            self._mesh_view.set_output_data(positions, normals if normals else None, colors if colors else None)
+            self._mesh_view.set_output_data(positions, normals, colors, texcoords, texcoords2)
             self._mesh_view.show(blocking=False)
             self.log_output(f"Result mesh displayed: {len(positions)} vertices")
         else:

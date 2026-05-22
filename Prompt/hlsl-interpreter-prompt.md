@@ -1292,7 +1292,7 @@ Git commit: hlsl-inter: fix deactive button issue of re-execute-Vertex-Shader bu
 
 
 # 74
-Git commit: 
+Git commit: hlsl-inter: fix wrong input data name for re-execute vertex shader by MiniMax-M2.7
 MeshView的函数_on_re_execute_vertex在构造下列input data时，使用固定的名称，这个导致HLSL解释执行时找不到对应的input data
         input_data = {
             'POSITION': v.position,
@@ -1305,7 +1305,10 @@ Executing: output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj))
 
 # 75
 Git commit: 
-
+1. MeshView保存顶点的信息的对象input_vertices只有position, color, normal，漏掉了纹理坐标，包括TexCoord，TexCoord2，请增加纹理坐标数据保存
+2. MeshView的函数_on_re_execute_vertex在构造input data时，漏掉了纹理坐标，包括TexCoord，TexCoord2请根据input_struct把所有的数据都添加
+3. HLSLInterpreter的函数show_input_mesh调用set_input_data时，并没有把TexCoord，TexCoord2传入，请添加相应代码
+4. 请检查HLSLInterpreter的其它地方，如果有设置MeshView的输入顶点数据的函数调用，就都添加TexCoord，TexCoord2的数据
 
 # 76
 Git commit: 

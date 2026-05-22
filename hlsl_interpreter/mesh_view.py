@@ -30,10 +30,13 @@ MESH_VIEW_OFFSET_Y = 180
 
 class VertexData:
     """顶点数据结构"""
-    def __init__(self, position: List[float], normal: List[float] = None, color: List[float] = None):
+    def __init__(self, position: List[float], normal: List[float] = None, color: List[float] = None,
+                 tex_coord: List[float] = None, tex_coord2: List[float] = None):
         self.position = position
         self.normal = normal if normal else [0, 0, 1]
         self.color = color if color else [1, 1, 1, 1]
+        self.tex_coord = tex_coord if tex_coord else [0, 0]
+        self.tex_coord2 = tex_coord2 if tex_coord2 else [0, 0]
 
 
 class MeshView:
@@ -302,47 +305,62 @@ class MeshView:
             self._animation_job = None
         self._update_button_states()
 
-    def add_vertex(self, position: List[float], normal: List[float] = None, color: List[float] = None):
+    def add_vertex(self, position: List[float], normal: List[float] = None, color: List[float] = None,
+                   tex_coord: List[float] = None, tex_coord2: List[float] = None):
         """添加单个顶点到输入"""
-        self.input_vertices.append(VertexData(position, normal, color))
+        self.input_vertices.append(VertexData(position, normal, color, tex_coord, tex_coord2))
         self._compute_input_bounds()
 
-    def add_input_vertex(self, position: List[float], normal: List[float] = None, color: List[float] = None):
+    def add_input_vertex(self, position: List[float], normal: List[float] = None, color: List[float] = None,
+                         tex_coord: List[float] = None, tex_coord2: List[float] = None):
         """添加单个输入顶点"""
-        self.input_vertices.append(VertexData(position, normal, color))
+        self.input_vertices.append(VertexData(position, normal, color, tex_coord, tex_coord2))
         self._compute_input_bounds()
 
-    def add_output_vertex(self, position: List[float], normal: List[float] = None, color: List[float] = None):
+    def add_output_vertex(self, position: List[float], normal: List[float] = None, color: List[float] = None,
+                          tex_coord: List[float] = None, tex_coord2: List[float] = None):
         """添加单个输出顶点"""
-        self.output_vertices.append(VertexData(position, normal, color))
+        self.output_vertices.append(VertexData(position, normal, color, tex_coord, tex_coord2))
         self._compute_output_bounds()
 
-    def set_input_data(self, positions: List[List[float]], normals: List[List[float]] = None, colors: List[List[float]] = None):
+    def set_input_data(self, positions: List[List[float]], normals: List[List[float]] = None,
+                       colors: List[List[float]] = None, tex_coords: List[List[float]] = None,
+                       tex_coords2: List[List[float]] = None):
         """
         设置输入数据
         positions: 顶点位置列表 [[x,y,z], [x,y,z], ...]
         normals: 法线列表 [[x,y,z], [x,y,z], ...]
         colors: 颜色列表 [[r,g,b,a], [r,g,b,a], ...]
+        tex_coords: 纹理坐标列表 [[u,v], [u,v], ...]
+        tex_coords2: 第二纹理坐标列表 [[u,v], [u,v], ...]
         """
         self.input_vertices = []
         for i, pos in enumerate(positions):
             normal = normals[i] if normals and i < len(normals) else None
             color = colors[i] if colors and i < len(colors) else None
-            self.input_vertices.append(VertexData(pos, normal, color))
+            tex_coord = tex_coords[i] if tex_coords and i < len(tex_coords) else None
+            tex_coord2 = tex_coords2[i] if tex_coords2 and i < len(tex_coords2) else None
+            self.input_vertices.append(VertexData(pos, normal, color, tex_coord, tex_coord2))
         self._compute_input_bounds()
 
-    def set_output_data(self, positions: List[List[float]], normals: List[List[float]] = None, colors: List[List[float]] = None):
+    def set_output_data(self, positions: List[List[float]], normals: List[List[float]] = None,
+                        colors: List[List[float]] = None, tex_coords: List[List[float]] = None,
+                        tex_coords2: List[List[float]] = None):
         """
         设置输出数据（executeVS结果）
         positions: 顶点位置列表 [[x,y,z], [x,y,z], ...]
         normals: 法线列表 [[x,y,z], [x,y,z], ...]
         colors: 颜色列表 [[r,g,b,a], [r,g,b,a], ...]
+        tex_coords: 纹理坐标列表 [[u,v], [u,v], ...]
+        tex_coords2: 第二纹理坐标列表 [[u,v], [u,v], ...]
         """
         self.output_vertices = []
         for i, pos in enumerate(positions):
             normal = normals[i] if normals and i < len(normals) else None
             color = colors[i] if colors and i < len(colors) else None
-            self.output_vertices.append(VertexData(pos, normal, color))
+            tex_coord = tex_coords[i] if tex_coords and i < len(tex_coords) else None
+            tex_coord2 = tex_coords2[i] if tex_coords2 and i < len(tex_coords2) else None
+            self.output_vertices.append(VertexData(pos, normal, color, tex_coord, tex_coord2))
         self._compute_output_bounds()
 
     def _compute_input_bounds(self):
@@ -947,6 +965,11 @@ class MeshView:
                 input_data[field.name] = v.normal if v.normal else [0, 0, 1]
             elif 'color' in semantic_lower:
                 input_data[field.name] = v.color if v.color else [1, 1, 1, 1]
+            elif 'texcoord' in semantic_lower:
+                if 'texcoord2' in semantic_lower or 'texcoord1' in semantic_lower:
+                    input_data[field.name] = v.tex_coord2 if v.tex_coord2 else [0, 0]
+                else:
+                    input_data[field.name] = v.tex_coord if v.tex_coord else [0, 0]
 
         old_print_syntax_tree = self._hlsl_interpreter.printSyntaxTree
         old_print_sequence = self._hlsl_interpreter.print_sequence
