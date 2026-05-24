@@ -1349,9 +1349,10 @@ hlsl_interpreter.py的HLSLInterpreter对输入顶点数据进行解释执行后�
    4. MSAA
    5. viewport
 
+hy: 看起来LLM实现的rasterizer可以正确执行
 
 # 79
-Git commit: 
+Git commit: hlsl-inter: add d3d.py to define all d3d enum/structure and so on by MiniMax-M2.7.
 D3D_PRIMITIVE_TOPOLOGY_UNDEFINED = 0
 D3D_PRIMITIVE_TOPOLOGY_POINTLIST = 1
 D3D_PRIMITIVE_TOPOLOGY_LINELIST = 2
@@ -1364,6 +1365,9 @@ D3D_PRIMITIVE_TOPOLOGY_TRIANGLEFAN = 6
 
 # 80
 Git commit: 
+1. 创建render.py文件
+2. 把hlsl_interpreter.py的main函数的代码迁移到render.py文件
+3. hlsl_interpreter.py的代码只保留实现HLSL解释执行器的代码
 
 
 # 81
@@ -1391,4 +1395,44 @@ Git commit:
 
 
 # 87
+Git commit: 
+
+
+# 88
+Git commit: 
+
+
+# 89
+Git commit: 
+
+
+# 90
+Git commit: 
+
+
+# 91
+Git commit: 
+
+
+# 92
+Git commit: 
+
+
+# 93
+Git commit: 
+
+
+# 94
+Git commit: 
+
+
+# 95
+Git commit: 
+
+
+# 96
+Git commit: 
+
+
+# 97
 Git commit: 

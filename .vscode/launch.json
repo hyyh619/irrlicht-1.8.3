@@ -21,7 +21,7 @@
             "name": "Python hlsl_interpreter",
             "type": "debugpy",
             "request": "launch",
-            "program": "hlsl_interpreter.py",
+            "program": "render.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/hlsl_interpreter",
             "args": [
