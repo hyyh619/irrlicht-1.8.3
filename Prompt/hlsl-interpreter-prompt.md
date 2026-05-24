@@ -1310,8 +1310,15 @@ Git commit:
 3. HLSLInterpreter的函数show_input_mesh调用set_input_data时，并没有把TexCoord，TexCoord2传入，请添加相应代码
 4. 请检查HLSLInterpreter的其它地方，如果有设置MeshView的输入顶点数据的函数调用，就都添加TexCoord，TexCoord2的数据
 
-# 76
+# 76: From here, we add rasterizer 
 Git commit: 
+mesh_view.py做如下新增功能
+1. MeshView的output(results)窗口改成支持tab view的方式，通过的tab view显示不同的output窗口
+2. output(results)通过tab view方式增加下面两个窗口
+   a. rasterizer的结果窗口
+   b. pixel shader执行完毕的窗口
+   c. output merger阶段执行完毕的窗口
+3. 以上新增窗口暂时不显示任何东西，等待后续输入
 
 
 # 77

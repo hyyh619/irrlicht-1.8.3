@@ -206,10 +206,31 @@ class MeshView:
         self._input_canvas = tk.Canvas(input_frame, bg="#1a1a2e", width=1000, height=320)
         self._input_canvas.pack(fill=tk.BOTH, expand=True)
 
-        output_frame = ttk.LabelFrame(left_paned, text="Output (VS Result)", padding=5)
+        output_frame = ttk.LabelFrame(left_paned, text="Output", padding=5)
         left_paned.add(output_frame)
-        self._output_canvas = tk.Canvas(output_frame, bg="#1a1a2e", width=1000, height=320)
+
+        self._output_notebook = ttk.Notebook(output_frame)
+        self._output_notebook.pack(fill=tk.BOTH, expand=True)
+
+        vs_result_frame = ttk.Frame(self._output_notebook)
+        self._output_notebook.add(vs_result_frame, text="VS Result")
+        self._output_canvas = tk.Canvas(vs_result_frame, bg="#1a1a2e", width=1000, height=320)
         self._output_canvas.pack(fill=tk.BOTH, expand=True)
+
+        rasterizer_frame = ttk.Frame(self._output_notebook)
+        self._output_notebook.add(rasterizer_frame, text="Rasterizer")
+        self._rasterizer_canvas = tk.Canvas(rasterizer_frame, bg="#1a1a2e", width=1000, height=320)
+        self._rasterizer_canvas.pack(fill=tk.BOTH, expand=True)
+
+        pixel_shader_frame = ttk.Frame(self._output_notebook)
+        self._output_notebook.add(pixel_shader_frame, text="Pixel Shader")
+        self._pixel_shader_canvas = tk.Canvas(pixel_shader_frame, bg="#1a1a2e", width=1000, height=320)
+        self._pixel_shader_canvas.pack(fill=tk.BOTH, expand=True)
+
+        output_merger_frame = ttk.Frame(self._output_notebook)
+        self._output_notebook.add(output_merger_frame, text="Output Merger")
+        self._output_merger_canvas = tk.Canvas(output_merger_frame, bg="#1a1a2e", width=1000, height=320)
+        self._output_merger_canvas.pack(fill=tk.BOTH, expand=True)
 
         right_paned = ttk.PanedWindow(self._paned_window, orient=tk.VERTICAL)
         self._paned_window.add(right_paned)
@@ -262,6 +283,24 @@ class MeshView:
         self._output_canvas.bind("<ButtonRelease-1>", lambda e: self._on_mouse_release(e))
         self._output_canvas.bind("<MouseWheel>", lambda e: self._on_mouse_wheel_output(e))
         self._output_canvas.bind("<Button-3>", lambda e: self._on_right_click_output(e))
+
+        if self._rasterizer_canvas:
+            self._rasterizer_canvas.bind("<Button-1>", lambda e: self._on_mouse_drag_rasterizer(e))
+            self._rasterizer_canvas.bind("<B1-Motion>", lambda e: self._on_mouse_drag_rasterizer(e))
+            self._rasterizer_canvas.bind("<ButtonRelease-1>", lambda e: self._on_mouse_release(e))
+            self._rasterizer_canvas.bind("<MouseWheel>", lambda e: self._on_mouse_wheel_rasterizer(e))
+
+        if self._pixel_shader_canvas:
+            self._pixel_shader_canvas.bind("<Button-1>", lambda e: self._on_mouse_drag_pixel_shader(e))
+            self._pixel_shader_canvas.bind("<B1-Motion>", lambda e: self._on_mouse_drag_pixel_shader(e))
+            self._pixel_shader_canvas.bind("<ButtonRelease-1>", lambda e: self._on_mouse_release(e))
+            self._pixel_shader_canvas.bind("<MouseWheel>", lambda e: self._on_mouse_wheel_pixel_shader(e))
+
+        if self._output_merger_canvas:
+            self._output_merger_canvas.bind("<Button-1>", lambda e: self._on_mouse_drag_output_merger(e))
+            self._output_merger_canvas.bind("<B1-Motion>", lambda e: self._on_mouse_drag_output_merger(e))
+            self._output_merger_canvas.bind("<ButtonRelease-1>", lambda e: self._on_mouse_release(e))
+            self._output_merger_canvas.bind("<MouseWheel>", lambda e: self._on_mouse_wheel_output_merger(e))
 
         self._root.bind("<Configure>", lambda e: self._on_resize(e))
 
@@ -1073,6 +1112,30 @@ class MeshView:
             self._output_scale = max(MESH_VIEW_MIN_SCALE, min(MESH_VIEW_MAX_SCALE, self._output_scale))
         self._draw_mesh()
 
+    def _on_mouse_drag_rasterizer(self, event):
+        """处理Rasterizer画布鼠标拖动"""
+        pass
+
+    def _on_mouse_wheel_rasterizer(self, event):
+        """处理Rasterizer画布鼠标滚轮缩放"""
+        pass
+
+    def _on_mouse_drag_pixel_shader(self, event):
+        """处理Pixel Shader画布鼠标拖动"""
+        pass
+
+    def _on_mouse_wheel_pixel_shader(self, event):
+        """处理Pixel Shader画布鼠标滚轮缩放"""
+        pass
+
+    def _on_mouse_drag_output_merger(self, event):
+        """处理Output Merger画布鼠标拖动"""
+        pass
+
+    def _on_mouse_wheel_output_merger(self, event):
+        """处理Output Merger画布鼠标滚轮缩放"""
+        pass
+
     def _on_resize(self, event):
         """处理窗口大小改变"""
         self._draw_mesh()
@@ -1577,7 +1640,10 @@ class MeshView:
                     pass
                 self._root = None
                 self._input_canvas = None
-                self._output_canvas = None
+self._rasterizer_canvas = None
+        self._pixel_shader_canvas = None
+        self._output_merger_canvas = None
+        self._output_notebook = None
             try:
                 self._root.after(0, _do_close)
             except RuntimeError:
