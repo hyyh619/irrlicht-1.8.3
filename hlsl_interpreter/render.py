@@ -86,6 +86,8 @@ def main():
     r = Rasterizer("rasterizer_param.json")
     pixels = r.rasterize(results, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
 
+    interpreter._mesh_view.set_rasterizer_pixels(pixels)
+
     if mesh_view_enabled:
         interpreter.log_output("Displaying input mesh before executeVS...")
         interpreter.show_input_mesh("VS_INPUT")
@@ -93,6 +95,10 @@ def main():
     if mesh_view_enabled and results:
         interpreter.log_output("Displaying result mesh after executeVS...")
         interpreter.show_result_mesh(results)
+
+    if mesh_view_enabled and pixels:
+        interpreter.log_output("Displaying pixels after rasterizer...")
+        interpreter._mesh_view._draw_rasterizer_pixels()
 
     if interpreter.print_interpreter_result:
         interpreter.log_output("HLSL Interpreter Result:")

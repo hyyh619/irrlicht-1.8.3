@@ -101,6 +101,13 @@ class MeshView:
         self._shader_log_font_size = 12
         self._vertex_info_scroll_y = None
         self._vertex_info_inner_frame = None
+        self._rasterizer_pixels = []  # pixels from rasterizer output
+        self._rasterizer_canvas = None
+        self._pixel_shader_canvas = None
+        self._output_merger_canvas = None
+        self._rasterizer_scale = 1.0
+        self._rasterizer_offset_x = 0
+        self._rasterizer_offset_y = 0
         self._start_gui_thread()
 
     @property
@@ -403,6 +410,13 @@ class MeshView:
             self.output_vertices.append(VertexData(pos, normal, color, tex_coord, tex_coord2))
         self._compute_output_bounds()
 
+    def set_rasterizer_pixels(self, pixels: List):
+        """
+        设置光栅化后的像素数据
+        pixels: Pixel对象列表 from Rasterizer.rasterize()
+        """
+        self._rasterizer_pixels = pixels
+
     def _compute_input_bounds(self):
         """计算输入顶点边界框"""
         if not self.input_vertices:
@@ -687,6 +701,59 @@ class MeshView:
         """绘制mesh到画布"""
         self._draw_mesh_animated(max(len(self.input_vertices), len(self.output_vertices)))
 
+    def _draw_rasterizer_pixels(self):
+        """绘制光栅化后的像素到Rasterizer画布"""
+        if not self._rasterizer_canvas or not self._rasterizer_pixels:
+            return
+
+        self._rasterizer_canvas.delete("all")
+
+        canvas_width = int(self._rasterizer_canvas.cget('width'))
+        canvas_height = int(self._rasterizer_canvas.cget('height'))
+
+        if not self._rasterizer_pixels:
+            return
+
+        min_x = min(p.x for p in self._rasterizer_pixels)
+        max_x = max(p.x for p in self._rasterizer_pixels)
+        min_y = min(p.y for p in self._rasterizer_pixels)
+        max_y = max(p.y for p in self._rasterizer_pixels)
+
+        mesh_width = max(max_x - min_x, 1)
+        mesh_height = max(max_y - min_y, 1)
+
+        margin = 40
+        usable_width = canvas_width - 2 * margin
+        usable_height = canvas_height - 2 * margin
+        scale = self._rasterizer_scale * min(usable_width, usable_height) / max(mesh_width, mesh_height)
+        if scale < 0.01:
+            scale = 0.01
+
+        offset_x = canvas_width / 2 + self._rasterizer_offset_x - (min_x + max_x) / 2 * scale
+        offset_y = canvas_height / 2 + self._rasterizer_offset_y - (min_y + max_y) / 2 * scale
+
+        drawn_primitives = set()
+        for pixel in self._rasterizer_pixels:
+            screen_x = pixel.x * scale + offset_x
+            screen_y = pixel.y * scale + offset_y
+
+            prim_id = pixel.primitive_id
+            if prim_id not in drawn_primitives:
+                hue = (prim_id * 37) % 360
+                drawn_primitives.add(prim_id)
+            else:
+                hue = (prim_id * 37) % 360
+
+            r = int(127 + 127 * math.sin(hue * math.pi / 180))
+            g = int(127 + 127 * math.sin((hue + 120) * math.pi / 180))
+            b = int(127 + 127 * math.sin((hue + 240) * math.pi / 180))
+            color_hex = f'#{r:02x}{g:02x}{b:02x}'
+
+            self._rasterizer_canvas.create_rectangle(
+                screen_x - 1, screen_y - 1, screen_x + 1, screen_y + 1,
+                fill=color_hex, outline=color_hex
+            )
+
     def _draw_mesh_animated(self, count: int = None):
         """绘制动画mesh到画布，只渲染前count个元素"""
         if not self._input_canvas or not self._output_canvas:
@@ -699,7 +766,7 @@ class MeshView:
 
         self._input_canvas.delete("all")
         self._output_canvas.delete("all")
-        
+
         input_width = int(self._input_canvas.cget('width'))
         input_height = int(self._input_canvas.cget('height'))
         output_width = int(self._output_canvas.cget('width'))
@@ -731,6 +798,7 @@ class MeshView:
             proj = self._project_output(p, output_width, output_height)
             self._output_canvas.create_oval(proj[0]-8, proj[1]-8, proj[0]+8, proj[1]+8, outline="#ff8800", width=2)
 
+        self._draw_rasterizer_pixels()
         self._update_info()
 
     def _update_info(self):
@@ -1115,11 +1183,22 @@ class MeshView:
 
     def _on_mouse_drag_rasterizer(self, event):
         """处理Rasterizer画布鼠标拖动"""
-        pass
+        if self._last_mouse:
+            dx = event.x - self._last_mouse[0]
+            dy = event.y - self._last_mouse[1]
+            self._rasterizer_offset_x += dx
+            self._rasterizer_offset_y += dy
+            self._draw_mesh()
+        self._last_mouse = (event.x, event.y)
 
     def _on_mouse_wheel_rasterizer(self, event):
         """处理Rasterizer画布鼠标滚轮缩放"""
-        pass
+        if event.delta > 0:
+            self._rasterizer_scale *= 1.1
+        else:
+            self._rasterizer_scale *= 0.9
+        self._rasterizer_scale = max(0.01, min(100, self._rasterizer_scale))
+        self._draw_mesh()
 
     def _on_mouse_drag_pixel_shader(self, event):
         """处理Pixel Shader画布鼠标拖动"""
