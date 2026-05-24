@@ -1335,8 +1335,17 @@ hlsl_interpreter.py的HLSLInterpreter对输入顶点数据进行解释执行后�
 1. 新增一个rasterizer.py的光栅化处理的文件，创建Rasterizer对象
 2. Rasterizer对象接收HLSLInterpreter的输出results
 3. Rasterizer根据primitive_topology的类型来构造primitive，例如
-   1. primitive type是D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST，每三个HLSLInterpreter输出的顶点构造成一个
-4. 
+   1. primitive type是D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST，每三个HLSLInterpreter输出的顶点构造成一个triangle
+   2. triangle在光栅化插值阶段使用重心坐标公式来完成坐标位置和属性的插值
+4. 请根据D3D11的光栅化算法在rasterizer.py的Rasterizer对象中实现完整的光栅化算法
+5. Rasterizer对象接收HLSLInterpreter executorVS的输出结果results
+6. Rasterizer对象光栅化后输出Pixel对象，Pixel对象定义在单独的pixel.py的文件中
+7. Rasterizer阶段需要的配置参数从json文件rasterizer_param获取配置文件路径，从该路径读取rasterizer的配置文件来获取光栅化算法需要的配置信息，包括以下信息等：
+   1. cull mode
+   2. fill mode
+   3. scissor
+   4. MSAA
+   5. viewport
 
 
 # 79

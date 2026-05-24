@@ -2,6 +2,7 @@
     "hlsl_file_path": "./color-correct-ninjia-of-collision/VERTEX_SHADER_STANDARD_POINT.hlsl",
     "csv_folder_path": "./color-correct-ninjia-of-collision/",
     "log_file_path": "./color-correct-ninjia-of-collision/output.log",
+    "rasterizer_param": "./color-correct-ninjia-of-collision/rasterizer_param.json",
     "log_to_file": false,
     "printSyntaxTree": false,
     "print_interpreter_result": false,

@@ -8,7 +8,7 @@
     "SlopeScaledDepthBias": 0.0,
     "DepthClipEnable": true,
     "ScissorEnable": false,
-    "MultisampleEnable": true,
+    "MultisampleEnable": false,
     "AntialiasedLineEnable": false,
     "ForcedSampleCount": 0
   },
