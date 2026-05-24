@@ -1325,12 +1325,14 @@ git commit: hlsl-inter: fix the simple stupid error causes by the last LLM's com
 
 
 # 77
-Git commit: 
+Git commit: hlsl-inter: convert raw data of rasterizer to json format by MiniMax-M2.7.
 请把解析hlsl_interpreter\color-correct-ninjia-of-collision\rasterizer_param.txt生成一份json文件
+
+hy: perfect example to process raw data to formatted structure data.
 
 
 # 78
-Git commit:
+Git commit: hlsl-inter: implement rasterizer by MiniMax-M2.7
 hlsl_interpreter.py的HLSLInterpreter对输入顶点数据进行解释执行后的输出数据我们需要继续做光栅化
 1. 新增一个rasterizer.py的光栅化处理的文件，创建Rasterizer对象
 2. Rasterizer对象接收HLSLInterpreter的输出results
@@ -1350,6 +1352,14 @@ hlsl_interpreter.py的HLSLInterpreter对输入顶点数据进行解释执行后�
 
 # 79
 Git commit: 
+D3D_PRIMITIVE_TOPOLOGY_UNDEFINED = 0
+D3D_PRIMITIVE_TOPOLOGY_POINTLIST = 1
+D3D_PRIMITIVE_TOPOLOGY_LINELIST = 2
+D3D_PRIMITIVE_TOPOLOGY_LINESTRIP = 3
+D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST = 4
+D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP = 5
+D3D_PRIMITIVE_TOPOLOGY_TRIANGLEFAN = 6
+上述定义在hlsl_interpreter.py和rasterizer.py重复定义，请创建一个新的d3d.py的文件，把D3D_开头的相关定义都统一放到这个文件中。
 
 
 # 80
