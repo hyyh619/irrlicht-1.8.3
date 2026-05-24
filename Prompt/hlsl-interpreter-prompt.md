@@ -1364,7 +1364,7 @@ D3D_PRIMITIVE_TOPOLOGY_TRIANGLEFAN = 6
 
 
 # 80
-Git commit: 
+Git commit: hlsl-inter: create render.py by MiniMax-M2.7
 1. 创建render.py文件
 2. 把hlsl_interpreter.py的main函数的代码迁移到render.py文件
 3. hlsl_interpreter.py的代码只保留实现HLSL解释执行器的代码
@@ -1372,7 +1372,9 @@ Git commit:
 
 # 81
 Git commit: 
-
+1. rasterizer.py的Rasterizer对象只对输入顶点的坐标进行了光栅化，但是没有对输入的color,normal,texcoord,texcoord2等顶点属性进行插值。请使用D3D11的重心坐标和三线性插值的算法，对这些属性进行插值，并保存在Pixel对象里。
+2. Pixel对象构造时，已经传入了
+3. 
 
 # 82
 Git commit: 

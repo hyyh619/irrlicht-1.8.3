@@ -303,7 +303,7 @@ class Rasterizer:
             depth=pos[2] / clip_w if clip_w != 0 else pos[2],
             color=self._interpolate_vertex_attribute(vertex, 'color'),
             texcoord=self._interpolate_vertex_attribute(vertex, 'texcoord'),
-            texcoord2=self._interpolate_vertex_attribute(vertex, 'texcoord1'),
+            texcoord2=self._interpolate_vertex_attribute(vertex, 'texcoord2'),
             normal=self._interpolate_vertex_attribute(vertex, 'normal'),
             position=self._interpolate_vertex_attribute(vertex, 'position'),
             attributes={},
@@ -348,7 +348,7 @@ class Rasterizer:
 
             depth = pos0[2] + (pos1[2] - pos0[2]) * t if len(pos0) >= 3 and len(pos1) >= 3 else 0.0
 
-            interpolated_attrs = self._interpolate_attributes_line(v0, v1, t)
+            interpolated_attrs = self._interpolate_attributes_line(v0, v1, t, clip_w0, clip_w1)
 
             pixel = Pixel(
                 x=screen_x,
@@ -356,10 +356,10 @@ class Rasterizer:
                 depth=depth,
                 color=interpolated_attrs.get('color'),
                 texcoord=interpolated_attrs.get('texcoord'),
-                texcoord2=interpolated_attrs.get('texcoord1'),
+                texcoord2=interpolated_attrs.get('texcoord2'),
                 normal=interpolated_attrs.get('normal'),
                 position=interpolated_attrs.get('position'),
-                attributes={},
+                attributes=interpolated_attrs.get('attributes', {}),
                 primitive_id=primitive_id
             )
             self._pixels.append(pixel)
@@ -432,19 +432,20 @@ class Rasterizer:
 
                     interpolated = self._interpolate_with_barycentric(
                         triangle.v0, triangle.v1, triangle.v2,
-                        bary_x, bary_y, bary_z
+                        bary_x, bary_y, bary_z,
+                        clip_w0, clip_w1, clip_w2
                     )
 
                     pixel = Pixel(
                         x=x,
                         y=y,
                         depth=depth,
-                        color=interpolated.get('color'),
-                        texcoord=interpolated.get('texcoord'),
-                        texcoord2=interpolated.get('texcoord1'),
-                        normal=interpolated.get('normal'),
-                        position=interpolated.get('position'),
-                        attributes={},
+                        color=interpolated.get('Color'),
+                        texcoord=interpolated.get('Texcoord'),
+                        texcoord2=interpolated.get('Texcoord2'),
+                        normal=interpolated.get('Normal'),
+                        worldPos=interpolated.get('WorldPos'),
+                        attributes=interpolated.get('attributes', {}),
                         primitive_id=triangle.primitive_id
                     )
                     self._pixels.append(pixel)
@@ -479,8 +480,14 @@ class Rasterizer:
         return (c[0] - a[0]) * (b[1] - a[1]) - (c[1] - a[1]) * (b[0] - a[0])
 
     def _interpolate_with_barycentric(self, v0: Dict[str, Any], v1: Dict[str, Any], v2: Dict[str, Any],
-                                      bary_x: float, bary_y: float, bary_z: float) -> Dict[str, Any]:
-        """Interpolate vertex attributes using barycentric coordinates"""
+                                      bary_x: float, bary_y: float, bary_z: float,
+                                      clip_w0: float = 1.0, clip_w1: float = 1.0, clip_w2: float = 1.0) -> Dict[str, Any]:
+        """
+        Interpolate vertex attributes using barycentric coordinates with D3D11 perspective-correct interpolation.
+
+        Uses perspective-correct (trilinear) interpolation: attributes are divided by w before interpolation,
+        then the result is divided by the interpolated 1/w to get the correct perspective value.
+        """
         result = {}
 
         attr_names = set()
@@ -488,8 +495,17 @@ class Rasterizer:
             if v:
                 attr_names.update(v.keys())
 
+        inv_w0 = 1.0 / clip_w0 if abs(clip_w0) > 1e-8 else 0.0
+        inv_w1 = 1.0 / clip_w1 if abs(clip_w1) > 1e-8 else 0.0
+        inv_w2 = 1.0 / clip_w2 if abs(clip_w2) > 1e-8 else 0.0
+
+        interpolated_inv_w = bary_x * inv_w0 + bary_y * inv_w1 + bary_z * inv_w2
+        if abs(interpolated_inv_w) < 1e-8:
+            interpolated_inv_w = 1.0
+
         for attr_name in attr_names:
-            if attr_name.lower() in ['sv_position', 'position', 'pos', 'texcoord2']:
+            attr_lower = attr_name.lower()
+            if attr_lower in ['sv_position', 'position', 'pos', 'sv_position']:
                 continue
 
             vals = []
@@ -502,14 +518,38 @@ class Rasterizer:
             if all(isinstance(v, list) and v is not None for v in vals):
                 min_len = min(len(v) for v in vals if isinstance(v, list))
                 interpolated = []
-                for i in range(min_len):
-                    comp0 = vals[0][i] if len(vals[0]) > i else 0.0
-                    comp1 = vals[1][i] if len(vals[1]) > i else 0.0
-                    comp2 = vals[2][i] if len(vals[2]) > i else 0.0
-                    interpolated.append(bary_x * comp0 + bary_y * comp1 + bary_z * comp2)
+
+                if attr_lower in ['color', 'normal']:
+                    for i in range(min_len):
+                        comp0 = vals[0][i] if len(vals[0]) > i else 0.0
+                        comp1 = vals[1][i] if len(vals[1]) > i else 0.0
+                        comp2 = vals[2][i] if len(vals[2]) > i else 0.0
+                        val = bary_x * comp0 + bary_y * comp1 + bary_z * comp2
+                        if attr_lower == 'color':
+                            val = max(0.0, min(1.0, val))
+                        interpolated.append(val)
+                else:
+                    for i in range(min_len):
+                        comp0 = vals[0][i] if len(vals[0]) > i else 0.0
+                        comp1 = vals[1][i] if len(vals[1]) > i else 0.0
+                        comp2 = vals[2][i] if len(vals[2]) > i else 0.0
+
+                        attr0_normalized = comp0 * inv_w0
+                        attr1_normalized = comp1 * inv_w1
+                        attr2_normalized = comp2 * inv_w2
+
+                        attr_interpolated_normalized = bary_x * attr0_normalized + bary_y * attr1_normalized + bary_z * attr2_normalized
+
+                        attr_interpolated = attr_interpolated_normalized / interpolated_inv_w
+                        interpolated.append(attr_interpolated)
+
                 result[attr_name] = interpolated
-            elif all(isinstance(v, (int, float)) for v in vals if v is not None):
-                result[attr_name] = bary_x * vals[0] + bary_y * vals[1] + bary_z * vals[2]
+            elif all(isinstance(v, (int, float)) and v is not None for v in vals):
+                attr0_normalized = vals[0] * inv_w0
+                attr1_normalized = vals[1] * inv_w1
+                attr2_normalized = vals[2] * inv_w2
+                attr_interpolated_normalized = bary_x * attr0_normalized + bary_y * attr1_normalized + bary_z * attr2_normalized
+                result[attr_name] = attr_interpolated_normalized / interpolated_inv_w
 
         return result
 
@@ -519,17 +559,26 @@ class Rasterizer:
             return vertex[attr_name]
         return None
 
-    def _interpolate_attributes_line(self, v0: Dict[str, Any], v1: Dict[str, Any], t: float) -> Dict[str, Any]:
-        """Interpolate attributes for line at parameter t"""
+    def _interpolate_attributes_line(self, v0: Dict[str, Any], v1: Dict[str, Any], t: float,
+                                      clip_w0: float = 1.0, clip_w1: float = 1.0) -> Dict[str, Any]:
+        """Interpolate attributes for line at parameter t with perspective-correct interpolation"""
         result = {}
 
         if not v0 or not v1:
             return result
 
+        inv_w0 = 1.0 / clip_w0 if abs(clip_w0) > 1e-8 else 0.0
+        inv_w1 = 1.0 / clip_w1 if abs(clip_w1) > 1e-8 else 0.0
+        one_minus_t = 1.0 - t
+        interpolated_inv_w = one_minus_t * inv_w0 + t * inv_w1
+        if abs(interpolated_inv_w) < 1e-8:
+            interpolated_inv_w = 1.0
+
         attr_names = set(v0.keys()) | set(v1.keys())
 
         for attr_name in attr_names:
-            if attr_name.lower() in ['sv_position', 'position', 'pos']:
+            attr_lower = attr_name.lower()
+            if attr_lower in ['sv_position', 'position', 'pos', 'sv_position']:
                 continue
 
             val0 = v0.get(attr_name)
@@ -546,13 +595,30 @@ class Rasterizer:
             if isinstance(val0, list) and isinstance(val1, list):
                 min_len = min(len(val0), len(val1))
                 interpolated = []
-                for i in range(min_len):
-                    v0_comp = val0[i] if i < len(val0) else 0.0
-                    v1_comp = val1[i] if i < len(val1) else 0.0
-                    interpolated.append(v0_comp + (v1_comp - v0_comp) * t)
+
+                if attr_lower in ['color', 'normal']:
+                    for i in range(min_len):
+                        v0_comp = val0[i] if i < len(val0) else 0.0
+                        v1_comp = val1[i] if i < len(val1) else 0.0
+                        val = one_minus_t * v0_comp + t * v1_comp
+                        if attr_lower == 'color':
+                            val = max(0.0, min(1.0, val))
+                        interpolated.append(val)
+                else:
+                    for i in range(min_len):
+                        v0_comp = val0[i] if i < len(val0) else 0.0
+                        v1_comp = val1[i] if i < len(val1) else 0.0
+                        v0_normalized = v0_comp * inv_w0
+                        v1_normalized = v1_comp * inv_w1
+                        val_normalized = one_minus_t * v0_normalized + t * v1_normalized
+                        val = val_normalized / interpolated_inv_w
+                        interpolated.append(val)
                 result[attr_name] = interpolated
             elif isinstance(val0, (int, float)) and isinstance(val1, (int, float)):
-                result[attr_name] = val0 + (val1 - val0) * t
+                v0_normalized = val0 * inv_w0
+                v1_normalized = val1 * inv_w1
+                val_normalized = one_minus_t * v0_normalized + t * v1_normalized
+                result[attr_name] = val_normalized / interpolated_inv_w
             elif val0 is not None:
                 result[attr_name] = val0
 

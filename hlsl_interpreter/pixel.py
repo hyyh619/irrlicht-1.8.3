@@ -12,12 +12,12 @@ class Pixel:
     depth: float                     # Depth value (for z-test)
     color: Optional[List[float]]     # Interpolated color (RGBA)
     texcoord: Optional[List[float]]  # Interpolated texture coordinate
-    texcoord2: Optional[List[float]]  # Interpolated second texture coordinate
+    texcoord2: Optional[List[float]] # Interpolated second texture coordinate
     normal: Optional[List[float]]    # Interpolated normal vector
-    position: Optional[List[float]]  # Interpolated world position
-    attributes: Dict[str, Any]      # Additional interpolated attributes
+    worldPos: Optional[List[float]]  # Interpolated world position
+    attributes: Dict[str, Any]       # Additional interpolated attributes
     primitive_id: int                # ID of the primitive this pixel belongs to
-    sample_index: int = 0           # Sample index for MSAA
+    sample_index: int = 0            # Sample index for MSAA
 
     def __post_init__(self):
         if self.attributes is None:
