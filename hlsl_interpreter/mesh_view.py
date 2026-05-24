@@ -1640,10 +1640,10 @@ class MeshView:
                     pass
                 self._root = None
                 self._input_canvas = None
-self._rasterizer_canvas = None
-        self._pixel_shader_canvas = None
-        self._output_merger_canvas = None
-        self._output_notebook = None
+                self._rasterizer_canvas = None
+                self._pixel_shader_canvas = None
+                self._output_merger_canvas = None
+                self._output_notebook = None
             try:
                 self._root.after(0, _do_close)
             except RuntimeError:
