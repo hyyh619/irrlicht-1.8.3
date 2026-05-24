@@ -1371,13 +1371,15 @@ Git commit: hlsl-inter: create render.py by MiniMax-M2.7
 
 
 # 81
-Git commit: 
+Git commit: hlsl-inter: fix Pixel object doesn't store interpolated attributes by MiniMax-M2.7 and ying.
 1. rasterizer.py的Rasterizer对象只对输入顶点的坐标进行了光栅化，但是没有对输入的color,normal,texcoord,texcoord2等顶点属性进行插值。请使用D3D11的重心坐标和三线性插值的算法，对这些属性进行插值，并保存在Pixel对象里。
-2. Pixel对象构造时，已经传入了
-3. 
+
+## hy: LLM没有完全修复，因为Pixel对象获取attribute是通过name，所以出现名称不匹配，手动修复。
+
 
 # 82
 Git commit: 
+
 
 
 # 83
