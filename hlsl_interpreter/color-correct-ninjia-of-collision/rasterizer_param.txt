@@ -1,0 +1,14 @@
+FillMode            D3D11_FILL_SOLID
+CullMode            D3D11_CULL_BACK
+FrontCounterClockwise False
+DepthBias           0
+DepthBiasClamp      0.00
+SlopeScaledDepthBias 0.00
+DepthClipEnable     True
+ScissorEnable       False
+MultisampleEnable   True
+AntialiasedLineEnable False
+ForcedSampleCount   0
+
+name     slot   x y width   height  mindepth maxdepth
+viewport 0      0 0 640     480     0        1

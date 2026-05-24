@@ -835,7 +835,7 @@ Git commit:
 # 37
 Git commit: hlsl-inter: MiniMax-M2.7 fixes two char operator issue failed. I have to fix it by my hand.
 
-hy: MiniMax-M2.7并不能完全修复。提供了两个char的运算符的判断，但是没有考虑到检测到"<"后，取[i-1:i+1]实际取出的是" <"，导致错误依旧。
+## hy: MiniMax-M2.7并不能完全修复。提供了两个char的运算符的判断，但是没有考虑到检测到"<"后，取[i-1:i+1]实际取出的是" <"，导致错误依旧。
 
 hlsl_interpreter.py生成语法树的函数SyntaxTreeParser.parse没有正确的处理语句“float cond = dist <= LightRadius ? 1.0 : 0.0”。
 它把操作符“<=”识别成“<”操作符，导致后续常量名LightRadius被错误识别成"= LightRadius"，无法加载到正确的数据。请修复该问题
@@ -928,7 +928,7 @@ HLSLInterpreter分割下列语句
 # 42
 Git commit: hlsl-inter: refine if-cond-else execute_if_statement. We should merge if/else statements before executing by MiniMax-M2.7.
 
-hy: MiniMax-M2.7错误的删除以下语句导致execute_main_function没有返回执行结果
+## hy: MiniMax-M2.7错误的删除以下语句导致execute_main_function没有返回执行结果
                  if 'return' in stmt and 'output' in stmt:
                 ret_val = local_vars.get('output')
                 i += 1
@@ -985,7 +985,7 @@ Git commit: hlsl-inter: add thread workers to run multithreads on VS by MiniMax-
 # 45
 Git commit: hlsl-inter: add function cache to improve performance by MiniMax-M2.7.
 
-hy: MiniMax-M2.7这次做得比较好，找出GIL问题是多线程无法提速的根本。主动增加了function cache提升从executeVS执行9秒到7秒。
+## hy: MiniMax-M2.7这次做得比较好，找出GIL问题是多线程无法提速的根本。主动增加了function cache提升从executeVS执行9秒到7秒。
 
 HLSLInterpreter的self.max_workers也采用json配置的方式。如果没有json配置项，默认值为1
 
@@ -1158,7 +1158,7 @@ Git commit: hlsl-inter: create vertex object by MiniMax-M2.7.
 
 # 62
 Git commit: hlsl-inter: fix tk mainloop threading issue by MiniMax-M2.7.
-hy: It's a good fix.
+## hy: It's a good fix.
 
 帮我修复hlsl_interpreter.py运行时的，下面这个报错问题
   File "c:\Python314\Lib\threading.py", line 1023, in run
@@ -1180,7 +1180,7 @@ Git commit: hlsl-inter: move MeshView UI to a separate thread. by MiniMax-M2.7.
 
 # 64
 Git commit: hlsl-inter: fix MeshView close crash if mainloop had have exited. by MiniMax-M2.7.
-hy: It's a good fix.
+## hy: It's a good fix.
 
 hlsl_interpreter.py退出时，遇到下面错误，请修复
 Exception has occurred: RuntimeError
@@ -1206,7 +1206,7 @@ MeshView下面的状态栏显示了input顶点数量，output顶点数量，topo
 
 # 66
 Git commit: hlsl-inter: support vertex pick from input and result windows. by MiniMax-M2.7.
-hy: the full function added by MiniMax-M2.7. It passed test after first coding by MiniMax-M2.7.
+## hy: the full function added by MiniMax-M2.7. It passed test after first coding by MiniMax-M2.7.
 
 MeshView能够提供一个选中某个顶点的功能，
 1. 用户可以在input窗口或者result窗口选择任意的一个顶点
@@ -1216,7 +1216,7 @@ MeshView能够提供一个选中某个顶点的功能，
 
 # 67
 Git commit: hlsl-inter: add re-execute vs with selected vertex by MiniMax-M2.7.
-hy: the full function added by MiniMax-M2.7. It passed test after first coding by MiniMax-M2.7.
+## hy: the full function added by MiniMax-M2.7. It passed test after first coding by MiniMax-M2.7.
 
 MeshView的selected vertex info窗口增加以下功能
 1. selected vertex info窗口除了显示当前被选中的顶点外，同时显示该顶点执行的vertex shader语句
@@ -1320,15 +1320,23 @@ mesh_view.py做如下新增功能
    c. output merger阶段执行完毕的窗口
 3. 以上新增窗口暂时不显示任何东西，等待后续输入
 
-hy: llm wrote a stupid syntax error
+## hy: llm wrote a stupid syntax error
+git commit: hlsl-inter: fix the simple stupid error causes by the last LLM's commit by ying.
 
 
 # 77
 Git commit: 
+请把解析hlsl_interpreter\color-correct-ninjia-of-collision\rasterizer_param.txt生成一份json文件
 
 
 # 78
-Git commit: 
+Git commit:
+hlsl_interpreter.py的HLSLInterpreter对输入顶点数据进行解释执行后的输出数据我们需要继续做光栅化
+1. 新增一个rasterizer.py的光栅化处理的文件，创建Rasterizer对象
+2. Rasterizer对象接收HLSLInterpreter的输出results
+3. Rasterizer根据primitive_topology的类型来构造primitive，例如
+   1. primitive type是D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST，每三个HLSLInterpreter输出的顶点构造成一个
+4. 
 
 
 # 79
