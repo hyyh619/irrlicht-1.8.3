@@ -1385,6 +1385,28 @@ Git commit: hlsl-inter: show rasterized pixels by MiniMax-M2.7.
 
 # 83
 Git commit: 
+1. 创建texture.py文件，该文件主要实现纹理采样
+2. 在texture.py中创建Sampler对象，该对象是保存采样器的参数配置，请保存以下参数Filter, AddressU, AddressV, AddressW, MipLODBias, MaxAnisotropy, ComparisonFunc, BorderColor, MinLOD, MaxLOD
+3. 下面是Sampler的参数例子，请创建一份json文件用来保存下列的采样器参数，并送给Sampler对象初始化
+    Filter         D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT
+    AddressU       D3D11_TEXTURE_ADDRESS_WRAP
+    AddressV       D3D11_TEXTURE_ADDRESS_WRAP
+    AddressW       D3D11_TEXTURE_ADDRESS_WRAP
+    MipLODBias     0.00
+    MaxAnisotropy  1
+    ComparisonFunc D3D11_COMPARISON_NEVER
+    BorderColor    float[4]
+            [0]          -1.07374E+08
+            [1]          -1.07374E+08
+            [2]          -1.07374E+08
+            [3]          -1.07374E+08
+    MinLOD         -3.40282E+38
+    MaxLOD         3.40282E+38
+
+4. 在texture.py中创建Texture对象，该对象初始化时接收纹理文件，Sampler对象
+4. 参考D3D11的纹理采样算法在Texture对象实现纹理采样
+   1. 输入纹理坐标U, V, W，坐标使用浮点数
+   2. 输出采样的纹理的颜色，颜色用4个0.0~1.0之间的浮点数来表示RGBA四个通道的颜色
 
 
 # 84
