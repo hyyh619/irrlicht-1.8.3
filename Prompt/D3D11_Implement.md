@@ -1,5 +1,5 @@
 # 1
-
+Git commit: Implement d3d11 by minimax-m2.7.
 对照source\Irrlicht\CD3D9*.cpp, source\Irrlicht\CD3D9*.h的代码，补全CD3D11*.cpp和CD3D11*.h的实现
 
 # 2
@@ -27,6 +27,8 @@ C:\Development\Graphics\irrlicht-1.8.3\examples\01.HelloWorld\Shader@0x00007FF93
 修复上述问题
 
 # 6
+Git commit: implement createMipMaps, copy16BitMipMap and copy32BitMipMap by MiniMax-M2.7
+
 CD3D11Texture::createTexture下面部分的代码请参照CD3D9Texture::createTexture的实现
                 case ETCF_OPTIMIZED_FOR_QUALITY:
                     break;
@@ -302,6 +304,8 @@ d3d11最大可以支持8个纹理,其它video driver支持4个,改一下下面�
 根据CD3D9Driver::setVertexShader的代码，实现CD3D11Driver::setVertexShader
 
 # 19
+Git commit: Implement the following functions,
+
 1. 参考CD3D9Driver的代码，实现CD3D11Driver 的硬件缓冲区管理，包括drawHardwareBuffer 和 updateVertexHardwareBuffer的实现像 D3D9 那样设置 vertex shader/FVF。
 2. D3D11 需要通过 Input Layout 来定义顶点格式，实现 input layout 管理机制。你需要实现：
    A. 为每种 E_VERTEX_TYPE 创建/缓存 ID3D11InputLayout
@@ -322,6 +326,8 @@ d3d11最大可以支持8个纹理,其它video driver支持4个,改一下下面�
 3. vertex shader的顶点计算增加mvp矩阵转换。
 
 # 23
+Git commit: add blend/rasterizer/rendertarget states setting by MiniMax-M2.7.
+
 d3d11的渲染管线需要设置viewport/scissor, ID3D11DepthStencilState, ID3D11RasterizerState1和ID3D11BlendState1，请增加这些设置项。
 
 # 24
@@ -342,6 +348,8 @@ d3d11在draw前调用CD3D11Driver::setMaterial设置m_CurrentTexture，因此我
 d3d11的PIXEL_SHADER_STANDARD需要采样一个纹理的纹素，把该纹素作为PS的输出color
 
 # 28
+Git commit: Chang d3d11 mvp and add transpose to vs pos by MiniMax-M2.7.
+
 d3d9使用下面3个矩阵完成MVP转换
             // ! View transformation
             ETS_VIEW = 0,
@@ -365,6 +373,8 @@ d3d9使用下面3个矩阵完成MVP转换
 d3d11只需要给VS一个MVP矩阵，完成顶点转换。获得了ETS_VIEW，ETS_WORLD和ETS_PROJECTION矩阵，该如何计算出VS使用的MVP矩阵。
 
 # 29
+Git commit: Fix mismatch format between image and resource of texture by MiniMax-M2.7.
+
 CD3D11Texture::copyTexture在拷贝image数据到texture对应的resource中时，
 1. 需要先检查image的format与m_ColorFormat是否匹配。
 2. 如果不匹配需要使用m_ColorFormat创建一个临时的tmpImage
@@ -372,6 +382,8 @@ CD3D11Texture::copyTexture在拷贝image数据到texture对应的resource中时�
 4. 使用tmpImage的data 上传到texture的resource中。
 
 # 30
+Git commit: Create d3d11 shader class by MiniMax-M2.7.
+
 创建shader类
 1. 该类表示d3d11的所有shader类型，包括vs/hs/ds/gs/ps/cs
 2. 该类保存shader HLSL源代码
@@ -382,6 +394,7 @@ CD3D11Texture::copyTexture在拷贝image数据到texture对应的resource中时�
 7. 把下列shader源码的编译，创建都使用该shader类来管理
 
 # 31
+Git commit: fix memory leak caused by creating shader object by MiniMax-M2.7.
 1. m_ShaderPool缓存了创建的shader对象，但是在最后CD3D11Driver对象销毁时，没有释放
 2. 下面的成员变量定义数组的大小不要使用数字，根据当前shader type,创建一个shader type enum，根据enum的数量来创建数组
             ID3D11InputLayout               *m_InputLayout[3];
@@ -389,6 +402,8 @@ CD3D11Texture::copyTexture在拷贝image数据到texture对应的resource中时�
             ID3D11PixelShader               *m_BuiltInPixelShader[3];
 
 # 32
+Git commit: add object tracking for d3d11 objects by MiniMax-M2.7.
+
 为每个ID3D11* 对象的创建，引用和销毁都打印一个log来跟踪其生存周期，以及检测内存泄漏，
 打印的log要包括对象的ID3D11*的指针地址，以及在哪个函数被调用。
 这些ID3D11* 对象例如：
@@ -399,12 +414,16 @@ ID3D11DepthStencilView
 请包括所有的对象。
 
 # 33
+Git commit: Fix memory leak.
+
 1. 检查CD3D11Driver::~CD3D11Driver 中 SwapChain 和 Device 的释放逻辑，确保没有memory leak
 2. 确保 DepthStencilTexture 在 initDriver 失败回滚时也有 Release
 3. 在CD3D11Driver释放结束时使用 ID3D11Debug::ReportLiveDeviceObjects 看到更完整的未释放对象列表，这个只对Debug代码有效
 4. 检查DepthStencilTexture， SwapChain， ID3D11Device/Device1是否释放，如果没有，添加释放代码。
 
 # 34
+Git commit: Fix memory leak.
+
 CD3D11ShaderMaterialRenderer创建了下列d3d11的对象，没有释放。请释放。
             ID3D11Device                *m_pID3DDevice;
             ID3D11DeviceContext         *m_pID3DDeviceContext;

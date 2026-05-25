@@ -1378,7 +1378,7 @@ Git commit: hlsl-inter: fix Pixel object doesn't store interpolated attributes b
 
 
 # 82
-Git commit: 
+Git commit: hlsl-inter: show rasterized pixels by MiniMax-M2.7.
 1. 请把经过Rasterizer以后的pixel绘制到MeshView的Output Rasterizer窗口上
 2. 每个像素的颜色，请根据primitive id赋予一个不同的颜色，不用直接使用pixel的color属性
 
