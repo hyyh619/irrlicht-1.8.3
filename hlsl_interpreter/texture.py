@@ -122,18 +122,110 @@ class Sampler:
         return address_u_func(u), address_v_func(v), address_w_func(w)
 
 
-class Texture:
-    def __init__(self, file_path: str, sampler: Sampler):
-        self.file_path = file_path
-        self.sampler = sampler
-        self.width = 0
-        self.height = 0
-        self.mip_levels: List[List[List[List[float]]]] = []
-        self._load_texture()
+FORMAT_MAP = {
+    "DXGI_FORMAT_B8G8R8A8_UNORM": 0x57,
+    "DXGI_FORMAT_R8G8B8A8_UNORM": 0x56,
+    "DXGI_FORMAT_R8G8B8A8_UINT": 0x6C,
+    "DXGI_FORMAT_R32G32B32A32_FLOAT": 0x5A,
+    "DXGI_FORMAT_R32G32B32A32_UINT": 0x5B,
+    "DXGI_FORMAT_R16G16B16A16_FLOAT": 0x5E,
+    "DXGI_FORMAT_R16G16B16A16_UNORM": 0x5C,
+    "DXGI_FORMAT_R32_FLOAT": 0x52,
+    "DXGI_FORMAT_R8_UNORM": 0x51,
+}
 
-    def _load_texture(self):
+USAGE_MAP = {
+    "D3D11_USAGE_DEFAULT": 0,
+    "D3D11_USAGE_IMMUTABLE": 1,
+    "D3D11_USAGE_DYNAMIC": 2,
+    "D3D11_USAGE_STAGING": 3,
+}
+
+BINDFLAGS_MAP = {
+    "D3D11_BIND_SHADER_RESOURCE": 0x8,
+    "D3D11_BIND_RENDER_TARGET": 0x4,
+    "D3D11_BIND_DEPTH_STENCIL": 0x2,
+    "D3D11_BIND_VERTEX_BUFFER": 0x1,
+    "D3D11_BIND_INDEX_BUFFER": 0x2,
+}
+
+
+class TextureDesc:
+    def __init__(
+        self,
+        Width: int = 512,
+        Height: int = 512,
+        MipLevels: int = 1,
+        ArraySize: int = 1,
+        Format: int = 0x57,  # DXGI_FORMAT_B8G8R8A8_UNORM
+        SampleDesc_Count: int = 1,
+        SampleDesc_Quality: int = 0,
+        Usage: int = 0,  # D3D11_USAGE_DEFAULT
+        BindFlags: int = 0x8,  # D3D11_BIND_SHADER_RESOURCE
+        CPUAccessFlags: int = 0,
+        MiscFlags: int = 0
+    ):
+        self.Width = Width
+        self.Height = Height
+        self.MipLevels = MipLevels
+        self.ArraySize = ArraySize
+        self.Format = Format
+        self.SampleDesc_Count = SampleDesc_Count
+        self.SampleDesc_Quality = SampleDesc_Quality
+        self.Usage = Usage
+        self.BindFlags = BindFlags
+        self.CPUAccessFlags = CPUAccessFlags
+        self.MiscFlags = MiscFlags
+
+    @classmethod
+    def from_json(cls, json_path: str) -> 'TextureDesc':
+        with open(json_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        format_val = data.get('Format', 0x57)
+        if isinstance(format_val, str):
+            format_val = FORMAT_MAP.get(format_val, 0x57)
+
+        usage_val = data.get('Usage', 0)
+        if isinstance(usage_val, str):
+            usage_val = USAGE_MAP.get(usage_val, 0)
+
+        bindflags_val = data.get('BindFlags', 0x8)
+        if isinstance(bindflags_val, str):
+            bindflags_val = BINDFLAGS_MAP.get(bindflags_val, 0x8)
+
+        return cls(
+            Width=data.get('Width', 512),
+            Height=data.get('Height', 512),
+            MipLevels=data.get('MipLevels', 1),
+            ArraySize=data.get('ArraySize', 1),
+            Format=format_val,
+            SampleDesc_Count=data.get('SampleDesc', {}).get('Count', 1),
+            SampleDesc_Quality=data.get('SampleDesc', {}).get('Quality', 0),
+            Usage=usage_val,
+            BindFlags=bindflags_val,
+            CPUAccessFlags=data.get('CPUAccessFlags', 0),
+            MiscFlags=data.get('MiscFlags', 0)
+        )
+
+
+class Texture:
+    def __init__(self, desc: TextureDesc, data_path: str, sampler: Sampler):
+        self.desc = desc
+        self.sampler = sampler
+        self.width = desc.Width
+        self.height = desc.Height
+        self.mip_levels: List[List[List[List[float]]]] = []
+        self._load_texture(data_path)
+
+    @classmethod
+    def from_json(cls, desc_path: str, data_path: str, sampler: Sampler) -> 'Texture':
+        desc = TextureDesc.from_json(desc_path)
+        return cls(desc, data_path, sampler)
+
+    def _load_texture(self, data_path: str):
         try:
-            with open(self.file_path, 'rb') as f:
+            with open(data_path, 'rb') as f:
                 data = f.read()
             self._parse_bmp(data)
         except Exception:

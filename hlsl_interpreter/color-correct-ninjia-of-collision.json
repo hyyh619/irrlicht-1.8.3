@@ -4,6 +4,7 @@
     "log_file_path": "./color-correct-ninjia-of-collision/output.log",
     "rasterizer_param": "./color-correct-ninjia-of-collision/rasterizer_param.json",
     "sampler_config": "./color-correct-ninjia-of-collision/sampler_config.json",
+    "texture_desc": "./color-correct-ninjia-of-collision/texture_desc.json",
     "log_to_file": false,
     "printSyntaxTree": false,
     "print_interpreter_result": false,

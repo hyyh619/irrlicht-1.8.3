@@ -1384,7 +1384,7 @@ Git commit: hlsl-inter: show rasterized pixels by MiniMax-M2.7.
 
 
 # 83
-Git commit: 
+Git commit: hlsl-inter: create texture sampling by MiniMax-M2.7.
 1. 创建texture.py文件，该文件主要实现纹理采样
 2. 在texture.py中创建Sampler对象，该对象是保存采样器的参数配置，请保存以下参数Filter, AddressU, AddressV, AddressW, MipLODBias, MaxAnisotropy, ComparisonFunc, BorderColor, MinLOD, MaxLOD
 3. 下面是Sampler的参数例子，请创建一份json文件用来保存下列的采样器参数，并送给Sampler对象初始化
@@ -1408,13 +1408,40 @@ Git commit:
    1. 输入纹理坐标U, V, W，坐标使用浮点数
    2. 输出采样的纹理的颜色，颜色用4个0.0~1.0之间的浮点数来表示RGBA四个通道的颜色
 
+Width        512
+Height       512
+MipLevels    1
+ArraySize    1
+Format       DXGI_FORMAT_B8G8R8A8_UNORM
+SampleDesc   DXGI_SAMPLE_DESC()
+Usage        D3D11_USAGE_DEFAULT
+BindFlags    D3D11_BIND_SHADER_RESOURCE
+CPUAccessFlags 0
+MiscFlags    0
 
 # 84
 Git commit: 
+1. texture.py中定义的Texture对象需要保存纹理参数，纹理的参数如下列所示
+    Width        512
+    Height       512
+    MipLevels    1
+    ArraySize    1
+    Format       DXGI_FORMAT_B8G8R8A8_UNORM
+    SampleDesc   DXGI_SAMPLE_DESC()
+    Usage        D3D11_USAGE_DEFAULT
+    BindFlags    D3D11_BIND_SHADER_RESOURCE
+    CPUAccessFlags 0
+    MiscFlags    0
+2. 请给Texture对象增加上述参数
+3. Texture创建时输入纹理参数的json文件和纹理数据文件，以及Sampler对象
+
 
 
 # 85
-Git commit: 
+Git commit:
+1. hlsl_interpreter.py的HLSLInterpreter初始化时创建Sampler对象和Texture对象
+2. Sampler对象和Texture对象的定义在texture.py
+3. Sampler对象创建用到的配置参数文件请从输入的json配置文件中的sampler_json项获得
 
 
 # 86
