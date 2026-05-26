@@ -104,12 +104,12 @@ def main():
         interpreter.set_texture_and_sampler(texture, texture_desc, sampler)
 
     # 3. 执行PS（需要提供纹理和采样器配置文件路径）
-    interpreter.executePS("ps_main", "PS_INPUT", pixels, 
+    interpreter.executePS("ps_main", "PS_INPUT", pixels,
                     texture_desc_path, sampler_config_path)
 
     # 在MeshView中显示
     if mesh_view_enabled and pixels:
-        mesh_view.set_rasterizer_pixels(pixels)  # 更新后的pixels已包含ps_output_color
+        interpreter.mesh_view.set_rasterizer_pixels(pixels)  # 更新后的pixels已包含ps_output_color
 
     if interpreter.print_interpreter_result:
         interpreter.log_output("HLSL Interpreter Result:")

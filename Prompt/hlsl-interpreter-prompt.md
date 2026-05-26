@@ -1467,13 +1467,33 @@ hy: cannot run correctly. Need to fix by hand.
 
 
 # 87
-Git commit: 
-1. 
-2. 请在render.py中根据获取的texture_desc和sampler_config
+Git commit: hlsl-inter: separate texture_desc and sampler from Texture executor by MiniMax-M2.7.
+1. texture.py中Texture对象是纹理采样的执行器，请不要跟具体的纹理描述(texture_desc)和Sampler绑定
+2. texture_desc对象负责保存纹理的参数以及纹理数据，sampler对象保存采样参数
+3. Texture对象的sample参数除了输入纹理坐标以外，还需要输入texture_desc和sampler。sample函数内部根据texture_desc和sampler来完成具体的采样
+4. render.py根据获取的texture_desc_path和sampler_config_path，创建对应的texture_desc对象和sampler对象
+5. render.py创建Texture对象作为纹理采样的执行器，Texture对象，texture_desc和sampler需要传递给interpreter
+6. HLSLInterpreter在执行采样语句时，根据具体的register定义来获取到指定的texture_desc和sampler并传递给Texture.sample完成一次采样过程
 
 
 # 88
 Git commit: 
+1. render.py的下列代码只会加载texture_desc和sampler_config的第一项，请添加代码加载所有的texture_desc和sampler保存成列表
+    texture_desc_path = config.get('texture_desc', '')
+    sampler_config_path = config.get('sampler_config', '')
+
+    texture_desc = None
+    sampler = None
+    texture = None
+    if texture_desc_path and sampler_config_path:
+        from texture import TextureDesc, Sampler, Texture
+        texture_desc = TextureDesc.from_config(texture_desc_path, 0)
+        sampler = Sampler.from_config(sampler_config_path, 0)
+        texture = Texture()
+2. render.py执行executorPS时不需要再送入texture_desc_path和sampler_config_path，原始代码如下
+    interpreter.executePS("ps_main", "PS_INPUT", pixels,
+                    texture_desc_path, sampler_config_path)
+3. HLSLInterpreter创建时，需要把步骤1生成的所有texture_desc和sampler_config传入给interpreter
 
 
 # 89

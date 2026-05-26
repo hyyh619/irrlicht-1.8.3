@@ -257,7 +257,7 @@ class TextureDesc:
             BindFlags=_convert_bindflags(tex_data.get('BindFlags', 'D3D11_BIND_SHADER_RESOURCE')),
             CPUAccessFlags=tex_data.get('CPUAccessFlags', 0),
             MiscFlags=tex_data.get('MiscFlags', 0),
-            DataPath=tex_data.get('DataPath', '')
+            DataPath=tex_data.get('Image', '')
         )
 
 
