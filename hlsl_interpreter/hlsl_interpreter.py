@@ -1855,7 +1855,7 @@ class HLSLInterpreter:
 
         return results
 
-    def executePS(self, code: str, main_func: str, ps_input: str, pixels: List['Pixel'], texture_config_path: str = None, sampler_config_path: str = None):
+    def executePS(self, main_func: str, ps_input: str, pixels: List['Pixel'], texture_config_path: str = None, sampler_config_path: str = None):
         """
         执行像素着色器
         code: HLSL代码
@@ -1866,8 +1866,7 @@ class HLSLInterpreter:
         sampler_config_path: 采样器配置文件路径
         返回: 更新了ps_output_color的像素列表
         """
-        if code is None:
-            code = self.hlsl_code
+        code = self.hlsl_code
 
         input_struct = self.structs.get(ps_input)
         if not input_struct:

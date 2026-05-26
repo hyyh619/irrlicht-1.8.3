@@ -79,26 +79,35 @@ def main():
         interpreter.load_vs_output_golden_from_csv(golden_csv_path)
     load_golden_time = time.time() - load_golden_start
 
-    execute_start = time.time()
-    results = interpreter.executeVS("main", "VS_INPUT", execute_count=execute_count)
-    execute_time = time.time() - execute_start
-
-    r = Rasterizer("rasterizer_param.json")
-    pixels = r.rasterize(results, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
-
-    interpreter._mesh_view.set_rasterizer_pixels(pixels)
-
     if mesh_view_enabled:
         interpreter.log_output("Displaying input mesh before executeVS...")
         interpreter.show_input_mesh("VS_INPUT")
+
+    # 1. Execute VS
+    execute_start = time.time()
+    results = interpreter.executeVS("vs_main", "VS_INPUT", execute_count=execute_count)
+    execute_time = time.time() - execute_start
 
     if mesh_view_enabled and results:
         interpreter.log_output("Displaying result mesh after executeVS...")
         interpreter.show_result_mesh(results)
 
+    # Execute rasterization
+    r = Rasterizer("rasterizer_param.json")
+    pixels = r.rasterize(results, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+    interpreter._mesh_view.set_rasterizer_pixels(pixels)
+
     if mesh_view_enabled and pixels:
         interpreter.log_output("Displaying pixels after rasterizer...")
         interpreter._mesh_view._draw_rasterizer_pixels()
+
+    # 3. 执行PS（需要提供纹理和采样器配置文件路径）
+    interpreter.executePS("ps_main", "PS_INPUT", pixels, 
+                    texture_config_path, sampler_config_path)
+
+    # 在MeshView中显示
+    if mesh_view_enabled and pixels:
+        mesh_view.set_rasterizer_pixels(pixels)  # 更新后的pixels已包含ps_output_color
 
     if interpreter.print_interpreter_result:
         interpreter.log_output("HLSL Interpreter Result:")
