@@ -1616,7 +1616,7 @@ execute_main_function构造output_struct时，
 
 
 # 91
-Git commit: 
+Git commit: hlsl-inter: refine main function of render.py by MiniMax-M2.7.
 对render.py的main函数的下列代码是打印executeVS后的输出，以及比较VS执行的结果与golden结果是否匹配，请把下列代码包装成一个单独的函数，放在executeVS后面
     if interpreter.print_interpreter_result:
         interpreter.log_output("HLSL Interpreter Result:")
@@ -1672,6 +1672,13 @@ Git commit:
 
 # 92
 Git commit: 
+hlsl_interperter.py 调用tree = self.syntax_parser.parse(expr)获得的语法tree如下
+[STMT] Executing: float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord)
+[SYNTAX TREE]
+Value(DiffuseTexture.Sample(LinearSampler, input.TexCoord))
+看起来没有正确解析出语法树
+正确的语法应该是我们对DiffuseTexture对应的texture descriptor进行sample(采样),sample可以认为是一个函数，输入参数是LinearSampler（指定了采样器用哪个），input.TexCoord指定输入的纹理坐标。
+请对parse进行修复以支持上述语法
 
 
 # 93
@@ -1691,4 +1698,52 @@ Git commit:
 
 
 # 97
+Git commit: 
+
+
+# 98
+Git commit: 
+
+
+# 99
+Git commit: 
+
+
+# 100
+Git commit: 
+
+
+# 101
+Git commit: 
+
+
+# 102
+Git commit: 
+
+
+# 103
+Git commit: 
+
+
+# 104
+Git commit: 
+
+
+# 105
+Git commit: 
+
+
+# 106
+Git commit: 
+
+
+# 107
+Git commit: 
+
+
+# 108
+Git commit: 
+
+
+# 109
 Git commit: 

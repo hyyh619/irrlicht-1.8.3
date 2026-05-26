@@ -8,6 +8,7 @@ _COMPILED_PATTERNS: Dict[str, re.Pattern] = {
     'float_constructor': re.compile(r'float[234]\s*\('),
     'function_call': re.compile(r'\w+\s*\('),
     'function_call_format': re.compile(r'^(\w+)\s*\('),
+    'method_call': re.compile(r'^(\w+(?:\.\w+)*)\s*\('),
 }
 
 _OPERATORS: Dict[str, int] = {
@@ -135,8 +136,11 @@ class SyntaxTreeNode:
 
     def _pretty(self, indent: int) -> str:
         prefix = "  " * indent
-        if self.node_type == 'function':
-            lines = [f"Function({self.value})"]
+        if self.node_type == 'function' or self.node_type == 'method_call':
+            lines = [f"{self.node_type.capitalize()}({self.value})"]
+            if self.left:
+                lines.append(f"{prefix}  object:")
+                lines.append(self.left._pretty(indent + 2))
             for i, arg in enumerate(self.args):
                 lines.append(f"{prefix}  arg[{i}]:")
                 lines.append(arg._pretty(indent + 2))
@@ -242,6 +246,9 @@ class SyntaxTreeParser:
         if _COMPILED_PATTERNS['function_call'].match(expr):
             return self._parse_function_call(expr)
 
+        if '.' in expr and '(' in expr:
+            return self._parse_method_call(expr)
+
         return SyntaxTreeNode('value', expr)
 
     def _parse_function_call(self, expr: str) -> SyntaxTreeNode:
@@ -283,6 +290,24 @@ class SyntaxTreeParser:
                     return SyntaxTreeNode('function', func_name, args=arg_nodes)
 
         return SyntaxTreeNode('value', expr)
+
+    def _parse_method_call(self, expr: str) -> SyntaxTreeNode:
+        """Parse method call expression like DiffuseTexture.Sample(LinearSampler, input.TexCoord)"""
+        expr = expr.strip()
+        dot_pos = expr.find('.')
+        if dot_pos < 0:
+            return SyntaxTreeNode('value', expr)
+
+        paren_pos = expr.find('(', dot_pos)
+        if paren_pos < 0:
+            return SyntaxTreeNode('value', expr)
+
+        obj_name = expr[:dot_pos].strip()
+        method_name = expr[dot_pos+1:paren_pos].strip()
+        args_str = expr[paren_pos+1:expr.rfind(')')]
+
+        arg_nodes = [self._parse_expression(arg.strip()) for arg in _split_args_cached(args_str)]
+        return SyntaxTreeNode('method_call', method_name, left=SyntaxTreeNode('value', obj_name), args=arg_nodes)
 
     def _split_args(self, args_str: str) -> List[str]:
         return list(_split_args_cached(args_str))

@@ -1073,6 +1073,9 @@ class HLSLInterpreter:
         elif node.node_type == 'function':
             return self.execute_function_node(node, local_vars)
 
+        elif node.node_type == 'method_call':
+            return self.execute_method_call_node(node, local_vars)
+
         elif node.node_type == 'ternary':
             cond = self.evaluate_syntax_tree(node.left, local_vars)
             if cond:
@@ -1329,6 +1332,42 @@ class HLSLInterpreter:
                             return result
             return None
 
+        return None
+
+    def execute_method_call_node(self, node: SyntaxTreeNode, local_vars: Dict[str, Any]) -> Any:
+        """
+        执行方法调用语法树节点 (如 Texture.Sample)
+        node: 方法调用节点
+        local_vars: 局部变量字典
+        返回: 方法执行结果
+        """
+        method_name = node.value
+        obj_node = node.left
+        args = node.args
+
+        if method_name == 'Sample' and len(args) == 2:
+            if obj_node is None:
+                return None
+            obj_name = obj_node.value if obj_node.node_type == 'value' else None
+            if obj_name is None:
+                return None
+            coords = self.evaluate_syntax_tree(args[1], local_vars)
+            if coords and isinstance(coords, list) and len(coords) >= 2:
+                u, v = coords[0], coords[1]
+                w = coords[2] if len(coords) > 2 else 0.0
+                binding = self._find_texture_binding(obj_name)
+                if binding and self._texture_list and self._texture_desc_list and self._sampler_list:
+                    reg_id = binding.register_id
+                    if reg_id < len(self._texture_list) and reg_id < len(self._texture_desc_list) and reg_id < len(self._sampler_list):
+                        texture = self._texture_list[reg_id]
+                        texture_desc = self._texture_desc_list[reg_id]
+                        sampler = self._sampler_list[reg_id]
+                        result = texture.sample(u, v, w, texture_desc, sampler)
+                        self.debug_print(f"[METHOD] {obj_name}.Sample(..., ({u:.4f}, {v:.4f})) = {self._format_float(result)}")
+                        return result
+            return None
+
+        self.debug_print(f"[ERROR] Unknown method: {method_name}")
         return None
 
     def apply_swizzle(self, obj: Any, swizzle: str) -> Any:
