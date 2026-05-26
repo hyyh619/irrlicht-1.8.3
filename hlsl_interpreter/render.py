@@ -96,7 +96,7 @@ def main():
 
     texture_desc_list = []
     sampler_list = []
-    texture_list = []
+    texture_exec = None
     if texture_desc_path and sampler_config_path:
         from texture import TextureDesc, Sampler, Texture
         with open(texture_desc_path, 'r', encoding='utf-8') as f:
@@ -108,7 +108,7 @@ def main():
         for samp_id in sampler_data:
             sampler_list.append(Sampler.from_config(sampler_config_path, int(samp_id)))
 
-        texture_list.append(Texture())
+        texture_exec = Texture()
 
     interpreter = HLSLInterpreter(
         log_to_file=log_to_file,
@@ -119,7 +119,7 @@ def main():
         print_interpreter_result=print_interpreter_result,
         max_workers=max_workers,
         primitive_topology=primitive_topology,
-        texture_list=texture_list,
+        texture_list=[texture_exec] if texture_exec else [],
         texture_desc_list=texture_desc_list,
         sampler_list=sampler_list)
 

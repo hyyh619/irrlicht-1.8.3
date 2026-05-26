@@ -1671,7 +1671,8 @@ Git commit: hlsl-inter: refine main function of render.py by MiniMax-M2.7.
 
 
 # 92
-Git commit: 
+Git commit: hlsl-inter: add texture sample parsing in PS by MiniMax-M2.7.
+
 hlsl_interperter.py 调用tree = self.syntax_parser.parse(expr)获得的语法tree如下
 [STMT] Executing: float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord)
 [SYNTAX TREE]
@@ -1683,6 +1684,24 @@ Value(DiffuseTexture.Sample(LinearSampler, input.TexCoord))
 
 # 93
 Git commit: 
+1. HLSLInterpreter不需要多个Texture对象，请把self._texture_list改为保存单个Texture对象（self._texture_exec）
+2. syntax tree parse分析下面语句
+float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord)
+生成的语法树如下
+[SYNTAX TREE]
+Method_call(Sample)
+  object:
+    Value(DiffuseTexture)
+  arg[0]:
+    Value(LinearSampler)
+  arg[1]:
+    Value(input.TexCoord)
+根据上述语法树实现HLSLInterpreter evaluate_syntax_tree
+针对上面的HLSL语句实际执行路径如下
+    a. 调用HLSLInterpreter _texture_exec.sample来执行采样
+    b. _texture_exec.sample的texture_desc由DiffuseTexture指定
+    c. _texture_exec.sample的sampler由LinearSampler指定
+    d. _texture_exec.sample的纹理坐标来源于input.TexCoord
 
 
 # 94

@@ -338,7 +338,7 @@ class HLSLInterpreter:
         self.sampler_bindings: List[SamplerBinding] = []     # VS/PS中的采样器绑定列表
         self.texture_config_path: str = ""                   # 纹理配置文件路径
         self.sampler_config_path: str = ""                   # 采样器配置文件路径
-        self._texture_list: List['Texture'] = texture_list if texture_list else []
+        self._texture_exec: 'Texture' = texture_list[0] if texture_list else None
         self._texture_desc_list: List['TextureDesc'] = texture_desc_list if texture_desc_list else []
         self._sampler_list: List['Sampler'] = sampler_list if sampler_list else []
 
@@ -404,14 +404,14 @@ class HLSLInterpreter:
 
         self.log_output(f"MeshView {'enabled' if enable else 'disabled'}")
 
-    def set_texture_and_sampler(self, texture_list, texture_desc_list, sampler_list):
+    def set_texture_and_sampler(self, texture_exec, texture_desc_list, sampler_list):
         """
         设置纹理采样执行器及其关联的texture_desc和sampler列表
-        texture_list: Texture对象列表（纹理采样执行器）
+        texture_exec: Texture对象（纹理采样执行器）
         texture_desc_list: TextureDesc对象列表（纹理参数和纹理数据）
         sampler_list: Sampler对象列表（采样参数）
         """
-        self._texture_list = texture_list if texture_list else []
+        self._texture_exec = texture_exec
         self._texture_desc_list = texture_desc_list if texture_desc_list else []
         self._sampler_list = sampler_list if sampler_list else []
 
@@ -1321,13 +1321,12 @@ class HLSLInterpreter:
                     u, v = coords[0], coords[1]
                     w = coords[2] if len(coords) > 2 else 0.0
                     binding = self._find_texture_binding(texture_name)
-                    if binding and self._texture_list and self._texture_desc_list and self._sampler_list:
+                    if binding and self._texture_exec and self._texture_desc_list and self._sampler_list:
                         reg_id = binding.register_id
-                        if reg_id < len(self._texture_list) and reg_id < len(self._texture_desc_list) and reg_id < len(self._sampler_list):
-                            texture = self._texture_list[reg_id]
+                        if reg_id < len(self._texture_desc_list) and reg_id < len(self._sampler_list):
                             texture_desc = self._texture_desc_list[reg_id]
                             sampler = self._sampler_list[reg_id]
-                            result = texture.sample(u, v, w, texture_desc, sampler)
+                            result = self._texture_exec.sample(u, v, w, texture_desc, sampler)
                             self.debug_print(f"[FUNC] {texture_name}.Sample(..., ({u:.4f}, {v:.4f})) = {self._format_float(result)}")
                             return result
             return None
@@ -1356,13 +1355,12 @@ class HLSLInterpreter:
                 u, v = coords[0], coords[1]
                 w = coords[2] if len(coords) > 2 else 0.0
                 binding = self._find_texture_binding(obj_name)
-                if binding and self._texture_list and self._texture_desc_list and self._sampler_list:
+                if binding and self._texture_exec and self._texture_desc_list and self._sampler_list:
                     reg_id = binding.register_id
-                    if reg_id < len(self._texture_list) and reg_id < len(self._texture_desc_list) and reg_id < len(self._sampler_list):
-                        texture = self._texture_list[reg_id]
+                    if reg_id < len(self._texture_desc_list) and reg_id < len(self._sampler_list):
                         texture_desc = self._texture_desc_list[reg_id]
                         sampler = self._sampler_list[reg_id]
-                        result = texture.sample(u, v, w, texture_desc, sampler)
+                        result = self._texture_exec.sample(u, v, w, texture_desc, sampler)
                         self.debug_print(f"[METHOD] {obj_name}.Sample(..., ({u:.4f}, {v:.4f})) = {self._format_float(result)}")
                         return result
             return None
@@ -2041,8 +2039,8 @@ class HLSLInterpreter:
 
             data = {
                 'Color': pixel.color if pixel.color else [1.0, 1.0, 1.0, 1.0],
-                'Texcoord': pixel.texcoord if pixel.texcoord else [0.0, 0.0],
-                'Texcoord2': pixel.texcoord2 if pixel.texcoord2 else [0.0, 0.0],
+                'TexCoord': pixel.texcoord if pixel.texcoord else [0.0, 0.0],
+                'TexCoord2': pixel.texcoord2 if pixel.texcoord2 else [0.0, 0.0],
                 'Normal': pixel.normal if pixel.normal else [0.0, 0.0, 1.0],
                 'WorldPos': pixel.worldPos if pixel.worldPos else [0.0, 0.0, 0.0],
             }
@@ -2088,8 +2086,8 @@ class HLSLInterpreter:
             for sbinding in self.sampler_bindings:
                 if binding.register_id == sbinding.register_id:
                     reg_id = binding.register_id
-                    if reg_id < len(self._texture_list) and reg_id < len(self._texture_desc_list) and reg_id < len(self._sampler_list):
-                        binding.texture = self._texture_list[reg_id]
+                    if self._texture_exec and reg_id < len(self._texture_desc_list) and reg_id < len(self._sampler_list):
+                        binding.texture = self._texture_exec
                         binding.texture_desc = self._texture_desc_list[reg_id]
                         binding.sampler = self._sampler_list[reg_id]
 
