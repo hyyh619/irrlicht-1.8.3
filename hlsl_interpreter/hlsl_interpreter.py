@@ -1752,8 +1752,13 @@ class HLSLInterpreter:
             output_struct = None
 
         output_fields = {}
-        for field in output_struct.fields:
-            output_fields[field.name] = field.field_type
+        is_ps = main_func.startswith('ps_') or main_func == 'ps_main'
+        if output_struct is not None:
+            for field in output_struct.fields:
+                output_fields[field.name] = field.field_type
+        else:
+            if is_ps:
+                output_fields['Color'] = 'float4'
 
         func_signature = rf'{output_struct_name}\s+{main_func}\s*\(\s*{input_struct_name_from_func}\s+input\s*\)'
 
@@ -1803,8 +1808,14 @@ class HLSLInterpreter:
                 i += 1
                 continue
 
-            if 'return' in stmt and 'output' in stmt:
-                ret_val = local_vars.get('output')
+            if 'return' in stmt and ('output' in stmt or is_ps):
+                if is_ps:
+                    return_val_match = re.search(r'return\s+(.+?)\s*;', stmt)
+                    if return_val_match:
+                        var_name = return_val_match.group(1).strip()
+                        ret_val = local_vars.get(var_name)
+                else:
+                    ret_val = local_vars.get('output')
                 i += 1
                 continue
 
