@@ -334,6 +334,7 @@ class HLSLInterpreter:
         self.sampler_bindings: List[SamplerBinding] = []     # PS中的采样器绑定列表
         self.texture_config_path: str = ""                   # 纹理配置文件路径
         self.sampler_config_path: str = ""                   # 采样器配置文件路径
+        self._texture_sampler: tuple = None                   # (Texture, TextureDesc, Sampler) 元组
 
         # 预编译的正则表达式模式字典
         type_pattern = '|'.join(DATA_TYPE_LIST)
@@ -396,6 +397,15 @@ class HLSLInterpreter:
             self._mesh_view = MeshView(title="HLSL Interpreter - Input/Output Mesh")
 
         self.log_output(f"MeshView {'enabled' if enable else 'disabled'}")
+
+    def set_texture_and_sampler(self, texture, texture_desc, sampler):
+        """
+        设置纹理采样执行器及其关联的texture_desc和sampler
+        texture: Texture对象（纹理采样执行器）
+        texture_desc: TextureDesc对象（纹理参数和纹理数据）
+        sampler: Sampler对象（采样参数）
+        """
+        self._texture_sampler = (texture, texture_desc, sampler)
 
     def show_input_mesh(self, vs_input: str, row_index: int = None):
         """
@@ -1212,9 +1222,11 @@ class HLSLInterpreter:
                 coords = self.evaluate_syntax_tree(coords_node, local_vars) if coords_node else None
                 if coords and isinstance(coords, list) and len(coords) >= 2:
                     u, v = coords[0], coords[1]
+                    w = coords[2] if len(coords) > 2 else 0.0
                     binding = self._find_texture_binding(texture_name)
-                    if binding and binding.texture:
-                        result = binding.texture.sample(u, v)
+                    if binding and self._texture_sampler:
+                        texture, texture_desc, sampler = self._texture_sampler
+                        result = texture.sample(u, v, w, texture_desc, sampler)
                         self.debug_print(f"[FUNC] {texture_name}.Sample(..., ({u:.4f}, {v:.4f})) = {self._format_float(result)}")
                         return result
             return None

@@ -262,56 +262,51 @@ class TextureDesc:
 
 
 class Texture:
-    def __init__(self, desc: TextureDesc, sampler: Sampler):
-        self.desc = desc
-        self.sampler = sampler
-        self.width = desc.Width
-        self.height = desc.Height
-        self.mip_levels: List[List[List[List[float]]]] = []
-        self._load_texture(desc.DataPath)
+    def __init__(self):
+        self._mip_levels_cache: Dict[str, List[List[List[List[float]]]]] = {}
 
-    @classmethod
-    def from_config(cls, texture_config_path: str, sampler_config_path: str, texture_id: int, sampler_id: int) -> 'Texture':
-        desc = TextureDesc.from_config(texture_config_path, texture_id)
-        sampler = Sampler.from_config(sampler_config_path, sampler_id)
-        return cls(desc, sampler)
+    def _get_mip_levels(self, texture_desc: TextureDesc) -> List[List[List[List[float]]]]:
+        data_path = texture_desc.DataPath
+        if data_path in self._mip_levels_cache:
+            return self._mip_levels_cache[data_path]
 
-    def _load_texture(self, data_path: str):
+        mip_levels = []
         try:
             with open(data_path, 'rb') as f:
                 data = f.read()
-            self._parse_bmp(data)
+            mip_levels = self._parse_bmp(data, texture_desc)
         except Exception:
-            self._create_placeholder_texture()
+            mip_levels = self._create_placeholder_texture(texture_desc)
 
-    def _parse_bmp(self, data: bytes):
+        self._mip_levels_cache[data_path] = mip_levels
+        return mip_levels
+
+    def _parse_bmp(self, data: bytes, texture_desc: TextureDesc) -> List[List[List[List[float]]]]:
+        mip_levels = []
         if len(data) < 54:
-            self._create_placeholder_texture()
-            return
+            return self._create_placeholder_texture(texture_desc)
 
         if data[0:2] != b'BM':
-            self._create_placeholder_texture()
-            return
+            return self._create_placeholder_texture(texture_desc)
 
         offset = struct.unpack('<I', data[10:14])[0]
         header_size = struct.unpack('<I', data[14:18])[0]
 
         if header_size == 40:
-            self.width = struct.unpack('<I', data[18:22])[0]
-            self.height = struct.unpack('<I', data[22:26])[0]
+            width = struct.unpack('<I', data[18:22])[0]
+            height = struct.unpack('<I', data[22:26])[0]
             bits_per_pixel = struct.unpack('<H', data[28:30])[0]
 
             if bits_per_pixel != 24 and bits_per_pixel != 32:
-                self._create_placeholder_texture()
-                return
+                return self._create_placeholder_texture(texture_desc)
 
             bytes_per_pixel = bits_per_pixel // 8
-            row_size = ((bits_per_pixel * self.width + 31) // 32) * 4
+            row_size = ((bits_per_pixel * width + 31) // 32) * 4
 
             pixels = []
-            for y in range(self.height):
+            for y in range(height):
                 row = []
-                for x in range(self.width):
+                for x in range(width):
                     pos = offset + y * row_size + x * bytes_per_pixel
                     if pos + bytes_per_pixel > len(data):
                         row.append([0.0, 0.0, 0.0, 1.0])
@@ -330,34 +325,37 @@ class Texture:
                     ])
                 pixels.append(row)
 
-            self.mip_levels = [pixels]
-            self._generate_mipmaps()
-
+            mip_levels = [pixels]
+            mip_levels.extend(self._generate_mipmaps(pixels))
         else:
-            self._create_placeholder_texture()
+            return self._create_placeholder_texture(texture_desc)
 
-    def _create_placeholder_texture(self):
-        self.width = 4
-        self.height = 4
+        return mip_levels
+
+    def _create_placeholder_texture(self, texture_desc: TextureDesc) -> List[List[List[List[float]]]]:
+        width = 4
+        height = 4
         checkerboard = []
-        for y in range(self.height):
+        for y in range(height):
             row = []
-            for x in range(self.width):
+            for x in range(width):
                 if (x + y) % 2 == 0:
                     color = [1.0, 1.0, 1.0, 1.0]
                 else:
                     color = [0.0, 0.0, 0.0, 1.0]
                 row.append(color)
             checkerboard.append(row)
-        self.mip_levels = [checkerboard]
-        self._generate_mipmaps()
+        mip_levels = [checkerboard]
+        mip_levels.extend(self._generate_mipmaps(checkerboard))
+        return mip_levels
 
-    def _generate_mipmaps(self):
-        while self.mip_levels[-1]:
-            prev_level = self.mip_levels[-1]
-            h = len(prev_level)
-            w = len(prev_level[0])
+    def _generate_mipmaps(self, base_level: List[List[List[float]]]) -> List[List[List[List[float]]]]:
+        mip_levels = []
+        prev_level = base_level
+        h = len(prev_level)
+        w = len(prev_level[0])
 
+        while True:
             if w <= 1 or h <= 1:
                 break
 
@@ -382,7 +380,12 @@ class Texture:
                     new_row.append(new_color)
                 new_level.append(new_row)
 
-            self.mip_levels.append(new_level)
+            mip_levels.append(new_level)
+            prev_level = new_level
+            h = new_h
+            w = new_w
+
+        return mip_levels
 
     def _sample_nearest(self, mip_level: List[List[List[float]]], u: float, v: float) -> List[float]:
         h = len(mip_level)
@@ -433,22 +436,23 @@ class Texture:
     def _sample_mip_point(self, mip_level: List[List[List[float]]], u: float, v: float) -> List[float]:
         return self._sample_nearest(mip_level, u, v)
 
-    def sample(self, u: float, v: float, w: float = 0.0) -> List[float]:
-        tu, tv, tw = self.sampler.transform_coordinates(u, v, w)
+    def sample(self, u: float, v: float, w: float, texture_desc: TextureDesc, sampler: Sampler) -> List[float]:
+        tu, tv, tw = sampler.transform_coordinates(u, v, w)
 
-        lod = tw + self.sampler.MipLODBias
+        lod = tw + sampler.MipLODBias
 
-        lod = max(self.sampler.MinLOD, min(self.sampler.MaxLOD, lod))
+        lod = max(sampler.MinLOD, min(sampler.MaxLOD, lod))
 
-        min_filter, mag_filter, mip_filter = self.sampler._get_filter_mode()
+        min_filter, mag_filter, mip_filter = sampler._get_filter_mode()
 
-        level_count = len(self.mip_levels)
+        mip_levels = self._get_mip_levels(texture_desc)
+        level_count = len(mip_levels)
 
         if level_count == 1:
             if mag_filter == 0:
-                return self._sample_nearest(self.mip_levels[0], tu, tv)
+                return self._sample_nearest(mip_levels[0], tu, tv)
             else:
-                return self._sample_linear(self.mip_levels[0], tu, tv)
+                return self._sample_linear(mip_levels[0], tu, tv)
 
         lod_level = min(lod, float(level_count - 1))
         level0 = int(lod_level)
@@ -457,44 +461,44 @@ class Texture:
         s = lod_level - level0
 
         if min_filter == 0 and mag_filter == 0 and mip_filter == 0:
-            color0 = self._sample_nearest(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_nearest(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_nearest(mip_levels[level0], tu, tv)
+            color1 = self._sample_nearest(mip_levels[level1], tu, tv)
         elif min_filter == 0 and mag_filter == 0 and mip_filter == 1:
-            color0 = self._sample_nearest(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_nearest(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_nearest(mip_levels[level0], tu, tv)
+            color1 = self._sample_nearest(mip_levels[level1], tu, tv)
         elif min_filter == 0 and mag_filter == 0 and mip_filter == 2:
-            color0 = self._sample_linear(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_linear(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_linear(mip_levels[level0], tu, tv)
+            color1 = self._sample_linear(mip_levels[level1], tu, tv)
         elif min_filter == 0 and mag_filter == 1 and mip_filter == 0:
-            color0 = self._sample_linear(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_linear(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_linear(mip_levels[level0], tu, tv)
+            color1 = self._sample_linear(mip_levels[level1], tu, tv)
         elif min_filter == 0 and mag_filter == 1 and mip_filter == 1:
-            color0 = self._sample_linear(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_linear(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_linear(mip_levels[level0], tu, tv)
+            color1 = self._sample_linear(mip_levels[level1], tu, tv)
         elif min_filter == 0 and mag_filter == 1 and mip_filter == 2:
-            color0 = self._sample_linear(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_linear(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_linear(mip_levels[level0], tu, tv)
+            color1 = self._sample_linear(mip_levels[level1], tu, tv)
         elif min_filter == 1 and mag_filter == 0 and mip_filter == 0:
-            color0 = self._sample_nearest(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_nearest(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_nearest(mip_levels[level0], tu, tv)
+            color1 = self._sample_nearest(mip_levels[level1], tu, tv)
         elif min_filter == 1 and mag_filter == 0 and mip_filter == 1:
-            color0 = self._sample_nearest(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_nearest(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_nearest(mip_levels[level0], tu, tv)
+            color1 = self._sample_nearest(mip_levels[level1], tu, tv)
         elif min_filter == 1 and mag_filter == 0 and mip_filter == 2:
-            color0 = self._sample_linear(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_linear(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_linear(mip_levels[level0], tu, tv)
+            color1 = self._sample_linear(mip_levels[level1], tu, tv)
         elif min_filter == 1 and mag_filter == 1 and mip_filter == 0:
-            color0 = self._sample_linear(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_linear(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_linear(mip_levels[level0], tu, tv)
+            color1 = self._sample_linear(mip_levels[level1], tu, tv)
         elif min_filter == 1 and mag_filter == 1 and mip_filter == 1:
-            color0 = self._sample_linear(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_linear(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_linear(mip_levels[level0], tu, tv)
+            color1 = self._sample_linear(mip_levels[level1], tu, tv)
         elif min_filter == 1 and mag_filter == 1 and mip_filter == 2:
-            color0 = self._sample_linear(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_linear(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_linear(mip_levels[level0], tu, tv)
+            color1 = self._sample_linear(mip_levels[level1], tu, tv)
         else:
-            color0 = self._sample_linear(self.mip_levels[level0], tu, tv)
-            color1 = self._sample_linear(self.mip_levels[level1], tu, tv)
+            color0 = self._sample_linear(mip_levels[level0], tu, tv)
+            color1 = self._sample_linear(mip_levels[level1], tu, tv)
 
         result = [
             color0[0] * (1 - s) + color1[0] * s,

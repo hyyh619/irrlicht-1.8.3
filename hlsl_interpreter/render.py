@@ -38,20 +38,17 @@ def main():
     max_workers = config.get('max_workers', 1)
     primitive_topology = config.get('primitive_topology', D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
     mesh_view_enabled = config.get('mesh_view_enabled', False)
-    sampler_config_path = config.get('sampler_config', '')
     texture_desc_path = config.get('texture_desc', '')
+    sampler_config_path = config.get('sampler_config', '')
 
-    if not hlsl_file_path:
-        print("Error: hlsl_file_path not specified in config")
-        sys.exit(1)
-
-    if not os.path.exists(hlsl_file_path):
-        print(f"Error: HLSL file not found: {hlsl_file_path}")
-        sys.exit(1)
-
-    if csv_folder_path and not os.path.exists(csv_folder_path):
-        print(f"Error: CSV folder not found: {csv_folder_path}")
-        sys.exit(1)
+    texture_desc = None
+    sampler = None
+    texture = None
+    if texture_desc_path and sampler_config_path:
+        from texture import TextureDesc, Sampler, Texture
+        texture_desc = TextureDesc.from_config(texture_desc_path, 0)
+        sampler = Sampler.from_config(sampler_config_path, 0)
+        texture = Texture()
 
     interpreter = HLSLInterpreter(
         log_to_file=log_to_file,
@@ -103,9 +100,12 @@ def main():
         interpreter.log_output("Displaying pixels after rasterizer...")
         interpreter._mesh_view._draw_rasterizer_pixels()
 
+    if texture_desc and sampler and 'texture' in dir():
+        interpreter.set_texture_and_sampler(texture, texture_desc, sampler)
+
     # 3. 执行PS（需要提供纹理和采样器配置文件路径）
     interpreter.executePS("ps_main", "PS_INPUT", pixels, 
-                    texture_config_path, sampler_config_path)
+                    texture_desc_path, sampler_config_path)
 
     # 在MeshView中显示
     if mesh_view_enabled and pixels:
