@@ -1438,7 +1438,7 @@ Git commit: hlsl-inter: add texture description json to set texture descriptor b
 
 
 # 85
-Git commit:
+Git commit: hlsl-inter: refine Texture/Sampler to support multiple texture unit and samplers by MiniMax-M2.7.
 1. texture_desc.json需要支持多个纹理单元的配置，请改变texture_desc.json的结构支持多个纹理单元，每个纹理单元给予用一个id号，默认从0开始
 2. sampler_config.json也需要支持多个采样器配置，也改变该配置文件结构，每个采样器也给予一个id号，默认从0开始
 3. texture.py中解析texture_desc.json和sampler_config.json的代码也做相应的更改
@@ -1449,9 +1449,18 @@ Git commit:
 
 # 86
 Git commit:
-1. hlsl_interpreter.py的HLSLInterpreter初始化时创建Sampler对象和Texture对象
-2. Sampler对象和Texture对象的定义在texture.py
-3. Sampler对象创建用到的配置参数文件请从输入的json配置文件中的sampler_json项获得
+请实现hlsl_interpreter.py HLSLInterpreter对象的executePS函数
+1. executePS的输入数据是pixel，rasterizer执行完光栅化的pixels就是executePS的输入数据
+2. executePS执行的HLSL的定义也放在hlsl_file_path指定的位置，用户会指定main函数入口
+3. pixels的数据需要与HLSL中PS的输入struct匹配
+4. 请参照executeVS的实现来实现executePS
+5. PS的HLSL有采样语句，请在HLSLInterpreter中实现采样语句的解释执行
+   a. 这是采样语句的例子float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+   b. 采样语句的DiffuseTexture在PS中定义Texture2D DiffuseTexture : register(t0);意味着采样执行时，我们需要去找我们创建的纹理采样单元。纹理采样单元的配置信息由texture_desc项给出。t0需要匹配texture_desc中id为0的配置信息
+   c. 采样语句的LinearSampler在PS中定义SamplerState LinearSampler : register(s0);意味着采样器是匹配sampler_config中id 为0的采样配置信息
+   d. 找到对应的Texture对象和Sampler对象后，就可以把input.TexCoord的坐标输入给Texture.sample来获取颜色数据
+6. pixel.py中定义的Pixel对象请增加一个ps_output_color的成员，用来保存每个pixel执行PS以后的color输出结果。
+7. executePS执行完毕后，请把pixels信息显示在MeshView的output Pixel Shader窗口中
 
 
 # 87

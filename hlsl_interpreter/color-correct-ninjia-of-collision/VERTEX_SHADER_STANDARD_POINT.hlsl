@@ -4,6 +4,7 @@ struct VS_INPUT {
     float4 Color : COLOR;
     float2 TexCoord : TEXCOORD;
 };
+
 struct VS_OUTPUT {
     float4 Pos : SV_POSITION;
     float4 Color : COLOR;
@@ -12,10 +13,22 @@ struct VS_OUTPUT {
     float3 Normal : NORMAL;
     float3 WorldPos : WORLDPOS;
 };
+
+struct PS_INPUT_BASIC
+{
+    float4 Pos : SV_POSITION;
+    float4 Color : COLOR;
+    float2 TexCoord : TEXCOORD0;
+    float2 TexCoord2 : TEXCOORD1;
+    float3 Normal : NORMAL;
+    float3 WorldPos : WORLDPOS;
+};
+
 cbuffer MatrixBuffer : register(b0) {
     float4x4 WorldViewProj;
     float4x4 World;
 };
+
 cbuffer LightBuffer : register(b1) {
     float4 AmbientColor;
     float4 DiffuseColor;
@@ -29,6 +42,7 @@ cbuffer LightBuffer : register(b1) {
     float OuterCone;
     float InnerCone;
 };
+
 cbuffer MaterialBuffer : register(b2) {
     float4 MaterialDiffuseColor;
     float4 MaterialAmbientColor;
@@ -38,9 +52,11 @@ cbuffer MaterialBuffer : register(b2) {
     uint ColorMaterialMode;
     float2 Padding;
 };
+
 cbuffer CameraBuffer : register(b3) {
     float3 cameraPos;
 };
+
 VS_OUTPUT main(VS_INPUT input) {
     VS_OUTPUT output;
     output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));
@@ -70,4 +86,18 @@ VS_OUTPUT main(VS_INPUT input) {
     float cond = dist <= LightRadius ? 1.0 : 0.0;
     output.Color = float4((ambient + diffuse * att + specular * att + emissive) * cond, 1.0);
     return output;
+}
+
+Texture2D DiffuseTexture : register(t0);
+Texture2D LightmapTexture : register(t1);
+Texture2D DetailTexture : register(t1);
+Texture2D NormalMap : register(t1);
+Texture2D SphereMap : register(t2);
+
+SamplerState LinearSampler : register(s0);
+
+float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+    return texColor * input.Color;
 }
