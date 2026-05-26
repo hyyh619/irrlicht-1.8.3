@@ -18,6 +18,7 @@ class Pixel:
     attributes: Dict[str, Any]       # Additional interpolated attributes
     primitive_id: int                # ID of the primitive this pixel belongs to
     sample_index: int = 0            # Sample index for MSAA
+    ps_output_color: Optional[List[float]] = None  # Output color from Pixel Shader
 
     def __post_init__(self):
         if self.attributes is None:

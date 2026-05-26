@@ -8,6 +8,12 @@ from typing import Any, Dict, List, Union, Optional
 
 from hlsl_syntax_tree import SyntaxTreeNode, SyntaxTreeParser, _COMPILED_PATTERNS
 
+try:
+    from texture import Texture, Sampler, TextureDesc, Sampler as SamplerClass
+    TEXTURE_AVAILABLE = True
+except ImportError:
+    TEXTURE_AVAILABLE = False
+
 
 try:
     from mesh_view import MeshView, VertexData
@@ -50,6 +56,22 @@ class FieldDefinition:
     name: str           # 字段名
     semantic: str       # 语义名称，如 POSITION, NORMAL
     data: List[Any] = None  # 字段数据值
+
+
+@dataclass
+class TextureBinding:
+    """PS中的纹理绑定信息"""
+    variable_name: str   # 变量名，如 DiffuseTexture
+    register_id: int     # register(t0) 中的 t0，即纹理单元ID
+    texture: Optional['Texture'] = None  # 实际的Texture对象
+
+
+@dataclass
+class SamplerBinding:
+    """PS中的采样器绑定信息"""
+    variable_name: str   # 变量名，如 LinearSampler
+    register_id: int     # register(s0) 中的 s0，即采样器ID
+    sampler: Optional['Sampler'] = None  # 实际的Sampler对象
 
 
 @dataclass
@@ -307,6 +329,12 @@ class HLSLInterpreter:
         self._log_cache_size = log_cache_size                # 日志缓存大小(字节)
         self._log_cache_bytes = 0                            # 当前缓存已用字节数
 
+        # PS纹理和采样器绑定
+        self.texture_bindings: List[TextureBinding] = []     # PS中的纹理绑定列表
+        self.sampler_bindings: List[SamplerBinding] = []     # PS中的采样器绑定列表
+        self.texture_config_path: str = ""                   # 纹理配置文件路径
+        self.sampler_config_path: str = ""                   # 采样器配置文件路径
+
         # 预编译的正则表达式模式字典
         type_pattern = '|'.join(DATA_TYPE_LIST)
         self.patterns: Dict[str, re.Pattern] = {
@@ -336,6 +364,12 @@ class HLSLInterpreter:
 
             # load_hlsl_code_from_file: 查找cbuffer定义（用于finditer）
             'cbuffer_finditer': re.compile(r'cbuffer\s+\w+[^}]+\}'),
+
+            # parse_texture_binding: 纹理绑定，如 "Texture2D DiffuseTexture : register(t0);"
+            'texture_binding': re.compile(r'Texture2D\s+(\w+)\s*:\s*register\(t(\d+)\)\s*;?'),
+
+            # parse_sampler_binding: 采样器绑定，如 "SamplerState LinearSampler : register(s0);"
+            'sampler_binding': re.compile(r'SamplerState\s+(\w+)\s*:\s*register\(s(\d+)\)\s*;?'),
         }
 
         if self.log_to_file and self.log_file_path:
@@ -1164,6 +1198,27 @@ class HLSLInterpreter:
             self.debug_print(f"[FUNC] {func_name}(args={self._format_float(args)}) = {self._format_float(result)}")
             return result
 
+        # Texture.Sample: 纹理采样函数
+        # 格式: DiffuseTexture.Sample(LinearSampler, input.TexCoord)
+        # DiffuseTexture 是 Texture2D，LinearSampler 是 SamplerState
+        elif func_name == 'Sample' and len(args) == 2:
+            if len(node.args) < 1:
+                return None
+            texture_node = node.args[0]
+            texture_name = texture_node.value if texture_node and texture_node.node_type == 'value' else None
+            if texture_name:
+                sampler_node = args[0] if isinstance(args[0], SyntaxTreeNode) else None
+                coords_node = args[1] if len(args) > 1 else None
+                coords = self.evaluate_syntax_tree(coords_node, local_vars) if coords_node else None
+                if coords and isinstance(coords, list) and len(coords) >= 2:
+                    u, v = coords[0], coords[1]
+                    binding = self._find_texture_binding(texture_name)
+                    if binding and binding.texture:
+                        result = binding.texture.sample(u, v)
+                        self.debug_print(f"[FUNC] {texture_name}.Sample(..., ({u:.4f}, {v:.4f})) = {self._format_float(result)}")
+                        return result
+            return None
+
         return None
 
     def apply_swizzle(self, obj: Any, swizzle: str) -> Any:
@@ -1800,11 +1855,123 @@ class HLSLInterpreter:
 
         return results
 
-    def executePS(self, code: str, main_func: str, ps_input: str):
+    def executePS(self, code: str, main_func: str, ps_input: str, pixels: List['Pixel'], texture_config_path: str = None, sampler_config_path: str = None):
         """
-        执行像素着色器(当前为占位函数)
+        执行像素着色器
+        code: HLSL代码
+        main_func: 入口函数名
+        ps_input: 输入结构体名
+        pixels: 光栅化后的像素列表
+        texture_config_path: 纹理配置文件路径
+        sampler_config_path: 采样器配置文件路径
+        返回: 更新了ps_output_color的像素列表
         """
-        pass
+        if code is None:
+            code = self.hlsl_code
+
+        input_struct = self.structs.get(ps_input)
+        if not input_struct:
+            self.log_output(f"Cannot find ps input: {ps_input}\n")
+            return pixels
+
+        output_struct_name = None
+        func_signature_pattern = r'(\w+)\s+' + re.escape(main_func) + r'\s*\(\s*(\w+)\s+input\s*\)'
+        func_signature_match = re.search(func_signature_pattern, code)
+        if func_signature_match:
+            output_struct_name = func_signature_match.group(1)
+
+        output_struct = self.structs.get(output_struct_name) if output_struct_name else None
+
+        self._parse_texture_and_sampler_bindings(code, texture_config_path, sampler_config_path)
+
+        self._eval_counter = 0
+
+        for pixel in pixels:
+            pixel.ps_output_color = None
+
+            data = {
+                'Color': pixel.color if pixel.color else [1.0, 1.0, 1.0, 1.0],
+                'Texcoord': pixel.texcoord if pixel.texcoord else [0.0, 0.0],
+                'Texcoord2': pixel.texcoord2 if pixel.texcoord2 else [0.0, 0.0],
+                'Normal': pixel.normal if pixel.normal else [0.0, 0.0, 1.0],
+                'WorldPos': pixel.worldPos if pixel.worldPos else [0.0, 0.0, 0.0],
+            }
+            data.update(pixel.attributes)
+
+            result = self.execute_main_function(code, main_func, ps_input, 0, data)
+
+            if result and 'Color' in result:
+                pixel.ps_output_color = result['Color']
+            elif result:
+                pixel.ps_output_color = [1.0, 1.0, 1.0, 1.0]
+            else:
+                pixel.ps_output_color = pixel.color if pixel.color else [1.0, 1.0, 1.0, 1.0]
+
+        return pixels
+
+    def _parse_texture_and_sampler_bindings(self, code: str, texture_config_path: str = None, sampler_config_path: str = None):
+        """
+        解析HLSL代码中的纹理和采样器绑定
+        code: HLSL代码
+        texture_config_path: 纹理配置文件路径
+        sampler_config_path: 采样器配置文件路径
+        """
+        self.texture_bindings = []
+        self.sampler_bindings = []
+
+        if texture_config_path:
+            self.texture_config_path = texture_config_path
+        if sampler_config_path:
+            self.sampler_config_path = sampler_config_path
+
+        if not TEXTURE_AVAILABLE:
+            self.log_output("Warning: texture module not available")
+            return
+
+        for match in self.patterns['texture_binding'].finditer(code):
+            var_name = match.group(1)
+            reg_id = int(match.group(2))
+            binding = TextureBinding(variable_name=var_name, register_id=reg_id)
+            self.texture_bindings.append(binding)
+
+        for match in self.patterns['sampler_binding'].finditer(code):
+            var_name = match.group(1)
+            reg_id = int(match.group(2))
+            binding = SamplerBinding(variable_name=var_name, register_id=reg_id)
+            self.sampler_bindings.append(binding)
+
+        for binding in self.texture_bindings:
+            for sbinding in self.sampler_bindings:
+                if binding.register_id == sbinding.register_id:
+                    try:
+                        binding.texture = Texture.from_config(
+                            self.texture_config_path,
+                            self.sampler_config_path,
+                            binding.register_id,
+                            sbinding.register_id
+                        )
+                        binding.sampler = binding.texture.sampler
+                    except Exception as e:
+                        self.log_output(f"Warning: Failed to load texture {binding.variable_name}: {e}")
+
+    def get_pixel_shader_output(self, pixels: List['Pixel']) -> List[List[float]]:
+        """
+        获取像素着色器的输出颜色
+        pixels: 像素列表
+        返回: 输出颜色列表
+        """
+        return [p.ps_output_color if p.ps_output_color else p.color for p in pixels]
+
+    def _find_texture_binding(self, texture_name: str) -> Optional[TextureBinding]:
+        """
+        根据纹理变量名查找纹理绑定
+        texture_name: 纹理变量名，如 DiffuseTexture
+        返回: TextureBinding对象或None
+        """
+        for binding in self.texture_bindings:
+            if binding.variable_name == texture_name:
+                return binding
+        return None
 
     def load_struct_data_from_csv(self, struct_name: str, csv_path: str):
         """

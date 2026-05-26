@@ -417,6 +417,13 @@ class MeshView:
         """
         self._rasterizer_pixels = pixels
 
+    def set_pixel_shader_output(self, pixels: List):
+        """
+        设置Pixel Shader输出后的像素数据（更新ps_output_color）
+        pixels: Pixel对象列表，executePS执行后的像素列表
+        """
+        self._rasterizer_pixels = pixels
+
     def _compute_input_bounds(self):
         """计算输入顶点边界框"""
         if not self.input_vertices:
@@ -754,6 +761,60 @@ class MeshView:
                 fill=color_hex, outline=color_hex
             )
 
+    def _draw_pixel_shader_pixels(self):
+        """绘制Pixel Shader输出后的像素到Pixel Shader画布"""
+        if not self._pixel_shader_canvas or not self._rasterizer_pixels:
+            return
+
+        self._pixel_shader_canvas.delete("all")
+
+        canvas_width = int(self._pixel_shader_canvas.cget('width'))
+        canvas_height = int(self._pixel_shader_canvas.cget('height'))
+
+        if not self._rasterizer_pixels:
+            return
+
+        min_x = min(p.x for p in self._rasterizer_pixels)
+        max_x = max(p.x for p in self._rasterizer_pixels)
+        min_y = min(p.y for p in self._rasterizer_pixels)
+        max_y = max(p.y for p in self._rasterizer_pixels)
+
+        mesh_width = max(max_x - min_x, 1)
+        mesh_height = max(max_y - min_y, 1)
+
+        margin = 40
+        usable_width = canvas_width - 2 * margin
+        usable_height = canvas_height - 2 * margin
+        scale = self._rasterizer_scale * min(usable_width, usable_height) / max(mesh_width, mesh_height)
+        if scale < 0.01:
+            scale = 0.01
+
+        offset_x = canvas_width / 2 + self._rasterizer_offset_x - (min_x + max_x) / 2 * scale
+        offset_y = canvas_height / 2 + self._rasterizer_offset_y - (min_y + max_y) / 2 * scale
+
+        for pixel in self._rasterizer_pixels:
+            screen_x = pixel.x * scale + offset_x
+            screen_y = pixel.y * scale + offset_y
+
+            if pixel.ps_output_color:
+                color = pixel.ps_output_color
+                r = int(min(255, max(0, color[0] * 255)))
+                g = int(min(255, max(0, color[1] * 255)))
+                b = int(min(255, max(0, color[2] * 255)))
+                color_hex = f'#{r:02x}{g:02x}{b:02x}'
+            else:
+                prim_id = pixel.primitive_id
+                hue = (prim_id * 37) % 360
+                r = int(127 + 127 * math.sin(hue * math.pi / 180))
+                g = int(127 + 127 * math.sin((hue + 120) * math.pi / 180))
+                b = int(127 + 127 * math.sin((hue + 240) * math.pi / 180))
+                color_hex = f'#{r:02x}{g:02x}{b:02x}'
+
+            self._pixel_shader_canvas.create_rectangle(
+                screen_x - 1, screen_y - 1, screen_x + 1, screen_y + 1,
+                fill=color_hex, outline=color_hex
+            )
+
     def _draw_mesh_animated(self, count: int = None):
         """绘制动画mesh到画布，只渲染前count个元素"""
         if not self._input_canvas or not self._output_canvas:
@@ -799,6 +860,7 @@ class MeshView:
             self._output_canvas.create_oval(proj[0]-8, proj[1]-8, proj[0]+8, proj[1]+8, outline="#ff8800", width=2)
 
         self._draw_rasterizer_pixels()
+        self._draw_pixel_shader_pixels()
         self._update_info()
 
     def _update_info(self):

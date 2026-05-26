@@ -57,7 +57,7 @@ cbuffer CameraBuffer : register(b3) {
     float3 cameraPos;
 };
 
-VS_OUTPUT main(VS_INPUT input) {
+VS_OUTPUT vs_main(VS_INPUT input) {
     VS_OUTPUT output;
     output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));
     float4 worldPos = mul(float4(input.Pos, 1.0), transpose(World));
@@ -96,7 +96,7 @@ Texture2D SphereMap : register(t2);
 
 SamplerState LinearSampler : register(s0);
 
-float4 PS_SOLID(PS_INPUT_BASIC input) : SV_TARGET
+float4 ps_main(PS_INPUT_BASIC input) : SV_TARGET
 {
     float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
     return texColor * input.Color;
