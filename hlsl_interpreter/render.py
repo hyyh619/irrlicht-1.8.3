@@ -8,6 +8,59 @@ from rasterizer import Rasterizer
 from d3d import D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST
 
 
+def print_and_compare_results(interpreter, results, output_struct_name, float_tolerance, execute_count, interpret_time, load_golden_time, execute_time, total_start):
+    if interpreter.print_interpreter_result:
+        interpreter.log_output("HLSL Interpreter Result:")
+        interpreter.log_output("=" * 40)
+        if results:
+            for idx, result in enumerate(results):
+                interpreter.log_output(f"\n--- Row {idx} ---")
+                if result:
+                    for key, value in result.items():
+                        if isinstance(value, list):
+                            if len(value) == 4:
+                                interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}, {value[3]:.4f}]")
+                            elif len(value) == 3:
+                                interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}]")
+                            elif len(value) == 2:
+                                interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}]")
+                            else:
+                                interpreter.log_output(f"{key}: {value}")
+                        else:
+                            interpreter.log_output(f"{key}: {value}")
+        else:
+            interpreter.log_output("No result produced")
+
+        if results and results[-1] and 'Color' in results[-1]:
+            color = results[-1]['Color']
+            if color and isinstance(color, list) and len(color) == 4:
+                interpreter.log_output("\nFinal Output Color (RGBA):")
+                interpreter.log_output(f"  R: {color[0]:.4f}")
+                interpreter.log_output(f"  G: {color[1]:.4f}")
+                interpreter.log_output(f"  B: {color[2]:.4f}")
+                interpreter.log_output(f"  A: {color[3]:.4f}")
+            else:
+                interpreter.log_output(f"\nColor result: {color}")
+
+        interpreter.log_output("\n" + "=" * 40)
+    interpreter.log_output("Comparing with golden data...")
+    interpreter.log_output("=" * 40)
+    compare_start = time.time()
+    interpreter.compare_vs_output_with_golden(results, output_struct_name=output_struct_name, float_tolerance=float_tolerance, execute_count=execute_count)
+    compare_time = time.time() - compare_start
+
+    total_time = time.time() - total_start
+
+    interpreter.log_output("\n" + "=" * 40)
+    interpreter.log_output("Timing Summary:")
+    interpreter.log_output("=" * 40)
+    interpreter.log_output(f"interpreter.interpret():             {interpret_time:.4f}s")
+    interpreter.log_output(f"interpreter.load_vs_output_golden_from_csv(): {load_golden_time:.4f}s")
+    interpreter.log_output(f"interpreter.executeVS():           {execute_time:.4f}s")
+    interpreter.log_output(f"compare_vs_output_with_golden():    {compare_time:.4f}s")
+    interpreter.log_output(f"Total execution time:               {total_time:.4f}s")
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python render.py <config.json>")
@@ -97,6 +150,8 @@ def main():
     results = interpreter.executeVS("vs_main", "VS_INPUT", execute_count=execute_count)
     execute_time = time.time() - execute_start
 
+    print_and_compare_results(interpreter, results, output_struct_name, float_tolerance, execute_count, interpret_time, load_golden_time, execute_time, total_start)
+
     if mesh_view_enabled and results:
         interpreter.log_output("Displaying result mesh after executeVS...")
         interpreter.show_result_mesh(results)
@@ -117,57 +172,6 @@ def main():
     if mesh_view_enabled and pixels:
         interpreter._mesh_view.set_rasterizer_pixels(pixels)  # 更新后的pixels已包含ps_output_color
         interpreter._mesh_view._draw_pixel_shader_pixels()
-
-    if interpreter.print_interpreter_result:
-        interpreter.log_output("HLSL Interpreter Result:")
-        interpreter.log_output("=" * 40)
-        if results:
-            for idx, result in enumerate(results):
-                interpreter.log_output(f"\n--- Row {idx} ---")
-                if result:
-                    for key, value in result.items():
-                        if isinstance(value, list):
-                            if len(value) == 4:
-                                interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}, {value[3]:.4f}]")
-                            elif len(value) == 3:
-                                interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}]")
-                            elif len(value) == 2:
-                                interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}]")
-                            else:
-                                interpreter.log_output(f"{key}: {value}")
-                        else:
-                            interpreter.log_output(f"{key}: {value}")
-        else:
-            interpreter.log_output("No result produced")
-
-        if results and results[-1] and 'Color' in results[-1]:
-            color = results[-1]['Color']
-            if color and isinstance(color, list) and len(color) == 4:
-                interpreter.log_output("\nFinal Output Color (RGBA):")
-                interpreter.log_output(f"  R: {color[0]:.4f}")
-                interpreter.log_output(f"  G: {color[1]:.4f}")
-                interpreter.log_output(f"  B: {color[2]:.4f}")
-                interpreter.log_output(f"  A: {color[3]:.4f}")
-            else:
-                interpreter.log_output(f"\nColor result: {color}")
-
-        interpreter.log_output("\n" + "=" * 40)
-    interpreter.log_output("Comparing with golden data...")
-    interpreter.log_output("=" * 40)
-    compare_start = time.time()
-    interpreter.compare_vs_output_with_golden(results, output_struct_name=output_struct_name, float_tolerance=float_tolerance, execute_count=execute_count)
-    compare_time = time.time() - compare_start
-
-    total_time = time.time() - total_start
-
-    interpreter.log_output("\n" + "=" * 40)
-    interpreter.log_output("Timing Summary:")
-    interpreter.log_output("=" * 40)
-    interpreter.log_output(f"interpreter.interpret():             {interpret_time:.4f}s")
-    interpreter.log_output(f"interpreter.load_vs_output_golden_from_csv(): {load_golden_time:.4f}s")
-    interpreter.log_output(f"interpreter.executeVS():           {execute_time:.4f}s")
-    interpreter.log_output(f"compare_vs_output_with_golden():    {compare_time:.4f}s")
-    interpreter.log_output(f"Total execution time:               {total_time:.4f}s")
 
     while True:
         user_input = input("\nEnter 'x' to exit, 'o' to open MeshView, 'r' to rerun executeVS: ")

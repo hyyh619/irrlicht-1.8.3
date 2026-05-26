@@ -1602,7 +1602,8 @@ VS_OUTPUT vs_main(VS_INPUT input) {
 
 
 # 90
-Git commit: 
+Git commit: hlsl-inter: execute_main_function's output_struct should take PS's color output as consider by MiniMax-M2.7.
+Git commit: hlsl-inter: define shader stages for execute_main_function by MiniMax-M2.7
 
 hy: AI coding is very specific for some code, not common.
 
@@ -1614,9 +1615,59 @@ execute_main_function构造output_struct时，
 5. execute_main_function判断is_ps不要使用主函数名判断而是使用shader stage来判断
 
 
-
 # 91
 Git commit: 
+对render.py的main函数的下列代码是打印executeVS后的输出，以及比较VS执行的结果与golden结果是否匹配，请把下列代码包装成一个单独的函数，放在executeVS后面
+    if interpreter.print_interpreter_result:
+        interpreter.log_output("HLSL Interpreter Result:")
+        interpreter.log_output("=" * 40)
+        if results:
+            for idx, result in enumerate(results):
+                interpreter.log_output(f"\n--- Row {idx} ---")
+                if result:
+                    for key, value in result.items():
+                        if isinstance(value, list):
+                            if len(value) == 4:
+                                interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}, {value[3]:.4f}]")
+                            elif len(value) == 3:
+                                interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}, {value[2]:.4f}]")
+                            elif len(value) == 2:
+                                interpreter.log_output(f"{key}: [{value[0]:.4f}, {value[1]:.4f}]")
+                            else:
+                                interpreter.log_output(f"{key}: {value}")
+                        else:
+                            interpreter.log_output(f"{key}: {value}")
+        else:
+            interpreter.log_output("No result produced")
+
+        if results and results[-1] and 'Color' in results[-1]:
+            color = results[-1]['Color']
+            if color and isinstance(color, list) and len(color) == 4:
+                interpreter.log_output("\nFinal Output Color (RGBA):")
+                interpreter.log_output(f"  R: {color[0]:.4f}")
+                interpreter.log_output(f"  G: {color[1]:.4f}")
+                interpreter.log_output(f"  B: {color[2]:.4f}")
+                interpreter.log_output(f"  A: {color[3]:.4f}")
+            else:
+                interpreter.log_output(f"\nColor result: {color}")
+
+        interpreter.log_output("\n" + "=" * 40)
+    interpreter.log_output("Comparing with golden data...")
+    interpreter.log_output("=" * 40)
+    compare_start = time.time()
+    interpreter.compare_vs_output_with_golden(results, output_struct_name=output_struct_name, float_tolerance=float_tolerance, execute_count=execute_count)
+    compare_time = time.time() - compare_start
+
+    total_time = time.time() - total_start
+
+    interpreter.log_output("\n" + "=" * 40)
+    interpreter.log_output("Timing Summary:")
+    interpreter.log_output("=" * 40)
+    interpreter.log_output(f"interpreter.interpret():             {interpret_time:.4f}s")
+    interpreter.log_output(f"interpreter.load_vs_output_golden_from_csv(): {load_golden_time:.4f}s")
+    interpreter.log_output(f"interpreter.executeVS():           {execute_time:.4f}s")
+    interpreter.log_output(f"compare_vs_output_with_golden():    {compare_time:.4f}s")
+    interpreter.log_output(f"Total execution time:               {total_time:.4f}s")
 
 
 # 92
