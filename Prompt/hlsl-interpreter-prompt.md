@@ -1448,7 +1448,10 @@ Git commit: hlsl-inter: refine Texture/Sampler to support multiple texture unit 
 
 
 # 86
-Git commit:
+Git commit: hlsl-inter: add executePS call and refine executePS input arguments by ying.
+
+hy: cannot run correctly. Need to fix by hand.
+
 请实现hlsl_interpreter.py HLSLInterpreter对象的executePS函数
 1. executePS的输入数据是pixel，rasterizer执行完光栅化的pixels就是executePS的输入数据
 2. executePS执行的HLSL的定义也放在hlsl_file_path指定的位置，用户会指定main函数入口
