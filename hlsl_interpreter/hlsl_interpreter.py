@@ -303,7 +303,10 @@ class HLSLInterpreter:
                 print_interpreter_result: bool = True,
                 max_workers: int = 1,
                 primitive_topology: int = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
-                log_cache_size: int = 10 * 1024 * 1024):
+                log_cache_size: int = 10 * 1024 * 1024,
+                texture_list: List['Texture'] = None,
+                texture_desc_list: List['TextureDesc'] = None,
+                sampler_list: List['Sampler'] = None):
         self.structs: Dict[str, StructDefinition] = {}      # 解析的结构体定义
         self.cbuffers: Dict[str, CbufferDefinition] = {}    # 解析的cbuffer定义
         self.variables: Dict[str, Any] = {}                 # 全局变量
@@ -334,7 +337,9 @@ class HLSLInterpreter:
         self.sampler_bindings: List[SamplerBinding] = []     # PS中的采样器绑定列表
         self.texture_config_path: str = ""                   # 纹理配置文件路径
         self.sampler_config_path: str = ""                   # 采样器配置文件路径
-        self._texture_sampler: tuple = None                   # (Texture, TextureDesc, Sampler) 元组
+        self._texture_list: List['Texture'] = texture_list if texture_list else []
+        self._texture_desc_list: List['TextureDesc'] = texture_desc_list if texture_desc_list else []
+        self._sampler_list: List['Sampler'] = sampler_list if sampler_list else []
 
         # 预编译的正则表达式模式字典
         type_pattern = '|'.join(DATA_TYPE_LIST)
@@ -398,14 +403,16 @@ class HLSLInterpreter:
 
         self.log_output(f"MeshView {'enabled' if enable else 'disabled'}")
 
-    def set_texture_and_sampler(self, texture, texture_desc, sampler):
+    def set_texture_and_sampler(self, texture_list, texture_desc_list, sampler_list):
         """
-        设置纹理采样执行器及其关联的texture_desc和sampler
-        texture: Texture对象（纹理采样执行器）
-        texture_desc: TextureDesc对象（纹理参数和纹理数据）
-        sampler: Sampler对象（采样参数）
+        设置纹理采样执行器及其关联的texture_desc和sampler列表
+        texture_list: Texture对象列表（纹理采样执行器）
+        texture_desc_list: TextureDesc对象列表（纹理参数和纹理数据）
+        sampler_list: Sampler对象列表（采样参数）
         """
-        self._texture_sampler = (texture, texture_desc, sampler)
+        self._texture_list = texture_list if texture_list else []
+        self._texture_desc_list = texture_desc_list if texture_desc_list else []
+        self._sampler_list = sampler_list if sampler_list else []
 
     def show_input_mesh(self, vs_input: str, row_index: int = None):
         """
@@ -1224,11 +1231,15 @@ class HLSLInterpreter:
                     u, v = coords[0], coords[1]
                     w = coords[2] if len(coords) > 2 else 0.0
                     binding = self._find_texture_binding(texture_name)
-                    if binding and self._texture_sampler:
-                        texture, texture_desc, sampler = self._texture_sampler
-                        result = texture.sample(u, v, w, texture_desc, sampler)
-                        self.debug_print(f"[FUNC] {texture_name}.Sample(..., ({u:.4f}, {v:.4f})) = {self._format_float(result)}")
-                        return result
+                    if binding and self._texture_list and self._texture_desc_list and self._sampler_list:
+                        reg_id = binding.register_id
+                        if reg_id < len(self._texture_list) and reg_id < len(self._texture_desc_list) and reg_id < len(self._sampler_list):
+                            texture = self._texture_list[reg_id]
+                            texture_desc = self._texture_desc_list[reg_id]
+                            sampler = self._sampler_list[reg_id]
+                            result = texture.sample(u, v, w, texture_desc, sampler)
+                            self.debug_print(f"[FUNC] {texture_name}.Sample(..., ({u:.4f}, {v:.4f})) = {self._format_float(result)}")
+                            return result
             return None
 
         return None
@@ -1867,15 +1878,13 @@ class HLSLInterpreter:
 
         return results
 
-    def executePS(self, main_func: str, ps_input: str, pixels: List['Pixel'], texture_config_path: str = None, sampler_config_path: str = None):
+    def executePS(self, main_func: str, ps_input: str, pixels: List['Pixel']):
         """
         执行像素着色器
         code: HLSL代码
         main_func: 入口函数名
         ps_input: 输入结构体名
         pixels: 光栅化后的像素列表
-        texture_config_path: 纹理配置文件路径
-        sampler_config_path: 采样器配置文件路径
         返回: 更新了ps_output_color的像素列表
         """
         code = self.hlsl_code
@@ -1893,7 +1902,7 @@ class HLSLInterpreter:
 
         output_struct = self.structs.get(output_struct_name) if output_struct_name else None
 
-        self._parse_texture_and_sampler_bindings(code, texture_config_path, sampler_config_path)
+        self._parse_texture_and_sampler_bindings(code)
 
         self._eval_counter = 0
 
@@ -1920,20 +1929,13 @@ class HLSLInterpreter:
 
         return pixels
 
-    def _parse_texture_and_sampler_bindings(self, code: str, texture_config_path: str = None, sampler_config_path: str = None):
+    def _parse_texture_and_sampler_bindings(self, code: str):
         """
         解析HLSL代码中的纹理和采样器绑定
         code: HLSL代码
-        texture_config_path: 纹理配置文件路径
-        sampler_config_path: 采样器配置文件路径
         """
         self.texture_bindings = []
         self.sampler_bindings = []
-
-        if texture_config_path:
-            self.texture_config_path = texture_config_path
-        if sampler_config_path:
-            self.sampler_config_path = sampler_config_path
 
         if not TEXTURE_AVAILABLE:
             self.log_output("Warning: texture module not available")
@@ -1954,16 +1956,11 @@ class HLSLInterpreter:
         for binding in self.texture_bindings:
             for sbinding in self.sampler_bindings:
                 if binding.register_id == sbinding.register_id:
-                    try:
-                        binding.texture = Texture.from_config(
-                            self.texture_config_path,
-                            self.sampler_config_path,
-                            binding.register_id,
-                            sbinding.register_id
-                        )
-                        binding.sampler = binding.texture.sampler
-                    except Exception as e:
-                        self.log_output(f"Warning: Failed to load texture {binding.variable_name}: {e}")
+                    reg_id = binding.register_id
+                    if reg_id < len(self._texture_list) and reg_id < len(self._texture_desc_list) and reg_id < len(self._sampler_list):
+                        binding.texture = self._texture_list[reg_id]
+                        binding.texture_desc = self._texture_desc_list[reg_id]
+                        binding.sampler = self._sampler_list[reg_id]
 
     def get_pixel_shader_output(self, pixels: List['Pixel']) -> List[List[float]]:
         """

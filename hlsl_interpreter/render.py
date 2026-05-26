@@ -41,14 +41,21 @@ def main():
     texture_desc_path = config.get('texture_desc', '')
     sampler_config_path = config.get('sampler_config', '')
 
-    texture_desc = None
-    sampler = None
-    texture = None
+    texture_desc_list = []
+    sampler_list = []
+    texture_list = []
     if texture_desc_path and sampler_config_path:
         from texture import TextureDesc, Sampler, Texture
-        texture_desc = TextureDesc.from_config(texture_desc_path, 0)
-        sampler = Sampler.from_config(sampler_config_path, 0)
-        texture = Texture()
+        with open(texture_desc_path, 'r', encoding='utf-8') as f:
+            texture_data = json.load(f)
+        with open(sampler_config_path, 'r', encoding='utf-8') as f:
+            sampler_data = json.load(f)
+        for tex_id in texture_data:
+            texture_desc_list.append(TextureDesc.from_config(texture_desc_path, int(tex_id)))
+        for samp_id in sampler_data:
+            sampler_list.append(Sampler.from_config(sampler_config_path, int(samp_id)))
+        for _ in texture_desc_list:
+            texture_list.append(Texture())
 
     interpreter = HLSLInterpreter(
         log_to_file=log_to_file,
@@ -58,7 +65,10 @@ def main():
         printSyntaxTree=printSyntaxTree,
         print_interpreter_result=print_interpreter_result,
         max_workers=max_workers,
-        primitive_topology=primitive_topology)
+        primitive_topology=primitive_topology,
+        texture_list=texture_list,
+        texture_desc_list=texture_desc_list,
+        sampler_list=sampler_list)
 
     if mesh_view_enabled:
         interpreter.enable_mesh_view(True)
@@ -100,12 +110,8 @@ def main():
         interpreter.log_output("Displaying pixels after rasterizer...")
         interpreter._mesh_view._draw_rasterizer_pixels()
 
-    if texture_desc and sampler and 'texture' in dir():
-        interpreter.set_texture_and_sampler(texture, texture_desc, sampler)
-
-    # 3. 执行PS（需要提供纹理和采样器配置文件路径）
-    interpreter.executePS("ps_main", "PS_INPUT", pixels,
-                    texture_desc_path, sampler_config_path)
+    # 3. 执行PS
+    interpreter.executePS("ps_main", "PS_INPUT", pixels)
 
     # 在MeshView中显示
     if mesh_view_enabled and pixels:
