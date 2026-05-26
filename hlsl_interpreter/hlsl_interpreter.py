@@ -324,6 +324,7 @@ class HLSLInterpreter:
         self.hlsl_code = None                               # 加载的HLSL代码
         self.max_workers = max_workers                       # 线程池最大工作线程数
         self._parsed_func_cache = {}                         # 解析过的函数体缓存
+        self._all_functions = {}                              # 所有解析的函数定义 {func_name: {'ret_type': ..., 'params': {...}, 'body': ...}}
         self.primitive_topology = primitive_topology         # 图元拓扑类型
         self._mesh_view = None                               # MeshView实例(用于显示输入和输出)
         self._mesh_view_enabled = False                      # 是否启用MeshView
@@ -735,6 +736,92 @@ class HLSLInterpreter:
                     field_name = parts[1]
                     fields.append(FieldDefinition(field_type, field_name, ''))
         return CbufferDefinition(name, fields)
+
+    def parse_all_functions(self, code: str):
+        """
+        解析代码中所有函数定义并存储到_all_functions字典
+        code: HLSL代码
+        """
+        func_pattern = re.compile(r'(\w+)\s+(\w+)\s*\(([^)]*)\)\s*[:\w\s]*\{([^}]+(?:\{[^}]*\}[^}]*)*)\}', re.DOTALL)
+        for match in func_pattern.finditer(code):
+            ret_type = match.group(1)
+            func_name = match.group(2)
+            params_str = match.group(3)
+            body = match.group(4)
+            params = {}
+            if params_str.strip():
+                for param in params_str.split(','):
+                    param = param.strip()
+                    parts = param.split()
+                    if len(parts) >= 2:
+                        param_type = parts[0]
+                        param_name = parts[1]
+                        params[param_name] = param_type
+            self._all_functions[func_name] = {
+                'ret_type': ret_type,
+                'params': params,
+                'body': body
+            }
+
+    def _get_function_body(self, func_name: str) -> Optional[str]:
+        """
+        根据函数名获取函数体
+        func_name: 函数名
+        返回: 函数体字符串，如果未找到返回None
+        """
+        if func_name in self._all_functions:
+            return self._all_functions[func_name]['body']
+        return None
+
+    def _collect_function_statements(self, func_name: str, visited: set = None, is_main_func: bool = False) -> List[str]:
+        """
+        递归收集函数及其调用的其他函数的语句
+        func_name: 函数名
+        visited: 已访问的函数集合（防止循环调用）
+        is_main_func: 是否是主函数（主函数的return语句需要保留）
+        返回: 语句列表
+        """
+        if visited is None:
+            visited = set()
+
+        if func_name in visited:
+            return []
+        visited.add(func_name)
+
+        body = self._get_function_body(func_name)
+        if body is None:
+            return []
+
+        statements = self.GenerateStmts(body.strip())
+
+        result_statements = []
+        for stmt in statements:
+            if stmt is None:
+                continue
+
+            called_funcs = self._find_function_calls_in_statement(stmt)
+            for called_func in called_funcs:
+                if called_func in self._all_functions and called_func not in visited:
+                    nested_statements = self._collect_function_statements(called_func, visited, is_main_func=False)
+                    result_statements.extend(nested_statements)
+
+            result_statements.append(stmt)
+
+        return result_statements
+
+    def _find_function_calls_in_statement(self, stmt: str) -> List[str]:
+        """
+        从语句中查找用户定义的函数调用
+        stmt: 语句字符串
+        返回: 函数名列表
+        """
+        func_calls = []
+        func_pattern = re.compile(r'(\w+)\s*\(')
+        for match in func_pattern.finditer(stmt):
+            func_name = match.group(1)
+            if func_name not in ['if', 'for', 'while', 'do', 'switch']:
+                func_calls.append(func_name)
+        return func_calls
 
     def parse_function(self, code: str) -> tuple:
         """
@@ -1675,27 +1762,8 @@ class HLSLInterpreter:
             body = cached['body']
             statements = cached['statements']
         else:
-            func_start = re.search(func_signature, code)
-            if not func_start:
-                return None
-
-            open_brace_pos = func_start.end()
-            brace_depth = 1
-            pos = open_brace_pos
-            while pos < len(code) and brace_depth > 0:
-                if code[pos] == '{':
-                    brace_depth += 1
-                elif code[pos] == '}':
-                    brace_depth -= 1
-                pos += 1
-
-            body = code[open_brace_pos+1:pos-1].strip()
-            if body.startswith('{'):
-                body = body[1:].strip()
-            if body.endswith('}'):
-                body = body[:-1].strip()
-
-            statements = self.GenerateStmts(body)
+            statements = self._collect_function_statements(main_func)
+            body = ""
             self._parsed_func_cache[cache_key] = {'body': body, 'statements': statements}
 
         # 初始化局部变量
@@ -1806,6 +1874,8 @@ class HLSLInterpreter:
             if os.path.exists(csv_path):
                 self.load_cbuffer_data_from_csv(cb_name, csv_path)
 
+        self.parse_all_functions(code)
+
     def executeVS(self, main_func: str, vs_input: str, code: str = None, execute_count: int = None):
         """
         执行顶点着色器
@@ -1817,6 +1887,9 @@ class HLSLInterpreter:
         """
         if code is None:
             code = self.hlsl_code
+        else:
+            if not self._all_functions:
+                self.parse_all_functions(code)
         self._last_executeVS_code = code
         input_struct = self.structs.get(vs_input)
         if not input_struct:
@@ -1888,6 +1961,8 @@ class HLSLInterpreter:
         返回: 更新了ps_output_color的像素列表
         """
         code = self.hlsl_code
+        if not self._all_functions:
+            self.parse_all_functions(code)
 
         input_struct = self.structs.get(ps_input)
         if not input_struct:

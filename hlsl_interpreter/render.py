@@ -54,8 +54,8 @@ def main():
             texture_desc_list.append(TextureDesc.from_config(texture_desc_path, int(tex_id)))
         for samp_id in sampler_data:
             sampler_list.append(Sampler.from_config(sampler_config_path, int(samp_id)))
-        for _ in texture_desc_list:
-            texture_list.append(Texture())
+
+        texture_list.append(Texture())
 
     interpreter = HLSLInterpreter(
         log_to_file=log_to_file,
@@ -111,11 +111,12 @@ def main():
         interpreter._mesh_view._draw_rasterizer_pixels()
 
     # 3. 执行PS
-    interpreter.executePS("ps_main", "PS_INPUT", pixels)
+    interpreter.executePS("ps_main", "PS_INPUT_BASIC", pixels)
 
     # 在MeshView中显示
     if mesh_view_enabled and pixels:
-        interpreter.mesh_view.set_rasterizer_pixels(pixels)  # 更新后的pixels已包含ps_output_color
+        interpreter._mesh_view.set_rasterizer_pixels(pixels)  # 更新后的pixels已包含ps_output_color
+        interpreter._mesh_view._draw_pixel_shader_pixels()
 
     if interpreter.print_interpreter_result:
         interpreter.log_output("HLSL Interpreter Result:")

@@ -1477,7 +1477,7 @@ Git commit: hlsl-inter: separate texture_desc and sampler from Texture executor 
 
 
 # 88
-Git commit: 
+Git commit: hlsl-inter: load all texture descriptors and samplers from json file by MiniMax-M2.7.
 1. render.py的下列代码只会加载texture_desc和sampler_config的第一项，请添加代码加载所有的texture_desc和sampler保存成列表
     texture_desc_path = config.get('texture_desc', '')
     sampler_config_path = config.get('sampler_config', '')
@@ -1498,6 +1498,107 @@ Git commit:
 
 # 89
 Git commit: 
+hlsl_interpreter.py的execute_main_function函数在获取VS/PS的shader语句时，没有考虑这个语句是否属于VS或者PS能够走到的语句
+其具体的处理语句如下:
+            func_start = re.search(func_signature, code)
+            if not func_start:
+                return None
+
+            open_brace_pos = func_start.end()
+            brace_depth = 1
+            pos = open_brace_pos
+            while pos < len(code) and brace_depth > 0:
+                if code[pos] == '{':
+                    brace_depth += 1
+                elif code[pos] == '}':
+                    brace_depth -= 1
+                pos += 1
+
+            body = code[open_brace_pos+1:pos-1].strip()
+            if body.startswith('{'):
+                body = body[1:].strip()
+            if body.endswith('}'):
+                body = body[:-1].strip()
+
+            statements = self.GenerateStmts(body)
+            self._parsed_func_cache[cache_key] = {'body': body, 'statements': statements}
+按照上面的逻辑针对下列语句，在执行executeVS时会把下列所有语句都加入到可执行语句中
+VS_OUTPUT vs_main(VS_INPUT input) {
+    VS_OUTPUT output;
+    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));
+    float4 worldPos = mul(float4(input.Pos, 1.0), transpose(World));
+    float3 nor = normalize(input.Normal);
+    float3 normal = normalize(mul(nor, (float3x3)World));
+    output.WorldPos = worldPos.xyz;
+    output.Normal = normal;
+    output.TexCoord = input.TexCoord;
+    output.TexCoord2 = input.TexCoord;
+    float3 lightDistant = LightPos.xyz - worldPos.xyz;
+    float dist = length(lightDistant);
+    float3 lightDir = normalize(lightDistant);
+    float3 viewDir = cameraPos;
+    float NdotL = max(dot(normal, lightDir), 0.0);
+    float4 matDiffuse = (ColorMaterialMode == 1 || ColorMaterialMode == 5) ? input.Color : MaterialDiffuseColor;
+    float4 matAmbient = (ColorMaterialMode == 2 || ColorMaterialMode == 5) ? input.Color : MaterialAmbientColor;
+    float4 matSpecular = (ColorMaterialMode == 3) ? input.Color : MaterialSpecularColor;
+    float4 matEmissive = (ColorMaterialMode == 4) ? input.Color : MaterialEmissiveColor;
+    float3 diffuse = matDiffuse.rgb * DiffuseColor.rgb * NdotL;
+    float3 R = reflect(lightDir, normal);
+    float RdotV = max(dot(R, viewDir), 0.0);
+    float3 specular = RdotV > 0.0 ? matSpecular.rgb * SpecularColor.rgb * pow(RdotV, Shininess) : float3(0.0, 0.0, 0.0);
+    float3 ambient = matAmbient.rgb * AmbientColor.rgb;
+    float3 emissive = matEmissive.rgb;
+    float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist);
+    float cond = dist <= LightRadius ? 1.0 : 0.0;
+    output.Color = float4((ambient + diffuse * att + specular * att + emissive) * cond, 1.0);
+    return output;
+}
+
+Texture2D DiffuseTexture : register(t0);
+Texture2D LightmapTexture : register(t1);
+Texture2D DetailTexture : register(t1);
+Texture2D NormalMap : register(t1);
+Texture2D SphereMap : register(t2);
+
+SamplerState LinearSampler : register(s0);
+
+float4 ps_main(PS_INPUT_BASIC input) : SV_TARGET
+{
+    float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord);
+    return texColor * input.Color;
+}
+实际情况是我们只需要把下面的语句加入到VS可执行的语句中就行。
+VS_OUTPUT vs_main(VS_INPUT input) {
+    VS_OUTPUT output;
+    output.Pos = mul(float4(input.Pos, 1.0), transpose(WorldViewProj));
+    float4 worldPos = mul(float4(input.Pos, 1.0), transpose(World));
+    float3 nor = normalize(input.Normal);
+    float3 normal = normalize(mul(nor, (float3x3)World));
+    output.WorldPos = worldPos.xyz;
+    output.Normal = normal;
+    output.TexCoord = input.TexCoord;
+    output.TexCoord2 = input.TexCoord;
+    float3 lightDistant = LightPos.xyz - worldPos.xyz;
+    float dist = length(lightDistant);
+    float3 lightDir = normalize(lightDistant);
+    float3 viewDir = cameraPos;
+    float NdotL = max(dot(normal, lightDir), 0.0);
+    float4 matDiffuse = (ColorMaterialMode == 1 || ColorMaterialMode == 5) ? input.Color : MaterialDiffuseColor;
+    float4 matAmbient = (ColorMaterialMode == 2 || ColorMaterialMode == 5) ? input.Color : MaterialAmbientColor;
+    float4 matSpecular = (ColorMaterialMode == 3) ? input.Color : MaterialSpecularColor;
+    float4 matEmissive = (ColorMaterialMode == 4) ? input.Color : MaterialEmissiveColor;
+    float3 diffuse = matDiffuse.rgb * DiffuseColor.rgb * NdotL;
+    float3 R = reflect(lightDir, normal);
+    float RdotV = max(dot(R, viewDir), 0.0);
+    float3 specular = RdotV > 0.0 ? matSpecular.rgb * SpecularColor.rgb * pow(RdotV, Shininess) : float3(0.0, 0.0, 0.0);
+    float3 ambient = matAmbient.rgb * AmbientColor.rgb;
+    float3 emissive = matEmissive.rgb;
+    float att = 1.0 / (Attenuation.x + Attenuation.y * dist + Attenuation.z * dist * dist);
+    float cond = dist <= LightRadius ? 1.0 : 0.0;
+    output.Color = float4((ambient + diffuse * att + specular * att + emissive) * cond, 1.0);
+    return output;
+}
+因此需要改动获取可执行语句的逻辑，请根据execute_main_function给出的主函数名，遍历函数体内的语句加入到当前VS或者PS执行的语句中，如果主函数还调用了其它函数，则递归遍历到其它函数的函数体语句
 
 
 # 90
