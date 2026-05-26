@@ -1468,6 +1468,8 @@ hy: cannot run correctly. Need to fix by hand.
 
 # 87
 Git commit: 
+1. 
+2. 请在render.py中根据获取的texture_desc和sampler_config
 
 
 # 88

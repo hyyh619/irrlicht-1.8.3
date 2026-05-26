@@ -38,6 +38,8 @@ def main():
     max_workers = config.get('max_workers', 1)
     primitive_topology = config.get('primitive_topology', D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
     mesh_view_enabled = config.get('mesh_view_enabled', False)
+    sampler_config_path = config.get('sampler_config', '')
+    texture_desc_path = config.get('texture_desc', '')
 
     if not hlsl_file_path:
         print("Error: hlsl_file_path not specified in config")
