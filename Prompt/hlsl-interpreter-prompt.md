@@ -1420,7 +1420,7 @@ CPUAccessFlags 0
 MiscFlags    0
 
 # 84
-Git commit: 
+Git commit: hlsl-inter: add texture description json to set texture descriptor by MiniMax-M2.7.
 1. texture.py中定义的Texture对象需要保存纹理参数，纹理的参数如下列所示
     Width        512
     Height       512
@@ -1439,13 +1439,19 @@ Git commit:
 
 # 85
 Git commit:
-1. hlsl_interpreter.py的HLSLInterpreter初始化时创建Sampler对象和Texture对象
-2. Sampler对象和Texture对象的定义在texture.py
-3. Sampler对象创建用到的配置参数文件请从输入的json配置文件中的sampler_json项获得
+1. texture_desc.json需要支持多个纹理单元的配置，请改变texture_desc.json的结构支持多个纹理单元，每个纹理单元给予用一个id号，默认从0开始
+2. sampler_config.json也需要支持多个采样器配置，也改变该配置文件结构，每个采样器也给予一个id号，默认从0开始
+3. texture.py中解析texture_desc.json和sampler_config.json的代码也做相应的更改
+   a. Texture对象和Sampler对象在初始化时，获取texture_desc.json和sampler_config.json文件的同时，还需要指定纹理单元id和sampler的id。
+   b. 根据id从texture_desc.json和sampler_config.json获取对应的配置信息
+4. texture_desc.json每一个纹理单元配置信息中包含了纹理数据文件路径。请从该路径加载纹理的像素数据
 
 
 # 86
-Git commit: 
+Git commit:
+1. hlsl_interpreter.py的HLSLInterpreter初始化时创建Sampler对象和Texture对象
+2. Sampler对象和Texture对象的定义在texture.py
+3. Sampler对象创建用到的配置参数文件请从输入的json配置文件中的sampler_json项获得
 
 
 # 87

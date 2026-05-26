@@ -1,18 +1,17 @@
 import math
 import struct
 import json
-from typing import List, Optional, Tuple
+import os
+from typing import List, Optional, Tuple, Dict
 
 
 D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT = 0x10
-
 
 D3D11_TEXTURE_ADDRESS_WRAP = 1
 D3D11_TEXTURE_ADDRESS_MIRROR = 2
 D3D11_TEXTURE_ADDRESS_CLAMP = 3
 D3D11_TEXTURE_ADDRESS_BORDER = 4
 D3D11_TEXTURE_ADDRESS_MIRROR_ONCE = 5
-
 
 D3D11_COMPARISON_NEVER = 0
 D3D11_COMPARISON_LESS = 1
@@ -22,6 +21,95 @@ D3D11_COMPARISON_GREATER = 4
 D3D11_COMPARISON_NOT_EQUAL = 5
 D3D11_COMPARISON_GREATER_EQUAL = 6
 D3D11_COMPARISON_ALWAYS = 7
+
+FILTER_MAP = {
+    "D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT": 0x10,
+    "D3D11_FILTER_MIN_MAG_MIP_LINEAR": 0x15,
+    "D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR": 0x14,
+    "D3D11_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT": 0x11,
+}
+
+ADDRESS_MAP = {
+    "D3D11_TEXTURE_ADDRESS_WRAP": 1,
+    "D3D11_TEXTURE_ADDRESS_MIRROR": 2,
+    "D3D11_TEXTURE_ADDRESS_CLAMP": 3,
+    "D3D11_TEXTURE_ADDRESS_BORDER": 4,
+    "D3D11_TEXTURE_ADDRESS_MIRROR_ONCE": 5,
+}
+
+COMPARISON_MAP = {
+    "D3D11_COMPARISON_NEVER": 0,
+    "D3D11_COMPARISON_LESS": 1,
+    "D3D11_COMPARISON_EQUAL": 2,
+    "D3D11_COMPARISON_LESS_EQUAL": 3,
+    "D3D11_COMPARISON_GREATER": 4,
+    "D3D11_COMPARISON_NOT_EQUAL": 5,
+    "D3D11_COMPARISON_GREATER_EQUAL": 6,
+    "D3D11_COMPARISON_ALWAYS": 7,
+}
+
+FORMAT_MAP = {
+    "DXGI_FORMAT_B8G8R8A8_UNORM": 0x57,
+    "DXGI_FORMAT_R8G8B8A8_UNORM": 0x56,
+    "DXGI_FORMAT_R8G8B8A8_UINT": 0x6C,
+    "DXGI_FORMAT_R32G32B32A32_FLOAT": 0x5A,
+    "DXGI_FORMAT_R32G32B32A32_UINT": 0x5B,
+    "DXGI_FORMAT_R16G16B16A16_FLOAT": 0x5E,
+    "DXGI_FORMAT_R16G16B16A16_UNORM": 0x5C,
+    "DXGI_FORMAT_R32_FLOAT": 0x52,
+    "DXGI_FORMAT_R8_UNORM": 0x51,
+}
+
+USAGE_MAP = {
+    "D3D11_USAGE_DEFAULT": 0,
+    "D3D11_USAGE_IMMUTABLE": 1,
+    "D3D11_USAGE_DYNAMIC": 2,
+    "D3D11_USAGE_STAGING": 3,
+}
+
+BINDFLAGS_MAP = {
+    "D3D11_BIND_SHADER_RESOURCE": 0x8,
+    "D3D11_BIND_RENDER_TARGET": 0x4,
+    "D3D11_BIND_DEPTH_STENCIL": 0x2,
+    "D3D11_BIND_VERTEX_BUFFER": 0x1,
+    "D3D11_BIND_INDEX_BUFFER": 0x2,
+}
+
+
+def _convert_filter(val):
+    if isinstance(val, int):
+        return val
+    return FILTER_MAP.get(val, D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT)
+
+
+def _convert_address(val):
+    if isinstance(val, int):
+        return val
+    return ADDRESS_MAP.get(val, D3D11_TEXTURE_ADDRESS_WRAP)
+
+
+def _convert_comparison(val):
+    if isinstance(val, int):
+        return val
+    return COMPARISON_MAP.get(val, D3D11_COMPARISON_NEVER)
+
+
+def _convert_format(val):
+    if isinstance(val, int):
+        return val
+    return FORMAT_MAP.get(val, 0x57)
+
+
+def _convert_usage(val):
+    if isinstance(val, int):
+        return val
+    return USAGE_MAP.get(val, 0)
+
+
+def _convert_bindflags(val):
+    if isinstance(val, int):
+        return val
+    return BINDFLAGS_MAP.get(val, 0x8)
 
 
 class Sampler:
@@ -50,20 +138,21 @@ class Sampler:
         self.MaxLOD = MaxLOD
 
     @classmethod
-    def from_json(cls, json_path: str) -> 'Sampler':
-        with open(json_path, 'r', encoding='utf-8') as f:
+    def from_config(cls, config_path: str, sampler_id: int) -> 'Sampler':
+        with open(config_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
+        sampler_data = data[str(sampler_id)]
         return cls(
-            Filter=data.get('Filter', D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT),
-            AddressU=data.get('AddressU', D3D11_TEXTURE_ADDRESS_WRAP),
-            AddressV=data.get('AddressV', D3D11_TEXTURE_ADDRESS_WRAP),
-            AddressW=data.get('AddressW', D3D11_TEXTURE_ADDRESS_WRAP),
-            MipLODBias=data.get('MipLODBias', 0.0),
-            MaxAnisotropy=data.get('MaxAnisotropy', 1),
-            ComparisonFunc=data.get('ComparisonFunc', D3D11_COMPARISON_NEVER),
-            BorderColor=data.get('BorderColor', [0.0, 0.0, 0.0, 0.0]),
-            MinLOD=data.get('MinLOD', -3.40282e38),
-            MaxLOD=data.get('MaxLOD', 3.40282e38)
+            Filter=_convert_filter(sampler_data.get('Filter', D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT)),
+            AddressU=_convert_address(sampler_data.get('AddressU', D3D11_TEXTURE_ADDRESS_WRAP)),
+            AddressV=_convert_address(sampler_data.get('AddressV', D3D11_TEXTURE_ADDRESS_WRAP)),
+            AddressW=_convert_address(sampler_data.get('AddressW', D3D11_TEXTURE_ADDRESS_WRAP)),
+            MipLODBias=sampler_data.get('MipLODBias', 0.0),
+            MaxAnisotropy=sampler_data.get('MaxAnisotropy', 1),
+            ComparisonFunc=_convert_comparison(sampler_data.get('ComparisonFunc', D3D11_COMPARISON_NEVER)),
+            BorderColor=sampler_data.get('BorderColor', [0.0, 0.0, 0.0, 0.0]),
+            MinLOD=sampler_data.get('MinLOD', -3.40282e38),
+            MaxLOD=sampler_data.get('MaxLOD', 3.40282e38)
         )
 
     def _get_filter_mode(self) -> Tuple[int, int, int]:
@@ -122,34 +211,6 @@ class Sampler:
         return address_u_func(u), address_v_func(v), address_w_func(w)
 
 
-FORMAT_MAP = {
-    "DXGI_FORMAT_B8G8R8A8_UNORM": 0x57,
-    "DXGI_FORMAT_R8G8B8A8_UNORM": 0x56,
-    "DXGI_FORMAT_R8G8B8A8_UINT": 0x6C,
-    "DXGI_FORMAT_R32G32B32A32_FLOAT": 0x5A,
-    "DXGI_FORMAT_R32G32B32A32_UINT": 0x5B,
-    "DXGI_FORMAT_R16G16B16A16_FLOAT": 0x5E,
-    "DXGI_FORMAT_R16G16B16A16_UNORM": 0x5C,
-    "DXGI_FORMAT_R32_FLOAT": 0x52,
-    "DXGI_FORMAT_R8_UNORM": 0x51,
-}
-
-USAGE_MAP = {
-    "D3D11_USAGE_DEFAULT": 0,
-    "D3D11_USAGE_IMMUTABLE": 1,
-    "D3D11_USAGE_DYNAMIC": 2,
-    "D3D11_USAGE_STAGING": 3,
-}
-
-BINDFLAGS_MAP = {
-    "D3D11_BIND_SHADER_RESOURCE": 0x8,
-    "D3D11_BIND_RENDER_TARGET": 0x4,
-    "D3D11_BIND_DEPTH_STENCIL": 0x2,
-    "D3D11_BIND_VERTEX_BUFFER": 0x1,
-    "D3D11_BIND_INDEX_BUFFER": 0x2,
-}
-
-
 class TextureDesc:
     def __init__(
         self,
@@ -157,13 +218,14 @@ class TextureDesc:
         Height: int = 512,
         MipLevels: int = 1,
         ArraySize: int = 1,
-        Format: int = 0x57,  # DXGI_FORMAT_B8G8R8A8_UNORM
+        Format: int = 0x57,
         SampleDesc_Count: int = 1,
         SampleDesc_Quality: int = 0,
-        Usage: int = 0,  # D3D11_USAGE_DEFAULT
-        BindFlags: int = 0x8,  # D3D11_BIND_SHADER_RESOURCE
+        Usage: int = 0,
+        BindFlags: int = 0x8,
         CPUAccessFlags: int = 0,
-        MiscFlags: int = 0
+        MiscFlags: int = 0,
+        DataPath: str = ""
     ):
         self.Width = Width
         self.Height = Height
@@ -176,52 +238,43 @@ class TextureDesc:
         self.BindFlags = BindFlags
         self.CPUAccessFlags = CPUAccessFlags
         self.MiscFlags = MiscFlags
+        self.DataPath = DataPath
 
     @classmethod
-    def from_json(cls, json_path: str) -> 'TextureDesc':
-        with open(json_path, 'r', encoding='utf-8') as f:
+    def from_config(cls, config_path: str, texture_id: int) -> 'TextureDesc':
+        with open(config_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-
-        format_val = data.get('Format', 0x57)
-        if isinstance(format_val, str):
-            format_val = FORMAT_MAP.get(format_val, 0x57)
-
-        usage_val = data.get('Usage', 0)
-        if isinstance(usage_val, str):
-            usage_val = USAGE_MAP.get(usage_val, 0)
-
-        bindflags_val = data.get('BindFlags', 0x8)
-        if isinstance(bindflags_val, str):
-            bindflags_val = BINDFLAGS_MAP.get(bindflags_val, 0x8)
-
+        tex_data = data[str(texture_id)]
         return cls(
-            Width=data.get('Width', 512),
-            Height=data.get('Height', 512),
-            MipLevels=data.get('MipLevels', 1),
-            ArraySize=data.get('ArraySize', 1),
-            Format=format_val,
-            SampleDesc_Count=data.get('SampleDesc', {}).get('Count', 1),
-            SampleDesc_Quality=data.get('SampleDesc', {}).get('Quality', 0),
-            Usage=usage_val,
-            BindFlags=bindflags_val,
-            CPUAccessFlags=data.get('CPUAccessFlags', 0),
-            MiscFlags=data.get('MiscFlags', 0)
+            Width=tex_data.get('Width', 512),
+            Height=tex_data.get('Height', 512),
+            MipLevels=tex_data.get('MipLevels', 1),
+            ArraySize=tex_data.get('ArraySize', 1),
+            Format=_convert_format(tex_data.get('Format', 'DXGI_FORMAT_B8G8R8A8_UNORM')),
+            SampleDesc_Count=tex_data.get('SampleDesc', {}).get('Count', 1),
+            SampleDesc_Quality=tex_data.get('SampleDesc', {}).get('Quality', 0),
+            Usage=_convert_usage(tex_data.get('Usage', 'D3D11_USAGE_DEFAULT')),
+            BindFlags=_convert_bindflags(tex_data.get('BindFlags', 'D3D11_BIND_SHADER_RESOURCE')),
+            CPUAccessFlags=tex_data.get('CPUAccessFlags', 0),
+            MiscFlags=tex_data.get('MiscFlags', 0),
+            DataPath=tex_data.get('DataPath', '')
         )
 
 
 class Texture:
-    def __init__(self, desc: TextureDesc, data_path: str, sampler: Sampler):
+    def __init__(self, desc: TextureDesc, sampler: Sampler):
         self.desc = desc
         self.sampler = sampler
         self.width = desc.Width
         self.height = desc.Height
         self.mip_levels: List[List[List[List[float]]]] = []
-        self._load_texture(data_path)
+        self._load_texture(desc.DataPath)
 
     @classmethod
-    def from_json(cls, desc_path: str, data_path: str, sampler: Sampler) -> 'Texture':
-        desc = TextureDesc.from_json(desc_path)
-        return cls(desc, data_path, sampler)
+    def from_config(cls, texture_config_path: str, sampler_config_path: str, texture_id: int, sampler_id: int) -> 'Texture':
+        desc = TextureDesc.from_config(texture_config_path, texture_id)
+        sampler = Sampler.from_config(sampler_config_path, sampler_id)
+        return cls(desc, sampler)
 
     def _load_texture(self, data_path: str):
         try:

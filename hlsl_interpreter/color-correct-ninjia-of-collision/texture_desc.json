@@ -1,4 +1,5 @@
 {
+    "0": {
     "Width": 512,
     "Height": 512,
     "MipLevels": 1,
@@ -11,5 +12,39 @@
     "Usage": "D3D11_USAGE_DEFAULT",
     "BindFlags": "D3D11_BIND_SHADER_RESOURCE",
     "CPUAccessFlags": 0,
-    "MiscFlags": 0
+    "MiscFlags": 0,
+    "image": "./color-correct-ninjia-of-collision/ninjia.bmp"
+    },
+    "1": {
+        "Width": 512,
+        "Height": 512,
+        "MipLevels": 1,
+        "ArraySize": 1,
+        "Format": "DXGI_FORMAT_B8G8R8A8_UNORM",
+        "SampleDesc": {
+            "Count": 1,
+            "Quality": 0
+        },
+        "Usage": "D3D11_USAGE_DEFAULT",
+        "BindFlags": "D3D11_BIND_SHADER_RESOURCE",
+        "CPUAccessFlags": 0,
+        "MiscFlags": 0,
+        "DataPath": "media/texture0.bmp"
+    },
+    "2": {
+        "Width": 256,
+        "Height": 256,
+        "MipLevels": 1,
+        "ArraySize": 1,
+        "Format": "DXGI_FORMAT_B8G8R8A8_UNORM",
+        "SampleDesc": {
+            "Count": 1,
+            "Quality": 0
+        },
+        "Usage": "D3D11_USAGE_DEFAULT",
+        "BindFlags": "D3D11_BIND_SHADER_RESOURCE",
+        "CPUAccessFlags": 0,
+        "MiscFlags": 0,
+        "DataPath": "media/texture1.bmp"
+    }
 }
