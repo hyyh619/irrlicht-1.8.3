@@ -1497,7 +1497,7 @@ Git commit: hlsl-inter: load all texture descriptors and samplers from json file
 
 
 # 89
-Git commit: 
+Git commit: hlsl-inter: rewrite statements parsing of function body by MiniMax-M2.7.
 hlsl_interpreter.py的execute_main_function函数在获取VS/PS的shader语句时，没有考虑这个语句是否属于VS或者PS能够走到的语句
 其具体的处理语句如下:
             func_start = re.search(func_signature, code)
@@ -1603,6 +1603,9 @@ VS_OUTPUT vs_main(VS_INPUT input) {
 
 # 90
 Git commit: 
+execute_main_function构造output_struct时，
+1. 如果是VS，那么可以从VS main函数得到返回的output的struct结构
+2. 如果是PS，则PS main函数总是返回float4的color颜色值，而不是像VS一样返回一个struct结构数据。请为color创造对应output_struct
 
 
 # 91

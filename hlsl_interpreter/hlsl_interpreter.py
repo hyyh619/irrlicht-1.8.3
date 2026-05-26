@@ -333,9 +333,9 @@ class HLSLInterpreter:
         self._log_cache_size = log_cache_size                # 日志缓存大小(字节)
         self._log_cache_bytes = 0                            # 当前缓存已用字节数
 
-        # PS纹理和采样器绑定
-        self.texture_bindings: List[TextureBinding] = []     # PS中的纹理绑定列表
-        self.sampler_bindings: List[SamplerBinding] = []     # PS中的采样器绑定列表
+        # VS/PS纹理和采样器绑定
+        self.texture_bindings: List[TextureBinding] = []     # VS/PS中的纹理绑定列表
+        self.sampler_bindings: List[SamplerBinding] = []     # VS/PS中的采样器绑定列表
         self.texture_config_path: str = ""                   # 纹理配置文件路径
         self.sampler_config_path: str = ""                   # 采样器配置文件路径
         self._texture_list: List['Texture'] = texture_list if texture_list else []
@@ -1746,10 +1746,11 @@ class HLSLInterpreter:
         output_struct_name = func_signature_match.group(1)
         input_struct_name_from_func = func_signature_match.group(2)
 
-        if output_struct_name not in self.structs:
-            return None
+        if output_struct_name in self.structs:
+            output_struct = self.structs[output_struct_name]
+        else:
+            output_struct = None
 
-        output_struct = self.structs[output_struct_name]
         output_fields = {}
         for field in output_struct.fields:
             output_fields[field.name] = field.field_type
@@ -1849,6 +1850,8 @@ class HLSLInterpreter:
 
         if csv_folder_path is None:
             csv_folder_path = os.path.dirname(hlsl_file_path)
+
+        self._parse_texture_and_sampler_bindings(code)
 
         # 解析struct定义
         for struct_match in self.patterns['struct_finditer'].finditer(code):
@@ -1976,8 +1979,6 @@ class HLSLInterpreter:
             output_struct_name = func_signature_match.group(1)
 
         output_struct = self.structs.get(output_struct_name) if output_struct_name else None
-
-        self._parse_texture_and_sampler_bindings(code)
 
         self._eval_counter = 0
 
