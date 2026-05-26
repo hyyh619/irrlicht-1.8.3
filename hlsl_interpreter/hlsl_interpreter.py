@@ -1849,10 +1849,10 @@ class HLSLInterpreter:
 
             if 'return' in stmt and ('output' in stmt or is_ps):
                 if is_ps:
-                    return_val_match = re.search(r'return\s+(.+?)\s*;', stmt)
+                    return_val_match = re.search(r'return\s+(.+?)\s*$', stmt)
                     if return_val_match:
-                        var_name = return_val_match.group(1).strip()
-                        ret_val = local_vars.get(var_name)
+                        expr = return_val_match.group(1).strip()
+                        ret_val = self.evaluate_expression(expr, local_vars)
                 else:
                     ret_val = local_vars.get('output')
                 i += 1
@@ -2049,12 +2049,7 @@ class HLSLInterpreter:
             from d3d import SHADER_STAGE_PS
             result = self.execute_main_function(code, main_func, ps_input, 0, data, SHADER_STAGE_PS)
 
-            if result and 'Color' in result:
-                pixel.ps_output_color = result['Color']
-            elif result:
-                pixel.ps_output_color = [1.0, 1.0, 1.0, 1.0]
-            else:
-                pixel.ps_output_color = pixel.color if pixel.color else [1.0, 1.0, 1.0, 1.0]
+            pixel.ps_output_color = result
 
         return pixels
 

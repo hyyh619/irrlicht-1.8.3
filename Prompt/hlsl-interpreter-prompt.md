@@ -1683,7 +1683,7 @@ Value(DiffuseTexture.Sample(LinearSampler, input.TexCoord))
 
 
 # 93
-Git commit: 
+Git commit: hlsl-inter: add code to evaluate texture sample syntax tree by MiniMax-M2.7.
 1. HLSLInterpreter不需要多个Texture对象，请把self._texture_list改为保存单个Texture对象（self._texture_exec）
 2. syntax tree parse分析下面语句
 float4 texColor = DiffuseTexture.Sample(LinearSampler, input.TexCoord)
@@ -1706,6 +1706,23 @@ Method_call(Sample)
 
 # 94
 Git commit: 
+1. execute_main_function在执行下面语句时
+return texColor * input.Color;
+并没有对texColor * input.Color;做语法树分析和执行，直接按照简单的返回变量值执行，如下源码
+            if 'return' in stmt and ('output' in stmt or is_ps):
+                if is_ps:
+                    return_val_match = re.search(r'return\s+(.+?)\s*;', stmt)
+                    if return_val_match:
+                        var_name = return_val_match.group(1).strip()
+                        ret_val = local_vars.get(var_name)
+                else:
+                    ret_val = local_vars.get('output')
+                i += 1
+                continue
+需要改写这段代码，增加对return后面的表达式进行语法树构建和评估执行来获取正确的值。
+
+2. hlsl_interpreter.py针对PS的return语句“return texColor * input.Color;”执行下面的获取返回值的操作，return_val_match为None，导致后续没有对return语句的返回值表达进行评估。请修复该问题
+    return_val_match = re.search(r'return\s+(.+?)\s*;', stmt)
 
 
 # 95
