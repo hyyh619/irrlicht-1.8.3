@@ -6,7 +6,7 @@
     "sampler_config": "./color-correct-ninjia-of-collision/sampler_config.json",
     "texture_desc": "./color-correct-ninjia-of-collision/texture_desc.json",
     "log_to_file": false,
-    "printSyntaxTree": false,
+    "printSyntaxTree": true,
     "print_interpreter_result": false,
     "print_sequence": 100,
     "float_tolerance": 0.005,

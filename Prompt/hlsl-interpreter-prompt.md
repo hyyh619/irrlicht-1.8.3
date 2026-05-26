@@ -1603,9 +1603,16 @@ VS_OUTPUT vs_main(VS_INPUT input) {
 
 # 90
 Git commit: 
+
+hy: AI coding is very specific for some code, not common.
+
 execute_main_function构造output_struct时，
 1. 如果是VS，那么可以从VS main函数得到返回的output的struct结构
 2. 如果是PS，则PS main函数总是返回float4的color颜色值，而不是像VS一样返回一个struct结构数据。请为color创造对应output_struct
+3. 在d3d.py中定义一个shader stage的常量，包括VS/HS/DS/GS/PS/CS
+4. execute_main_function增加一个输入参数指定运行的是哪一个shader stage
+5. execute_main_function判断is_ps不要使用主函数名判断而是使用shader stage来判断
+
 
 
 # 91

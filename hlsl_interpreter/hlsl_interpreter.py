@@ -1718,7 +1718,7 @@ class HLSLInterpreter:
         return statements
 
 
-    def execute_main_function(self, code: str, main_func: str, input_struct_name: str, row_index: int, data: Dict[str, Any]):
+    def execute_main_function(self, code: str, main_func: str, input_struct_name: str, row_index: int, data: Dict[str, Any], shader_stage: int = None):
         """
         执行HLSL main函数
         code: HLSL代码
@@ -1726,8 +1726,10 @@ class HLSLInterpreter:
         input_struct_name: 输入结构体名
         row_index: 数据行索引
         data: 输入数据字典
+        shader_stage: shader阶段常量 (SHADER_STAGE_VS/HS/DS/GS/PS/CS)
         返回: output结构体字典
         """
+        from d3d import SHADER_STAGE_PS
         input_struct = self.structs.get(input_struct_name)
         if not input_struct:
             self.log_output(f"Cannot find input_struct: {input_struct_name}\n")
@@ -1752,7 +1754,7 @@ class HLSLInterpreter:
             output_struct = None
 
         output_fields = {}
-        is_ps = main_func.startswith('ps_') or main_func == 'ps_main'
+        is_ps = (shader_stage == SHADER_STAGE_PS)
         if output_struct is not None:
             for field in output_struct.fields:
                 output_fields[field.name] = field.field_type
@@ -1797,7 +1799,7 @@ class HLSLInterpreter:
         self.debug_print(f"\n=== INPUT DATA ===")
         for k, v in local_vars.items():
             if k.startswith('input.') or k == 'output':
-                self.debug_print(f"  {k} = {v}")
+                self.debug_print(f"  {k} = {self._format_float(v)}")
         self.debug_print(f"==================")
 
         # 顺序执行语句
@@ -1939,7 +1941,8 @@ class HLSLInterpreter:
                     if field.data and row_index < len(field.data):
                         data[field.name] = field.data[row_index]
                 self.vertex_pool.build_from_input(vs_input, data, row_index)
-                result = self.execute_main_function(code, main_func, vs_input, row_index, data)
+                from d3d import SHADER_STAGE_VS
+                result = self.execute_main_function(code, main_func, vs_input, row_index, data, SHADER_STAGE_VS)
                 self.vertex_pool.update_output(row_index, result)
                 return row_index, result
 
@@ -1959,7 +1962,8 @@ class HLSLInterpreter:
                     if field.data and row_index < len(field.data):
                         data[field.name] = field.data[row_index]
                 self.vertex_pool.build_from_input(vs_input, data, row_index)
-                result = self.execute_main_function(code, main_func, vs_input, row_index, data)
+                from d3d import SHADER_STAGE_VS
+                result = self.execute_main_function(code, main_func, vs_input, row_index, data, SHADER_STAGE_VS)
                 self.vertex_pool.update_output(row_index, result)
                 results.append(result)
 
@@ -2005,7 +2009,8 @@ class HLSLInterpreter:
             }
             data.update(pixel.attributes)
 
-            result = self.execute_main_function(code, main_func, ps_input, 0, data)
+            from d3d import SHADER_STAGE_PS
+            result = self.execute_main_function(code, main_func, ps_input, 0, data, SHADER_STAGE_PS)
 
             if result and 'Color' in result:
                 pixel.ps_output_color = result['Color']
