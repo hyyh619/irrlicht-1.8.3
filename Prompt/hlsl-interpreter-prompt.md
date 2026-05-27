@@ -1705,7 +1705,7 @@ Method_call(Sample)
 
 
 # 94
-Git commit: 
+Git commit: hlsl-inter: fix PS return expression match by MiniMax-M2.7.
 1. execute_main_function在执行下面语句时
 return texColor * input.Color;
 并没有对texColor * input.Color;做语法树分析和执行，直接按照简单的返回变量值执行，如下源码
@@ -1727,6 +1727,29 @@ return texColor * input.Color;
 
 # 95
 Git commit: 
+1. 新增一个output_merger.py文件
+2. 在output_merger.py文件实现Depth对象，Depth对象负责完成3D渲染中的深度测试
+   a. Depth根据
+   b. Depth对象接收rasterizer执行后的pixels，
+
+
+DepthEnable        True
+DepthWriteMask     D3D11_DEPTH_WRITE_MASK_ALL
+DepthFunc          D3D11_COMPARISON_LESS
+StencilEnable      False
+StencilReadMask    255
+StencilWriteMask   255
+FrontFace          
+StencilFailOp    D3D11_STENCIL_OP_KEEP
+StencilDepthFailOp D3D11_STENCIL_OP_KEEP
+StencilPassOp    D3D11_STENCIL_OP_KEEP
+StencilFunc      D3D11_COMPARISON_ALWAYS
+BackFace           
+StencilFailOp    D3D11_STENCIL_OP_KEEP
+StencilDepthFailOp D3D11_STENCIL_OP_KEEP
+StencilPassOp    D3D11_STENCIL_OP_KEEP
+StencilFunc      D3D11_COMPARISON_ALWAYS
+
 
 
 # 96

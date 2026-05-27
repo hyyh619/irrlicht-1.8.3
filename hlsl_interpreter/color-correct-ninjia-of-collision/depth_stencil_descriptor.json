@@ -1,0 +1,20 @@
+{
+    "DepthEnable": true,
+    "DepthWriteMask": "D3D11_DEPTH_WRITE_MASK_ALL",
+    "DepthFunc": "D3D11_COMPARISON_LESS",
+    "StencilEnable": false,
+    "StencilReadMask": 255,
+    "StencilWriteMask": 255,
+    "FrontFace": {
+        "StencilFailOp": "D3D11_STENCIL_OP_KEEP",
+        "StencilDepthFailOp": "D3D11_STENCIL_OP_KEEP",
+        "StencilPassOp": "D3D11_STENCIL_OP_KEEP",
+        "StencilFunc": "D3D11_COMPARISON_ALWAYS"
+    },
+    "BackFace": {
+        "StencilFailOp": "D3D11_STENCIL_OP_KEEP",
+        "StencilDepthFailOp": "D3D11_STENCIL_OP_KEEP",
+        "StencilPassOp": "D3D11_STENCIL_OP_KEEP",
+        "StencilFunc": "D3D11_COMPARISON_ALWAYS"
+    }
+}
