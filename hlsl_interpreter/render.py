@@ -141,14 +141,14 @@ def main():
         interpreter.load_vs_output_golden_from_csv(golden_csv_path)
     load_golden_time = time.time() - load_golden_start
 
-    if mesh_view_enabled:
-        interpreter.log_output("Displaying input mesh before executeVS...")
-        interpreter.show_input_mesh("VS_INPUT")
-
     # 1. Execute VS
     execute_start = time.time()
     results = interpreter.executeVS("vs_main", "VS_INPUT", execute_count=execute_count)
     execute_time = time.time() - execute_start
+
+    if mesh_view_enabled:
+        interpreter.log_output("Displaying input mesh before executeVS...")
+        interpreter.show_input_mesh("VS_INPUT")
 
     print_and_compare_results(interpreter, results, output_struct_name, float_tolerance, execute_count, interpret_time, load_golden_time, execute_time, total_start)
 
