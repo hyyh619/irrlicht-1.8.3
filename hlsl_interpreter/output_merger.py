@@ -86,9 +86,9 @@ class Depth:
             with open(config_path, 'r', encoding='utf-8') as f:
                 config_data = json.load(f)
 
-            self.config.depth_enable = config_data.get('depth_enable', False)
-            self.config.depth_write_mask = config_data.get('depth_write_mask', False)
-            self.config.depth_init_value = config_data.get('depth_init_value', 1.0)
+            self.config.depth_enable = config_data.get('DepthEnable', False)
+            self.config.depth_write_mask = config_data.get('DepthWriteMask', False)
+            self.config.depth_init_value = config_data.get('DepthInitValue', 1.0)
 
             depth_func_map = {
                 'never': ComparisonFunc.NEVER,
@@ -100,13 +100,13 @@ class Depth:
                 'greater_equal': ComparisonFunc.GREATER_EQUAL,
                 'always': ComparisonFunc.ALWAYS
             }
-            depth_func_str = config_data.get('depth_func', 'less').lower()
+            depth_func_str = config_data.get('DepthFunc', 'less').lower()
             self.config.depth_func = depth_func_map.get(depth_func_str, ComparisonFunc.LESS)
 
-            self.config.stencil_enable = config_data.get('stencil_enable', False)
-            self.config.stencil_read_mask = config_data.get('stencil_read_mask', 0xFF)
-            self.config.stencil_write_mask = config_data.get('stencil_write_mask', 0xFF)
-            self.config.stencil_init_value = config_data.get('stencil_init_value', 0)
+            self.config.stencil_enable = config_data.get('StencilEnable', False)
+            self.config.stencil_read_mask = config_data.get('StencilReadMask', 0xFF)
+            self.config.stencil_write_mask = config_data.get('StencilWriteMask', 0xFF)
+            self.config.stencil_init_value = config_data.get('StencilInitValue', 0)
 
             stencil_op_map = {
                 'keep': StencilOp.KEEP,
@@ -130,24 +130,24 @@ class Depth:
                 'always': StencilFunc.ALWAYS
             }
 
-            if 'front_face' in config_data:
-                ff = config_data['front_face']
+            if 'FrontFace' in config_data:
+                ff = config_data['FrontFace']
                 self.config.front_face = StencilOpDesc(
-                    fail_op=stencil_op_map.get(ff.get('fail_op', 'keep'), StencilOp.KEEP),
-                    pass_op=stencil_op_map.get(ff.get('pass_op', 'keep'), StencilOp.KEEP),
-                    depth_fail_op=stencil_op_map.get(ff.get('depth_fail_op', 'keep'), StencilOp.KEEP),
-                    func=stencil_func_map.get(ff.get('func', 'always'), StencilFunc.ALWAYS)
+                    fail_op=stencil_op_map.get(ff.get('StencilFailOp', 'keep'), StencilOp.KEEP),
+                    pass_op=stencil_op_map.get(ff.get('StencilPassOp', 'keep'), StencilOp.KEEP),
+                    depth_fail_op=stencil_op_map.get(ff.get('StencilDepthFailOp', 'keep'), StencilOp.KEEP),
+                    func=stencil_func_map.get(ff.get('StencilFunc', 'always'), StencilFunc.ALWAYS)
                 )
             else:
                 self.config.front_face = StencilOpDesc()
 
-            if 'back_face' in config_data:
-                bf = config_data['back_face']
+            if 'BackFace' in config_data:
+                bf = config_data['BackFace']
                 self.config.back_face = StencilOpDesc(
-                    fail_op=stencil_op_map.get(bf.get('fail_op', 'keep'), StencilOp.KEEP),
-                    pass_op=stencil_op_map.get(bf.get('pass_op', 'keep'), StencilOp.KEEP),
-                    depth_fail_op=stencil_op_map.get(bf.get('depth_fail_op', 'keep'), StencilOp.KEEP),
-                    func=stencil_func_map.get(bf.get('func', 'always'), StencilFunc.ALWAYS)
+                    fail_op=stencil_op_map.get(bf.get('StencilFailOp', 'keep'), StencilOp.KEEP),
+                    pass_op=stencil_op_map.get(bf.get('StencilPassOp', 'keep'), StencilOp.KEEP),
+                    depth_fail_op=stencil_op_map.get(bf.get('StencilDepthFailOp', 'keep'), StencilOp.KEEP),
+                    func=stencil_func_map.get(bf.get('StencilFunc', 'always'), StencilFunc.ALWAYS)
                 )
             else:
                 self.config.back_face = StencilOpDesc()
@@ -293,25 +293,25 @@ class Depth:
 def create_default_depth_config() -> Dict[str, Any]:
     """Create default depth/stencil configuration"""
     return {
-        'depth_enable': False,
-        'depth_write_mask': False,
-        'depth_func': 'less',
-        'depth_init_value': 1.0,
-        'stencil_enable': False,
-        'stencil_read_mask': 0xFF,
-        'stencil_write_mask': 0xFF,
-        'stencil_init_value': 0,
-        'front_face': {
-            'fail_op': 'keep',
-            'pass_op': 'keep',
-            'depth_fail_op': 'keep',
-            'func': 'always'
+        'DepthEnable': True,
+        'DepthWriteMask': 'D3D11_DEPTH_WRITE_MASK_ALL',
+        'DepthFunc': 'D3D11_COMPARISON_LESS',
+        'DepthInitValue': 1.0,
+        'StencilEnable': False,
+        'StencilReadMask': 255,
+        'StencilWriteMask': 255,
+        'StencilInitValue': 0,
+        'FrontFace': {
+            'StencilFailOp': 'D3D11_STENCIL_OP_KEEP',
+            'StencilDepthFailOp': 'D3D11_STENCIL_OP_KEEP',
+            'StencilPassOp': 'D3D11_STENCIL_OP_KEEP',
+            'StencilFunc': 'D3D11_COMPARISON_ALWAYS'
         },
-        'back_face': {
-            'fail_op': 'keep',
-            'pass_op': 'keep',
-            'depth_fail_op': 'keep',
-            'func': 'always'
+        'BackFace': {
+            'StencilFailOp': 'D3D11_STENCIL_OP_KEEP',
+            'StencilDepthFailOp': 'D3D11_STENCIL_OP_KEEP',
+            'StencilPassOp': 'D3D11_STENCIL_OP_KEEP',
+            'StencilFunc': 'D3D11_COMPARISON_ALWAYS'
         }
     }
 

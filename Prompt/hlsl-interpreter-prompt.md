@@ -1751,7 +1751,10 @@ Git commit: hlsl-inter: refine Depth Object creation by MiniMax-M2.7.
 
 
 # 97
-Git commit: 
+Git commit: hlsl-inter: add depth buffer/stencil buffer init values by MiniMax-M2.7.
+
+hy: 没有给具体的信息，导致解析config文件的字段名错误，AI自己脑补的字段名
+
 1. Depth对象获取depth/stencil config file中DepthInitValue和StencilInitValue的值
 2. 如果_depth_buffer没有保存当前屏幕坐标的像素的depth value，则使用DepthInitValue的值和当前pixel的depth值做比较
 3. 如果_depth_buffer已经保存了某个pixel的depth值，则depth test使用该像素的depth值和当前pixel的depth值做比较
@@ -1760,6 +1763,32 @@ Git commit:
 
 # 98
 Git commit: 
+我们depth/stencil的config json file的字段如下
+    "DepthEnable": true,
+    "DepthWriteMask": "D3D11_DEPTH_WRITE_MASK_ALL",
+    "DepthFunc": "D3D11_COMPARISON_LESS",
+    "StencilEnable": false,
+    "StencilReadMask": 255,
+    "StencilWriteMask": 255,
+    "FrontFace": {
+        "StencilFailOp": "D3D11_STENCIL_OP_KEEP",
+        "StencilDepthFailOp": "D3D11_STENCIL_OP_KEEP",
+        "StencilPassOp": "D3D11_STENCIL_OP_KEEP",
+        "StencilFunc": "D3D11_COMPARISON_ALWAYS"
+    },
+    "BackFace": {
+        "StencilFailOp": "D3D11_STENCIL_OP_KEEP",
+        "StencilDepthFailOp": "D3D11_STENCIL_OP_KEEP",
+        "StencilPassOp": "D3D11_STENCIL_OP_KEEP",
+        "StencilFunc": "D3D11_COMPARISON_ALWAYS"
+    },
+    "DepthInitValue": 1.0,
+    "StencilInitValue": 0
+而对应的output_merger.py中Depth对象解析config file的代码用的字段名错误，其代码如下
+            self.config.depth_enable = config_data.get('depth_enable', False)
+            self.config.depth_write_mask = config_data.get('depth_write_mask', False)
+            self.config.depth_init_value = config_data.get('depth_init_value', 1.0)
+请检查load_config函数，修复所有字段名的错误
 
 
 # 99
