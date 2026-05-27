@@ -1729,27 +1729,19 @@ return texColor * input.Color;
 Git commit: 
 1. 新增一个output_merger.py文件
 2. 在output_merger.py文件实现Depth对象，Depth对象负责完成3D渲染中的深度测试
-   a. Depth根据
-   b. Depth对象接收rasterizer执行后的pixels，
-
-
-DepthEnable        True
-DepthWriteMask     D3D11_DEPTH_WRITE_MASK_ALL
-DepthFunc          D3D11_COMPARISON_LESS
-StencilEnable      False
-StencilReadMask    255
-StencilWriteMask   255
-FrontFace          
-StencilFailOp    D3D11_STENCIL_OP_KEEP
-StencilDepthFailOp D3D11_STENCIL_OP_KEEP
-StencilPassOp    D3D11_STENCIL_OP_KEEP
-StencilFunc      D3D11_COMPARISON_ALWAYS
-BackFace           
-StencilFailOp    D3D11_STENCIL_OP_KEEP
-StencilDepthFailOp D3D11_STENCIL_OP_KEEP
-StencilPassOp    D3D11_STENCIL_OP_KEEP
-StencilFunc      D3D11_COMPARISON_ALWAYS
-
+3. 在render.py中创建Depth对象，Depth对象的配置从depth_stencil_config_path给的json config file中读取，这是配置决定了depth/stencil的具体操作
+4. Depth对象的执行有两个过程分别如下：
+   a. 如果early_z打开
+        1). Depth对象接收rasterizer输出的pixels
+        2). 如果depth enable or stencil enable，Depth对象就对输入的pixels执行对应的depth/stencil操作
+        3). 把所有通过depth/stencil操作的pixel输出出来
+        4). 如果depth disable，则直接把输入pixels全部输出
+   a. 如果early_z关闭
+        1). Depth对象接收executePS处理完的pixels
+        2). 如果depth enable or stencil enable，Depth对象就对输入的pixels执行对应的depth/stencil操作
+        3). 把所有通过depth/stencil操作的pixel输出出来
+        4). 如果depth disable，则直接把输入pixels全部输出
+5. MeshView的output rasterizer和Pixel Shader窗口请使用depth模块处理后的pixels，而不是rasterizer和executePS处理后的pixels
 
 
 # 96

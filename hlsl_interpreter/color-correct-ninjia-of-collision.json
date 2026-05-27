@@ -6,6 +6,7 @@
     "sampler_config": "./color-correct-ninjia-of-collision/sampler_config.json",
     "texture_desc": "./color-correct-ninjia-of-collision/texture_desc.json",
     "depth_stencil_config": "./color-correct-ninjia-of-collision/depth_stencil_descriptor.json",
+    "early_z": true,
     "log_to_file": false,
     "printSyntaxTree": true,
     "print_interpreter_result": false,

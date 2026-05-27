@@ -6,6 +6,7 @@ import json
 from hlsl_interpreter import HLSLInterpreter
 from rasterizer import Rasterizer
 from d3d import D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST
+from output_merger import Depth
 
 
 def print_and_compare_results(interpreter, results, output_struct_name, float_tolerance, execute_count, interpret_time, load_golden_time, execute_time, total_start):
@@ -93,6 +94,8 @@ def main():
     mesh_view_enabled = config.get('mesh_view_enabled', False)
     texture_desc_path = config.get('texture_desc', '')
     sampler_config_path = config.get('sampler_config', '')
+    depth_stencil_config_path = config.get('depth_stencil_config', '')
+    early_z = config.get("early_z", True)
 
     texture_desc_list = []
     sampler_list = []
@@ -159,19 +162,47 @@ def main():
     # Execute rasterization
     r = Rasterizer("rasterizer_param.json")
     pixels = r.rasterize(results, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
-    interpreter._mesh_view.set_rasterizer_pixels(pixels)
 
-    if mesh_view_enabled and pixels:
+    depth = None
+    depth_pixels = pixels
+    depth_pixels_for_view = pixels
+    if depth_stencil_config_path:
+        depth = Depth(depth_stencil_config_path)
+        if early_z:
+            depth_pixels = depth.execute(pixels, early_z=True)
+            depth_pixels_for_view = depth_pixels
+            interpreter.log_output(f"Early-Z: Depth processed {len(pixels)} rasterizer pixels to {len(depth_pixels)} pixels")
+        else:
+            interpreter.log_output(f"Late-Z: Depth will process pixels after PS")
+
+    interpreter._mesh_view.set_rasterizer_pixels(depth_pixels_for_view)
+
+    if mesh_view_enabled and depth_pixels:
         interpreter.log_output("Displaying pixels after rasterizer...")
         interpreter._mesh_view._draw_rasterizer_pixels()
 
+    if early_z:
+        pixels_for_ps = depth_pixels
+    else:
+        pixels_for_ps = pixels
+
     # 3. 执行PS
-    interpreter.executePS("ps_main", "PS_INPUT_BASIC", pixels)
+    interpreter.executePS("ps_main", "PS_INPUT_BASIC", pixels_for_ps)
+
+    if not early_z and depth is not None:
+        depth_pixels = depth.execute(pixels, early_z=False)
+        interpreter.log_output(f"Late-Z: Depth processed {len(pixels)} PS pixels to {len(depth_pixels)} pixels")
+        depth_pixels_for_view = depth_pixels
+    else:
+        depth_pixels_for_view = depth_pixels
 
     # 在MeshView中显示
-    if mesh_view_enabled and pixels:
-        interpreter._mesh_view.set_rasterizer_pixels(pixels)  # 更新后的pixels已包含ps_output_color
+    if mesh_view_enabled and depth_pixels_for_view:
+        interpreter._mesh_view.set_rasterizer_pixels(depth_pixels_for_view)
+        interpreter._mesh_view.set_output_merger_pixels(depth_pixels_for_view)
+        interpreter._mesh_view._draw_rasterizer_pixels()
         interpreter._mesh_view._draw_pixel_shader_pixels()
+        interpreter._mesh_view._draw_output_merger_pixels()
 
     while True:
         user_input = input("\nEnter 'x' to exit, 'o' to open MeshView, 'r' to rerun executeVS: ")

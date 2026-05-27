@@ -105,6 +105,7 @@ class MeshView:
         self._rasterizer_canvas = None
         self._pixel_shader_canvas = None
         self._output_merger_canvas = None
+        self._output_merger_pixels = []  # pixels after depth/stencil processing
         self._rasterizer_scale = 1.0
         self._rasterizer_offset_x = 0
         self._rasterizer_offset_y = 0
@@ -423,6 +424,13 @@ class MeshView:
         pixels: Pixel对象列表，executePS执行后的像素列表
         """
         self._rasterizer_pixels = pixels
+
+    def set_output_merger_pixels(self, pixels: List):
+        """
+        设置Output Merger阶段的像素数据（经过depth/stencil处理后的像素）
+        pixels: Pixel对象列表，Depth处理后的像素列表
+        """
+        self._output_merger_pixels = pixels
 
     def _compute_input_bounds(self):
         """计算输入顶点边界框"""
@@ -811,6 +819,65 @@ class MeshView:
                 color_hex = f'#{r:02x}{g:02x}{b:02x}'
 
             self._pixel_shader_canvas.create_rectangle(
+                screen_x - 1, screen_y - 1, screen_x + 1, screen_y + 1,
+                fill=color_hex, outline=color_hex
+            )
+
+    def _draw_output_merger_pixels(self):
+        """绘制Output Merger处理后的像素到Output Merger画布"""
+        if not self._output_merger_canvas:
+            return
+
+        if self._output_merger_pixels:
+            pixels = self._output_merger_pixels
+        else:
+            pixels = self._rasterizer_pixels
+
+        if not pixels:
+            return
+
+        self._output_merger_canvas.delete("all")
+
+        canvas_width = int(self._output_merger_canvas.cget('width'))
+        canvas_height = int(self._output_merger_canvas.cget('height'))
+
+        min_x = min(p.x for p in pixels)
+        max_x = max(p.x for p in pixels)
+        min_y = min(p.y for p in pixels)
+        max_y = max(p.y for p in pixels)
+
+        mesh_width = max(max_x - min_x, 1)
+        mesh_height = max(max_y - min_y, 1)
+
+        margin = 40
+        usable_width = canvas_width - 2 * margin
+        usable_height = canvas_height - 2 * margin
+        scale = self._rasterizer_scale * min(usable_width, usable_height) / max(mesh_width, mesh_height)
+        if scale < 0.01:
+            scale = 0.01
+
+        offset_x = canvas_width / 2 + self._rasterizer_offset_x - (min_x + max_x) / 2 * scale
+        offset_y = canvas_height / 2 + self._rasterizer_offset_y - (min_y + max_y) / 2 * scale
+
+        for pixel in pixels:
+            screen_x = pixel.x * scale + offset_x
+            screen_y = pixel.y * scale + offset_y
+
+            if pixel.ps_output_color:
+                color = pixel.ps_output_color
+                r = int(min(255, max(0, color[0] * 255)))
+                g = int(min(255, max(0, color[1] * 255)))
+                b = int(min(255, max(0, color[2] * 255)))
+                color_hex = f'#{r:02x}{g:02x}{b:02x}'
+            else:
+                prim_id = pixel.primitive_id
+                hue = (prim_id * 37) % 360
+                r = int(127 + 127 * math.sin(hue * math.pi / 180))
+                g = int(127 + 127 * math.sin((hue + 120) * math.pi / 180))
+                b = int(127 + 127 * math.sin((hue + 240) * math.pi / 180))
+                color_hex = f'#{r:02x}{g:02x}{b:02x}'
+
+            self._output_merger_canvas.create_rectangle(
                 screen_x - 1, screen_y - 1, screen_x + 1, screen_y + 1,
                 fill=color_hex, outline=color_hex
             )
