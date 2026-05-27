@@ -52,9 +52,11 @@ class DepthStencilOpDesc:
     depth_enable: bool = False
     depth_write_mask: bool = False
     depth_func: ComparisonFunc = ComparisonFunc.LESS
+    depth_init_value: float = 1.0
     stencil_enable: bool = False
     stencil_read_mask: int = 0xFF
     stencil_write_mask: int = 0xFF
+    stencil_init_value: int = 0
     front_face: StencilOpDesc = None
     back_face: StencilOpDesc = None
 
@@ -84,8 +86,9 @@ class Depth:
             with open(config_path, 'r', encoding='utf-8') as f:
                 config_data = json.load(f)
 
-            self.config.depth_enable = config_data.get('depth_enable', True)
-            self.config.depth_write_mask = config_data.get('depth_write_mask', True)
+            self.config.depth_enable = config_data.get('depth_enable', False)
+            self.config.depth_write_mask = config_data.get('depth_write_mask', False)
+            self.config.depth_init_value = config_data.get('depth_init_value', 1.0)
 
             depth_func_map = {
                 'never': ComparisonFunc.NEVER,
@@ -103,6 +106,7 @@ class Depth:
             self.config.stencil_enable = config_data.get('stencil_enable', False)
             self.config.stencil_read_mask = config_data.get('stencil_read_mask', 0xFF)
             self.config.stencil_write_mask = config_data.get('stencil_write_mask', 0xFF)
+            self.config.stencil_init_value = config_data.get('stencil_init_value', 0)
 
             stencil_op_map = {
                 'keep': StencilOp.KEEP,
@@ -203,7 +207,10 @@ class Depth:
                 return False
 
         if self.config.depth_enable:
-            stored_depth = self._depth_buffer.get((x, y), 0.0 if self.config.depth_func == ComparisonFunc.LESS else 1.0)
+            if (x, y) in self._depth_buffer:
+                stored_depth = self._depth_buffer[(x, y)]
+            else:
+                stored_depth = self.config.depth_init_value
             if not self._test_depth(stored_depth, current_depth):
                 return False
 
@@ -235,7 +242,10 @@ class Depth:
     def _test_stencil(self, pixel: Pixel, x: int, y: int) -> bool:
         """Test stencil value"""
         stencil_ref = self._get_stencil_ref()
-        stored_stencil = self._stencil_buffer.get((x, y), 0)
+        if (x, y) in self._stencil_buffer:
+            stored_stencil = self._stencil_buffer[(x, y)]
+        else:
+            stored_stencil = self.config.stencil_init_value
         mask = self.config.stencil_read_mask
 
         func = self.config.front_face.func
@@ -264,8 +274,8 @@ class Depth:
         return True
 
     def _get_stencil_ref(self) -> int:
-        """Get stencil reference value (usually 0 for simplicity)"""
-        return 0
+        """Get stencil reference value from config"""
+        return self.config.stencil_init_value
 
     def _write_to_depth_buffer(self, x: int, y: int, depth: float):
         """Write depth value to depth buffer"""
@@ -283,12 +293,14 @@ class Depth:
 def create_default_depth_config() -> Dict[str, Any]:
     """Create default depth/stencil configuration"""
     return {
-        'depth_enable': True,
-        'depth_write_mask': True,
+        'depth_enable': False,
+        'depth_write_mask': False,
         'depth_func': 'less',
+        'depth_init_value': 1.0,
         'stencil_enable': False,
         'stencil_read_mask': 0xFF,
         'stencil_write_mask': 0xFF,
+        'stencil_init_value': 0,
         'front_face': {
             'fail_op': 'keep',
             'pass_op': 'keep',

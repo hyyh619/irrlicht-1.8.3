@@ -1745,13 +1745,17 @@ Git commit: hlsl-inter: implement depth/stencil operation by MiniMax-M2.7.
 
 
 # 96
-Git commit: 
+Git commit: hlsl-inter: refine Depth Object creation by MiniMax-M2.7.
 1. render.py中不用根据是否有depth_stencil_config_path来创建Depth对象
 2. 请总是创建Depth对象，如果没有depth_stencil_config_path来指定depth/stencil config file，那么用默认参数创建Depth对象，这个时候depth/stencil都需要disable
 
 
 # 97
 Git commit: 
+1. Depth对象获取depth/stencil config file中DepthInitValue和StencilInitValue的值
+2. 如果_depth_buffer没有保存当前屏幕坐标的像素的depth value，则使用DepthInitValue的值和当前pixel的depth值做比较
+3. 如果_depth_buffer已经保存了某个pixel的depth值，则depth test使用该像素的depth值和当前pixel的depth值做比较
+4. 对stencil test也做以上的类似操作
 
 
 # 98
