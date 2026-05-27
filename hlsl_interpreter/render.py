@@ -163,17 +163,14 @@ def main():
     r = Rasterizer("rasterizer_param.json")
     pixels = r.rasterize(results, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
 
-    depth = None
-    depth_pixels = pixels
-    depth_pixels_for_view = pixels
-    if depth_stencil_config_path:
-        depth = Depth(depth_stencil_config_path)
-        if early_z:
-            depth_pixels = depth.execute(pixels, early_z=True)
-            depth_pixels_for_view = depth_pixels
-            interpreter.log_output(f"Early-Z: Depth processed {len(pixels)} rasterizer pixels to {len(depth_pixels)} pixels")
-        else:
-            interpreter.log_output(f"Late-Z: Depth will process pixels after PS")
+    depth = Depth(depth_stencil_config_path) if depth_stencil_config_path else Depth()
+
+    if early_z:
+        depth_pixels = depth.execute(pixels, early_z=True)
+        depth_pixels_for_view = depth_pixels
+        interpreter.log_output(f"Early-Z: Depth processed {len(pixels)} rasterizer pixels to {len(depth_pixels)} pixels")
+    else:
+        interpreter.log_output(f"Late-Z: Depth will process pixels after PS")
 
     interpreter._mesh_view.set_rasterizer_pixels(depth_pixels_for_view)
 
@@ -181,20 +178,15 @@ def main():
         interpreter.log_output("Displaying pixels after rasterizer...")
         interpreter._mesh_view._draw_rasterizer_pixels()
 
-    if early_z:
-        pixels_for_ps = depth_pixels
-    else:
-        pixels_for_ps = pixels
+    pixels_for_ps = depth_pixels if early_z else pixels
 
     # 3. 执行PS
     interpreter.executePS("ps_main", "PS_INPUT_BASIC", pixels_for_ps)
 
-    if not early_z and depth is not None:
+    if not early_z:
         depth_pixels = depth.execute(pixels, early_z=False)
+        depth_pixels_for_view = depth_pixels
         interpreter.log_output(f"Late-Z: Depth processed {len(pixels)} PS pixels to {len(depth_pixels)} pixels")
-        depth_pixels_for_view = depth_pixels
-    else:
-        depth_pixels_for_view = depth_pixels
 
     # 在MeshView中显示
     if mesh_view_enabled and depth_pixels_for_view:

@@ -1726,7 +1726,7 @@ return texColor * input.Color;
 
 
 # 95
-Git commit: 
+Git commit: hlsl-inter: implement depth/stencil operation by MiniMax-M2.7.
 1. 新增一个output_merger.py文件
 2. 在output_merger.py文件实现Depth对象，Depth对象负责完成3D渲染中的深度测试
 3. 在render.py中创建Depth对象，Depth对象的配置从depth_stencil_config_path给的json config file中读取，这是配置决定了depth/stencil的具体操作
@@ -1746,6 +1746,8 @@ Git commit:
 
 # 96
 Git commit: 
+1. render.py中不用根据是否有depth_stencil_config_path来创建Depth对象
+2. 请总是创建Depth对象，如果没有depth_stencil_config_path来指定depth/stencil config file，那么用默认参数创建Depth对象，这个时候depth/stencil都需要disable
 
 
 # 97

@@ -49,8 +49,8 @@ class StencilOpDesc:
 
 @dataclass
 class DepthStencilOpDesc:
-    depth_enable: bool = True
-    depth_write_mask: bool = True
+    depth_enable: bool = False
+    depth_write_mask: bool = False
     depth_func: ComparisonFunc = ComparisonFunc.LESS
     stencil_enable: bool = False
     stencil_read_mask: int = 0xFF
