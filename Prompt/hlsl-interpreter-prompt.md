@@ -1762,7 +1762,7 @@ hy: 没有给具体的信息，导致解析config文件的字段名错误，AI�
 
 
 # 98
-Git commit: 
+Git commit: hlsl-inter: fix wrong depth/stencil config string parsing by MiniMax-M2.7.
 我们depth/stencil的config json file的字段如下
     "DepthEnable": true,
     "DepthWriteMask": "D3D11_DEPTH_WRITE_MASK_ALL",
@@ -1793,6 +1793,7 @@ Git commit:
 
 # 99
 Git commit: 
+1. render.py执行时，如果没有指定
 
 
 # 100

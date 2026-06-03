@@ -25,7 +25,7 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/hlsl_interpreter",
             "args": [
-                "color-correct-ninjia-of-collision.json",
+                "./Cases/Default.json"
             ]
         },
         {
