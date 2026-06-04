@@ -10,6 +10,7 @@ from hlsl_interpreter import HLSLInterpreter
 from rasterizer import Rasterizer
 from d3d import D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST
 from output_merger import Depth
+import d3d
 
 
 def print_and_compare_results(interpreter, results, output_struct_name, float_tolerance, execute_count, interpret_time, load_golden_time, execute_time, total_start):
@@ -63,13 +64,17 @@ def print_and_compare_results(interpreter, results, output_struct_name, float_to
     interpreter.log_output(f"Total execution time:               {total_time:.4f}s")
 
 
-def _make_interpreter(config: dict, log_file_path: str = None, primitive_topology: int = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
-                      texture_exec=None, texture_desc_list=None, sampler_list=None) -> HLSLInterpreter:
+def _make_interpreter(config: dict, shader_stage: int = d3d.SHADER_STAGE_VS, log_file_path: str = None, primitive_topology: int = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+                    texture_exec=None, texture_desc_list=None, sampler_list=None) -> HLSLInterpreter:
     """Create an HLSLInterpreter from config dict."""
+    config_log_file_mode = config.get('log_file_mode', 'a')
+    if shader_stage != d3d.SHADER_STAGE_VS and shader_stage != d3d.SHADER_STAGE_CS:
+        config_log_file_mode = 'a'
+
     return HLSLInterpreter(
         log_to_file=config.get('log_to_file', True),
         log_file_path=log_file_path or config.get('log_file_path', 'hlsl_interpreter.log'),
-        log_file_mode=config.get('log_file_mode', 'a'),
+        log_file_mode=config_log_file_mode,
         print_sequence=config.get('print_sequence', 1),
         printSyntaxTree=config.get('printSyntaxTree', True),
         print_interpreter_result=config.get('print_interpreter_result', True),
@@ -146,7 +151,7 @@ def _execute_pipeline(config: dict, config_path: str, data_folder: str):
     # ============================================================
     # VS setup and execution
     # ============================================================
-    vs_interp = _make_interpreter(config, log_file_path, primitive_topology)
+    vs_interp = _make_interpreter(config, d3d.SHADER_STAGE_VS, log_file_path, primitive_topology)
 
     if not os.path.exists(vs_hlsl):
         print(f"Error: VS shader not found: {vs_hlsl}")
@@ -254,7 +259,7 @@ def _execute_pipeline(config: dict, config_path: str, data_folder: str):
     # PS setup and execution
     # ============================================================
     if os.path.exists(ps_hlsl) and pixels_for_ps:
-        ps_interp = _make_interpreter(config, log_file_path)
+        ps_interp = _make_interpreter(config, d3d.SHADER_STAGE_PS, log_file_path)
 
         with open(ps_hlsl, 'r', encoding='utf-8') as f:
             ps_code_raw = f.read()
