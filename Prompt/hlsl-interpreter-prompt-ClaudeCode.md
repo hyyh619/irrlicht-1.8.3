@@ -41,8 +41,20 @@ void main(
 ## Git commit: hlsl-interpreter: using DxRenderDoc dump zip file as input by Claude Code.
 
 
-# 2
+# 2 修复前序提交引入的bug
 ## Prompts
+请查看render.py运行时的打印log文件output.log，有如下的Error打印
+Error: Row 0 Color[0]: output=1.640544 golden=0.431490 diff=1.209054
+Error: Row 0 Color[1]: output=1.640544 golden=0.431490 diff=1.209054
+Error: Row 0 Color[2]: output=1.640544 golden=0.431490 diff=1.209054
+Error: Row 0 WorldPos[0]: output=-61.638200 golden=11.282900 diff=72.921100
+Error: Row 0 WorldPos[1]: output=11.282900 golden=-88.120250 diff=99.403150
+Error: Row 0 WorldPos[2]: output=-88.120300 golden=-58.054070 diff=30.066230
+VS执行完毕的结果与golden data的数据对比，Color/WorldPos错误。
+1. 请修复该问题。
+2. 修复代码后执行下列命令来验证修复是否成功。运行render.py后会生成output.log(该文件在Cases文件夹中)，请读取output.log内容来验证还有Error打印吗？如果还有Error，请继续修复，知道VS输出正确
+   python.exe render.py ./Cases/Default.json
+
 ## Git commit: 
 
 

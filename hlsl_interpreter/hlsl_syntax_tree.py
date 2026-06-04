@@ -68,6 +68,14 @@ def _find_top_level_operator_cached(expr: str) -> Optional[Tuple[int, str]]:
 
             two_char = expr[i:i+2]
             if char in _OPERATORS and not (i >= 1 and two_char in _OPERATORS):
+                # Skip unary +/- that follows an operator or opening delimiter
+                if char in ('+', '-') and i >= 1:
+                    j = i - 1
+                    while j >= 0 and expr[j] == ' ':
+                        j -= 1
+                    if j >= 0 and expr[j] in '+-*/%(,[|&!<>=':
+                        i += 1
+                        continue
                 candidates.append((i, char, _OPERATORS[char]))
 
         i += 1

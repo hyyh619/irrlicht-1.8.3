@@ -1,8 +1,8 @@
 {
     "data_path": "./Cases/Collision-fix-constant-buffer-and-RdotV-zero_event475.zip",
-    "log_file_path": "./Cases/output.log",
+    "log_file_path": "output.log",
     "early_z": true,
-    "log_to_file": false,
+    "log_to_file": true,
     "printSyntaxTree": true,
     "print_interpreter_result": false,
     "print_sequence": 100,

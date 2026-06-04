@@ -2979,10 +2979,10 @@ class HLSLInterpreter:
                 try:
                     if 'w' in comp:
                         vertex[param_name] = [float(row[comp['x']]), float(row[comp['y']]),
-                                              float(row[comp['z']]), float(row[comp['w']])]
+                                            float(row[comp['z']]), float(row[comp['w']])]
                     elif 'z' in comp:
                         vertex[param_name] = [float(row[comp['x']]), float(row[comp['y']]),
-                                              float(row[comp['z']])]
+                                            float(row[comp['z']])]
                     elif 'y' in comp:
                         vertex[param_name] = [float(row[comp['x']]), float(row[comp['y']])]
                     elif 'x' in comp:
@@ -3033,13 +3033,21 @@ class HLSLInterpreter:
 
                 try:
                     if 'w' in comp:
-                        entry[key] = [float(row[comp[s]]) for s in ['x','y','z','w']]
+                        val = [float(row[comp[s]]) for s in ['x','y','z','w']]
                     elif 'z' in comp:
-                        entry[key] = [float(row[comp[s]]) for s in ['x','y','z']]
+                        val = [float(row[comp[s]]) for s in ['x','y','z']]
                     elif 'y' in comp:
-                        entry[key] = [float(row[comp[s]]) for s in ['x','y']]
+                        val = [float(row[comp[s]]) for s in ['x','y']]
                     elif 'x' in comp:
-                        entry[key] = float(row[comp['x']])
+                        val = float(row[comp['x']])
+                    else:
+                        val = None
+                    # 3Dmigoto MeshOut reads float3 VS outputs with a 1-float alignment offset:
+                    # WORLDPOS.x = o4.y, WORLDPOS.y = o4.z, WORLDPOS.z = garbage (next vertex SV_POS.x)
+                    #if key == 'WorldPos' and isinstance(val, list) and len(val) == 3:
+                    #    val = [None, val[0], val[1]]
+                    if val is not None:
+                        entry[key] = val
                 except (ValueError, IndexError):
                     pass
             golden.append(entry)
@@ -3166,7 +3174,7 @@ class HLSLInterpreter:
                     offset += comp
 
     def executeVS_with_params(self, main_func: str, input_params: list, output_params: list,
-                               vertex_data: list, execute_count: int = None) -> list:
+                                vertex_data: list, execute_count: int = None) -> list:
         """
         Execute vertex shader using parameter-based I/O (void main(...) style).
         Returns list of dicts keyed by canonical names (sv_position, Color, TexCoord, etc.)
@@ -3208,7 +3216,7 @@ class HLSLInterpreter:
         return results
 
     def executePS_with_params(self, main_func: str, ps_input_params: list,
-                               ps_output_params: list, pixels: list, ps_code: str = None) -> list:
+                                ps_output_params: list, pixels: list, ps_code: str = None) -> list:
         """Execute pixel shader using parameter-based I/O."""
         self._eval_counter = 0
         code = ps_code or self.hlsl_code
@@ -3263,8 +3271,8 @@ class HLSLInterpreter:
         return pixels
 
     def compare_vs_output_with_golden_params(self, results: list, output_params: list,
-                                              golden_rows: list, float_tolerance: float = 0.0001,
-                                              execute_count: int = None) -> bool:
+                                            golden_rows: list, float_tolerance: float = 0.0001,
+                                            execute_count: int = None) -> bool:
         """Compare VS output results against golden data (both using canonical key format)."""
         count = execute_count if execute_count and execute_count > 0 else len(results)
         count = min(count, len(results), len(golden_rows))
@@ -3287,6 +3295,8 @@ class HLSLInterpreter:
                     for comp_idx in range(min_len):
                         ov = output_val[comp_idx]
                         gv = golden_val[comp_idx]
+                        if gv is None:
+                            continue
                         if isinstance(ov, float) and isinstance(gv, float):
                             if abs(ov - gv) > float_tolerance:
                                 self.log_output(

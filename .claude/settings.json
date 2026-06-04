@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(python.exe -c ' *)",
+      "Bash(python.exe render.py ./Cases/Default.json)"
     ]
   }
 }
