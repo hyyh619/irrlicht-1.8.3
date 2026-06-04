@@ -661,6 +661,112 @@ class Rasterizer:
         """Get count of pixels generated"""
         return len(self._pixels)
 
+    def load_config_from_pipeline_state_csv(self, csv_path: str) -> Optional[int]:
+        """
+        Load rasterizer/viewport/scissor config from pipeline_state.csv.
+        Returns the primitive topology value if found, else None.
+
+        CSV format:
+          Section,Property,Value
+          Viewport,X,0.0
+          Viewport,Width,640.0
+          Topology,Primitive,4
+          ...
+        """
+        try:
+            import csv as csv_mod
+            with open(csv_path, 'r', encoding='utf-8') as f:
+                reader = csv_mod.reader(f)
+                rows = list(reader)
+        except Exception as e:
+            print(f"Warning: Failed to load pipeline_state from {csv_path}: {e}")
+            return None
+
+        if not rows or len(rows) < 2:
+            return None
+
+        vp = {'x': 0.0, 'y': 0.0, 'width': 800.0, 'height': 600.0,
+              'min_depth': 0.0, 'max_depth': 1.0}
+        sc = {'x': 0, 'y': 0, 'width': 0, 'height': 0}
+        has_viewport = False
+        has_scissor = False
+        primitive_topology = None
+
+        cull_mode_map = {
+            'none': CullMode.NONE, 'front': CullMode.FRONT, 'back': CullMode.BACK,
+            '0': CullMode.NONE, '1': CullMode.FRONT, '2': CullMode.BACK,
+        }
+        fill_mode_map = {
+            'point': FillMode.POINT, 'line': FillMode.LINE, 'solid': FillMode.SOLID,
+            '0': FillMode.POINT, '1': FillMode.LINE, '2': FillMode.SOLID,
+        }
+
+        for row in rows[1:]:
+            if len(row) < 3:
+                continue
+            section = row[0].strip()
+            prop = row[1].strip()
+            val = row[2].strip().strip('"') if len(row) > 2 else ''
+
+            if section == 'Viewport':
+                has_viewport = True
+                try:
+                    if prop == 'X': vp['x'] = float(val)
+                    elif prop == 'Y': vp['y'] = float(val)
+                    elif prop == 'Width': vp['width'] = float(val)
+                    elif prop == 'Height': vp['height'] = float(val)
+                    elif prop == 'MinDepth': vp['min_depth'] = float(val)
+                    elif prop == 'MaxDepth': vp['max_depth'] = float(val)
+                except ValueError:
+                    pass
+
+            elif section == 'Scissor':
+                try:
+                    if prop == 'X': sc['x'] = int(float(val)); has_scissor = True
+                    elif prop == 'Y': sc['y'] = int(float(val))
+                    elif prop == 'Width': sc['width'] = int(float(val))
+                    elif prop == 'Height': sc['height'] = int(float(val))
+                except ValueError:
+                    pass
+
+            elif section == 'Rasterizer':
+                if prop == 'CullMode':
+                    mode = cull_mode_map.get(val.lower())
+                    if mode is not None:
+                        self.config.cull_mode = mode
+                elif prop == 'FillMode':
+                    mode = fill_mode_map.get(val.lower())
+                    if mode is not None:
+                        self.config.fill_mode = mode
+                elif prop == 'FrontFace':
+                    if 'clockwise' in val.lower() and 'counter' not in val.lower():
+                        self.config.front_face = FrontFace.CLOCKWISE
+                    else:
+                        self.config.front_face = FrontFace.COUNTER_CLOCKWISE
+
+            elif section == 'Topology':
+                if prop == 'Primitive':
+                    try:
+                        primitive_topology = int(val)
+                    except ValueError:
+                        pass
+
+        if has_viewport:
+            self.config.viewport = Viewport(
+                x=vp['x'], y=vp['y'],
+                width=vp['width'], height=vp['height'],
+                min_depth=vp['min_depth'], max_depth=vp['max_depth']
+            )
+
+        if has_scissor and (sc['width'] > 0 or sc['height'] > 0):
+            self.config.scissor_rect = ScissorRect(
+                left=sc['x'], top=sc['y'],
+                right=sc['x'] + sc['width'],
+                bottom=sc['y'] + sc['height']
+            )
+
+        return primitive_topology
+
 
 def create_default_config() -> Dict[str, Any]:
     """Create default rasterizer configuration"""

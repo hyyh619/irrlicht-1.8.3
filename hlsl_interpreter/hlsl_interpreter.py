@@ -373,10 +373,19 @@ class HLSLInterpreter:
             'cbuffer_finditer': re.compile(r'cbuffer\s+\w+[^}]+\}'),
 
             # parse_texture_binding: 纹理绑定，如 "Texture2D DiffuseTexture : register(t0);"
-            'texture_binding': re.compile(r'Texture2D\s+(\w+)\s*:\s*register\(t(\d+)\)\s*;?'),
+            'texture_binding': re.compile(r'Texture2D(?:<[^>]+>)?\s+(\w+)\s*:\s*register\(t(\d+)\)\s*;?'),
 
             # parse_sampler_binding: 采样器绑定，如 "SamplerState LinearSampler : register(s0);"
-            'sampler_binding': re.compile(r'SamplerState\s+(\w+)\s*:\s*register\(s(\d+)\)\s*;?'),
+            'sampler_binding': re.compile(r'SamplerState\s+(\w+)(?:_s)?\s*:\s*register\(s(\d+)\)\s*;?'),
+
+            # multi-variable declaration without initializer: "float4 r0,r1,r2;"
+            'multi_var_decl': re.compile(rf'^({type_pattern})\s+([\w][\w\s,]*)\s*;?$'),
+
+            # swizzle assignment to local variable: "r0.xyzw = expr;"
+            'swizzle_var_assign': re.compile(r'^(\w+)\.([xyzwrgba]+)\s*=\s*(.+?);?$'),
+
+            # matrix _mRC accessor pattern: _m00_m10_m20_m30
+            'matrix_accessor': re.compile(r'^_m\d\d(?:_m\d\d)*$'),
         }
 
         if self.log_to_file and self.log_file_path:
@@ -853,8 +862,18 @@ class HLSLInterpreter:
         op: 运算符 '-' 或 '!'
         val: 操作数
         """
+        def _neg(v):
+            if isinstance(v, bool):
+                return -1 if v else 0
+            if isinstance(v, (int, float)):
+                return -v
+            return v
+
         if op == '-':
-            result = [-v for v in val] if isinstance(val, list) else (-val if isinstance(val, (int, float)) else val)
+            if isinstance(val, list):
+                result = [_neg(v) for v in val]
+            else:
+                result = _neg(val)
         else:
             result = not bool(val)
         if self.debug and self._should_print:
@@ -867,6 +886,9 @@ class HLSLInterpreter:
         op: 运算符 '+', '-', '*', '/', '.'
         left, right: 左右操作数
         """
+        if left is None and op == '-':
+            # Unary negation encoded as binary with empty left side: -(expr)
+            return self.execute_unary_op('-', right)
         if left is None or right is None:
             result = None
             self.debug_print(f"[BINARY OP] left={self._format_value(left)}, right={self._format_value(right)}, op={op}, result={self._format_value(result)}")
@@ -899,30 +921,84 @@ class HLSLInterpreter:
             else:
                 result = left * right
         elif op == '/':
+            def _safe_div(a, b):
+                if b == 0 or b == 0.0:
+                    return float('inf') if (a is None or a >= 0) else float('-inf')
+                return a / b
             if isinstance(left, list) and isinstance(right, (int, float)):
-                result = [v / right for v in left]
+                result = [_safe_div(v, right) for v in left]
             elif isinstance(left, list) and isinstance(right, list):
-                result = [l / r for l, r in zip(left, right)]
+                result = [_safe_div(l, r) for l, r in zip(left, right)]
+            elif isinstance(right, (int, float)):
+                result = _safe_div(left, right)
             else:
-                result = left / right
+                result = left / right if right else 0.0
         elif op == '.':
             result = (left, right)
         elif op == '==':
-            result = left == right
+            if isinstance(left, list) or isinstance(right, list):
+                lv = left if isinstance(left, list) else [left] * (len(right) if isinstance(right, list) else 1)
+                rv = right if isinstance(right, list) else [right] * len(lv)
+                result = [1 if l == r else 0 for l, r in zip(lv, rv)]
+            else:
+                result = left == right
         elif op == '!=':
-            result = left != right
+            if isinstance(left, list) or isinstance(right, list):
+                lv = left if isinstance(left, list) else [left] * (len(right) if isinstance(right, list) else 1)
+                rv = right if isinstance(right, list) else [right] * len(lv)
+                result = [1 if l != r else 0 for l, r in zip(lv, rv)]
+            else:
+                result = left != right
         elif op == '<':
-            result = left < right
+            if isinstance(left, list) or isinstance(right, list):
+                lv = left if isinstance(left, list) else [left] * (len(right) if isinstance(right, list) else 1)
+                rv = right if isinstance(right, list) else [right] * len(lv)
+                result = [1 if l < r else 0 for l, r in zip(lv, rv)]
+            else:
+                result = left < right
         elif op == '>':
-            result = left > right
+            if isinstance(left, list) or isinstance(right, list):
+                lv = left if isinstance(left, list) else [left] * (len(right) if isinstance(right, list) else 1)
+                rv = right if isinstance(right, list) else [right] * len(lv)
+                result = [1 if l > r else 0 for l, r in zip(lv, rv)]
+            else:
+                result = left > right
         elif op == '<=':
-            result = left <= right
+            if isinstance(left, list) or isinstance(right, list):
+                lv = left if isinstance(left, list) else [left] * (len(right) if isinstance(right, list) else 1)
+                rv = right if isinstance(right, list) else [right] * len(lv)
+                result = [1 if l <= r else 0 for l, r in zip(lv, rv)]
+            else:
+                result = left <= right
         elif op == '>=':
-            result = left >= right
+            if isinstance(left, list) or isinstance(right, list):
+                lv = left if isinstance(left, list) else [left] * (len(right) if isinstance(right, list) else 1)
+                rv = right if isinstance(right, list) else [right] * len(lv)
+                result = [1 if l >= r else 0 for l, r in zip(lv, rv)]
+            else:
+                result = left >= right
         elif op == '&&':
-            result = bool(left and right)
+            result = bool(self._to_bool(left) and self._to_bool(right))
         elif op == '||':
-            result = bool(left or right)
+            result = bool(self._to_bool(left) or self._to_bool(right))
+        elif op == '|':
+            if isinstance(left, list) and isinstance(right, list):
+                result = [int(l) | int(r) for l, r in zip(left, right)]
+            elif isinstance(left, list):
+                result = [int(l) | int(right) for l in left]
+            elif isinstance(right, list):
+                result = [int(left) | int(r) for r in right]
+            else:
+                result = int(left) | int(right)
+        elif op == '&':
+            if isinstance(left, list) and isinstance(right, list):
+                result = [int(l) & int(r) for l, r in zip(left, right)]
+            elif isinstance(left, list):
+                result = [int(l) & int(right) for l in left]
+            elif isinstance(right, list):
+                result = [int(left) & int(r) for r in right]
+            else:
+                result = int(left) & int(right)
         else:
             result = None
         self.debug_print(f"[BINARY OP] left={self._format_float(left)}, right={self._format_float(right)}, op={op}, result={self._format_float(result)}")
@@ -1078,7 +1154,7 @@ class HLSLInterpreter:
 
         elif node.node_type == 'ternary':
             cond = self.evaluate_syntax_tree(node.left, local_vars)
-            if cond:
+            if self._to_bool(cond):
                 return self.evaluate_syntax_tree(node.right, local_vars)
             else:
                 return self.evaluate_syntax_tree(node.third_child, local_vars)
@@ -1097,6 +1173,16 @@ class HLSLInterpreter:
             # float2x2转换: 从3x3矩阵提取前2x2
             if cast_type == 'float2x2' and isinstance(inner, list) and len(inner) == 3:
                 return [row[:2] for row in inner[:2]]
+            # int/uint cast: 转换为整数
+            if cast_type in ('int', 'int2', 'int3', 'int4', 'uint', 'uint2', 'uint3', 'uint4'):
+                if isinstance(inner, list):
+                    return [int(v) for v in inner]
+                return int(inner) if inner is not None else 0
+            # float cast: 转换为浮点数
+            if cast_type in ('float', 'float2', 'float3', 'float4'):
+                if isinstance(inner, list):
+                    return [float(v) for v in inner]
+                return float(inner) if inner is not None else 0.0
             return inner
 
         return None
@@ -1180,8 +1266,7 @@ class HLSLInterpreter:
             self.debug_print(f"[FUNC] reflect({self._format_float(I)}, {self._format_float(N)}) = {self._format_float(result)}")
             return result
 
-        # max: 最大值函数
-        # 返回两个值中的较大者
+        # max: 最大值函数 (支持标量和向量)
         elif func_name == 'max':
             if len(args) != 2:
                 self.debug_print(f"[ERROR] max requires 2 args, got {len(args)} at line {node.line_number}")
@@ -1190,12 +1275,18 @@ class HLSLInterpreter:
             b = self.evaluate_syntax_tree(args[1], local_vars)
             if a is None or b is None:
                 return None
-            result = max(a, b)
+            if isinstance(a, list) and isinstance(b, list):
+                result = [max(x, y) for x, y in zip(a, b)]
+            elif isinstance(a, list):
+                result = [max(x, b) for x in a]
+            elif isinstance(b, list):
+                result = [max(a, y) for y in b]
+            else:
+                result = max(a, b)
             self.debug_print(f"[FUNC] max({self._format_float(a)}, {self._format_float(b)}) = {self._format_float(result)}")
             return result
 
-        # min: 最小值函数
-        # 返回两个值中的较小者
+        # min: 最小值函数 (支持标量和向量)
         elif func_name == 'min':
             if len(args) != 2:
                 self.debug_print(f"[ERROR] min requires 2 args, got {len(args)} at line {node.line_number}")
@@ -1204,8 +1295,131 @@ class HLSLInterpreter:
             b = self.evaluate_syntax_tree(args[1], local_vars)
             if a is None or b is None:
                 return None
-            result = min(a, b)
+            if isinstance(a, list) and isinstance(b, list):
+                result = [min(x, y) for x, y in zip(a, b)]
+            elif isinstance(a, list):
+                result = [min(x, b) for x in a]
+            elif isinstance(b, list):
+                result = [min(a, y) for y in b]
+            else:
+                result = min(a, b)
             self.debug_print(f"[FUNC] min({self._format_float(a)}, {self._format_float(b)}) = {self._format_float(result)}")
+            return result
+
+        # rsqrt: 倒数平方根函数 1/sqrt(x)
+        elif func_name == 'rsqrt':
+            if len(args) != 1:
+                return None
+            val = self.evaluate_syntax_tree(args[0], local_vars)
+            if val is None:
+                return None
+            if isinstance(val, list):
+                result = [1.0 / math.sqrt(max(v, 1e-30)) if v > 0 else 0.0 for v in val]
+            else:
+                result = 1.0 / math.sqrt(max(val, 1e-30)) if val > 0 else 0.0
+            self.debug_print(f"[FUNC] rsqrt({self._format_float(val)}) = {self._format_float(result)}")
+            return result
+
+        # sqrt: 平方根函数
+        elif func_name == 'sqrt':
+            if len(args) != 1:
+                return None
+            val = self.evaluate_syntax_tree(args[0], local_vars)
+            if val is None:
+                return None
+            if isinstance(val, list):
+                result = [math.sqrt(max(v, 0.0)) for v in val]
+            else:
+                result = math.sqrt(max(val, 0.0))
+            self.debug_print(f"[FUNC] sqrt({self._format_float(val)}) = {self._format_float(result)}")
+            return result
+
+        # log2: 以2为底的对数
+        elif func_name == 'log2':
+            if len(args) != 1:
+                return None
+            val = self.evaluate_syntax_tree(args[0], local_vars)
+            if val is None:
+                return None
+            if isinstance(val, list):
+                result = [math.log2(max(v, 1e-30)) for v in val]
+            else:
+                result = math.log2(max(val, 1e-30)) if val > 0 else -1e30
+            self.debug_print(f"[FUNC] log2({self._format_float(val)}) = {self._format_float(result)}")
+            return result
+
+        # exp2: 2的幂次方
+        elif func_name == 'exp2':
+            if len(args) != 1:
+                return None
+            val = self.evaluate_syntax_tree(args[0], local_vars)
+            if val is None:
+                return None
+            if isinstance(val, list):
+                result = [math.pow(2.0, v) for v in val]
+            else:
+                result = math.pow(2.0, val)
+            self.debug_print(f"[FUNC] exp2({self._format_float(val)}) = {self._format_float(result)}")
+            return result
+
+        # clamp: 限制范围函数
+        elif func_name == 'clamp':
+            if len(args) != 3:
+                return None
+            val = self.evaluate_syntax_tree(args[0], local_vars)
+            lo = self.evaluate_syntax_tree(args[1], local_vars)
+            hi = self.evaluate_syntax_tree(args[2], local_vars)
+            if val is None:
+                return None
+            lo = lo if lo is not None else 0.0
+            hi = hi if hi is not None else 1.0
+            if isinstance(val, list):
+                lo_v = lo if isinstance(lo, list) else [lo] * len(val)
+                hi_v = hi if isinstance(hi, list) else [hi] * len(val)
+                result = [max(min(v, h), l) for v, l, h in zip(val, lo_v, hi_v)]
+            else:
+                result = max(min(val, hi), lo)
+            return result
+
+        # saturate: 限制在[0,1]范围
+        elif func_name == 'saturate':
+            if len(args) != 1:
+                return None
+            val = self.evaluate_syntax_tree(args[0], local_vars)
+            if val is None:
+                return None
+            if isinstance(val, list):
+                result = [max(0.0, min(1.0, v)) for v in val]
+            else:
+                result = max(0.0, min(1.0, val))
+            return result
+
+        # lerp: 线性插值
+        elif func_name == 'lerp':
+            if len(args) != 3:
+                return None
+            a = self.evaluate_syntax_tree(args[0], local_vars)
+            b = self.evaluate_syntax_tree(args[1], local_vars)
+            t = self.evaluate_syntax_tree(args[2], local_vars)
+            if a is None or b is None or t is None:
+                return None
+            if isinstance(a, list) and isinstance(b, list):
+                t_v = t if isinstance(t, list) else [t] * len(a)
+                result = [av + (bv - av) * tv for av, bv, tv in zip(a, b, t_v)]
+            else:
+                result = a + (b - a) * t
+            return result
+
+        # int2/int3/int4: 整数向量构造
+        elif func_name in ('int2', 'int3', 'int4', 'uint2', 'uint3', 'uint4'):
+            result = []
+            for arg in args:
+                val = self.evaluate_syntax_tree(arg, local_vars)
+                if isinstance(val, list):
+                    result.extend(int(v) for v in val)
+                elif val is not None:
+                    result.append(int(val))
+            self.debug_print(f"[FUNC] {func_name}(...) = {result}")
             return result
 
         # pow: 幂函数
@@ -1471,6 +1685,33 @@ class HLSLInterpreter:
 
                     return 0
                 else:
+                    # 检查矩阵 _mRC 访问器: WorldViewProj._m01_m11_m21_m31
+                    if len(parts) == 2 and self.patterns['matrix_accessor'].match(parts[1]):
+                        base = parts[0]
+                        prop = parts[1]
+                        matrix = local_vars.get(base) or self.variables.get(base)
+                        if matrix is None:
+                            for cb_def in self.cbuffers.values():
+                                if isinstance(cb_def, CbufferDefinition):
+                                    for field in cb_def.fields:
+                                        if field.name == base and field.data is not None:
+                                            matrix = field.data
+                                            break
+                                if matrix is not None:
+                                    break
+                        if matrix is not None and isinstance(matrix, list) and matrix and isinstance(matrix[0], list):
+                            accessor_parts = [p for p in prop.split('_') if p and p[0] == 'm' and len(p) == 3]
+                            result = []
+                            for ap in accessor_parts:
+                                try:
+                                    r, c = int(ap[1]), int(ap[2])
+                                    result.append(matrix[r][c] if r < len(matrix) and c < len(matrix[r]) else 0.0)
+                                except (ValueError, IndexError):
+                                    result.append(0.0)
+                            if len(result) == 1:
+                                return result[0]
+                            return result if result else 0.0
+
                     # 多级访问: input.Color.g (Color不是纯swizzle字符)
                     if len(parts) == 2:
                         # 两级访问但不是swizzle模式: input.Color
@@ -1565,12 +1806,26 @@ class HLSLInterpreter:
             return None
 
         self.debug_print(f"\n[STMT] Executing: {stmt}")
-        input_snapshot = {k: v for k, v in local_vars.items() if k.startswith('input.') or k == 'output'}
 
         # if-else条件语句处理
         if stmt.startswith('if'):
             self.execute_if_statement(stmt, local_vars)
             return None
+
+        # 多变量声明无初始值: float4 r0,r1,r2; 或 uint4 bitmask, uiDest;
+        if '=' not in stmt:
+            match = self.patterns['multi_var_decl'].match(stmt)
+            if match:
+                var_type = match.group(1)
+                var_names_str = match.group(2)
+                var_names = [n.strip() for n in var_names_str.split(',') if n.strip() and re.match(r'^\w+$', n.strip())]
+                if var_names:
+                    default = self._default_value_for_type(var_type)
+                    for vname in var_names:
+                        if vname not in local_vars:
+                            local_vars[vname] = list(default) if isinstance(default, list) else default
+                    self.debug_print(f"[DECL] {var_type} {var_names}")
+                    return None
 
         # 变量声明语句: float4 pos = ...;
         match = self.patterns['variable_declaration'].match(stmt)
@@ -1614,6 +1869,18 @@ class HLSLInterpreter:
 
                     local_vars['output'][field_name] = current
                 self.debug_print(f"[STMT] {stmt} => output.{field_name}" + (f".{swizzle}" if swizzle else "") + f" = {self._format_float(value)}")
+                return None
+
+        # swizzle分量赋值: r0.xyzw = expr; 或 o0.xyz = expr;
+        # Note: don't check count('=') here since RHS may contain >= <= == comparisons
+        if '.' in stmt and '=' in stmt:
+            match = self.patterns['swizzle_var_assign'].match(stmt)
+            if match:
+                var_name = match.group(1)
+                swizzle = match.group(2)
+                value = self.evaluate_expression(match.group(3).rstrip(';').strip(), local_vars)
+                self._apply_swizzle_assign(var_name, swizzle, value, local_vars)
+                self.debug_print(f"[STMT] {stmt} => {var_name}.{swizzle} = {self._format_float(value)}")
                 return None
 
         # 一般赋值语句: var = ...;
@@ -2462,4 +2729,588 @@ class HLSLInterpreter:
         """
         return getattr(self, '_last_executeVS_code', None)
 
+    # =========================================================
+    # New param-based execution methods for void main(...) style
+    # =========================================================
+
+    def _to_bool(self, val) -> bool:
+        """Truthiness for scalars and vectors (non-empty list is true only if any element nonzero)."""
+        if val is None:
+            return False
+        if isinstance(val, list):
+            return any(v is not None and v not in (0, 0.0, False) for v in val)
+        if isinstance(val, float) and (val != val):  # NaN check
+            return False
+        return bool(val)
+
+    def _default_value_for_type(self, type_str: str):
+        """Return default (zero) value for an HLSL type."""
+        defaults = {
+            'float4x4': [[0.0, 0.0, 0.0, 0.0]] * 4,
+            'float3x3': [[0.0, 0.0, 0.0]] * 3,
+            'float4': [0.0, 0.0, 0.0, 0.0],
+            'float3': [0.0, 0.0, 0.0],
+            'float2': [0.0, 0.0],
+            'float': 0.0,
+            'uint4': [0, 0, 0, 0], 'uint3': [0, 0, 0], 'uint2': [0, 0], 'uint': 0,
+            'int4': [0, 0, 0, 0], 'int3': [0, 0, 0], 'int2': [0, 0], 'int': 0,
+            'bool': False,
+        }
+        v = defaults.get(type_str)
+        if isinstance(v, list):
+            return [list(row) if isinstance(row, list) else row for row in v]
+        return v if v is not None else 0.0
+
+    def _type_component_count(self, type_str: str) -> int:
+        """Return number of scalar components for an HLSL type."""
+        counts = {
+            'float4x4': 16, 'float3x3': 9,
+            'float4': 4, 'float3': 3, 'float2': 2, 'float': 1,
+            'uint4': 4, 'uint3': 3, 'uint2': 2, 'uint': 1,
+            'int4': 4, 'int3': 3, 'int2': 2, 'int': 1,
+            'bool': 1,
+        }
+        return counts.get(type_str, 4)
+
+    def _apply_swizzle_assign(self, var_name: str, swizzle: str, value, local_vars: dict):
+        """Assign components of a vector variable via swizzle notation."""
+        swizzle_map = {'x': 0, 'y': 1, 'z': 2, 'w': 3, 'r': 0, 'g': 1, 'b': 2, 'a': 3}
+        current = local_vars.get(var_name)
+        if current is None:
+            current = [0.0, 0.0, 0.0, 0.0]
+        elif not isinstance(current, list):
+            current = [float(current), 0.0, 0.0, 0.0]
+        else:
+            current = list(current)
+        # Extend list if swizzle accesses beyond current length
+        indices = [swizzle_map[ch] for ch in swizzle.lower() if ch in swizzle_map]
+        if indices:
+            needed = max(indices) + 1
+            while len(current) < needed:
+                current.append(0.0)
+        if isinstance(value, list):
+            for i, ch in enumerate(swizzle.lower()):
+                if ch in swizzle_map and i < len(value):
+                    current[swizzle_map[ch]] = value[i]
+        elif isinstance(value, (int, float)):
+            for ch in swizzle.lower():
+                if ch in swizzle_map:
+                    current[swizzle_map[ch]] = float(value)
+        local_vars[var_name] = current
+
+    def preprocess_hlsl(self, code: str) -> str:
+        """Preprocess HLSL code: expand #define macros, strip preprocessor directives."""
+        defines = {}
+        result_lines = []
+        for line in code.split('\n'):
+            stripped = line.strip()
+            if stripped.startswith('#define'):
+                parts = stripped.split(None, 2)
+                if len(parts) >= 3:
+                    defines[parts[1]] = parts[2].strip()
+                elif len(parts) == 2:
+                    defines[parts[1]] = ''
+                continue
+            elif stripped.startswith('#'):
+                continue
+            for name, replacement in defines.items():
+                line = re.sub(r'\b' + re.escape(name) + r'\b', replacement, line)
+            result_lines.append(line)
+        return '\n'.join(result_lines)
+
+    def parse_main_params_with_semantics(self, code: str, func_name: str = 'main') -> Optional[dict]:
+        """
+        Parse void main(...) parameter list.
+        Returns {'inputs': [...], 'outputs': [...]} where each entry has:
+          name, type, semantic, semantic_base, semantic_index, is_out, slot (-1 until mapped)
+        """
+        pattern = re.compile(
+            r'void\s+' + re.escape(func_name) + r'\s*\(\s*(.*?)\s*\)\s*\{',
+            re.DOTALL
+        )
+        match = pattern.search(code)
+        if not match:
+            return None
+
+        params_str = match.group(1)
+        param_list = [p.strip() for p in params_str.split(',') if p.strip()]
+        params = []
+
+        for param_str in param_list:
+            param_str = param_str.strip()
+            is_out = False
+            if param_str.lower().startswith('out '):
+                is_out = True
+                param_str = param_str[4:].strip()
+            elif param_str.lower().startswith('inout '):
+                param_str = param_str[6:].strip()
+
+            semantic = ''
+            if ':' in param_str:
+                colon_pos = param_str.index(':')
+                type_name_part = param_str[:colon_pos].strip()
+                semantic = param_str[colon_pos + 1:].strip()
+            else:
+                type_name_part = param_str
+
+            parts = type_name_part.split()
+            if len(parts) >= 2:
+                param_type = parts[0]
+                param_name = parts[-1]
+            elif len(parts) == 1:
+                param_type = parts[0]
+                param_name = '_unnamed'
+            else:
+                continue
+
+            # Parse semantic index: SV_POSITION0 -> base=SV_POSITION, index=0
+            semantic_base = semantic
+            semantic_index = 0
+            idx_match = re.match(r'^(.*?)(\d+)$', semantic)
+            if idx_match:
+                semantic_base = idx_match.group(1)
+                semantic_index = int(idx_match.group(2))
+
+            params.append({
+                'name': param_name,
+                'type': param_type,
+                'semantic': semantic,
+                'semantic_base': semantic_base,
+                'semantic_index': semantic_index,
+                'is_out': is_out,
+                'slot': -1,
+            })
+
+        return {
+            'inputs': [p for p in params if not p['is_out']],
+            'outputs': [p for p in params if p['is_out']],
+        }
+
+    def load_signature_from_csv(self, csv_path: str) -> dict:
+        """
+        Parse VS_input_output_signature.csv or PS_input_output_signature.csv.
+        Returns {'inputs': [...], 'outputs': [...]} with slot/index/semantic info.
+        """
+        if not os.path.exists(csv_path):
+            return {'inputs': [], 'outputs': []}
+        rows = self.load_csv(csv_path)
+        if not rows or len(rows) < 2:
+            return {'inputs': [], 'outputs': []}
+
+        header = [h.strip() for h in rows[0]]
+        type_idx = header.index('Type') if 'Type' in header else 0
+        slot_idx = header.index('Slot') if 'Slot' in header else 1
+        index_idx = header.index('Index') if 'Index' in header else 2
+        name_idx = header.index('SemanticName') if 'SemanticName' in header else 3
+
+        inputs, outputs = [], []
+        for row in rows[1:]:
+            if len(row) < 4:
+                continue
+            sig_type = row[type_idx].strip()
+            try:
+                slot = int(row[slot_idx].strip())
+                idx = int(row[index_idx].strip())
+            except ValueError:
+                continue
+            semantic = row[name_idx].strip()
+            entry = {'slot': slot, 'index': idx, 'semantic': semantic}
+            if sig_type == 'Input':
+                inputs.append(entry)
+            elif sig_type == 'Output':
+                outputs.append(entry)
+
+        return {'inputs': inputs, 'outputs': outputs}
+
+    def map_params_to_signature(self, params: list, signature_entries: list):
+        """Fill in slot field for each param by matching semantic base and index."""
+        for param in params:
+            sem_base = param['semantic_base'].upper()
+            sem_idx = param['semantic_index']
+            for sig in signature_entries:
+                if sig['semantic'].upper() == sem_base and sig['index'] == sem_idx:
+                    param['slot'] = sig['slot']
+                    break
+
+    def load_ia_vertex_data(self, csv_path: str, vs_input_params: list) -> list:
+        """
+        Load ia_vertex_data.csv and map columns to VS input param names by semantic.
+        Returns list of dicts {param_name: value} per vertex.
+        """
+        if not os.path.exists(csv_path):
+            return []
+        rows = self.load_csv(csv_path)
+        if not rows or len(rows) < 2:
+            return []
+
+        header = [col.strip() for col in rows[0]]
+        col_map = {col: i for i, col in enumerate(header)}
+
+        # Build per-param column mapping
+        param_col_map = {}
+        for param in vs_input_params:
+            sem_base = param['semantic_base']
+            sem_idx = param['semantic_index']
+            ptype = param['type']
+
+            # Try SEMANTIC0 first, then SEMANTIC, then SEMANTIC + index
+            candidates = [
+                f'{sem_base}{sem_idx}',
+                sem_base,
+                f'{sem_base}_{sem_idx}',
+            ]
+            components = {}
+            for cand in candidates:
+                for suffix in ['x', 'y', 'z', 'w']:
+                    col = f'{cand}.{suffix}'
+                    if col in col_map:
+                        components[suffix] = col_map[col]
+                if components:
+                    break
+
+            param_col_map[param['name']] = {'type': ptype, 'components': components}
+
+        vertices = []
+        for row in rows[1:]:
+            vertex = {}
+            for param_name, info in param_col_map.items():
+                ptype = info['type']
+                comp = info['components']
+                try:
+                    if 'w' in comp:
+                        vertex[param_name] = [float(row[comp['x']]), float(row[comp['y']]),
+                                              float(row[comp['z']]), float(row[comp['w']])]
+                    elif 'z' in comp:
+                        vertex[param_name] = [float(row[comp['x']]), float(row[comp['y']]),
+                                              float(row[comp['z']])]
+                    elif 'y' in comp:
+                        vertex[param_name] = [float(row[comp['x']]), float(row[comp['y']])]
+                    elif 'x' in comp:
+                        vertex[param_name] = float(row[comp['x']])
+                    else:
+                        vertex[param_name] = self._default_value_for_type(ptype)
+                except (ValueError, IndexError):
+                    vertex[param_name] = self._default_value_for_type(ptype)
+            vertices.append(vertex)
+
+        return vertices
+
+    def load_vs_golden_from_mesh_csv(self, csv_path: str, vs_output_params: list) -> list:
+        """
+        Load MeshOut_vs_mesh.csv golden data. Returns list of dicts with canonical keys.
+        """
+        if not os.path.exists(csv_path):
+            return []
+        rows = self.load_csv(csv_path)
+        if not rows or len(rows) < 2:
+            return []
+
+        header = [col.strip() for col in rows[0]]
+        col_map = {col: i for i, col in enumerate(header)}
+        sem_to_key = self._get_output_semantic_to_key_map()
+
+        golden = []
+        for row in rows[1:]:
+            entry = {}
+            for param in vs_output_params:
+                sem_base = param['semantic_base']
+                sem_idx = param['semantic_index']
+
+                # Try both TEXCOORD0 style (with index) and SV_POSITION style (no index)
+                candidates = [f'{sem_base}{sem_idx}', sem_base]
+                comp = {}
+                for cand in candidates:
+                    for suffix in ['x', 'y', 'z', 'w']:
+                        c = f'{cand}.{suffix}'
+                        if c in col_map:
+                            comp[suffix] = col_map[c]
+                    if comp:
+                        break
+
+                # Choose canonical key
+                sem_full = f'{sem_base.upper()}{sem_idx}' if sem_idx > 0 else sem_base.upper()
+                key = sem_to_key.get(sem_full, sem_to_key.get(sem_base.upper(), sem_base))
+
+                try:
+                    if 'w' in comp:
+                        entry[key] = [float(row[comp[s]]) for s in ['x','y','z','w']]
+                    elif 'z' in comp:
+                        entry[key] = [float(row[comp[s]]) for s in ['x','y','z']]
+                    elif 'y' in comp:
+                        entry[key] = [float(row[comp[s]]) for s in ['x','y']]
+                    elif 'x' in comp:
+                        entry[key] = float(row[comp['x']])
+                except (ValueError, IndexError):
+                    pass
+            golden.append(entry)
+
+        return golden
+
+    def _get_output_semantic_to_key_map(self) -> dict:
+        """Map VS/PS output semantic names to canonical dict keys for rasterizer/pixel."""
+        return {
+            'SV_POSITION': 'sv_position',
+            'COLOR': 'Color',
+            'COLOR0': 'Color',
+            'TEXCOORD': 'TexCoord',
+            'TEXCOORD0': 'TexCoord',
+            'TEXCOORD1': 'TexCoord2',
+            'NORMAL': 'Normal',
+            'NORMAL0': 'Normal',
+            'WORLDPOS': 'WorldPos',
+            'WORLDPOS0': 'WorldPos',
+            'SV_TARGET': 'Color',
+            'SV_TARGET0': 'Color',
+        }
+
+    def load_all_cbuffers_from_combined_csv(self, csv_path: str):
+        """Load all cbuffer data from a combined VS/PS cbuffer CSV file."""
+        for cb_name in list(self.cbuffers.keys()):
+            self.load_cbuffer_data_from_csv(cb_name, csv_path)
+
+    def _execute_void_main(self, code: str, main_func: str, input_params: list,
+                           output_params: list, input_data: dict, row_index: int) -> dict:
+        """
+        Execute a void main(...) style HLSL function.
+        Returns dict {output_param_name: value}.
+        """
+        local_vars = {}
+        # Set input params directly by name
+        for param in input_params:
+            pname = param['name']
+            local_vars[pname] = input_data.get(pname, self._default_value_for_type(param['type']))
+
+        # Initialize output params
+        for param in output_params:
+            pname = param['name']
+            local_vars[pname] = self._default_value_for_type(param['type'])
+
+        self._eval_counter += 1
+        self._should_print = ((self._eval_counter - 1) % self.print_sequence == 0)
+
+        self.debug_print(f"\n=== ROW {row_index} (void main) ===")
+
+        # Get cached statements for this function
+        cache_key = f'void_{main_func}_{id(code)}'
+        if cache_key in self._parsed_func_cache:
+            statements = list(self._parsed_func_cache[cache_key]['statements'])
+        else:
+            statements = self._collect_function_statements(main_func)
+            self._parsed_func_cache[cache_key] = {'statements': statements, 'body': ''}
+
+        # Execute statements
+        i = 0
+        while i < len(statements):
+            stmt = statements[i]
+            if stmt is None:
+                i += 1
+                continue
+
+            stmt_stripped = stmt.strip()
+            if stmt_stripped == 'return' or stmt_stripped.startswith('return;'):
+                break
+
+            if stmt_stripped.startswith('if'):
+                next_i = i + 1
+                while next_i < len(statements) and statements[next_i] is None:
+                    next_i += 1
+                if (next_i < len(statements) and statements[next_i] and
+                        statements[next_i].strip().startswith('else')):
+                    full_stmt = stmt + '\n' + statements[next_i]
+                    self.execute_if_statement(full_stmt, local_vars)
+                    statements[next_i] = None
+                else:
+                    self.execute_if_statement(stmt_stripped, local_vars)
+            else:
+                self.execute_statement(stmt_stripped, local_vars)
+            i += 1
+
+        # Collect output param values
+        result = {}
+        for param in output_params:
+            result[param['name']] = local_vars.get(param['name'])
+        return result
+
+    def _resolve_slot_shared_params(self, output_params: list, result_params: dict):
+        """
+        Handle output params sharing the same output slot (e.g., TEXCOORD0 and TEXCOORD1).
+        If a secondary param was never assigned, derive its value from the primary param's extra components.
+        """
+        slot_groups: Dict[int, list] = {}
+        for param in output_params:
+            slot = param.get('slot', -1)
+            if slot < 0:
+                continue
+            if slot not in slot_groups:
+                slot_groups[slot] = []
+            slot_groups[slot].append(param)
+
+        for slot, params in slot_groups.items():
+            if len(params) <= 1:
+                continue
+            params_sorted = sorted(params, key=lambda p: p.get('semantic_index', 0))
+            first = params_sorted[0]
+            first_val = result_params.get(first['name'], [])
+            first_comp = self._type_component_count(first['type'])
+
+            if isinstance(first_val, list) and len(first_val) > first_comp:
+                offset = first_comp
+                for param in params_sorted[1:]:
+                    cur = result_params.get(param['name'], [])
+                    comp = self._type_component_count(param['type'])
+                    is_default = not cur or all(
+                        v in (0, 0.0, False) for v in (cur if isinstance(cur, list) else [cur])
+                    )
+                    if is_default:
+                        result_params[param['name']] = first_val[offset:offset + comp]
+                    offset += comp
+
+    def executeVS_with_params(self, main_func: str, input_params: list, output_params: list,
+                               vertex_data: list, execute_count: int = None) -> list:
+        """
+        Execute vertex shader using parameter-based I/O (void main(...) style).
+        Returns list of dicts keyed by canonical names (sv_position, Color, TexCoord, etc.)
+        """
+        if execute_count is None or execute_count < 0:
+            execute_count = len(vertex_data)
+        execute_count = min(execute_count, len(vertex_data))
+
+        self._eval_counter = 0
+        self.vertex_pool.clear()
+        sem_to_key = self._get_output_semantic_to_key_map()
+
+        results = []
+        for row_index in range(execute_count):
+            row_data = vertex_data[row_index]
+            result_params = self._execute_void_main(
+                self.hlsl_code, main_func, input_params, output_params, row_data, row_index
+            )
+
+            # Handle slot-shared params (e.g., TEXCOORD0/TEXCOORD1 sharing slot 2)
+            self._resolve_slot_shared_params(output_params, result_params)
+
+            # Map to canonical keys
+            canonical = {}
+            for param in output_params:
+                sem_base = param['semantic_base'].upper()
+                sem_idx = param['semantic_index']
+                sem_full = f'{sem_base}{sem_idx}' if sem_idx > 0 else sem_base
+                key = sem_to_key.get(sem_full, sem_to_key.get(sem_base, param['semantic_base']))
+
+                value = result_params.get(param['name'])
+                comp_count = self._type_component_count(param['type'])
+                if isinstance(value, list) and len(value) > comp_count:
+                    value = value[:comp_count]
+                canonical[key] = value
+
+            results.append(canonical)
+
+        return results
+
+    def executePS_with_params(self, main_func: str, ps_input_params: list,
+                               ps_output_params: list, pixels: list, ps_code: str = None) -> list:
+        """Execute pixel shader using parameter-based I/O."""
+        self._eval_counter = 0
+        code = ps_code or self.hlsl_code
+
+        # Mapping from PS input semantic to pixel attribute name
+        sem_to_pixel = {
+            'SV_POSITION': 'sv_pos',
+            'COLOR': 'color', 'COLOR0': 'color',
+            'TEXCOORD': 'texcoord', 'TEXCOORD0': 'texcoord',
+            'TEXCOORD1': 'texcoord2',
+            'NORMAL': 'normal', 'NORMAL0': 'normal',
+            'WORLDPOS': 'worldPos', 'WORLDPOS0': 'worldPos',
+        }
+
+        for pixel in pixels:
+            pixel.ps_output_color = None
+            input_data = {}
+
+            for param in ps_input_params:
+                sem_base = param['semantic_base'].upper()
+                sem_idx = param['semantic_index']
+                sem_full = f'{sem_base}{sem_idx}' if sem_idx > 0 else sem_base
+                attr_name = sem_to_pixel.get(sem_full, sem_to_pixel.get(sem_base, ''))
+
+                if attr_name == 'sv_pos':
+                    pixel_val = [float(pixel.x), float(pixel.y), float(pixel.depth), 1.0]
+                elif attr_name:
+                    pixel_val = getattr(pixel, attr_name, None)
+                    if pixel_val is None:
+                        pixel_val = self._default_value_for_type(param['type'])
+                else:
+                    pixel_val = self._default_value_for_type(param['type'])
+
+                # Trim/pad to declared type component count
+                comp = self._type_component_count(param['type'])
+                if isinstance(pixel_val, list):
+                    pixel_val = (pixel_val + [0.0] * comp)[:comp]
+                input_data[param['name']] = pixel_val
+
+            result_params = self._execute_void_main(
+                code, main_func, ps_input_params, ps_output_params, input_data, 0
+            )
+
+            # SV_TARGET0 is the output color
+            for param in ps_output_params:
+                if 'SV_TARGET' in param['semantic_base'].upper():
+                    pixel.ps_output_color = result_params.get(param['name'])
+                    break
+            if pixel.ps_output_color is None and result_params:
+                pixel.ps_output_color = next(iter(result_params.values()))
+
+        return pixels
+
+    def compare_vs_output_with_golden_params(self, results: list, output_params: list,
+                                              golden_rows: list, float_tolerance: float = 0.0001,
+                                              execute_count: int = None) -> bool:
+        """Compare VS output results against golden data (both using canonical key format)."""
+        count = execute_count if execute_count and execute_count > 0 else len(results)
+        count = min(count, len(results), len(golden_rows))
+
+        passed = 0
+        all_match = True
+
+        for row_idx in range(count):
+            result_row = results[row_idx]
+            golden_row = golden_rows[row_idx]
+            row_match = True
+
+            for key, golden_val in golden_row.items():
+                output_val = result_row.get(key)
+                if output_val is None or golden_val is None:
+                    continue
+
+                if isinstance(output_val, list) and isinstance(golden_val, list):
+                    min_len = min(len(output_val), len(golden_val))
+                    for comp_idx in range(min_len):
+                        ov = output_val[comp_idx]
+                        gv = golden_val[comp_idx]
+                        if isinstance(ov, float) and isinstance(gv, float):
+                            if abs(ov - gv) > float_tolerance:
+                                self.log_output(
+                                    f"Error: Row {row_idx} {key}[{comp_idx}]: "
+                                    f"output={ov:.6f} golden={gv:.6f} diff={abs(ov-gv):.6f}"
+                                )
+                                row_match = False
+                        elif ov != gv:
+                            self.log_output(f"Error: Row {row_idx} {key}[{comp_idx}]: output={ov} golden={gv}")
+                            row_match = False
+                elif isinstance(output_val, (int, float)) and isinstance(golden_val, (int, float)):
+                    if abs(float(output_val) - float(golden_val)) > float_tolerance:
+                        self.log_output(f"Error: Row {row_idx} {key}: output={output_val:.6f} golden={golden_val:.6f}")
+                        row_match = False
+
+            if row_match:
+                passed += 1
+            else:
+                all_match = False
+
+        self.log_output(f"Total PASSED rows: {passed}/{count}")
+        if all_match:
+            self.log_output("Comparison PASSED: All output data matches golden data within tolerance")
+        else:
+            self.log_output("Comparison FAILED: Some output data does not match golden data")
+        return all_match
 
