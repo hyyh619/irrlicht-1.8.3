@@ -38,7 +38,7 @@ void main(
 5. rasterizer state/blend state/depth-stencil state的对应配置设置文件改成pipeline_state.csv。请改成从这个文件解析
 6. VS的输入数据的input layout定义文件是ia_input_layouts.csv定义，数据文件是ia_vertex_data.csv，请根据vs input signature和ia_input_layouts.csv来完成输入顶点数据到vs hlsl的输入数据的映射。
 
-## Git commit: hlsl-interpreter: implement zip-based data_path workflow and void main() param-based execution
+## Git commit: hlsl-interpreter: using DxRenderDoc dump zip file as input by Claude Code.
 
 
 # 2

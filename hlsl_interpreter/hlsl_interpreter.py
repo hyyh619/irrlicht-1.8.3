@@ -3069,7 +3069,7 @@ class HLSLInterpreter:
             self.load_cbuffer_data_from_csv(cb_name, csv_path)
 
     def _execute_void_main(self, code: str, main_func: str, input_params: list,
-                           output_params: list, input_data: dict, row_index: int) -> dict:
+                            output_params: list, input_data: dict, row_index: int) -> dict:
         """
         Execute a void main(...) style HLSL function.
         Returns dict {output_param_name: value}.

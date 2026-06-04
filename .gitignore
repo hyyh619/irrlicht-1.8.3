@@ -169,3 +169,4 @@ draw_*.jpg
 dump_*
 *.bak
 Sessions/hlsl-interpreter/hlsl-step20-support-swizzle-for-vector.md.
+*.zip
