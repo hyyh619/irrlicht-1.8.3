@@ -13,10 +13,11 @@ _COMPILED_PATTERNS: Dict[str, re.Pattern] = {
 
 _OPERATORS: Dict[str, int] = {
     '||': 1, '&&': 2,
-    '==': 3, '!=': 3,
-    '<': 4, '>': 4, '<=': 4, '>=': 4,
-    '+': 5, '-': 5,
-    '*': 6, '/': 6,
+    '|': 3, '&': 4,
+    '==': 5, '!=': 5,
+    '<': 6, '>': 6, '<=': 6, '>=': 6,
+    '+': 7, '-': 7,
+    '*': 8, '/': 8,
 }
 
 
@@ -204,6 +205,15 @@ class SyntaxTreeParser:
         if not expr:
             return SyntaxTreeNode('value', None)
 
+        # Check for | and & before cast: (int2)a | (int2)b must NOT be treated
+        # as a cast of the whole rhs — the bitwise op is at the top level.
+        op_info_pre = self._find_top_level_operator(expr)
+        if op_info_pre and op_info_pre[1] in ('|', '&'):
+            pos, op = op_info_pre
+            left_node = self._parse_expression(expr[:pos].strip())
+            right_node = self._parse_expression(expr[pos+1:].strip())
+            return SyntaxTreeNode('binary_op', op, left_node, right_node)
+
         cast_match = _COMPILED_PATTERNS['type_cast'].match(expr)
         if cast_match:
             cast_type = cast_match.group(1)
@@ -241,7 +251,7 @@ class SyntaxTreeParser:
         op_info = self._find_top_level_operator(expr)
         if op_info:
             pos, op = op_info
-            if op in ['||', '&&', '==', '!=', '<', '>', '<=', '>=', '+', '-', '*', '/']:
+            if op in ['||', '&&', '|', '&', '==', '!=', '<', '>', '<=', '>=', '+', '-', '*', '/']:
                 left_expr = expr[:pos].strip()
                 right_expr = expr[pos+len(op):].strip()
                 left_node = self._parse_expression(left_expr)
