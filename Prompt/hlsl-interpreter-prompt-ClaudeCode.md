@@ -99,35 +99,136 @@ Method_call(yy |)
 [STMT] r2.xy = (int2)r2.yy | (int2)r2.xz => r2.xy = None
 修复代码后执行下列命令来验证修复是否成功。运行render.py后会生成output.log(该文件在Cases文件夹中)，请读取output.log内容来验证还有Error打印吗？如果还有Error，请继续修复，知道VS输出正确
    python.exe render.py ./Cases/Default.json
-## Git commit: 
+
+## Git commit:
+hlsl-interpreter: fix syntax "Unknown method: yy |" by claude code.
+
+## Claude Code Session
+Bug: (int2)r2.yy | (int2)r2.xz → [ERROR] Unknown method: yy | → returns None
+Root cause: Two problems in hlsl_syntax_tree.py:
+
+| and & missing from _OPERATORS — the bitwise OR/AND single-character operators weren't recognized at all, so _find_top_level_operator never returned them.
+
+Cast check runs before binary operator check — for (int2)r2.yy | (int2)r2.xz, the type-cast pattern (int2) was consumed first, leaving r2.yy | (int2)r2.xz as the "inner expression". Without | in _OPERATORS, the parser fell through to the method-call branch, interpreting it as r2 calling method yy | with argument int2.
+
+Fixes in hlsl_syntax_tree.py:
+
+Added '|': 3, '&': 4 to _OPERATORS with correct precedence between &&(2) and ==(5), and renumbered ==→5, <→6, +→7, *→8 to maintain relative ordering.
+
+Added a pre-cast check at the top of _parse_expression: if the top-level operator is | or &, handle it as a binary op immediately before the cast pattern gets a chance to consume the leading (type):
+
+
+op_info_pre = self._find_top_level_operator(expr)
+if op_info_pre and op_info_pre[1] in ('|', '&'):
+    pos, op = op_info_pre
+    left_node = self._parse_expression(expr[:pos].strip())
+    right_node = self._parse_expression(expr[pos+1:].strip())
+    return SyntaxTreeNode('binary_op', op, left_node, right_node)
+Added '|', '&' to the recognized-ops list in the main binary-op handler.
+
+Also restored the previously-commented-out WorldPos golden remapping in hlsl_interpreter.py (line 3047), which was needed for the comparison to pass.
 
 
 # 4
 ## Prompts
 Error: Row 0 WorldPos[0]: output=-61.638200 golden=11.282900 diff=72.921100
+
 ## Git commit: 
 
+## Claude Code Session
 
 # 5
 ## Prompts
+
 ## Git commit: 
+
+## Claude Code Session
 
 
 # 6
 ## Prompts
+
 ## Git commit: 
+
+## Claude Code Session
 
 
 # 7
 ## Prompts
+
 ## Git commit: 
+
+## Claude Code Session
+
 
 
 # 8
 ## Prompts
+
 ## Git commit: 
+
+## Claude Code Session
+
 
 
 # 9
 ## Prompts
+
 ## Git commit: 
+
+## Claude Code Session
+
+
+
+# 10
+## Prompts
+
+## Git commit: 
+
+## Claude Code Session
+
+
+
+# 11
+## Prompts
+
+## Git commit: 
+
+## Claude Code Session
+
+
+
+# 12
+## Prompts
+
+## Git commit: 
+
+## Claude Code Session
+
+
+
+# 13
+## Prompts
+
+## Git commit: 
+
+## Claude Code Session
+
+
+
+# 14
+## Prompts
+
+## Git commit: 
+
+## Claude Code Session
+
+
+
+# 15
+## Prompts
+
+## Git commit: 
+
+## Claude Code Session
+

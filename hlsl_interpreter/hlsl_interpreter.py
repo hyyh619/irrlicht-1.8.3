@@ -3042,10 +3042,7 @@ class HLSLInterpreter:
                         val = float(row[comp['x']])
                     else:
                         val = None
-                    # 3Dmigoto MeshOut reads float3 VS outputs with a 1-float alignment offset:
-                    # WORLDPOS.x = o4.y, WORLDPOS.y = o4.z, WORLDPOS.z = garbage (next vertex SV_POS.x)
-                    if key == 'WorldPos' and isinstance(val, list) and len(val) == 3:
-                        val = [None, val[0], val[1]]
+
                     if val is not None:
                         entry[key] = val
                 except (ValueError, IndexError):
